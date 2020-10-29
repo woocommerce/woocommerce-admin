@@ -203,7 +203,7 @@ export const StoreManagementLinks = () => {
 								} ) => (
 									<QuickLink
 										icon={ icon }
-										key={ listItemTag }
+										key={ `${ title }_${ listItemTag }_${ href }` }
 										title={ title }
 										linkType={ linkType }
 										href={ href }
