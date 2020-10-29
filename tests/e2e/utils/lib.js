@@ -1,4 +1,4 @@
-export const waitForElementCount = async function ( page, domSelector, count ) {
+export const waitForElementCount = function ( page, domSelector, count ) {
 	return page.waitForFunction(
 		( domSelector, count ) => {
 			return document.querySelectorAll( domSelector ).length === count;
