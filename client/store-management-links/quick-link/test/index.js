@@ -4,7 +4,6 @@
 import React from '@wordpress/element';
 import { render } from '@testing-library/react';
 import { brush } from '@wordpress/icons';
-import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
 /**
