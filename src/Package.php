@@ -3,10 +3,6 @@
  * Returns information about the package and handles init.
  */
 
-/**
- * This namespace isn't compatible with the PSR-4
- * which ensures that the copy in the standalone plugin will not be autoloaded.
- */
 namespace Automattic\WooCommerce\Admin\Composer;
 
 defined( 'ABSPATH' ) || exit;
@@ -17,7 +13,7 @@ use Automattic\WooCommerce\Admin\FeaturePlugin;
 /**
  * Main package class.
  */
-class Package {
+class Package { // phpcs:ignore Suin.Classes.PSR4.IncorrectClassName, Generic.Classes.OpeningBraceSameLine.ContentAfterBrace -- The namespace isn't compatible with the PSR-4, which ensures that the copy in the standalone plugin will not be autoloaded.
 
 	/**
 	 * Version.
