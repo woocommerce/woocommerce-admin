@@ -17,27 +17,33 @@ import CustomerEffortScoreTracks from './customer-effort-score-tracks';
  * however this is designed to be flexible if multiple surveys per page are
  * added in the future.
  *
- * @param {Object}   props                      Component props.
- * @param {Array}    props.queue                The queue of surveys.
- * @param {boolean}  props.resolving            Whether the queue is resolving.
- * @param {Function} props.clearQueueFromOption Sets up clearing of the queue on the next page load.
+ * @param {Object}   props            Component props.
+ * @param {Array}    props.queue      The queue of surveys.
+ * @param {boolean}  props.resolving  Whether the queue is resolving.
+ * @param {Function} props.clearQueue Sets up clearing of the queue on the next page load.
  */
 function CustomerEffortScoreTracksContainer( {
 	queue,
 	resolving,
-	clearQueueFromOption,
+	clearQueue,
 } ) {
 	if ( resolving ) {
 		return null;
 	}
 
-	if ( queue.length ) {
-		clearQueueFromOption();
+	const queueForPage = queue.filter(
+		( item ) =>
+			item.pagenow === window.pagenow &&
+			item.adminpage === window.adminpage
+	);
+
+	if ( queueForPage.length ) {
+		clearQueue();
 	}
 
 	return (
 		<>
-			{ queue.map( ( item, index ) => (
+			{ queueForPage.map( ( item, index ) => (
 				<CustomerEffortScoreTracks
 					key={ index }
 					initiallyVisible={ true }
@@ -62,7 +68,7 @@ CustomerEffortScoreTracksContainer.propTypes = {
 	/**
 	 * Set up clearing the queue on the next page load.
 	 */
-	clearQueueFromOption: PropTypes.func,
+	clearQueue: PropTypes.func,
 };
 
 export default compose(
@@ -79,14 +85,17 @@ export default compose(
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 
 		return {
-			clearQueueFromOption: () => {
+			clearQueue: () => {
 				// This sets an option that should be used on the next page
-				// load to clear the CES tracks queue (see
+				// load to clear the CES tracks queue for the current page (see
 				// CustomerEffortScoreTracks.php) - clearing the queue
 				// directly puts this into an infinite loop which is picked
 				// up by React.
 				updateOptions( {
-					woocommerce_clear_ces_tracks_queue: true,
+					woocommerce_clear_ces_tracks_queue_for_page: {
+						pagenow: window.pagenow,
+						adminpage: window.adminpage,
+					},
 				} );
 			},
 		};
