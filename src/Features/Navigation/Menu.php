@@ -236,6 +236,57 @@ class Menu {
 	}
 
 	/**
+	 * Adds a plugin item.
+	 *
+	 * @param array $args Array containing the necessary arguments.
+	 *    $args = array(
+	 *      'id'         => (string) The unique ID of the menu item. Required.
+	 *      'title'      => (string) Title of the menu item. Required.
+	 *      'parent'     => (string) Parent menu item ID.
+	 *      'capability' => (string) Capability to view this menu item.
+	 *      'url'        => (string) URL or callback to be used. Required.
+	 *      'order'      => (int) Menu item order.
+	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'menuId'     => (string) The ID of the menu to add the item to.
+	 *    ).
+	 */
+	public static function add_plugin_item( $args ) {
+		$item_args = array_merge(
+			$args,
+			array(
+				'menuId'       => 'plugins',
+				'is_top_level' => ! isset( $args['parent'] ),
+			)
+		);
+		self::add_item( $item_args );
+	}
+
+	/**
+	 * Adds a plugin category.
+	 *
+	 * @param array $args Array containing the necessary arguments.
+	 *    $args = array(
+	 *      'id'         => (string) The unique ID of the menu item. Required.
+	 *      'title'      => (string) Title of the menu item. Required.
+	 *      'capability' => (string) Capability to view this menu item.
+	 *      'url'        => (string) URL or callback to be used. Required.
+	 *      'order'      => (int) Menu item order.
+	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'menuId'     => (string) The ID of the menu to add the category to.
+	 *    ).
+	 */
+	public static function add_plugin_category( $args ) {
+		$category_args = array_merge(
+			$args,
+			array(
+				'menuId'       => 'plugins',
+				'is_top_level' => ! isset( $args['parent'] ),
+			)
+		);
+		self::add_item( $category_args );
+	}
+
+	/**
 	 * Adds a post type as a menu category.
 	 *
 	 * @param string $post_type Post type.
