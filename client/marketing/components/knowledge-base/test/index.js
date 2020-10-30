@@ -57,21 +57,14 @@ describe( 'Posts and not loading', () => {
 	} );
 
 	it( 'should display default title and description', () => {
-		const { getByRole } = knowledgeBaseWrapper;
+		const { getByText } = knowledgeBaseWrapper;
+
+		expect( getByText( 'WooCommerce knowledge base' ) ).toBeInTheDocument();
 
 		expect(
-			getByRole( 'heading', {
-				level: 2,
-				name: 'WooCommerce knowledge base',
-			} )
-		).toBeInTheDocument();
-
-		expect(
-			getByRole( 'heading', {
-				level: 2,
-				name:
-					'Learn the ins and outs of successful marketing from the experts at WooCommerce.',
-			} )
+			getByText(
+				'Learn the ins and outs of successful marketing from the experts at WooCommerce.'
+			)
 		).toBeInTheDocument();
 	} );
 
@@ -109,10 +102,11 @@ describe( 'Posts and not loading', () => {
 	it( 'should not display the empty content component', () => {
 		const { queryByText } = knowledgeBaseWrapper;
 
+		expect( queryByText( 'No posts yet' ) ).toBeNull();
+		expect( queryByText( /Read /i ) ).toBeNull();
+		expect( queryByText( 'the WooCommerce blog' ) ).toBeNull();
 		expect(
-			queryByText(
-				'There was an error loading knowledge base posts. Please check again later.'
-			)
+			queryByText( / for more tips on marketing your store/i )
 		).toBeNull();
 	} );
 
@@ -160,10 +154,11 @@ describe( 'No posts and loading', () => {
 	it( 'should not display the empty content component', () => {
 		const { queryByText } = knowledgeBaseWrapper;
 
+		expect( queryByText( 'No posts yet' ) ).toBeNull();
+		expect( queryByText( /Read /i ) ).toBeNull();
+		expect( queryByText( 'the WooCommerce blog' ) ).toBeNull();
 		expect(
-			queryByText(
-				'There was an error loading knowledge base posts. Please check again later.'
-			)
+			queryByText( / for more tips on marketing your store/i )
 		).toBeNull();
 	} );
 
@@ -215,9 +210,12 @@ describe( 'Error and not loading', () => {
 		const { getByText } = knowledgeBaseWrapper;
 
 		expect(
-			getByText(
-				'There was an error loading knowledge base posts. Please check again later.'
-			)
+			getByText( "Oops, our posts aren't loading right now" )
+		).toBeInTheDocument();
+		expect( getByText( /Read /i ) ).toBeInTheDocument();
+		expect( getByText( 'the WooCommerce blog' ) ).toBeInTheDocument();
+		expect(
+			getByText( / for more tips on marketing your store/i )
 		).toBeInTheDocument();
 	} );
 
@@ -265,8 +263,11 @@ describe( 'No posts and not loading', () => {
 	it( 'should display the empty content component', () => {
 		const { getByText } = knowledgeBaseWrapper;
 
+		expect( getByText( 'No posts yet' ) ).toBeInTheDocument();
+		expect( getByText( /Read /i ) ).toBeInTheDocument();
+		expect( getByText( 'the WooCommerce blog' ) ).toBeInTheDocument();
 		expect(
-			getByText( 'There are no knowledge base posts.' )
+			getByText( / for more tips on marketing your store/i )
 		).toBeInTheDocument();
 	} );
 
@@ -414,7 +415,7 @@ describe( 'Page with single post', () => {
 
 describe( 'Custom title and description ', () => {
 	it( 'should override defaults', () => {
-		const { getByRole } = render(
+		const { getByText } = render(
 			<KnowledgeBase
 				posts={ mockPosts }
 				isLoading={ false }
@@ -424,15 +425,7 @@ describe( 'Custom title and description ', () => {
 			/>
 		);
 
-		expect(
-			getByRole( 'heading', { level: 2, name: 'Custom Title' } )
-		).toBeInTheDocument();
-
-		expect(
-			getByRole( 'heading', {
-				level: 2,
-				name: 'Custom Description',
-			} )
-		).toBeInTheDocument();
+		expect( getByText( 'Custom Title' ) ).toBeInTheDocument();
+		expect( getByText( 'Custom Description' ) ).toBeInTheDocument();
 	} );
 } );
