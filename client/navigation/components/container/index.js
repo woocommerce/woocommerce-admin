@@ -130,17 +130,20 @@ const Container = ( { menuItems } ) => {
 								</NavigationGroup>
 							) }
 							{ !! pluginItems.length && (
-								<>
-									<h3>Plugins</h3>
-									<NavigationGroup>
-										{ pluginItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
-								</>
+								<NavigationGroup
+									title={
+										category.id === 'woocommerce'
+											? __(
+													'Plugins',
+													'woocommerce-admin'
+											  )
+											: null
+									}
+								>
+									{ pluginItems.map( ( item ) => (
+										<Item key={ item.id } item={ item } />
+									) ) }
+								</NavigationGroup>
 							) }
 						</NavigationMenu>
 					);
