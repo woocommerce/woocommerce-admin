@@ -1,4 +1,7 @@
 .woocommerce-navigation {
+	height: 100vh;
+	overflow: scroll;
+
 	h2 {
 		color: inherit; // This should be handled at component level.
 	}
