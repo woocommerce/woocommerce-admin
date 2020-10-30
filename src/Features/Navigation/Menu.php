@@ -283,7 +283,7 @@ class Menu {
 				'is_top_level' => ! isset( $args['parent'] ),
 			)
 		);
-		self::add_item( $category_args );
+		self::add_category( $category_args );
 	}
 
 	/**
