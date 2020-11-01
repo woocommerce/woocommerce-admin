@@ -2,6 +2,12 @@
  * External dependencies
  */
 import { useState } from '@wordpress/element';
+import {
+	Button,
+	Modal,
+	RadioControl,
+	__experimentalText as Text,
+} from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
@@ -27,22 +33,53 @@ function CustomerEffortScore( {
 	label,
 } ) {
 	const [ score, setScore ] = useState( 0 );
-
-	if ( ! visible ) {
-		return null;
-	}
-
-	function close() {
-		setScore( 3 ); // TODO let this happen in the UI
-
-		toggleVisible();
+	const [ isOpen, setOpen ] = useState( visible );
+	const closeModal = () => {
+		setOpen( false );
+		toggleVisible( false );
+	};
+	const sendScore = () => {
+		closeModal();
 		trackCallback( score );
-	}
+	};
 
 	return (
-		<p className="customer-effort-score_modal">
-			{ label } <button onClick={ close }>Click me</button>
-		</p>
+		<>
+			{ isOpen && (
+				<Modal
+					className="woocommerce-customer-effort-score"
+					title="Please share your feedback"
+					onRequestClose={ closeModal }
+				>
+					<Text variant="subtitle.small" as="p">
+						{ label }
+					</Text>
+
+					<RadioControl
+						selected={ score }
+						options={ [
+							{ label: 'Very difficult', value: '1' },
+							{ label: 'Somewhat difficult', value: '2' },
+							{ label: 'Neutral', value: '3' },
+							{ label: 'Somewhat easy', value: '4' },
+							{ label: 'Very easy', value: '5' },
+						] }
+						onChange={ ( value ) => {
+							setScore( value );
+						} }
+					/>
+
+					<div className="woocommerce-customer-effort-score__buttons">
+						<Button isTertiary onClick={ closeModal }>
+							Cancel
+						</Button>
+						<Button isPrimary onClick={ sendScore }>
+							Send
+						</Button>
+					</div>
+				</Modal>
+			) }
+		</>
 	);
 }
 
