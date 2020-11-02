@@ -25,11 +25,11 @@
 
 	// Emoji radio button.
 	.components-radio-control__option {
-		.components-radio-control__input {
+		input {
 			display: none; // Hide the input and overlay with emoji text.
 		}
 
-		.components-radio-control__input:checked + label {
+		input:checked + label {
 			background-color: $studio-wordpress-blue-0;
 		}
 
@@ -55,34 +55,24 @@
 			}
 		}
 
-		&:nth-child(1) {
-			label::before {
-				content: '😞';
-			}
+		input[value='1'] + label::before {
+			content: '😞';
 		}
 
-		&:nth-child(2) {
-			label::before {
-				content: '🙁';
-			}
+		input[value='2'] + label::before {
+			content: '🙁';
 		}
 
-		&:nth-child(3) {
-			label::before {
-				content: '😐';
-			}
+		input[value='3'] + label::before {
+			content: '😐';
 		}
 
-		&:nth-child(4) {
-			label::before {
-				content: '🙂';
-			}
+		input[value='4'] + label::before {
+			content: '🙂';
 		}
 
-		&:nth-child(5) {
-			label::before {
-				content: '😁';
-			}
+		input[value='5'] + label::before {
+			content: '😁';
 		}
 	}
 }
