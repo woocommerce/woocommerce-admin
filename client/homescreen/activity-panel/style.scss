@@ -44,7 +44,7 @@
 	}
 
 	.woocommerce-activity-card {
-		padding: ( $fallback-gutter / 2 ) $gutter;
+		padding: $gap-largest/2 $gutter $gutter;
 		&__header {
 			margin-bottom: $gap-smaller;
 		}
