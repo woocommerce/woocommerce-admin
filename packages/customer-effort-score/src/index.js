@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
-
 /**
  * Internal dependencies
  */
@@ -20,23 +19,19 @@ import { withDispatch } from '@wordpress/data';
  * @param {Object}   props               Component props.
  * @param {Function} props.trackCallback Function to call when the modal is activated.
  * @param {string}   props.label         The label displayed in the modal.
- * @param {Function} props.createNotice     Create a notice (snackbar)
+ * @param {Function} props.createNotice  Create a notice (snackbar)
  */
-function CustomerEffortScore( {
-	trackCallback,
-	label,
-    createNotice,
-} ) {
-    const [ showModal, setShowModal ] = useState( false );
+function CustomerEffortScore( { trackCallback, label, createNotice } ) {
 	const [ score, setScore ] = useState( 0 );
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
+	const [ visible, setVisible ] = useState( false );
 
 	if ( shouldCreateNotice ) {
 		createNotice( 'success', label, {
 			actions: [
 				{
 					label: __( 'Give feedback', 'woocommerce-admin' ),
-					onClick: () => setShowModal( true ),
+					onClick: () => setVisible( true ),
 				},
 			],
 		} );
@@ -46,13 +41,14 @@ function CustomerEffortScore( {
 		return null;
 	}
 
-	if ( ! showModal ) {
+	if ( ! visible ) {
 		return null;
 	}
 
 	function close() {
 		setScore( 3 ); // TODO let this happen in the UI
-		setShowModal( false );
+
+		setVisible( false );
 		trackCallback( score );
 	}
 
@@ -72,6 +68,10 @@ CustomerEffortScore.propTypes = {
 	 * The label displayed in the modal.
 	 */
 	label: PropTypes.string.isRequired,
+	/**
+	 * Create a notice (snackbar).
+	 */
+	createNotice: PropTypes.func,
 };
 
 export default compose(
