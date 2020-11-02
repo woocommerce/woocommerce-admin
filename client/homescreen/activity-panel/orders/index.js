@@ -6,12 +6,11 @@ import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
-import Gridicon from 'gridicons';
 import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
 import { keyBy, map, merge } from 'lodash';
 
-import { EmptyContent, Flag, Link, Section } from '@woocommerce/components';
+import { EmptyContent, Flag, H, Link, Section } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
@@ -32,6 +31,7 @@ import {
 import ActivityOutboundLink from '../../../header/activity-panel/activity-outbound-link';
 import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
 import { CurrencyContext } from '../../../lib/currency-context';
+import './style.scss';
 
 class OrdersPanel extends Component {
 	recordOrderEvent( eventName ) {
@@ -39,50 +39,34 @@ class OrdersPanel extends Component {
 	}
 
 	renderEmptyCard() {
-		const { hasNonActionableOrders } = this.props;
-		if ( hasNonActionableOrders ) {
-			return (
+		return (
+			<Fragment>
 				<ActivityCard
 					className="woocommerce-empty-activity-card"
-					title={ __(
-						'You have no orders to fulfill',
-						'woocommerce-admin'
-					) }
-					icon={ <Gridicon icon="checkmark" size={ 48 } /> }
+					title=""
+					icon=""
 				>
-					{ __(
-						"Good job, you've fulfilled all of your new orders!",
-						'woocommerce-admin'
-					) }
-				</ActivityCard>
-			);
-		}
-
-		return (
-			<ActivityCard
-				className="woocommerce-empty-activity-card"
-				title={ __(
-					'You have no orders to fulfill',
-					'woocommerce-admin'
-				) }
-				icon={ <Gridicon icon="time" size={ 48 } /> }
-				actions={
-					<Button
-						href="https://docs.woocommerce.com/document/managing-orders/"
-						isSecondary
-						onClick={ () => this.recordOrderEvent( 'learn_more' ) }
-						target="_blank"
+					<span
+						className="woocommerce-order-empty__success-icon"
+						role="img"
+						aria-labelledby="woocommerce-order-empty-message"
 					>
-						{ __( 'Learn more', 'woocommerce-admin' ) }
-					</Button>
-				}
-			>
-				{ __(
-					"You're still waiting for your customers to make their first orders. " +
-						'While you wait why not learn how to manage orders?',
-					'woocommerce-admin'
-				) }
-			</ActivityCard>
+						🎉
+					</span>
+					<H id="woocommerce-order-empty-message">
+						{ __(
+							'You’ve fulfilled all your orders',
+							'woocommerce-admin'
+						) }
+					</H>
+				</ActivityCard>
+				<ActivityOutboundLink
+					href={ 'edit.php?post_type=shop_order' }
+					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+				>
+					{ __( 'Manage all orders', 'woocommerce-admin' ) }
+				</ActivityOutboundLink>
+			</Fragment>
 		);
 	}
 
@@ -282,7 +266,7 @@ class OrdersPanel extends Component {
 							className="woocommerce-order-activity-card"
 							hasAction
 							hasDate
-							lines={ 2 }
+							lines={ 1 }
 						/>
 					) : (
 						this.renderOrders()
@@ -309,10 +293,8 @@ OrdersPanel.contextType = CurrencyContext;
 
 export default compose(
 	withSelect( ( select, props ) => {
-		const { hasActionableOrders } = props;
-		const { getItems, getItemsError, getItemsTotalCount } = select(
-			ITEMS_STORE_NAME
-		);
+		const { countUnreadOrders } = props;
+		const { getItems, getItemsError } = select( ITEMS_STORE_NAME );
 		const { getReportItems, getReportItemsError, isResolving } = select(
 			REPORTS_STORE_NAME
 		);
@@ -329,7 +311,7 @@ export default compose(
 			};
 		}
 
-		if ( hasActionableOrders ) {
+		if ( countUnreadOrders > 0 ) {
 			// Query the core Orders endpoint for the most up-to-date statuses.
 			const actionableOrdersQuery = {
 				page: 1,
@@ -406,18 +388,13 @@ export default compose(
 		};
 
 		getItems( 'orders', allOrdersQuery );
-		const totalNonActionableOrders = getItemsTotalCount(
-			'orders',
-			allOrdersQuery
-		);
 		const isError = Boolean( getItemsError( 'orders', allOrdersQuery ) );
-		const isRequesting = isResolving( 'getItems', [
-			'orders',
-			allOrdersQuery,
-		] );
+		const isRequesting =
+			countUnreadOrders !== null
+				? isResolving( 'getItems', [ 'orders', allOrdersQuery ] )
+				: true;
 
 		return {
-			hasNonActionableOrders: totalNonActionableOrders > 0,
 			isError,
 			isRequesting,
 			orderStatuses,

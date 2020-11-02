@@ -44,21 +44,23 @@ class ActivityCard extends Component {
 						{ icon }
 					</span>
 				) }
-				<header className="woocommerce-activity-card__header">
-					<H className="woocommerce-activity-card__title">
-						{ title }
-					</H>
-					{ subtitle && (
-						<div className="woocommerce-activity-card__subtitle">
-							{ subtitle }
-						</div>
-					) }
-					{ date && (
-						<span className="woocommerce-activity-card__date">
-							{ moment.utc( date ).fromNow() }
-						</span>
-					) }
-				</header>
+				{ title && (
+					<header className="woocommerce-activity-card__header">
+						<H className="woocommerce-activity-card__title">
+							{ title }
+						</H>
+						{ subtitle && (
+							<div className="woocommerce-activity-card__subtitle">
+								{ subtitle }
+							</div>
+						) }
+						{ date && (
+							<span className="woocommerce-activity-card__date">
+								{ moment.utc( date ).fromNow() }
+							</span>
+						) }
+					</header>
+				) }
 				{ children && (
 					<Section className="woocommerce-activity-card__body">
 						{ children }
@@ -86,8 +88,7 @@ ActivityCard.propTypes = {
 	date: PropTypes.string,
 	icon: PropTypes.node,
 	subtitle: PropTypes.node,
-	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] )
-		.isRequired,
+	title: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ),
 	unread: PropTypes.bool,
 };
 
