@@ -7,9 +7,11 @@ import { recordEvent } from '@woocommerce/tracks';
 import CustomerEffortScore from '@woocommerce/customer-effort-score';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { OPTIONS_STORE_NAME, MONTH } from '@woocommerce/data';
 
 const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
+const ADMIN_INSTALL_TIMESTAMP_OPTION_NAME =
+	'woocommerce_admin_install_timestamp';
 
 /**
  * A CustomerEffortScore wrapper that uses tracks to track the selected
@@ -21,7 +23,8 @@ const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
  * @param {Object}   props.trackProps         Additional props sent to Tracks.
  * @param {string}   props.label              The label displayed in the modal.
  * @param {Array}    props.cesShownForActions The array of actions that the CES modal has been shown for.
- * @param {boolean}  props.resolving          Flag to indicate if props are still resolving.
+ * @param {boolean}  props.resolving          Are values still being resolved.
+ * @param {number}   props.storeAge           The age of the store in months.
  * @param {Function} props.updateOptions      Function to update options.
  */
 function CustomerEffortScoreTracks( {
@@ -31,6 +34,7 @@ function CustomerEffortScoreTracks( {
 	label,
 	cesShownForActions,
 	resolving,
+	storeAge,
 	updateOptions,
 } ) {
 	const [ visible, setVisible ] = useState( initiallyVisible );
@@ -60,6 +64,7 @@ function CustomerEffortScoreTracks( {
 		recordEvent( 'ces_feedback', {
 			action,
 			score,
+			store_age: storeAge,
 			...trackProps,
 		} );
 	};
@@ -99,26 +104,36 @@ CustomerEffortScoreTracks.propTypes = {
 	 */
 	cesShownForActions: PropTypes.arrayOf( PropTypes.string ).isRequired,
 	/**
-	 * Whether items are still resolving.
+	 * Whether props are still being resolved.
 	 */
-	resolving: PropTypes.bool,
+	resolving: PropTypes.bool.isRequired,
 	/**
-	 * Function to update options.
+	 * The age of the store in months.
 	 */
-	updateOptions: PropTypes.func,
+	storeAge: PropTypes.number,
 };
 
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+
 		const cesShownForActions =
 			getOption( SHOWN_FOR_ACTIONS_OPTION_NAME ) || [];
-		const resolving = isResolving( 'getOption', [
-			SHOWN_FOR_ACTIONS_OPTION_NAME,
-		] );
+
+		const adminInstallTimestamp =
+			getOption( ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ) || 0;
+		// Date.now() is ms since Unix epoch, adminInstallTimestamp is in
+		// seconds since Unix epoch.
+		const storeAgeInMs = Date.now() - adminInstallTimestamp * 1000;
+		const storeAge = Math.round( storeAgeInMs / MONTH );
+
+		const resolving =
+			isResolving( 'getOption', [ SHOWN_FOR_ACTIONS_OPTION_NAME ] ) ||
+			isResolving( 'getOption', [ ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ] );
 
 		return {
 			cesShownForActions,
+			storeAge,
 			resolving,
 		};
 	} ),
