@@ -7,8 +7,6 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
-use Automattic\WooCommerce\Admin\PageController;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
