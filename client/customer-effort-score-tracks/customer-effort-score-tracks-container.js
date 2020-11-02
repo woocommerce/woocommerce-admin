@@ -40,7 +40,6 @@ function CustomerEffortScoreTracksContainer( {
 			{ queue.map( ( item, index ) => (
 				<CustomerEffortScoreTracks
 					key={ index }
-					initiallyVisible={ true }
 					trackName={ item.track_name }
 					label={ item.label }
 					trackProps={ item.props || {} }
