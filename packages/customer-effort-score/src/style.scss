@@ -17,14 +17,18 @@
 		@include breakpoint( '>600px' ) {
 			grid-template-columns: repeat(5, 1fr);
 		}
-
-		.components-radio-control__input{
-			display: none; // Hide the input and overlay with emoji text.
-		}
 	}
 
 	// Emoji radio button.
 	.components-radio-control__option {
+		.components-radio-control__input {
+			display: none; // Hide the input and overlay with emoji text.
+		}
+
+		.components-radio-control__input:checked + label {
+			background-color: #E4EBF3;
+		}
+
 		label{
 			display: block;
 			text-align: center;
