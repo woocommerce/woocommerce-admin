@@ -30,10 +30,10 @@
 		}
 
 		.components-radio-control__input:checked + label {
-			background-color: #E4EBF3;
+			background-color: $studio-wordpress-blue-0;
 		}
 
-		label{
+		label {
 			display: block;
 			text-align: center;
 			box-sizing: border-box;
@@ -43,45 +43,45 @@
 			font-size: 0.9em;
 
 			&:hover {
-				background-color: #E4EBF3;
+				background-color: $studio-wordpress-blue-0;
 			}
 
-			&:before {
+			&::before {
 				display: block;
 				font-size: 24px;
 				text-align: center;
 				margin: 1em 0;
-				color: #0073aa;
+				color: $studio-wordpress-blue;
 			}
 		}
 
 		&:nth-child(1) {
-			label:before {
-				content: "😞";
+			label::before {
+				content: '😞';
 			}
 		}
 
 		&:nth-child(2) {
-			label:before {
-				content: "🙁";
+			label::before {
+				content: '🙁';
 			}
 		}
 
 		&:nth-child(3) {
-			label:before {
-				content: "😐";
+			label::before {
+				content: '😐';
 			}
 		}
 
 		&:nth-child(4) {
-			label:before {
-				content: "🙂";
+			label::before {
+				content: '🙂';
 			}
 		}
 
 		&:nth-child(5) {
-			label:before {
-				content: "😁";
+			label::before {
+				content: '😁';
 			}
 		}
 	}
