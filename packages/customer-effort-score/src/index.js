@@ -17,20 +17,25 @@ import PropTypes from 'prop-types';
  * @param {Object}   props               Component props.
  * @param {Function} props.trackCallback Function to call when the modal is activated.
  * @param {boolean}  props.visible       Whether or not the tracks modal is visible.
+ * @param {Function} props.toggleVisible Callback to toggle the visible prop.
  * @param {string}   props.label         The label displayed in the modal.
  */
-function CustomerEffortScore( { trackCallback, visible, label } ) {
+function CustomerEffortScore( {
+	trackCallback,
+	visible,
+	toggleVisible,
+	label,
+} ) {
 	const [ score, setScore ] = useState( 0 );
-	const [ dismissed, setDismissed ] = useState( false );
 
-	if ( ! visible || dismissed ) {
+	if ( ! visible ) {
 		return null;
 	}
 
 	function close() {
 		setScore( 3 ); // TODO let this happen in the UI
 
-		setDismissed( true );
+		toggleVisible();
 		trackCallback( score );
 	}
 
@@ -47,14 +52,17 @@ CustomerEffortScore.propTypes = {
 	 */
 	trackCallback: PropTypes.func.isRequired,
 	/**
-	 * Whether or not the survey is visible. True is used for when
-	 * this is loaded on page load (in client/index.js). False is used if the
-	 * survey is loaded as part of the layout and displayed
-	 * programmatically.
+	 * Whether or not the dialog is visible. True is used for when this is
+	 * loaded on page load (in client/index.js). False is used if the modal is
+	 * loaded as part of the layout and displayed programmatically.
 	 */
 	visible: PropTypes.bool.isRequired,
 	/**
-	 * The label displayed in the survey.
+	 * Callback to toggle the visible prop.
+	 */
+	toggleVisible: PropTypes.func.isRequired,
+	/**
+	 * The label displayed in the modal.
 	 */
 	label: PropTypes.string.isRequired,
 };
