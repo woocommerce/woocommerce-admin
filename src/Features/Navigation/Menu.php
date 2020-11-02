@@ -94,6 +94,11 @@ class Menu {
 	 * @return string
 	 */
 	public static function get_callback_url( $callback ) {
+		// Return the full URL.
+		if ( strpos( $callback, 'http' ) === 0 ) {
+			return $callback;
+		}
+
 		$pos  = strpos( $callback, '?' );
 		$file = $pos > 0 ? substr( $callback, 0, $pos ) : $callback;
 		if ( file_exists( ABSPATH . "/wp-admin/$file" ) ) {
@@ -151,26 +156,26 @@ class Menu {
 		}
 
 		$defaults           = array(
-			'id'              => '',
-			'title'           => '',
-			'capability'      => 'manage_woocommerce',
-			'order'           => 100,
-			'migrate'         => true,
-			'menuId'          => 'primary',
-			'isCategory'      => true,
-			'parent'          => self::DEFAULT_PARENT,
-			'backButtonLabel' => __(
-				'WooCommerce Home',
-				'woocommerce-admin'
-			),
-			'is_top_level'    => false,
+			'id'           => '',
+			'title'        => '',
+			'capability'   => 'manage_woocommerce',
+			'order'        => 100,
+			'migrate'      => true,
+			'menuId'       => 'primary',
+			'isCategory'   => true,
+			'parent'       => self::DEFAULT_PARENT,
+			'is_top_level' => false,
 		);
 		$menu_item          = wp_parse_args( $args, $defaults );
 		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
 		unset( $menu_item['url'] );
 
 		if ( true === $menu_item['is_top_level'] ) {
-			$menu_item['parent'] = 'woocommerce';
+			$menu_item['parent']          = 'woocommerce';
+			$menu_item['backButtonLabel'] = __(
+				'WooCommerce Home',
+				'woocommerce-admin'
+			);
 		} else {
 			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
 		}
@@ -375,11 +380,7 @@ class Menu {
 		global $submenu, $parent_file, $typenow, $self;
 
 		$data = array(
-			'adminUrl'     => get_admin_url(),
-			'dashboardUrl' => get_dashboard_url(),
-			'menuItems'    => self::get_prepared_menu_item_data(),
-			'siteTitle'    => get_bloginfo( 'name' ),
-			'siteUrl'      => get_site_url(),
+			'menuItems' => self::get_prepared_menu_item_data(),
 		);
 
 		$paul = wp_add_inline_script( WC_ADMIN_APP, 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );

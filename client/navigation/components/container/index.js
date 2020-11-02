@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
 	__experimentalNavigation as Navigation,
@@ -10,13 +10,14 @@ import {
 	__experimentalNavigationMenu as NavigationMenu,
 	__experimentalNavigationGroup as NavigationGroup,
 } from '@wordpress/components';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import { addHistoryListener, getMatchingItem } from '../../utils';
-import { NAVIGATION_STORE_NAME } from '../../store';
 import Header from '../header';
 import Item from '../../components/Item';
 
@@ -27,8 +28,7 @@ const Container = ( { menuItems } ) => {
 		adminMenu.classList.add( 'folded' );
 	}, [] );
 
-	const dashboardUrl =
-		window.wcNavigation && window.wcNavigation.dashboardUrl;
+	const dashboardUrl = getAdminLink( '' );
 
 	const categories = menuItems.filter( ( item ) => item.isCategory );
 	categories.push( {
@@ -62,6 +62,22 @@ const Container = ( { menuItems } ) => {
 		return removeListener;
 	}, [ menuItems ] );
 
+	const getMenuItemsByCategory = ( items ) => {
+		return items.reduce( ( acc, item ) => {
+			if ( ! acc[ item.parent ] ) {
+				acc[ item.parent ] = [ [], [] ];
+			}
+			const index = item.menuId !== 'secondary' ? 0 : 1;
+			acc[ item.parent ][ index ].push( item );
+			return acc;
+		}, {} );
+	};
+
+	const categorizedItems = useMemo(
+		() => getMenuItemsByCategory( menuItems ),
+		[ menuItems ]
+	);
+
 	return (
 		<div className="woocommerce-navigation">
 			<Header />
@@ -80,38 +96,35 @@ const Container = ( { menuItems } ) => {
 						) }
 					></NavigationBackButton>
 				) }
-				{ categories.map( ( category ) => (
-					<NavigationMenu
-						key={ category.id }
-						title={ category.title }
-						menu={ category.id }
-						parentMenu={ category.parent }
-						backButtonLabel={ category.backButtonLabel }
-					>
-						<NavigationGroup>
-							{ menuItems
-								.filter(
-									( item ) =>
-										item.parent === category.id &&
-										item.menuId !== 'secondary'
-								)
-								.map( ( item ) => (
-									<Item key={ item.id } item={ item } />
-								) ) }
-						</NavigationGroup>
-						<NavigationGroup>
-							{ menuItems
-								.filter(
-									( item ) =>
-										item.parent === category.id &&
-										item.menuId === 'secondary'
-								)
-								.map( ( item ) => (
-									<Item key={ item.id } item={ item } />
-								) ) }
-						</NavigationGroup>
-					</NavigationMenu>
-				) ) }
+				{ categories.map( ( category ) => {
+					const [ primaryItems, secondaryItems ] = categorizedItems[
+						category.id
+					];
+					return (
+						<NavigationMenu
+							key={ category.id }
+							title={ category.title }
+							menu={ category.id }
+							parentMenu={ category.parent }
+							backButtonLabel={ category.backButtonLabel || null }
+						>
+							{ !! primaryItems.length && (
+								<NavigationGroup>
+									{ primaryItems.map( ( item ) => (
+										<Item key={ item.id } item={ item } />
+									) ) }
+								</NavigationGroup>
+							) }
+							{ !! secondaryItems.length && (
+								<NavigationGroup>
+									{ secondaryItems.map( ( item ) => (
+										<Item key={ item.id } item={ item } />
+									) ) }
+								</NavigationGroup>
+							) }
+						</NavigationMenu>
+					);
+				} ) }
 			</Navigation>
 		</div>
 	);
