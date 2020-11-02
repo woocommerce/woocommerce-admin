@@ -1,12 +1,6 @@
-@import 'node_modules/@wordpress/base-styles/colors';
-@import 'node_modules/@wordpress/base-styles/variables';
-@import 'node_modules/@wordpress/base-styles/mixins';
-@import 'node_modules/@wordpress/base-styles/breakpoints';
-@import 'node_modules/@wordpress/base-styles/animations';
-@import 'node_modules/@wordpress/base-styles/z-index';
-@import '_variables.scss';
-@import '../components/container/style';
-@import '../components/header/style';
+@import './stylesheets/variables';
+@import './components/container/style';
+@import './components/header/style';
 
 .has-woocommerce-navigation {
 	margin-top: -$admin-bar-height;
