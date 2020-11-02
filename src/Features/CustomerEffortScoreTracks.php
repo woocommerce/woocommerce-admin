@@ -109,69 +109,74 @@ class CustomerEffortScoreTracks {
 	}
 
 	/**
+	 * Return whether the action has already been shown.
+	 *
+	 * @param string $action The action to check.
+	 *
+	 * @return bool Whether the action has already been shown.
+	 */
+	private function has_been_shown( $action ) {
+		$shown_for_features = get_option( self::SHOWN_FOR_ACTIONS_OPTION_NAME, array() );
+		$has_been_shown     = in_array( $action, $shown_for_features, true );
+
+		return $has_been_shown;
+	}
+
+	/**
+	 * Enqueue the item to the CES tracks queue.
+	 *
+	 * @param object $item The item to enqueue.
+	 */
+	private function enqueue_to_ces_tracks( $item ) {
+		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+
+		$queue[] = $item;
+
+		update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, $queue );
+	}
+
+	/**
 	 * Enqueue the CES survey trigger for a new product.
 	 */
 	private function enqueue_ces_survey_for_new_product() {
-		// Only add the JS to trigger the CES modal if
-		// this modal hasn't been dismissed or actioned yet for this action.
-		$shown_for_features = get_option( self::SHOWN_FOR_ACTIONS_OPTION_NAME, array() );
-		$has_been_shown     = in_array(
-			self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
-			$shown_for_features,
-			true
-		);
-
-		if ( $has_been_shown ) {
+		if ( $this->has_been_shown( self::PRODUCT_ADD_PUBLISH_ACTION_NAME ) ) {
 			return;
 		}
 
-		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
-
-		$queue[] = array(
-			'action' => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
-			'label'  => __(
-				'How easy was it to add a product?',
-				'woocommerce-admin'
-			),
-			'props'  => array(
-				'product_count' => $this->get_product_count(),
-			),
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action' => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
+				'label'  => __(
+					'How easy was it to add a product?',
+					'woocommerce-admin'
+				),
+				'props'  => array(
+					'product_count' => $this->get_product_count(),
+				),
+			)
 		);
-
-		update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, $queue );
 	}
 
 	/**
 	 * Enqueue the CES survey trigger for an existing product.
 	 */
 	private function enqueue_ces_survey_for_edited_product() {
-		// Only add the JS to trigger the CES modal if
-		// this modal hasn't been dismissed or actioned yet for this action.
-		$shown_for_features = get_option( self::SHOWN_FOR_ACTIONS_OPTION_NAME, array() );
-		$has_been_shown     = in_array(
-			self::PRODUCT_UPDATE_ACTION_NAME,
-			$shown_for_features,
-			true
-		);
-
-		if ( $has_been_shown ) {
+		if ( $this->has_been_shown( self::PRODUCT_UPDATE_ACTION_NAME ) ) {
 			return;
 		}
 
-		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
-
-		$queue[] = array(
-			'action' => self::PRODUCT_UPDATE_ACTION_NAME,
-			'label'  => __(
-				'How easy was it to edit your product?',
-				'woocommerce-admin'
-			),
-			'props'  => array(
-				'product_count' => $this->get_product_count(),
-			),
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action' => self::PRODUCT_UPDATE_ACTION_NAME,
+				'label'  => __(
+					'How easy was it to edit your product?',
+					'woocommerce-admin'
+				),
+				'props'  => array(
+					'product_count' => $this->get_product_count(),
+				),
+			)
 		);
-
-		update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, $queue );
 	}
 
 	/**
