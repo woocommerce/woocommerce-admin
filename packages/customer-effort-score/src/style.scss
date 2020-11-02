@@ -7,6 +7,10 @@
 		}
 	}
 
+	.components-radio-control {
+		margin: 1em 0;
+	}
+
 	// Emoji radio button container
 	.components-base-control__field {
 		display: grid;
@@ -32,15 +36,19 @@
 		label{
 			display: block;
 			text-align: center;
-			width: 7.5em;
+			box-sizing: border-box;
+			width: 9em;
+			height: 100%;
 			padding: 1em 0;
+			font-size: 0.9em;
+
 			&:hover {
 				background-color: #E4EBF3;
 			}
 
 			&:before {
 				display: block;
-				font-size: 20px;
+				font-size: 24px;
 				text-align: center;
 				margin: 1em 0;
 				color: #0073aa;
