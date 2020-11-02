@@ -7,9 +7,11 @@ import { recordEvent } from '@woocommerce/tracks';
 import CustomerEffortScore from '@woocommerce/customer-effort-score';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { OPTIONS_STORE_NAME, MONTH } from '@woocommerce/data';
 
 const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
+const ADMIN_INSTALL_TIMESTAMP_OPTION_NAME =
+	'woocommerce_admin_install_timestamp';
 const ALLOW_TRACKING_OPTION_NAME = 'woocommerce_allow_tracking';
 
 /**
@@ -23,7 +25,8 @@ const ALLOW_TRACKING_OPTION_NAME = 'woocommerce_allow_tracking';
  * @param {string}   props.label              The label displayed in the modal.
  * @param {Array}    props.cesShownForActions The array of actions that the CES modal has been shown for.
  * @param {boolean}  props.allowTracking      Whether tracking is allowed or not.
- * @param {boolean}  props.resolving          Flag to indicate if props are still resolving.
+ * @param {boolean}  props.resolving          Are values still being resolved.
+ * @param {number}   props.storeAge           The age of the store in months.
  * @param {Function} props.updateOptions      Function to update options.
  */
 function CustomerEffortScoreTracks( {
@@ -34,6 +37,7 @@ function CustomerEffortScoreTracks( {
 	cesShownForActions,
 	allowTracking,
 	resolving,
+	storeAge,
 	updateOptions,
 } ) {
 	const [ visible, setVisible ] = useState( initiallyVisible );
@@ -68,6 +72,7 @@ function CustomerEffortScoreTracks( {
 		recordEvent( 'ces_feedback', {
 			action,
 			score,
+			store_age: storeAge,
 			...trackProps,
 		} );
 	};
@@ -113,7 +118,11 @@ CustomerEffortScoreTracks.propTypes = {
 	/**
 	 * Whether items are still resolving.
 	 */
-	resolving: PropTypes.bool,
+	resolving: PropTypes.bool.isRequired,
+	/**
+	 * The age of the store in months.
+	 */
+	storeAge: PropTypes.number,
 	/**
 	 * Function to update options.
 	 */
@@ -123,19 +132,29 @@ CustomerEffortScoreTracks.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+
 		const cesShownForActions =
 			getOption( SHOWN_FOR_ACTIONS_OPTION_NAME ) || [];
+
+		const adminInstallTimestamp =
+			getOption( ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ) || 0;
+		// Date.now() is ms since Unix epoch, adminInstallTimestamp is in
+		// seconds since Unix epoch.
+		const storeAgeInMs = Date.now() - adminInstallTimestamp * 1000;
+		const storeAge = Math.round( storeAgeInMs / MONTH );
+
 		const allowTrackingOption =
 			getOption( ALLOW_TRACKING_OPTION_NAME ) || 'no';
 		const allowTracking = allowTrackingOption === 'yes';
-		const resolving = isResolving( 'getOption', [
-			SHOWN_FOR_ACTIONS_OPTION_NAME,
-			ALLOW_TRACKING_OPTION_NAME,
-		] );
+		const resolving =
+			isResolving( 'getOption', [ SHOWN_FOR_ACTIONS_OPTION_NAME ] )
+			|| isResolving( 'getOption', [ ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ] )
+			|| isResolving( 'getOption', [ ALLOW_TRACKING_OPTION_NAME ] );
 
 		return {
 			cesShownForActions,
 			allowTracking,
+			storeAge,
 			resolving,
 		};
 	} ),
