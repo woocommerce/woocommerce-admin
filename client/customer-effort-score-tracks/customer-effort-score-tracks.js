@@ -11,7 +11,6 @@ import { OPTIONS_STORE_NAME, MONTH } from '@woocommerce/data';
 
 const ADMIN_INSTALL_TIMESTAMP_OPTION_NAME =
 	'woocommerce_admin_install_timestamp';
-const MONTH_IN_SECONDS = ( 60 * 60 * 24 * 365 ) / 12;
 
 /**
  * A CustomerEffortScore wrapper that uses tracks to track the selected
@@ -90,7 +89,7 @@ CustomerEffortScoreTracks.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
-		
+
 		const adminInstallTimestamp =
 			getOption( ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ) || 0;
 		// Date.now() is ms since Unix epoch, adminInstallTimestamp is in
