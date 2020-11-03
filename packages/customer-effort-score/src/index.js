@@ -43,43 +43,43 @@ function CustomerEffortScore( {
 		trackCallback( score );
 	};
 
+	if ( ! isOpen ) {
+		return null;
+	}
+
 	return (
-		<>
-			{ isOpen && (
-				<Modal
-					className="woocommerce-customer-effort-score"
-					title="Please share your feedback"
-					onRequestClose={ closeModal }
-				>
-					<Text variant="subtitle.small" as="p">
-						{ label }
-					</Text>
+		<Modal
+			className="woocommerce-customer-effort-score"
+			title="Please share your feedback"
+			onRequestClose={ closeModal }
+		>
+			<Text variant="subtitle.small" as="p">
+				{ label }
+			</Text>
 
-					<RadioControl
-						selected={ score }
-						options={ [
-							{ label: 'Very difficult', value: '1' },
-							{ label: 'Somewhat difficult', value: '2' },
-							{ label: 'Neutral', value: '3' },
-							{ label: 'Somewhat easy', value: '4' },
-							{ label: 'Very easy', value: '5' },
-						] }
-						onChange={ ( value ) => {
-							setScore( value );
-						} }
-					/>
+			<RadioControl
+				selected={ score }
+				options={ [
+					{ label: 'Very difficult', value: '1' },
+					{ label: 'Somewhat difficult', value: '2' },
+					{ label: 'Neutral', value: '3' },
+					{ label: 'Somewhat easy', value: '4' },
+					{ label: 'Very easy', value: '5' },
+				] }
+				onChange={ ( value ) => {
+					setScore( value );
+				} }
+			/>
 
-					<div className="woocommerce-customer-effort-score__buttons">
-						<Button isTertiary onClick={ closeModal }>
-							Cancel
-						</Button>
-						<Button isPrimary onClick={ sendScore }>
-							Send
-						</Button>
-					</div>
-				</Modal>
-			) }
-		</>
+			<div className="woocommerce-customer-effort-score__buttons">
+				<Button isTertiary onClick={ closeModal }>
+					Cancel
+				</Button>
+				<Button isPrimary onClick={ sendScore }>
+					Send
+				</Button>
+			</div>
+		</Modal>
 	);
 }
 
