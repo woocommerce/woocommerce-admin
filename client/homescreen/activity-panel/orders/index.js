@@ -59,12 +59,14 @@ class OrdersPanel extends Component {
 						) }
 					</H>
 				</ActivityCard>
-				<ActivityOutboundLink
+				<Link
 					href={ 'edit.php?post_type=shop_order' }
 					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+					className="woocommerce-layout__activity-panel-outbound-link woocommerce-layout__activity-panel-empty"
+					type="wp-admin"
 				>
 					{ __( 'Manage all orders', 'woocommerce-admin' ) }
-				</ActivityOutboundLink>
+				</Link>
 			</Fragment>
 		);
 	}
