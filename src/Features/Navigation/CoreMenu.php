@@ -156,8 +156,20 @@ class CoreMenu {
 			}
 		}
 
+		$home_item = array();
+		if ( defined( '\Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG' ) ) {
+			$home_item = array(
+				'id'           => 'home',
+				'title'        => __( 'Home', 'woocommerce-admin' ),
+				'url'          => \Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG,
+				'is_top_level' => true,
+				'order'        => 0,
+			);
+		}
+
 		return array_merge(
 			array(
+				$home_item,
 				$order_items[1],
 				$product_items[1],
 				$product_items[2],
