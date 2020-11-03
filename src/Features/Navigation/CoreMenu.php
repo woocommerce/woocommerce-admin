@@ -10,7 +10,6 @@ namespace Automattic\WooCommerce\Admin\Features\Navigation;
 use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 
-
 /**
  * CoreMenu class. Handles registering Core menu items.
  */
@@ -138,10 +137,24 @@ class CoreMenu {
 	 * @return array
 	 */
 	public static function get_items() {
-		$order_items   = Menu::get_post_type_items( 'shop_order', array( 'parent' => 'orders' ) );
-		$product_items = Menu::get_post_type_items( 'product', array( 'parent' => 'products' ) );
-		$coupon_items  = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'marketing' ) );
-		$setting_items = self::get_setting_items();
+		$order_items     = Menu::get_post_type_items( 'shop_order', array( 'parent' => 'orders' ) );
+		$product_items   = Menu::get_post_type_items( 'product', array( 'parent' => 'products' ) );
+		$coupon_items    = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'marketing' ) );
+		$setting_items   = self::get_setting_items();
+		$analytics_items = array();
+		if ( method_exists( '\Automattic\WooCommerce\Admin\Features\Analytics', 'get_report_pages' ) ) {
+			$report_pages = \Automattic\WooCommerce\Admin\Features\Analytics::get_report_pages();
+			foreach ( $report_pages as $report_page ) {
+				if ( ! isset( $report_page['nav_args'] ) ) {
+					continue;
+				}
+
+				$analytics_items[] = array_merge(
+					$report_page,
+					$report_page['nav_args']
+				);
+			}
+		}
 
 		return array_merge(
 			array(
@@ -189,6 +202,8 @@ class CoreMenu {
 					'url'        => 'admin.php?page=wc-status&tab=tools',
 				),
 			),
+			// Analytics category.
+			$analytics_items,
 			// Settings category.
 			$setting_items
 		);
