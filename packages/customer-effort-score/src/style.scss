@@ -26,7 +26,10 @@
 	// Emoji radio button.
 	.components-radio-control__option {
 		input {
-			display: none; // Hide the input and overlay with emoji text.
+			opacity: 0; // Hide the input and overlay with emoji text. Opacity is used for accessibility.
+		}
+		input:focus + label {
+			outline: 2px solid $studio-wordpress-blue;
 		}
 
 		input:checked + label {
