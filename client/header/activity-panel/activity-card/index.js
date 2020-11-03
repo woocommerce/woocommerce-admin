@@ -84,7 +84,7 @@ class ActivityCard extends Component {
 			return (
 				<Button
 					className="woocommerce-activity-card__button"
-					onClick={ ( element ) => onClick( element ) }
+					onClick={ onClick }
 				>
 					{ this.getCard() }
 				</Button>
