@@ -16,12 +16,14 @@ class CustomerEffortScoreTracks {
 	/**
 	 * Option name for the CES Tracks queue.
 	 */
-	const CES_TRACKS_QUEUE_OPTION_NAME = 'woocommerce_ces_tracks_queue';
+	const CES_TRACKS_QUEUE_OPTION_NAME
+		= 'woocommerce_ces_tracks_queue';
 
 	/**
-	 * Option name for the clear CES Tracks queue flag.
+	 * Option name for the clear CES Tracks queue for page.
 	 */
-	const CLEAR_CES_TRACKS_QUEUE_OPTION_NAME = 'woocommerce_clear_ces_tracks_queue';
+	const CLEAR_CES_TRACKS_QUEUE_FOR_PAGE_OPTION_NAME =
+		'woocommerce_clear_ces_tracks_queue_for_page';
 
 	/**
 	 * Option name for the set of actions that have been shown.
@@ -128,11 +130,17 @@ class CustomerEffortScoreTracks {
 	 * @param object $item The item to enqueue.
 	 */
 	private function enqueue_to_ces_tracks( $item ) {
-		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+		$queue = get_option(
+			self::CES_TRACKS_QUEUE_OPTION_NAME,
+			array()
+		);
 
 		$queue[] = $item;
 
-		update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, $queue );
+		update_option(
+			self::CES_TRACKS_QUEUE_OPTION_NAME,
+			$queue
+		);
 	}
 
 	/**
@@ -145,12 +153,14 @@ class CustomerEffortScoreTracks {
 
 		$this->enqueue_to_ces_tracks(
 			array(
-				'action' => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
-				'label'  => __(
+				'action'    => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
+				'label'     => __(
 					'How easy was it to add a product?',
 					'woocommerce-admin'
 				),
-				'props'  => array(
+				'pagenow'   => 'product',
+				'adminpage' => 'post-php',
+				'props'     => array(
 					'product_count' => $this->get_product_count(),
 				),
 			)
@@ -167,12 +177,14 @@ class CustomerEffortScoreTracks {
 
 		$this->enqueue_to_ces_tracks(
 			array(
-				'action' => self::PRODUCT_UPDATE_ACTION_NAME,
-				'label'  => __(
+				'action'    => self::PRODUCT_UPDATE_ACTION_NAME,
+				'label'     => __(
 					'How easy was it to edit your product?',
 					'woocommerce-admin'
 				),
-				'props'  => array(
+				'pagenow'   => 'product',
+				'adminpage' => 'post-php',
+				'props'     => array(
 					'product_count' => $this->get_product_count(),
 				),
 			)
@@ -186,14 +198,31 @@ class CustomerEffortScoreTracks {
 	 * sets the clear option.
 	 */
 	public function maybe_clear_ces_tracks_queue() {
-		$clear_ces_tracks_queue = get_option(
-			self::CLEAR_CES_TRACKS_QUEUE_OPTION_NAME,
+		$clear_ces_tracks_queue_for_page = get_option(
+			self::CLEAR_CES_TRACKS_QUEUE_FOR_PAGE_OPTION_NAME,
 			false
 		);
 
-		if ( $clear_ces_tracks_queue ) {
-			update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
-			update_option( self::CLEAR_CES_TRACKS_QUEUE_OPTION_NAME, false );
+		if ( ! $clear_ces_tracks_queue_for_page ) {
+			return;
 		}
+
+		$queue           = get_option(
+			self::CES_TRACKS_QUEUE_OPTION_NAME,
+			array()
+		);
+		$remaining_items = array_filter(
+			$queue,
+			function( $item ) use ( $clear_ces_tracks_queue_for_page ) {
+				return $clear_ces_tracks_queue_for_page['pagenow'] !== $item['pagenow']
+					|| $clear_ces_tracks_queue_for_page['adminpage'] !== $item['adminpage'];
+			}
+		);
+
+		update_option(
+			self::CES_TRACKS_QUEUE_OPTION_NAME,
+			array_values( $remaining_items )
+		);
+		update_option( self::CLEAR_CES_TRACKS_QUEUE_FOR_PAGE_OPTION_NAME, false );
 	}
 }
