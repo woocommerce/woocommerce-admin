@@ -31,16 +31,22 @@ function CustomerEffortScoreTracksContainer( {
 		return null;
 	}
 
-	if ( queue.length ) {
+	const queueForPage = queue.filter(
+		( item ) =>
+			item.pagenow === window.pagenow &&
+			item.adminpage === window.adminpage
+	);
+
+	if ( queueForPage.length ) {
 		clearQueue();
 	}
 
 	return (
 		<>
-			{ queue.map( ( item, index ) => (
+			{ queueForPage.map( ( item, index ) => (
 				<CustomerEffortScoreTracks
 					key={ index }
-					trackName={ item.track_name }
+					action={ item.action }
 					label={ item.label }
 					trackProps={ item.props || {} }
 				/>
@@ -85,7 +91,10 @@ export default compose(
 				// directly puts this into an infinite loop which is picked
 				// up by React.
 				updateOptions( {
-					woocommerce_clear_ces_tracks_queue: true,
+					woocommerce_clear_ces_tracks_queue_for_page: {
+						pagenow: window.pagenow,
+						adminpage: window.adminpage,
+					},
 				} );
 			},
 		};

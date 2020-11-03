@@ -17,11 +17,17 @@ import { withDispatch } from '@wordpress/data';
  * reuse.
  *
  * @param {Object}   props               Component props.
- * @param {Function} props.trackCallback Function to call when the modal is activated.
+ * @param {Function} props.trackCallback Function to call when the results should be tracked.
  * @param {string}   props.label         The label displayed in the modal.
- * @param {Function} props.createNotice  Create a notice (snackbar)
+ * @param {Function} props.createNotice  Create a notice (snackbar).
+ * @param {Function} props.openedCallback Function to call when the modal is opened.
  */
-function CustomerEffortScore( { trackCallback, label, createNotice } ) {
+function CustomerEffortScore( {
+	trackCallback,
+	label,
+	createNotice,
+	openedCallback,
+} ) {
 	const [ score, setScore ] = useState( 0 );
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 	const [ visible, setVisible ] = useState( false );
@@ -31,7 +37,10 @@ function CustomerEffortScore( { trackCallback, label, createNotice } ) {
 			actions: [
 				{
 					label: __( 'Give feedback', 'woocommerce-admin' ),
-					onClick: () => setVisible( true ),
+					onClick: () => {
+						setVisible( true );
+						openedCallback();
+					},
 				},
 			],
 		} );
