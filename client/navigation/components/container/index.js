@@ -106,7 +106,7 @@ const Container = ( { menuItems } ) => {
 						primaryItems,
 						secondaryItems,
 						pluginItems,
-					] = categorizedItems[ category.id ];
+					] = categorizedItems[ category.id ] || [ [], [], [] ];
 					return (
 						<NavigationMenu
 							key={ category.id }
