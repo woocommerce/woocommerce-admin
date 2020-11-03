@@ -16,10 +16,11 @@ class CustomerEffortScoreTracks {
 	/**
 	 * Option name for the CES Tracks queue.
 	 */
-	const CES_TRACKS_QUEUE_OPTION_NAME = 'woocommerce_ces_tracks_queue';
+	const CES_TRACKS_QUEUE_OPTION_NAME
+		= 'woocommerce_ces_tracks_queue';
 
 	/**
-	 * Option name for the clear CES Tracks queue flag.
+	 * Option name for the clear CES Tracks queue for page.
 	 */
 	const CLEAR_CES_TRACKS_QUEUE_FOR_PAGE_OPTION_NAME =
 		'woocommerce_clear_ces_tracks_queue_for_page';
@@ -135,11 +136,17 @@ class CustomerEffortScoreTracks {
 	 * @param object $item The item to enqueue.
 	 */
 	private function enqueue_to_ces_tracks( $item ) {
-		$queue = get_option( self::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+		$queue = get_option(
+			self::CES_TRACKS_QUEUE_OPTION_NAME,
+			array()
+		);
 
 		$queue[] = $item;
 
-		update_option( self::CES_TRACKS_QUEUE_OPTION_NAME, $queue );
+		update_option(
+			self::CES_TRACKS_QUEUE_OPTION_NAME,
+			$queue
+		);
 	}
 
 	/**

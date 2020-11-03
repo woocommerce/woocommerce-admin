@@ -115,8 +115,9 @@ CustomerEffortScoreTracks.propTypes = {
 	 * Whether tracking is allowed or not.
 	 */
 	allowTracking: PropTypes.bool,
+
 	/**
-	 * Whether items are still resolving.
+	 * Whether props are still being resolved.
 	 */
 	resolving: PropTypes.bool.isRequired,
 	/**
@@ -146,10 +147,13 @@ export default compose(
 		const allowTrackingOption =
 			getOption( ALLOW_TRACKING_OPTION_NAME ) || 'no';
 		const allowTracking = allowTrackingOption === 'yes';
+
 		const resolving =
-			isResolving( 'getOption', [ SHOWN_FOR_ACTIONS_OPTION_NAME ] )
-			|| isResolving( 'getOption', [ ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ] )
-			|| isResolving( 'getOption', [ ALLOW_TRACKING_OPTION_NAME ] );
+			isResolving( 'getOption', [ SHOWN_FOR_ACTIONS_OPTION_NAME ] ) ||
+			isResolving( 'getOption', [
+				ADMIN_INSTALL_TIMESTAMP_OPTION_NAME,
+			] ) ||
+			isResolving( 'getOption', [ ALLOW_TRACKING_OPTION_NAME ] );
 
 		return {
 			cesShownForActions,
