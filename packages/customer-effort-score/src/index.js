@@ -8,6 +8,7 @@ import {
 	RadioControl,
 	__experimentalText as Text,
 } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 
 /**
@@ -50,7 +51,7 @@ function CustomerEffortScore( {
 	return (
 		<Modal
 			className="woocommerce-customer-effort-score"
-			title="Please share your feedback"
+			title={ __( 'Please share your feedback', 'woocommerce-admin' ) }
 			onRequestClose={ closeModal }
 		>
 			<Text variant="subtitle.small" as="p">
@@ -60,11 +61,26 @@ function CustomerEffortScore( {
 			<RadioControl
 				selected={ score }
 				options={ [
-					{ label: 'Very difficult', value: '1' },
-					{ label: 'Somewhat difficult', value: '2' },
-					{ label: 'Neutral', value: '3' },
-					{ label: 'Somewhat easy', value: '4' },
-					{ label: 'Very easy', value: '5' },
+					{
+						label: __( 'Very difficult', 'woocommerce-admin' ),
+						value: '1',
+					},
+					{
+						label: __( 'Somewhat difficult', 'woocommerce-admin' ),
+						value: '2',
+					},
+					{
+						label: __( 'Neutral', 'woocommerce-admin' ),
+						value: '3',
+					},
+					{
+						label: __( 'Somewhat easy', 'woocommerce-admin' ),
+						value: '4',
+					},
+					{
+						label: __( 'Very easy', 'woocommerce-admin' ),
+						value: '5',
+					},
 				] }
 				onChange={ ( value ) => {
 					setScore( value );
@@ -73,10 +89,10 @@ function CustomerEffortScore( {
 
 			<div className="woocommerce-customer-effort-score__buttons">
 				<Button isTertiary onClick={ closeModal }>
-					Cancel
+					{ __( 'Cancel', 'woocommerce-admin' ) }
 				</Button>
 				<Button isPrimary onClick={ sendScore }>
-					Send
+					{ __( 'Send', 'woocommerce-admin' ) }
 				</Button>
 			</div>
 		</Modal>
