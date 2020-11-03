@@ -28,7 +28,6 @@ import {
 	ActivityCard,
 	ActivityCardPlaceholder,
 } from '../../../header/activity-panel/activity-card';
-import ActivityOutboundLink from '../../../header/activity-panel/activity-outbound-link';
 import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
 import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
@@ -197,7 +196,7 @@ class OrdersPanel extends Component {
 								)
 							}
 						>
-							{ __( 'Open' ) }
+							{ __( 'Open', 'woocommerce-admin' ) }
 						</Button>
 					}
 				></ActivityCard>
@@ -206,12 +205,14 @@ class OrdersPanel extends Component {
 		return (
 			<Fragment>
 				{ cards }
-				<ActivityOutboundLink
+				<Link
 					href={ 'edit.php?post_type=shop_order' }
+					className="woocommerce-layout__activity-panel-outbound-link"
 					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+					type="wp-admin"
 				>
 					{ __( 'Manage all orders', 'woocommerce-admin' ) }
-				</ActivityOutboundLink>
+				</Link>
 			</Fragment>
 		);
 	}
