@@ -180,9 +180,9 @@ class OrdersPanel extends Component {
 					className="woocommerce-order-activity-card"
 					title={ orderCardTitle( order ) }
 					date={ dateCreatedGmt }
-					onClick={ ( element ) => {
+					onClick={ ( { target } ) => {
 						this.recordOrderEvent( 'orders_begin_fulfillment' );
-						if ( ! element.target.href ) {
+						if ( ! target.href ) {
 							window.location.href = getAdminLink(
 								`post.php?action=edit&post=${ orderId }`
 							);
