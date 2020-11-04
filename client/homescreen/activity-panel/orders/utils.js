@@ -9,7 +9,7 @@ import { SETTINGS_STORE_NAME, ITEMS_STORE_NAME } from '@woocommerce/data';
 import { DEFAULT_ACTIONABLE_STATUSES } from '../../../analytics/settings/config';
 
 export function getUnreadOrders( select ) {
-	const { getItems, getItemsTotalCount, getItemsError, isResolving } = select(
+	const { getItemsTotalCount, getItemsError, isResolving } = select(
 		ITEMS_STORE_NAME
 	);
 	const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
@@ -28,14 +28,15 @@ export function getUnreadOrders( select ) {
 		_fields: [ 'id' ],
 	};
 
-	getItems( 'orders', ordersQuery );
-
 	// Disable eslint rule requiring `latestNote` to be defined below because the next two statements
 	// depend on `getItemsTotalCount` to have been called.
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const totalOrders = getItemsTotalCount( 'orders', ordersQuery );
 	const isError = Boolean( getItemsError( 'orders', ordersQuery ) );
-	const isRequesting = isResolving( 'getItems', [ 'orders', ordersQuery ] );
+	const isRequesting = isResolving( 'getItemsTotalCount', [
+		'orders',
+		ordersQuery,
+	] );
 
 	if ( isError || isRequesting ) {
 		return null;
