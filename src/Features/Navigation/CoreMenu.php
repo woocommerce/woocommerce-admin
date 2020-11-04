@@ -137,23 +137,27 @@ class CoreMenu {
 	 * @return array
 	 */
 	public static function get_items() {
-		$order_items     = Menu::get_post_type_items( 'shop_order', array( 'parent' => 'orders' ) );
-		$product_items   = Menu::get_post_type_items( 'product', array( 'parent' => 'products' ) );
-		$coupon_items    = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'marketing' ) );
-		$setting_items   = self::get_setting_items();
-		$analytics_items = array();
-		if ( method_exists( '\Automattic\WooCommerce\Admin\Features\Analytics', 'get_report_pages' ) ) {
-			$report_pages = \Automattic\WooCommerce\Admin\Features\Analytics::get_report_pages();
-			foreach ( $report_pages as $report_page ) {
-				if ( ! isset( $report_page['nav_args'] ) ) {
-					continue;
-				}
+		$order_items   = Menu::get_post_type_items( 'shop_order', array( 'parent' => 'orders' ) );
+		$product_items = Menu::get_post_type_items( 'product', array( 'parent' => 'products' ) );
+		$coupon_items  = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'marketing' ) );
+		$setting_items = self::get_setting_items();
+		$wca_items     = array();
+		$wca_pages     = \Automattic\WooCommerce\Admin\PageController::get_instance()->get_pages();
 
-				$analytics_items[] = array_merge(
-					$report_page,
-					$report_page['nav_args']
-				);
+		foreach ( $wca_pages as $page ) {
+			if ( ! isset( $page['nav_args'] ) ) {
+				continue;
 			}
+
+			$wca_items[] = array_merge(
+				array(
+					'id'         => $page['id'],
+					'url'        => $page['path'],
+					'title'      => $page['title'][0],
+					'capability' => $page['capability'],
+				),
+				$page['nav_args']
+			);
 		}
 
 		$home_item = array();
@@ -214,8 +218,8 @@ class CoreMenu {
 					'url'        => 'admin.php?page=wc-status&tab=tools',
 				),
 			),
-			// Analytics category.
-			$analytics_items,
+			// WooCommerce Admin items.
+			$wca_items,
 			// Settings category.
 			$setting_items
 		);

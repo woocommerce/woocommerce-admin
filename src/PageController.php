@@ -457,6 +457,15 @@ class PageController {
 	}
 
 	/**
+	 * Get registered pages.
+	 *
+	 * @return array
+	 */
+	public function get_pages() {
+		return $this->pages;
+	}
+
+	/**
 	 * Set up a div for the app to render into.
 	 */
 	public static function page_wrapper() {

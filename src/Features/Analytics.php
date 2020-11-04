@@ -132,8 +132,6 @@ class Analytics {
 			'position' => 56, // After WooCommerce & Product menu items.
 		);
 
-		$navigation_enabled = Loader::is_feature_enabled( 'navigation' );
-
 		$report_pages = array(
 			$overview_page,
 			array(
