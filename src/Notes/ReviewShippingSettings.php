@@ -27,7 +27,7 @@ class ReviewShippingSettings {
 	public static function get_note() {
 		$note = new Note();
 
-		$note_lines = array(
+		$content_lines = array(
 			__(
 				"Based on the information that you provided we've configured some shipping rates and options for your store:<br/><br/>",
 				'woocommerce-admin'
@@ -37,13 +37,13 @@ class ReviewShippingSettings {
 		);
 
 		if ( 'US' === WC()->countries->get_base_country() ) {
-			array_push( $note_lines, __( 'Label printing: enabled', 'woocommerce-admin' ) );
+			array_push( $content_lines, __( 'Label printing: enabled', 'woocommerce-admin' ) );
 		}
 
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
 		$note->set_title( __( 'Review your shipping settings', 'woocommerce-admin' ) );
-		$note->set_content( implode( '', $note_lines ) );
+		$note->set_content( implode( '', $content_lines ) );
 		$note->set_content_data( (object) array() );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
 
