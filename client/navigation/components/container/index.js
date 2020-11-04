@@ -122,13 +122,6 @@ const Container = ( { menuItems } ) => {
 									) ) }
 								</NavigationGroup>
 							) }
-							{ !! secondaryItems.length && (
-								<NavigationGroup>
-									{ secondaryItems.map( ( item ) => (
-										<Item key={ item.id } item={ item } />
-									) ) }
-								</NavigationGroup>
-							) }
 							{ !! pluginItems.length && (
 								<NavigationGroup
 									title={
@@ -141,6 +134,13 @@ const Container = ( { menuItems } ) => {
 									}
 								>
 									{ pluginItems.map( ( item ) => (
+										<Item key={ item.id } item={ item } />
+									) ) }
+								</NavigationGroup>
+							) }
+							{ !! secondaryItems.length && (
+								<NavigationGroup>
+									{ secondaryItems.map( ( item ) => (
 										<Item key={ item.id } item={ item } />
 									) ) }
 								</NavigationGroup>
