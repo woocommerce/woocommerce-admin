@@ -127,7 +127,7 @@ const Container = ( { menuItems } ) => {
 									title={
 										category.id === 'woocommerce'
 											? __(
-													'Plugins',
+													'Extensions',
 													'woocommerce-admin'
 											  )
 											: null
