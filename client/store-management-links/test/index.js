@@ -112,7 +112,7 @@ describe( 'generateExtensionLinks', () => {
 				icon: validFullUrl.icon,
 				link: {
 					href: validFullUrl.href,
-					linkType: 'extension',
+					linkType: 'wp-admin',
 				},
 				title: validFullUrl.title,
 				listItemTag: 'quick-links-extension-link',
@@ -124,7 +124,7 @@ describe( 'generateExtensionLinks', () => {
 				icon: validRelativeUrl.icon,
 				link: {
 					href: validRelativeUrl.href,
-					linkType: 'extension',
+					linkType: 'wp-admin',
 				},
 				title: validRelativeUrl.title,
 				listItemTag: 'quick-links-extension-link',
