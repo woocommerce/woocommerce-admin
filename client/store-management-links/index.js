@@ -148,7 +148,7 @@ export const generateExtensionLinks = ( links ) => {
 				icon,
 				link: {
 					href,
-					linkType: 'extension',
+					linkType: 'wp-admin',
 				},
 				title,
 				listItemTag: 'quick-links-extension-link',
