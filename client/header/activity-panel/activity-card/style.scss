@@ -82,6 +82,9 @@
 
 	.woocommerce-activity-card__subtitle {
 		order: 3;
+		.woocommerce-activity-card__button & {
+			margin-bottom: $gap-smallest;
+		}
 	}
 
 	@include breakpoint( '>782px' ) {
