@@ -108,7 +108,7 @@ CustomerEffortScoreTracks.propTypes = {
 	/**
 	 * The label for the snackbar that appears upon survey submission.
 	 */
-	onSubmitLabel: PropTypes.string,
+	onSubmitLabel: PropTypes.string.isRequired,
 	/**
 	 * The array of actions that the CES modal has been shown for.
 	 */
