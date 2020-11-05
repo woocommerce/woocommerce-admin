@@ -45,11 +45,15 @@ TransientNotices.propTypes = {
 
 export default compose(
 	withSelect( ( select ) => {
-		const notices = select( 'core/notices' ).getNotices();
+		// NOTE: This uses core/notices2, if this file is copied back upstream
+		// to Gutenberg this needs to be changed back to core/notices.
+		const notices = select( 'core/notices2' ).getNotices();
 
 		return { notices };
 	} ),
 	withDispatch( ( dispatch ) => ( {
-		onRemove: dispatch( 'core/notices' ).removeNotice,
+		// NOTE: This uses core/notices2, if this file is copied back upstream
+		// to Gutenberg this needs to be changed back to core/notices.
+		onRemove: dispatch( 'core/notices2' ).removeNotice,
 	} ) )
 )( TransientNotices );
