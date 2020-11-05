@@ -17,11 +17,7 @@ import {
 } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
-import {
-	SETTINGS_STORE_NAME,
-	REPORTS_STORE_NAME,
-	ITEMS_STORE_NAME,
-} from '@woocommerce/data';
+import { REPORTS_STORE_NAME, ITEMS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -306,18 +302,6 @@ export default withSelect( ( select, props ) => {
 	const { getReportItems, getReportItemsError, isResolving } = select(
 		REPORTS_STORE_NAME
 	);
-	const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
-	const {
-		woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
-	} = getMutableSetting( 'wc_admin', 'wcAdminSettings', {} );
-	if ( ! orderStatuses.length ) {
-		return {
-			orders: [],
-			isError: true,
-			isRequesting: false,
-			orderStatuses,
-		};
-	}
 
 	if ( countUnreadOrders === null ) {
 		return { isRequesting: true };
@@ -331,7 +315,7 @@ export default withSelect( ( select, props ) => {
 	const actionableOrdersQuery = {
 		page: 1,
 		per_page: 5,
-		status: orderStatuses,
+		status: DEFAULT_ACTIONABLE_STATUSES,
 		_fields: [ 'id', 'date_created_gmt', 'status' ],
 	};
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
@@ -349,7 +333,7 @@ export default withSelect( ( select, props ) => {
 				getItemsError( 'orders', actionableOrdersQuery )
 			),
 			isRequesting: isRequestingActionable,
-			orderStatuses,
+			orderStatuses: DEFAULT_ACTIONABLE_STATUSES,
 		};
 	}
 
@@ -385,5 +369,10 @@ export default withSelect( ( select, props ) => {
 			merge( {}, order, actionableOrdersById[ order.order_id ] || {} )
 		);
 	}
-	return { orders, isError, isRequesting, orderStatuses };
+	return {
+		orders,
+		isError,
+		isRequesting,
+		orderStatuses: DEFAULT_ACTIONABLE_STATUSES,
+	};
 } )( OrdersPanel );
