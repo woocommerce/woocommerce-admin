@@ -3,7 +3,6 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
@@ -22,7 +21,6 @@ import {
 	SETTINGS_STORE_NAME,
 	REPORTS_STORE_NAME,
 	ITEMS_STORE_NAME,
-	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -302,113 +300,90 @@ OrdersPanel.defaultProps = {
 
 OrdersPanel.contextType = CurrencyContext;
 
-export default compose(
-	withSelect( ( select, props ) => {
-		const { countUnreadOrders } = props;
-		const { getItems, getItemsError } = select( ITEMS_STORE_NAME );
-		const { getReportItems, getReportItemsError, isResolving } = select(
-			REPORTS_STORE_NAME
-		);
-		const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
-		const {
-			woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
-		} = getMutableSetting( 'wc_admin', 'wcAdminSettings', {} );
-		if ( ! orderStatuses.length ) {
-			return {
-				orders: [],
-				isError: true,
-				isRequesting: false,
-				orderStatuses,
-			};
-		}
-
-		if ( countUnreadOrders > 0 ) {
-			// Query the core Orders endpoint for the most up-to-date statuses.
-			const actionableOrdersQuery = {
-				page: 1,
-				per_page: QUERY_DEFAULTS.pageSize,
-				status: orderStatuses,
-				_fields: [ 'id', 'date_created_gmt', 'status' ],
-			};
-			const actionableOrders = Array.from(
-				getItems( 'orders', actionableOrdersQuery ).values()
-			);
-			const isRequestingActionable = isResolving( 'getItems', [
-				'orders',
-				actionableOrdersQuery,
-			] );
-
-			if ( isRequestingActionable ) {
-				return {
-					isError: Boolean(
-						getItemsError( 'orders', actionableOrdersQuery )
-					),
-					isRequesting: isRequestingActionable,
-					orderStatuses,
-				};
-			}
-
-			// Retrieve the Order stats data from our reporting table.
-			const ordersQuery = {
-				page: 1,
-				per_page: 5,
-				extended_info: true,
-				order_includes: map( actionableOrders, 'id' ),
-				_fields: [
-					'order_id',
-					'order_number',
-					'status',
-					'data_created_gmt',
-					'total_sales',
-					'extended_info.customer',
-					'extended_info.products',
-				],
-			};
-
-			const reportOrders = getReportItems( 'orders', ordersQuery ).data;
-			const isError = Boolean(
-				getReportItemsError( 'orders', ordersQuery )
-			);
-			const isRequesting = isResolving( 'getReportItems', [
-				'orders',
-				ordersQuery,
-			] );
-			let orders = [];
-
-			if ( reportOrders && reportOrders.length ) {
-				// Merge the core endpoint data with our reporting table.
-				const actionableOrdersById = keyBy( actionableOrders, 'id' );
-				orders = reportOrders.map( ( order ) =>
-					merge(
-						{},
-						order,
-						actionableOrdersById[ order.order_id ] || {}
-					)
-				);
-			}
-
-			return { orders, isError, isRequesting, orderStatuses };
-		}
-
-		// Get a count of all orders for messaging purposes.
-		// @todo Add a property to settings api for this?
-		const allOrdersQuery = {
-			page: 1,
-			per_page: 1,
-			_fields: [ 'id' ],
-		};
-
-		getItems( 'orders', allOrdersQuery );
-		const isError = Boolean( getItemsError( 'orders', allOrdersQuery ) );
-		const isRequesting =
-			countUnreadOrders !== null
-				? isResolving( 'getItems', [ 'orders', allOrdersQuery ] )
-				: true;
-
+export default withSelect( ( select, props ) => {
+	const { countUnreadOrders } = props;
+	const { getItems, getItemsError } = select( ITEMS_STORE_NAME );
+	const { getReportItems, getReportItemsError, isResolving } = select(
+		REPORTS_STORE_NAME
+	);
+	const { getSetting: getMutableSetting } = select( SETTINGS_STORE_NAME );
+	const {
+		woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
+	} = getMutableSetting( 'wc_admin', 'wcAdminSettings', {} );
+	if ( ! orderStatuses.length ) {
 		return {
-			isError,
-			isRequesting,
+			orders: [],
+			isError: true,
+			isRequesting: false,
 			orderStatuses,
 		};
-	} )
-)( OrdersPanel );
+	}
+
+	if ( countUnreadOrders === null ) {
+		return { isRequesting: true };
+	}
+
+	if ( countUnreadOrders === 0 ) {
+		return { isRequesting: false };
+	}
+
+	// Query the core Orders endpoint for the most up-to-date statuses.
+	const actionableOrdersQuery = {
+		page: 1,
+		per_page: 5,
+		status: orderStatuses,
+		_fields: [ 'id', 'date_created_gmt', 'status' ],
+	};
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
+	const actionableOrders = Array.from(
+		getItems( 'orders', actionableOrdersQuery ).values()
+	);
+	const isRequestingActionable = isResolving( 'getItems', [
+		'orders',
+		actionableOrdersQuery,
+	] );
+
+	if ( isRequestingActionable ) {
+		return {
+			isError: Boolean(
+				getItemsError( 'orders', actionableOrdersQuery )
+			),
+			isRequesting: isRequestingActionable,
+			orderStatuses,
+		};
+	}
+
+	// Retrieve the Order stats data from our reporting table.
+	const ordersQuery = {
+		page: 1,
+		per_page: 5,
+		extended_info: true,
+		order_includes: map( actionableOrders, 'id' ),
+		_fields: [
+			'order_id',
+			'order_number',
+			'status',
+			'data_created_gmt',
+			'total_sales',
+			'extended_info.customer',
+			'extended_info.products',
+		],
+	};
+
+	const reportOrders = getReportItems( 'orders', ordersQuery ).data;
+	const isError = Boolean( getReportItemsError( 'orders', ordersQuery ) );
+	const isRequesting = isResolving( 'getReportItems', [
+		'orders',
+		ordersQuery,
+	] );
+	let orders = [];
+
+	if ( reportOrders && reportOrders.length ) {
+		// Merge the core endpoint data with our reporting table.
+		const actionableOrdersById = keyBy( actionableOrders, 'id' );
+		orders = reportOrders.map( ( order ) =>
+			merge( {}, order, actionableOrdersById[ order.order_id ] || {} )
+		);
+	}
+	return { orders, isError, isRequesting, orderStatuses };
+} )( OrdersPanel );
