@@ -11,12 +11,18 @@
 			font-weight: 400;
 			font-size: 20px;
 			line-height: 28px;
+			color: $gray-900;
+			&:focus {
+				box-shadow: unset;
+				outline: unset;
+			}
 			.woocommerce-accordion-header {
 				order: 1;
 				text-align: left;
 				width: 50%;
 				.woocommerce-accordion-title {
 					vertical-align: bottom;
+					margin-right: $gap;
 				}
 			}
 			& > span {
