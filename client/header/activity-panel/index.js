@@ -151,7 +151,8 @@ export class ActivityPanel extends Component {
 		const showInbox =
 			( isEmbedded || ! this.isHomescreen() ) && ! isPerformingSetupTask;
 
-		const showHelp = this.isHomescreen() && ! isEmbedded;
+		const showHelp =
+			( this.isHomescreen() && ! isEmbedded ) || isPerformingSetupTask;
 
 		const showStockAndReviews =
 			( taskListComplete || taskListHidden ) && ! isPerformingSetupTask;
