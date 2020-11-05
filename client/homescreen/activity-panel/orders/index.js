@@ -2,17 +2,22 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import interpolateComponents from 'interpolate-components';
 import { keyBy, map, merge } from 'lodash';
-
-import { EmptyContent, Flag, H, Link, Section } from '@woocommerce/components';
+import {
+	EmptyContent,
+	Flag,
+	H,
+	Link,
+	OrderStatus,
+	Section,
+} from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	SETTINGS_STORE_NAME,
 	REPORTS_STORE_NAME,
@@ -156,20 +161,33 @@ class OrdersPanel extends Component {
 
 		const cards = [];
 		orders.forEach( ( order ) => {
-			const extendedInfo = order.extended_info || {};
+			const {
+				date_created_gmt: dateCreatedGmt,
+				extended_info: extendedInfo,
+				order_id: orderId,
+				total_sales: totalSales,
+			} = order;
 			const productsCount =
 				extendedInfo && extendedInfo.products
 					? extendedInfo.products.length
 					: 0;
 
-			const total = order.total_sales;
+			const total = totalSales;
 
 			cards.push(
 				<ActivityCard
-					key={ order.order_id }
+					key={ orderId }
 					className="woocommerce-order-activity-card"
 					title={ orderCardTitle( order ) }
-					date={ order.date_created_gmt }
+					date={ dateCreatedGmt }
+					onClick={ ( { target } ) => {
+						this.recordOrderEvent( 'orders_begin_fulfillment' );
+						if ( ! target.href ) {
+							window.location.href = getAdminLink(
+								`post.php?action=edit&post=${ orderId }`
+							);
+						}
+					} }
 					subtitle={
 						<div>
 							<span>
@@ -186,22 +204,12 @@ class OrdersPanel extends Component {
 							<span>{ Currency.formatAmount( total ) }</span>
 						</div>
 					}
-					actions={
-						<Button
-							isSecondary
-							href={ getAdminLink(
-								'post.php?action=edit&post=' + order.order_id
-							) }
-							onClick={ () =>
-								this.recordOrderEvent(
-									'orders_begin_fulfillment'
-								)
-							}
-						>
-							{ __( 'Open', 'woocommerce-admin' ) }
-						</Button>
-					}
-				></ActivityCard>
+				>
+					<OrderStatus
+						order={ order }
+						orderStatusMap={ getSetting( 'orderStatuses', {} ) }
+					/>
+				</ActivityCard>
 			);
 		} );
 		return (
