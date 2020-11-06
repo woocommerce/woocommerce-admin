@@ -21,6 +21,7 @@ import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../inbox-panel';
 import { WelcomeModal } from './welcome-modal';
 import ActivityHeader from '../header/activity-panel/activity-header';
+import { ActivityPanel } from './activity-panel';
 
 import './style.scss';
 import '../dashboard/style.scss';
@@ -66,6 +67,7 @@ export const Layout = ( {
 							'woocommerce-admin'
 						) }
 					/>
+					<ActivityPanel />
 					{ isTaskListEnabled && renderTaskList() }
 					{ ! isTaskListEnabled && <StoreManagementLinks /> }
 				</Column>
