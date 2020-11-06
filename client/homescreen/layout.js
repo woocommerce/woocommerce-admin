@@ -1,13 +1,7 @@
 /**
  * External dependencies
  */
-import {
-	Suspense,
-	lazy,
-	useState,
-	useRef,
-	useEffect,
-} from '@wordpress/element';
+import { Suspense, lazy, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import classnames from 'classnames';
@@ -31,6 +25,7 @@ import ActivityHeader from '../header/activity-panel/activity-header';
 import './style.scss';
 import '../dashboard/style.scss';
 import { StoreManagementLinks } from '../store-management-links';
+import { Column } from './column';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -51,26 +46,6 @@ export const Layout = ( {
 		( userPrefs.homepage_layout || defaultHomescreenLayout ) ===
 		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
-	const [ isContentSticky, setIsContentSticky ] = useState( false );
-	const content = useRef( null );
-	const maybeStickContent = () => {
-		if ( ! content.current ) {
-			return;
-		}
-		const { bottom } = content.current.getBoundingClientRect();
-		const shouldBeSticky = twoColumns && bottom < window.innerHeight;
-
-		setIsContentSticky( shouldBeSticky );
-	};
-
-	useEffect( () => {
-		maybeStickContent();
-		window.addEventListener( 'resize', maybeStickContent );
-
-		return () => {
-			window.removeEventListener( 'resize', maybeStickContent );
-		};
-	}, [ twoColumns ] );
 
 	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
@@ -82,13 +57,7 @@ export const Layout = ( {
 	const renderColumns = () => {
 		return (
 			<>
-				<div
-					className="woocommerce-homescreen-column"
-					ref={ content }
-					style={ {
-						position: isContentSticky ? 'sticky' : 'static',
-					} }
-				>
+				<Column shouldStick={ twoColumns }>
 					<ActivityHeader
 						className="your-store-today"
 						title={ __( 'Your store today', 'woocommerce-admin' ) }
@@ -99,11 +68,11 @@ export const Layout = ( {
 					/>
 					{ isTaskListEnabled && renderTaskList() }
 					{ ! isTaskListEnabled && <StoreManagementLinks /> }
-				</div>
-				<div className="woocommerce-homescreen-column">
+				</Column>
+				<Column shouldStick={ twoColumns }>
 					<StatsOverview />
 					<InboxPanel />
-				</div>
+				</Column>
 			</>
 		);
 	};
