@@ -438,7 +438,7 @@ class BusinessDetails extends Component {
 			{
 				slug: 'creative-mail-by-constant-contact',
 				title: __(
-					'Email marketing for WooCommerce with Creative Mai',
+					'Email marketing for WooCommerce with Creative Mail',
 					'woocommerce-admin'
 				),
 				icon: 'onboarding/creativemail.png',
