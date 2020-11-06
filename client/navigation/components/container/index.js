@@ -84,7 +84,7 @@ const Container = ( { menuItems } ) => {
 			<Navigation
 				activeItem={ activeItem ? activeItem.id : null }
 				activeMenu={ activeLevel }
-				onActivateMenu={ ( { menuId } ) => {
+				onActivateMenu={ ( ...args ) => {
 					const navDomRef = document.querySelector(
 						'.components-navigation'
 					);
@@ -93,7 +93,7 @@ const Container = ( { menuItems } ) => {
 						navDomRef.scrollTop = 0;
 					}
 
-					setActiveLevel( menuId );
+					setActiveLevel( ...args );
 				} }
 			>
 				{ activeLevel === 'woocommerce' && dashboardUrl && (
