@@ -13,13 +13,13 @@
 
 	// Emoji radio button container
 	.components-base-control__field {
-		display: grid;
-		justify-items: center;
-		grid-template-columns: 1fr;
+		display: flex;
+		flex-direction: column;
+		margin: 0 auto;
 		color: var(--wp-admin-theme-color);
 
 		@include breakpoint( '>600px' ) {
-			grid-template-columns: repeat(5, 1fr);
+			flex-direction: row;
 		}
 	}
 
