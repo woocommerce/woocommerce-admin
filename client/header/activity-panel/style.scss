@@ -291,3 +291,12 @@
 .has-woocommerce-navigation .woocommerce-layout__activity-panel {
 	top: 0;
 }
+
+.has-woocommerce-navigation .woocommerce-layout__activity-panel-wrapper {
+	height: calc(100vh - #{$header-height + $header-height});
+	top: #{$header-height + $header-height};
+	@include breakpoint( '>782px' ) {
+		height: calc(100vh - #{$header-height});
+		top: #{$header-height};
+	}
+}
