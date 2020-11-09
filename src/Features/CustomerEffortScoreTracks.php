@@ -45,6 +45,14 @@ class CustomerEffortScoreTracks {
 	 */
 	const SETTINGS_CHANGE_ACTION_NAME = 'settings_change';
 
+  /**
+	 * Label for the snackbar that appears when a user submits the survey.
+	 *
+	 * @var string
+	 */
+	private $onsubmit_label;
+
+
 	/**
 	 * Constructor. Sets up filters to hook into WooCommerce.
 	 */
@@ -89,6 +97,8 @@ class CustomerEffortScoreTracks {
 			10,
 			3
 		);
+
+		$this->onsubmit_label = __( 'Thank you for your feedback!', 'woocommerce-admin' );
 	}
 
 	/**
@@ -156,7 +166,7 @@ class CustomerEffortScoreTracks {
 	/**
 	 * Enqueue the item to the CES tracks queue.
 	 *
-	 * @param object $item The item to enqueue.
+	 * @param array $item The item to enqueue.
 	 */
 	private function enqueue_to_ces_tracks( $item ) {
 		$queue = get_option(
@@ -182,14 +192,15 @@ class CustomerEffortScoreTracks {
 
 		$this->enqueue_to_ces_tracks(
 			array(
-				'action'    => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
-				'label'     => __(
+				'action'         => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
+				'label'          => __(
 					'How easy was it to add a product?',
 					'woocommerce-admin'
 				),
-				'pagenow'   => 'product',
-				'adminpage' => 'post-php',
-				'props'     => array(
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product',
+				'adminpage'      => 'post-php',
+				'props'          => array(
 					'product_count' => $this->get_product_count(),
 				),
 			)
@@ -206,14 +217,15 @@ class CustomerEffortScoreTracks {
 
 		$this->enqueue_to_ces_tracks(
 			array(
-				'action'    => self::PRODUCT_UPDATE_ACTION_NAME,
-				'label'     => __(
+				'action'         => self::PRODUCT_UPDATE_ACTION_NAME,
+				'label'          => __(
 					'How easy was it to edit your product?',
 					'woocommerce-admin'
 				),
-				'pagenow'   => 'product',
-				'adminpage' => 'post-php',
-				'props'     => array(
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product',
+				'adminpage'      => 'post-php',
+				'props'          => array(
 					'product_count' => $this->get_product_count(),
 				),
 			)
