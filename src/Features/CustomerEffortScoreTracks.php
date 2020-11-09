@@ -57,6 +57,19 @@ class CustomerEffortScoreTracks {
 	 * Constructor. Sets up filters to hook into WooCommerce.
 	 */
 	public function __construct() {
+		$this->enable_survey_enqueing_if_tracking_is_enabled();
+	}
+
+	/**
+	 * Add actions that require woocommerce_allow_tracking.
+	 */
+	private function enable_survey_enqueing_if_tracking_is_enabled() {
+		// Only enqueue a survey if tracking is allowed.
+		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
+		if ( ! $allow_tracking ) {
+			return;
+		}
+
 		add_action(
 			'admin_init',
 			array(
@@ -64,19 +77,6 @@ class CustomerEffortScoreTracks {
 				'maybe_clear_ces_tracks_queue',
 			)
 		);
-
-		$this->add_actions();
-	}
-
-	/**
-	 * Add actions that require woocommerce_allow_tracking.
-	 */
-	private function add_actions() {
-		// Only enqueue a survey if tracking is allowed.
-		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
-		if ( ! $allow_tracking ) {
-			return;
-		}
 
 		add_action(
 			'transition_post_status',
