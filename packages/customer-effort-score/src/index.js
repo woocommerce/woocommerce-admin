@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { useState } from '@wordpress/element';
+import PropTypes from 'prop-types';
 import {
 	Button,
 	Modal,
@@ -9,7 +10,6 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import PropTypes from 'prop-types';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 /**
@@ -35,11 +35,11 @@ function CustomerEffortScore( {
 	openedCallback,
 } ) {
 	const [ score, setScore ] = useState( 0 );
-	const [ isOpen, setOpen ] = useState( false );
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
+	const [ visible, setVisible ] = useState( false );
 
 	const closeModal = () => {
-		setOpen( false );
+		setVisible( false );
 	};
 	const sendScore = () => {
 		closeModal();
@@ -52,7 +52,7 @@ function CustomerEffortScore( {
 				{
 					label: __( 'Give feedback', 'woocommerce-admin' ),
 					onClick: () => {
-						setOpen( true );
+						setVisible( true );
 						openedCallback();
 					},
 				},
@@ -64,7 +64,7 @@ function CustomerEffortScore( {
 		return null;
 	}
 
-	if ( ! isOpen ) {
+	if ( ! visible ) {
 		return null;
 	}
 
