@@ -1,14 +1,14 @@
 <?php
 /**
- * Onboarding Themes Tests.
+ * Customer Effort Score Survey Tests.
  *
- * @package WooCommerce\Admin\Tests\OnboardingThemes
+ * @package Automattic\WooCommerce\Admin\Features
  */
 
 use \Automattic\WooCommerce\Admin\Features\CustomerEffortScoreTracks;
 
 /**
- * Class WC_Tests_Onboarding
+ * Class WC_Tests_CES_Tracks
  */
 class WC_Tests_CES_Tracks extends WC_Unit_Test_Case {
 
