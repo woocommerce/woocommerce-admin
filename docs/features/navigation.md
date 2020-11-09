@@ -12,7 +12,7 @@ The fastest way to get started is by creating an example plugin from WooCommerce
 
 `npm run example -- --ext=add-navigation-items`
 
-This will create a new plugin that covers various features of the navigation and helps to register some intial items and categories within the new navigation menu.
+This will create a new plugin that covers various features of the navigation and helps to register some intial items and categories within the new navigation menu.  After running the command above, you can make edits directly to the files at `docs/examples/extensions/add-navigation-items` and they will be built and copied to your `wp-content/add-navigation-items` folder on save.
 
 ### Adding a menu category
 
