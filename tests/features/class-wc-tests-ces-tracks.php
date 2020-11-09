@@ -21,9 +21,9 @@ class WC_Tests_CES_Tracks extends WC_Unit_Test_Case {
 	 * Overridden setUp method from PHPUnit
 	 */
 	public function setUp() {
-		$this->ces = new CustomerEffortScoreTracks();
-		update_option( 'woocommerce_allow_tracking', 'yes' );
 		parent::setUp();
+		update_option( 'woocommerce_allow_tracking', 'yes' );
+		$this->ces = new CustomerEffortScoreTracks();
 	}
 
 	/**
