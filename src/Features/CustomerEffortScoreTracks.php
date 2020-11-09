@@ -45,7 +45,7 @@ class CustomerEffortScoreTracks {
 	 */
 	const SETTINGS_CHANGE_ACTION_NAME = 'settings_change';
 
-  /**
+	/**
 	 * Label for the snackbar that appears when a user submits the survey.
 	 *
 	 * @var string
