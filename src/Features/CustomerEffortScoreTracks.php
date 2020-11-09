@@ -84,7 +84,7 @@ class CustomerEffortScoreTracks {
 			'woocommerce_update_options',
 			array(
 				$this,
-				'run_on_settings_change',
+				'run_on_update_options',
 			),
 			10,
 			3
@@ -258,7 +258,7 @@ class CustomerEffortScoreTracks {
 	/**
 	 * Enqueue the CES survey trigger for setting changes.
 	 */
-	public function run_on_settings_change() {
+	public function run_on_update_options() {
 		if ( $this->has_been_shown( self::SETTINGS_CHANGE_ACTION_NAME ) ) {
 			return;
 		}
