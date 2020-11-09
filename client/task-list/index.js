@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, cloneElement, Fragment } from '@wordpress/element';
+import { Component, cloneElement } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import {
@@ -15,7 +15,7 @@ import {
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { xor } from 'lodash';
-import { List, EllipsisMenu } from '@woocommerce/components';
+import { List, EllipsisMenu, Badge } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import {
 	PLUGINS_STORE_NAME,
@@ -34,7 +34,7 @@ import { getAllTasks, recordTaskViewEvent } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
 import sanitizeHTML from '../lib/sanitize-html';
 
-class TaskDashboard extends Component {
+export class TaskDashboard extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
@@ -73,6 +73,7 @@ class TaskDashboard extends Component {
 		if ( ! this.getIncompleteTasks().length && ! isTaskListComplete ) {
 			updateOptions( {
 				woocommerce_task_list_complete: 'yes',
+				woocommerce_default_homepage_layout: 'two_columns',
 			} );
 		}
 	}
@@ -215,6 +216,7 @@ class TaskDashboard extends Component {
 		this.props.updateOptions( {
 			woocommerce_task_list_hidden: 'yes',
 			woocommerce_task_list_prompt_shown: true,
+			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	}
 
@@ -326,46 +328,41 @@ class TaskDashboard extends Component {
 
 			return task;
 		} );
-		const progressBarClass = classNames(
-			'woocommerce-task-card__progress-bar',
-			{
-				completed:
-					listTasks.length === this.getCompletedTaskKeys().length,
-			}
-		);
 
 		return (
-			<Fragment>
+			<>
 				<div className="woocommerce-task-dashboard__container">
 					{ currentTask ? (
 						cloneElement( currentTask.container, {
 							query,
 						} )
 					) : (
-						<Fragment>
+						<>
 							<Card
 								size="large"
-								className="woocommerce-task-card woocommerce-dashboard-card"
+								className="woocommerce-task-card woocommerce-homescreen-card"
 							>
-								<progress
-									className={ progressBarClass }
-									max={ listTasks.length }
-									value={ this.getCompletedTaskKeys().length }
-								/>
 								<CardHeader size="medium">
-									<Text variant="title.small">
-										{ __(
-											'Finish setup',
-											'woocommerce-admin'
-										) }
-									</Text>
+									<div className="wooocommerce-task-card__header">
+										<Text variant="title.small">
+											{ __(
+												'Finish setup',
+												'woocommerce-admin'
+											) }
+										</Text>
+										<Badge
+											count={
+												this.getIncompleteTasks().length
+											}
+										/>
+									</div>
 									{ this.renderMenu() }
 								</CardHeader>
 								<CardBody>
 									<List items={ listTasks } />
 								</CardBody>
 							</Card>
-						</Fragment>
+						</>
 					) }
 				</div>
 				{ isCartModalOpen && (
@@ -374,7 +371,7 @@ class TaskDashboard extends Component {
 						onClickPurchaseLater={ () => this.toggleCartModal() }
 					/>
 				) }
-			</Fragment>
+			</>
 		);
 	}
 }

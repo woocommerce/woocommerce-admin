@@ -54,6 +54,10 @@ class Install {
 			'wc_admin_update_160_remove_facebook_note',
 			'wc_admin_update_160_db_version',
 		),
+		'1.7.0'  => array(
+			'wc_admin_update_170_homescreen_layout',
+			'wc_admin_update_170_db_version',
+		),
 	);
 
 	/**
@@ -472,6 +476,7 @@ class Install {
 			'wc-admin-store-notice-setting-moved',
 			'wc-admin-store-notice-giving-feedback',
 			'wc-admin-learn-more-about-product-settings',
+			'wc-admin-onboarding-profiler-reminder',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(

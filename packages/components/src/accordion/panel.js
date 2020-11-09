@@ -4,6 +4,12 @@
 import { Card, PanelBody, PanelRow } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useState } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
+import { Badge } from '../badge';
 
 /**
  * `AccordionPanel` is used to give the panel content an accessible wrapper.
@@ -23,28 +29,31 @@ const AccordionPanel = ( {
 	initialOpen,
 	children,
 } ) => {
+	const [ isPanelOpen, setIsPanelOpen ] = useState( initialOpen );
 	const getTitleAndCount = ( titleText, countUnread ) => {
 		return (
 			<span className="woocommerce-accordion-header">
 				<span className="woocommerce-accordion-title">
 					{ titleText }
 				</span>
-				{ countUnread !== null && (
-					<span className="woocommerce-accordion-badge">
-						{ countUnread }
-					</span>
-				) }
+				{ countUnread !== null && <Badge count={ countUnread } /> }
 			</span>
 		);
+	};
+	const onToggle = () => {
+		setIsPanelOpen( ! isPanelOpen );
 	};
 	return (
 		<Card
 			size="large"
-			className={ classnames( className, 'woocommerce-accordion-card' ) }
+			className={ classnames( className, 'woocommerce-accordion-card', {
+				'is-panel-opened': isPanelOpen,
+			} ) }
 		>
 			<PanelBody
 				title={ getTitleAndCount( title, count ) }
 				initialOpen={ initialOpen }
+				onToggle={ () => onToggle() }
 			>
 				<PanelRow> { children } </PanelRow>
 			</PanelBody>

@@ -10,7 +10,8 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
-
+import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 /**
  * Internal dependencies
  */
@@ -22,27 +23,46 @@ import PropTypes from 'prop-types';
  * reuse.
  *
  * @param {Object}   props               Component props.
- * @param {Function} props.trackCallback Function to call when the modal is activated.
- * @param {boolean}  props.visible       Whether or not the tracks modal is visible.
- * @param {Function} props.toggleVisible Callback to toggle the visible prop.
+ * @param {Function} props.trackCallback Function to call when the results should be tracked.
  * @param {string}   props.label         The label displayed in the modal.
+ * @param {Function} props.createNotice  Create a notice (snackbar).
+ * @param {Function} props.openedCallback Function to call when the modal is opened.
  */
 function CustomerEffortScore( {
 	trackCallback,
-	visible,
-	toggleVisible,
 	label,
+	createNotice,
+	openedCallback,
 } ) {
 	const [ score, setScore ] = useState( 0 );
-	const [ isOpen, setOpen ] = useState( visible );
+	const [ isOpen, setOpen ] = useState( false );
+	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
+
 	const closeModal = () => {
 		setOpen( false );
-		toggleVisible( false );
 	};
 	const sendScore = () => {
 		closeModal();
 		trackCallback( score );
 	};
+
+	if ( shouldCreateNotice ) {
+		createNotice( 'success', label, {
+			actions: [
+				{
+					label: __( 'Give feedback', 'woocommerce-admin' ),
+					onClick: () => {
+						setOpen( true );
+						openedCallback();
+					},
+				},
+			],
+		} );
+
+		setShouldCreateNotice( false );
+
+		return null;
+	}
 
 	if ( ! isOpen ) {
 		return null;
@@ -105,19 +125,21 @@ CustomerEffortScore.propTypes = {
 	 */
 	trackCallback: PropTypes.func.isRequired,
 	/**
-	 * Whether or not the dialog is visible. True is used for when this is
-	 * loaded on page load (in client/index.js). False is used if the modal is
-	 * loaded as part of the layout and displayed programmatically.
-	 */
-	visible: PropTypes.bool.isRequired,
-	/**
-	 * Callback to toggle the visible prop.
-	 */
-	toggleVisible: PropTypes.func.isRequired,
-	/**
 	 * The label displayed in the modal.
 	 */
 	label: PropTypes.string.isRequired,
+	/**
+	 * Create a notice (snackbar).
+	 */
+	createNotice: PropTypes.func,
 };
 
-export default CustomerEffortScore;
+export default compose(
+	withDispatch( ( dispatch ) => {
+		const { createNotice } = dispatch( 'core/notices' );
+
+		return {
+			createNotice,
+		};
+	} )
+)( CustomerEffortScore );
