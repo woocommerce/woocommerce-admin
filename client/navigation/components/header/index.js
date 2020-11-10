@@ -25,13 +25,15 @@ const Header = () => {
 	};
 
 	const foldOnMobile = ( screenWidth = document.body.clientWidth ) => {
-		if ( screenWidth <= 960 ) {
-			document.body.classList.add( 'is-folded' );
-		}
+		const isSmallScreen = screenWidth <= 960;
+
+		document.body.classList[ isSmallScreen ? 'add' : 'remove' ](
+			'is-folded'
+		);
 	};
 
 	useEffect( () => {
-		foldOnMobile( document.body.clientWidth );
+		foldOnMobile();
 		const foldEvents = [
 			{
 				eventName: 'orientationchange',
