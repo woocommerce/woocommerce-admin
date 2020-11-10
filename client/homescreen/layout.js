@@ -69,11 +69,11 @@ export const Layout = ( {
 					/>
 					<ActivityPanel />
 					{ isTaskListEnabled && renderTaskList() }
-					{ ! isTaskListEnabled && <StoreManagementLinks /> }
 				</Column>
 				<Column shouldStick={ twoColumns }>
 					<StatsOverview />
 					<InboxPanel />
+					{ ! isTaskListEnabled && <StoreManagementLinks /> }
 				</Column>
 			</>
 		);
