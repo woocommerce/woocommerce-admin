@@ -348,7 +348,7 @@ class Menu {
 		}
 
 		return array(
-			array_merge(
+			'default' => array_merge(
 				array(
 					'title'      => esc_attr( $post_type_object->labels->menu_name ),
 					'capability' => $post_type_object->cap->edit_posts,
@@ -357,7 +357,7 @@ class Menu {
 				),
 				$menu_args
 			),
-			array_merge(
+			'all'     => array_merge(
 				array(
 					'parent'     => $post_type,
 					'title'      => esc_attr( $post_type_object->labels->all_items ),
@@ -368,7 +368,7 @@ class Menu {
 				),
 				$menu_args
 			),
-			array_merge(
+			'new'     => array_merge(
 				array(
 					'parent'     => $post_type,
 					'title'      => esc_attr( $post_type_object->labels->add_new ),
