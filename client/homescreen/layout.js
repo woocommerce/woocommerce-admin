@@ -69,11 +69,16 @@ export const Layout = ( {
 					/>
 					<ActivityPanel />
 					{ isTaskListEnabled && renderTaskList() }
+					{ ! isTaskListEnabled && twoColumns && (
+						<StoreManagementLinks />
+					) }
 				</Column>
 				<Column shouldStick={ twoColumns }>
 					<StatsOverview />
 					<InboxPanel />
-					{ ! isTaskListEnabled && <StoreManagementLinks /> }
+					{ ! isTaskListEnabled && ! twoColumns && (
+						<StoreManagementLinks />
+					) }
 				</Column>
 			</>
 		);
@@ -150,12 +155,23 @@ export default compose(
 			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
 			'yes';
 
+		console.log(
+			'raw opt value',
+			getOption( 'woocommerce_task_list_welcome_modal_dismissed' )
+		);
+
+		console.log( 'it equal yes?', welcomeModalDismissed );
+
 		const welcomeModalDismissedIsResolving = isResolving( 'getOption', [
 			'woocommerce_task_list_welcome_modal_dismissed',
 		] );
 
+		console.log( 'isresolve? ', welcomeModalDismissedIsResolving );
+
 		const shouldShowWelcomeModal =
 			! welcomeModalDismissedIsResolving && ! welcomeModalDismissed;
+
+		console.log( 'final value? ', shouldShowWelcomeModal );
 
 		const defaultHomescreenLayout =
 			getOption( 'woocommerce_default_homepage_layout' ) ||
