@@ -69,9 +69,19 @@ export const getMatchScore = ( location, url ) => {
 	}
 
 	const urlParams = getParams( urlLocation );
-	const locationParams = getParams( location );
-	let matchingParamCount = 0;
 
+	// Post type match.
+	if (
+		window.wcNavigation.postType === urlParams.post_type &&
+		urlPathname.indexOf( 'edit.php' ) >= 0 &&
+		origin === urlOrigin
+	) {
+		return Number.MAX_SAFE_INTEGER - 2;
+	}
+
+	// Add points for each matching param.
+	let matchingParamCount = 0;
+	const locationParams = getParams( location );
 	Object.keys( urlParams ).forEach( ( key ) => {
 		if ( urlParams[ key ] === locationParams[ key ] ) {
 			matchingParamCount++;
