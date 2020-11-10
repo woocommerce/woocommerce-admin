@@ -304,12 +304,8 @@ export default withSelect( ( select, props ) => {
 		REPORTS_STORE_NAME
 	);
 
-	if ( countUnreadOrders === null ) {
-		return { isRequesting: true };
-	}
-
-	if ( countUnreadOrders === 0 ) {
-		return { isRequesting: false };
+	if ( ! countUnreadOrders ) {
+		return { isRequesting: countUnreadOrders !== 0 };
 	}
 
 	// Query the core Orders endpoint for the most up-to-date statuses.
@@ -344,6 +340,7 @@ export default withSelect( ( select, props ) => {
 		per_page: 5,
 		extended_info: true,
 		order_includes: map( actionableOrders, 'id' ),
+		status_is: orderStatuses,
 		_fields: [
 			'order_id',
 			'order_number',
