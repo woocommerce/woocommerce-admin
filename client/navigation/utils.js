@@ -139,11 +139,11 @@ export const getMatchingItem = ( items ) => {
 			window.location,
 			getAdminLink( item.url )
 		);
-		if ( score >= highestMatch ) {
+		if ( score >= highestMatch && score > 0 ) {
 			matchedItem = item;
 			highestMatch = score;
 		}
 	} );
 
-	return matchedItem ? matchedItem : null;
+	return matchedItem || null;
 };
