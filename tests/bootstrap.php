@@ -54,7 +54,7 @@ class WC_Admin_Unit_Tests_Bootstrap {
 		// load test function so tests_add_filter() is available.
 		require_once $this->wp_tests_dir . '/includes/functions.php';
 
-		// load the wc installer
+		// load the wc installer.
 		require_once $this->wc_core_dir . '/includes/class-wc-install.php';
 
 		// load WC.
@@ -97,7 +97,7 @@ class WC_Admin_Unit_Tests_Bootstrap {
 		define( 'WC_REMOVE_ALL_DATA', true );
 		include $this->plugin_dir . '/uninstall.php';
 
-		Install::install();
+		WC_Install::install();
 
 		// Initialize the WC API extensions.
 		\Automattic\WooCommerce\Admin\Install::create_tables();
