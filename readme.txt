@@ -71,59 +71,64 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-= 1.7.0 11/06/2020 =
-- Fix: Navigation: Added ability for new navigation to scroll when list of links exceed viewport height. [#5524](https://github.com/woocommerce/woocommerce-admin/pull/5524)
-- Fix: Navigation. Make section overview appear first in the subnav for each category. [#5534](https://github.com/woocommerce/woocommerce-admin/pull/5534)
-- Tweak: alter homescreen layout. [#5465](https://github.com/woocommerce/woocommerce-admin/pull/5465)
-- Fix: Ensure the "Set up additional payment providers" inbox notification is shown when relevant after completing the OBW. [#5547](https://github.com/woocommerce/woocommerce-admin/pull/5547)
-- Dev: Home Screen - migrate orders panel. [#5455](https://github.com/woocommerce/woocommerce-admin/pull/5455)
-- Fix: Added support for custom actionable statuses. [#5550](https://github.com/woocommerce/woocommerce-admin/pull/5550)
-- Enhancement: Variations report.  [#5167](https://github.com/woocommerce/woocommerce-admin/pull/5167)
-- Enhancement: Add ability to toggle homescreen layouts. [#5429](https://github.com/woocommerce/woocommerce-admin/pull/5429)
-- Enhancement: Accordion component  [#5474](https://github.com/woocommerce/woocommerce-admin/pull/5474)
-- Enhancement: Badge component [#5520](https://github.com/woocommerce/woocommerce-admin/pull/5520)
-- Fix: wrong casing used on the PayPal brand name  [#5514](https://github.com/woocommerce/woocommerce-admin/pull/5514) 🎉 @rtpHarry
-- Fix: Import @wordpress/base-styles/default-custom-properties [#5491](https://github.com/woocommerce/woocommerce-admin/pull/5491)
-- Fix: downloads report  [#5441](https://github.com/woocommerce/woocommerce-admin/pull/5441)
-- Fix: missing custom autocompleter attribute in Search component of Advanced Filter [#5448](https://github.com/woocommerce/woocommerce-admin/pull/5448)
-- Fix: empty no posts state on Marketing page. [#5411](https://github.com/woocommerce/woocommerce-admin/pull/5411)
-- Fix: visual issues in the Search component.  [#5199](https://github.com/woocommerce/woocommerce-admin/pull/5199)
-- Fix: Inconsistent line endings in readme.txt. [#5281](https://github.com/woocommerce/woocommerce-admin/pull/5281)
-- Fix: popover menu to expand menu item width to 100%  [#5519](https://github.com/woocommerce/woocommerce-admin/pull/5519)
-- Fix: Wrong class name for querying Categories Report [#5522](https://github.com/woocommerce/woocommerce-admin/pull/5522) 🎉 @zzap
-- Fix: Remove label printing mention for non us countries [#5527](https://github.com/woocommerce/woocommerce-admin/pull/5527)
-- Tweak: Remove customer analytics data upon order deletion  [#5171](https://github.com/woocommerce/woocommerce-admin/pull/5171)
-- Tweak: Updating Stripe key field validation to support test keys  [#5201](https://github.com/woocommerce/woocommerce-admin/pull/5201)
-- Tweak: Wrap search control selected items in list  [#5231](https://github.com/woocommerce/woocommerce-admin/pull/5231)
-- Tweak: Update store setup link to redirect to setup wizard  [#5200](https://github.com/woocommerce/woocommerce-admin/pull/5200)
-- Tweak: Removing breadcrumbs from wc-admin header [#5232](https://github.com/woocommerce/woocommerce-admin/pull/5232)
-- Tweak: Use consistent markdown headers in navigation readme [#5417](https://github.com/woocommerce/woocommerce-admin/pull/5417)
-- Tweak: Remove Store Setup Alert [#5499](https://github.com/woocommerce/woocommerce-admin/pull/5499)
-- Dev: Fix wakeup visibility for PHP 8 compatibility  [#5211](https://github.com/woocommerce/woocommerce-admin/pull/5211)
-- Dev: Fix header height and positioning for wc nav  [#5173](https://github.com/woocommerce/woocommerce-admin/pull/5173)
-- Dev: Add remote inbox notification rule processors for country and state  [#5203](https://github.com/woocommerce/woocommerce-admin/pull/5203)
-- Dev: Rename admin notes classes and file names to fit conventions  [#5142](https://github.com/woocommerce/woocommerce-admin/pull/5142)
-- Dev: remove checks of store registration that are no longer needed.  [#5170](https://github.com/woocommerce/woocommerce-admin/pull/5170)
-- Dev: Fix version update script for composer.json  [#5165](https://github.com/woocommerce/woocommerce-admin/pull/5165)
-- Dev: Remove getAdminLink from data package  [#5158](https://github.com/woocommerce/woocommerce-admin/pull/5158)
-- Dev: Bump @woocommerce/components dependencies.  [#5153](https://github.com/woocommerce/woocommerce-admin/pull/5153)
-- Dev: Add note status remote inbox notifications rule processor [#5207](https://github.com/woocommerce/woocommerce-admin/pull/5207)
-- Dev: Make code chunk filenames more stable.  [#5229](https://github.com/woocommerce/woocommerce-admin/pull/5229)
-- Dev: Inbox Panel component moved [#5252](https://github.com/woocommerce/woocommerce-admin/pull/5252)
-- Dev: Added animation to Inbox note deletion  [#5263](https://github.com/woocommerce/woocommerce-admin/pull/5263)
-- Dev: Update starter pack dependencies [#5254](https://github.com/woocommerce/woocommerce-admin/pull/5254)
-- Dev: Ensure test zips have latest packages from npm and composer. [#5313](https://github.com/woocommerce/woocommerce-admin/pull/5313)
-- Dev: Add remote inbox notifications rule allowing access to any option [#5206](https://github.com/woocommerce/woocommerce-admin/pull/5206)
-- Dev: Add manage orders on the go admin note [#5159](https://github.com/woocommerce/woocommerce-admin/pull/5159)
-- Dev: Add WooCommerceDependencyExtractionWebpackPlugin package  [#5198](https://github.com/woocommerce/woocommerce-admin/pull/5198)
-- Dev: Migrate devdocs examples to Storybook stories [#5271](https://github.com/woocommerce/woocommerce-admin/pull/5271)
-- Dev: Remove Enzyme in favor of React Testing Library [#5299](https://github.com/woocommerce/woocommerce-admin/pull/5299)
-- Dev: Add exclusion rule to PHPCS config for TODO comments  [#5388](https://github.com/woocommerce/woocommerce-admin/pull/5388)
-- Dev: Remove no longer used isPanelEmpty logic. [#5423](https://github.com/woocommerce/woocommerce-admin/pull/5423)
-- Dev: Use new @wordpress/components Card on Marketing page.  [#5428](https://github.com/woocommerce/woocommerce-admin/pull/5428)
-- Dev: Add PSR-4 naming checks to PHP linting. [#5512](https://github.com/woocommerce/woocommerce-admin/pull/5512)
-- Dev: Rearrange the store management links under categories add filter woocommerce_admin_homescreen_quicklinks. [#5476](https://github.com/woocommerce/woocommerce-admin/pull/5476)
-- Dev: Restyle the setup task list header to display incomplete tasks [#5520](https://github.com/woocommerce/woocommerce-admin/pull/5520)
+= 1.7.0 11/11/2020 =
+
+- Enhancement: Variations report.  #5167
+- Enhancement: Add ability to toggle homescreen layouts. #5429
+- Enhancement: Accordion component  #5474
+- Enhancement: Badge component #5520
+- Fix: Added support for custom actionable statuses. #5550
+- Fix: wrong casing used on the PayPal brand name  #5514 🎉 @rtpHarry
+- Fix: Import @wordpress/base-styles/default-custom-properties #5491
+- Fix: downloads report  #5441
+- Fix: missing custom autocompleter attribute in Search component of Advanced Filter #5448
+- Fix: empty no posts state on Marketing page. #5411
+- Fix: visual issues in the Search component.  #5199
+- Fix: Inconsistent line endings in readme.txt. #5281
+- Fix: popover menu to expand menu item width to 100%  #5519
+- Fix: Wrong class name for querying Categories Report #5522 🎉 @zzap
+- Fix: Remove label printing mention for non us countries #5527
+- Fix: First product script navigation dependency #5584
+- Fix: Added support for custom actionable statuses #5550
+- Fix: Display the store management links last on the homescreen #5579
+- Fix: Ensure the "Set up additional payment providers" inbox notification is shown when relevant after completing the OBW. #5547
+- Tweak: Remove customer analytics data upon order deletion  #5171
+- Tweak: Updating Stripe key field validation to support test keys  #5201
+- Tweak: Wrap search control selected items in list  #5231
+- Tweak: Update store setup link to redirect to setup wizard  #5200
+- Tweak: Removing breadcrumbs from wc-admin header #5232
+- Tweak: Use consistent markdown headers in navigation readme #5417
+- Tweak: Remove Store Setup Alert #5499
+- Tweak: Customers: Update column heading for date registered #5542
+- Tweak: alter homescreen layout. #5465
+- Dev: Home Screen - migrate orders panel. #5455
+- Dev: Store Profiler - include Creative Mail as a free extension #5543
+- Dev: Add undefined check in intervals data util #5546
+- Dev: Fix wakeup visibility for PHP 8 compatibility  #5211
+- Dev: Fix header height and positioning for wc nav  #5173
+- Dev: Add remote inbox notification rule processors for country and state  #5203
+- Dev: Rename admin notes classes and file names to fit conventions  #514
+- Dev: remove checks of store registration that are no longer needed.  #5170
+- Dev: Fix version update script for composer.json  #5165
+- Dev: Remove getAdminLink from data package  #5158
+- Dev: Bump @woocommerce/components dependencies.  #5153
+- Dev: Add note status remote inbox notifications rule processor #5207
+- Dev: Make code chunk filenames more stable.  #5229
+- Dev: Inbox Panel component moved #5252
+- Dev: Added animation to Inbox note deletion  #5263
+- Dev: Update starter pack dependencies #5254
+- Dev: Ensure test zips have latest packages from npm and composer. #5313
+- Dev: Add remote inbox notifications rule allowing access to any option #5206
+- Dev: Add manage orders on the go admin note #5159
+- Dev: Add WooCommerceDependencyExtractionWebpackPlugin package  #5198
+- Dev: Migrate devdocs examples to Storybook stories #5271
+- Dev: Remove Enzyme in favor of React Testing Library #5299
+- Dev: Add exclusion rule to PHPCS config for TODO comments  #5388
+- Dev: Remove no longer used isPanelEmpty logic. #5423
+- Dev: Use new @wordpress/components Card on Marketing page.  #5428
+- Dev: Add PSR-4 naming checks to PHP linting. #5512
+- Dev: Rearrange the store management links under categories add filter woocommerce_admin_homescreen_quicklinks. #5476
+- Dev: Restyle the setup task list header to display incomplete tasks #5520
 
 = 1.6.2 10/16/2020 =
 - Fix: Missing activity panels on ugraded sites #5400
