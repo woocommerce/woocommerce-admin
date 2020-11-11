@@ -348,7 +348,7 @@ class Menu {
 		}
 
 		return array(
-			array_merge(
+			'default' => array_merge(
 				array(
 					'title'      => esc_attr( $post_type_object->labels->menu_name ),
 					'capability' => $post_type_object->cap->edit_posts,
@@ -357,9 +357,8 @@ class Menu {
 				),
 				$menu_args
 			),
-			array_merge(
+			'all'     => array_merge(
 				array(
-					'parent'     => $post_type,
 					'title'      => esc_attr( $post_type_object->labels->all_items ),
 					'capability' => $post_type_object->cap->edit_posts,
 					'id'         => "{$post_type}-all-items",
@@ -368,9 +367,8 @@ class Menu {
 				),
 				$menu_args
 			),
-			array_merge(
+			'new'     => array_merge(
 				array(
-					'parent'     => $post_type,
 					'title'      => esc_attr( $post_type_object->labels->add_new ),
 					'capability' => $post_type_object->cap->create_posts,
 					'id'         => "{$post_type}-add-new",
@@ -538,6 +536,7 @@ class Menu {
 
 		$data = array(
 			'menuItems' => self::get_prepared_menu_item_data(),
+			'postType'  => isset( $_GET['post'] ) ? get_post_type( $_GET['post'] ) : null,
 		);
 
 		$paul = wp_add_inline_script( WC_ADMIN_APP, 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );
