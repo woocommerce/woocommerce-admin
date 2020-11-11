@@ -45,6 +45,7 @@ class WC_Admin_Unit_Tests_Bootstrap {
 		$this->wp_tests_dir = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
 
 		$wc_tests_framework_base_dir = $this->wc_core_dir . '/tests';
+
 		if ( ! is_dir( $wc_tests_framework_base_dir . '/framework' ) ) {
 			$wc_tests_framework_base_dir .= '/legacy';
 		}
@@ -52,6 +53,9 @@ class WC_Admin_Unit_Tests_Bootstrap {
 
 		// load test function so tests_add_filter() is available.
 		require_once $this->wp_tests_dir . '/includes/functions.php';
+
+		// load the wc installer
+		require_once $this->wc_core_dir . '/includes/class-wc-install.php';
 
 		// load WC.
 		tests_add_filter( 'muplugins_loaded', array( $this, 'load_wc' ) );
@@ -93,7 +97,7 @@ class WC_Admin_Unit_Tests_Bootstrap {
 		define( 'WC_REMOVE_ALL_DATA', true );
 		include $this->plugin_dir . '/uninstall.php';
 
-		WC_Install::install();
+		Install::install();
 
 		// Initialize the WC API extensions.
 		\Automattic\WooCommerce\Admin\Install::create_tables();
