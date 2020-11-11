@@ -346,7 +346,6 @@ export default withSelect( ( select, props ) => {
 			'order_id',
 			'order_number',
 			'status',
-			'data_created_gmt',
 			'total_sales',
 			'extended_info.customer',
 			'extended_info.products',
