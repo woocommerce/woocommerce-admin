@@ -339,6 +339,7 @@ export default withSelect( ( select, props ) => {
 		page: 1,
 		per_page: 5,
 		extended_info: true,
+		match: 'any',
 		order_includes: map( actionableOrders, 'id' ),
 		status_is: orderStatuses,
 		_fields: [
