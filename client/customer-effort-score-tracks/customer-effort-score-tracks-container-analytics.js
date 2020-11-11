@@ -7,6 +7,7 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import PropTypes from 'prop-types';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { addAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -14,55 +15,48 @@ import { __ } from '@wordpress/i18n';
 import CustomerEffortScoreTracks from './customer-effort-score-tracks';
 
 const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
-const ACTION_NAME = 'woocommerce.admin.analytics.filtered';
+const ACTION_NAME = 'woocommerce_admin_analytics_filtered';
 
 /**
  * Listens for ACTION_NAME event from the client/analytics/components/report-filters/index.js
  * and renders CustomerEffortScoreTracks conditionally.
- 
- * @param {Object}   props           Component props.
- * @param {Function} props.getOption Function to get WordPress options.
+ *
+ * @param {Object}   props	Component props.
  */
-function CustomerEffortScoreTracksContainerAnalytics( { getOption } ) {
+function CustomerEffortScoreTracksContainerAnalytics( props ) {
+	const { shownActions } = props;
 	// Save the result of hasShown() so that the subsequent
 	// woocommerce.admin.analytics.filtered actions do not trigger the survey again
 	// on the same page
-	let hasShownResultCache = false;
+	let hasShown = false;
 
 	// We don't want to render CustomerEffortScoreTracks for the first page load
 	const [ showComponent, setShowComponent ] = useState( false );
 
-	const hasShown = () => {
-		const shownActions = getOption( SHOWN_FOR_ACTIONS_OPTION_NAME ) || [];
-		if ( shownActions.indexOf( ACTION_NAME ) !== -1 ) {
-			return true;
-		}
-
-		return false;
-	};
+	if ( shownActions.indexOf( ACTION_NAME ) !== -1 ) {
+		hasShown = true;
+	}
 
 	const onAnalyticFilterChanged = () => {
-		if ( hasShownResultCache === true ) {
+		if ( hasShown === true ) {
 			return;
 		}
 
-		if ( hasShown( ACTION_NAME ) === false ) {
-			setShowComponent( true );
-			hasShownResultCache = true;
-		}
+		setShowComponent( true );
+		hasShown = true;
 	};
 
-	// Listen for the action
-	wp.hooks.addAction(
-		ACTION_NAME,
-		'woocommerce.admin',
-		onAnalyticFilterChanged
-	);
+	// Listen for the events
+	[
+		'woocommerce_admin_analytics_date_range_query_executed',
+		'woocommerce_admin_analytics_filter_query_executed',
+	].forEach( ( event ) => {
+		addAction( event, 'woocommerce_admin', onAnalyticFilterChanged );
+	} );
 
-	function getComponent() {
-		return (
+	return (
+		showComponent && (
 			<CustomerEffortScoreTracks
-				key={ 999 }
 				action={ ACTION_NAME }
 				label={ __(
 					'How easy was it to filter your store analytics?',
@@ -72,12 +66,9 @@ function CustomerEffortScoreTracksContainerAnalytics( { getOption } ) {
 					'Thank you for your feedback!',
 					'woocommerce-admin'
 				) }
-				trackProps={ {} }
 			/>
-		);
-	}
-
-	return showComponent ? getComponent() : null;
+		)
+	);
 }
 
 CustomerEffortScoreTracksContainerAnalytics.propTypes = {
@@ -90,6 +81,8 @@ CustomerEffortScoreTracksContainerAnalytics.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		return { getOption };
+		return {
+			shownActions: getOption( SHOWN_FOR_ACTIONS_OPTION_NAME ) || [],
+		};
 	} )
 )( CustomerEffortScoreTracksContainerAnalytics );

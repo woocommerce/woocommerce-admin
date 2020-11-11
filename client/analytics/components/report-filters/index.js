@@ -14,6 +14,7 @@ import {
 	isoDateFormat,
 } from '@woocommerce/date';
 import { recordEvent } from '@woocommerce/tracks';
+import { doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -23,38 +24,39 @@ import { CurrencyContext } from '../../../lib/currency-context';
 class ReportFilters extends Component {
 	constructor() {
 		super();
-		this.trackDateSelect = this.trackDateSelect.bind( this );
-		this.trackFilterSelect = this.trackFilterSelect.bind( this );
-		this.trackAdvancedFilterAction = this.trackAdvancedFilterAction.bind(
-			this
-		);
+		this.onDateSelect = this.onDateSelect.bind( this );
+		this.onFilterSelect = this.onFilterSelect.bind( this );
+		this.onAdvancedFilterAction = this.onAdvancedFilterAction.bind( this );
 	}
 
-	trackDateSelect( data ) {
-		wp.hooks.doAction(
-			'woocommerce.admin.analytics.filtered',
-			'datepicker_update'
-		);
+	onDateSelect( data ) {
 		const { report } = this.props;
+		const filteredData = omitBy( data, isUndefined );
+		doAction(
+			'woocommerce_admin_analytics_date_range_query_executed',
+			report,
+			filteredData
+		);
 		recordEvent( 'datepicker_update', {
 			report,
-			...omitBy( data, isUndefined ),
+			...filteredData,
 		} );
 	}
 
-	trackFilterSelect( data ) {
-		wp.hooks.doAction(
-			'woocommerce.admin.analytics.filtered',
-			'analytics_filter'
-		);
+	onFilterSelect( data ) {
 		const { report } = this.props;
+		doAction(
+			'woocommerce_admin_analytics_filter_type_changed',
+			report,
+			data.filter || 'all'
+		);
 		recordEvent( 'analytics_filter', {
 			report,
 			filter: data.filter || 'all',
 		} );
 	}
 
-	trackAdvancedFilterAction( action, data ) {
+	onAdvancedFilterAction( action, data ) {
 		const { report } = this.props;
 
 		switch ( action ) {
@@ -71,16 +73,17 @@ class ReportFilters extends Component {
 				} );
 				break;
 			case 'filter':
-				wp.hooks.doAction(
-					'woocommerce.admin.analytics.filtered',
-					'analytics_filters_filter'
-				);
 				const snakeCaseData = Object.keys( data ).reduce(
 					( result, property ) => {
 						result[ snakeCase( property ) ] = data[ property ];
 						return result;
 					},
 					{}
+				);
+				doAction(
+					'woocommerce_admin_analytics_filter_query_executed',
+					report,
+					snakeCaseData
 				);
 				recordEvent( 'analytics_filters_filter', {
 					report,
@@ -135,9 +138,9 @@ class ReportFilters extends Component {
 				filters={ filters }
 				advancedFilters={ advancedFilters }
 				showDatePicker={ showDatePicker }
-				onDateSelect={ this.trackDateSelect }
-				onFilterSelect={ this.trackFilterSelect }
-				onAdvancedFilterAction={ this.trackAdvancedFilterAction }
+				onDateSelect={ this.onDateSelect }
+				onFilterSelect={ this.onFilterSelect }
+				onAdvancedFilterAction={ this.onAdvancedFilterAction }
 				dateQuery={ dateQuery }
 				isoDateFormat={ isoDateFormat }
 			/>
