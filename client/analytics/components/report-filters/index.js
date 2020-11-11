@@ -31,6 +31,10 @@ class ReportFilters extends Component {
 	}
 
 	trackDateSelect( data ) {
+		wp.hooks.doAction(
+			'woocommerce.admin.analytics.filtered',
+			'datepicker_update'
+		);
 		const { report } = this.props;
 		recordEvent( 'datepicker_update', {
 			report,
@@ -39,6 +43,10 @@ class ReportFilters extends Component {
 	}
 
 	trackFilterSelect( data ) {
+		wp.hooks.doAction(
+			'woocommerce.admin.analytics.filtered',
+			'analytics_filter'
+		);
 		const { report } = this.props;
 		recordEvent( 'analytics_filter', {
 			report,
@@ -63,6 +71,10 @@ class ReportFilters extends Component {
 				} );
 				break;
 			case 'filter':
+				wp.hooks.doAction(
+					'woocommerce.admin.analytics.filtered',
+					'analytics_filters_filter'
+				);
 				const snakeCaseData = Object.keys( data ).reduce(
 					( result, property ) => {
 						result[ snakeCase( property ) ] = data[ property ];
