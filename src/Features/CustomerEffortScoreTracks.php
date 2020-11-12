@@ -73,6 +73,11 @@ class CustomerEffortScoreTracks {
 	 * Add actions that require woocommerce_allow_tracking.
 	 */
 	private function enable_survey_enqueing_if_tracking_is_enabled() {
+		// Only hook up the action handlers if in wp-admin.
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		// Only enqueue a survey if tracking is allowed.
 		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
 		if ( ! $allow_tracking ) {
@@ -87,15 +92,20 @@ class CustomerEffortScoreTracks {
 			)
 		);
 
-		add_action(
-			'transition_post_status',
-			array(
-				$this,
-				'run_on_transition_post_status',
-			),
-			10,
-			3
-		);
+		// Only hook up the transition_post_status action handler
+		// if on the edit page.
+		global $pagenow;
+		if ( 'post.php' === $pagenow ) {
+			add_action(
+				'transition_post_status',
+				array(
+					$this,
+					'run_on_transition_post_status',
+				),
+				10,
+				3
+			);
+		}
 
 		add_action(
 			'woocommerce_update_options',
@@ -165,11 +175,6 @@ class CustomerEffortScoreTracks {
 		$new_status,
 		$old_status
 	) {
-
-		if ( 'auto-draft' === $new_status ) {
-			return;
-		}
-
 		$this->enqueue_ces_survey_for_edited_shop_order();
 	}
 
