@@ -8,6 +8,7 @@ import {
 	Modal,
 	RadioControl,
 	__experimentalText as Text,
+	TextareaControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
@@ -35,6 +36,7 @@ function CustomerEffortScore( {
 	openedCallback,
 } ) {
 	const [ score, setScore ] = useState( 0 );
+	const [ comments, setComments ] = useState();
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 	const [ visible, setVisible ] = useState( false );
 
@@ -106,6 +108,17 @@ function CustomerEffortScore( {
 					setScore( value );
 				} }
 			/>
+			{ ( score === '1' || score === '5' ) && (
+				<div className="woocommerce-customer-effort-score__comments">
+					<TextareaControl
+						label="Comments (Optional)"
+						help="Your feedback will go to the WooCommerce development team"
+						value={ comments }
+						onChange={ ( value ) => setComments( value ) }
+						rows="5"
+					/>
+				</div>
+			) }
 
 			<div className="woocommerce-customer-effort-score__buttons">
 				<Button isTertiary onClick={ closeModal }>

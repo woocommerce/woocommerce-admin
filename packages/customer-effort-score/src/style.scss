@@ -80,4 +80,16 @@
 			content: '😁';
 		}
 	}
+
+	.woocommerce-customer-effort-score__comments {
+		label {
+			display: block;
+			color: inherit;
+			font-weight: bold;
+		}
+
+		textarea {
+			width: 100%;
+		}
+	}
 }
