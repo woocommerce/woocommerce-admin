@@ -35,7 +35,7 @@ function CustomerEffortScore( {
 	createNotice,
 	openedCallback,
 } ) {
-	const [ score, setScore ] = useState( 0 );
+	const [ score, setScore ] = useState();
 	const [ comments, setComments ] = useState();
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 	const [ visible, setVisible ] = useState( false );
