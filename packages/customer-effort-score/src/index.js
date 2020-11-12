@@ -18,7 +18,7 @@ import { withDispatch } from '@wordpress/data';
  * @param {string}   props.label          The label displayed in the modal.
  * @param {Function} props.createNotice   Create a notice (snackbar).
  * @param {Function} props.openedCallback Function to call when the modal is opened.
- * @param {string}   props.icon           Icon (React component) to be shown on the notice.
+ * @param {Object}   props.icon           Icon (React component) to be shown on the notice.
  */
 function CustomerEffortScore( {
 	trackCallback,
@@ -91,7 +91,7 @@ CustomerEffortScore.propTypes = {
 	/**
 	 * Icon (React component) to be displayed.
 	 */
-	icon: PropTypes.object,
+	icon: PropTypes.element,
 };
 
 export default compose(
