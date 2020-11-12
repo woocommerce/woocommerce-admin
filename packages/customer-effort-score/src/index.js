@@ -38,7 +38,7 @@ function CustomerEffortScore( {
 					label: __( 'Give feedback', 'woocommerce-admin' ),
 					onClick: () => {
 						setVisible( true );
-						
+
 						if ( openedCallback ) {
 							openedCallback();
 						}

@@ -80,7 +80,9 @@ function Snackbar(
 			aria-label={ __( 'Dismiss this notice' ) }
 		>
 			<div className={ snackbarContentClassnames }>
-				{ icon && <div className="components-snackbar__icon">{ icon }</div> }
+				{ icon && (
+					<div className="components-snackbar__icon">{ icon }</div>
+				) }
 				{ children }
 				{ actions.map( ( { label, onClick, url }, index ) => {
 					return (
