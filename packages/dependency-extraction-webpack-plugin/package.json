@@ -17,8 +17,6 @@
 		"url": "https://github.com/woocommerce/woocommerce-admin/issues"
 	},
 	"main": "src/index.js",
-	"module": "build-module/index.js",
-	"react-native": "src/index",
 	"dependencies": {
 		"@wordpress/dependency-extraction-webpack-plugin": "^2.8.0"
 	},
