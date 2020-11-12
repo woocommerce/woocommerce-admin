@@ -80,34 +80,38 @@ function CustomerEffortScore( {
 				{ label }
 			</Text>
 
-			<RadioControl
-				selected={ score }
-				options={ [
-					{
-						label: __( 'Very difficult', 'woocommerce-admin' ),
-						value: '1',
-					},
-					{
-						label: __( 'Somewhat difficult', 'woocommerce-admin' ),
-						value: '2',
-					},
-					{
-						label: __( 'Neutral', 'woocommerce-admin' ),
-						value: '3',
-					},
-					{
-						label: __( 'Somewhat easy', 'woocommerce-admin' ),
-						value: '4',
-					},
-					{
-						label: __( 'Very easy', 'woocommerce-admin' ),
-						value: '5',
-					},
-				] }
-				onChange={ ( value ) => {
-					setScore( value );
-				} }
-			/>
+			<div className="woocommerce-customer-effort-score__selection">
+				<RadioControl
+					selected={ score }
+					options={ [
+						{
+							label: __( 'Very difficult', 'woocommerce-admin' ),
+							value: '1',
+						},
+						{
+							label: __(
+								'Somewhat difficult',
+								'woocommerce-admin'
+							),
+							value: '2',
+						},
+						{
+							label: __( 'Neutral', 'woocommerce-admin' ),
+							value: '3',
+						},
+						{
+							label: __( 'Somewhat easy', 'woocommerce-admin' ),
+							value: '4',
+						},
+						{
+							label: __( 'Very easy', 'woocommerce-admin' ),
+							value: '5',
+						},
+					] }
+					onChange={ ( value ) => setScore( value ) }
+				/>
+			</div>
+
 			{ ( score === '1' || score === '5' ) && (
 				<div className="woocommerce-customer-effort-score__comments">
 					<TextareaControl

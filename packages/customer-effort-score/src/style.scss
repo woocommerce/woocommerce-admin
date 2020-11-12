@@ -1,17 +1,6 @@
-.woocommerce-customer-effort-score {
+.woocommerce-customer-effort-score__selection {
+	margin: 1em 0;
 
-	.woocommerce-customer-effort-score__buttons {
-		text-align: right;
-		.components-button {
-			margin-left: 1em;
-		}
-	}
-
-	.components-radio-control {
-		margin: 1em 0;
-	}
-
-	// Emoji radio button container
 	.components-base-control__field {
 		display: flex;
 		flex-direction: column;
@@ -23,19 +12,11 @@
 		}
 	}
 
-	// Emoji radio button.
 	.components-radio-control__option {
 		input {
-			/** Hide the input and overlay with emoji text, whilst keeping the input accessibile. **/
+			// Hide the radio input but keep it accessibile.
 			position: absolute;
 			opacity: 0;
-		}
-		input:focus + label {
-			outline: 2px solid $studio-wordpress-blue;
-		}
-
-		input:checked + label {
-			background-color: $studio-wordpress-blue-0;
 		}
 
 		label {
@@ -51,13 +32,22 @@
 				background-color: $studio-wordpress-blue-0;
 			}
 
-			&::before {
-				display: block;
-				font-size: 24px;
-				text-align: center;
-				margin: 1em 0;
-				color: $studio-wordpress-blue;
+			input:focus + & {
+				outline: 2px solid $studio-wordpress-blue;
 			}
+
+			input:checked + & {
+				background-color: $studio-wordpress-blue-0;
+			}
+		}
+
+		// Replace the hidden radio input with emoji.
+		label::before {
+			display: block;
+			font-size: 24px;
+			text-align: center;
+			margin: 1em 0;
+			color: $studio-wordpress-blue;
 		}
 
 		input[value='1'] + label::before {
@@ -80,16 +70,24 @@
 			content: '😁';
 		}
 	}
+}
 
-	.woocommerce-customer-effort-score__comments {
-		label {
-			display: block;
-			color: inherit;
-			font-weight: bold;
-		}
+.woocommerce-customer-effort-score__comments {
+	label {
+		display: block;
+		color: inherit;
+		font-weight: bold;
+	}
 
-		textarea {
-			width: 100%;
-		}
+	textarea {
+		width: 100%;
+	}
+}
+
+.woocommerce-customer-effort-score__buttons {
+	text-align: right;
+
+	.components-button {
+		margin-left: 1em;
 	}
 }
