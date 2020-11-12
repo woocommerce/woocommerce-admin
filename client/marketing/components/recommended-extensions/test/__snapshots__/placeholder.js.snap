@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RecommendedExtensionsPlaceholder should render a default placeholder 1`] = `
+<div>
+  <div
+    class="is-loading woocommerce-marketing-recommended-extensions-item"
+  >
+    <div
+      class="woocommerce-admin-marketing-product-icon"
+    >
+      <span
+        class="is-placeholder"
+      />
+    </div>
+    <div
+      class="is-loading woocommerce-marketing-recommended-extensions-item__text"
+    >
+      <h4>
+        <span
+          class="is-placeholder"
+        />
+      </h4>
+      <p>
+        <span
+          class="is-placeholder"
+        />
+        <span
+          class="is-placeholder"
+        />
+        <span
+          class="is-placeholder"
+        />
+      </p>
+    </div>
+  </div>
+</div>
+`;
