@@ -41,9 +41,43 @@ class CustomerEffortScoreTracks {
 	const PRODUCT_UPDATE_ACTION_NAME = 'product_update';
 
 	/**
+	 * Action name for settings change.
+	 */
+	const SETTINGS_CHANGE_ACTION_NAME = 'settings_change';
+
+	/**
+	 * Label for the snackbar that appears when a user submits the survey.
+	 *
+	 * @var string
+	 */
+	private $onsubmit_label;
+
+
+	/**
 	 * Constructor. Sets up filters to hook into WooCommerce.
 	 */
 	public function __construct() {
+		$this->enable_survey_enqueing_if_tracking_is_enabled();
+	}
+
+	/**
+	 * Add actions that require woocommerce_allow_tracking.
+	 */
+	private function enable_survey_enqueing_if_tracking_is_enabled() {
+		// Only enqueue a survey if tracking is allowed.
+		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
+		if ( ! $allow_tracking ) {
+			return;
+		}
+
+		add_action(
+			'admin_init',
+			array(
+				$this,
+				'maybe_clear_ces_tracks_queue',
+			)
+		);
+
 		add_action(
 			'transition_post_status',
 			array(
@@ -53,13 +87,18 @@ class CustomerEffortScoreTracks {
 			10,
 			3
 		);
+
 		add_action(
-			'admin_init',
+			'woocommerce_update_options',
 			array(
 				$this,
-				'maybe_clear_ces_tracks_queue',
-			)
+				'run_on_update_options',
+			),
+			10,
+			3
 		);
+
+		$this->onsubmit_label = __( 'Thank you for your feedback!', 'woocommerce-admin' );
 	}
 
 	/**
@@ -68,7 +107,7 @@ class CustomerEffortScoreTracks {
 	 *
 	 * @param string $new_status The new status.
 	 * @param string $old_status The old status.
-	 * @param Post   $post       The post.
+	 * @param Post   $post The post.
 	 */
 	public function run_on_transition_post_status(
 		$new_status,
@@ -80,12 +119,6 @@ class CustomerEffortScoreTracks {
 		}
 
 		if ( 'publish' !== $new_status ) {
-			return;
-		}
-
-		// Only enqueue a survey if tracking is allowed.
-		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
-		if ( ! $allow_tracking ) {
 			return;
 		}
 
@@ -133,7 +166,7 @@ class CustomerEffortScoreTracks {
 	/**
 	 * Enqueue the item to the CES tracks queue.
 	 *
-	 * @param object $item The item to enqueue.
+	 * @param array $item The item to enqueue.
 	 */
 	private function enqueue_to_ces_tracks( $item ) {
 		$queue = get_option(
@@ -159,14 +192,15 @@ class CustomerEffortScoreTracks {
 
 		$this->enqueue_to_ces_tracks(
 			array(
-				'action'    => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
-				'label'     => __(
+				'action'         => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
+				'label'          => __(
 					'How easy was it to add a product?',
 					'woocommerce-admin'
 				),
-				'pagenow'   => 'product',
-				'adminpage' => 'post-php',
-				'props'     => array(
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product',
+				'adminpage'      => 'post-php',
+				'props'          => array(
 					'product_count' => $this->get_product_count(),
 				),
 			)
@@ -183,14 +217,15 @@ class CustomerEffortScoreTracks {
 
 		$this->enqueue_to_ces_tracks(
 			array(
-				'action'    => self::PRODUCT_UPDATE_ACTION_NAME,
-				'label'     => __(
+				'action'         => self::PRODUCT_UPDATE_ACTION_NAME,
+				'label'          => __(
 					'How easy was it to edit your product?',
 					'woocommerce-admin'
 				),
-				'pagenow'   => 'product',
-				'adminpage' => 'post-php',
-				'props'     => array(
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product',
+				'adminpage'      => 'post-php',
+				'props'          => array(
 					'product_count' => $this->get_product_count(),
 				),
 			)
@@ -219,9 +254,9 @@ class CustomerEffortScoreTracks {
 		);
 		$remaining_items = array_filter(
 			$queue,
-			function( $item ) use ( $clear_ces_tracks_queue_for_page ) {
+			function ( $item ) use ( $clear_ces_tracks_queue_for_page ) {
 				return $clear_ces_tracks_queue_for_page['pagenow'] !== $item['pagenow']
-					|| $clear_ces_tracks_queue_for_page['adminpage'] !== $item['adminpage'];
+				|| $clear_ces_tracks_queue_for_page['adminpage'] !== $item['adminpage'];
 			}
 		);
 
@@ -230,5 +265,27 @@ class CustomerEffortScoreTracks {
 			array_values( $remaining_items )
 		);
 		update_option( self::CLEAR_CES_TRACKS_QUEUE_FOR_PAGE_OPTION_NAME, false );
+	}
+
+	/**
+	 * Enqueue the CES survey trigger for setting changes.
+	 */
+	public function run_on_update_options() {
+		if ( $this->has_been_shown( self::SETTINGS_CHANGE_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'    => self::SETTINGS_CHANGE_ACTION_NAME,
+				'label'     => __(
+					'How easy was it to update your settings?',
+					'woocommerce-admin'
+				),
+				'pagenow'   => 'woocommerce_page_wc-settings',
+				'adminpage' => 'woocommerce_page_wc-settings',
+				'props'     => array(),
+			)
+		);
 	}
 }
