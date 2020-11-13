@@ -67,7 +67,7 @@ function Snackbar(
 		}, NOTICE_TIMEOUT );
 
 		return () => clearTimeout( timeoutHandle );
-	}, [ explicitDismiss, onDismiss. onRemove ] );
+	}, [ explicitDismiss, onDismiss, onRemove ] );
 
 	const classes = classnames( className, 'components-snackbar' );
 	if ( actions && actions.length > 1 ) {
