@@ -38,6 +38,15 @@ const NavigationPlugin = () => {
 				};
 			}
 			return page;
+		} )
+		.map( ( page ) => {
+			if ( ! page.navParent ) {
+				return page;
+			}
+			return {
+				...page,
+				id: `${ page.navParent }/${ page.id }`,
+			};
 		} );
 	const persistedQuery = getPersistedQuery( {} );
 	return (
@@ -54,7 +63,10 @@ const NavigationPlugin = () => {
 				</WooNavigationItem>
 			) ) }
 			{ reports.map( ( item ) => (
-				<WooNavigationItem item={ item.id } key={ item.report }>
+				<WooNavigationItem
+					item={ `analytics/${ item.id }` }
+					key={ item.report }
+				>
 					<Link
 						className="components-button"
 						href={ getNewPath(

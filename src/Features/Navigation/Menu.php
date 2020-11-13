@@ -206,11 +206,12 @@ class Menu {
 	 *    ).
 	 */
 	private static function add_item( $args ) {
-		if ( ! isset( $args['id'] ) || isset( self::$menu_items[ $args['id'] ] ) ) {
+
+		if ( ! isset( $args['id'] ) ) {
 			return;
 		}
 
-		$defaults           = array(
+		$defaults = array(
 			'id'           => '',
 			'title'        => '',
 			'parent'       => self::DEFAULT_PARENT,
@@ -221,6 +222,7 @@ class Menu {
 			'menuId'       => 'primary',
 			'is_top_level' => false,
 		);
+
 		$menu_item          = wp_parse_args( $args, $defaults );
 		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
 		$menu_item['url']   = self::get_callback_url( $menu_item['url'] );
@@ -229,6 +231,12 @@ class Menu {
 			$menu_item['parent'] = 'woocommerce';
 		} else {
 			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
+		}
+
+		$menu_item['id'] = $menu_item['parent'] . '/' . $menu_item['id'];
+
+		if ( isset( self::$menu_items[ $menu_item['id'] ] ) ) {
+			return;
 		}
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
