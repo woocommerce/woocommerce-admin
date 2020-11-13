@@ -44,7 +44,7 @@ function CustomerEffortScore( {
 	};
 	const sendScore = () => {
 		closeModal();
-		trackCallback( score );
+		trackCallback( score, comments );
 	};
 
 	if ( shouldCreateNotice ) {
