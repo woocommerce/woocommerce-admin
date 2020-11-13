@@ -13,10 +13,7 @@ import {
  */
 import './stylesheets/_index.scss';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
-import {
-	CustomerEffortScoreTracksContainer,
-	CustomerEffortScoreTracksContainerAnalytics,
-} from './customer-effort-score-tracks';
+import { CustomerEffortScoreTracksContainer } from './customer-effort-score-tracks';
 import Navigation from './navigation';
 
 // Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
@@ -92,12 +89,6 @@ if ( navigationRoot ) {
 
 	render(
 		<CustomerEffortScoreTracksContainer />,
-		root.insertBefore( document.createElement( 'div' ), null )
-	);
-
-	// Used to display CES Survey on the Analytic pages
-	render(
-		<CustomerEffortScoreTracksContainerAnalytics />,
 		root.insertBefore( document.createElement( 'div' ), null )
 	);
 } )();

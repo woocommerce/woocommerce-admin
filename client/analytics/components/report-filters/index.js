@@ -14,12 +14,12 @@ import {
 	isoDateFormat,
 } from '@woocommerce/date';
 import { recordEvent } from '@woocommerce/tracks';
-import { doAction } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
  */
 import { CurrencyContext } from '../../../lib/currency-context';
+import { showCesSurveyForAnalytics } from '../../../customer-effort-score-tracks';
 
 class ReportFilters extends Component {
 	constructor() {
@@ -31,25 +31,18 @@ class ReportFilters extends Component {
 
 	onDateSelect( data ) {
 		const { report } = this.props;
-		const filteredData = omitBy( data, isUndefined );
-		doAction(
-			'woocommerce_admin_analytics_date_range_query_executed',
-			report,
-			filteredData
-		);
+		showCesSurveyForAnalytics();
 		recordEvent( 'datepicker_update', {
 			report,
-			...filteredData,
+			...omitBy( data, isUndefined ),
 		} );
 	}
 
 	onFilterSelect( data ) {
 		const { report } = this.props;
-		doAction(
-			'woocommerce_admin_analytics_filter_type_changed',
-			report,
-			data.filter || 'all'
-		);
+		if ( data.filter === 'single_product' ) {
+			showCesSurveyForAnalytics();
+		}
 		recordEvent( 'analytics_filter', {
 			report,
 			filter: data.filter || 'all',
@@ -58,7 +51,6 @@ class ReportFilters extends Component {
 
 	onAdvancedFilterAction( action, data ) {
 		const { report } = this.props;
-
 		switch ( action ) {
 			case 'add':
 				recordEvent( 'analytics_filters_add', {
@@ -80,11 +72,7 @@ class ReportFilters extends Component {
 					},
 					{}
 				);
-				doAction(
-					'woocommerce_admin_analytics_filter_query_executed',
-					report,
-					snakeCaseData
-				);
+				showCesSurveyForAnalytics();
 				recordEvent( 'analytics_filters_filter', {
 					report,
 					...snakeCaseData,
