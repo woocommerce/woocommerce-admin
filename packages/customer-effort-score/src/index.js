@@ -115,7 +115,7 @@ function CustomerEffortScore( {
 				/>
 			</div>
 
-			{ ( score === '1' || score === '5' ) && (
+			{ ( score === '1' || score === '2' ) && (
 				<div className="woocommerce-customer-effort-score__comments">
 					<TextareaControl
 						label="Comments (Optional)"
