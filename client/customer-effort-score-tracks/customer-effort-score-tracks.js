@@ -74,10 +74,11 @@ function CustomerEffortScoreTracks( {
 		} );
 	};
 
-	const trackCallback = ( score ) => {
+	const trackCallback = ( score, comments ) => {
 		recordEvent( 'ces_feedback', {
 			action,
 			score,
+			comments,
 			store_age: storeAge,
 			...trackProps,
 		} );
