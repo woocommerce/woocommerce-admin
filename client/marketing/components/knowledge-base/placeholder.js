@@ -14,7 +14,7 @@ const KnowledgebaseCardPostPlaceholder = ( index ) => {
 		>
 			<div className={ classNameBase + '-img is-placeholder' }></div>
 			<div className={ classNameBase + '-text' }>
-				<h3 className="is-placeholder"></h3>
+				<h3 className="is-placeholder" aria-hidden="true"></h3>
 				<p className={ classNameBase + '-meta is-placeholder' }></p>
 			</div>
 		</div>
