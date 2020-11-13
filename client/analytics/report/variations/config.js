@@ -12,6 +12,7 @@ import {
 	getProductLabels,
 	getVariationLabels,
 } from '../../../lib/async-requests';
+import { showCesSurveyForAnalytics } from '../../../customer-effort-score-tracks';
 
 const VARIATIONS_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_variations_report_charts';
@@ -89,6 +90,7 @@ export const filters = applyFilters( VARIATIONS_REPORT_FILTERS_FILTER, [
 				settings: {
 					type: 'variations',
 					param: 'variations',
+					onClick: showCesSurveyForAnalytics,
 					getLabels: getVariationLabels,
 					labels: {
 						helpText: __(

@@ -8,6 +8,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import { getCouponLabels } from '../../../lib/async-requests';
+import { showCesSurveyForAnalytics } from '../../../customer-effort-score-tracks';
 
 const COUPON_REPORT_CHARTS_FILTER = 'woocommerce_admin_coupons_report_charts';
 const COUPON_REPORT_FILTERS_FILTER = 'woocommerce_admin_coupons_report_filters';
@@ -73,6 +74,7 @@ export const filters = applyFilters( COUPON_REPORT_FILTERS_FILTER, [
 				settings: {
 					type: 'coupons',
 					param: 'coupons',
+					onClick: showCesSurveyForAnalytics,
 					getLabels: getCouponLabels,
 					labels: {
 						title: __(

@@ -8,6 +8,7 @@ import { applyFilters } from '@wordpress/hooks';
  * Internal dependencies
  */
 import { getCategoryLabels } from '../../../lib/async-requests';
+import { showCesSurveyForAnalytics } from '../../../customer-effort-score-tracks';
 
 const CATEGORY_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_categories_report_charts';
@@ -86,6 +87,7 @@ export const filters = applyFilters( CATEGORY_REPORT_FILTERS_FILTER, [
 				settings: {
 					type: 'categories',
 					param: 'categories',
+					onClick: showCesSurveyForAnalytics,
 					getLabels: getCategoryLabels,
 					labels: {
 						helpText: __(

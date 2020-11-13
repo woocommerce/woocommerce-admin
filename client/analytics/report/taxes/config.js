@@ -10,6 +10,7 @@ import { NAMESPACE } from '@woocommerce/data';
  */
 import { getRequestByIdString } from '../../../lib/async-requests';
 import { getTaxCode } from './utils';
+import { showCesSurveyForAnalytics } from '../../../customer-effort-score-tracks';
 
 const TAXES_REPORT_CHARTS_FILTER = 'woocommerce_admin_taxes_report_charts';
 const TAXES_REPORT_FILTERS_FILTER = 'woocommerce_admin_taxes_report_filters';
@@ -62,6 +63,7 @@ export const filters = applyFilters( TAXES_REPORT_FILTERS_FILTER, [
 				settings: {
 					type: 'taxes',
 					param: 'taxes',
+					onClick: showCesSurveyForAnalytics,
 					getLabels: getRequestByIdString(
 						NAMESPACE + '/taxes',
 						( tax ) => ( {

@@ -11,6 +11,7 @@ import {
 	getProductLabels,
 	getVariationLabels,
 } from '../../../lib/async-requests';
+import { showCesSurveyForAnalytics } from '../../../customer-effort-score-tracks';
 
 const PRODUCTS_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_products_report_charts';
@@ -82,6 +83,7 @@ const filterConfig = {
 			settings: {
 				type: 'products',
 				param: 'products',
+				onClick: showCesSurveyForAnalytics,
 				getLabels: getProductLabels,
 				labels: {
 					helpText: __(
