@@ -10,6 +10,7 @@ use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 use Automattic\WooCommerce\Admin\API\Plugins;
+use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 use WC_Marketplace_Suggestions;
 
 /**
@@ -379,6 +380,16 @@ class Loader {
 			true
 		);
 
+			// NOTE: This should be removed when Gutenberg is updated and
+			// the notices package is removed from WooCommerce Admin.
+			wp_register_script(
+				'wc-notices',
+				self::get_url( 'notices/index', 'js' ),
+				array(),
+				$js_file_version,
+				true
+			);
+
 		wp_register_script(
 			'wc-number',
 			self::get_url( 'number/index', 'js' ),
@@ -431,6 +442,9 @@ class Loader {
 				'wc-customer-effort-score',
 				'wc-date',
 				'wc-navigation',
+				// NOTE: This should be removed when Gutenberg is updated and
+				// the notices package is removed from WooCommerce Admin.
+				'wc-notices',
 				'wc-number',
 				'wc-store-data',
 			),
@@ -822,7 +836,7 @@ class Loader {
 	 * TODO: See usage in `admin.php`. This needs refactored and implemented properly in core.
 	 */
 	public static function is_embed_page() {
-		return wc_admin_is_connected_page();
+		return wc_admin_is_connected_page() || ( ! self::is_admin_page() && Screen::is_woocommerce_page() );
 	}
 
 	/**
@@ -1372,6 +1386,9 @@ class Loader {
 				'wc-currency',
 				'wc-customer-effort-score',
 				'wc-navigation',
+				// NOTE: This should be removed when Gutenberg is updated and
+				// the notices package is removed from WooCommerce Admin.
+				'wc-notices',
 				'wc-number',
 				'wc-date',
 				'wc-components',
