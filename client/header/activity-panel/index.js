@@ -212,15 +212,19 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		const displayOption = showDisplayOptions
+		const displayOptions = showDisplayOptions
 			? {
 					component: DisplayOptions,
 			  }
 			: null;
 
-		return [ inbox, ...stockAndReviews, setup, displayOption, help ].filter(
-			Boolean
-		);
+		return [
+			inbox,
+			...stockAndReviews,
+			setup,
+			displayOptions,
+			help,
+		].filter( Boolean );
 	}
 
 	getPanelContent( tab ) {
