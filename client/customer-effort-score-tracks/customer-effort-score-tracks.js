@@ -8,6 +8,7 @@ import CustomerEffortScore from '@woocommerce/customer-effort-score';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { OPTIONS_STORE_NAME, MONTH } from '@woocommerce/data';
+import { __ } from '@wordpress/i18n';
 
 const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
 const ADMIN_INSTALL_TIMESTAMP_OPTION_NAME =
@@ -22,21 +23,25 @@ const ALLOW_TRACKING_OPTION_NAME = 'woocommerce_allow_tracking';
  * @param {string}   props.action             The action name sent to Tracks.
  * @param {Object}   props.trackProps         Additional props sent to Tracks.
  * @param {string}   props.label              The label displayed in the modal.
+ * @param {string}   props.onSubmitLabel      The label displayed upon survey submission.
  * @param {Array}    props.cesShownForActions The array of actions that the CES modal has been shown for.
  * @param {boolean}  props.allowTracking      Whether tracking is allowed or not.
  * @param {boolean}  props.resolving          Are values still being resolved.
  * @param {number}   props.storeAge           The age of the store in months.
  * @param {Function} props.updateOptions      Function to update options.
+ * @param {Function} props.createNotice       Function to create a snackbar.
  */
 function CustomerEffortScoreTracks( {
 	action,
 	trackProps,
 	label,
+	onSubmitLabel,
 	cesShownForActions,
 	allowTracking,
 	resolving,
 	storeAge,
 	updateOptions,
+	createNotice,
 } ) {
 	const [ shown, setShown ] = useState( false );
 
@@ -76,6 +81,7 @@ function CustomerEffortScoreTracks( {
 			store_age: storeAge,
 			...trackProps,
 		} );
+		createNotice( 'success', onSubmitLabel );
 	};
 
 	return (
@@ -83,6 +89,15 @@ function CustomerEffortScoreTracks( {
 			trackCallback={ trackCallback }
 			label={ label }
 			openedCallback={ openedCallback }
+			icon={
+				<span
+					style={ { height: 21, width: 21 } }
+					role="img"
+					aria-label={ __( 'Pencil icon', 'woocommerce-admin' ) }
+				>
+					✏️
+				</span>
+			}
 		/>
 	);
 }
@@ -100,6 +115,10 @@ CustomerEffortScoreTracks.propTypes = {
 	 * The label displayed in the modal.
 	 */
 	label: PropTypes.string.isRequired,
+	/**
+	 * The label for the snackbar that appears upon survey submission.
+	 */
+	onSubmitLabel: PropTypes.string.isRequired,
 	/**
 	 * The array of actions that the CES modal has been shown for.
 	 */
@@ -121,6 +140,10 @@ CustomerEffortScoreTracks.propTypes = {
 	 * Function to update options.
 	 */
 	updateOptions: PropTypes.func,
+	/**
+	 * Function to create a snackbar
+	 */
+	createNotice: PropTypes.func,
 };
 
 export default compose(
@@ -157,9 +180,11 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
+		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
 			updateOptions,
+			createNotice,
 		};
 	} )
 )( CustomerEffortScoreTracks );

@@ -250,13 +250,17 @@ class Menu {
 	 *      'url'        => (string) URL or callback to be used. Required.
 	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
 	 *      'menuId'     => (string) The ID of the menu to add the item to.
+	 *      'order'      => (int) Menu item order.
 	 *    ).
 	 */
 	public static function add_plugin_item( $args ) {
+		if ( ! isset( $args['parent'] ) ) {
+			unset( $args['order'] );
+		}
+
 		$item_args = array_merge(
 			$args,
 			array(
-				'order'        => null,
 				'menuId'       => 'plugins',
 				'is_top_level' => ! isset( $args['parent'] ),
 			)
@@ -275,13 +279,17 @@ class Menu {
 	 *      'url'        => (string) URL or callback to be used. Required.
 	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
 	 *      'menuId'     => (string) The ID of the menu to add the category to.
+	 *      'order'      => (int) Menu item order.
 	 *    ).
 	 */
 	public static function add_plugin_category( $args ) {
+		if ( ! isset( $args['parent'] ) ) {
+			unset( $args['order'] );
+		}
+
 		$category_args = array_merge(
 			$args,
 			array(
-				'order'        => null,
 				'menuId'       => 'plugins',
 				'is_top_level' => ! isset( $args['parent'] ),
 			)
@@ -348,7 +356,7 @@ class Menu {
 		}
 
 		return array(
-			array_merge(
+			'default' => array_merge(
 				array(
 					'title'      => esc_attr( $post_type_object->labels->menu_name ),
 					'capability' => $post_type_object->cap->edit_posts,
@@ -357,9 +365,8 @@ class Menu {
 				),
 				$menu_args
 			),
-			array_merge(
+			'all'     => array_merge(
 				array(
-					'parent'     => $post_type,
 					'title'      => esc_attr( $post_type_object->labels->all_items ),
 					'capability' => $post_type_object->cap->edit_posts,
 					'id'         => "{$post_type}-all-items",
@@ -368,9 +375,8 @@ class Menu {
 				),
 				$menu_args
 			),
-			array_merge(
+			'new'     => array_merge(
 				array(
-					'parent'     => $post_type,
 					'title'      => esc_attr( $post_type_object->labels->add_new ),
 					'capability' => $post_type_object->cap->create_posts,
 					'id'         => "{$post_type}-add-new",
@@ -538,6 +544,7 @@ class Menu {
 
 		$data = array(
 			'menuItems' => self::get_prepared_menu_item_data(),
+			'postType'  => isset( $_GET['post'] ) ? get_post_type( $_GET['post'] ) : null,
 		);
 
 		$paul = wp_add_inline_script( WC_ADMIN_APP, 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );
