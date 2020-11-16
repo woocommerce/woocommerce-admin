@@ -44,10 +44,12 @@ function Snackbar(
 		// onDismiss is a callback executed when the snackbar is dismissed.
 		// It is distinct from onRemove, which _looks_ like a callback but is
 		// actually the function to call to remove the snackbar from the UI.
-		onDismiss = noop,
+		onDismiss = null,
 	},
 	ref
 ) {
+	onDismiss = onDismiss || noop;
+
 	function dismissMe( event ) {
 		if ( event && event.preventDefault ) {
 			event.preventDefault();
@@ -71,13 +73,9 @@ function Snackbar(
 		return () => clearTimeout( timeoutHandle );
 	}, [ onDismiss, onRemove ] );
 
-	const classes = classnames(
-		className,
-		'components-snackbar',
-		{
-			'components-snackbar-explicit-dismiss': !! explicitDismiss,
-		}
-	);
+	const classes = classnames( className, 'components-snackbar', {
+		'components-snackbar-explicit-dismiss': !! explicitDismiss,
+	} );
 	if ( actions && actions.length > 1 ) {
 		// we need to inform developers that snackbar only accepts 1 action
 		warning(
@@ -117,6 +115,9 @@ function Snackbar(
 							isTertiary
 							onClick={ ( event ) => {
 								event.stopPropagation();
+								if ( explicitDismiss ) {
+									onRemove();
+								}
 								if ( onClick ) {
 									onClick( event );
 								}
