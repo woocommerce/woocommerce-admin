@@ -66,6 +66,7 @@ Adding an item, much like a category, can be added directly to the menu or to an
         'title'      => 'Example Plugin',
         'capability' => 'view_woocommerce_reports',
         'url'        => 'https://www.google.com',
+        'parent'     => 'example-category',
     )
 );
 ```
@@ -89,10 +90,9 @@ You can also manually add a screen without registering an item.
 
 ### Slot/fill items
 
-Using slot fill we can update items on the front-end of the site using JavaScript.  This is useful for modern JavaScript routing, more intricate interactions with menu items, or updating URLs and hyperlink text without reloading the page.
+Using slot fill we can update items on the front-end of the site using JavaScript. This is useful for modern JavaScript routing, more intricate interactions with menu items, or updating URLs and hyperlink text without reloading the page.
 
-In order to use slot fill, you can import the `WooNavigationItem` component from `@woocommerce/navigation` and match the `item` prop with the ID of the item you'd like to modify the behavior of.
-
+In order to use slot fill, you can import the `WooNavigationItem` component from `@woocommerce/navigation` and match the `item` prop with a unique identifier of the item you'd like to modify the behavior of. This identifer needs to conform to the following format, given the `parent` and `id` properties that you used when registering the item in PHP: "`parent/item-id`".
 
 ```js
 import { __ } from '@wordpress/i18n';
@@ -102,20 +102,20 @@ import { useHistory } from "react-router-dom";
 import { WooNavigationItem } from "@woocommerce/navigation";
 
 const MyPlugin = () => {
-    const history = useHistory();
+	const history = useHistory();
 
-    const handleClick = () => {
-        history.push( '/my-plugin-path' );
-    }
+	const handleClick = () => {
+		history.push( '/my-plugin-path' );
+	};
 
-    return (
-        <WooNavigationItem item="example-plugin">
-            <Button onClick={ handleClick }>
-                { __( 'My Link', 'plugin-domain' ) }
-            </Button>
-        </WooNavigationItem>
-    );
+	return (
+		<WooNavigationItem item="example-category/example-plugin">
+			<Button onClick={ handleClick }>
+				{ __( 'My Link', 'plugin-domain' ) }
+			</Button>
+		</WooNavigationItem>
+	);
 };
 
-registerPlugin('my-plugin', { render: MyPlugin });
+registerPlugin( 'my-plugin', { render: MyPlugin } );
 ```
