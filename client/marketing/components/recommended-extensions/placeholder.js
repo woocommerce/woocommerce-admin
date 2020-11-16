@@ -9,9 +9,7 @@ const RecommendedExtensionsPlaceholder = () => {
 
 	return (
 		<div className={ classNameBase } aria-hidden="true">
-			<div className="woocommerce-admin-marketing-product-icon">
-				<span className="is-placeholder" />
-			</div>
+			<div className="woocommerce-admin-marketing-product-icon is-placeholder"></div>
 
 			<div className={ `${ classNameBase }__text` }>
 				<h4 className="is-placeholder" aria-hidden="true"></h4>

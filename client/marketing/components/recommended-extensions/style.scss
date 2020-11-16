@@ -83,8 +83,7 @@
 	.is-placeholder {
 		@include placeholder();
 		display: inline-block;
-		width: 100%;
-		height: 16px;
+		min-height: 16px;
 	}
 
 	h4 {

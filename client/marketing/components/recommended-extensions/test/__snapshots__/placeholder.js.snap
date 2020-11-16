@@ -7,12 +7,8 @@ exports[`RecommendedExtensionsPlaceholder should render a default placeholder 1`
     class="is-loading woocommerce-marketing-recommended-extensions-item"
   >
     <div
-      class="woocommerce-admin-marketing-product-icon"
-    >
-      <span
-        class="is-placeholder"
-      />
-    </div>
+      class="woocommerce-admin-marketing-product-icon is-placeholder"
+    />
     <div
       class="is-loading woocommerce-marketing-recommended-extensions-item__text"
     >
