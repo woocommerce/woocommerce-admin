@@ -236,6 +236,13 @@ class Menu {
 		$menu_item['id'] = $menu_item['parent'] . '/' . $menu_item['id'];
 
 		if ( isset( self::$menu_items[ $menu_item['id'] ] ) ) {
+			error_log(  // phpcs:ignore
+				sprintf(
+					/* translators: 1: Duplicate menu item path. */
+					esc_html__( 'You have attempted to register a duplicate item with WooCommerce Navigation: %1$s', 'woocommerce-admin' ),
+					'`' . $menu_item['id'] . '`'
+				)
+			);
 			return;
 		}
 
