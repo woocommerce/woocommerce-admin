@@ -16,7 +16,7 @@ jobs:
                   composer self-update 2.0.6
                   composer i
             - name: Setup Node.js
-            - uses: actions/setup-node@v2-beta
+              uses: actions/setup-node@v2-beta
               with:
                   node-version: '14'
             - name: Build
