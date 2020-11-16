@@ -16,9 +16,9 @@ const RecommendedExtensionsPlaceholder = () => {
 			<div className={ `${ classNameBase }__text` }>
 				<h4 className="is-placeholder" aria-hidden="true"></h4>
 				<p>
-					<span className="is-placeholder" key={ 1 } />
-					<span className="is-placeholder" key={ 2 } />
-					<span className="is-placeholder" key={ 3 } />
+					<span className="is-placeholder" />
+					<span className="is-placeholder" />
+					<span className="is-placeholder" />
 				</p>
 			</div>
 		</div>

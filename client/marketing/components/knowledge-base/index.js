@@ -166,8 +166,8 @@ const KnowledgeBase = ( {
 		return (
 			<div className="woocommerce-marketing-knowledgebase-card__posts">
 				<div className="woocommerce-marketing-knowledgebase-card__page">
-					<KnowledgebaseCardPostPlaceholder key={ 1 } />
-					<KnowledgebaseCardPostPlaceholder key={ 2 } />
+					<KnowledgebaseCardPostPlaceholder />
+					<KnowledgebaseCardPostPlaceholder />
 				</div>
 			</div>
 		);
