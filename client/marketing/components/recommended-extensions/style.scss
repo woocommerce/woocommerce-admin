@@ -10,29 +10,29 @@
 
 		@include breakpoint( '>600px' ) {
 			> a,
- > .is-loading.woocommerce-marketing-recommended-extensions-item {
+			> .is-loading.woocommerce-marketing-recommended-extensions-item {
 				width: 50%;
 			}
 		}
 
 		@include breakpoint( '>960px' ) {
 			> a,
- > .is-loading.woocommerce-marketing-recommended-extensions-item {
+			> .is-loading.woocommerce-marketing-recommended-extensions-item {
 				width: 33.3%;
 			}
 
 			&--count-1 > a,
- &--count-1 > .is-loading.woocommerce-marketing-recommended-extensions-item {
+			&--count-1 > .is-loading.woocommerce-marketing-recommended-extensions-item {
 				width: 100%;
 			}
 
 			&--count-2 > a,
- &--count-2 > .is-loading.woocommerce-marketing-recommended-extensions-item {
+			&--count-2 > .is-loading.woocommerce-marketing-recommended-extensions-item {
 				width: 50%;
 			}
 
 			&--count-4 > a,
- &--count-4 > .is-loading.woocommerce-marketing-recommended-extensions-item {
+			&--count-4 > .is-loading.woocommerce-marketing-recommended-extensions-item {
 				width: 25%;
 			}
 		}
