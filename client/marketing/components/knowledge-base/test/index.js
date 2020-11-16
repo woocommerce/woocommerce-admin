@@ -49,10 +49,10 @@ describe( 'Posts and not loading', () => {
 		);
 	} );
 
-	it( 'should not display the preloader', () => {
+	it( 'should not display the placeholder', () => {
 		const { container } = knowledgeBaseWrapper;
 		expect(
-			container.querySelector( '.is-loading, .is-preloader' )
+			container.querySelector( '.is-loading, .is-placeholder' )
 		).toBeFalsy();
 	} );
 
@@ -135,7 +135,7 @@ describe( 'No posts and loading', () => {
 		);
 	} );
 
-	it( 'should display preloader', () => {
+	it( 'should display placeholder', () => {
 		const { container } = knowledgeBaseWrapper;
 		expect(
 			container.querySelector(
@@ -201,10 +201,10 @@ describe( 'Error and not loading', () => {
 		);
 	} );
 
-	it( 'should not display the preloader', () => {
+	it( 'should not display the placeholder', () => {
 		const { container } = knowledgeBaseWrapper;
 		expect(
-			container.querySelector( '.is-loading, .is-preloader' )
+			container.querySelector( '.is-loading, .is-placeholder' )
 		).toBeFalsy();
 	} );
 
@@ -255,10 +255,10 @@ describe( 'No posts and not loading', () => {
 		);
 	} );
 
-	it( 'should not display the preloader', () => {
+	it( 'should not display the placeholder', () => {
 		const { container } = knowledgeBaseWrapper;
 		expect(
-			container.querySelector( '.is-loading, .is-preloader' )
+			container.querySelector( '.is-loading, .is-placeholder' )
 		).toBeFalsy();
 	} );
 
