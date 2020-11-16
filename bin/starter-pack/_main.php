@@ -24,7 +24,7 @@ function add_extension_register_script() {
 	wp_register_script(
 		'{{extension_slug}}',
 		$script_url,
-		$script_asset['dependencies'],
+		array_merge( array( 'wc-admin-app' ), $script_asset['dependencies'] ),
 		$script_asset['version'],
 		true
 	);
