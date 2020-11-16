@@ -15,6 +15,15 @@
 	.woocommerce .subsubsub {
 		font-size: 14px;
 		margin: 5px 0;
+  }
+  
+  #wpcontent,
+	#wpfooter {
+		margin-left: $navigation-width;
+
+		@media ( max-width: 960px ) {
+			margin-left: 0;
+		}
 	}
 
 	#woocommerce-embedded-navigation {
@@ -26,6 +35,11 @@
 		box-sizing: border-box;
 		background-color: $gray-900;
 		z-index: 1100; //Must be greater than z-index on .woocommerce-layout__header
+
+		@media ( max-width: 960px ) {
+			width: $header-height;
+			height: $header-height;
+		}
 	}
 
 	.woocommerce-navigation__wrapper {
@@ -37,14 +51,10 @@
 		box-sizing: border-box;
 	}
 
-	&:not(.is-folded) {
-		#wpcontent,
-		#wpfooter {
-			margin-left: $navigation-width;
-
-			@media ( max-width: 960px ) {
-				margin-left: 0;
-			}
+	&.is-expanded {
+		#woocommerce-embedded-navigation {
+			width: $navigation-width;
+			height: 100%;
 		}
 	}
 
