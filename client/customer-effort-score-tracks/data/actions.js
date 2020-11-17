@@ -9,8 +9,9 @@ import { __ } from '@wordpress/i18n';
 import TYPES from './action-types';
 
 /**
+ * Initialize the state
  *
- * @param {Object} queue initialize the state
+ * @param {Object} queue	initial queue
  */
 export function setCesSurveyTracksQueue( queue ) {
 	return {
@@ -20,19 +21,20 @@ export function setCesSurveyTracksQueue( queue ) {
 }
 
 /**
+ * Add a new CES track to the state.
  *
- * @param {string} action					action name for the survey
- * @param {string} label 					label for the snackback
- * @param {string} pageNow 				value of window.pagenow
- * @param {string} adminPage			value of window.adminpage
- * @param {string} onSubmitLabel	label for the snackback onsubmit
+ * @param {string} action action name for the survey
+ * @param {string} label label for the snackback
+ * @param {string} pageNow value of window.pagenow
+ * @param {string} adminPage value of window.adminpage
+ * @param {string} onsubmit_label label for the snackback onsubmit
  */
 export function addCesSurveyTrack(
 	action,
 	label,
 	pageNow = window.pagenow,
 	adminPage = window.adminpage,
-	onSubmitLabel = undefined
+	onsubmit_label = undefined
 ) {
 	return {
 		type: TYPES.ADD_CES_SURVEY_TRACK,
@@ -40,7 +42,7 @@ export function addCesSurveyTrack(
 		label,
 		pageNow,
 		adminPage,
-		onSubmitLabel,
+		onsubmit_label,
 	};
 }
 
