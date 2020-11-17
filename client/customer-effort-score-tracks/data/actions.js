@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
 import TYPES from './action-types';
@@ -20,7 +15,7 @@ export function addCesSurveyTrack(
 	label,
 	pageNow = window.pagenow,
 	adminPage = window.adminpage,
-	onSubmitLabel = __( 'Thank you for your feedback!', 'woocommerce-admin' )
+	onSubmitLabel = undefined
 ) {
 	return {
 		type: TYPES.ADD_CES_SURVEY_TRACK,
