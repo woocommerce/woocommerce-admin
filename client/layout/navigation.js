@@ -31,23 +31,15 @@ const NavigationPlugin = () => {
 	const pages = getPages()
 		.filter( ( page ) => page.id )
 		.map( ( page ) => {
-			if ( page.id === 'woocommerce-analytics-settings' ) {
+			if ( page.id === 'settings/woocommerce-analytics-settings' ) {
 				return {
 					...page,
 					breadcrumbs: [ __( 'Analytics', 'woocommerce-admin' ) ],
 				};
 			}
 			return page;
-		} )
-		.map( ( page ) => {
-			if ( ! page.navParent ) {
-				return page;
-			}
-			return {
-				...page,
-				id: `${ page.navParent }/${ page.id }`,
-			};
 		} );
+
 	const persistedQuery = getPersistedQuery( {} );
 	return (
 		<>

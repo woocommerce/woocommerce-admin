@@ -59,8 +59,7 @@ export const getPages = () => {
 			__( 'Home', 'woocommerce-admin' ),
 		],
 		wpOpenMenu: 'toplevel_page_woocommerce',
-		id: 'home',
-		navParent: 'woocommerce',
+		id: 'woocommerce/home',
 	} );
 
 	if ( window.wcAdminFeatures.analytics ) {
@@ -76,8 +75,7 @@ export const getPages = () => {
 				__( 'Overview', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
-			id: 'woocommerce-analytics-overview',
-			navParent: 'analytics',
+			id: 'analytics/woocommerce-analytics-overview',
 		} );
 		pages.push( {
 			container: AnalyticsSettings,
@@ -91,8 +89,7 @@ export const getPages = () => {
 				__( 'Settings', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
-			id: 'woocommerce-analytics-settings',
-			navParent: 'settings',
+			id: 'settings/woocommerce-analytics-settings',
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -102,8 +99,7 @@ export const getPages = () => {
 				__( 'Customers', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce',
-			id: 'woocommerce-analytics-customers',
-			navParent: 'woocommerce',
+			id: 'woocommerce/woocommerce-analytics-customers',
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -138,8 +134,7 @@ export const getPages = () => {
 				__( 'Overview', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
-			id: 'woocommerce-marketing',
-			navParent: 'marketing',
+			id: 'marketing/woocommerce-marketing',
 		} );
 	}
 
