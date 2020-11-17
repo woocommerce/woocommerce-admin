@@ -44,7 +44,12 @@ class CategoriesReport extends Component {
 	}
 
 	render() {
-		const { isRequesting, query, path, addCesSurveyTrack } = this.props;
+		const {
+			isRequesting,
+			query,
+			path,
+			addCesSurveyTrackForAnalytics,
+		} = this.props;
 		const { mode, itemsLabel, isSingleCategoryView } = this.getChartMeta();
 
 		const chartQuery = {
@@ -57,15 +62,12 @@ class CategoriesReport extends Component {
 				: 'category';
 		}
 
-		filters[ 0 ].filters[ 2 ].settings.onClick = () => {
-			addCesSurveyTrack(
-				'woocommerce_admin_analytics_filtered',
-				__(
-					'How easy was it to filter your store analytics?',
-					'woocommerce-admin'
-				)
-			);
-		};
+		const compareProducts = filters[ 0 ].filters.filter(
+			( item ) => item.value === 'compare-categories'
+		);
+		if ( compareProducts.length ) {
+			compareProducts[ 0 ].settings.onClick = addCesSurveyTrackForAnalytics;
+		}
 
 		return (
 			<Fragment>
@@ -136,6 +138,6 @@ CategoriesReport.propTypes = {
 };
 
 export default withDispatch( ( dispatch ) => {
-	const { addCesSurveyTrack } = dispatch( CES_STORE_KEY );
-	return { addCesSurveyTrack };
+	const { addCesSurveyTrackForAnalytics } = dispatch( CES_STORE_KEY );
+	return { addCesSurveyTrackForAnalytics };
 } )( CategoriesReport );

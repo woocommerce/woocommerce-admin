@@ -15,7 +15,6 @@ import {
 	isoDateFormat,
 } from '@woocommerce/date';
 import { recordEvent } from '@woocommerce/tracks';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -31,20 +30,9 @@ class ReportFilters extends Component {
 		this.onAdvancedFilterAction = this.onAdvancedFilterAction.bind( this );
 	}
 
-	showCesSurveyTrack() {
-		const { addCesSurveyTrack } = this.props;
-		addCesSurveyTrack(
-			'woocommerce_admin_analytics_filtered',
-			__(
-				'How easy was it to filter your store analytics?',
-				'woocommerce-admin'
-			)
-		);
-	}
-
 	onDateSelect( data ) {
-		const { report } = this.props;
-		this.showCesSurveyTrack();
+		const { report, addCesSurveyTrackForAnalytics } = this.props;
+		addCesSurveyTrackForAnalytics();
 		recordEvent( 'datepicker_update', {
 			report,
 			...omitBy( data, isUndefined ),
@@ -52,9 +40,9 @@ class ReportFilters extends Component {
 	}
 
 	onFilterSelect( data ) {
-		const { report } = this.props;
+		const { report, addCesSurveyTrackForAnalytics } = this.props;
 		if ( data.filter === 'single_product' ) {
-			this.showCesSurveyTrack();
+			addCesSurveyTrackForAnalytics();
 		}
 		recordEvent( 'analytics_filter', {
 			report,
@@ -63,7 +51,7 @@ class ReportFilters extends Component {
 	}
 
 	onAdvancedFilterAction( action, data ) {
-		const { report } = this.props;
+		const { report, addCesSurveyTrackForAnalytics } = this.props;
 		switch ( action ) {
 			case 'add':
 				recordEvent( 'analytics_filters_add', {
@@ -85,7 +73,7 @@ class ReportFilters extends Component {
 					},
 					{}
 				);
-				this.showCesSurveyTrack();
+				addCesSurveyTrackForAnalytics();
 				recordEvent( 'analytics_filters_filter', {
 					report,
 					...snakeCaseData,
@@ -159,8 +147,8 @@ export default compose(
 		return { defaultDateRange };
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { addCesSurveyTrack } = dispatch( CES_STORE_KEY );
-		return { addCesSurveyTrack };
+		const { addCesSurveyTrackForAnalytics } = dispatch( CES_STORE_KEY );
+		return { addCesSurveyTrackForAnalytics };
 	} )
 )( ReportFilters );
 

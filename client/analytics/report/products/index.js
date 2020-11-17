@@ -61,7 +61,7 @@ class ProductsReport extends Component {
 			isError,
 			isRequesting,
 			isSingleProductVariable,
-			addCesSurveyTrack,
+			addCesSurveyTrackForAnalytics,
 		} = this.props;
 
 		if ( isError ) {
@@ -77,15 +77,12 @@ class ProductsReport extends Component {
 				compareObject === 'products' ? 'product' : 'variation';
 		}
 
-		filters[ 0 ].filters[ 2 ].settings.onClick = () => {
-			addCesSurveyTrack(
-				'woocommerce_admin_analytics_filtered',
-				__(
-					'How easy was it to filter your store analytics?',
-					'woocommerce-admin'
-				)
-			);
-		};
+		const compareProducts = filters[ 0 ].filters.filter(
+			( item ) => item.value === 'compare-products'
+		);
+		if ( compareProducts.length ) {
+			compareProducts[ 0 ].settings.onClick = addCesSurveyTrackForAnalytics;
+		}
 
 		return (
 			<Fragment>
@@ -201,7 +198,7 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { addCesSurveyTrack } = dispatch( CES_STORE_KEY );
-		return { addCesSurveyTrack };
+		const { addCesSurveyTrackForAnalytics } = dispatch( CES_STORE_KEY );
+		return { addCesSurveyTrackForAnalytics };
 	} )
 )( ProductsReport );
