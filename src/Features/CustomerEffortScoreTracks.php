@@ -30,11 +30,6 @@ class CustomerEffortScoreTracks {
 	const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
 
 	/**
-	 * The post types that we show CES surveys for.
-	 */
-	const TRACKED_POST_TYPES = array( 'product', 'shop_order' );
-
-	/**
 	 * Action name for product add/publish.
 	 */
 	const PRODUCT_ADD_PUBLISH_ACTION_NAME = 'product_add_publish';
@@ -133,14 +128,10 @@ class CustomerEffortScoreTracks {
 		$old_status,
 		$post
 	) {
-		if ( ! in_array( $post->post_type, self::TRACKED_POST_TYPES, true ) ) {
-			return;
-		}
-
 		if ( 'product' === $post->post_type ) {
 			$this->maybe_enqueue_ces_survey_for_product( $new_status, $old_status );
 		} elseif ( 'shop_order' === $post->post_type ) {
-			$this->maybe_enqueue_ces_survey_for_shop_order( $new_status, $old_status );
+			$this->enqueue_ces_survey_for_edited_shop_order();
 		}
 	}
 
@@ -163,19 +154,6 @@ class CustomerEffortScoreTracks {
 		} else {
 			$this->enqueue_ces_survey_for_edited_product();
 		}
-	}
-
-	/**
-	 * Maybe enqueue the CES survey, if shop order is being edited.
-	 *
-	 * @param string $new_status The new status.
-	 * @param string $old_status The old status.
-	 */
-	private function maybe_enqueue_ces_survey_for_shop_order(
-		$new_status,
-		$old_status
-	) {
-		$this->enqueue_ces_survey_for_edited_shop_order();
 	}
 
 	/**
