@@ -304,7 +304,7 @@ export default withSelect( ( select, props ) => {
 		REPORTS_STORE_NAME
 	);
 
-	if ( ! orderStatuses.length && ! countUnreadOrders ) {
+	if ( ! orderStatuses.length && countUnreadOrders === 0 ) {
 		return { isRequesting: false };
 	}
 
