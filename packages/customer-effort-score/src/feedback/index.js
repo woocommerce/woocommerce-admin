@@ -51,11 +51,18 @@ function Survey( { trackCallback, label } ) {
 
 	const [ score, setScore ] = useState();
 	const [ comments, setComments ] = useState();
+	const [ errorMessage, setErrorMessage ] = useState();
 	const [ isOpen, setOpen ] = useState( true );
 
 	const closeModal = () => setOpen( false );
 
 	const sendScore = () => {
+		if ( ! [ '1', '2', '3', '4', '5' ].includes( score ) ) {
+			setErrorMessage(
+				__( 'Error: Feedback not provided.', 'woocommerce-admin' )
+			);
+			return;
+		}
 		setOpen( false );
 		trackCallback( score, comments );
 	};
@@ -91,6 +98,17 @@ function Survey( { trackCallback, label } ) {
 						onChange={ ( value ) => setComments( value ) }
 						rows="5"
 					/>
+				</div>
+			) }
+
+			{ errorMessage && (
+				<div
+					className="woocommerce-customer-effort-score__errors"
+					role="alert"
+				>
+					<Text variant="body" as="p">
+						{ errorMessage }
+					</Text>
 				</div>
 			) }
 
