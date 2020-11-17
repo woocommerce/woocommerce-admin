@@ -30,13 +30,7 @@ export class CompareFilter extends Component {
 		this.clearQuery = this.clearQuery.bind( this );
 		this.updateQuery = this.updateQuery.bind( this );
 		this.updateLabels = this.updateLabels.bind( this );
-		this.onClickHandlers = [ this.updateQuery ];
 		this.onButtonClicked = this.onButtonClicked.bind( this );
-
-		if ( isFunction( this.props.onClick ) ) {
-			this.onClickHandlers.push( this.props.onClick );
-		}
-
 		if ( query[ param ] ) {
 			getLabels( query[ param ], query ).then( this.updateLabels );
 		}
@@ -85,9 +79,10 @@ export class CompareFilter extends Component {
 	}
 
 	onButtonClicked( e ) {
-		this.onClickHandlers.forEach( function ( callback ) {
-			callback( e );
-		} );
+		this.updateQuery( e );
+		if ( isFunction( this.props.onClick ) ) {
+			this.props.onClick( e );
+		}
 	}
 
 	render() {

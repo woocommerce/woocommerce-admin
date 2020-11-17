@@ -21,11 +21,11 @@ export function setCesSurveyTracksQueue( queue ) {
 
 /**
  *
- * @param {string} action 	       action name for the survey
- * @param {string} label 					 label for the snackback
- * @param {string} pageNow 				 value of window.pagenow
- * @param {string} adminPage 			 value of window.adminpage
- * @param {string} onSubmitLabel 	 label for the snackback onsubmit
+ * @param {string} action					action name for the survey
+ * @param {string} label 					label for the snackback
+ * @param {string} pageNow 				value of window.pagenow
+ * @param {string} adminPage			value of window.adminpage
+ * @param {string} onSubmitLabel	label for the snackback onsubmit
  */
 export function addCesSurveyTrack(
 	action,
