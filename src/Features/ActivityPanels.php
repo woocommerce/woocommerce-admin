@@ -63,11 +63,11 @@ class ActivityPanels {
 	}
 
 	/**
-	 * Determines if there are out of stock or low stock products.
+	 * Retreives the count of out of stock and low stock products.
 	 *
-	 * @return boolean
+	 * @return int
 	 */
-	public function has_low_stock_products() {
+	public function get_low_stock_products_count() {
 		global $wpdb;
 
 		// Bail early if store does not manage stock, or Woo version < 3.6 needs lookup tables.
@@ -90,7 +90,7 @@ class ActivityPanels {
 			);
 			set_transient( self::LOW_STOCK_TRANSIENT_NAME, $low_stock_out_of_stock_count, HOUR_IN_SECONDS );
 		}
-		return $low_stock_out_of_stock_count > 0;
+		return $low_stock_out_of_stock_count;
 	}
 
 	/**
@@ -109,8 +109,8 @@ class ActivityPanels {
 	 * @param array $settings Component settings.
 	 */
 	public function component_settings( $settings ) {
-		$settings['alertCount']  = Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
-		$settings['hasLowStock'] = $this->has_low_stock_products();
+		$settings['alertCount']    = Notes::get_notes_count( array( 'error', 'update' ), array( 'unactioned' ) );
+		$settings['lowStockCount'] = $this->get_low_stock_products_count();
 		return $settings;
 	}
 }

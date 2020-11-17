@@ -24,7 +24,7 @@ import ActivityPanelToggleBubble from './toggle-bubble';
 import {
 	getUnreadNotes,
 	getUnapprovedReviews,
-	getUnreadStock,
+	getLowStockCount,
 } from './unread-indicators';
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
@@ -401,7 +401,7 @@ ActivityPanel.defaultProps = {
 export default compose(
 	withSelect( ( select ) => {
 		const hasUnreadNotes = getUnreadNotes( select );
-		const hasUnreadStock = getUnreadStock();
+		const hasUnreadStock = getLowStockCount() > 0;
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
