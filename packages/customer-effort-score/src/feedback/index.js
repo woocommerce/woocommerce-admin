@@ -25,7 +25,7 @@ import { __ } from '@wordpress/i18n';
  * @param {Function} props.openedCallback Function to call when the modal is opened.
  * @param {Object}   props.icon           Icon (React component) to be shown on the notice.
  */
-function Survey( { trackCallback, label } ) {
+function Feedback( { trackCallback, label } ) {
 	const options = [
 		{
 			label: __( 'Very difficult', 'woocommerce-admin' ),
@@ -124,7 +124,7 @@ function Survey( { trackCallback, label } ) {
 	);
 }
 
-Survey.propTypes = {
+Feedback.propTypes = {
 	/**
 	 * The function to call when the modal is actioned.
 	 */
@@ -135,4 +135,4 @@ Survey.propTypes = {
 	label: PropTypes.string.isRequired,
 };
 
-export default Survey;
+export default Feedback;
