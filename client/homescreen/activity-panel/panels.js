@@ -8,8 +8,13 @@ import { __ } from '@wordpress/i18n';
  */
 import OrdersPanel from './orders';
 
-export function getAllPanels( { countUnreadOrders, orderStatuses } ) {
-	return [
+export function getAllPanels( {
+	countLowStockProducts,
+	countUnreadOrders,
+	manageStock,
+	orderStatuses,
+} ) {
+	const panels = [
 		{
 			className: 'woocommerce-homescreen-card',
 			count: countUnreadOrders,
@@ -25,4 +30,17 @@ export function getAllPanels( { countUnreadOrders, orderStatuses } ) {
 		},
 		// Add another panel row here
 	];
+
+	if ( manageStock === 'yes' ) {
+		panels.push( {
+			className: 'woocommerce-homescreen-card',
+			count: countLowStockProducts,
+			id: 'stock-panel',
+			initialOpen: countLowStockProducts > 0,
+			panel: <></>,
+			title: __( 'Stock', 'woocommerce-admin' ),
+		} );
+	}
+
+	return panels;
 }
