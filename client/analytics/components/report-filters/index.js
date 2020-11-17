@@ -2,9 +2,10 @@
  * External dependencies
  */
 import { Component } from '@wordpress/element';
+import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { omitBy, isUndefined, snakeCase } from 'lodash';
-import { withSelect } from '@wordpress/data';
+import { withSelect, withDispatch } from '@wordpress/data';
 import { ReportFilters as Filters } from '@woocommerce/components';
 import { LOCALE } from '@woocommerce/wc-admin-settings';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
@@ -14,41 +15,55 @@ import {
 	isoDateFormat,
 } from '@woocommerce/date';
 import { recordEvent } from '@woocommerce/tracks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { CurrencyContext } from '../../../lib/currency-context';
+import { STORE_KEY as CES_STORE_KEY } from '../../../customer-effort-score-tracks/data/constants';
 
 class ReportFilters extends Component {
 	constructor() {
 		super();
-		this.trackDateSelect = this.trackDateSelect.bind( this );
-		this.trackFilterSelect = this.trackFilterSelect.bind( this );
-		this.trackAdvancedFilterAction = this.trackAdvancedFilterAction.bind(
-			this
+		this.onDateSelect = this.onDateSelect.bind( this );
+		this.onFilterSelect = this.onFilterSelect.bind( this );
+		this.onAdvancedFilterAction = this.onAdvancedFilterAction.bind( this );
+	}
+
+	showCesSurveyTrack() {
+		const { addCesSurveyTrack } = this.props;
+		addCesSurveyTrack(
+			'woocommerce_admin_analytics_filtered',
+			__(
+				'How easy was it to filter your store analytics?',
+				'woocommerce-admin'
+			)
 		);
 	}
 
-	trackDateSelect( data ) {
+	onDateSelect( data ) {
 		const { report } = this.props;
+		this.showCesSurveyTrack();
 		recordEvent( 'datepicker_update', {
 			report,
 			...omitBy( data, isUndefined ),
 		} );
 	}
 
-	trackFilterSelect( data ) {
+	onFilterSelect( data ) {
 		const { report } = this.props;
+		if ( data.filter === 'single_product' ) {
+			this.showCesSurveyTrack();
+		}
 		recordEvent( 'analytics_filter', {
 			report,
 			filter: data.filter || 'all',
 		} );
 	}
 
-	trackAdvancedFilterAction( action, data ) {
+	onAdvancedFilterAction( action, data ) {
 		const { report } = this.props;
-
 		switch ( action ) {
 			case 'add':
 				recordEvent( 'analytics_filters_add', {
@@ -70,6 +85,7 @@ class ReportFilters extends Component {
 					},
 					{}
 				);
+				this.showCesSurveyTrack();
 				recordEvent( 'analytics_filters_filter', {
 					report,
 					...snakeCaseData,
@@ -123,9 +139,9 @@ class ReportFilters extends Component {
 				filters={ filters }
 				advancedFilters={ advancedFilters }
 				showDatePicker={ showDatePicker }
-				onDateSelect={ this.trackDateSelect }
-				onFilterSelect={ this.trackFilterSelect }
-				onAdvancedFilterAction={ this.trackAdvancedFilterAction }
+				onDateSelect={ this.onDateSelect }
+				onFilterSelect={ this.onFilterSelect }
+				onAdvancedFilterAction={ this.onAdvancedFilterAction }
 				dateQuery={ dateQuery }
 				isoDateFormat={ isoDateFormat }
 			/>
@@ -135,12 +151,18 @@ class ReportFilters extends Component {
 
 ReportFilters.contextType = CurrencyContext;
 
-export default withSelect( ( select ) => {
-	const { woocommerce_default_date_range: defaultDateRange } = select(
-		SETTINGS_STORE_NAME
-	).getSetting( 'wc_admin', 'wcAdminSettings' );
-	return { defaultDateRange };
-} )( ReportFilters );
+export default compose(
+	withSelect( ( select ) => {
+		const { woocommerce_default_date_range: defaultDateRange } = select(
+			SETTINGS_STORE_NAME
+		).getSetting( 'wc_admin', 'wcAdminSettings' );
+		return { defaultDateRange };
+	} ),
+	withDispatch( ( dispatch ) => {
+		const { addCesSurveyTrack } = dispatch( CES_STORE_KEY );
+		return { addCesSurveyTrack };
+	} )
+)( ReportFilters );
 
 ReportFilters.propTypes = {
 	/**
