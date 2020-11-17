@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import OrdersPanel from './orders';
+import StockPanel from './stock';
 
 export function getAllPanels( {
 	countLowStockProducts,
@@ -28,19 +29,16 @@ export function getAllPanels( {
 			),
 			title: __( 'Orders', 'woocommerce-admin' ),
 		},
-		// Add another panel row here
-	];
-
-	if ( manageStock === 'yes' ) {
-		panels.push( {
+		manageStock === 'yes' && {
 			className: 'woocommerce-homescreen-card',
 			count: countLowStockProducts,
 			id: 'stock-panel',
 			initialOpen: countLowStockProducts > 0,
-			panel: <></>,
+			panel: <StockPanel />,
 			title: __( 'Stock', 'woocommerce-admin' ),
-		} );
-	}
+		},
+		// Add another panel row here
+	].filter( Boolean );
 
 	return panels;
 }

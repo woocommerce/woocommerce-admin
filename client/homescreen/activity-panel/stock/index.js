@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
@@ -13,8 +13,10 @@ import { QUERY_DEFAULTS, ITEMS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { ActivityCard, ActivityCardPlaceholder } from '../../activity-card';
-import ActivityHeader from '../../activity-header';
+import {
+	ActivityCard,
+	ActivityCardPlaceholder,
+} from '../../../header/activity-panel/activity-card';
 import ProductStockCard from './card';
 
 class StockPanel extends Component {
@@ -49,7 +51,7 @@ class StockPanel extends Component {
 	}
 
 	render() {
-		const { isError, isRequesting, products } = this.props;
+		const { isError, isRequesting } = this.props;
 
 		if ( isError ) {
 			const title = __(
@@ -63,36 +65,27 @@ class StockPanel extends Component {
 			};
 
 			return (
-				<Fragment>
-					<EmptyContent
-						title={ title }
-						actionLabel={ actionLabel }
-						actionURL={ null }
-						actionCallback={ actionCallback }
-					/>
-				</Fragment>
+				<EmptyContent
+					title={ title }
+					actionLabel={ actionLabel }
+					actionURL={ null }
+					actionCallback={ actionCallback }
+				/>
 			);
 		}
 
-		const title =
-			isRequesting || products.length > 0
-				? __( 'Stock', 'woocommerce-admin' )
-				: __( 'No products with low stock', 'woocommerce-admin' );
 		return (
-			<Fragment>
-				<ActivityHeader title={ title } />
-				<Section>
-					{ isRequesting ? (
-						<ActivityCardPlaceholder
-							className="woocommerce-stock-activity-card"
-							hasAction
-							lines={ 1 }
-						/>
-					) : (
-						this.renderProducts()
-					) }
-				</Section>
-			</Fragment>
+			<Section>
+				{ isRequesting ? (
+					<ActivityCardPlaceholder
+						className="woocommerce-stock-activity-card"
+						hasAction
+						lines={ 1 }
+					/>
+				) : (
+					this.renderProducts()
+				) }
+			</Section>
 		);
 	}
 }

@@ -17,7 +17,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { ActivityCard } from '../../activity-card';
+import { ActivityCard } from '../../../header/activity-panel/activity-card';
 
 class ProductStockCard extends Component {
 	constructor( props ) {
@@ -88,6 +88,7 @@ class ProductStockCard extends Component {
 			createNotice(
 				'success',
 				sprintf(
+					/* translators: %s = name of the product having stock updated */
 					__( '%s stock updated.', 'woocommerce-admin' ),
 					product.name
 				)
@@ -96,6 +97,7 @@ class ProductStockCard extends Component {
 			createNotice(
 				'error',
 				sprintf(
+					/* translators: %s = name of the product having stock updated */
 					__( '%s stock could not be updated.', 'woocommerce-admin' ),
 					product.name
 				)
@@ -155,6 +157,7 @@ class ProductStockCard extends Component {
 		return (
 			<span className="woocommerce-stock-activity-card__stock-quantity">
 				{ sprintf(
+					/* translators: %s = name of the product having stock updated */
 					__( '%d in stock', 'woocommerce-admin' ),
 					product.stock_quantity
 				) }
