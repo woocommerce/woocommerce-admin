@@ -6,7 +6,7 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { ITEMS_STORE_NAME } from '@woocommerce/data';
-import { withSelect } from '@wordpress/data';
+import { withSelect, withDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -19,6 +19,7 @@ import ReportError from '../../components/report-error';
 import ReportSummary from '../../components/report-summary';
 import VariationsReportTable from '../variations/table';
 import ReportFilters from '../../components/report-filters';
+import { STORE_KEY as CES_STORE_KEY } from '../../../customer-effort-score-tracks/data/constants';
 
 class ProductsReport extends Component {
 	getChartMeta() {
@@ -60,6 +61,7 @@ class ProductsReport extends Component {
 			isError,
 			isRequesting,
 			isSingleProductVariable,
+			addCesSurveyTrack,
 		} = this.props;
 
 		if ( isError ) {
@@ -74,6 +76,16 @@ class ProductsReport extends Component {
 			chartQuery.segmentby =
 				compareObject === 'products' ? 'product' : 'variation';
 		}
+
+		filters[ 0 ].filters[ 2 ].settings.onClick = () => {
+			addCesSurveyTrack(
+				'woocommerce_admin_analytics_filtered',
+				__(
+					'How easy was it to filter your store analytics?',
+					'woocommerce-admin'
+				)
+			);
+		};
 
 		return (
 			<Fragment>
@@ -177,8 +189,8 @@ export default compose(
 					'is-variable': isVariable,
 				},
 				isSingleProductView,
-				isSingleProductVariable: isVariable,
 				isRequesting: isProductsRequesting,
+				isSingleProductVariable: isVariable,
 				isError: isProductsError,
 			};
 		}
@@ -187,5 +199,9 @@ export default compose(
 			query,
 			isSingleProductView,
 		};
+	} ),
+	withDispatch( ( dispatch ) => {
+		const { addCesSurveyTrack } = dispatch( CES_STORE_KEY );
+		return { addCesSurveyTrack };
 	} )
 )( ProductsReport );

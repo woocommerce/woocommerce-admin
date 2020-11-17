@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Fragment } from '@wordpress/element';
 import PropTypes from 'prop-types';
+import { withDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -15,6 +16,7 @@ import ReportError from '../../components/report-error';
 import ReportSummary from '../../components/report-summary';
 import VariationsReportTable from './table';
 import ReportFilters from '../../components/report-filters';
+import { STORE_KEY as CES_STORE_KEY } from '../../../customer-effort-score-tracks/data/constants';
 
 const getChartMeta = ( { query } ) => {
 	const isCompareView =
@@ -31,7 +33,7 @@ const getChartMeta = ( { query } ) => {
 
 const VariationsReport = ( props ) => {
 	const { itemsLabel, mode } = getChartMeta( props );
-	const { path, query, isError, isRequesting } = props;
+	const { path, query, isError, isRequesting, addCesSurveyTrack } = props;
 
 	if ( isError ) {
 		return <ReportError isError />;
@@ -44,6 +46,16 @@ const VariationsReport = ( props ) => {
 	if ( mode === 'item-comparison' ) {
 		chartQuery.segmentby = 'variation';
 	}
+
+	filters[ 0 ].filters[ 2 ].settings.onClick = () => {
+		addCesSurveyTrack(
+			'woocommerce_admin_analytics_filtered',
+			__(
+				'How easy was it to filter your store analytics?',
+				'woocommerce-admin'
+			)
+		);
+	};
 
 	return (
 		<Fragment>
@@ -91,4 +103,7 @@ VariationsReport.propTypes = {
 	query: PropTypes.object.isRequired,
 };
 
-export default VariationsReport;
+export default withDispatch( ( dispatch ) => {
+	const { addCesSurveyTrack } = dispatch( CES_STORE_KEY );
+	return { addCesSurveyTrack };
+} )( VariationsReport );
