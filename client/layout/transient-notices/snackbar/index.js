@@ -59,6 +59,18 @@ function Snackbar(
 		onRemove();
 	}
 
+	function onActionClick( event, onClick ) {
+		event.stopPropagation();
+
+		if ( explicitDismiss ) {
+			onRemove();
+		}
+
+		if ( onClick ) {
+			onClick( event );
+		}
+	}
+
 	useSpokenMessage( spokenMessage, politeness );
 
 	// Only set up the timeout dismiss if we're not explicitly dismissing.
@@ -113,15 +125,9 @@ function Snackbar(
 							key={ index }
 							href={ url }
 							isTertiary
-							onClick={ ( event ) => {
-								event.stopPropagation();
-								if ( explicitDismiss ) {
-									onRemove();
-								}
-								if ( onClick ) {
-									onClick( event );
-								}
-							} }
+							onClick={ ( event ) =>
+								onActionClick( event, onClick )
+							}
 							className="components-snackbar__action"
 						>
 							{ label }
