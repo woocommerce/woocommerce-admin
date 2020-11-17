@@ -2,10 +2,10 @@ version: "3"
 
 services:
   phpunit:
-    build: "docker/phpunit"
+    build: "phpunit"
     volumes:
       - "testsuite:/tmp"
-      - ".:/plugin"
+      - "../:/plugin"
     working_dir: "/plugin"
     command: "-c /plugin/phpunit.xml.dist"
     environment:
