@@ -8,10 +8,9 @@ import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { uniqueId, find } from 'lodash';
-import PagesIcon from 'gridicons/dist/pages';
 import CrossIcon from 'gridicons/dist/cross-small';
 import classnames from 'classnames';
-import { Icon, lifesaver } from '@wordpress/icons';
+import { Icon, help as helpIcon } from '@wordpress/icons';
 import { getSetting, getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
@@ -24,13 +23,13 @@ import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
 import {
 	getUnreadNotes,
-	getUnreadOrders,
 	getUnapprovedReviews,
 	getUnreadStock,
 } from './unread-indicators';
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
+import { DisplayOptions } from './display-options';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -40,9 +39,6 @@ const InboxPanel = lazy( () =>
 	import(
 		/* webpackChunkName: "activity-panels-inbox" */ '../../inbox-panel'
 	)
-);
-const OrdersPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-orders" */ './panels/orders' )
 );
 const StockPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-stock" */ './panels/stock' )
@@ -116,14 +112,14 @@ export class ActivityPanel extends Component {
 		}
 	}
 
-	// @todo Pull in dynamic unread status/count
-	getTabs() {
+	isHomescreen() {
+		const { location } = this.props.getHistory();
+
+		return location.pathname === '/';
+	}
+
+	isPerformingSetupTask() {
 		const {
-			hasUnreadNotes,
-			hasUnreadOrders,
-			hasUnapprovedReviews,
-			hasUnreadStock,
-			isEmbedded,
 			requestingTaskListOptions,
 			taskListComplete,
 			taskListHidden,
@@ -136,12 +132,37 @@ export class ActivityPanel extends Component {
 			( requestingTaskListOptions === true ||
 				( taskListHidden === false && taskListComplete === false ) );
 
-		// Don't show the inbox on the Home screen.
-		const { location } = this.props.getHistory();
+		return isPerformingSetupTask;
+	}
 
+	// @todo Pull in dynamic unread status/count
+	getTabs() {
+		const {
+			hasUnreadNotes,
+			hasUnapprovedReviews,
+			hasUnreadStock,
+			isEmbedded,
+			taskListComplete,
+			taskListHidden,
+		} = this.props;
+
+		const isPerformingSetupTask = this.isPerformingSetupTask();
+
+		// Don't show the inbox on the Home screen.
 		const showInbox =
-			( isEmbedded || location.pathname !== '/' ) &&
-			! isPerformingSetupTask;
+			( isEmbedded || ! this.isHomescreen() ) && ! isPerformingSetupTask;
+
+		const showHelp =
+			( this.isHomescreen() && ! isEmbedded ) || isPerformingSetupTask;
+
+		const showDisplayOptions =
+			! isEmbedded && this.isHomescreen() && ! isPerformingSetupTask;
+
+		const showStockAndReviews =
+			( taskListComplete || taskListHidden ) && ! isPerformingSetupTask;
+
+		const showStoreSetup =
+			! taskListComplete && ! taskListHidden && ! isPerformingSetupTask;
 
 		const inbox = showInbox
 			? {
@@ -152,69 +173,67 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		const setup =
-			! taskListComplete && ! isPerformingSetupTask
-				? {
-						name: 'setup',
-						title: __( 'Store Setup', 'woocommerce-admin' ),
-						icon: <SetupProgress />,
-				  }
-				: null;
-
-		const ordersStockAndReviews =
-			taskListComplete && ! isPerformingSetupTask
-				? [
-						{
-							name: 'orders',
-							title: __( 'Orders', 'woocommerce-admin' ),
-							icon: <PagesIcon />,
-							unread: hasUnreadOrders,
-						},
-						manageStock === 'yes' && {
-							name: 'stock',
-							title: __( 'Stock', 'woocommerce-admin' ),
-							icon: (
-								<i className="material-icons-outlined">
-									widgets
-								</i>
-							),
-							unread: hasUnreadStock,
-						},
-						reviewsEnabled === 'yes' && {
-							name: 'reviews',
-							title: __( 'Reviews', 'woocommerce-admin' ),
-							icon: (
-								<i className="material-icons-outlined">
-									star_border
-								</i>
-							),
-							unread: hasUnapprovedReviews,
-						},
-				  ].filter( Boolean )
-				: [];
-
-		const help = isPerformingSetupTask
+		const setup = showStoreSetup
 			? {
-					name: 'help',
-					title: __( 'Help', 'woocommerce-admin' ),
-					icon: <Icon icon={ lifesaver } />,
+					name: 'setup',
+					title: __( 'Store Setup', 'woocommerce-admin' ),
+					icon: <SetupProgress />,
 			  }
 			: null;
 
-		return [ inbox, ...ordersStockAndReviews, setup, help ].filter(
-			Boolean
-		);
+		const stockAndReviews = showStockAndReviews
+			? [
+					manageStock === 'yes' && {
+						name: 'stock',
+						title: __( 'Stock', 'woocommerce-admin' ),
+						icon: (
+							<i className="material-icons-outlined">widgets</i>
+						),
+						unread: hasUnreadStock,
+					},
+					reviewsEnabled === 'yes' && {
+						name: 'reviews',
+						title: __( 'Reviews', 'woocommerce-admin' ),
+						icon: (
+							<i className="material-icons-outlined">
+								star_border
+							</i>
+						),
+						unread: hasUnapprovedReviews,
+					},
+			  ].filter( Boolean )
+			: [];
+
+		const help = showHelp
+			? {
+					name: 'help',
+					title: __( 'Help', 'woocommerce-admin' ),
+					icon: <Icon icon={ helpIcon } />,
+			  }
+			: null;
+
+		const displayOptions = showDisplayOptions
+			? {
+					component: DisplayOptions,
+			  }
+			: null;
+
+		return [
+			inbox,
+			...stockAndReviews,
+			setup,
+			displayOptions,
+			help,
+		].filter( Boolean );
 	}
 
 	getPanelContent( tab ) {
-		const { hasUnreadOrders, query, hasUnapprovedReviews } = this.props;
+		const { query, hasUnapprovedReviews } = this.props;
 		const { task } = query;
 
 		switch ( tab ) {
 			case 'inbox':
 				return <InboxPanel />;
-			case 'orders':
-				return <OrdersPanel hasActionableOrders={ hasUnreadOrders } />;
 			case 'stock':
 				return <StockPanel />;
 			case 'reviews':
@@ -244,6 +263,10 @@ export class ActivityPanel extends Component {
 		const clearPanel = () => {
 			this.clearPanel();
 		};
+
+		if ( currentTab === 'display-options' ) {
+			return null;
+		}
 
 		if ( currentTab === 'setup' ) {
 			const currentLocation = window.location.href;
@@ -378,7 +401,6 @@ ActivityPanel.defaultProps = {
 export default compose(
 	withSelect( ( select ) => {
 		const hasUnreadNotes = getUnreadNotes( select );
-		const hasUnreadOrders = getUnreadOrders( select );
 		const hasUnreadStock = getUnreadStock();
 		const hasUnapprovedReviews = getUnapprovedReviews( select );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
@@ -393,7 +415,6 @@ export default compose(
 
 		return {
 			hasUnreadNotes,
-			hasUnreadOrders,
 			hasUnreadStock,
 			hasUnapprovedReviews,
 			requestingTaskListOptions,

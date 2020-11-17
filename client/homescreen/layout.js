@@ -2,35 +2,45 @@
  * External dependencies
  */
 import {
-	Fragment,
 	Suspense,
 	lazy,
-	useState,
+	useCallback,
+	useLayoutEffect,
 	useRef,
-	useEffect,
+	useState,
 } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { NOTES_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
+import {
+	useUserPreferences,
+	NOTES_STORE_NAME,
+	OPTIONS_STORE_NAME,
+} from '@woocommerce/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import QuickLinks from '../quick-links';
 import StatsOverview from './stats-overview';
-import './style.scss';
-import '../dashboard/style.scss';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../inbox-panel';
 import { WelcomeModal } from './welcome-modal';
+import ActivityHeader from '../header/activity-panel/activity-header';
+import { ActivityPanel } from './activity-panel';
+
+import './style.scss';
+import '../dashboard/style.scss';
+import { StoreManagementLinks } from '../store-management-links';
+import { Column } from './column';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
 );
 
 export const Layout = ( {
+	defaultHomescreenLayout,
 	isBatchUpdating,
 	query,
 	requestingTaskList,
@@ -39,62 +49,61 @@ export const Layout = ( {
 	shouldShowWelcomeModal,
 	updateOptions,
 } ) => {
+	const userPrefs = useUserPreferences();
+	const twoColumns =
+		( userPrefs.homepage_layout || defaultHomescreenLayout ) ===
+		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
-	const [ isContentSticky, setIsContentSticky ] = useState( false );
-	const content = useRef( null );
-	const maybeStickContent = () => {
-		if ( ! content.current ) {
-			return;
-		}
-		const { bottom } = content.current.getBoundingClientRect();
-		const shouldBeSticky = showInbox && bottom < window.innerHeight;
-
-		setIsContentSticky( shouldBeSticky );
-	};
-
-	useEffect( () => {
-		maybeStickContent();
-		window.addEventListener( 'resize', maybeStickContent );
-
-		return () => {
-			window.removeEventListener( 'resize', maybeStickContent );
-		};
-	}, [] );
 
 	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
-
-	const isInboxPanelEmpty = ( isEmpty ) => {
-		if ( isBatchUpdating ) {
-			return;
-		}
-		setShowInbox( ! isEmpty );
-	};
 
 	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
 	}
 
+	const isWideViewport = useRef( true );
+	const maybeToggleColumns = useCallback( () => {
+		isWideViewport.current = window.innerWidth >= 782;
+	}, [] );
+
+	useLayoutEffect( () => {
+		maybeToggleColumns();
+		window.addEventListener( 'resize', maybeToggleColumns );
+
+		return () => {
+			window.removeEventListener( 'resize', maybeToggleColumns );
+		};
+	}, [ maybeToggleColumns ] );
+
+	const shouldStickColumns = isWideViewport.current && twoColumns;
+
 	const renderColumns = () => {
 		return (
-			<Fragment>
-				{ showInbox && (
-					<div className="woocommerce-homescreen-column is-inbox">
-						<InboxPanel isPanelEmpty={ isInboxPanelEmpty } />
-					</div>
-				) }
-				<div
-					className="woocommerce-homescreen-column"
-					ref={ content }
-					style={ {
-						position: isContentSticky ? 'sticky' : 'static',
-					} }
-				>
+			<>
+				<Column shouldStick={ shouldStickColumns }>
+					<ActivityHeader
+						className="your-store-today"
+						title={ __( 'Your store today', 'woocommerce-admin' ) }
+						subtitle={ __(
+							"To do's, tips, and insights for your business",
+							'woocommerce-admin'
+						) }
+					/>
+					<ActivityPanel />
 					{ isTaskListEnabled && renderTaskList() }
+					{ ! isTaskListEnabled && shouldStickColumns && (
+						<StoreManagementLinks />
+					) }
+				</Column>
+				<Column shouldStick={ shouldStickColumns }>
 					<StatsOverview />
-					{ ! isTaskListEnabled && <QuickLinks /> }
-				</div>
-			</Fragment>
+					<InboxPanel />
+					{ ! isTaskListEnabled && ! shouldStickColumns && (
+						<StoreManagementLinks />
+					) }
+				</Column>
+			</>
 		);
 	};
 
@@ -113,7 +122,7 @@ export const Layout = ( {
 	return (
 		<div
 			className={ classnames( 'woocommerce-homescreen', {
-				hasInbox: showInbox,
+				'two-columns': twoColumns,
 			} ) }
 		>
 			{ isDashboardShown
@@ -163,20 +172,28 @@ Layout.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { isNotesRequesting } = select( NOTES_STORE_NAME );
-		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+		const { getOption, isResolving, hasFinishedResolution } = select(
+			OPTIONS_STORE_NAME
+		);
 
 		const welcomeModalDismissed =
 			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
 			'yes';
 
-		const welcomeModalDismissedIsResolving = isResolving( 'getOption', [
-			'woocommerce_task_list_welcome_modal_dismissed',
-		] );
+		const welcomeModalDismissedHasResolved = hasFinishedResolution(
+			'getOption',
+			[ 'woocommerce_task_list_welcome_modal_dismissed' ]
+		);
 
 		const shouldShowWelcomeModal =
-			! welcomeModalDismissedIsResolving && ! welcomeModalDismissed;
+			welcomeModalDismissedHasResolved && ! welcomeModalDismissed;
+
+		const defaultHomescreenLayout =
+			getOption( 'woocommerce_default_homepage_layout' ) ||
+			'single_column';
 
 		return {
+			defaultHomescreenLayout,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			taskListComplete:

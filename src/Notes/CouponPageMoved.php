@@ -2,12 +2,13 @@
 /**
  * WooCommerce Admin Coupon Page Moved provider.
  *
- * Adds a notice when the store manager access the coupons page via the old WooCommere > Coupons menu.
+ * Adds a notice when the store manager access the coupons page via the old WooCommerce > Coupons menu.
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
 
 use Automattic\WooCommerce\Admin\Features\CouponsMovedTrait;
+use Automattic\WooCommerce\Admin\Loader;
 use stdClass;
 use WC_Data_Store;
 
@@ -16,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Coupon_Page_Moved class.
  */
-class Coupon_Page_Moved {
+class CouponPageMoved {
 
 	use NoteTraits, CouponsMovedTrait;
 
@@ -51,6 +52,11 @@ class Coupon_Page_Moved {
 
 		// If we already have a notice, don't add a new one.
 		if ( self::has_unactioned_note() ) {
+			return false;
+		}
+
+		// If new navigation feature is enabled.
+		if ( Loader::is_feature_enabled( 'navigation' ) ) {
 			return false;
 		}
 

@@ -4,6 +4,8 @@
 import 'react-dates/initialize';
 // The above: Turn on react-dates classes/styles, see https://github.com/airbnb/react-dates#initialize
 
+export { default as Accordion } from './accordion';
+export { default as AccordionPanel } from './accordion/panel';
 export { default as AdvancedFilters } from './advanced-filters';
 export { default as AnimationSlider } from './animation-slider';
 export { default as Chart } from './chart';
@@ -62,3 +64,4 @@ export { default as Timeline } from './timeline';
 export { default as useFilters } from './higher-order/use-filters';
 export { default as ViewMoreList } from './view-more-list';
 export { default as WebPreview } from './web-preview';
+export { Badge } from './badge';

@@ -8,7 +8,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\PluginsHelper;
-use \Automattic\WooCommerce\Admin\Notes\Review_Shipping_Settings;
+use \Automattic\WooCommerce\Admin\Notes\ReviewShippingSettings;
 
 /**
  * This contains logic for setting up shipping when the profiler completes.
@@ -20,6 +20,14 @@ class OnboardingSetUpShipping {
 	public function __construct() {
 		add_action(
 			'woocommerce_onboarding_profile_completed',
+			array(
+				__CLASS__,
+				'on_onboarding_profile_completed',
+			)
+		);
+
+		add_action(
+			'jetpack_authorize_ending_authorized',
 			array(
 				__CLASS__,
 				'on_onboarding_profile_completed',
@@ -39,8 +47,33 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
+		$country_code = WC()->countries->get_base_country();
+
+		// Corrolary to the logic in /client/task-list/tasks.js.
+		// Skip for countries we don't recommend WCS for.
+		if ( in_array( $country_code, array( 'AU', 'CA', 'GB' ), true ) ) {
+			return;
+		}
+
+		if (
+			! class_exists( '\Jetpack_Data' ) ||
+			! class_exists( '\WC_Connect_Loader' ) ||
+			! class_exists( '\WC_Connect_Options' )
+		) {
+			return;
+		}
+
+		$user_token        = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
+		$jetpack_connected = isset( $user_token->external_user_id );
+		$wcs_version       = \WC_Connect_Loader::get_wcs_version();
+		$wcs_tos_accepted  = \WC_Connect_Options::get_option( 'tos_accepted' );
+
+		if ( ! $jetpack_connected || ! $wcs_version || ! $wcs_tos_accepted ) {
+			return;
+		}
+
 		self::set_up_free_local_shipping();
-		Review_Shipping_Settings::possibly_add_note();
+		ReviewShippingSettings::possibly_add_note();
 		wc_admin_record_tracks_event( 'shipping_automatically_set_up' );
 	}
 

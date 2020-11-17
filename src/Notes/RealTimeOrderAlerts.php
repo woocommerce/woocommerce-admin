@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Real_Time_Order_Alerts
  */
-class Real_Time_Order_Alerts {
+class RealTimeOrderAlerts {
 	/**
 	 * Note traits.
 	 */
@@ -36,7 +36,7 @@ class Real_Time_Order_Alerts {
 		}
 
 		// Check that the previous mobile app note was not actioned.
-		if ( Mobile_App::has_note_been_actioned() ) {
+		if ( MobileApp::has_note_been_actioned() ) {
 			return;
 		}
 

@@ -9,7 +9,7 @@
 
 use \Automattic\WooCommerce\Admin\Install as Installer;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
-use \Automattic\WooCommerce\Admin\Notes\Deactivate_Plugin;
+use \Automattic\WooCommerce\Admin\Notes\DeactivatePlugin;
 
 /**
  * Update order stats `status` index length.
@@ -115,7 +115,7 @@ function wc_admin_update_130_db_version() {
 function wc_admin_update_140_change_deactivate_plugin_note_type() {
 	global $wpdb;
 
-	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}wc_admin_notes SET type = 'info' WHERE name = %s", Deactivate_Plugin::NOTE_NAME ) );
+	$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}wc_admin_notes SET type = 'info' WHERE name = %s", DeactivatePlugin::NOTE_NAME ) );
 }
 
 /**
@@ -129,7 +129,7 @@ function wc_admin_update_140_db_version() {
  * Remove Facebook Experts note.
  */
 function wc_admin_update_160_remove_facebook_note() {
-	WC_Admin_Notes::delete_notes_with_name( 'wc-admin-facebook-marketing-expert' );
+	Notes::delete_notes_with_name( 'wc-admin-facebook-marketing-expert' );
 }
 
 /**
@@ -137,4 +137,18 @@ function wc_admin_update_160_remove_facebook_note() {
  */
 function wc_admin_update_160_db_version() {
 	Installer::update_db_version( '1.6.0' );
+}
+
+/**
+ * Set "two column" homescreen layout as default for existing stores.
+ */
+function wc_admin_update_170_homescreen_layout() {
+	add_option( 'woocommerce_default_homepage_layout', 'two_columns', '', 'no' );
+}
+
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_170_db_version() {
+	Installer::update_db_version( '1.7.0' );
 }

@@ -13,12 +13,15 @@ import {
  */
 import './stylesheets/_index.scss';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
+import { CustomerEffortScoreTracksContainer } from './customer-effort-score-tracks';
+import Navigation from './navigation';
 
 // Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
 // eslint-disable-next-line no-undef,camelcase
 __webpack_public_path__ = global.wcAdminAssets.path;
 
 const appRoot = document.getElementById( 'root' );
+const embeddedRoot = document.getElementById( 'woocommerce-embedded-root' );
 const settingsGroup = 'wc_admin';
 const hydrateUser = window.wcSettings.currentUserData;
 
@@ -42,8 +45,7 @@ if ( appRoot ) {
 		);
 	}
 	render( <HydratedPageLayout />, appRoot );
-} else {
-	const embeddedRoot = document.getElementById( 'woocommerce-embedded-root' );
+} else if ( embeddedRoot ) {
 	let HydratedEmbedLayout = withSettingsHydration(
 		settingsGroup,
 		window.wcSettings
@@ -72,3 +74,21 @@ if ( appRoot ) {
 		wpBody.insertBefore( noticeContainer, wrap )
 	);
 }
+
+const navigationRoot = document.getElementById(
+	'woocommerce-embedded-navigation'
+);
+
+if ( navigationRoot ) {
+	render( <Navigation />, navigationRoot );
+}
+
+// Set up customer effort score survey.
+( function () {
+	const root = appRoot || embeddedRoot;
+
+	render(
+		<CustomerEffortScoreTracksContainer />,
+		root.insertBefore( document.createElement( 'div' ), null )
+	);
+} )();

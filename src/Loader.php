@@ -10,6 +10,7 @@ use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 use Automattic\WooCommerce\Admin\API\Plugins;
+use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 use WC_Marketplace_Suggestions;
 
 /**
@@ -60,6 +61,8 @@ class Loader {
 		add_action( 'init', array( __CLASS__, 'define_tables' ) );
 		// Load feature before WooCommerce update hooks.
 		add_action( 'init', array( __CLASS__, 'load_features' ), 4 );
+		add_filter( 'woocommerce_get_sections_advanced', array( __CLASS__, 'add_features_section' ) );
+		add_filter( 'woocommerce_get_settings_advanced', array( __CLASS__, 'add_features_settings' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
@@ -111,16 +114,6 @@ class Loader {
 			$wpdb->$name    = $wpdb->prefix . $table;
 			$wpdb->tables[] = $table;
 		}
-	}
-
-	/**
-	 * Returns true if WooCommerce Admin is currently running in a development environment.
-	 */
-	public static function is_dev() {
-		if ( self::is_feature_enabled( 'devdocs' ) && defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -233,13 +226,64 @@ class Loader {
 	public static function load_features() {
 		$features = self::get_features();
 		foreach ( $features as $feature ) {
-			$feature = str_replace( '-', '', ucwords( strtolower( $feature ), '-' ) );
-			$feature = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
+			$feature       = str_replace( '-', '', ucwords( strtolower( $feature ), '-' ) );
+			$feature_class = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
 
-			if ( class_exists( $feature ) ) {
-				new $feature();
+			// Handle features contained in subdirectory.
+			if ( ! class_exists( $feature_class ) && class_exists( $feature_class . '\\Init' ) ) {
+				$feature_class = $feature_class . '\\Init';
+			}
+
+			if ( class_exists( $feature_class ) ) {
+				new $feature_class();
 			}
 		}
+	}
+
+	/**
+	 * Adds the Features section to the advanced tab of WooCommerce Settings
+	 *
+	 * @param array $sections Sections.
+	 * @return array
+	 */
+	public static function add_features_section( $sections ) {
+		$sections['features'] = __( 'Features', 'woocommerce-admin' );
+		return $sections;
+	}
+
+	/**
+	 * Adds the Features settings.
+	 *
+	 * @param array  $settings Settings.
+	 * @param string $current_section Current section slug.
+	 * @return array
+	 */
+	public static function add_features_settings( $settings, $current_section ) {
+		if ( 'features' !== $current_section ) {
+			return $settings;
+		}
+
+		return apply_filters(
+			'woocommerce_settings_features',
+			array(
+				array(
+					'title' => __( 'Features', 'woocommerce-admin' ),
+					'type'  => 'title',
+					'desc'  => __( 'Start using new features that are being progressively rolled out to improve the store management experience.', 'woocommerce-admin' ),
+					'id'    => 'features_options',
+				),
+				array(
+					'title' => __( 'Navigation', 'woocommerce-admin' ),
+					'desc'  => __( 'Adds the new WooCommerce navigation experience to the dashboard', 'woocommerce-admin' ),
+					'id'    => 'woocommerce_navigation_enabled',
+					'type'  => 'checkbox',
+				),
+				array(
+					'type' => 'sectionend',
+					'id'   => 'features_options',
+				),
+			)
+		);
 	}
 
 	/**
@@ -321,12 +365,30 @@ class Loader {
 		wp_set_script_translations( 'wc-currency', 'woocommerce-admin' );
 
 		wp_register_script(
+			'wc-customer-effort-score',
+			self::get_url( 'customer-effort-score/index', 'js' ),
+			array(),
+			$js_file_version,
+			true
+		);
+
+		wp_register_script(
 			'wc-navigation',
 			self::get_url( 'navigation/index', 'js' ),
 			array( 'wp-url', 'wp-hooks' ),
 			$js_file_version,
 			true
 		);
+
+			// NOTE: This should be removed when Gutenberg is updated and
+			// the notices package is removed from WooCommerce Admin.
+			wp_register_script(
+				'wc-notices',
+				self::get_url( 'notices/index', 'js' ),
+				array(),
+				$js_file_version,
+				true
+			);
 
 		wp_register_script(
 			'wc-number',
@@ -377,8 +439,12 @@ class Loader {
 				'wp-keycodes',
 				'wc-csv',
 				'wc-currency',
+				'wc-customer-effort-score',
 				'wc-date',
 				'wc-navigation',
+				// NOTE: This should be removed when Gutenberg is updated and
+				// the notices package is removed from WooCommerce Admin.
+				'wc-notices',
 				'wc-number',
 				'wc-store-data',
 			),
@@ -404,6 +470,14 @@ class Loader {
 		);
 		wp_style_add_data( 'wc-components-ie', 'rtl', 'replace' );
 
+		wp_register_style(
+			'wc-customer-effort-score',
+			self::get_url( 'customer-effort-score/style', 'css' ),
+			array(),
+			$css_file_version
+		);
+		wp_style_add_data( 'wc-customer-effort-score', 'rtl', 'replace' );
+
 		wp_register_script(
 			WC_ADMIN_APP,
 			self::get_url( 'app/index', 'js' ),
@@ -411,7 +485,9 @@ class Loader {
 				'wp-core-data',
 				'wc-components',
 				'wp-date',
+				'wp-plugins',
 				'wc-tracks',
+				'wc-navigation',
 			),
 			$js_file_version,
 			true
@@ -433,7 +509,7 @@ class Loader {
 		wp_register_style(
 			WC_ADMIN_APP,
 			self::get_url( "app/style{$rtl}", 'css' ),
-			array( 'wc-components' ),
+			array( 'wc-components', 'wc-customer-effort-score' ),
 			$css_file_version
 		);
 
@@ -760,7 +836,7 @@ class Loader {
 	 * TODO: See usage in `admin.php`. This needs refactored and implemented properly in core.
 	 */
 	public static function is_embed_page() {
-		return wc_admin_is_connected_page();
+		return wc_admin_is_connected_page() || ( ! self::is_admin_page() && Screen::is_woocommerce_page() );
 	}
 
 	/**
@@ -859,7 +935,7 @@ class Loader {
 	 * See https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/PromotingAppswithAppBanners/PromotingAppswithAppBanners.html
 	 */
 	public static function smart_app_banner() {
-		if ( self::is_admin_page() ) {
+		if ( self::is_admin_or_embed_page() ) {
 			echo "
 				<meta name='apple-itunes-app' content='app-id=1389130815'>
 			";
@@ -1308,7 +1384,11 @@ class Loader {
 			$handles_for_injection = [
 				'wc-csv',
 				'wc-currency',
+				'wc-customer-effort-score',
 				'wc-navigation',
+				// NOTE: This should be removed when Gutenberg is updated and
+				// the notices package is removed from WooCommerce Admin.
+				'wc-notices',
 				'wc-number',
 				'wc-date',
 				'wc-components',
