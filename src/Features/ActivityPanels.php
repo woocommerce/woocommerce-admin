@@ -90,7 +90,7 @@ class ActivityPanels {
 			);
 			set_transient( self::LOW_STOCK_TRANSIENT_NAME, $low_stock_out_of_stock_count, HOUR_IN_SECONDS );
 		}
-		return $low_stock_out_of_stock_count;
+		return intval( $low_stock_out_of_stock_count );
 	}
 
 	/**
