@@ -448,6 +448,10 @@ class Menu {
 	 * @return bool
 	 */
 	public static function has_callback( $menu_item ) {
+		if ( ! $menu_item || ! isset( $menu_item[ self::CALLBACK ] ) ) {
+			return false;
+		}
+
 		$callback = $menu_item[ self::CALLBACK ];
 
 		if (
@@ -478,6 +482,14 @@ class Menu {
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( self::has_callback( $menu_item ) ) {
+				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+				continue;
+			}
+
+			// WordPress core menus make the parent item the same URL as the first child.
+			$has_children = isset( $submenu[ $menu_item[ self::CALLBACK ] ] ) && isset( $submenu[ $menu_item[ self::CALLBACK ] ][0] );
+			$first_child  = $has_children ? $submenu[ $menu_item[ self::CALLBACK ] ][0] : null;
+			if ( self::has_callback( $first_child ) ) {
 				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
 			}
 		}
