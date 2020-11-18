@@ -364,7 +364,6 @@ export default withSelect( ( select, props ) => {
 	if (
 		countUnreadOrders === null ||
 		typeof reportOrders === 'undefined' ||
-		typeof actionableOrders === 'undefined' ||
 		( reportOrders.length && ! actionableOrders.length ) ||
 		isRequesting
 	) {
