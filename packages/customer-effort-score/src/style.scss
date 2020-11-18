@@ -13,6 +13,11 @@
 	}
 
 	.components-radio-control__option {
+		&:not(:last-child) {
+			// Override package component style.
+			margin-bottom: 0;
+		}
+
 		input {
 			// Hide the radio input but keep it accessibile.
 			position: absolute;
@@ -31,14 +36,15 @@
 			&:hover {
 				background-color: $studio-wordpress-blue-0;
 			}
+		}
 
-			input:focus + & {
-				outline: 2px solid $studio-wordpress-blue;
-			}
+		input:focus + label {
+			outline: 2px solid $studio-wordpress-blue;
+			background-color: peach;
+		}
 
-			input:checked + & {
-				background-color: $studio-wordpress-blue-0;
-			}
+		input:checked + label {
+			background-color: $studio-wordpress-blue-0;
 		}
 
 		// Replace the hidden radio input with emoji.
