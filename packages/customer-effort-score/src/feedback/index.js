@@ -13,19 +13,21 @@ import {
 import { __ } from '@wordpress/i18n';
 
 /**
- * Use `CustomerEffortScore` to gather a customer effort score.
+ * Provides a modal requesting customer feedback.
  *
- * NOTE: This should live in @woocommerce/customer-effort-score to allow
- * reuse.
+ * A question is displayed in the modal asking the customer to score the
+ * difficulty completing a task. A group of radio buttons, styled with
+ * emoji facial expressions, are used to provide a score between 1 and 5.
  *
- * @param {Object}   props                Component props.
- * @param {Function} props.trackCallback  Function to call when the results should be tracked.
- * @param {string}   props.label          The label displayed in the modal.
- * @param {Function} props.createNotice   Create a notice (snackbar).
- * @param {Function} props.openedCallback Function to call when the modal is opened.
- * @param {Object}   props.icon           Icon (React component) to be shown on the notice.
+ * A low score triggers a comments field to appear.
+ *
+ * Upon completion, the score and comments is sent to a callback function.
+ *
+ * @param {Object}   props              Component props.
+ * @param {Function} props.sendCallback Function to call when the results are sent.
+ * @param {string}   props.question     Question to ask the customer.
  */
-function Feedback( { trackCallback, label } ) {
+function Feedback( { sendCallback, question } ) {
 	const options = [
 		{
 			label: __( 'Very difficult', 'woocommerce-admin' ),
@@ -64,7 +66,7 @@ function Feedback( { trackCallback, label } ) {
 			return;
 		}
 		setOpen( false );
-		trackCallback( score, comments );
+		sendCallback( score, comments );
 	};
 
 	if ( ! isOpen ) {
@@ -78,7 +80,7 @@ function Feedback( { trackCallback, label } ) {
 			onRequestClose={ closeModal }
 		>
 			<Text variant="subtitle.small" as="p">
-				{ label }
+				{ question }
 			</Text>
 
 			<div className="woocommerce-customer-effort-score__selection">
@@ -128,7 +130,7 @@ Feedback.propTypes = {
 	/**
 	 * The function to call when the modal is actioned.
 	 */
-	trackCallback: PropTypes.func.isRequired,
+	sendCallback: PropTypes.func.isRequired,
 	/**
 	 * The label displayed in the modal.
 	 */
