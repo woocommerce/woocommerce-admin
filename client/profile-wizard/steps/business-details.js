@@ -38,6 +38,8 @@ import { recordEvent } from '@woocommerce/tracks';
 import { getCountryCode, getCurrencyRegion } from '../../dashboard/utils';
 import { CurrencyContext } from '../../lib/currency-context';
 import { createNoticesFromResponse } from '../../lib/notices';
+import { platformOptions } from './platform-options';
+import { sellingVenueOptions } from './selling-venue-options';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
@@ -659,7 +661,7 @@ class BusinessDetails extends Component {
 			isInstallingActivating,
 			hasInstallActivateError,
 		} = this.props;
-		const { formatAmount } = this.context;
+
 		const productCountOptions = [
 			{
 				key: '0',
@@ -683,128 +685,6 @@ class BusinessDetails extends Component {
 			{
 				key: '1000+',
 				label: this.getNumberRangeString( 1000 ),
-			},
-		];
-
-		const revenueOptions = [
-			{
-				key: 'none',
-				label: sprintf(
-					/* translators: %s: $0 revenue amount */
-					__( "%s (I'm just getting started)", 'woocommerce-admin' ),
-					formatAmount( 0 )
-				),
-			},
-			{
-				key: 'up-to-2500',
-				label: sprintf(
-					/* translators: %s: A given revenue amount, e.g., $2500 */
-					__( 'Up to %s', 'woocommerce-admin' ),
-					formatAmount( this.convertCurrency( 2500 ) )
-				),
-			},
-			{
-				key: '2500-10000',
-				label: this.getNumberRangeString(
-					this.convertCurrency( 2500 ),
-					this.convertCurrency( 10000 ),
-					formatAmount
-				),
-			},
-			{
-				key: '10000-50000',
-				label: this.getNumberRangeString(
-					this.convertCurrency( 10000 ),
-					this.convertCurrency( 50000 ),
-					formatAmount
-				),
-			},
-			{
-				key: '50000-250000',
-				label: this.getNumberRangeString(
-					this.convertCurrency( 50000 ),
-					this.convertCurrency( 250000 ),
-					formatAmount
-				),
-			},
-			{
-				key: 'more-than-250000',
-				label: sprintf(
-					/* translators: %s: A given revenue amount, e.g., $250000 */
-					__( 'More than %s', 'woocommerce-admin' ),
-					formatAmount( this.convertCurrency( 250000 ) )
-				),
-			},
-		];
-
-		const sellingVenueOptions = [
-			{
-				key: 'no',
-				label: __( 'No', 'woocommerce-admin' ),
-			},
-			{
-				key: 'other',
-				label: __( 'Yes, on another platform', 'woocommerce-admin' ),
-			},
-			{
-				key: 'other-woocommerce',
-				label: __(
-					'Yes, I own a different store powered by WooCommerce',
-					'woocommerce-admin'
-				),
-			},
-			{
-				key: 'brick-mortar',
-				label: __(
-					'Yes, in person at physical stores and/or events',
-					'woocommerce-admin'
-				),
-			},
-			{
-				key: 'brick-mortar-other',
-				label: __(
-					'Yes, on another platform and in person at physical stores and/or events',
-					'woocommerce-admin'
-				),
-			},
-		];
-
-		const otherPlatformOptions = [
-			{
-				key: 'shopify',
-				label: __( 'Shopify', 'woocommerce-admin' ),
-			},
-			{
-				key: 'bigcommerce',
-				label: __( 'BigCommerce', 'woocommerce-admin' ),
-			},
-			{
-				key: 'magento',
-				label: __( 'Magento', 'woocommerce-admin' ),
-			},
-			{
-				key: 'wix',
-				label: __( 'Wix', 'woocommerce-admin' ),
-			},
-			{
-				key: 'amazon',
-				label: __( 'Amazon', 'woocommerce-admin' ),
-			},
-			{
-				key: 'ebay',
-				label: __( 'eBay', 'woocommerce-admin' ),
-			},
-			{
-				key: 'etsy',
-				label: __( 'Etsy', 'woocommerce-admin' ),
-			},
-			{
-				key: 'squarespace',
-				label: __( 'Squarespace', 'woocommerce-admin' ),
-			},
-			{
-				key: 'other',
-				label: __( 'Other', 'woocommerce-admin' ),
 			},
 		];
 
@@ -881,9 +761,7 @@ class BusinessDetails extends Component {
 														'Which platform is the store using?',
 														'woocommerce-admin'
 													) }
-													options={
-														otherPlatformOptions
-													}
+													options={ platformOptions }
 													required
 													{ ...getInputProps(
 														'other_platform'
