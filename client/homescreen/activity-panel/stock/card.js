@@ -155,9 +155,16 @@ class ProductStockCard extends Component {
 		}
 
 		return (
-			<span className="woocommerce-stock-activity-card__stock-quantity">
+			<span
+				className={ classnames(
+					'woocommerce-stock-activity-card__stock-quantity',
+					{
+						'out-of-stock': product.stock_quantity < 1,
+					}
+				) }
+			>
 				{ sprintf(
-					/* translators: %s = name of the product having stock updated */
+					/* translators: %d = stock quantity of the product being updated */
 					__( '%d in stock', 'woocommerce-admin' ),
 					product.stock_quantity
 				) }
