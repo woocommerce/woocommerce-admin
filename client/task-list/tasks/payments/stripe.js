@@ -273,14 +273,12 @@ class Stripe extends Component {
 					/>
 				),
 				manualConfigLink: (
-					<Link
-						href="#"
+					<Button
+						isLink
 						onClick={ () => {
 							this.setState( {
 								connectURL: null,
 							} );
-
-							return false;
 						} }
 					/>
 				),
