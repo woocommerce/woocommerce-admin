@@ -7,17 +7,22 @@
 
 	#wpadminbar,
 	#adminmenuwrap,
-	.woo-nav-tab-wrapper,
 	#adminmenuback {
 		display: none !important;
 	}
 
-	.woocommerce .subsubsub {
-		font-size: 14px;
-		margin: 5px 0;
-  }
-  
-  #wpcontent,
+	&.woocommerce_page_wc-settings {
+		.woo-nav-tab-wrapper {
+			display: none;
+		}
+
+		.woocommerce .subsubsub {
+			font-size: 14px;
+			margin: 5px 0;
+		}
+	}
+
+	#wpcontent,
 	#wpfooter {
 		margin-left: $navigation-width;
 
