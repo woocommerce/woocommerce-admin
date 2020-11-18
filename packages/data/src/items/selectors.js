@@ -21,11 +21,10 @@ export const getItemsTotalCount = (
 	defaultValue = 0
 ) => {
 	const resourceName = getResourceName( itemType, query );
-	return (
-		( state.items[ resourceName ] &&
-			state.items[ resourceName ].totalCount ) ||
-		defaultValue
-	);
+	const totalCount = state.items[ resourceName ]
+		? state.items[ resourceName ].totalCount
+		: defaultValue;
+	return totalCount;
 };
 
 export const getItemsError = ( state, itemType, query ) => {
