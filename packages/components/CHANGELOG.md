@@ -1,3 +1,7 @@
+# Unreleased
+
+-   Change styling of `<ProductImage />`
+
 # 5.1.2
 
 -   Update dependencies.
