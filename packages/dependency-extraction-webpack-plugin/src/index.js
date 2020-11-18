@@ -27,6 +27,12 @@ const wooRequestToExternal = ( request ) => {
 };
 
 const wooRequestToHandle = ( request ) => {
+	// Dependencies on `@woocommerce/navigation` must depend on `wc-admin-app`,
+	// which has a dependency on `wc-navigation` itself.
+	if ( request === '@woocommerce/navigation' ) {
+		return 'wc-admin-app';
+	}
+
 	if ( packages.includes( request ) ) {
 		return 'wc-' + request.substring( WOOCOMMERCE_NAMESPACE.length );
 	}
