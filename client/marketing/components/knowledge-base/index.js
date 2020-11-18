@@ -89,7 +89,8 @@ const KnowledgeBase = ( {
 					<div className="woocommerce-marketing-knowledgebase-card__post-text">
 						<h3>{ post.title }</h3>
 						<p className="woocommerce-marketing-knowledgebase-card__post-meta">
-							By { post.author_name }
+							{ __( 'By', 'woocommerce-admin' ) + ' ' }
+							{ post.author_name }
 							{ post.author_avatar && (
 								<img
 									src={ post.author_avatar.replace(
