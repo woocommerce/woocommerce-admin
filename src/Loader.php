@@ -1081,7 +1081,10 @@ class Loader {
 		if ( ! empty( $preload_settings ) ) {
 			$setting_options = new \WC_REST_Setting_Options_V2_Controller();
 			foreach ( $preload_settings as $group ) {
-				$group_settings   = $setting_options->get_group_settings( $group );
+				$group_settings = $setting_options->get_group_settings( $group );
+				if ( $group_settings instanceof \WP_Error ) {
+					continue;
+				}
 				$preload_settings = [];
 				foreach ( $group_settings as $option ) {
 					$preload_settings[ $option['id'] ] = $option['value'];
