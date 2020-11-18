@@ -39,12 +39,9 @@ class TaxesReport extends Component {
 		} = this.props;
 		const { mode, itemsLabel } = this.getChartMeta();
 
-		const compareProducts = filters[ 0 ].filters.filter(
+		filters[ 0 ].filters.filter(
 			( item ) => item.value === 'compare-taxes'
-		);
-		if ( compareProducts.length ) {
-			compareProducts[ 0 ].settings.onClick = addCesSurveyTrackForAnalytics;
-		}
+		)[ 0 ].settings.onClick = addCesSurveyTrackForAnalytics;
 
 		const chartQuery = {
 			...query,

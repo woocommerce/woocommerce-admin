@@ -50,14 +50,13 @@ export function addCesSurveyTrack(
  * Add a new CES survey track for the pages in Analytics menu
  */
 export function addCesSurveyTrackForAnalytics() {
-	return {
-		type: TYPES.ADD_CES_SURVEY_TRACK,
-		action: 'analytics_filtered',
-		label: __(
+	return addCesSurveyTrack(
+		'analytics_filtered',
+		__(
 			'How easy was it to filter your store analytics?',
 			'woocommerce-admin'
 		),
-		pageNow: 'woocommerce_page_wc-admin',
-		adminPage: 'woocommerce_page_wc-admin',
-	};
+		'woocommerce_page_wc-admin',
+		'woocommerce_page_wc-admin'
+	);
 }

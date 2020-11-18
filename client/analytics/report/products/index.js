@@ -77,12 +77,9 @@ class ProductsReport extends Component {
 				compareObject === 'products' ? 'product' : 'variation';
 		}
 
-		const compareProducts = filters[ 0 ].filters.filter(
+		filters[ 0 ].filters.filter(
 			( item ) => item.value === 'compare-products'
-		);
-		if ( compareProducts.length ) {
-			compareProducts[ 0 ].settings.onClick = addCesSurveyTrackForAnalytics;
-		}
+		)[ 0 ].settings.onClick = addCesSurveyTrackForAnalytics;
 
 		return (
 			<Fragment>
