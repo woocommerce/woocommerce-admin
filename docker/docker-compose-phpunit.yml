@@ -15,6 +15,7 @@ services:
 
   phpunit-db:
     image: mysql:5.7
+    hostname: "phpunit-db"
     environment:
       MYSQL_DATABASE: "wordpress_test"
       MYSQL_ROOT_PASSWORD: "password"
