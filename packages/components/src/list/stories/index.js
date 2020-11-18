@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import Gridicon from 'gridicons';
+import CartIcon from 'gridicons/dist/cart';
+import ChevronRightIcon from 'gridicons/dist/chevron-right';
+import MySitesIcon from 'gridicons/dist/my-sites';
+import LinkBreakIcon from 'gridicons/dist/link-break';
+import NoticeIcon from 'gridicons/dist/notice';
+
 import { withConsole } from '@storybook/addon-console';
 
 /**
@@ -65,26 +70,26 @@ export const Default = () => {
 export const BeforeAndAfter = () => {
 	const listItems = [
 		{
-			before: <Gridicon icon="cart" />,
-			after: <Gridicon icon="chevron-right" />,
+			before: <CartIcon />,
+			after: <ChevronRightIcon />,
 			title: 'WooCommerce.com',
 			href: 'https://woocommerce.com',
 			onClick: logItemClick,
 		},
 		{
-			before: <Gridicon icon="my-sites" />,
-			after: <Gridicon icon="chevron-right" />,
+			before: <MySitesIcon />,
+			after: <ChevronRightIcon />,
 			title: 'WordPress.org',
 			href: 'https://wordpress.org',
 			onClick: logItemClick,
 		},
 		{
-			before: <Gridicon icon="link-break" />,
+			before: <LinkBreakIcon />,
 			title: 'A list item with no action',
 			description: 'List item description text',
 		},
 		{
-			before: <Gridicon icon="notice" />,
+			before: <NoticeIcon />,
 			title: 'Click me!',
 			content: 'An alert will be triggered.',
 			onClick: ( event ) => {
@@ -101,27 +106,27 @@ export const BeforeAndAfter = () => {
 export const CustomStyleAndTags = () => {
 	const listItems = [
 		{
-			before: <Gridicon icon="cart" />,
-			after: <Gridicon icon="chevron-right" />,
+			before: <CartIcon />,
+			after: <ChevronRightIcon />,
 			title: 'WooCommerce.com',
 			href: 'https://woocommerce.com',
 			onClick: logItemClick,
 			listItemTag: 'woocommerce.com-link',
 		},
 		{
-			before: <Gridicon icon="my-sites" />,
-			after: <Gridicon icon="chevron-right" />,
+			before: <MySitesIcon />,
+			after: <ChevronRightIcon />,
 			title: 'WordPress.org',
 			href: 'https://wordpress.org',
 			onClick: logItemClick,
 			listItemTag: 'wordpress.org-link',
 		},
 		{
-			before: <Gridicon icon="link-break" />,
+			before: <LinkBreakIcon />,
 			title: 'A list item with no action',
 		},
 		{
-			before: <Gridicon icon="notice" />,
+			before: <NoticeIcon />,
 			title: 'Click me!',
 			content: 'An alert will be triggered.',
 			onClick: ( event ) => {
