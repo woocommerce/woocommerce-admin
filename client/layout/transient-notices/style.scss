@@ -24,12 +24,6 @@
 	}
 }
 
-.has-woocommerce-navigation {
-	.woocommerce-transient-notices {
-		left: $navigation-width + $gap;
-	}
-}
-
 .components-snackbar {
 	&.components-snackbar-explicit-dismiss {
 		cursor: default;
