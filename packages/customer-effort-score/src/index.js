@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
+import { noop } from 'lodash';
 
 /**
  * Internal dependencies
@@ -29,7 +30,7 @@ function CustomerEffortScore( {
 	trackCallback,
 	label,
 	createNotice,
-	openedCallback,
+	openedCallback = noop,
 	icon,
 } ) {
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
@@ -43,13 +44,13 @@ function CustomerEffortScore( {
 					onClick: () => {
 						setVisible( true );
 
-						if ( openedCallback ) {
-							openedCallback();
-						}
+						openedCallback();
 					},
 				},
 			],
 			icon,
+			explicitDismiss: true,
+			onDismiss: openedCallback,
 		} );
 
 		setShouldCreateNotice( false );
