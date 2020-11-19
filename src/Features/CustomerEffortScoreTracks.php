@@ -223,8 +223,7 @@ class CustomerEffortScoreTracks {
 		$has_duplicate = array_filter(
 			$queue,
 			function ( $queue_item ) use ( $item ) {
-				return $queue_item['action'] === $item['action']
-				&& $queue_item['label'] === $item['label'];
+				return $queue_item['action'] === $item['action'];
 			}
 		);
 		if ( $has_duplicate ) {
