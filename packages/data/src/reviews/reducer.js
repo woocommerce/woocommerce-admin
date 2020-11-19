@@ -8,8 +8,20 @@ const reducer = (
 		reviews: {},
 		errors: {},
 		data: {},
+		requesting: {},
 	},
-	{ type, query, reviews, totalCount, error }
+	{
+		type,
+		query,
+		reviews,
+		reviewId,
+		reviewData,
+		totalCount,
+		error,
+		isRequesting,
+		isUpdating,
+		selector,
+	}
 ) => {
 	switch ( type ) {
 		case TYPES.UPDATE_REVIEWS:
@@ -30,12 +42,39 @@ const reducer = (
 					...nextReviews,
 				},
 			};
+		case TYPES.SET_REVIEW:
+			return {
+				...state,
+				data: {
+					...state.data,
+					[ reviewId ]: reviewData,
+				},
+			};
 		case TYPES.SET_ERROR:
 			return {
 				...state,
 				errors: {
 					...state.errors,
 					[ JSON.stringify( query ) ]: error,
+				},
+			};
+		case TYPES.SET_REVIEW_IS_UPDATING:
+			return {
+				...state,
+				data: {
+					...state.data,
+					[ reviewId ]: {
+						...state.data[ reviewId ],
+						isUpdating,
+					},
+				},
+			};
+		case TYPES.SET_IS_REQUESTING:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					[ selector ]: isRequesting,
 				},
 			};
 		default:
