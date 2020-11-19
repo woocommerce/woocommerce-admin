@@ -11,6 +11,18 @@
 		display: none !important;
 	}
 
+	&.woocommerce_page_wc-settings,
+	&.woocommerce_page_wc-status {
+		.woo-nav-tab-wrapper {
+			display: none;
+		}
+
+		.woocommerce .subsubsub {
+			font-size: 14px;
+			margin: 5px 0;
+		}
+	}
+
 	#wpcontent,
 	#wpfooter {
 		margin-left: $navigation-width;
@@ -45,14 +57,14 @@
 		box-sizing: border-box;
 	}
 
-	&.is-expanded {
+	&.is-wc-nav-expanded {
 		#woocommerce-embedded-navigation {
 			width: $navigation-width;
 			height: 100%;
 		}
 	}
 
-	&.is-folded {
+	&.is-wc-nav-folded {
 		#wpcontent,
 		#wpfooter {
 			margin-left: 0;
