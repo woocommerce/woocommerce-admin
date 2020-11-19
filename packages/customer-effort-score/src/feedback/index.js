@@ -78,6 +78,7 @@ function Feedback( { recordScoreCallback, label } ) {
 			className="woocommerce-customer-effort-score"
 			title={ __( 'Please share your feedback', 'woocommerce-admin' ) }
 			onRequestClose={ closeModal }
+			shouldCloseOnClickOutside={ false }
 		>
 			<Text variant="subtitle.small" as="p">
 				{ label }
