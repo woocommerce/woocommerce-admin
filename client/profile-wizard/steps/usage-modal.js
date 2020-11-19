@@ -87,16 +87,10 @@ class UsageModal extends Component {
 			return null;
 		}
 
-		const { isRequesting } = this.props;
-		const { isRequestStarted } = this.state;
-		const isBusy = isRequestStarted && isRequesting;
-
-		const title =
-			this.props.title ||
-			__( 'Build a better WooCommerce', 'woocommerce-admin' );
-		const trackingMessage =
-			this.props.message ||
-			interpolateComponents( {
+		const {
+			isRequesting,
+			title = __( 'Build a better WooCommerce', 'woocommerce-admin' ),
+			message = interpolateComponents( {
 				mixedString: __(
 					'Get improved features and faster fixes by sharing non-sensitive data via {{link}}usage tracking{{/link}} ' +
 						'that shows us how WooCommerce is used. No personal data is tracked or stored.',
@@ -111,14 +105,13 @@ class UsageModal extends Component {
 						/>
 					),
 				},
-			} );
+			} ),
+			dismissActionText = __( 'No thanks', 'woocommerce-admin' ),
+			acceptActionText = __( 'Yes, count me in!', 'woocommerce-admin' ),
+		} = this.props;
 
-		const dismissActionText =
-			this.props.dismissActionText ||
-			__( 'No thanks', 'woocommerce-admin' );
-		const acceptActionText =
-			this.props.acceptActionText ||
-			__( 'Yes, count me in!', 'woocommerce-admin' );
+		const { isRequestStarted } = this.state;
+		const isBusy = isRequestStarted && isRequesting;
 
 		return (
 			<Modal
@@ -129,7 +122,7 @@ class UsageModal extends Component {
 			>
 				<div className="woocommerce-usage-modal__wrapper">
 					<div className="woocommerce-usage-modal__message">
-						{ trackingMessage }
+						{ message }
 					</div>
 					<div className="woocommerce-usage-modal__actions">
 						<Button
