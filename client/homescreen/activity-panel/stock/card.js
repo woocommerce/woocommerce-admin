@@ -91,7 +91,27 @@ class ProductStockCard extends Component {
 					/* translators: %s = name of the product having stock updated */
 					__( '%s stock updated.', 'woocommerce-admin' ),
 					product.name
-				)
+				),
+				{
+					actions: [
+						{
+							label: __( 'Undo', 'woocommerce-admin' ),
+							onClick: () => {
+								this.setState( {
+									editing: false,
+									quantity: product.stock_quantity,
+								} );
+
+								updateProductStock(
+									product,
+									product.stock_quantity
+								);
+
+								this.recordStockEvent( 'undo' );
+							},
+						},
+					],
+				}
 			);
 		} else {
 			createNotice(
