@@ -142,8 +142,12 @@ class Homescreen {
 	 * @param array $settings Shared component settings.
 	 */
 	public function component_settings( $settings ) {
-		$allowed_statuses       = array( 'pending', 'processing', 'completed' );
-		$status_counts          = array_map( 'wc_orders_count', $allowed_statuses );
+		$allowed_statuses = Loader::get_order_statuses( wc_get_order_statuses() );
+
+		// Remove the Draft Order status (from the Checkout Block).
+		unset( $allowed_statuses['checkout-draft'] );
+
+		$status_counts          = array_map( 'wc_orders_count', array_keys( $allowed_statuses ) );
 		$settings['orderCount'] = array_sum( $status_counts );
 
 		return $settings;
