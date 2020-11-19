@@ -73,4 +73,17 @@ class WC_Tests_CES_Tracks extends WC_Unit_Test_Case {
 
 		$this->assertCount( 1, $expected_queue_item );
 	}
+
+	/**
+	 * Verify that tasks performed using a mobile device do not get processed.
+	 */
+	public function test_disabled_for_mobile() {
+		add_filter( 'wp_is_mobile', '__return_true' );
+		do_action( 'woocommerce_update_options' );
+
+		$ces = $this->ces;
+
+		$queue_items = get_option( $ces::CES_TRACKS_QUEUE_OPTION_NAME, array() );
+		$this->assertEmpty( $queue_items );
+	}
 }
