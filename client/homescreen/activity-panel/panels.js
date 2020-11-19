@@ -8,6 +8,7 @@ import { __ } from '@wordpress/i18n';
  */
 import OrdersPanel from './orders';
 import StockPanel from './stock';
+import ReviewsPanel from './reviews';
 
 export function getAllPanels( {
 	countLowStockProducts,
@@ -15,6 +16,9 @@ export function getAllPanels( {
 	manageStock,
 	orderStatuses,
 	totalOrderCount,
+	reviewsEnabled,
+	hasUnapprovedReviews,
+	countUnreadReviews,
 } ) {
 	return [
 		totalOrderCount > 0 && {
@@ -39,6 +43,16 @@ export function getAllPanels( {
 				<StockPanel countLowStockProducts={ countLowStockProducts } />
 			),
 			title: __( 'Stock', 'woocommerce-admin' ),
+		},
+		reviewsEnabled === 'yes' && {
+			className: 'woocommerce-homescreen-card',
+			id: 'reviews-panel',
+			count: countUnreadReviews,
+			initialOpen: true,
+			panel: (
+				<ReviewsPanel hasUnapprovedReviews={ hasUnapprovedReviews } />
+			),
+			title: __( 'Reviews to moderate', 'woocommerce-admin' ),
 		},
 		// Add another panel row here
 	].filter( Boolean );

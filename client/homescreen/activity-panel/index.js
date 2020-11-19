@@ -16,11 +16,14 @@ import {
 	getUnreadOrders,
 } from './orders/utils';
 import { getAllPanels } from './panels';
+import { getUnreadReviews } from './reviews/utils';
 
 export const ActivityPanel = () => {
 	const panelsData = useSelect( ( select ) => {
 		const totalOrderCount = getSetting( 'orderCount', 0 );
 		const orderStatuses = getOrderStatuses( select );
+		const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
+		const countUnreadReviews = getUnreadReviews( select );
 		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
 		const manageStock = getSetting( 'manageStock', 'no' );
 		const countLowStockProducts = getLowStockCount( select );
@@ -31,6 +34,8 @@ export const ActivityPanel = () => {
 			manageStock,
 			orderStatuses,
 			totalOrderCount,
+			reviewsEnabled,
+			countUnreadReviews,
 		};
 	} );
 
