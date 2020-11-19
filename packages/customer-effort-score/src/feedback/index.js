@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Provides a modal requesting customer feedback.
  *
- * A question is displayed in the modal asking the customer to score the
+ * A label is displayed in the modal asking the customer to score the
  * difficulty completing a task. A group of radio buttons, styled with
  * emoji facial expressions, are used to provide a score between 1 and 5.
  *
@@ -23,11 +23,11 @@ import { __ } from '@wordpress/i18n';
  *
  * Upon completion, the score and comments is sent to a callback function.
  *
- * @param {Object}   props              Component props.
- * @param {Function} props.sendCallback Function to call when the results are sent.
- * @param {string}   props.question     Question to ask the customer.
+ * @param {Object}   props               Component props.
+ * @param {Function} props.trackCallback Function to call when the results are sent.
+ * @param {string}   props.label         Question to ask the customer.
  */
-function Feedback( { sendCallback, question } ) {
+function Feedback( { trackCallback, label } ) {
 	const options = [
 		{
 			label: __( 'Very difficult', 'woocommerce-admin' ),
@@ -66,7 +66,7 @@ function Feedback( { sendCallback, question } ) {
 			return;
 		}
 		setOpen( false );
-		sendCallback( score, comments );
+		trackCallback( score, comments );
 	};
 
 	if ( ! isOpen ) {
@@ -80,7 +80,7 @@ function Feedback( { sendCallback, question } ) {
 			onRequestClose={ closeModal }
 		>
 			<Text variant="subtitle.small" as="p">
-				{ question }
+				{ label }
 			</Text>
 
 			<div className="woocommerce-customer-effort-score__selection">
@@ -130,7 +130,7 @@ Feedback.propTypes = {
 	/**
 	 * The function to call when the modal is actioned.
 	 */
-	sendCallback: PropTypes.func.isRequired,
+	trackCallback: PropTypes.func.isRequired,
 	/**
 	 * The label displayed in the modal.
 	 */
