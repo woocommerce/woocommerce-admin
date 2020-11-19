@@ -62,9 +62,9 @@ class CategoriesReport extends Component {
 				: 'category';
 		}
 
-		filters[ 0 ].filters.filter(
+		filters[ 0 ].filters.find(
 			( item ) => item.value === 'compare-categories'
-		)[ 0 ].settings.onClick = addCesSurveyTrackForAnalytics;
+		).settings.onClick = addCesSurveyTrackForAnalytics;
 
 		return (
 			<Fragment>
