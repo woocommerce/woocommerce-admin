@@ -8,7 +8,7 @@ import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import CheckmarkIcon from 'gridicons/dist/checkmark';
 import { EmptyContent, Section } from '@woocommerce/components';
-import { QUERY_DEFAULTS, ITEMS_STORE_NAME } from '@woocommerce/data';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -110,7 +110,7 @@ export default compose(
 
 		const productsQuery = {
 			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
+			per_page: 5,
 			low_in_stock: true,
 			status: 'publish',
 		};
