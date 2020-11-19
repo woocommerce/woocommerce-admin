@@ -23,11 +23,11 @@ import { __ } from '@wordpress/i18n';
  *
  * Upon completion, the score and comments is sent to a callback function.
  *
- * @param {Object}   props               Component props.
- * @param {Function} props.trackCallback Function to call when the results are sent.
- * @param {string}   props.label         Question to ask the customer.
+ * @param {Object} props                       Component props.
+ * @param {Function} props.recordScoreCallback Function to call when the results are sent.
+ * @param {string} props.label                 Question to ask the customer.
  */
-function Feedback( { trackCallback, label } ) {
+function Feedback( { recordScoreCallback, label } ) {
 	const options = [
 		{
 			label: __( 'Very difficult', 'woocommerce-admin' ),
@@ -66,7 +66,7 @@ function Feedback( { trackCallback, label } ) {
 			return;
 		}
 		setOpen( false );
-		trackCallback( score, comments );
+		recordScoreCallback( score, comments );
 	};
 
 	if ( ! isOpen ) {
@@ -127,13 +127,7 @@ function Feedback( { trackCallback, label } ) {
 }
 
 Feedback.propTypes = {
-	/**
-	 * The function to call when the modal is actioned.
-	 */
-	trackCallback: PropTypes.func.isRequired,
-	/**
-	 * The label displayed in the modal.
-	 */
+	recordScoreCallback: PropTypes.func.isRequired,
 	label: PropTypes.string.isRequired,
 };
 

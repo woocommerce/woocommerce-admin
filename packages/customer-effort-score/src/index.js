@@ -67,7 +67,9 @@ function CustomerEffortScore( {
 		return null;
 	}
 
-	return <Feedback label={ label } trackCallback={ recordScoreCallback } />;
+	return (
+		<Feedback label={ label } recordScoreCallback={ recordScoreCallback } />
+	);
 }
 
 CustomerEffortScore.propTypes = {
