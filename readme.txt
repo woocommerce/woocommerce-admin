@@ -78,7 +78,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Flickering of order panel while loading. #5655
 - Fix: Tax code duplicated when clicking button to remove. #5661
 
-= 1.7.0 11/11/2020 =
+= 1.7.0 11/11/2020 ( unreleased ) =
 
 - Enhancement: Variations report.  #5167
 - Enhancement: Add ability to toggle homescreen layouts. #5429
