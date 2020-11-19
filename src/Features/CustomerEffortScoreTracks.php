@@ -73,7 +73,7 @@ class CustomerEffortScoreTracks {
 			return;
 		}
 
-		// Only hook up the action handlers if a desktop device is used.
+		// Do not hook up the action handlers if a mobile device is used.
 		if ( wp_is_mobile() ) {
 			return;
 		}
