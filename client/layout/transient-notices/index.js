@@ -55,6 +55,7 @@ export default compose(
 	withDispatch( ( dispatch ) => ( {
 		// NOTE: This uses core/notices2, if this file is copied back upstream
 		// to Gutenberg this needs to be changed back to core/notices.
-		onRemove: dispatch( 'core/notices2' ).removeNotice,
+		onRemove: dispatch( 'core/notices' ).removeNotice,
+		onRemove2: dispatch( 'core/notices2' ).removeNotice,
 	} ) )
 )( TransientNotices );
