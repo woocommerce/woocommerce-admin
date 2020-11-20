@@ -16,10 +16,10 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 			};
 		case TYPES.ADD_CES_SURVEY_TRACK:
 			// Prevent duplicate
-			const registeredTracks = new Set(
-				state.queue.map( ( track ) => track.action )
+			const hasDuplicate = state.queue.filter(
+				( track ) => track.action === action.action
 			);
-			if ( registeredTracks.has( action.action ) ) {
+			if ( hasDuplicate.length ) {
 				return state;
 			}
 			const newTrack = {
