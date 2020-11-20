@@ -132,7 +132,6 @@ export class ActivityPanel extends Component {
 	getTabs() {
 		const {
 			hasUnreadNotes,
-			hasUnapprovedReviews,
 			isEmbedded,
 			taskListComplete,
 			taskListHidden,
@@ -149,9 +148,6 @@ export class ActivityPanel extends Component {
 
 		const showDisplayOptions =
 			! isEmbedded && this.isHomescreen() && ! isPerformingSetupTask;
-
-		const showReviews =
-			( taskListComplete || taskListHidden ) && ! isPerformingSetupTask;
 
 		const showStoreSetup =
 			! taskListComplete && ! taskListHidden && ! isPerformingSetupTask;
@@ -173,20 +169,6 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		const reviews =
-			showReviews && reviewsEnabled === 'yes'
-				? {
-						name: 'reviews',
-						title: __( 'Reviews', 'woocommerce-admin' ),
-						icon: (
-							<i className="material-icons-outlined">
-								star_border
-							</i>
-						),
-						unread: hasUnapprovedReviews,
-				  }
-				: null;
-
 		const help = showHelp
 			? {
 					name: 'help',
@@ -201,9 +183,7 @@ export class ActivityPanel extends Component {
 			  }
 			: null;
 
-		return [ inbox, reviews, setup, displayOptions, help ].filter(
-			Boolean
-		);
+		return [ inbox, setup, displayOptions, help ].filter( Boolean );
 	}
 
 	getPanelContent( tab ) {
