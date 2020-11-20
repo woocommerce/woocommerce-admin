@@ -12,7 +12,6 @@ const defaultState = {
 	reviews: {},
 	errors: {},
 	data: {},
-	requesting: {},
 };
 
 describe( 'reviews reducer', () => {
@@ -108,23 +107,5 @@ describe( 'reviews reducer', () => {
 		} );
 
 		expect( newstate.data[ 4 ].isUpdating ).toEqual( false );
-	} );
-
-	it( 'should handle SET_IS_REQUESTING', () => {
-		const state = reducer( defaultState, {
-			type: TYPES.SET_IS_REQUESTING,
-			selector: 'updating',
-			isRequesting: true,
-		} );
-
-		expect( state.requesting.updating ).toEqual( true );
-
-		const newstate = reducer( state, {
-			type: TYPES.SET_IS_REQUESTING,
-			selector: 'updating',
-			isRequesting: false,
-		} );
-
-		expect( newstate.requesting.updating ).toEqual( false );
 	} );
 } );

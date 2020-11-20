@@ -67,9 +67,8 @@ export function getUnapprovedReviews( select ) {
 			page: 1,
 			// @todo we are not using this review, so when the endpoint supports it,
 			// it could be replaced with `per_page: 0`
-			per_page: 5,
+			per_page: 1,
 			status: 'hold',
-			_embed: 1,
 		};
 		const totalActionableReviews = getReviewsTotalCount(
 			actionableReviewsQuery

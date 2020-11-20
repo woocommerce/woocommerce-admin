@@ -8,7 +8,6 @@ const reducer = (
 		reviews: {},
 		errors: {},
 		data: {},
-		requesting: {},
 	},
 	{
 		type,
@@ -18,9 +17,7 @@ const reducer = (
 		reviewData,
 		totalCount,
 		error,
-		isRequesting,
 		isUpdating,
-		selector,
 	}
 ) => {
 	switch ( type ) {
@@ -67,14 +64,6 @@ const reducer = (
 						...state.data[ reviewId ],
 						isUpdating,
 					},
-				},
-			};
-		case TYPES.SET_IS_REQUESTING:
-			return {
-				...state,
-				requesting: {
-					...state.requesting,
-					[ selector ]: isRequesting,
 				},
 			};
 		default:

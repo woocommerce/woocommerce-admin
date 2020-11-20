@@ -20,7 +20,6 @@ export function updateReviews( query, reviews, totalCount ) {
 }
 
 export function* updateReview( reviewId, reviewFields, query ) {
-	yield setIsRequesting( 'updateReview', true );
 	yield setReviewIsUpdating( reviewId, true );
 
 	try {
@@ -34,29 +33,26 @@ export function* updateReview( reviewId, reviewFields, query ) {
 			data: reviewFields,
 		} );
 		yield setReview( reviewId, review );
-		yield setIsRequesting( 'updateReview', false );
 		yield setReviewIsUpdating( reviewId, false );
 	} catch ( error ) {
 		yield setError( 'updateReview', error );
-		yield setIsRequesting( 'updateReview', false );
 		yield setReviewIsUpdating( reviewId, false );
 		throw new Error();
 	}
 }
 
 export function* deleteReview( reviewId ) {
-	yield setIsRequesting( 'deleteReview', true );
 	yield setReviewIsUpdating( reviewId, true );
 
 	try {
 		const url = `${ NAMESPACE }/products/reviews/${ reviewId }`;
 		const response = yield apiFetch( { path: url, method: 'DELETE' } );
 		yield setReview( reviewId, response );
-		yield setIsRequesting( 'deleteReview', false );
+		yield setReviewIsUpdating( reviewId, false );
 		return response;
 	} catch ( error ) {
 		yield setError( 'deleteReview', error );
-		yield setIsRequesting( 'deleteReview', false );
+		yield setReviewIsUpdating( reviewId, false );
 		throw new Error();
 	}
 }
@@ -82,13 +78,5 @@ export function setError( query, error ) {
 		type: TYPES.SET_ERROR,
 		query,
 		error,
-	};
-}
-
-export function setIsRequesting( selector, isRequesting ) {
-	return {
-		type: TYPES.SET_IS_REQUESTING,
-		selector,
-		isRequesting,
 	};
 }
