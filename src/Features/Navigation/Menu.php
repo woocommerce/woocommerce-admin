@@ -523,7 +523,7 @@ class Menu {
 	/**
 	 * Add a callback to identify and hide pages in the WP menu.
 	 */
-	public static function hide_page_in_wp_menu( $callback ) {
+	public static function hide_wp_menu_item( $callback ) {
 		self::$callbacks[ $callback ] = true;
 	}
 
