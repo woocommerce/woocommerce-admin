@@ -61,7 +61,7 @@ function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 	const sendScore = () => {
 		if ( ! [ '1', '2', '3', '4', '5' ].includes( score ) ) {
 			setErrorMessage(
-				__( 'Error: Feedback not provided.', 'woocommerce-admin' )
+				__( 'Please provide feedback by selecting an option above.', 'woocommerce-admin' )
 			);
 			return;
 		}
