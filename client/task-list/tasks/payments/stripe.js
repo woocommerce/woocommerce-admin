@@ -317,10 +317,6 @@ class Stripe extends Component {
 
 		return {
 			...connectStep,
-			description: __(
-				'Connect your store to your Stripe account.',
-				'woocommerce-admin'
-			),
 			content: this.renderManualConfig(),
 		};
 	}
