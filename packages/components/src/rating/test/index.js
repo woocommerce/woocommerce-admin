@@ -27,6 +27,13 @@ describe( 'Rating', () => {
 		const { container } = render( <Rating rating={ 1 } size={ 36 } /> );
 		expect( container ).toMatchSnapshot();
 	} );
+
+	test( 'should render different icons if specified', () => {
+		const { container } = render(
+			<Rating rating={ 2 } icon="star-outline" outlineIcon="star" />
+		);
+		expect( container ).toMatchSnapshot();
+	} );
 } );
 
 describe( 'ReviewRating', () => {
