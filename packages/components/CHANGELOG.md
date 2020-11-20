@@ -1,6 +1,7 @@
 # Unreleased
 
 -   Change styling of `<ProductImage />`
+-   Add new `<Accordion>` component.
 
 # 5.1.2
 
