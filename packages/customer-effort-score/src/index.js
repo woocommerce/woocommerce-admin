@@ -68,7 +68,10 @@ function CustomerEffortScore( {
 	}
 
 	return (
-		<CustomerFeedbackModal label={ label } recordScoreCallback={ recordScoreCallback } />
+		<CustomerFeedbackModal
+			label={ label }
+			recordScoreCallback={ recordScoreCallback }
+		/>
 	);
 }
 

@@ -13,7 +13,10 @@ const mockTrackCallback = jest.fn();
 describe( 'CustomerFeedbackModal', () => {
 	it( 'should close modal when cancel button pressed', async () => {
 		render(
-			<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
+			<CustomerFeedbackModal
+				trackCallback={ mockTrackCallback }
+				label="Testing"
+			/>
 		);
 
 		// Wait for the modal to render.
@@ -27,7 +30,10 @@ describe( 'CustomerFeedbackModal', () => {
 
 	it( 'should halt with an error when submitting without a score', async () => {
 		render(
-			<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
+			<CustomerFeedbackModal
+				trackCallback={ mockTrackCallback }
+				label="Testing"
+			/>
 		);
 
 		await screen.findByRole( 'dialog' ); // Wait for the modal to render.
@@ -42,7 +48,10 @@ describe( 'CustomerFeedbackModal', () => {
 
 	it( 'should disable the comments field initially', async () => {
 		render(
-			<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
+			<CustomerFeedbackModal
+				trackCallback={ mockTrackCallback }
+				label="Testing"
+			/>
 		);
 
 		// Wait for the modal to render.
@@ -57,7 +66,10 @@ describe( 'CustomerFeedbackModal', () => {
 		'should toggle the comments field when %s is selected',
 		async ( labelText ) => {
 			render(
-				<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
+				<CustomerFeedbackModal
+					trackCallback={ mockTrackCallback }
+					label="Testing"
+				/>
 			);
 
 			// Wait for the modal to render.
