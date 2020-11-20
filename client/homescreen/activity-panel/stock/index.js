@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withSelect } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import CheckmarkIcon from 'gridicons/dist/checkmark';
 import { EmptyContent, Section } from '@woocommerce/components';
@@ -19,7 +19,19 @@ import {
 } from '../../../header/activity-panel/activity-card';
 import ProductStockCard from './card';
 
+const productsQuery = {
+	page: 1,
+	per_page: 5,
+	low_in_stock: true,
+	status: 'publish',
+};
 class StockPanel extends Component {
+	constructor( props ) {
+		super( props );
+
+		this.updateStock = this.updateStock.bind( this );
+	}
+
 	renderEmptyCard() {
 		return (
 			<ActivityCard
@@ -38,6 +50,19 @@ class StockPanel extends Component {
 		);
 	}
 
+	async updateStock( product, quantity ) {
+		const { invalidateResolution, updateProductStock } = this.props;
+
+		const result = await updateProductStock( product, quantity );
+
+		if ( result.success ) {
+			// Request more low stock products.
+			invalidateResolution( 'getItems', [ 'products', productsQuery ] );
+		}
+
+		return result;
+	}
+
 	renderProducts() {
 		const { products } = this.props;
 
@@ -46,7 +71,11 @@ class StockPanel extends Component {
 		}
 
 		return products.map( ( product ) => (
-			<ProductStockCard key={ product.id } product={ product } />
+			<ProductStockCard
+				key={ product.id }
+				product={ product }
+				updateProductStock={ this.updateStock }
+			/>
 		) );
 	}
 
@@ -108,13 +137,6 @@ export default compose(
 			ITEMS_STORE_NAME
 		);
 
-		const productsQuery = {
-			page: 1,
-			per_page: 5,
-			low_in_stock: true,
-			status: 'publish',
-		};
-
 		const products = Array.from(
 			getItems( 'products', productsQuery ).values()
 		);
@@ -125,5 +147,15 @@ export default compose(
 		] );
 
 		return { products, isError, isRequesting };
+	} ),
+	withDispatch( ( dispatch ) => {
+		const { invalidateResolution, updateProductStock } = dispatch(
+			ITEMS_STORE_NAME
+		);
+
+		return {
+			invalidateResolution,
+			updateProductStock,
+		};
 	} )
 )( StockPanel );
