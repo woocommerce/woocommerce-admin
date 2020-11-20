@@ -10,10 +10,10 @@ import Feedback from '../index';
 
 const mockTrackCallback = jest.fn();
 
-describe( 'Survey', () => {
+describe( 'CustomerFeedbackModal', () => {
 	it( 'should close modal when cancel button pressed', async () => {
 		render(
-			<Feedback trackCallback={ mockTrackCallback } label="Testing" />
+			<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
 		);
 
 		// Wait for the modal to render.
@@ -27,7 +27,7 @@ describe( 'Survey', () => {
 
 	it( 'should halt with an error when submitting without a score', async () => {
 		render(
-			<Feedback trackCallback={ mockTrackCallback } label="Testing" />
+			<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
 		);
 
 		await screen.findByRole( 'dialog' ); // Wait for the modal to render.
@@ -42,7 +42,7 @@ describe( 'Survey', () => {
 
 	it( 'should disable the comments field initially', async () => {
 		render(
-			<Feedback trackCallback={ mockTrackCallback } label="Testing" />
+			<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
 		);
 
 		// Wait for the modal to render.
@@ -57,7 +57,7 @@ describe( 'Survey', () => {
 		'should toggle the comments field when %s is selected',
 		async ( labelText ) => {
 			render(
-				<Feedback trackCallback={ mockTrackCallback } label="Testing" />
+				<CustomerFeedbackModal trackCallback={ mockTrackCallback } label="Testing" />
 			);
 
 			// Wait for the modal to render.

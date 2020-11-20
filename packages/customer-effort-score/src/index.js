@@ -11,7 +11,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import Feedback from './feedback';
+import CustomerFeedbackModal from './customer-feedback-modal';
 
 /**
  * Use `CustomerEffortScore` to gather a customer effort score.
@@ -68,7 +68,7 @@ function CustomerEffortScore( {
 	}
 
 	return (
-		<Feedback label={ label } recordScoreCallback={ recordScoreCallback } />
+		<CustomerFeedbackModal label={ label } recordScoreCallback={ recordScoreCallback } />
 	);
 }
 

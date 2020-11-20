@@ -27,7 +27,7 @@ import { __ } from '@wordpress/i18n';
  * @param {Function} props.recordScoreCallback Function to call when the results are sent.
  * @param {string} props.label                 Question to ask the customer.
  */
-function Feedback( { recordScoreCallback, label } ) {
+function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 	const options = [
 		{
 			label: __( 'Very difficult', 'woocommerce-admin' ),
@@ -127,9 +127,9 @@ function Feedback( { recordScoreCallback, label } ) {
 	);
 }
 
-Feedback.propTypes = {
+CustomerFeedbackModal.propTypes = {
 	recordScoreCallback: PropTypes.func.isRequired,
 	label: PropTypes.string.isRequired,
 };
 
-export default Feedback;
+export default CustomerFeedbackModal;
