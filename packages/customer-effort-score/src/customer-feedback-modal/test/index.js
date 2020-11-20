@@ -8,13 +8,13 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
  */
 import CustomerFeedbackModal from '../index';
 
-const mockTrackCallback = jest.fn();
+const mockRecordScoreCallback = jest.fn();
 
 describe( 'CustomerFeedbackModal', () => {
 	it( 'should close modal when cancel button pressed', async () => {
 		render(
 			<CustomerFeedbackModal
-				trackCallback={ mockTrackCallback }
+				recordScoreCallback={ mockRecordScoreCallback }
 				label="Testing"
 			/>
 		);
@@ -31,7 +31,7 @@ describe( 'CustomerFeedbackModal', () => {
 	it( 'should halt with an error when submitting without a score', async () => {
 		render(
 			<CustomerFeedbackModal
-				trackCallback={ mockTrackCallback }
+				recordScoreCallback={ mockRecordScoreCallback }
 				label="Testing"
 			/>
 		);
@@ -49,7 +49,7 @@ describe( 'CustomerFeedbackModal', () => {
 	it( 'should disable the comments field initially', async () => {
 		render(
 			<CustomerFeedbackModal
-				trackCallback={ mockTrackCallback }
+				recordScoreCallback={ mockRecordScoreCallback }
 				label="Testing"
 			/>
 		);
@@ -67,7 +67,7 @@ describe( 'CustomerFeedbackModal', () => {
 		async ( labelText ) => {
 			render(
 				<CustomerFeedbackModal
-					trackCallback={ mockTrackCallback }
+					recordScoreCallback={ mockRecordScoreCallback }
 					label="Testing"
 				/>
 			);
