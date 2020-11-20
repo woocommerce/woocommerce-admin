@@ -17,8 +17,7 @@ export function getAllPanels( {
 	orderStatuses,
 	totalOrderCount,
 	reviewsEnabled,
-	hasUnapprovedReviews,
-	countUnreadReviews,
+	countUnapprovedReviews,
 } ) {
 	return [
 		totalOrderCount > 0 && {
@@ -47,10 +46,12 @@ export function getAllPanels( {
 		reviewsEnabled === 'yes' && {
 			className: 'woocommerce-homescreen-card',
 			id: 'reviews-panel',
-			count: countUnreadReviews,
+			count: countUnapprovedReviews,
 			initialOpen: false,
 			panel: (
-				<ReviewsPanel hasUnapprovedReviews={ hasUnapprovedReviews } />
+				<ReviewsPanel
+					hasUnapprovedReviews={ countUnapprovedReviews > 0 }
+				/>
 			),
 			title: __( 'Reviews to moderate', 'woocommerce-admin' ),
 		},

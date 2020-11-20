@@ -16,7 +16,6 @@ import {
 	Link,
 	ReviewRating,
 	ProductImage,
-	Gravatar,
 	Section,
 } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
@@ -34,17 +33,24 @@ import {
 } from '../../../header/activity-panel/activity-card';
 import { CurrencyContext } from '../../../lib/currency-context';
 import sanitizeHTML from '../../../lib/sanitize-html';
+import { REVIEW_PAGE_LIMIT } from './utils';
 
 class ReviewsPanel extends Component {
-	recordReviewEvent( eventName ) {
-		recordEvent( `activity_panel_reviews_${ eventName }`, {} );
+	recordReviewEvent( eventName, eventData ) {
+		recordEvent( `reviews_${ eventName }`, eventData || {} );
 	}
 
 	deleteReview( reviewId ) {
-		const { deleteReview, createNotice, updateReview } = this.props;
+		const {
+			deleteReview,
+			createNotice,
+			updateReview,
+			clearReviewsCache,
+		} = this.props;
 		if ( reviewId ) {
 			deleteReview( reviewId )
 				.then( () => {
+					clearReviewsCache();
 					createNotice(
 						'success',
 						__(
@@ -64,7 +70,7 @@ class ReviewsPanel extends Component {
 											{
 												_embed: 1,
 											}
-										);
+										).then( () => clearReviewsCache() );
 									},
 								},
 							],
@@ -84,10 +90,11 @@ class ReviewsPanel extends Component {
 	}
 
 	updateReviewStatus( reviewId, newStatus, oldStatus ) {
-		const { createNotice, updateReview } = this.props;
+		const { createNotice, updateReview, clearReviewsCache } = this.props;
 		if ( reviewId ) {
 			updateReview( reviewId, { status: newStatus } )
 				.then( () => {
+					clearReviewsCache();
 					createNotice(
 						'success',
 						__(
@@ -107,7 +114,7 @@ class ReviewsPanel extends Component {
 											{
 												_embed: 1,
 											}
-										);
+										).then( () => clearReviewsCache() );
 									},
 								},
 							],
@@ -229,8 +236,7 @@ class ReviewsPanel extends Component {
 		);
 	}
 
-	renderReview( review, props ) {
-		const { lastRead } = props;
+	renderReview( review ) {
 		const product =
 			( review &&
 				review._embedded &&
@@ -238,6 +244,17 @@ class ReviewsPanel extends Component {
 				review._embedded.up[ 0 ] ) ||
 			null;
 
+		if ( review.isUpdating ) {
+			return (
+				<ActivityCardPlaceholder
+					key={ review.id }
+					className="woocommerce-review-activity-card"
+					hasAction
+					hasDate
+					lines={ 1 }
+				/>
+			);
+		}
 		if ( isNull( product ) ) {
 			return null;
 		}
@@ -245,11 +262,11 @@ class ReviewsPanel extends Component {
 		const title = interpolateComponents( {
 			mixedString: sprintf(
 				__(
-					'{{productLink}}%s{{/productLink}} reviewed by {{authorLink}}%s{{/authorLink}} {{reviewRating}}{{/reviewRating}}',
+					'{{authorLink}}%s{{/authorLink}} reviewed {{productLink}}%s{{/productLink}} {{reviewRating}}{{/reviewRating}}',
 					'woocommerce-admin'
 				),
-				product.name,
-				review.reviewer
+				review.reviewer,
+				product.name
 			),
 			components: {
 				productLink: (
@@ -261,7 +278,10 @@ class ReviewsPanel extends Component {
 				),
 				authorLink: (
 					<Link
-						href={ 'mailto:' + review.reviewer_email }
+						href={ getAdminLink(
+							'admin.php?page=wc-admin&path=%2Fcustomers&search=' +
+								review.reviewer
+						) }
 						onClick={ () => this.recordReviewEvent( 'customer' ) }
 						type="external"
 					/>
@@ -298,7 +318,6 @@ class ReviewsPanel extends Component {
 		);
 		const icon = (
 			<div className="woocommerce-review-activity-card__image-overlay">
-				<Gravatar user={ review.reviewer_email } size={ 24 } />
 				<div className={ productImageClasses }>
 					<ProductImage product={ product } />
 				</div>
@@ -315,7 +334,7 @@ class ReviewsPanel extends Component {
 				key="approve-action"
 				isSecondary
 				onClick={ () => {
-					recordEvent( 'review_approve_click', manageReviewEvent );
+					this.recordReviewEvent( 'approve', manageReviewEvent );
 					this.updateReviewStatus(
 						review.id,
 						'approved',
@@ -329,10 +348,7 @@ class ReviewsPanel extends Component {
 				key="spam-action"
 				isTertiary
 				onClick={ () => {
-					recordEvent(
-						'review_mark_as_spam_click',
-						manageReviewEvent
-					);
+					this.recordReviewEvent( 'mark_as_spam', manageReviewEvent );
 					this.updateReviewStatus( review.id, 'spam', review.status );
 				} }
 			>
@@ -343,7 +359,7 @@ class ReviewsPanel extends Component {
 				isDestructive
 				isTertiary
 				onClick={ () => {
-					recordEvent( 'review_delete_click', manageReviewEvent );
+					this.recordReviewEvent( 'delete', manageReviewEvent );
 					this.deleteReview( review.id );
 				} }
 			>
@@ -360,13 +376,6 @@ class ReviewsPanel extends Component {
 				date={ review.date_created_gmt }
 				icon={ icon }
 				actions={ cardActions }
-				unread={
-					review.status === 'hold' ||
-					! lastRead ||
-					! review.date_created_gmt ||
-					new Date( review.date_created_gmt + 'Z' ).getTime() >
-						lastRead
-				}
 			>
 				<span
 					dangerouslySetInnerHTML={ sanitizeHTML( review.review ) }
@@ -459,13 +468,22 @@ ReviewsPanel.contextType = CurrencyContext;
 
 export default compose( [
 	withDispatch( ( dispatch ) => {
-		const { deleteReview, updateReview } = dispatch( REVIEWS_STORE_NAME );
+		const {
+			deleteReview,
+			updateReview,
+			invalidateResolutionForStoreSelector,
+		} = dispatch( REVIEWS_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
+
+		const clearReviewsCache = () => {
+			invalidateResolutionForStoreSelector( 'getReviews' );
+		};
 
 		return {
 			deleteReview,
 			createNotice,
 			updateReview,
+			clearReviewsCache,
 		};
 	} ),
 	withSelect( ( select, props ) => {
@@ -480,13 +498,11 @@ export default compose( [
 		if ( hasUnapprovedReviews ) {
 			const reviewsQuery = {
 				page: 1,
-				per_page: 5,
+				per_page: REVIEW_PAGE_LIMIT,
 				status: 'hold',
 				_embed: 1,
 			};
-			reviews = getReviews( reviewsQuery ).filter(
-				( review ) => review.status === 'hold'
-			);
+			reviews = getReviews( reviewsQuery );
 			isError = Boolean( getReviewsError( reviewsQuery ) );
 			isRequesting = isResolving( 'getReviews', [ reviewsQuery ] );
 		} else {

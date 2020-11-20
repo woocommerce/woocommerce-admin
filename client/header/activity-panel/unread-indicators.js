@@ -58,7 +58,7 @@ export function getUnreadNotes( select ) {
 }
 
 export function getUnapprovedReviews( select ) {
-	const { getReviews, getReviewsError, isResolving } = select(
+	const { getReviewsTotalCount, getReviewsError, isResolving } = select(
 		REVIEWS_STORE_NAME
 	);
 	const reviewsEnabled = getSetting( 'reviewsEnabled' );
@@ -69,18 +69,20 @@ export function getUnapprovedReviews( select ) {
 			// it could be replaced with `per_page: 0`
 			per_page: 5,
 			status: 'hold',
+			_embed: 1,
 		};
-		const totalActionableReviews = getReviews(
+		const totalActionableReviews = getReviewsTotalCount(
 			actionableReviewsQuery
-		).filter( ( review ) => review.status === 'hold' ).length;
+		);
 
 		const isActionableReviewsError = Boolean(
 			getReviewsError( actionableReviewsQuery )
 		);
 
-		const isActionableReviewsRequesting = isResolving( 'getReviews', [
-			actionableReviewsQuery,
-		] );
+		const isActionableReviewsRequesting = isResolving(
+			'getReviewsTotalCount',
+			[ actionableReviewsQuery ]
+		);
 
 		if ( ! isActionableReviewsError && ! isActionableReviewsRequesting ) {
 			return totalActionableReviews > 0;
