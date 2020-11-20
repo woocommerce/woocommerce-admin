@@ -78,13 +78,16 @@ class ProductStockCard extends Component {
 
 	async onSubmit() {
 		const { product, updateProductStock, createNotice } = this.props;
-		const { quantity } = this.state;
+		const quantity = parseInt( this.state.quantity, 10 );
 
 		this.setState( { editing: false, edited: true } );
 
 		const results = await updateProductStock( product, quantity );
 
 		if ( results.success ) {
+			// Temporary way to hide the product if it's in stock now.
+			this.setState( { edited: false } );
+
 			createNotice(
 				'success',
 				sprintf(
