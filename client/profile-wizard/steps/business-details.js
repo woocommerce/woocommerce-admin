@@ -658,7 +658,7 @@ class BusinessDetails extends Component {
 			goToNextStep,
 			isInstallingActivating,
 			hasInstallActivateError,
-			isUpdateRequesting,
+			isUpdatingProfileItems,
 		} = this.props;
 		const { formatAmount } = this.context;
 		const productCountOptions = [
@@ -923,7 +923,7 @@ class BusinessDetails extends Component {
 											onClick={ handleSubmit }
 											disabled={
 												! isValidForm ||
-												isUpdateRequesting ||
+												isUpdatingProfileItems ||
 												isInstallingActivating
 											}
 											isBusy={ isInstallingActivating }
@@ -988,7 +988,7 @@ export default compose(
 			profileItems: getProfileItems(),
 			isSettingsError: Boolean( getSettingsError( 'general' ) ),
 			settings,
-			isUpdateRequesting:
+			isUpdatingProfileItems:
 				isOnboardingRequesting( 'updateProfileItems' ) ||
 				isUpdateSettingsRequesting( 'general' ),
 			isInstallingActivating:

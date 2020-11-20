@@ -172,7 +172,7 @@ class StoreDetails extends Component {
 			isStoreDetailsPopoverVisible,
 			isSkipSetupPopoverVisible,
 		} = this.state;
-		const { skipProfiler, isUpdateRequesting } = this.props;
+		const { skipProfiler, isUpdatingProfileItems } = this.props;
 
 		/* eslint-disable @wordpress/i18n-no-collapsible-whitespace */
 		const skipSetupText = __(
@@ -292,7 +292,7 @@ class StoreDetails extends Component {
 											onClick={ handleSubmit }
 											disabled={
 												! isValidForm ||
-												isUpdateRequesting
+												isUpdatingProfileItems
 											}
 										>
 											{ __(
@@ -378,14 +378,14 @@ export default compose(
 
 		const { general: settings = {} } = getSettings( 'general' );
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isUpdateRequesting =
+		const isUpdatingProfileItems =
 			isOnboardingRequesting( 'updateProfileItems' ) ||
 			isUpdateSettingsRequesting( 'general' );
 		return {
 			isProfileItemsError,
 			isSettingsError,
 			profileItems,
-			isUpdateRequesting,
+			isUpdatingProfileItems,
 			settings,
 		};
 	} ),

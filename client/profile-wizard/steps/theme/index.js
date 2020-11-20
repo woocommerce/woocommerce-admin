@@ -189,7 +189,6 @@ class Theme extends Component {
 		} = theme;
 		const { chosen } = this.state;
 		const { activeTheme = '' } = getSetting( 'onboarding', {} );
-		const { isUpdatingProfileItems } = this.props;
 
 		return (
 			<Card className="woocommerce-profile-wizard__theme" key={ slug }>
@@ -230,7 +229,7 @@ class Theme extends Component {
 								isPrimary
 								onClick={ () => this.onChoose( theme, 'card' ) }
 								isBusy={ chosen === slug }
-								disabled={ isUpdatingProfileItems }
+								disabled={ chosen === slug }
 							>
 								{ __(
 									'Continue with my active theme',
