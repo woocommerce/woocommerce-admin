@@ -244,7 +244,7 @@ class ReviewsPanel extends Component {
 				review._embedded.up[ 0 ] ) ||
 			null;
 
-		if ( review.isUpdating ) {
+		if ( review.isUpdating || this.props.isRequesting ) {
 			return (
 				<ActivityCardPlaceholder
 					key={ review.id }
@@ -436,7 +436,7 @@ class ReviewsPanel extends Component {
 		return (
 			<Fragment>
 				<Section>
-					{ isRequesting ? (
+					{ isRequesting && ! reviews.length ? (
 						<ActivityCardPlaceholder
 							className="woocommerce-review-activity-card"
 							hasAction
