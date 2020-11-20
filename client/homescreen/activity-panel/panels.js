@@ -48,7 +48,7 @@ export function getAllPanels( {
 			className: 'woocommerce-homescreen-card',
 			id: 'reviews-panel',
 			count: countUnreadReviews,
-			initialOpen: true,
+			initialOpen: false,
 			panel: (
 				<ReviewsPanel hasUnapprovedReviews={ hasUnapprovedReviews } />
 			),

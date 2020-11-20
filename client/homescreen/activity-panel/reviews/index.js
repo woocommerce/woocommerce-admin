@@ -5,7 +5,8 @@ import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import Gridicon from 'gridicons';
 import interpolateComponents from 'interpolate-components';
@@ -26,6 +27,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
+import './style.scss';
 import {
 	ActivityCard,
 	ActivityCardPlaceholder,
@@ -34,11 +36,165 @@ import { CurrencyContext } from '../../../lib/currency-context';
 import sanitizeHTML from '../../../lib/sanitize-html';
 
 class ReviewsPanel extends Component {
-	recordOrderEvent( eventName ) {
-		recordEvent( `activity_panel_orders_${ eventName }`, {} );
+	recordReviewEvent( eventName ) {
+		recordEvent( `activity_panel_reviews_${ eventName }`, {} );
+	}
+
+	deleteReview( reviewId ) {
+		const { deleteReview, createNotice, updateReview } = this.props;
+		if ( reviewId ) {
+			deleteReview( reviewId )
+				.then( () => {
+					createNotice(
+						'success',
+						__(
+							'Review successfully deleted.',
+							'woocommerce-admin'
+						),
+						{
+							actions: [
+								{
+									label: __( 'Undo', 'woocommerce-admin' ),
+									onClick: () => {
+										updateReview(
+											reviewId,
+											{
+												deleted: false,
+											},
+											{
+												_embed: 1,
+											}
+										);
+									},
+								},
+							],
+						}
+					);
+				} )
+				.catch( () => {
+					createNotice(
+						'error',
+						__(
+							'Review could not be deleted.',
+							'woocommerce-admin'
+						)
+					);
+				} );
+		}
+	}
+
+	updateReviewStatus( reviewId, newStatus, oldStatus ) {
+		const { createNotice, updateReview } = this.props;
+		if ( reviewId ) {
+			updateReview( reviewId, { status: newStatus } )
+				.then( () => {
+					createNotice(
+						'success',
+						__(
+							'Review successfully updated.',
+							'woocommerce-admin'
+						),
+						{
+							actions: [
+								{
+									label: __( 'Undo', 'woocommerce-admin' ),
+									onClick: () => {
+										updateReview(
+											reviewId,
+											{
+												status: oldStatus,
+											},
+											{
+												_embed: 1,
+											}
+										);
+									},
+								},
+							],
+						}
+					);
+				} )
+				.catch( () => {
+					createNotice(
+						'error',
+						__(
+							'Review could not be updated.',
+							'woocommerce-admin'
+						)
+					);
+				} );
+		}
 	}
 
 	renderEmptyCard() {
+		const { lastApprovedReviewTime } = this.props;
+
+		let content = '';
+		let buttonUrl = '';
+		let buttonText = '';
+		let eventName = 'learn_more';
+
+		if ( lastApprovedReviewTime ) {
+			const now = new Date();
+			const DAY = 24 * 60 * 60 * 1000;
+			if ( ( now.getTime() - lastApprovedReviewTime ) / DAY > 30 ) {
+				buttonUrl =
+					'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
+				buttonText = __( 'Learn more', 'woocommerce-admin' );
+				content = (
+					<Fragment>
+						<p>
+							{ __(
+								"We noticed that it's been a while since your products had any reviews.",
+								'woocommerce-admin'
+							) }
+						</p>
+						<p>
+							{ __(
+								'Take some time to learn about best practices for collecting and using your reviews.',
+								'woocommerce-admin'
+							) }
+						</p>
+					</Fragment>
+				);
+			} else {
+				buttonUrl = getAdminLink(
+					'edit-comments.php?comment_type=review'
+				);
+				buttonText = __( 'View all Reviews', 'woocommerce-admin' );
+				content = (
+					<p>
+						{ __(
+							/* eslint-disable max-len */
+							"Awesome, you've moderated all of your product reviews. How about responding to some of those negative reviews?",
+							'woocommerce-admin'
+							/* eslint-enable */
+						) }
+					</p>
+				);
+				eventName = 'view_reviews';
+			}
+		} else {
+			buttonUrl =
+				'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
+			buttonText = __( 'Learn more', 'woocommerce-admin' );
+			content = (
+				<Fragment>
+					<p>
+						{ __(
+							"Your customers haven't started reviewing your products.",
+							'woocommerce-admin'
+						) }
+					</p>
+					<p>
+						{ __(
+							'Take some time to learn about best practices for collecting and using your reviews.',
+							'woocommerce-admin'
+						) }
+					</p>
+				</Fragment>
+			);
+		}
 		return (
 			<Fragment>
 				<ActivityCard
@@ -47,28 +203,27 @@ class ReviewsPanel extends Component {
 					icon=""
 				>
 					<span
-						className="woocommerce-order-empty__success-icon"
+						className="woocommerce-review-empty__success-icon"
 						role="img"
-						aria-labelledby="woocommerce-order-empty-message"
+						aria-labelledby="woocommerce-review-empty-message"
 					>
 						🎉
 					</span>
-					<H id="woocommerce-order-empty-message">
+					<H id="woocommerce-review-empty-message">
 						{ __(
-							'You’ve fulfilled all your orders',
+							'You have no reviews to moderate',
 							'woocommerce-admin'
 						) }
 					</H>
+					{ content }
 				</ActivityCard>
 				<Link
-					href={ getAdminLink(
-						'edit-comments.php?comment_type=review'
-					) }
-					onClick={ () => this.recordOrderEvent( 'reviews_manage' ) }
+					href={ buttonUrl }
+					onClick={ () => this.recordReviewEvent( eventName ) }
 					className="woocommerce-layout__activity-panel-outbound-link woocommerce-layout__activity-panel-empty"
 					type="wp-admin"
 				>
-					{ __( 'Manage all reviews', 'woocommerce-admin' ) }
+					{ buttonText }
 				</Link>
 			</Fragment>
 		);
@@ -90,7 +245,7 @@ class ReviewsPanel extends Component {
 		const title = interpolateComponents( {
 			mixedString: sprintf(
 				__(
-					'{{productLink}}%s{{/productLink}} reviewed by {{authorLink}}%s{{/authorLink}}',
+					'{{productLink}}%s{{/productLink}} reviewed by {{authorLink}}%s{{/authorLink}} {{reviewRating}}{{/reviewRating}}',
 					'woocommerce-admin'
 				),
 				product.name,
@@ -111,12 +266,19 @@ class ReviewsPanel extends Component {
 						type="external"
 					/>
 				),
+				reviewRating: (
+					<ReviewRating
+						review={ review }
+						icon="star-outline"
+						outlineIcon="star"
+						size={ 16 }
+					/>
+				),
 			},
 		} );
 
 		const subtitle = (
 			<Fragment>
-				<ReviewRating review={ review } />
 				{ review.verified && (
 					<span className="woocommerce-review-activity-card__verified">
 						<Gridicon icon="checkmark" size={ 18 } />
@@ -148,19 +310,46 @@ class ReviewsPanel extends Component {
 			status: review.status,
 		};
 
-		const cardActions = (
+		const cardActions = [
 			<Button
+				key="approve-action"
 				isSecondary
-				onClick={ () =>
-					recordEvent( 'review_manage_click', manageReviewEvent )
-				}
-				href={ getAdminLink(
-					'comment.php?action=editcomment&c=' + review.id
-				) }
+				onClick={ () => {
+					recordEvent( 'review_approve_click', manageReviewEvent );
+					this.updateReviewStatus(
+						review.id,
+						'approved',
+						review.status
+					);
+				} }
 			>
-				{ __( 'Manage', 'woocommerce-admin' ) }
-			</Button>
-		);
+				{ __( 'Approve', 'woocommerce-admin' ) }
+			</Button>,
+			<Button
+				key="spam-action"
+				isTertiary
+				onClick={ () => {
+					recordEvent(
+						'review_mark_as_spam_click',
+						manageReviewEvent
+					);
+					this.updateReviewStatus( review.id, 'spam', review.status );
+				} }
+			>
+				{ __( 'Mark as spam', 'woocommerce-admin' ) }
+			</Button>,
+			<Button
+				key="delete-action"
+				isDestructive
+				isTertiary
+				onClick={ () => {
+					recordEvent( 'review_delete_click', manageReviewEvent );
+					this.deleteReview( review.id );
+				} }
+			>
+				{ __( 'Delete', 'woocommerce-admin' ) }
+			</Button>,
+		];
 
 		return (
 			<ActivityCard
@@ -183,6 +372,29 @@ class ReviewsPanel extends Component {
 					dangerouslySetInnerHTML={ sanitizeHTML( review.review ) }
 				/>
 			</ActivityCard>
+		);
+	}
+
+	renderReviews( reviews ) {
+		if ( reviews.length === 0 ) {
+			return this.renderEmptyCard();
+		}
+		return (
+			<>
+				{ reviews.map( ( review ) =>
+					this.renderReview( review, this.props )
+				) }
+				<Link
+					href={ getAdminLink(
+						'edit-comments.php?comment_type=review'
+					) }
+					onClick={ () => this.recordReviewEvent( 'reviews_manage' ) }
+					className="woocommerce-layout__activity-panel-outbound-link woocommerce-layout__activity-panel-empty"
+					type="wp-admin"
+				>
+					{ __( 'Manage all reviews', 'woocommerce-admin' ) }
+				</Link>
+			</>
 		);
 	}
 
@@ -217,17 +429,14 @@ class ReviewsPanel extends Component {
 				<Section>
 					{ isRequesting ? (
 						<ActivityCardPlaceholder
-							className="woocommerce-order-activity-card"
+							className="woocommerce-review-activity-card"
 							hasAction
 							hasDate
 							lines={ 1 }
 						/>
-					) : null }
-					{ reviews.length
-						? reviews.map( ( review ) =>
-								this.renderReview( review, this.props )
-						  )
-						: this.renderEmptyCard() }
+					) : (
+						<>{ this.renderReviews( reviews, this.props ) }</>
+					) }
 				</Section>
 			</Fragment>
 		);
@@ -248,51 +457,67 @@ ReviewsPanel.defaultProps = {
 
 ReviewsPanel.contextType = CurrencyContext;
 
-export default withSelect( ( select, props ) => {
-	const { hasUnapprovedReviews } = props;
-	const { getReviews, getReviewsError, isResolving } = select(
-		REVIEWS_STORE_NAME
-	);
-	let reviews = [];
-	let isError = false;
-	let isRequesting = false;
-	let lastApprovedReviewTime = null;
-	if ( hasUnapprovedReviews ) {
-		const reviewsQuery = {
-			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			status: 'hold',
-			_embed: 1,
+export default compose( [
+	withDispatch( ( dispatch ) => {
+		const { deleteReview, updateReview } = dispatch( REVIEWS_STORE_NAME );
+		const { createNotice } = dispatch( 'core/notices' );
+
+		return {
+			deleteReview,
+			createNotice,
+			updateReview,
 		};
-		reviews = getReviews( reviewsQuery );
-		isError = Boolean( getReviewsError( reviewsQuery ) );
-		isRequesting = isResolving( 'getReviews', [ reviewsQuery ] );
-	} else {
-		const approvedReviewsQuery = {
-			page: 1,
-			per_page: 1,
-			status: 'approved',
-			_embed: 1,
-		};
-		const approvedReviews = getReviews( approvedReviewsQuery );
-		if ( approvedReviews.length ) {
-			const lastApprovedReview = approvedReviews[ 0 ];
-			if ( lastApprovedReview.date_created_gmt ) {
-				const creationDate = new Date(
-					lastApprovedReview.date_created_gmt
-				);
-				lastApprovedReviewTime = creationDate.getTime();
+	} ),
+	withSelect( ( select, props ) => {
+		const { hasUnapprovedReviews } = props;
+		const { getReviews, getReviewsError, isResolving } = select(
+			REVIEWS_STORE_NAME
+		);
+		let reviews = [];
+		let isError = false;
+		let isRequesting = false;
+		let lastApprovedReviewTime = null;
+		if ( hasUnapprovedReviews ) {
+			const reviewsQuery = {
+				page: 1,
+				per_page: 5,
+				status: 'hold',
+				_embed: 1,
+			};
+			reviews = getReviews( reviewsQuery ).filter(
+				( review ) => review.status === 'hold'
+			);
+			isError = Boolean( getReviewsError( reviewsQuery ) );
+			isRequesting = isResolving( 'getReviews', [ reviewsQuery ] );
+		} else {
+			const approvedReviewsQuery = {
+				page: 1,
+				per_page: QUERY_DEFAULTS.pageSize,
+				status: 'approved',
+				_embed: 1,
+			};
+			const approvedReviews = getReviews( approvedReviewsQuery );
+			if ( approvedReviews.length ) {
+				const lastApprovedReview = approvedReviews[ 0 ];
+				if ( lastApprovedReview.date_created_gmt ) {
+					const creationDate = new Date(
+						lastApprovedReview.date_created_gmt
+					);
+					lastApprovedReviewTime = creationDate.getTime();
+				}
 			}
+
+			isError = Boolean( getReviewsError( approvedReviewsQuery ) );
+			isRequesting = isResolving( 'getReviews', [
+				approvedReviewsQuery,
+			] );
 		}
 
-		isError = Boolean( getReviewsError( approvedReviewsQuery ) );
-		isRequesting = isResolving( 'getReviews', [ approvedReviewsQuery ] );
-	}
-
-	return {
-		reviews,
-		isError,
-		isRequesting,
-		lastApprovedReviewTime,
-	};
-} )( ReviewsPanel );
+		return {
+			reviews,
+			isError,
+			isRequesting,
+			lastApprovedReviewTime,
+		};
+	} ),
+] )( ReviewsPanel );

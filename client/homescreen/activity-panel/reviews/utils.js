@@ -4,7 +4,7 @@
 import { REVIEWS_STORE_NAME, QUERY_DEFAULTS } from '@woocommerce/data';
 
 export function getUnreadReviews( select ) {
-	const { getReviewsTotalCount, getReviewsError, isResolving } = select(
+	const { getReviews, getReviewsError, isResolving } = select(
 		REVIEWS_STORE_NAME
 	);
 
@@ -12,11 +12,12 @@ export function getUnreadReviews( select ) {
 		page: 1,
 		per_page: QUERY_DEFAULTS.pageSize,
 		status: 'hold',
-		_fields: [ 'id' ],
 	};
 
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
-	const totalReviews = getReviewsTotalCount( reviewsQuery );
+	const totalReviews = getReviews( reviewsQuery ).filter(
+		( review ) => review.status === 'hold'
+	).length;
 	const isError = Boolean( getReviewsError( reviewsQuery ) );
 	const isRequesting = isResolving( 'getReviewsTotalCount', [
 		reviewsQuery,
