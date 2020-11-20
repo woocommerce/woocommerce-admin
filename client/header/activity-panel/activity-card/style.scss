@@ -138,6 +138,12 @@
 	& > * + * {
 		margin-left: 0.5em;
 	}
+
+	.components-button {
+		height: 24px;
+		padding: 4px 10px;
+		@include font-size( 11 );
+	}
 }
 
 .woocommerce-activity-card.is-loading {
@@ -175,18 +181,8 @@
 		margin-right: $gutter;
 
 		.is-placeholder {
-			height: 48px;
-			width: 48px;
-		}
-	}
-
-	&.woocommerce-stock-activity-card,
-	&.woocommerce-review-activity-card {
-		.woocommerce-activity-card__icon {
-			.is-placeholder {
-				height: 60px;
-				width: 60px;
-			}
+			height: 33px;
+			width: 33px;
 		}
 	}
 
@@ -203,7 +199,7 @@
 	.woocommerce-activity-card__actions {
 		.is-placeholder {
 			width: 91px;
-			height: 34px;
+			height: 24px;
 		}
 	}
 }
@@ -373,12 +369,6 @@
 				}
 			}
 		}
-	}
-
-	.components-button {
-		height: 24px;
-		padding: 4px 10px;
-		@include font-size( 11 );
 	}
 
 	.woocommerce-activity-card__subtitle {
