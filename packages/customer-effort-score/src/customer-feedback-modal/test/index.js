@@ -6,7 +6,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 /**
  * Internal dependencies
  */
-import Feedback from '../index';
+import CustomerFeedbackModal from '../index';
 
 const mockTrackCallback = jest.fn();
 
