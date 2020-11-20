@@ -10,7 +10,11 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import './style.scss';
-import { getOrderStatuses, getUnreadOrders } from './orders/utils';
+import {
+	getLowStockCount,
+	getOrderStatuses,
+	getUnreadOrders,
+} from './orders/utils';
 import { getAllPanels } from './panels';
 
 export const ActivityPanel = () => {
@@ -18,7 +22,7 @@ export const ActivityPanel = () => {
 		const orderStatuses = getOrderStatuses( select );
 		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
 		const manageStock = getSetting( 'manageStock', 'no' );
-		const countLowStockProducts = getSetting( 'lowStockCount', 0 );
+		const countLowStockProducts = getLowStockCount( select );
 
 		return getAllPanels( {
 			countLowStockProducts,
