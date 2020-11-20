@@ -34,7 +34,9 @@ export function getAllPanels( {
 			count: countLowStockProducts,
 			id: 'stock-panel',
 			initialOpen: countLowStockProducts > 0,
-			panel: <StockPanel />,
+			panel: (
+				<StockPanel countLowStockProducts={ countLowStockProducts } />
+			),
 			title: __( 'Stock', 'woocommerce-admin' ),
 		},
 		// Add another panel row here

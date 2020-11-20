@@ -80,7 +80,7 @@ class StockPanel extends Component {
 	}
 
 	render() {
-		const { isError, isRequesting } = this.props;
+		const { countLowStockProducts, isError, isRequesting } = this.props;
 
 		if ( isError ) {
 			const title = __(
@@ -103,23 +103,28 @@ class StockPanel extends Component {
 			);
 		}
 
-		return (
-			<Section>
-				{ isRequesting ? (
-					<ActivityCardPlaceholder
-						className="woocommerce-stock-activity-card"
-						hasAction
-						lines={ 1 }
-					/>
-				) : (
-					this.renderProducts()
-				) }
-			</Section>
-		);
+		if ( isRequesting ) {
+			const numPlaceholders = Math.min( 5, countLowStockProducts );
+			const placeholders = Array.from(
+				new Array( numPlaceholders )
+			).map( ( v, idx ) => (
+				<ActivityCardPlaceholder
+					key={ idx }
+					className="woocommerce-stock-activity-card"
+					hasAction
+					lines={ 1 }
+				/>
+			) );
+
+			return <Section>{ placeholders }</Section>;
+		}
+
+		return <Section>{ this.renderProducts() }</Section>;
 	}
 }
 
 StockPanel.propTypes = {
+	countLowStockProducts: PropTypes.number,
 	products: PropTypes.array.isRequired,
 	isError: PropTypes.bool,
 	isRequesting: PropTypes.bool,
