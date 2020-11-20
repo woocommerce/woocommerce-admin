@@ -80,7 +80,12 @@ class StockPanel extends Component {
 	}
 
 	render() {
-		const { countLowStockProducts, isError, isRequesting } = this.props;
+		const {
+			countLowStockProducts,
+			isError,
+			isRequesting,
+			products,
+		} = this.props;
 
 		if ( isError ) {
 			const title = __(
@@ -103,7 +108,8 @@ class StockPanel extends Component {
 			);
 		}
 
-		if ( isRequesting ) {
+		// Show placeholders only for the first products fetch.
+		if ( isRequesting && ! products.length ) {
 			const numPlaceholders = Math.min( 5, countLowStockProducts );
 			const placeholders = Array.from(
 				new Array( numPlaceholders )
