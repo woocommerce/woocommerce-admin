@@ -181,7 +181,7 @@
 		"copy-webpack-plugin": "5.1.1",
 		"cross-env": "7.0.2",
 		"css-loader": "3.6.0",
-		"deasync": "0.1.20",
+		"deasync": "0.1.21",
 		"deep-freeze": "0.0.1",
 		"docsify-cli": "4.4.1",
 		"fs-extra": "8.1.0",
