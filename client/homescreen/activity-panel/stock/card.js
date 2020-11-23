@@ -12,6 +12,7 @@ import { withDispatch } from '@wordpress/data';
 import { Link, ProductImage } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
+import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -194,6 +195,13 @@ class ProductStockCard extends Component {
 			? product.low_stock_amount
 			: notifyLowStockAmount;
 		const isLowStock = product.stock_quantity <= lowStockAmount;
+		const lastOrderDate = product.last_order_date
+			? sprintf(
+					/* translators: %s = time since last product order. e.g.: "10 minutes ago" - translated. */
+					__( 'Last ordered %s', 'woocommerce-admin' ),
+					moment.utc( product.last_order_date ).fromNow()
+			  )
+			: null;
 
 		// Hide cards that are not in low stock and have not been edited.
 		// This allows clearing cards which are no longer in low stock after
@@ -250,6 +258,7 @@ class ProductStockCard extends Component {
 				title={ title }
 				subtitle={ subtitle }
 				icon={ icon }
+				date={ lastOrderDate }
 				actions={ this.getActions() }
 			>
 				{ this.getBody() }

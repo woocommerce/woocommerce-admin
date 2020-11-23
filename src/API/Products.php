@@ -52,6 +52,13 @@ class Products extends \WC_REST_Products_Controller {
 			$schema['properties'][ $property ]['context'][] = 'embed';
 		}
 
+		$schema['last_order_date'] = array(
+			'description' => __( "The date the last order for this product was placed, in the site's timezone.", 'woocommerce-admin' ),
+			'type'        => 'date-time',
+			'context'     => array( 'view', 'edit' ),
+			'readonly'    => true,
+		);
+
 		return $schema;
 	}
 
@@ -147,7 +154,7 @@ class Products extends \WC_REST_Products_Controller {
 				$data->data['low_stock_amount'] = $object_data['low_stock_amount'];
 			}
 			if ( isset( $this->last_order_dates[ $product_id ] ) ) {
-				$data->data['last_order_date'] = $this->last_order_dates[ $product_id ];
+				$data->data['last_order_date'] = wc_rest_prepare_date_response( $this->last_order_dates[ $product_id ] );
 			}
 		}
 		$data->data['name'] = wp_strip_all_tags( $data->data['name'] );
