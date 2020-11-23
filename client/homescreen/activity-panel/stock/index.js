@@ -20,6 +20,17 @@ const productsQuery = {
 	per_page: 5,
 	low_in_stock: true,
 	status: 'publish',
+	_fields: [
+		'attributes',
+		'id',
+		'images',
+		'last_ordered_date',
+		'low_stock_amount',
+		'name',
+		'parent_id',
+		'stock_quantity',
+		'type',
+	],
 };
 export class StockPanel extends Component {
 	constructor( props ) {
