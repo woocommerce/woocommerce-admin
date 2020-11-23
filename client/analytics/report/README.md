@@ -40,17 +40,21 @@ addFilter(
 				report: 'example',
 				title: 'My Example Extension',
 				component: Report,
+				navArgs: {
+					id: 'my-example-report',
+				},
 			},
 		];
 	}
 );
 ```
 
-Each report is defined by an object containing `report`, `title`, `component`.
+Each report is defined by an object containing `report`, `title`, `component`, and optionally `navArgs`.
 
 -   `report` (string): The path used to show the report, ex: `/analytics/example`
 -   `title` (string): The title shown in the breadcrumbs & document title.
 -   `component` (react component): The component containing the report content- everything on the page under the breadcrumbs header.
+-   `navArgs` (object): Supply an id which is the same id as the server side registration.
 
 The component will get the following props:
 
