@@ -67,7 +67,7 @@ class ReviewsPanel extends Component {
 										updateReview(
 											reviewId,
 											{
-												deleted: false,
+												status: 'untrash',
 											},
 											{
 												_embed: 1,
