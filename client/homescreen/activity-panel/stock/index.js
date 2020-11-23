@@ -21,7 +21,7 @@ const productsQuery = {
 	low_in_stock: true,
 	status: 'publish',
 };
-class StockPanel extends Component {
+export class StockPanel extends Component {
 	constructor( props ) {
 		super( props );
 
