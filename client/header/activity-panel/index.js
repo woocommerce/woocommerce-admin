@@ -21,7 +21,7 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
  */
 import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
-import { getUnreadNotes, getUnapprovedReviews } from './unread-indicators';
+import { getUnreadNotes } from './unread-indicators';
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
@@ -37,11 +37,6 @@ const InboxPanel = lazy( () =>
 	)
 );
 
-const ReviewsPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/reviews' )
-);
-
-const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
 export class ActivityPanel extends Component {
 	constructor( props ) {
 		super( props );
@@ -187,18 +182,12 @@ export class ActivityPanel extends Component {
 	}
 
 	getPanelContent( tab ) {
-		const { query, hasUnapprovedReviews } = this.props;
+		const { query } = this.props;
 		const { task } = query;
 
 		switch ( tab ) {
 			case 'inbox':
 				return <InboxPanel />;
-			case 'reviews':
-				return (
-					<ReviewsPanel
-						hasUnapprovedReviews={ hasUnapprovedReviews }
-					/>
-				);
 			case 'help':
 				return <HelpPanel taskName={ task } />;
 			default:
@@ -358,7 +347,6 @@ ActivityPanel.defaultProps = {
 export default compose(
 	withSelect( ( select ) => {
 		const hasUnreadNotes = getUnreadNotes( select );
-		const hasUnapprovedReviews = getUnapprovedReviews( select );
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 
 		const taskListComplete =
@@ -371,7 +359,6 @@ export default compose(
 
 		return {
 			hasUnreadNotes,
-			hasUnapprovedReviews,
 			requestingTaskListOptions,
 			taskListComplete,
 			taskListHidden,
