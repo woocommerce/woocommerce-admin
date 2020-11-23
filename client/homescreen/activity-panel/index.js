@@ -60,6 +60,7 @@ export const ActivityPanel = () => {
 							count={ count }
 							initialOpen={ initialOpen }
 							title={ title }
+							collapsible={ count !== 0 }
 						>
 							{ panel }
 						</AccordionPanel>
