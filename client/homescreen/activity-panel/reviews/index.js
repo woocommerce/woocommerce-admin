@@ -468,6 +468,8 @@ ReviewsPanel.defaultProps = {
 
 ReviewsPanel.contextType = CurrencyContext;
 
+export { ReviewsPanel };
+
 export default compose( [
 	withDispatch( ( dispatch ) => {
 		const {
