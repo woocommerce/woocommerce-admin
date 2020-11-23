@@ -143,9 +143,9 @@ class CoreMenu {
 			$wca_items[] = array_merge(
 				array(
 					'id'         => 'wc_admin-' . $page['path'],
-					'url'        => $page['path'],
+					'url'        => isset( $page['path'] ) ? $page['path'] : null,
 					'title'      => $page['title'][0],
-					'capability' => $page['capability'],
+					'capability' => isset( $page['capability'] ) ? $page['capability'] : 'manage_woocommerce',
 				),
 				$page['nav_args']
 			);
