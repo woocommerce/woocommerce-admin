@@ -14,7 +14,6 @@ import StarOutlineIcon from 'gridicons/dist/star-outline';
 import interpolateComponents from 'interpolate-components';
 import {
 	EmptyContent,
-	H,
 	Link,
 	ReviewRating,
 	ProductImage,
@@ -22,7 +21,7 @@ import {
 } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { get, isNull } from 'lodash';
-import { REVIEWS_STORE_NAME, QUERY_DEFAULTS } from '@woocommerce/data';
+import { REVIEWS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -48,6 +47,7 @@ class ReviewsPanel extends Component {
 			createNotice,
 			updateReview,
 			clearReviewsCache,
+			reviews,
 		} = this.props;
 		if ( reviewId ) {
 			deleteReview( reviewId )
@@ -72,7 +72,11 @@ class ReviewsPanel extends Component {
 											{
 												_embed: 1,
 											}
-										).then( () => clearReviewsCache() );
+										).then( () =>
+											clearReviewsCache(
+												reviews.length < 2
+											)
+										);
 									},
 								},
 							],
@@ -92,7 +96,12 @@ class ReviewsPanel extends Component {
 	}
 
 	updateReviewStatus( reviewId, newStatus, oldStatus ) {
-		const { createNotice, updateReview, clearReviewsCache } = this.props;
+		const {
+			createNotice,
+			updateReview,
+			clearReviewsCache,
+			reviews,
+		} = this.props;
 		if ( reviewId ) {
 			updateReview( reviewId, { status: newStatus } )
 				.then( () => {
@@ -116,7 +125,11 @@ class ReviewsPanel extends Component {
 											{
 												_embed: 1,
 											}
-										).then( () => clearReviewsCache() );
+										).then( () =>
+											clearReviewsCache(
+												reviews.length < 2
+											)
+										);
 									},
 								},
 							],
@@ -133,109 +146,6 @@ class ReviewsPanel extends Component {
 					);
 				} );
 		}
-	}
-
-	renderEmptyCard() {
-		const { lastApprovedReviewTime } = this.props;
-
-		let content = '';
-		let buttonUrl = '';
-		let buttonText = '';
-		let eventName = 'learn_more';
-
-		if ( lastApprovedReviewTime ) {
-			const now = new Date();
-			const DAY = 24 * 60 * 60 * 1000;
-			if ( ( now.getTime() - lastApprovedReviewTime ) / DAY > 30 ) {
-				buttonUrl =
-					'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
-				buttonText = __( 'Learn more', 'woocommerce-admin' );
-				content = (
-					<Fragment>
-						<p>
-							{ __(
-								"We noticed that it's been a while since your products had any reviews.",
-								'woocommerce-admin'
-							) }
-						</p>
-						<p>
-							{ __(
-								'Take some time to learn about best practices for collecting and using your reviews.',
-								'woocommerce-admin'
-							) }
-						</p>
-					</Fragment>
-				);
-			} else {
-				buttonUrl = getAdminLink(
-					'edit-comments.php?comment_type=review'
-				);
-				buttonText = __( 'View all Reviews', 'woocommerce-admin' );
-				content = (
-					<p>
-						{ __(
-							/* eslint-disable max-len */
-							"Awesome, you've moderated all of your product reviews. How about responding to some of those negative reviews?",
-							'woocommerce-admin'
-							/* eslint-enable */
-						) }
-					</p>
-				);
-				eventName = 'view_reviews';
-			}
-		} else {
-			buttonUrl =
-				'https://woocommerce.com/posts/reviews-woocommerce-best-practices/';
-			buttonText = __( 'Learn more', 'woocommerce-admin' );
-			content = (
-				<Fragment>
-					<p>
-						{ __(
-							"Your customers haven't started reviewing your products.",
-							'woocommerce-admin'
-						) }
-					</p>
-					<p>
-						{ __(
-							'Take some time to learn about best practices for collecting and using your reviews.',
-							'woocommerce-admin'
-						) }
-					</p>
-				</Fragment>
-			);
-		}
-		return (
-			<Fragment>
-				<ActivityCard
-					className="woocommerce-empty-activity-card"
-					title=""
-					icon=""
-				>
-					<span
-						className="woocommerce-review-empty__success-icon"
-						role="img"
-						aria-labelledby="woocommerce-review-empty-message"
-					>
-						🎉
-					</span>
-					<H id="woocommerce-review-empty-message">
-						{ __(
-							'You have no reviews to moderate',
-							'woocommerce-admin'
-						) }
-					</H>
-					{ content }
-				</ActivityCard>
-				<Link
-					href={ buttonUrl }
-					onClick={ () => this.recordReviewEvent( eventName ) }
-					className="woocommerce-layout__activity-panel-outbound-link woocommerce-layout__activity-panel-empty"
-					type="wp-admin"
-				>
-					{ buttonText }
-				</Link>
-			</Fragment>
-		);
 	}
 
 	renderReview( review ) {
@@ -388,7 +298,7 @@ class ReviewsPanel extends Component {
 
 	renderReviews( reviews ) {
 		if ( reviews.length === 0 ) {
-			return this.renderEmptyCard();
+			return <></>;
 		}
 		return (
 			<>
@@ -479,8 +389,11 @@ export default compose( [
 		} = dispatch( REVIEWS_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
-		const clearReviewsCache = () => {
+		const clearReviewsCache = ( emptyReviews ) => {
 			invalidateResolutionForStoreSelector( 'getReviews' );
+			if ( emptyReviews ) {
+				invalidateResolutionForStoreSelector( 'getReviewsTotalCount' );
+			}
 		};
 
 		return {
@@ -498,7 +411,6 @@ export default compose( [
 		let reviews = [];
 		let isError = false;
 		let isRequesting = false;
-		let lastApprovedReviewTime = null;
 		if ( hasUnapprovedReviews ) {
 			const reviewsQuery = {
 				page: 1,
@@ -509,35 +421,12 @@ export default compose( [
 			reviews = getReviews( reviewsQuery );
 			isError = Boolean( getReviewsError( reviewsQuery ) );
 			isRequesting = isResolving( 'getReviews', [ reviewsQuery ] );
-		} else {
-			const approvedReviewsQuery = {
-				page: 1,
-				per_page: QUERY_DEFAULTS.pageSize,
-				status: 'approved',
-				_embed: 1,
-			};
-			const approvedReviews = getReviews( approvedReviewsQuery );
-			if ( approvedReviews.length ) {
-				const lastApprovedReview = approvedReviews[ 0 ];
-				if ( lastApprovedReview.date_created_gmt ) {
-					const creationDate = new Date(
-						lastApprovedReview.date_created_gmt
-					);
-					lastApprovedReviewTime = creationDate.getTime();
-				}
-			}
-
-			isError = Boolean( getReviewsError( approvedReviewsQuery ) );
-			isRequesting = isResolving( 'getReviews', [
-				approvedReviewsQuery,
-			] );
 		}
 
 		return {
 			reviews,
 			isError,
 			isRequesting,
-			lastApprovedReviewTime,
 		};
 	} ),
 ] )( ReviewsPanel );

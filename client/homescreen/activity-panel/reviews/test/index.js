@@ -64,9 +64,7 @@ describe( 'ReviewsPanel', () => {
 				reviews={ [] }
 			/>
 		);
-		expect(
-			screen.queryByText( 'You have no reviews to moderate' )
-		).toBeInTheDocument();
+		expect( screen.queryByRole( 'section' ) ).toBeNull();
 	} );
 
 	it( 'should render a review card with title <name> reviewed <product name>', () => {
