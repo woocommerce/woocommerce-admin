@@ -2,6 +2,8 @@
  * External dependencies
  */
 import { render } from '@testing-library/react';
+import StarIcon from 'gridicons/dist/star';
+import StarOutlineIcon from 'gridicons/dist/star-outline';
 
 /**
  * Internal dependencies
@@ -30,7 +32,11 @@ describe( 'Rating', () => {
 
 	test( 'should render different icons if specified', () => {
 		const { container } = render(
-			<Rating rating={ 2 } icon="star-outline" outlineIcon="star" />
+			<Rating
+				rating={ 2 }
+				icon={ StarOutlineIcon }
+				outlineIcon={ StarIcon }
+			/>
 		);
 		expect( container ).toMatchSnapshot();
 	} );

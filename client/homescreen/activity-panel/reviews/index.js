@@ -8,7 +8,9 @@ import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
-import Gridicon from 'gridicons';
+import CheckmarkIcon from 'gridicons/dist/checkmark';
+import StarIcon from 'gridicons/dist/star';
+import StarOutlineIcon from 'gridicons/dist/star-outline';
 import interpolateComponents from 'interpolate-components';
 import {
 	EmptyContent,
@@ -289,8 +291,8 @@ class ReviewsPanel extends Component {
 				reviewRating: (
 					<ReviewRating
 						review={ review }
-						icon="star-outline"
-						outlineIcon="star"
+						icon={ StarOutlineIcon }
+						outlineIcon={ StarIcon }
 						size={ 16 }
 					/>
 				),
@@ -301,7 +303,7 @@ class ReviewsPanel extends Component {
 			<Fragment>
 				{ review.verified && (
 					<span className="woocommerce-review-activity-card__verified">
-						<Gridicon icon="checkmark" size={ 18 } />
+						<CheckmarkIcon size={ 18 } />
 						{ __( 'Verified customer', 'woocommerce-admin' ) }
 					</span>
 				) }

@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import Gridicon from 'gridicons';
+import StarIcon from 'gridicons/dist/star';
 import PropTypes from 'prop-types';
 
 /**
@@ -22,13 +22,8 @@ class Rating extends Component {
 
 		const stars = [];
 		for ( let i = 0; i < totalStars; i++ ) {
-			stars.push(
-				<Gridicon
-					key={ 'star-' + i }
-					icon={ icon || 'star' }
-					style={ starStyles }
-				/>
-			);
+			const Icon = icon || StarIcon;
+			stars.push( <Icon key={ 'star-' + i } style={ starStyles } /> );
 		}
 		return stars;
 	}
@@ -79,20 +74,19 @@ Rating.propTypes = {
 	 */
 	className: PropTypes.string,
 	/**
-	 * Icon used, defaults to 'star'
+	 * Icon used, defaults to StarIcon
 	 */
-	icon: PropTypes.string,
+	icon: PropTypes.elementType,
 	/**
-	 * Outline icon used, the not selected icon. Defaults to props.icon or 'star'
+	 * Outline icon used, the not selected rating. Defaults to props.icon or StarIcon
 	 */
-	outlineIcon: PropTypes.string,
+	outlineIcon: PropTypes.elementType,
 };
 
 Rating.defaultProps = {
 	rating: 0,
 	totalStars: 5,
 	size: 18,
-	icon: 'star',
 };
 
 export default Rating;
