@@ -6,17 +6,13 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-import CheckmarkIcon from 'gridicons/dist/checkmark';
 import { EmptyContent, Section } from '@woocommerce/components';
 import { ITEMS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
-import {
-	ActivityCard,
-	ActivityCardPlaceholder,
-} from '../../../header/activity-panel/activity-card';
+import { ActivityCardPlaceholder } from '../../../header/activity-panel/activity-card';
 import ProductStockCard from './card';
 
 const productsQuery = {
@@ -30,24 +26,6 @@ class StockPanel extends Component {
 		super( props );
 
 		this.updateStock = this.updateStock.bind( this );
-	}
-
-	renderEmptyCard() {
-		return (
-			<ActivityCard
-				className="woocommerce-empty-activity-card"
-				title={ __(
-					'Your stock is in good shape.',
-					'woocommerce-admin'
-				) }
-				icon={ <CheckmarkIcon size={ 48 } /> }
-			>
-				{ __(
-					'You currently have no products running low on stock.',
-					'woocommerce-admin'
-				) }
-			</ActivityCard>
-		);
 	}
 
 	async updateStock( product, quantity ) {
@@ -65,10 +43,6 @@ class StockPanel extends Component {
 
 	renderProducts() {
 		const { products } = this.props;
-
-		if ( products.length === 0 ) {
-			return this.renderEmptyCard();
-		}
 
 		return products.map( ( product ) => (
 			<ProductStockCard
