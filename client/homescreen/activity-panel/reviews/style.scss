@@ -37,16 +37,8 @@
 
 	&.woocommerce-activity-card {
 		padding: $gap $gap-large;
-
-		&:not(.woocommerce-empty-activity-card) {
-			grid-template-columns: calc(33px + #{$gap}) auto;
-		}
 	}
 	.woocommerce-activity-card__header .woocommerce-activity-card__title {
-		@include font-size( 14 );
 		line-height: 20px;
-	}
-	.components-button {
-		@include font-size( 11 );
 	}
 }
