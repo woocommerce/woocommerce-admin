@@ -124,8 +124,14 @@ function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 					>
 						<div className="woocommerce-customer-effort-score__comments">
 							<TextareaControl
-								label="Comments (Optional)"
-								help="Your feedback will go to the WooCommerce development team"
+								label={ __(
+									'Comments (Optional)',
+									'woocommerce-admin'
+								) }
+								help={ __(
+									'Your feedback will go to the WooCommerce development team',
+									'woocommerce-admin'
+								) }
 								value={ comments }
 								onChange={ ( value ) => setComments( value ) }
 								rows="5"
