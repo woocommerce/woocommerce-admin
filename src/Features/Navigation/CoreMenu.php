@@ -140,15 +140,27 @@ class CoreMenu {
 				continue;
 			}
 
-			$wca_items[] = array_merge(
+			$item = array_merge(
 				array(
 					'id'         => 'wc_admin-' . $page['path'],
 					'url'        => isset( $page['path'] ) ? $page['path'] : null,
 					'title'      => $page['title'][0],
 					'capability' => isset( $page['capability'] ) ? $page['capability'] : 'manage_woocommerce',
+					'menuId'     => 'primary',
 				),
 				$page['nav_args']
 			);
+
+			// Don't allow top-level items to be added to the primary menu.
+			if (
+				isset( $item['is_top_level'] ) &&
+				$item['is_top_level'] &&
+				'primary' === $item['menuId']
+			) {
+				$item['menuId'] = 'plugins';
+			}
+
+			$wca_items[] = $item;
 		}
 
 		$home_item = array();
@@ -162,9 +174,21 @@ class CoreMenu {
 			);
 		}
 
+		$customers_item = array();
+		if ( class_exists( '\Automattic\WooCommerce\Admin\Features\Analytics' ) ) {
+			$customers_item = array(
+				'id'           => 'woocommerce-analytics-customers',
+				'title'        => __( 'Customers', 'woocommerce-admin' ),
+				'url'          => wc_admin_url( '/customers' ),
+				'is_top_level' => true,
+				'order'        => 50,
+			);
+		}
+
 		return array_merge(
 			array(
 				$home_item,
+				$customers_item,
 				$order_items['all'],
 				$order_items['new'],
 				$product_items['all'],

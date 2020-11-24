@@ -412,14 +412,11 @@ class Menu {
 
 		$items = CoreMenu::get_items();
 		foreach ( $items as $item ) {
-			if ( ! isset( $item['is_top_level'] ) && ! isset( $item['parent'] ) ) {
-				if ( isset( $item['is_category'] ) && $item['is_category'] ) {
-					self::add_plugin_category( $item );
-				} else {
-					self::add_plugin_item( $item );
-				}
+			if ( isset( $item['is_category'] ) && $item['is_category'] ) {
+				self::add_category( $item );
+			} else {
+				self::add_item( $item );
 			}
-			self::add_item( $item );
 		}
 	}
 
