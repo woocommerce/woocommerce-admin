@@ -49,6 +49,7 @@ class BusinessDetails extends Component {
 
 		this.state = {
 			isPopoverVisible: false,
+			subStep: 0,
 		};
 
 		this.initialValues = {
@@ -298,6 +299,7 @@ class BusinessDetails extends Component {
 					'woocommerce-admin'
 			  )
 			: '';
+
 		return (
 			<div className="woocommerce-profile-wizard__footnote">
 				<Text variant="caption" as="p">
@@ -335,7 +337,7 @@ class BusinessDetails extends Component {
 		);
 	}
 
-	render() {
+	renderBusinessDetailsStep() {
 		const {
 			goToNextStep,
 			isInstallingActivating,
@@ -351,7 +353,9 @@ class BusinessDetails extends Component {
 		return (
 			<Form
 				initialValues={ this.initialValues }
-				onSubmitCallback={ this.onContinue }
+				onSubmitCallback={ () =>
+					console.log( 'todo, move to next step' )
+				}
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
@@ -447,11 +451,6 @@ class BusinessDetails extends Component {
 										</>
 									) }
 
-									{ /* NOTE THIS IS WHERE THE CURRENT A/B TEST HAPPENS */ }
-									<FreeFeatures
-										getInputProps={ getInputProps }
-									/>
-
 									<div className="woocommerce-profile-wizard__card-actions">
 										<Button
 											isPrimary
@@ -489,6 +488,58 @@ class BusinessDetails extends Component {
 				} }
 			</Form>
 		);
+	}
+
+	renderFreeFeaturesStep() {
+		return (
+			<Form
+				initialValues={ this.initialValues }
+				onSubmitCallback={ () =>
+					console.log( 'todo move to next step in wizard' )
+				}
+				validate={ () => {
+					console.log( 'todo confirm if we need validation here' );
+				} }
+			>
+				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
+					return (
+						<>
+							<div className="woocommerce-profile-wizard__step-header">
+								<Text variant="title.small" as="h2">
+									{ __(
+										'Included business features',
+										'woocommerce-admin'
+									) }
+								</Text>
+								<Text variant="body">
+									{ __(
+										'We recommend enhancing your store with these free extensions',
+										'woocommerce-admin'
+									) }
+								</Text>
+								<Text variant="body">
+									{ __(
+										'No commitment required - you can remove them at any time.',
+										'woocommerce-admin'
+									) }
+								</Text>
+							</div>
+							<FreeFeatures getInputProps={ getInputProps } />
+						</>
+					);
+				} }
+			</Form>
+		);
+	}
+
+	render() {
+		const { subStep } = this.state;
+
+		if ( subStep === 0 ) {
+			return this.renderBusinessDetailsStep();
+		}
+
+		return this.renderFreeFeaturesStep();
 	}
 }
 
