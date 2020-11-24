@@ -48,7 +48,14 @@ class ReportFilters extends Component {
 		// The comparsion and other filter types require a user to click
 		// a button to execute a query, so this is not a good place to
 		// trigger a CES survey for those.
-		if ( data.filter === 'single_product' ) {
+		const triggerCesFor = [
+			'single_product',
+			'single_category',
+			'single_coupon',
+			'single_variation',
+		];
+		const filterName = data.filter || data[ 'filter-variations' ];
+		if ( triggerCesFor.includes( filterName ) ) {
 			addCesSurveyForAnalytics();
 		}
 		recordEvent( 'analytics_filter', {
