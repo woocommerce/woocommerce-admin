@@ -5,10 +5,8 @@ import { __, sprintf } from '@wordpress/i18n';
 import { BaseControl, Button } from '@wordpress/components';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import { ESCAPE } from '@wordpress/keycodes';
 import { get } from 'lodash';
-import { withDispatch } from '@wordpress/data';
 import { Link, ProductImage } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
@@ -19,7 +17,7 @@ import moment from 'moment';
  */
 import { ActivityCard } from '../../../header/activity-panel/activity-card';
 
-class ProductStockCard extends Component {
+export class ProductStockCard extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
@@ -276,13 +274,3 @@ class ProductStockCard extends Component {
 		return activityCard;
 	}
 }
-
-export default compose(
-	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
-
-		return {
-			createNotice,
-		};
-	} )
-)( ProductStockCard );

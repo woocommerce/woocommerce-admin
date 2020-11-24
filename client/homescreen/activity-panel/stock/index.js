@@ -13,7 +13,7 @@ import { ITEMS_STORE_NAME } from '@woocommerce/data';
  * Internal dependencies
  */
 import { ActivityCardPlaceholder } from '../../../header/activity-panel/activity-card';
-import ProductStockCard from './card';
+import { ProductStockCard } from './card';
 
 const productsQuery = {
 	page: 1,
@@ -53,13 +53,14 @@ export class StockPanel extends Component {
 	}
 
 	renderProducts() {
-		const { products } = this.props;
+		const { products, createNotice } = this.props;
 
 		return products.map( ( product ) => (
 			<ProductStockCard
 				key={ product.id }
 				product={ product }
 				updateProductStock={ this.updateStock }
+				createNotice={ createNotice }
 			/>
 		) );
 	}
@@ -148,8 +149,10 @@ export default compose(
 		const { invalidateResolution, updateProductStock } = dispatch(
 			ITEMS_STORE_NAME
 		);
+		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
+			createNotice,
 			invalidateResolution,
 			updateProductStock,
 		};
