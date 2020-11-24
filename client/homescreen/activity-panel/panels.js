@@ -14,9 +14,10 @@ export function getAllPanels( {
 	countUnreadOrders,
 	manageStock,
 	orderStatuses,
+	totalOrderCount,
 } ) {
-	const panels = [
-		{
+	return [
+		totalOrderCount > 0 && {
 			className: 'woocommerce-homescreen-card',
 			count: countUnreadOrders,
 			id: 'orders-panel',
@@ -41,6 +42,4 @@ export function getAllPanels( {
 		},
 		// Add another panel row here
 	].filter( Boolean );
-
-	return panels;
 }

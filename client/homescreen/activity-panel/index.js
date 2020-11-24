@@ -19,6 +19,7 @@ import { getAllPanels } from './panels';
 
 export const ActivityPanel = () => {
 	const panels = useSelect( ( select ) => {
+		const totalOrderCount = getSetting( 'orderCount', 0 );
 		const orderStatuses = getOrderStatuses( select );
 		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
 		const manageStock = getSetting( 'manageStock', 'no' );
@@ -29,6 +30,7 @@ export const ActivityPanel = () => {
 			countUnreadOrders,
 			manageStock,
 			orderStatuses,
+			totalOrderCount,
 		} );
 	} );
 	return (
