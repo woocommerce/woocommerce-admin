@@ -8,7 +8,7 @@ import CurrencyFactory from '@woocommerce/currency';
 /**
  * Internal dependencies
  */
-import { getCurrencyRegion } from '../../../dashboard/utils';
+import { getCurrencyRegion } from '../../../../dashboard/utils';
 
 const { formatAmount } = CurrencyFactory( CURRENCY );
 

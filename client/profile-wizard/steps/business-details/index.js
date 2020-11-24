@@ -1,19 +1,13 @@
 /**
  * External dependencies
  */
-import { __, _n, _x, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import {
-	Button,
-	CheckboxControl,
-	FormToggle,
-	Popover,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, __experimentalText as Text } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { keys, get, pickBy } from 'lodash';
+import { keys, pickBy } from 'lodash';
 import {
 	H,
 	Card,
@@ -22,8 +16,6 @@ import {
 	Form,
 	TextControl,
 } from '@woocommerce/components';
-import { formatValue } from '@woocommerce/number';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
@@ -35,27 +27,25 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { getCountryCode, getCurrencyRegion } from '../../dashboard/utils';
-import { CurrencyContext } from '../../lib/currency-context';
-import { createNoticesFromResponse } from '../../lib/notices';
-import { platformOptions } from './platform-options';
-import { sellingVenueOptions } from './selling-venue-options';
-
-const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
+import { getCountryCode } from '../../../dashboard/utils';
+import { CurrencyContext } from '../../../lib/currency-context';
+import { createNoticesFromResponse } from '../../../lib/notices';
+import { platformOptions } from './data/platform-options';
+import { sellingVenueOptions } from './data/selling-venue-options';
+import { getRevenueOptions } from './data/revenue-options';
+import { getProductCountOptions } from './data/product-options';
+import { FreeFeatures } from './free-features';
 
 class BusinessDetails extends Component {
 	constructor( props ) {
 		super();
-		const settings = get( props, 'settings', {} );
-		const profileItems = get( props, 'profileItems', {} );
-		const industrySlugs = get( profileItems, 'industry', [] ).map(
+		const settings = props.settings || {};
+		const profileItems = props.profileItems || {};
+		const industrySlugs = ( profileItems.industry || [] ).map(
 			( industry ) => industry.slug
 		);
-		const businessExtensions = get(
-			profileItems,
-			'business_extensions',
-			false
-		);
+
+		const businessExtensions = profileItems.business_extensions || false;
 
 		this.state = {
 			isPopoverVisible: false,
@@ -91,15 +81,15 @@ class BusinessDetails extends Component {
 			'creative-mail-by-constant-contact',
 		];
 
+		// TODO convert this to some kind of segmentation we can use generically and pass to <FreeFeatures>
 		this.bundleInstall =
 			getCountryCode( settings.woocommerce_default_country ) === 'US' &&
 			( industrySlugs.includes( 'fashion-apparel-accessories' ) ||
 				industrySlugs.includes( 'health-beauty' ) ) &&
 			! industrySlugs.includes( 'cbd-other-hemp-derived-products' );
+
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
-		this.getNumberRangeString = this.getNumberRangeString.bind( this );
-		this.numberFormat = this.numberFormat.bind( this );
 	}
 
 	async onContinue( values ) {
@@ -158,11 +148,8 @@ class BusinessDetails extends Component {
 		};
 
 		// Remove possible empty values like `revenue` and `other_platform`.
-		const updates = {};
-		Object.keys( _updates ).forEach( ( key ) => {
-			if ( _updates[ key ] !== '' ) {
-				updates[ key ] = _updates[ key ];
-			}
+		const updates = Object.entries( _updates ).filter( ( { value } ) => {
+			return value !== '';
 		} );
 
 		const promises = [
@@ -276,67 +263,6 @@ class BusinessDetails extends Component {
 		);
 	}
 
-	convertCurrency( value ) {
-		const region = getCurrencyRegion(
-			this.props.settings.woocommerce_default_country
-		);
-		if ( region === 'US' ) {
-			return value;
-		}
-
-		// These are rough exchange rates from USD.  Precision is not paramount.
-		// The keys here should match the keys in `getCurrencyData`.
-		const exchangeRates = {
-			US: 1,
-			EU: 0.9,
-			IN: 71.24,
-			GB: 0.76,
-			BR: 4.19,
-			VN: 23172.5,
-			ID: 14031.0,
-			BD: 84.87,
-			PK: 154.8,
-			RU: 63.74,
-			TR: 5.75,
-			MX: 19.37,
-			CA: 1.32,
-		};
-
-		const exchangeRate = exchangeRates[ region ] || exchangeRates.US;
-		const digits = exchangeRate.toString().split( '.' )[ 0 ].length;
-		const multiplier = Math.pow( 10, 2 + digits );
-
-		return Math.round( ( value * exchangeRate ) / multiplier ) * multiplier;
-	}
-
-	numberFormat( value ) {
-		const { getCurrencyConfig } = this.context;
-		return formatValue( getCurrencyConfig(), 'number', value );
-	}
-
-	getNumberRangeString( min, max = false, format = this.numberFormat ) {
-		if ( ! max ) {
-			return sprintf(
-				_x(
-					'%s+',
-					'store product count or revenue',
-					'woocommerce-admin'
-				),
-				format( min )
-			);
-		}
-
-		return sprintf(
-			_x(
-				'%1$s - %2$s',
-				'store product count or revenue range',
-				'woocommerce-admin'
-			),
-			format( min ),
-			format( max )
-		);
-	}
-
 	renderBusinessExtensionHelpText( values ) {
 		const { isInstallingActivating } = this.props;
 		const extensions = this.getBusinessExtensions( values );
@@ -409,252 +335,6 @@ class BusinessDetails extends Component {
 		);
 	}
 
-	renderBusinessExtensions( values, getInputProps ) {
-		// Show extensions when the currently selling elsewhere checkbox has been answered.
-		if ( values.selling_venues === '' ) {
-			return null;
-		}
-
-		const extensionBenefits = [
-			{
-				slug: 'facebook-for-woocommerce',
-				title: __( 'Market on Facebook', 'woocommerce-admin' ),
-				icon: 'onboarding/fb-woocommerce.png',
-				description: __(
-					'Grow your business by targeting the right people and driving sales with Facebook.',
-					'woocommerce-admin'
-				),
-			},
-			{
-				slug: 'mailchimp-for-woocommerce',
-				title: __(
-					'Contact customers with Mailchimp',
-					'woocommerce-admin'
-				),
-				icon: 'onboarding/mailchimp.png',
-				description: __(
-					'Send targeted campaigns, recover abandoned carts and much more with Mailchimp.',
-					'woocommerce-admin'
-				),
-			},
-			{
-				slug: 'creative-mail-by-constant-contact',
-				title: __(
-					'Email marketing for WooCommerce with Creative Mail',
-					'woocommerce-admin'
-				),
-				icon: 'onboarding/creativemail.png',
-				description: __(
-					'Create on-brand store campaigns, fast email promotions and customer retargeting with Creative Mail.',
-					'woocommerce-admin'
-				),
-			},
-			{
-				slug: 'kliken-marketing-for-google',
-				title: __(
-					'Drive traffic to your store with Google Ads & Marketing by Kliken',
-					'woocommerce-admin'
-				),
-				icon: 'onboarding/g-shopping.png',
-				description: __(
-					'Get in front of shoppers and drive traffic so you can grow your business with Smart Shopping Campaigns and free listings.',
-					'woocommerce-admin'
-				),
-			},
-		];
-
-		return (
-			<Fragment>
-				{ extensionBenefits.map( ( benefit ) => (
-					<div
-						className="woocommerce-profile-wizard__benefit"
-						key={ benefit.title }
-					>
-						<div className="woocommerce-profile-wizard__business-extension">
-							<img
-								src={ wcAdminAssetUrl + benefit.icon }
-								alt=""
-							/>
-						</div>
-						<div className="woocommerce-profile-wizard__benefit-content">
-							<H className="woocommerce-profile-wizard__benefit-title">
-								{ benefit.title }
-							</H>
-							<p>{ benefit.description }</p>
-						</div>
-						<div className="woocommerce-profile-wizard__benefit-toggle">
-							<FormToggle
-								checked={ values[ benefit.slug ] }
-								{ ...getInputProps( benefit.slug ) }
-							/>
-						</div>
-					</div>
-				) ) }
-			</Fragment>
-		);
-	}
-
-	renderBusinessExtensionsBundle( values, getInputProps ) {
-		const { isPopoverVisible } = this.state;
-
-		return (
-			<div className="woocommerce-business-extensions">
-				<label htmlFor="woocommerce-business-extensions__checkbox">
-					<CheckboxControl
-						id="woocommerce-business-extensions__checkbox"
-						{ ...getInputProps( 'install_extensions' ) }
-					/>
-					<span className="woocommerce-business-extensions__label-text">
-						{ interpolateComponents( {
-							mixedString: __(
-								'Install recommended {{strong}}free{{/strong}} business features',
-								'woocommerce-admin'
-							),
-							components: {
-								strong: <strong />,
-							},
-						} ) }
-						<span className="woocommerce-business-extensions__label-subtext">
-							{ __( 'Requires an account', 'woocommerce-admin' ) }
-						</span>
-					</span>
-				</label>
-
-				<div className="woocommerce-business-extensions__popover-wrapper">
-					<Button
-						isTertiary
-						label={ __(
-							'Learn more about recommended free business features',
-							'woocommerce-admin'
-						) }
-						onClick={ () => {
-							recordEvent(
-								'storeprofiler_store_business_details_popover'
-							);
-							this.setState( { isPopoverVisible: true } );
-						} }
-					>
-						<i
-							className="material-icons-outlined"
-							aria-hidden="true"
-						>
-							info
-						</i>
-					</Button>
-					{ isPopoverVisible && (
-						<Popover
-							className="woocommerce-business-extensions__popover"
-							focusOnMount="container"
-							position="top center"
-							onClose={ () =>
-								this.setState( { isPopoverVisible: false } )
-							}
-						>
-							<div className="woocommerce-business-extensions__benefits">
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Manage your store on the go with the WooCommerce mobile app',
-										'woocommerce-admin'
-									) }
-								</div>
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Accept credit cards with WooCommerce Payments',
-										'woocommerce-admin'
-									) }
-								</div>
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Speed & security enhancements',
-										'woocommerce-admin'
-									) }
-								</div>
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Automatic sales taxes',
-										'woocommerce-admin'
-									) }
-								</div>
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Market on Facebook',
-										'woocommerce-admin'
-									) }
-								</div>
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Contact customers with Mailchimp',
-										'woocommerce-admin'
-									) }
-								</div>
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Drive sales with Google Ads',
-										'woocommerce-admin'
-									) }
-								</div>
-								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
-									{ __(
-										'Print shipping labels at home',
-										'woocommerce-admin'
-									) }
-								</div>
-							</div>
-						</Popover>
-					) }
-				</div>
-			</div>
-		);
-	}
-
 	render() {
 		const {
 			goToNextStep,
@@ -662,31 +342,11 @@ class BusinessDetails extends Component {
 			hasInstallActivateError,
 		} = this.props;
 
-		const productCountOptions = [
-			{
-				key: '0',
-				label: __(
-					"I don't have any products yet.",
-					'woocommerce-admin'
-				),
-			},
-			{
-				key: '1-10',
-				label: this.getNumberRangeString( 1, 10 ),
-			},
-			{
-				key: '11-100',
-				label: this.getNumberRangeString( 11, 100 ),
-			},
-			{
-				key: '101-1000',
-				label: this.getNumberRangeString( 101, 1000 ),
-			},
-			{
-				key: '1000+',
-				label: this.getNumberRangeString( 1000 ),
-			},
-		];
+		const { getCurrencyConfig } = this.context;
+
+		const productCountOptions = getProductCountOptions(
+			getCurrencyConfig()
+		);
 
 		return (
 			<Form
@@ -696,7 +356,7 @@ class BusinessDetails extends Component {
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
 					return (
-						<Fragment>
+						<>
 							<div className="woocommerce-profile-wizard__step-header">
 								<Text variant="title.small" as="h2">
 									{ __(
@@ -712,7 +372,7 @@ class BusinessDetails extends Component {
 								</Text>
 							</div>
 							<Card>
-								<Fragment>
+								<>
 									<SelectControl
 										label={ __(
 											'How many products do you plan to display?',
@@ -744,7 +404,10 @@ class BusinessDetails extends Component {
 												"What's your current annual revenue?",
 												'woocommerce-admin'
 											) }
-											options={ revenueOptions }
+											options={ getRevenueOptions(
+												this.props.settings
+													.woocommerce_default_country
+											) }
 											required
 											{ ...getInputProps( 'revenue' ) }
 										/>
@@ -754,7 +417,7 @@ class BusinessDetails extends Component {
 										'other',
 										'brick-mortar-other',
 									].includes( values.selling_venues ) && (
-										<Fragment>
+										<>
 											<div className="business-competitors">
 												<SelectControl
 													label={ __(
@@ -781,18 +444,13 @@ class BusinessDetails extends Component {
 													/>
 												) }
 											</div>
-										</Fragment>
+										</>
 									) }
 
-									{ this.bundleInstall
-										? this.renderBusinessExtensionsBundle(
-												values,
-												getInputProps
-										  )
-										: this.renderBusinessExtensions(
-												values,
-												getInputProps
-										  ) }
+									{ /* NOTE THIS IS WHERE THE CURRENT A/B TEST HAPPENS */ }
+									<FreeFeatures
+										getInputProps={ getInputProps }
+									/>
 
 									<div className="woocommerce-profile-wizard__card-actions">
 										<Button
@@ -822,11 +480,11 @@ class BusinessDetails extends Component {
 											</Button>
 										) }
 									</div>
-								</Fragment>
+								</>
 							</Card>
 
 							{ this.renderBusinessExtensionHelpText( values ) }
-						</Fragment>
+						</>
 					);
 				} }
 			</Form>
