@@ -51,26 +51,26 @@ function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 		},
 	];
 
-	const [ score, setScore ] = useState();
+	const [ score, setScore ] = useState( NaN );
 	const [ comments, setComments ] = useState();
-	const [ errorMessage, setErrorMessage ] = useState();
+	const [ showNoScoreMessage, setShowNoScoreMessage ] = useState( false );
 	const [ isOpen, setOpen ] = useState( true );
 
 	const closeModal = () => setOpen( false );
 
+	const onRadioControlChange = ( value ) => {
+		const valueAsInt = parseInt( value, 10 );
+		setScore( valueAsInt );
+		setShowNoScoreMessage( ! Number.isInteger( valueAsInt ) );
+	};
+
 	const sendScore = () => {
-		const scoreAsInt = parseInt( score, 10 );
-		if ( isNaN( scoreAsInt ) ) {
-			setErrorMessage(
-				__(
-					'Please provide feedback by selecting an option above.',
-					'woocommerce-admin'
-				)
-			);
+		if ( ! Number.isInteger( score ) ) {
+			setShowNoScoreMessage( true );
 			return;
 		}
 		setOpen( false );
-		recordScoreCallback( scoreAsInt, comments );
+		recordScoreCallback( score, comments );
 	};
 
 	if ( ! isOpen ) {
@@ -90,13 +90,13 @@ function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 
 			<div className="woocommerce-customer-effort-score__selection">
 				<RadioControl
-					selected={ score }
+					selected={ score.toString( 10 ) }
 					options={ options }
-					onChange={ ( value ) => setScore( value ) }
+					onChange={ onRadioControlChange }
 				/>
 			</div>
 
-			{ ( score === '1' || score === '2' ) && (
+			{ ( score === 1 || score === 2 ) && (
 				<div className="woocommerce-customer-effort-score__comments">
 					<TextareaControl
 						label="Comments (Optional)"
@@ -108,13 +108,16 @@ function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 				</div>
 			) }
 
-			{ errorMessage && (
+			{ showNoScoreMessage && (
 				<div
 					className="woocommerce-customer-effort-score__errors"
 					role="alert"
 				>
 					<Text variant="body" as="p">
-						{ errorMessage }
+						{ __(
+							'Please provide feedback by selecting an option above.',
+							'woocommerce-admin'
+						) }
 					</Text>
 				</div>
 			) }
