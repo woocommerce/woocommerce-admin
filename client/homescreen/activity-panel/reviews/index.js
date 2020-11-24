@@ -174,7 +174,7 @@ class ReviewsPanel extends Component {
 		const title = interpolateComponents( {
 			mixedString: sprintf(
 				__(
-					'{{authorLink}}%s{{/authorLink}} reviewed {{productLink}}%s{{/productLink}} {{reviewRating}}{{/reviewRating}}',
+					'{{authorLink}}%s{{/authorLink}} reviewed {{productLink}}%s{{/productLink}}',
 					'woocommerce-admin'
 				),
 				review.reviewer,
@@ -198,19 +198,17 @@ class ReviewsPanel extends Component {
 						type="external"
 					/>
 				),
-				reviewRating: (
-					<ReviewRating
-						review={ review }
-						icon={ StarOutlineIcon }
-						outlineIcon={ StarIcon }
-						size={ 13 }
-					/>
-				),
 			},
 		} );
 
 		const subtitle = (
 			<Fragment>
+				<ReviewRating
+					review={ review }
+					icon={ StarOutlineIcon }
+					outlineIcon={ StarIcon }
+					size={ 13 }
+				/>
 				{ review.verified && (
 					<span className="woocommerce-review-activity-card__verified">
 						<CheckmarkIcon size={ 18 } />
