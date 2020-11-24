@@ -52,7 +52,7 @@ class Products extends \WC_REST_Products_Controller {
 			$schema['properties'][ $property ]['context'][] = 'embed';
 		}
 
-		$schema['last_order_date'] = array(
+		$schema['properties']['last_order_date'] = array(
 			'description' => __( "The date the last order for this product was placed, in the site's timezone.", 'woocommerce-admin' ),
 			'type'        => 'date-time',
 			'context'     => array( 'view', 'edit' ),

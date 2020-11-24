@@ -24,7 +24,7 @@ const productsQuery = {
 		'attributes',
 		'id',
 		'images',
-		'last_ordered_date',
+		'last_order_date',
 		'low_stock_amount',
 		'name',
 		'parent_id',
