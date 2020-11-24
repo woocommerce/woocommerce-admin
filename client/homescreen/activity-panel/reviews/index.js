@@ -203,7 +203,7 @@ class ReviewsPanel extends Component {
 						review={ review }
 						icon={ StarOutlineIcon }
 						outlineIcon={ StarIcon }
-						size={ 16 }
+						size={ 13 }
 					/>
 				),
 			},
@@ -231,7 +231,11 @@ class ReviewsPanel extends Component {
 		const icon = (
 			<div className="woocommerce-review-activity-card__image-overlay">
 				<div className={ productImageClasses }>
-					<ProductImage product={ product } />
+					<ProductImage
+						product={ product }
+						width={ 33 }
+						height={ 33 }
+					/>
 				</div>
 			</div>
 		);

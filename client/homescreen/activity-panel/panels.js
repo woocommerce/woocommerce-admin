@@ -53,7 +53,7 @@ export function getAllPanels( {
 					hasUnapprovedReviews={ countUnapprovedReviews > 0 }
 				/>
 			),
-			title: __( 'Reviews to moderate', 'woocommerce-admin' ),
+			title: __( 'Reviews', 'woocommerce-admin' ),
 		},
 		// Add another panel row here
 	].filter( Boolean );
