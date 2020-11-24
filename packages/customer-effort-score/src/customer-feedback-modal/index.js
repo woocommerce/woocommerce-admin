@@ -59,7 +59,8 @@ function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 	const closeModal = () => setOpen( false );
 
 	const sendScore = () => {
-		if ( ! [ '1', '2', '3', '4', '5' ].includes( score ) ) {
+		const scoreAsInt = parseInt( score, 10 );
+		if ( isNaN( scoreAsInt ) ) {
 			setErrorMessage(
 				__(
 					'Please provide feedback by selecting an option above.',
@@ -69,7 +70,7 @@ function CustomerFeedbackModal( { recordScoreCallback, label } ) {
 			return;
 		}
 		setOpen( false );
-		recordScoreCallback( score, comments );
+		recordScoreCallback( scoreAsInt, comments );
 	};
 
 	if ( ! isOpen ) {
