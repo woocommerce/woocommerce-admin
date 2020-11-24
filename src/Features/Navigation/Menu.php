@@ -231,6 +231,8 @@ class Menu {
 			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
 		}
 
+		$menu_item['menuId'] = isset( self::$menu_items[ $menu_item['parent'] ] ) ? self::$menu_items[ $menu_item['parent'] ]['menuId'] : $menu_item['menuId'];
+
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
 
 		if ( isset( $args['url'] ) ) {
