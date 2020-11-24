@@ -87,6 +87,26 @@ const Container = ( { menuItems } ) => {
 
 	const navDomRef = useRef( null );
 
+	const renderNavigationGroup = ( category, items, topLevelTitle = null ) => {
+		if ( ! items.length ) {
+			return null;
+		}
+
+		const isTopLevel = category.id === 'woocommerce';
+
+		if ( ! isTopLevel && items[ 0 ].menuId !== category.menuId ) {
+			return null;
+		}
+
+		return (
+			<NavigationGroup title={ isTopLevel ? topLevelTitle : null }>
+				{ items.map( ( item ) => (
+					<Item key={ item.id } item={ item } />
+				) ) }
+			</NavigationGroup>
+		);
+	};
+
 	return (
 		<div className="woocommerce-navigation">
 			<Header />
@@ -128,44 +148,18 @@ const Container = ( { menuItems } ) => {
 									category.backButtonLabel || null
 								}
 							>
-								{ !! primaryItems.length && (
-									<NavigationGroup>
-										{ primaryItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
+								{ renderNavigationGroup(
+									category,
+									primaryItems
 								) }
-								{ !! pluginItems.length && (
-									<NavigationGroup
-										title={
-											category.id === 'woocommerce'
-												? __(
-														'Extensions',
-														'woocommerce-admin'
-												  )
-												: null
-										}
-									>
-										{ pluginItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
+								{ renderNavigationGroup(
+									category,
+									pluginItems,
+									__( 'Extensions', 'woocommerce-admin' )
 								) }
-								{ !! secondaryItems.length && (
-									<NavigationGroup>
-										{ secondaryItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
+								{ renderNavigationGroup(
+									category,
+									secondaryItems
 								) }
 							</NavigationMenu>
 						);
