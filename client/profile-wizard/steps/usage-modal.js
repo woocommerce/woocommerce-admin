@@ -65,6 +65,11 @@ class UsageModal extends Component {
 		if ( allowTracking && typeof window.wcTracks.enable === 'function' ) {
 			this.setState( { isLoadingScripts: true } );
 			window.wcTracks.enable( () => {
+				// Don't update state if component is unmounted already
+				if ( ! this._isMounted ) {
+					return;
+				}
+
 				this.setState( { isLoadingScripts: false } );
 			} );
 		} else if ( ! allowTracking ) {
@@ -76,6 +81,14 @@ class UsageModal extends Component {
 		updateOptions( {
 			woocommerce_allow_tracking: trackingValue,
 		} );
+	}
+
+	componentDidMount() {
+		this._isMounted = true;
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	render() {
