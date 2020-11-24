@@ -1,3 +1,3 @@
-export function getCesSurveyTracksQueue( state ) {
+export function getCesSurveyQueue( state ) {
 	return state.queue;
 }

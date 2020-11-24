@@ -75,8 +75,8 @@ CustomerEffortScoreTracksContainer.propTypes = {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getCesSurveyTracksQueue, isResolving } = select( STORE_KEY );
-		const queue = getCesSurveyTracksQueue();
+		const { getCesSurveyQueue, isResolving } = select( STORE_KEY );
+		const queue = getCesSurveyQueue();
 		const resolving = isResolving( 'getOption', [ QUEUE_OPTION_NAME ] );
 
 		return { queue, resolving };

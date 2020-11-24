@@ -38,7 +38,7 @@ const VariationsReport = ( props ) => {
 		query,
 		isError,
 		isRequesting,
-		addCesSurveyTrackForAnalytics,
+		addCesSurveyForAnalytics,
 	} = props;
 
 	if ( isError ) {
@@ -55,7 +55,7 @@ const VariationsReport = ( props ) => {
 
 	filters[ 0 ].filters.find(
 		( item ) => item.value === 'compare-variations'
-	).settings.onClick = addCesSurveyTrackForAnalytics;
+	).settings.onClick = addCesSurveyForAnalytics;
 
 	return (
 		<Fragment>
@@ -104,6 +104,6 @@ VariationsReport.propTypes = {
 };
 
 export default withDispatch( ( dispatch ) => {
-	const { addCesSurveyTrackForAnalytics } = dispatch( CES_STORE_KEY );
-	return { addCesSurveyTrackForAnalytics };
+	const { addCesSurveyForAnalytics } = dispatch( CES_STORE_KEY );
+	return { addCesSurveyForAnalytics };
 } )( VariationsReport );

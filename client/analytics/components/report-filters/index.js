@@ -31,8 +31,8 @@ class ReportFilters extends Component {
 	}
 
 	onDateSelect( data ) {
-		const { report, addCesSurveyTrackForAnalytics } = this.props;
-		addCesSurveyTrackForAnalytics();
+		const { report, addCesSurveyForAnalytics } = this.props;
+		addCesSurveyForAnalytics();
 		recordEvent( 'datepicker_update', {
 			report,
 			...omitBy( data, isUndefined ),
@@ -40,7 +40,7 @@ class ReportFilters extends Component {
 	}
 
 	onFilterSelect( data ) {
-		const { report, addCesSurveyTrackForAnalytics } = this.props;
+		const { report, addCesSurveyForAnalytics } = this.props;
 
 		// This event gets triggered in the following cases.
 		// 1. Select "Single Product" and choose a product.
@@ -49,7 +49,7 @@ class ReportFilters extends Component {
 		// a button to execute a query, so this is not a good place to
 		// trigger a CES survey for those.
 		if ( data.filter === 'single_product' ) {
-			addCesSurveyTrackForAnalytics();
+			addCesSurveyForAnalytics();
 		}
 		recordEvent( 'analytics_filter', {
 			report,
@@ -58,7 +58,7 @@ class ReportFilters extends Component {
 	}
 
 	onAdvancedFilterAction( action, data ) {
-		const { report, addCesSurveyTrackForAnalytics } = this.props;
+		const { report, addCesSurveyForAnalytics } = this.props;
 		switch ( action ) {
 			case 'add':
 				recordEvent( 'analytics_filters_add', {
@@ -80,7 +80,7 @@ class ReportFilters extends Component {
 					},
 					{}
 				);
-				addCesSurveyTrackForAnalytics();
+				addCesSurveyForAnalytics();
 				recordEvent( 'analytics_filters_filter', {
 					report,
 					...snakeCaseData,
@@ -154,8 +154,8 @@ export default compose(
 		return { defaultDateRange };
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { addCesSurveyTrackForAnalytics } = dispatch( CES_STORE_KEY );
-		return { addCesSurveyTrackForAnalytics };
+		const { addCesSurveyForAnalytics } = dispatch( CES_STORE_KEY );
+		return { addCesSurveyForAnalytics };
 	} )
 )( ReportFilters );
 

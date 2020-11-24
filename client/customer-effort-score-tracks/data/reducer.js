@@ -9,12 +9,12 @@ const DEFAULT_STATE = {
 
 const reducer = ( state = DEFAULT_STATE, action ) => {
 	switch ( action.type ) {
-		case TYPES.SET_CES_SURVEY_TRACKS_QUEUE:
+		case TYPES.SET_CES_SURVEY_QUEUE:
 			return {
 				...state,
 				queue: action.queue,
 			};
-		case TYPES.ADD_CES_SURVEY_TRACK:
+		case TYPES.ADD_CES_SURVEY:
 			// Prevent duplicate
 			const hasDuplicate = state.queue.filter(
 				( track ) => track.action === action.action

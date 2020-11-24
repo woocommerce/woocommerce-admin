@@ -61,7 +61,7 @@ class ProductsReport extends Component {
 			isError,
 			isRequesting,
 			isSingleProductVariable,
-			addCesSurveyTrackForAnalytics,
+			addCesSurveyForAnalytics,
 		} = this.props;
 
 		if ( isError ) {
@@ -79,7 +79,7 @@ class ProductsReport extends Component {
 
 		filters[ 0 ].filters.find(
 			( item ) => item.value === 'compare-products'
-		).settings.onClick = addCesSurveyTrackForAnalytics;
+		).settings.onClick = addCesSurveyForAnalytics;
 
 		return (
 			<Fragment>
@@ -195,7 +195,7 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { addCesSurveyTrackForAnalytics } = dispatch( CES_STORE_KEY );
-		return { addCesSurveyTrackForAnalytics };
+		const { addCesSurveyForAnalytics } = dispatch( CES_STORE_KEY );
+		return { addCesSurveyForAnalytics };
 	} )
 )( ProductsReport );

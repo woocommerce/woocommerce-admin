@@ -13,9 +13,9 @@ import TYPES from './action-types';
  *
  * @param {Object} queue	initial queue
  */
-export function setCesSurveyTracksQueue( queue ) {
+export function setCesSurveyQueue( queue ) {
 	return {
-		type: TYPES.SET_CES_SURVEY_TRACKS_QUEUE,
+		type: TYPES.SET_CES_SURVEY_QUEUE,
 		queue,
 	};
 }
@@ -29,7 +29,7 @@ export function setCesSurveyTracksQueue( queue ) {
  * @param {string} adminPage value of window.adminpage
  * @param {string} onsubmit_label label for the snackback onsubmit
  */
-export function addCesSurveyTrack(
+export function addCesSurvey(
 	action,
 	label,
 	pageNow = window.pagenow,
@@ -37,7 +37,7 @@ export function addCesSurveyTrack(
 	onsubmit_label = undefined
 ) {
 	return {
-		type: TYPES.ADD_CES_SURVEY_TRACK,
+		type: TYPES.ADD_CES_SURVEY,
 		action,
 		label,
 		pageNow,
@@ -49,8 +49,8 @@ export function addCesSurveyTrack(
 /**
  * Add a new CES survey track for the pages in Analytics menu
  */
-export function addCesSurveyTrackForAnalytics() {
-	return addCesSurveyTrack(
+export function addCesSurveyForAnalytics() {
+	return addCesSurvey(
 		'analytics_filtered',
 		__(
 			'How easy was it to filter your store analytics?',

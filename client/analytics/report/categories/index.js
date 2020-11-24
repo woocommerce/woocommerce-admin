@@ -48,7 +48,7 @@ class CategoriesReport extends Component {
 			isRequesting,
 			query,
 			path,
-			addCesSurveyTrackForAnalytics,
+			addCesSurveyForAnalytics,
 		} = this.props;
 		const { mode, itemsLabel, isSingleCategoryView } = this.getChartMeta();
 
@@ -64,7 +64,7 @@ class CategoriesReport extends Component {
 
 		filters[ 0 ].filters.find(
 			( item ) => item.value === 'compare-categories'
-		).settings.onClick = addCesSurveyTrackForAnalytics;
+		).settings.onClick = addCesSurveyForAnalytics;
 
 		return (
 			<Fragment>
@@ -135,6 +135,6 @@ CategoriesReport.propTypes = {
 };
 
 export default withDispatch( ( dispatch ) => {
-	const { addCesSurveyTrackForAnalytics } = dispatch( CES_STORE_KEY );
-	return { addCesSurveyTrackForAnalytics };
+	const { addCesSurveyForAnalytics } = dispatch( CES_STORE_KEY );
+	return { addCesSurveyForAnalytics };
 } )( CategoriesReport );
