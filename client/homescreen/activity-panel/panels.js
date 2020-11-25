@@ -34,7 +34,7 @@ export function getAllPanels( {
 			className: 'woocommerce-homescreen-card',
 			count: countLowStockProducts,
 			id: 'stock-panel',
-			initialOpen: countLowStockProducts > 0,
+			initialOpen: false,
 			panel: (
 				<StockPanel countLowStockProducts={ countLowStockProducts } />
 			),
