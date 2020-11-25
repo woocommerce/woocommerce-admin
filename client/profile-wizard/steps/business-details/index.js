@@ -2,14 +2,17 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button, __experimentalText as Text } from '@wordpress/components';
+import {
+	Button,
+	TabPanel,
+	__experimentalText as Text,
+} from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, pickBy } from 'lodash';
 import {
-	H,
 	Card,
 	Link,
 	SelectControl,
@@ -36,6 +39,8 @@ import { getRevenueOptions } from './data/revenue-options';
 import { getProductCountOptions } from './data/product-options';
 import { FreeFeatures } from './free-features';
 
+import './style.scss';
+
 class BusinessDetails extends Component {
 	constructor( props ) {
 		super();
@@ -49,7 +54,6 @@ class BusinessDetails extends Component {
 
 		this.state = {
 			isPopoverVisible: false,
-			subStep: 0,
 		};
 
 		this.initialValues = {
@@ -533,12 +537,24 @@ class BusinessDetails extends Component {
 	}
 
 	render() {
-		const { subStep } = this.state;
+		return (
+			<TabPanel
+				activeClass="is-active"
+				onSelect={ () => {} }
+				tabs={ [
+					{ name: 'business-details', title: 'Business details' },
+					{ name: 'free-features', title: 'Free features' },
+				] }
+			>
+				{ ( tab ) => <>{ this.getTab( tab.name ) }</> }
+			</TabPanel>
+		);
+	}
 
-		if ( subStep === 0 ) {
+	getTab( tabName ) {
+		if ( tabName === 'business-details' ) {
 			return this.renderBusinessDetailsStep();
 		}
-
 		return this.renderFreeFeaturesStep();
 	}
 }
