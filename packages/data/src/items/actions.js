@@ -48,16 +48,16 @@ export function* updateProductStock( product, quantity ) {
 	}
 
 	try {
-		const results = yield apiFetch( {
+		yield apiFetch( {
 			path: url,
 			method: 'PUT',
 			data: updatedProduct,
 		} );
-		return { success: true, ...results };
+		return true;
 	} catch ( error ) {
 		// Update failed, return product back to original state.
 		yield setItems( 'products', id, [ product ], 1 );
 		yield setError( id, error );
-		return { success: false, ...error };
+		return false;
 	}
 }
