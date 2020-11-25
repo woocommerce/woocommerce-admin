@@ -7,7 +7,7 @@
 	color: $gray-text;
 	@include font-size( 13 );
 
-	&:not( .woocommerce-empty-activity-card ) {
+	&:not(.woocommerce-empty-activity-card) {
 		display: grid;
 		grid-template-columns: 50px 1fr;
 		grid-template-areas:
@@ -30,10 +30,10 @@
 
 .woocommerce-activity-card__unread {
 	position: absolute;
-	top: calc( #{$fallback-gutter} - 6px );
-	top: calc( #{$gutter} - 6px );
-	right: calc( #{$fallback-gutter} - 6px );
-	right: calc( #{$gutter} - 6px );
+	top: calc(#{$fallback-gutter} - 6px);
+	top: calc(#{$gutter} - 6px);
+	right: calc(#{$fallback-gutter} - 6px);
+	right: calc(#{$gutter} - 6px);
 	width: 6px;
 	height: 6px;
 	border-radius: 50%;
@@ -142,6 +142,11 @@
 		height: 24px;
 		padding: 4px 10px;
 		@include font-size( 11 );
+		&.is-destructive {
+			&:not(:hover) {
+				box-shadow: none;
+			}
+		}
 	}
 }
 

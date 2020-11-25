@@ -55,18 +55,6 @@
 		}
 	}
 
-	.woocommerce-activity-card__actions {
-		margin: $gap 0 0 0;
-		.components-button {
-			&.is-destructive {
-				&:not( :hover ) {
-					box-shadow: none;
-				}
-			}
-			height: 24px;
-		}
-	}
-
 	.woocommerce-activity-card {
 		padding: $gap-largest/2 $gutter $gutter;
 		&__header {
