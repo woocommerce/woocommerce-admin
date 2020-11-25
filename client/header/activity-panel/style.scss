@@ -279,11 +279,6 @@
 		padding-left: $gap-large;
 		padding-right: $gap-large;
 	}
-
-	.woocommerce-activity-card__date {
-		text-transform: uppercase;
-		@include font-size( 11 );
-	}
 }
 
 .woocommerce-layout__activity-panel-avatar-flag-overlay {
