@@ -28,6 +28,15 @@ export function setItems( itemType, query, items, totalCount ) {
 	};
 }
 
+export function setItemsTotalCount( itemType, query, totalCount ) {
+	return {
+		type: TYPES.SET_ITEMS_TOTAL_COUNT,
+		itemType,
+		query,
+		totalCount,
+	};
+}
+
 export function setError( itemType, query, error ) {
 	return {
 		type: TYPES.SET_ERROR,

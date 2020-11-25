@@ -36,6 +36,21 @@ const reducer = (
 				return result;
 			}, {} );
 			const resourceName = getResourceName( itemType, query );
+			return {
+				...state,
+				items: {
+					...state.items,
+					[ resourceName ]: { data: ids },
+				},
+				data: {
+					...state.data,
+					[ itemType ]: {
+						...state.data[ itemType ],
+						...nextItems,
+					},
+				},
+			};
+		case TYPES.SET_ITEMS_TOTAL_COUNT:
 			const totalResourceName = getTotalCountResourceName(
 				itemType,
 				query
@@ -44,15 +59,7 @@ const reducer = (
 				...state,
 				items: {
 					...state.items,
-					[ resourceName ]: { data: ids },
 					[ totalResourceName ]: totalCount,
-				},
-				data: {
-					...state.data,
-					[ itemType ]: {
-						...state.data[ itemType ],
-						...nextItems,
-					},
 				},
 			};
 		case TYPES.SET_ERROR:

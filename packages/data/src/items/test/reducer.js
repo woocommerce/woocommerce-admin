@@ -80,15 +80,53 @@ describe( 'items reducer', () => {
 		} );
 
 		const resourceName = getResourceName( itemType, query );
-		const totalResourceName = getTotalCountResourceName( itemType, query );
 
 		expect( state.items[ resourceName ].data ).toHaveLength( 2 );
 		expect( state.items[ resourceName ].data.includes( 1 ) ).toBeTruthy();
 		expect( state.items[ resourceName ].data.includes( 2 ) ).toBeTruthy();
 
-		expect( state.items[ totalResourceName ] ).toBe( 45 );
 		expect( state.data[ itemType ][ '1' ] ).toBe( items[ 0 ] );
 		expect( state.data[ itemType ][ '2' ] ).toBe( items[ 1 ] );
+	} );
+
+	it( 'should handle SET_ITEMS_TOTAL_COUNT', () => {
+		const itemType = 'BBQ';
+		const initialQuery = {
+			status: 'flavortown',
+			page: 1,
+			per_page: 1,
+			_fields: [ 'id' ],
+		};
+		const resourceName = getTotalCountResourceName(
+			itemType,
+			initialQuery
+		);
+		const initialState = {
+			items: {
+				[ resourceName ]: 1,
+			},
+		};
+
+		// Additional coverage for getTotalCountResourceName().
+		const similarQueryForTotals = {
+			status: 'flavortown',
+			page: 2,
+			per_page: 10,
+			_fields: [ 'id', 'title', 'status' ],
+		};
+
+		const state = reducer( initialState, {
+			type: TYPES.SET_ITEMS_TOTAL_COUNT,
+			itemType,
+			query: similarQueryForTotals,
+			totalCount: 2,
+		} );
+
+		expect( state ).toEqual( {
+			items: {
+				[ resourceName ]: 2,
+			},
+		} );
 	} );
 
 	it( 'should handle SET_ERROR', () => {
