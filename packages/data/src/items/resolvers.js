@@ -33,7 +33,7 @@ export function* getItems( itemType, query ) {
 			yield setItems( itemType, query, response.data, totalCount );
 		}
 	} catch ( error ) {
-		yield setError( query, error );
+		yield setError( itemType, query, error );
 	}
 }
 

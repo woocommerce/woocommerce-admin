@@ -57,7 +57,7 @@ export function* updateProductStock( product, quantity ) {
 	} catch ( error ) {
 		// Update failed, return product back to original state.
 		yield setItems( 'products', id, [ product ], 1 );
-		yield setError( id, error );
+		yield setError( 'products', id, error );
 		return false;
 	}
 }
