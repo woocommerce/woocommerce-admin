@@ -78,6 +78,12 @@ export class ProductStockCard extends Component {
 		const { product, updateProductStock, createNotice } = this.props;
 		const quantity = parseInt( this.state.quantity, 10 );
 
+		// Bail on an actual update if the quantity is unchanged.
+		if ( product.stock_quantity === quantity ) {
+			this.setState( { editing: false } );
+			return;
+		}
+
 		this.setState( { editing: false, edited: true } );
 
 		const results = await updateProductStock( product, quantity );
