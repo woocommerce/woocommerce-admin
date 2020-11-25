@@ -42,7 +42,7 @@ export function* updateProductStock( product, quantity ) {
 	const { id, parent_id: parentId, type } = updatedProduct;
 
 	// Optimistically update product stock.
-	yield setItems( 'products', id, [ updatedProduct ], 1 );
+	yield setItem( 'products', id, updatedProduct );
 
 	let url = NAMESPACE;
 
@@ -65,7 +65,7 @@ export function* updateProductStock( product, quantity ) {
 		return true;
 	} catch ( error ) {
 		// Update failed, return product back to original state.
-		yield setItems( 'products', id, [ product ], 1 );
+		yield setItem( 'products', id, product );
 		yield setError( 'products', id, error );
 		return false;
 	}
