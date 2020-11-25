@@ -9,6 +9,15 @@ import { apiFetch } from '@wordpress/data-controls';
 import TYPES from './action-types';
 import { NAMESPACE } from '../constants';
 
+export function setItem( itemType, id, item ) {
+	return {
+		type: TYPES.SET_ITEM,
+		id,
+		item,
+		itemType,
+	};
+}
+
 export function setItems( itemType, query, items, totalCount ) {
 	return {
 		type: TYPES.SET_ITEMS,

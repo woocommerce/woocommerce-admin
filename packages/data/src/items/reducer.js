@@ -11,14 +11,28 @@ const reducer = (
 		errors: {},
 		data: {},
 	},
-	{ type, itemType, query, items, totalCount, error }
+	{ type, id, itemType, query, item, items, totalCount, error }
 ) => {
 	switch ( type ) {
+		case TYPES.SET_ITEM:
+			return {
+				...state,
+				data: {
+					...state.data,
+					[ itemType ]: {
+						...state.data[ itemType ],
+						[ id ]: {
+							...state.data[ itemType ][ id ],
+							...item,
+						},
+					},
+				},
+			};
 		case TYPES.SET_ITEMS:
 			const ids = [];
-			const nextItems = items.reduce( ( result, item ) => {
-				ids.push( item.id );
-				result[ item.id ] = item;
+			const nextItems = items.reduce( ( result, theItem ) => {
+				ids.push( theItem.id );
+				result[ theItem.id ] = theItem;
 				return result;
 			}, {} );
 			const resourceName = getResourceName( itemType, query );
