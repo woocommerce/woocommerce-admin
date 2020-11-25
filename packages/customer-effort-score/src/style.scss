@@ -45,6 +45,7 @@
 		input:focus + label {
 			outline: 2px solid $studio-wordpress-blue;
 			background-color: peach;
+			color: $studio-blue-60;
 		}
 
 		input:checked + label {
