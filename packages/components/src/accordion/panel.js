@@ -4,7 +4,7 @@
 import { Card, CardHeader, PanelBody, PanelRow } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -32,6 +32,13 @@ const AccordionPanel = ( {
 	children,
 } ) => {
 	const [ isPanelOpen, setIsPanelOpen ] = useState( null );
+
+	useEffect( () => {
+		if ( ! collapsible && isPanelOpen ) {
+			setIsPanelOpen( ! isPanelOpen );
+		}
+	}, [ collapsible ] );
+
 	const getTitleAndCount = ( titleText, countUnread ) => {
 		return (
 			<span className="woocommerce-accordion-header">
