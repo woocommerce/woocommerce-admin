@@ -47,7 +47,6 @@ class ReviewsPanel extends Component {
 			createNotice,
 			updateReview,
 			clearReviewsCache,
-			reviews,
 		} = this.props;
 		if ( reviewId ) {
 			deleteReview( reviewId )
@@ -72,11 +71,7 @@ class ReviewsPanel extends Component {
 											{
 												_embed: 1,
 											}
-										).then( () =>
-											clearReviewsCache(
-												reviews.length < 2
-											)
-										);
+										).then( () => clearReviewsCache() );
 									},
 								},
 							],
@@ -96,12 +91,7 @@ class ReviewsPanel extends Component {
 	}
 
 	updateReviewStatus( reviewId, newStatus, oldStatus ) {
-		const {
-			createNotice,
-			updateReview,
-			clearReviewsCache,
-			reviews,
-		} = this.props;
+		const { createNotice, updateReview, clearReviewsCache } = this.props;
 		if ( reviewId ) {
 			updateReview( reviewId, { status: newStatus } )
 				.then( () => {
@@ -125,11 +115,7 @@ class ReviewsPanel extends Component {
 											{
 												_embed: 1,
 											}
-										).then( () =>
-											clearReviewsCache(
-												reviews.length < 2
-											)
-										);
+										).then( () => clearReviewsCache() );
 									},
 								},
 							],
@@ -383,28 +369,6 @@ ReviewsPanel.contextType = CurrencyContext;
 export { ReviewsPanel };
 
 export default compose( [
-	withDispatch( ( dispatch ) => {
-		const {
-			deleteReview,
-			updateReview,
-			invalidateResolutionForStoreSelector,
-		} = dispatch( REVIEWS_STORE_NAME );
-		const { createNotice } = dispatch( 'core/notices' );
-
-		const clearReviewsCache = ( emptyReviews ) => {
-			invalidateResolutionForStoreSelector( 'getReviews' );
-			if ( emptyReviews ) {
-				invalidateResolutionForStoreSelector( 'getReviewsTotalCount' );
-			}
-		};
-
-		return {
-			deleteReview,
-			createNotice,
-			updateReview,
-			clearReviewsCache,
-		};
-	} ),
 	withSelect( ( select, props ) => {
 		const { hasUnapprovedReviews } = props;
 		const { getReviews, getReviewsError, isResolving } = select(
@@ -429,6 +393,28 @@ export default compose( [
 			reviews,
 			isError,
 			isRequesting,
+		};
+	} ),
+	withDispatch( ( dispatch, props ) => {
+		const {
+			deleteReview,
+			updateReview,
+			invalidateResolutionForStoreSelector,
+		} = dispatch( REVIEWS_STORE_NAME );
+		const { createNotice } = dispatch( 'core/notices' );
+
+		const clearReviewsCache = () => {
+			invalidateResolutionForStoreSelector( 'getReviews' );
+			if ( props.reviews && props.reviews.length < 2 ) {
+				invalidateResolutionForStoreSelector( 'getReviewsTotalCount' );
+			}
+		};
+
+		return {
+			deleteReview,
+			createNotice,
+			updateReview,
+			clearReviewsCache,
 		};
 	} ),
 ] )( ReviewsPanel );
