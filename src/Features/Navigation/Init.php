@@ -35,22 +35,35 @@ class Init {
 	}
 
 	/**
+	 * Determine if sufficient versions are present to support Navigation feature
+	 */
+	public function is_nav_compatible() {
+		$has_gutenberg     = is_plugin_active( 'gutenberg/gutenberg.php' );
+		$gutenberg_version = $has_gutenberg ? get_plugin_data( ABSPATH . 'wp-content/plugins/gutenberg/gutenberg.php' )['Version'] : false;
+
+		if ( $gutenberg_version && version_compare( $gutenberg_version, '9.0.0', '>=' ) ) {
+			return true;
+		}
+
+		$current    = get_site_transient( 'update_core' );
+		$wp_version = $current->version_checked;
+
+		if ( version_compare( $wp_version, '5.6.0', '<' ) ) {
+			return false;
+		}
+	}
+
+	/**
 	 * Overwrites the allowed features array using a local `feature-config.php` file.
 	 *
 	 * @param array $features Array of feature slugs.
 	 */
 	public function maybe_remove_nav_feature( $features ) {
-		$current    = get_site_transient( 'update_core' );
-		$wp_version = $current->version_checked;
+		$has_feature_enabled = in_array( 'navigation', $features, true );
+		$has_option_disabled = 'yes' !== get_option( 'woocommerce_navigation_enabled', 'no' );
+		$is_not_compatible   = ! self::is_nav_compatible();
 
-		// Check wp version.
-		// Also check Gutenberg present and version number.
-		// Check when Nav components made available.
-		if ( version_compare( $wp_version, '5.6.0', '<' ) ) {
-			$features = array_diff( $features, array( 'navigation' ) );
-		}
-
-		if ( in_array( 'navigation', $features, true ) && 'yes' !== get_option( 'woocommerce_navigation_enabled', 'no' ) ) {
+		if ( ( $has_feature_enabled && $has_option_disabled ) || $is_not_compatible ) {
 			$features = array_diff( $features, array( 'navigation' ) );
 		}
 		return $features;
