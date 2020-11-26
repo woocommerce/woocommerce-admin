@@ -1,5 +1,11 @@
 .woocommerce-profile-wizard__container.business-details {
 	.components-tab-panel__tabs {
+		.components-tab-panel__tabs-item.is-disabled {
+			color: $gray-600;
+			cursor: default;
+			pointer-events: none;
+		}
+
 		justify-content: center;
 	}
 }

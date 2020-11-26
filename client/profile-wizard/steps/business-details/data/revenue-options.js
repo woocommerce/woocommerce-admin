@@ -9,6 +9,7 @@ import CurrencyFactory from '@woocommerce/currency';
  * Internal dependencies
  */
 import { getCurrencyRegion } from '../../../../dashboard/utils';
+import { getNumberRangeString } from './product-options';
 
 const { formatAmount } = CurrencyFactory( CURRENCY );
 
@@ -63,7 +64,7 @@ export const getRevenueOptions = ( country ) => [
 	},
 	{
 		key: '2500-10000',
-		label: this.getNumberRangeString(
+		label: getNumberRangeString(
 			convertCurrency( 2500, country ),
 			convertCurrency( 10000, country ),
 			formatAmount
@@ -71,7 +72,7 @@ export const getRevenueOptions = ( country ) => [
 	},
 	{
 		key: '10000-50000',
-		label: this.getNumberRangeString(
+		label: getNumberRangeString(
 			convertCurrency( 10000, country ),
 			convertCurrency( 50000, country ),
 			formatAmount
@@ -79,7 +80,7 @@ export const getRevenueOptions = ( country ) => [
 	},
 	{
 		key: '50000-250000',
-		label: this.getNumberRangeString(
+		label: getNumberRangeString(
 			convertCurrency( 50000, country ),
 			convertCurrency( 250000, country ),
 			formatAmount

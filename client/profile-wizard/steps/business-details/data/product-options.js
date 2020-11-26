@@ -8,7 +8,7 @@ const formatNumber = ( numberConfig, value ) => {
 	return formatValue( numberConfig, 'number', value );
 };
 
-const getNumberRangeString = ( numberConfig, min, max = false ) => {
+export const getNumberRangeString = ( numberConfig, min, max = false ) => {
 	if ( ! max ) {
 		return sprintf(
 			_x( '%s+', 'store product count or revenue', 'woocommerce-admin' ),

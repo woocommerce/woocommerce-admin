@@ -54,6 +54,9 @@ class BusinessDetails extends Component {
 
 		this.state = {
 			isPopoverVisible: false,
+			isValid: false,
+			currentTab: 'business-details',
+			savedValues: null,
 		};
 
 		this.initialValues = {
@@ -244,6 +247,10 @@ class BusinessDetails extends Component {
 			);
 		}
 
+		if ( Object.keys( errors ).length === 0 ) {
+			this.setState( { isValid: true } );
+		}
+
 		return errors;
 	}
 
@@ -356,10 +363,16 @@ class BusinessDetails extends Component {
 
 		return (
 			<Form
-				initialValues={ this.initialValues }
-				onSubmitCallback={ () =>
-					console.log( 'todo, move to next step' )
-				}
+				initialValues={ this.state.savedValues || this.initialValues }
+				onSubmitCallback={ ( values ) => {
+					this.setState( {
+						savedValues: values,
+						currentTab: 'free-features',
+					} );
+				} }
+				onChangeCallback={ ( _, values ) => {
+					this.setState( { savedValues: values } );
+				} }
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
@@ -503,6 +516,7 @@ class BusinessDetails extends Component {
 				}
 				validate={ () => {
 					console.log( 'todo confirm if we need validation here' );
+					return {};
 				} }
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
@@ -528,7 +542,9 @@ class BusinessDetails extends Component {
 									) }
 								</Text>
 							</div>
-							<FreeFeatures getInputProps={ getInputProps } />
+							<Card>
+								<FreeFeatures getInputProps={ getInputProps } />
+							</Card>
 						</>
 					);
 				} }
@@ -537,22 +553,47 @@ class BusinessDetails extends Component {
 	}
 
 	render() {
+		// There are a couple of hacks here to help us manage the selected tab programatically.
+		// 1. We set the tab name to "current-tab" when its the one we want selected. This tricks
+		//    the logic in the TabPanel to select this tab since it checks the tab name to determine
+		//    selected tab.
+		// 2. When clicking on a tab onSelect keeps the currentTab state up to date, which forces the
+		//    a re-render with the tab names changed to keep the TabPanel up to date with which tab
+		//    was chosen.
 		return (
 			<TabPanel
 				activeClass="is-active"
-				onSelect={ () => {} }
+				initialTabName="current-tab"
+				onSelect={ ( tabName ) => {
+					this.setState( { currentTab: tabName } );
+				} }
 				tabs={ [
-					{ name: 'business-details', title: 'Business details' },
-					{ name: 'free-features', title: 'Free features' },
+					{
+						name:
+							this.state.currentTab === 'business-details'
+								? 'current-tab'
+								: 'business-details',
+						id: 'business-details',
+						title: 'Business details',
+					},
+					{
+						name:
+							this.state.currentTab === 'free-features'
+								? 'current-tab'
+								: 'free-features',
+						id: 'free-features',
+						title: 'Free features',
+						className: this.state.isValid ? '' : 'is-disabled',
+					},
 				] }
 			>
-				{ ( tab ) => <>{ this.getTab( tab.name ) }</> }
+				{ ( tab ) => <>{ this.getTab( tab.id ) }</> }
 			</TabPanel>
 		);
 	}
 
-	getTab( tabName ) {
-		if ( tabName === 'business-details' ) {
+	getTab( tabId ) {
+		if ( tabId === 'business-details' ) {
 			return this.renderBusinessDetailsStep();
 		}
 		return this.renderFreeFeaturesStep();

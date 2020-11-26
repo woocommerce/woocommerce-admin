@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { cloneElement, Component } from '@wordpress/element';
-import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 
 /**
@@ -44,7 +43,13 @@ class Form extends Component {
 			( prevState ) => ( {
 				values: { ...prevState.values, [ name ]: value },
 			} ),
-			this.validate
+			() => {
+				this.validate();
+				this.props.onChangeCallback(
+					{ name, value },
+					this.state.values
+				);
+			}
 		);
 	}
 
@@ -138,6 +143,10 @@ Form.propTypes = {
 	 */
 	onSubmitCallback: PropTypes.func,
 	/**
+	 * Function to call when a value changes in the form.
+	 */
+	onChangeCallback: PropTypes.func,
+	/**
 	 * A function that is passed a list of all values and
 	 * should return an `errors` object with error response.
 	 */
@@ -147,9 +156,10 @@ Form.propTypes = {
 Form.defaultProps = {
 	errors: {},
 	initialValues: {},
-	onSubmitCallback: noop,
+	onSubmitCallback: () => {},
+	onChangeCallback: () => {},
 	touched: {},
-	validate: noop,
+	validate: () => {},
 };
 
 export default Form;

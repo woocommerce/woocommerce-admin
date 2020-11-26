@@ -1,0 +1,19 @@
+.woocommerce-profile-wizard__business-details__free-features {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	.woocommerce-profile-wizard__business-details__free-features__illustration {
+		flex: 1;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		margin-top: 18px;
+	}
+
+	.woocommerce-profile-wizard__business-details__free-features__action {
+		padding-top: $gap-small;
+		display: flex;
+		justify-content: center;
+	}
+}
