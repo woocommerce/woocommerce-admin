@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { noop } from 'lodash';
 import { useState } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
@@ -12,6 +11,8 @@ import { withDispatch } from '@wordpress/data';
  * Internal dependencies
  */
 import CustomerFeedbackModal from './customer-feedback-modal';
+
+const noop = () => {};
 
 /**
  * Use `CustomerEffortScore` to gather a customer effort score.
