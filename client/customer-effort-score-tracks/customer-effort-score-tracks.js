@@ -102,7 +102,7 @@ function CustomerEffortScoreTracks( {
 		recordEvent( 'ces_feedback', {
 			action,
 			score,
-			comments,
+			comments: comments || '',
 			store_age: storeAge,
 			...trackProps,
 		} );
