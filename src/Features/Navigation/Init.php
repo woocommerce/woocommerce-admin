@@ -38,19 +38,26 @@ class Init {
 	 * Determine if sufficient versions are present to support Navigation feature
 	 */
 	public function is_nav_compatible() {
-		$has_gutenberg     = is_plugin_active( 'gutenberg/gutenberg.php' );
-		$gutenberg_version = $has_gutenberg ? get_plugin_data( ABSPATH . 'wp-content/plugins/gutenberg/gutenberg.php' )['Version'] : false;
+		$gutenberg_minimum_version = '9.0.0'; // https://github.com/WordPress/gutenberg/releases/tag/v9.0.0.
+		$wp_minimum_version        = '5.5.3';
+		$has_gutenberg             = is_plugin_active( 'gutenberg/gutenberg.php' );
+		$gutenberg_version         = $has_gutenberg ? get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' )['Version'] : false;
 
-		if ( $gutenberg_version && version_compare( $gutenberg_version, '9.0.0', '>=' ) ) {
+		if ( $gutenberg_version && version_compare( $gutenberg_version, $gutenberg_minimum_version, '>=' ) ) {
 			return true;
 		}
 
-		$current    = get_site_transient( 'update_core' );
-		$wp_version = $current->version_checked;
+		// Get unmodified $wp_version.
+		include ABSPATH . WPINC . '/version.php';
 
-		if ( version_compare( $wp_version, '5.6.0', '<' ) ) {
-			return false;
+		// Strip '-src' from the version string. Messes up version_compare().
+		$wp_version = str_replace( '-src', '', $wp_version );
+
+		if ( version_compare( $wp_version, $wp_minimum_version, '>=' ) ) {
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
