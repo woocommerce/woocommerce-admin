@@ -40,6 +40,16 @@ class Init {
 	 * @param array $features Array of feature slugs.
 	 */
 	public function maybe_remove_nav_feature( $features ) {
+		$current    = get_site_transient( 'update_core' );
+		$wp_version = $current->version_checked;
+
+		// Check wp version.
+		// Also check Gutenberg present and version number.
+		// Check when Nav components made available.
+		if ( version_compare( $wp_version, '5.6.0', '<' ) ) {
+			$features = array_diff( $features, array( 'navigation' ) );
+		}
+
 		if ( in_array( 'navigation', $features, true ) && 'yes' !== get_option( 'woocommerce_navigation_enabled', 'no' ) ) {
 			$features = array_diff( $features, array( 'navigation' ) );
 		}
