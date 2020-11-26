@@ -34,6 +34,7 @@ const externals = {
 	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
 	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
 	'@wordpress/plugins': { this: [ 'wp', 'plugins' ] },
+	'@wordpress/components': { this: [ 'wp', 'components' ] },
 	tinymce: 'tinymce',
 	moment: 'moment',
 	react: 'React',
