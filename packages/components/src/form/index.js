@@ -32,10 +32,10 @@ class Form extends Component {
 		return ! Object.keys( this.state.errors ).length;
 	}
 
-	validate() {
+	validate( onValidate = () => {} ) {
 		const { values } = this.state;
 		const errors = this.props.validate( values );
-		this.setState( { errors } );
+		this.setState( { errors }, onValidate );
 	}
 
 	setValue( name, value ) {
@@ -44,11 +44,15 @@ class Form extends Component {
 				values: { ...prevState.values, [ name ]: value },
 			} ),
 			() => {
-				this.validate();
-				this.props.onChangeCallback(
-					{ name, value },
-					this.state.values
-				);
+				this.validate( () => {
+					// on change keeps track of validity, so needs to
+					// happen after setting the error state.
+					this.props.onChangeCallback(
+						{ name, value },
+						this.state.values,
+						! Object.keys( this.state.errors ).length
+					);
+				} );
 			}
 		);
 	}

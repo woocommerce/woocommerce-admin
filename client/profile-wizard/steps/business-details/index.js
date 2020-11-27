@@ -370,8 +370,9 @@ class BusinessDetails extends Component {
 						currentTab: 'free-features',
 					} );
 				} }
-				onChangeCallback={ ( _, values ) => {
-					this.setState( { savedValues: values } );
+				onChangeCallback={ ( _, values, isValid ) => {
+					console.log( 'change', isValid );
+					this.setState( { savedValues: values, isValid } );
 				} }
 				validate={ this.validate }
 			>
