@@ -501,8 +501,6 @@ class BusinessDetails extends Component {
 									</div>
 								</>
 							</Card>
-
-							{ this.renderBusinessExtensionHelpText( values ) }
 						</>
 					);
 				} }
@@ -512,11 +510,8 @@ class BusinessDetails extends Component {
 
 	renderFreeFeaturesStep() {
 		return (
-			<Form
-				initialValues={ this.initialValues }
-				onSubmitCallback={ this.onContinue }
-			>
-				{ ( { getInputProps } ) => {
+			<Form onSubmitCallback={ this.onContinue }>
+				{ ( { getInputProps, values } ) => {
 					return (
 						<>
 							<div className="woocommerce-profile-wizard__step-header">
@@ -540,8 +535,12 @@ class BusinessDetails extends Component {
 								</Text>
 							</div>
 							<Card>
-								<FreeFeatures getInputProps={ getInputProps } />
+								<FreeFeatures
+									getInputProps={ getInputProps }
+									values={ this.state.savedValues }
+								/>
 							</Card>
+							{ this.renderBusinessExtensionHelpText( values ) }
 						</>
 					);
 				} }
@@ -587,7 +586,7 @@ class BusinessDetails extends Component {
 	}
 
 	getTab( tabId ) {
-		if ( tabId === FREE_FEATURES_TAB_NAME ) {
+		if ( tabId === BUSINESS_DETAILS_TAB_NAME ) {
 			return this.renderBusinessDetailsStep();
 		}
 		return this.renderFreeFeaturesStep();

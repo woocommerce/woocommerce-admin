@@ -8,18 +8,23 @@ import { Button } from '@wordpress/components';
  */
 import { BusinessExtensions } from '../business-extensions';
 import { ExtensionsBundle } from '../experiments/extensions-bundle';
+import { SelectiveExtensionsBundle } from '../experiments/selective-extensions-bundle';
 import { AppIllustration } from '../app-illustration';
 
 import './style.scss';
 
-export const FreeFeatures = ( { getInputProps } ) => {
+export const FreeFeatures = ( { getInputProps, values } ) => {
 	// TODO calculate experiment from segmentation
-	const bundleInstall = true;
+	// const bundleInstall = true;
 
-	const experiment = bundleInstall ? (
-		<ExtensionsBundle getInputProps={ getInputProps } />
-	) : (
-		<BusinessExtensions getInputProps={ getInputProps } />
+	// const experiment = bundleInstall ? (
+	// 	<ExtensionsBundle getInputProps={ getInputProps } />
+	// ) : (
+	// 	<BusinessExtensions getInputProps={ getInputProps } values={ values } />
+	// );
+
+	const experiment = (
+		<SelectiveExtensionsBundle getInputProps={ getInputProps } />
 	);
 
 	return (

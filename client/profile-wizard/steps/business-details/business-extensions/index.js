@@ -3,6 +3,7 @@
  */
 import { FormToggle } from '@wordpress/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { H } from '@woocommerce/components';
 
 /**
  * Internal dependencies
