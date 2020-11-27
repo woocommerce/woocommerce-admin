@@ -41,6 +41,9 @@ import { FreeFeatures } from './free-features';
 
 import './style.scss';
 
+const BUSINESS_DETAILS_TAB_NAME = 'business-details';
+const FREE_FEATURES_TAB_NAME = 'free-features';
+
 class BusinessDetails extends Component {
 	constructor( props ) {
 		super();
@@ -371,7 +374,6 @@ class BusinessDetails extends Component {
 					} );
 				} }
 				onChangeCallback={ ( _, values, isValid ) => {
-					console.log( 'change', isValid );
 					this.setState( { savedValues: values, isValid } );
 				} }
 				validate={ this.validate }
@@ -512,15 +514,9 @@ class BusinessDetails extends Component {
 		return (
 			<Form
 				initialValues={ this.initialValues }
-				onSubmitCallback={ () =>
-					console.log( 'todo move to next step in wizard' )
-				}
-				validate={ () => {
-					console.log( 'todo confirm if we need validation here' );
-					return {};
-				} }
+				onSubmitCallback={ this.onContinue }
 			>
-				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
+				{ ( { getInputProps } ) => {
 					return (
 						<>
 							<div className="woocommerce-profile-wizard__step-header">
@@ -554,13 +550,10 @@ class BusinessDetails extends Component {
 	}
 
 	render() {
-		// There are a couple of hacks here to help us manage the selected tab programatically.
-		// 1. We set the tab name to "current-tab" when its the one we want selected. This tricks
-		//    the logic in the TabPanel to select this tab since it checks the tab name to determine
-		//    selected tab.
-		// 2. When clicking on a tab onSelect keeps the currentTab state up to date, which forces the
-		//    a re-render with the tab names changed to keep the TabPanel up to date with which tab
-		//    was chosen.
+		// There is a hack here to help us manage the selected tab programatically.
+		// We set the tab name "current-tab". when its the one we want selected. This tricks
+		// the logic in the TabPanel and allows us to switch which tab has the name "current-tab"
+		// and force it to re-render with a different tab selected.
 		return (
 			<TabPanel
 				activeClass="is-active"
@@ -571,19 +564,19 @@ class BusinessDetails extends Component {
 				tabs={ [
 					{
 						name:
-							this.state.currentTab === 'business-details'
+							this.state.currentTab === BUSINESS_DETAILS_TAB_NAME
 								? 'current-tab'
-								: 'business-details',
-						id: 'business-details',
-						title: 'Business details',
+								: BUSINESS_DETAILS_TAB_NAME,
+						id: BUSINESS_DETAILS_TAB_NAME,
+						title: __( 'Business details', 'woocommerce-admin' ),
 					},
 					{
 						name:
-							this.state.currentTab === 'free-features'
+							this.state.currentTab === FREE_FEATURES_TAB_NAME
 								? 'current-tab'
-								: 'free-features',
-						id: 'free-features',
-						title: 'Free features',
+								: FREE_FEATURES_TAB_NAME,
+						id: FREE_FEATURES_TAB_NAME,
+						title: __( 'Free features', 'woocommerce-admin' ),
 						className: this.state.isValid ? '' : 'is-disabled',
 					},
 				] }
@@ -594,7 +587,7 @@ class BusinessDetails extends Component {
 	}
 
 	getTab( tabId ) {
-		if ( tabId === 'business-details' ) {
+		if ( tabId === FREE_FEATURES_TAB_NAME ) {
 			return this.renderBusinessDetailsStep();
 		}
 		return this.renderFreeFeaturesStep();
