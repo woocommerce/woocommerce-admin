@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
@@ -41,7 +41,11 @@ function CustomerEffortScore( {
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 	const [ visible, setVisible ] = useState( false );
 
-	if ( shouldCreateNotice ) {
+	useEffect( () => {
+		if ( ! shouldCreateNotice ) {
+			return;
+		}
+
 		createNotice( 'success', label, {
 			actions: [
 				{
@@ -60,7 +64,9 @@ function CustomerEffortScore( {
 		setShouldCreateNotice( false );
 
 		onNoticeShownCallback();
+	}, [ shouldCreateNotice ] );
 
+	if ( shouldCreateNotice ) {
 		return null;
 	}
 
