@@ -3,12 +3,26 @@
 	flex-direction: column;
 	justify-content: center;
 
+	.woocommerce-card__body {
+		padding: 0;
+	}
+
+	.components-base-control .components-base-control__field {
+		margin-bottom: 0;
+		margin-right: 21px;
+
+		.components-checkbox-control__input-container {
+			margin-right: 0;
+			vertical-align: baseline;
+		}
+	}
+
 	.woocommerce-profile-wizard__business-details__free-features__illustration {
 		flex: 1;
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		margin-top: 18px;
+		margin-top: 34px;
 		margin-bottom: 18px;
 	}
 
@@ -16,5 +30,6 @@
 		padding-top: $gap-small;
 		display: flex;
 		justify-content: center;
+		margin-bottom: $gap-small;
 	}
 }

@@ -534,12 +534,12 @@ class BusinessDetails extends Component {
 									) }
 								</Text>
 							</div>
-							<Card>
-								<FreeFeatures
-									getInputProps={ getInputProps }
-									values={ this.state.savedValues }
-								/>
-							</Card>
+
+							<FreeFeatures
+								getInputProps={ getInputProps }
+								values={ this.state.savedValues }
+							/>
+
 							{ this.renderBusinessExtensionHelpText( values ) }
 						</>
 					);

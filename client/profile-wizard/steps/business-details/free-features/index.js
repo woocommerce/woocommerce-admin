@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { Button } from '@wordpress/components';
+import { Card } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -29,13 +30,15 @@ export const FreeFeatures = ( { getInputProps, values } ) => {
 
 	return (
 		<div className="woocommerce-profile-wizard__business-details__free-features">
-			<div className="woocommerce-profile-wizard__business-details__free-features__illustration">
-				<AppIllustration />
-			</div>
-			{ experiment }
-			<div className="woocommerce-profile-wizard__business-details__free-features__action">
-				<Button isPrimary>Continue</Button>
-			</div>
+			<Card>
+				<div className="woocommerce-profile-wizard__business-details__free-features__illustration">
+					<AppIllustration />
+				</div>
+				{ experiment }
+				<div className="woocommerce-profile-wizard__business-details__free-features__action">
+					<Button isPrimary>Continue</Button>
+				</div>
+			</Card>
 		</div>
 	);
 };

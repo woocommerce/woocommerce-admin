@@ -1,4 +1,27 @@
 .woocommerce-admin__business-details__selective-extensions-bundle {
+	.woocommerce-admin__business-details__selective-extensions-bundle__category {
+		font-size: 11px;
+		text-transform: uppercase;
+		margin: 25px 0 0 30px;
+		color: black;
+		font-weight: 500;
+	}
 	.woocommerce-admin__business-details__selective-extensions-bundle__extension {
+		display: flex;
+		padding: $gap-large 0 $gap-large 30px;
+		border-bottom: 1px solid $gray-200;
+		font-size: 16px;
+		color: $gray-900;
+	}
+
+	.woocommerce-admin__business-details__free-badge {
+		padding: 0 $gap-smaller;
+		border: 1px solid $gray-700;
+		border-radius: 16px;
+		margin-left: $gap-smaller;
+		color: $gray-700;
+		font-size: 12px;
+		line-height: 18px;
+		height: 20px;
 	}
 }
