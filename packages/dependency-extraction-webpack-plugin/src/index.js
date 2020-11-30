@@ -28,7 +28,17 @@ const wooRequestToExternal = ( request ) => {
 
 const wooRequestToHandle = ( request ) => {
 	if ( packages.includes( request ) ) {
-		return 'wc-' + request.substring( WOOCOMMERCE_NAMESPACE.length );
+		const handle = request.substring( WOOCOMMERCE_NAMESPACE.length );
+		const irregularHandleMap = {
+			data: 'wc-store-data',
+			'csv-export': 'wc-csv',
+		};
+
+		if ( irregularHandleMap[ handle ] ) {
+			return irregularHandleMap[ handle ];
+		}
+
+		return 'wc-' + handle;
 	}
 };
 
