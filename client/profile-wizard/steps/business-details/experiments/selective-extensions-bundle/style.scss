@@ -10,8 +10,13 @@
 		display: flex;
 		padding: $gap-large 0 $gap-large 30px;
 		border-bottom: 1px solid $gray-200;
+	}
+
+	.woocommerce-admin__business-details__selective-extensions-bundle__description {
 		font-size: 16px;
 		color: $gray-900;
+		margin: 0;
+		line-height: 18px;
 	}
 
 	.woocommerce-admin__business-details__free-badge {
@@ -23,5 +28,9 @@
 		font-size: 12px;
 		line-height: 18px;
 		height: 20px;
+	}
+
+	.woocommerce-admin__business-details__selective-extensions-bundle__link {
+		text-decoration: none;
 	}
 }

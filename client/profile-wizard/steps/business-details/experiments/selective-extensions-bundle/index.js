@@ -3,13 +3,31 @@
  */
 import { useState } from '@wordpress/element';
 import { CheckboxControl } from '@wordpress/components';
+import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
+import interpolateComponents from 'interpolate-components';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
+
+const generatePluginDescriptionWithLink = ( description, productName ) => {
+	return interpolateComponents( {
+		mixedString: description,
+		components: {
+			link: (
+				<Link
+					type="external"
+					target="_blank"
+					className="woocommerce-admin__business-details__selective-extensions-bundle__link"
+					href={ `https://woocommerce.com/products/${ productName }` }
+				/>
+			),
+		},
+	} );
+};
 
 // TODO use links/i18n
 const installableExtensions = [
@@ -18,23 +36,32 @@ const installableExtensions = [
 		plugins: [
 			{
 				name: 'woocommerce-payments',
-				description: __(
-					'Accept credit cards with WooCommerce Payments',
-					'woocommerce-admin'
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Accept credit cards with {{link}}WooCommerce Payments{{/link}}',
+						'woocommerce-admin'
+					),
+					'woocommerce-payments'
 				),
 			},
 			{
 				name: 'woocommerce-shipping',
-				description: __(
-					'Print shipping labels with WooCommerce Shipping',
-					'woocommerce-admin'
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Print shipping labels with {{link}}WooCommerce Shipping{{/link}}',
+						'woocommerce-admin'
+					),
+					'shipping'
 				),
 			},
 			{
 				name: 'jetpack',
-				description: __(
-					'Enhance speed and security with Jetpack',
-					'woocommerce-admin'
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Enhance speed and security with {{link}}Jetpack{{/link}}',
+						'woocommerce-admin'
+					),
+					'jetpack'
 				),
 			},
 		],
@@ -44,27 +71,42 @@ const installableExtensions = [
 		plugins: [
 			{
 				name: 'facebook',
-				description: __( 'Market on Facebook', 'woocommerce-admin' ),
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Market on {{link}}Facebook{{/link}}',
+						'woocommerce-admin'
+					),
+					'facebook'
+				),
 			},
 			{
 				name: 'google-ads',
-				description: __(
-					'Drive sales with Google Ads',
-					'woocommerce-admin'
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Drive sales with {{link}}Google Ads{{/link}}',
+						'woocommerce-admin'
+					),
+					'google-ads-and-marketing'
 				),
 			},
 			{
 				name: 'mailchimp',
-				description: __(
-					'Contact customers with Mailchimp',
-					'woocommerce-admin'
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Contact customers with {{link}}Mailchimp{{/link}}',
+						'woocommerce-admin'
+					),
+					'mailchimp-for-woocommerce'
 				),
 			},
 			{
 				name: 'creative-mail',
-				description: __(
-					'Reach new customers with Creative Mail',
-					'woocommerce-admin'
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Reach new customers with {{link}}Creative Mail{{/link}}',
+						'woocommerce-admin'
+					),
+					'creative-mail-for-woocommerce'
 				),
 			},
 		],
@@ -91,7 +133,9 @@ export const SelectiveExtensionsBundle = ( { getInputProps, values } ) => {
 					id="woocommerce-business-extensions__checkbox"
 					{ ...getInputProps( 'install_extensions' ) }
 				/>
-				{ __( 'Add recommended business features to my site' ) }
+				<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
+					{ __( 'Add recommended business features to my site' ) }
+				</p>
 				<Icon
 					className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
 					icon={ showExtensions ? chevronUp : chevronDown }
@@ -115,7 +159,9 @@ export const SelectiveExtensionsBundle = ( { getInputProps, values } ) => {
 									id="woocommerce-business-extensions__checkbox"
 									{ ...getInputProps( 'install_extensions' ) }
 								/>
-								{ description }
+								<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
+									{ description }
+								</p>
 								<FreeBadge />
 							</div>
 						) ) }
