@@ -119,6 +119,11 @@ install_test_suite() {
 		local ioption='-i'
 	fi
 
+	# removes testing suite
+	if [ ${RESET_FLAG} = true ]; then
+		rm -rf $WP_TESTS_DIR
+	fi
+
 	# set up testing suite if it doesn't yet exist
 	if [ ! -d $WP_TESTS_DIR ]; then
 		# set up testing suite
