@@ -507,9 +507,8 @@ class Onboarding {
 			$active_theme     = get_option( 'stylesheet' );
 
 			foreach ( $installed_themes as $slug => $theme ) {
-				$theme_data       = self::get_theme_data( $theme );
-				$installed_themes = wp_get_themes();
-				$themes[ $slug ]  = $theme_data;
+				$theme_data      = self::get_theme_data( $theme );
+				$themes[ $slug ] = $theme_data;
 			}
 
 			// Add the WooCommerce support tag for default themes that don't explicitly declare support.
@@ -645,9 +644,26 @@ class Onboarding {
 	}
 
 	/**
+	 * Check if the current page is one of the WC Admin pages.
+	 *
+	 * @return bool
+	 */
+	public static function is_woocommerce_admin_page() {
+		$is_wc_admin_page = false;
+		$current_screen   = get_current_screen();
+		if ( null !== $current_screen ) {
+			$is_wc_admin_page = 'woocommerce_page_wc-admin' === $current_screen->id;
+		}
+
+		return $is_wc_admin_page;
+	}
+
+	/**
 	 * Add profiler items to component settings.
 	 *
 	 * @param array $settings Component settings.
+	 *
+	 * @return array
 	 */
 	public function component_settings( $settings ) {
 		$profile                = (array) get_option( self::PROFILE_DATA_OPTION, array() );
@@ -655,8 +671,14 @@ class Onboarding {
 			'profile' => $profile,
 		);
 
-		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown.
-		if ( ! self::should_show_profiler() && ! self::should_show_tasks() ) {
+		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown
+		// or the current page is one of the WooCommerce Admin pages.
+		if (
+			( ! self::should_show_profiler() && ! self::should_show_tasks()
+			||
+			! self::is_woocommerce_admin_page()
+		)
+		) {
 			return $settings;
 		}
 
