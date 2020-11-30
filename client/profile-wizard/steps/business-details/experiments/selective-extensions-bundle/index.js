@@ -2,8 +2,8 @@
  * External dependencies
  */
 import { useState } from '@wordpress/element';
-import { CheckboxControl } from '@wordpress/components';
-import { Link } from '@woocommerce/components';
+import { Button, CheckboxControl } from '@wordpress/components';
+import { Form, Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
@@ -34,7 +34,7 @@ const installableExtensions = [
 		title: __( 'Get the basics', 'woocommerce-admin' ),
 		plugins: [
 			{
-				name: 'woocommerce-payments',
+				slug: 'woocommerce-payments',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Accept credit cards with {{link}}WooCommerce Payments{{/link}}',
@@ -44,7 +44,7 @@ const installableExtensions = [
 				),
 			},
 			{
-				name: 'woocommerce-shipping',
+				slug: 'woocommerce-services',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Print shipping labels with {{link}}WooCommerce Shipping{{/link}}',
@@ -54,7 +54,7 @@ const installableExtensions = [
 				),
 			},
 			{
-				name: 'jetpack',
+				slug: 'jetpack',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Enhance speed and security with {{link}}Jetpack{{/link}}',
@@ -69,7 +69,7 @@ const installableExtensions = [
 		title: 'Grow your store',
 		plugins: [
 			{
-				name: 'facebook',
+				slug: 'facebook-for-woocommerce',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Market on {{link}}Facebook{{/link}}',
@@ -79,7 +79,7 @@ const installableExtensions = [
 				),
 			},
 			{
-				name: 'google-ads',
+				slug: 'kliken-marketing-for-google',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Drive sales with {{link}}Google Ads{{/link}}',
@@ -89,7 +89,7 @@ const installableExtensions = [
 				),
 			},
 			{
-				name: 'mailchimp',
+				slug: 'mailchimp-for-woocommerce',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Contact customers with {{link}}Mailchimp{{/link}}',
@@ -99,7 +99,7 @@ const installableExtensions = [
 				),
 			},
 			{
-				name: 'creative-mail',
+				slug: 'creative-mail-by-constant-contact',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Reach new customers with {{link}}Creative Mail{{/link}}',
@@ -112,6 +112,20 @@ const installableExtensions = [
 	},
 ];
 
+const initialValues = installableExtensions.reduce(
+	( acc, curr ) => {
+		const plugins = curr.plugins.reduce( ( pluginAcc, { slug } ) => {
+			return { ...pluginAcc, [ slug ]: true };
+		}, {} );
+
+		return {
+			...acc,
+			...plugins,
+		};
+	},
+	{ install_extensions: true }
+);
+
 const FreeBadge = () => {
 	return (
 		<div className="woocommerce-admin__business-details__free-badge">
@@ -120,52 +134,75 @@ const FreeBadge = () => {
 	);
 };
 
-export const SelectiveExtensionsBundle = ( { getInputProps, values } ) => {
+export const SelectiveExtensionsBundle = ( { onSubmit } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 
 	// TODO, map the different extension slugs to each checkbox, turn them all on/off when
 	// checking `install_extensions`
 	return (
-		<div className="woocommerce-admin__business-details__selective-extensions-bundle">
-			<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
-				<CheckboxControl
-					id="woocommerce-business-extensions__checkbox"
-					{ ...getInputProps( 'install_extensions' ) }
-				/>
-				<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
-					{ __( 'Add recommended business features to my site' ) }
-				</p>
-				<Icon
-					className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
-					icon={ showExtensions ? chevronUp : chevronDown }
-					onClick={ () => {
-						setShowExtensions( ! showExtensions );
-					} }
-				/>
-			</div>
-			{ showExtensions &&
-				installableExtensions.map( ( { plugins, title } ) => (
-					<div key={ title }>
-						<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
-							{ title }
-						</div>
-						{ plugins.map( ( { description, name } ) => (
-							<div
-								key={ name }
-								className="woocommerce-admin__business-details__selective-extensions-bundle__extension"
-							>
+		<Form initialValues={ initialValues } onSubmitCallback={ onSubmit }>
+			{ ( { getInputProps, values, handleSubmit } ) => {
+				return (
+					<>
+						<div className="woocommerce-admin__business-details__selective-extensions-bundle">
+							<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
 								<CheckboxControl
 									id="woocommerce-business-extensions__checkbox"
 									{ ...getInputProps( 'install_extensions' ) }
 								/>
 								<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
-									{ description }
+									{ __(
+										'Add recommended business features to my site'
+									) }
 								</p>
-								<FreeBadge />
+								<Icon
+									className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
+									icon={
+										showExtensions ? chevronUp : chevronDown
+									}
+									onClick={ () => {
+										setShowExtensions( ! showExtensions );
+									} }
+								/>
 							</div>
-						) ) }
-					</div>
-				) ) }
-		</div>
+							{ showExtensions &&
+								installableExtensions.map(
+									( { plugins, title } ) => (
+										<div key={ title }>
+											<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
+												{ title }
+											</div>
+											{ plugins.map(
+												( { description, slug } ) => (
+													<div
+														key={ slug }
+														className="woocommerce-admin__business-details__selective-extensions-bundle__extension"
+													>
+														<CheckboxControl
+															id="woocommerce-business-extensions__checkbox"
+															{ ...getInputProps(
+																slug
+															) }
+														/>
+														<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
+															{ description }
+														</p>
+														<FreeBadge />
+													</div>
+												)
+											) }
+										</div>
+									)
+								) }
+						</div>
+						<div className="woocommerce-profile-wizard__business-details__free-features__action">
+							<Button onClick={ handleSubmit } isPrimary>
+								Continue
+							</Button>
+						</div>
+					</>
+				);
+			} }
+		</Form>
 	);
 };

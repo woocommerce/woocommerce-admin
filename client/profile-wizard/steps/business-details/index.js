@@ -68,21 +68,21 @@ class BusinessDetails extends Component {
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
-			'facebook-for-woocommerce': businessExtensions
-				? businessExtensions.includes( 'facebook-for-woocommerce' )
-				: true,
-			'mailchimp-for-woocommerce': businessExtensions
-				? businessExtensions.includes( 'mailchimp-for-woocommerce' )
-				: true,
-			'creative-mail-by-constant-contact': businessExtensions
-				? businessExtensions.includes(
-						'creative-mail-by-constant-contact'
-				  )
-				: true,
-			'kliken-marketing-for-google': businessExtensions
-				? businessExtensions.includes( 'kliken-marketing-for-google' )
-				: true,
-			install_extensions: true,
+			// 'facebook-for-woocommerce': businessExtensions
+			// 	? businessExtensions.includes( 'facebook-for-woocommerce' )
+			// 	: true,
+			// 'mailchimp-for-woocommerce': businessExtensions
+			// 	? businessExtensions.includes( 'mailchimp-for-woocommerce' )
+			// 	: true,
+			// 'creative-mail-by-constant-contact': businessExtensions
+			// 	? businessExtensions.includes(
+			// 			'creative-mail-by-constant-contact'
+			// 	  )
+			// 	: true,
+			// 'kliken-marketing-for-google': businessExtensions
+			// 	? businessExtensions.includes( 'kliken-marketing-for-google' )
+			// 	: true,
+			// install_extensions: true,
 		};
 
 		this.extensions = [
@@ -509,42 +509,36 @@ class BusinessDetails extends Component {
 	}
 
 	renderFreeFeaturesStep() {
+		const onSubmit = ( values ) => {
+			// TODO - surface installed extensions to the onContinue
+			console.log( values );
+		};
+
 		return (
-			<Form onSubmitCallback={ this.onContinue }>
-				{ ( { getInputProps, values } ) => {
-					return (
-						<>
-							<div className="woocommerce-profile-wizard__step-header">
-								<Text variant="title.small" as="h2">
-									{ __(
-										'Included business features',
-										'woocommerce-admin'
-									) }
-								</Text>
-								<Text variant="body">
-									{ __(
-										'We recommend enhancing your store with these free extensions',
-										'woocommerce-admin'
-									) }
-								</Text>
-								<Text variant="body">
-									{ __(
-										'No commitment required - you can remove them at any time.',
-										'woocommerce-admin'
-									) }
-								</Text>
-							</div>
+			<>
+				<div className="woocommerce-profile-wizard__step-header">
+					<Text variant="title.small" as="h2">
+						{ __(
+							'Included business features',
+							'woocommerce-admin'
+						) }
+					</Text>
+					<Text variant="body">
+						{ __(
+							'We recommend enhancing your store with these free extensions',
+							'woocommerce-admin'
+						) }
+					</Text>
+					<Text variant="body">
+						{ __(
+							'No commitment required - you can remove them at any time.',
+							'woocommerce-admin'
+						) }
+					</Text>
+				</div>
 
-							<FreeFeatures
-								getInputProps={ getInputProps }
-								values={ this.state.savedValues }
-							/>
-
-							{ this.renderBusinessExtensionHelpText( values ) }
-						</>
-					);
-				} }
-			</Form>
+				<FreeFeatures handleSubmit={ onSubmit } />
+			</>
 		);
 	}
 
