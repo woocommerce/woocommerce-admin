@@ -134,10 +134,11 @@ class CoreMenu {
 				continue;
 			}
 
+			$path = isset( $page['path'] ) ? $page['path'] : null;
 			$item = array_merge(
 				array(
-					'id'         => 'wc_admin-' . $page['path'],
-					'url'        => isset( $page['path'] ) ? $page['path'] : null,
+					'id'         => 'wc_admin-' . $path,
+					'url'        => $path,
 					'title'      => $page['title'][0],
 					'capability' => isset( $page['capability'] ) ? $page['capability'] : 'manage_woocommerce',
 				),
@@ -145,7 +146,7 @@ class CoreMenu {
 			);
 
 			// Don't allow top-level items to be added to the primary menu.
-			if ( ! isset( $item['parent'] ) ) {
+			if ( ! isset( $item['parent'] ) || 'woocommerce' === $item['parent'] ) {
 				$item['menuId'] = 'plugins';
 			}
 
