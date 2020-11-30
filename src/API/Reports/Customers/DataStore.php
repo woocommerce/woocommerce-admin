@@ -127,6 +127,76 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
+	 * Sync customers data after an order was updated.
+	 *
+	 * Only updates customer if it is the customers last order.
+	 *
+	 * @param int $post_id of order.
+	 */
+	public static function sync_order_customer( $post_id ) {
+		global $wpdb;
+
+		if ( 'shop_order' !== get_post_type( $post_id ) && 'shop_order_refund' !== get_post_type( $post_id ) ) {
+			return -1;
+		}
+
+		$order       = wc_get_order( $post_id );
+		$customer_id = self::get_existing_customer_id_from_order( $order );
+		if ( ! $customer_id ) {
+			return -1;
+		}
+		$customer   = new \WC_Customer( $customer_id );
+		$last_order = $customer->get_last_order();
+
+		if ( $order->get_id() !== $last_order->get_id() ) {
+			return -1;
+		}
+
+		$data   = array(
+			'first_name'       => $order->get_customer_first_name(),
+			'last_name'        => $order->get_customer_last_name(),
+			'email'            => $order->get_billing_email( 'edit' ),
+			'city'             => $order->get_billing_city( 'edit' ),
+			'state'            => $order->get_billing_state( 'edit' ),
+			'postcode'         => $order->get_billing_postcode( 'edit' ),
+			'country'          => $order->get_billing_country( 'edit' ),
+			'date_last_active' => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
+		);
+		$format = array(
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+			'%s',
+		);
+
+		// Add registered customer data.
+		if ( 0 !== $order->get_user_id() ) {
+			$user_id                 = $order->get_user_id();
+			$data['user_id']         = $user_id;
+			$data['username']        = $customer->get_username( 'edit' );
+			$data['date_registered'] = $customer->get_date_created( 'edit' ) ? $customer->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ) : null;
+			$format[]                = '%d';
+			$format[]                = '%s';
+			$format[]                = '%s';
+		}
+
+		$result = $wpdb->update( self::get_db_table_name(), $data, array( 'customer_id' => $customer_id ), $format );
+
+		/**
+		 * Fires when a customer is updated.
+		 *
+		 * @param int $customer_id Customer ID.
+		 */
+		do_action( 'woocommerce_analytics_update_customer', $customer_id );
+
+		return 1 === $result;
+	}
+
+	/**
 	 * Maps ordering specified by the user to columns in the database/fields in the data.
 	 *
 	 * @param string $order_by Sorting criterion.
