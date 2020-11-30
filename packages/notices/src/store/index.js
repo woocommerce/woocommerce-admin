@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { registerStore } from '@wordpress/data';
+import '@wordpress/notices'; // Is this really necessary. Another way?
 
 /**
  * Internal dependencies
