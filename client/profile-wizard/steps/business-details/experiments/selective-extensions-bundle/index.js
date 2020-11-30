@@ -29,7 +29,6 @@ const generatePluginDescriptionWithLink = ( description, productName ) => {
 	} );
 };
 
-// TODO use links/i18n
 const installableExtensions = [
 	{
 		title: __( 'Get the basics', 'woocommerce-admin' ),
