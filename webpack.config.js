@@ -23,25 +23,6 @@ const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-web
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'development';
 
-// const externals = {
-// 	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
-// 	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
-// 	'@wordpress/data': { this: [ 'wp', 'data' ] },
-// 	'@wordpress/editor': { this: [ 'wp', 'editor' ] },
-// 	'@wordpress/element': { this: [ 'wp', 'element' ] },
-// 	'@wordpress/hooks': { this: [ 'wp', 'hooks' ] },
-// 	'@wordpress/url': { this: [ 'wp', 'url' ] },
-// 	'@wordpress/html-entities': { this: [ 'wp', 'htmlEntities' ] },
-// 	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
-// 	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
-// 	'@wordpress/plugins': { this: [ 'wp', 'plugins' ] },
-// 	tinymce: 'tinymce',
-// 	moment: 'moment',
-// 	react: 'React',
-// 	lodash: 'lodash',
-// 	'react-dom': 'ReactDOM',
-// };
-
 const wcAdminPackages = [
 	'components',
 	'csv-export',
@@ -57,14 +38,6 @@ const wcAdminPackages = [
 
 const entryPoints = {};
 wcAdminPackages.forEach( ( name ) => {
-	// externals[ `@woocommerce/${ name }` ] = {
-	// 	this: [
-	// 		'wc',
-	// 		name.replace( /-([a-z])/g, ( match, letter ) =>
-	// 			letter.toUpperCase()
-	// 		),
-	// 	],
-	// };
 	entryPoints[ name ] = `./packages/${ name }`;
 } );
 
