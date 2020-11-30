@@ -20,7 +20,7 @@ while [ $# -gt 0 ]; do
       RESET_FLAG=true
       ;;
   esac
-  shift
+	shift
 done
 
 TMPDIR=${TMPDIR-/tmp}
@@ -164,7 +164,7 @@ install_db() {
 
 	# drop existing database
 	if [ ${RESET_FLAG} = true ]; then
-		mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA 2>&1 | true
+		mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA || echo "Database $DB_NAME does not exist"
 	fi
 
 	# create database
@@ -185,8 +185,8 @@ install_deps() {
 
 	# delete existing wp-config and woocommerce repository
 	if [ ${RESET_FLAG} = true ]; then
-		rm wp-config.php | true
-		rm -rf wp-content/plugins/woocommerce | true
+		rm wp-config.php || echo "wp-config.php does not exist"
+		rm -rf wp-content/plugins/woocommerce || echo "wp-content/plugins/woocommerce does not exist"
 	fi
 
 	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --dbhost=$DB_HOST --dbprefix=wptests_
