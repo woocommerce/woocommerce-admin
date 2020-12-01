@@ -79,7 +79,7 @@ const Container = ( { menuItems } ) => {
 		return items.reduce( ( acc, item ) => {
 			// Set up the category if it doesn't yet exist.
 			if ( ! acc[ item.parent ] ) {
-				acc[ item.parent ] = [ [], [], [] ];
+				acc[ item.parent ] = {};
 			}
 
 			// Check if parent category is in the same menu.
@@ -91,13 +91,12 @@ const Container = ( { menuItems } ) => {
 				return acc;
 			}
 
-			let index = 0;
-			if ( item.menuId === 'secondary' ) {
-				index = 1;
-			} else if ( item.menuId === 'plugins' ) {
-				index = 2;
+			// Create the menu object if it doesn't exist in this category.
+			if ( ! acc[ item.parent ][ item.menuId ] ) {
+				acc[ item.parent ][ item.menuId ] = [];
 			}
-			acc[ item.parent ][ index ].push( item );
+
+			acc[ item.parent ][ item.menuId ].push( item );
 			return acc;
 		}, {} );
 	};
@@ -135,11 +134,11 @@ const Container = ( { menuItems } ) => {
 						></NavigationBackButton>
 					) }
 					{ categories.map( ( category ) => {
-						const [
-							primaryItems,
-							secondaryItems,
-							pluginItems,
-						] = categorizedItems[ category.id ] || [ [], [], [] ];
+						const {
+							primary: primaryItems,
+							secondary: secondaryItems,
+							plugin: pluginItems,
+						} = categorizedItems[ category.id ] || {};
 						return (
 							<NavigationMenu
 								key={ category.id }
@@ -150,7 +149,7 @@ const Container = ( { menuItems } ) => {
 									category.backButtonLabel || null
 								}
 							>
-								{ !! primaryItems.length && (
+								{ !! primaryItems && (
 									<NavigationGroup>
 										{ primaryItems.map( ( item ) => (
 											<Item
@@ -160,7 +159,7 @@ const Container = ( { menuItems } ) => {
 										) ) }
 									</NavigationGroup>
 								) }
-								{ !! pluginItems.length && (
+								{ !! pluginItems && (
 									<NavigationGroup
 										title={ __(
 											'Extensions',
@@ -175,7 +174,7 @@ const Container = ( { menuItems } ) => {
 										) ) }
 									</NavigationGroup>
 								) }
-								{ !! secondaryItems.length && (
+								{ !! secondaryItems && (
 									<NavigationGroup>
 										{ secondaryItems.map( ( item ) => (
 											<Item
