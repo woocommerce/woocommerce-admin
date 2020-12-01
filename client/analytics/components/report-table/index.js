@@ -165,12 +165,31 @@ const ReportTable = ( props ) => {
 		}
 
 		if ( data && data.length === totalResults ) {
+			/**
+			 * Filter report table for the CSV download.
+			 *
+			 * Enables manipulation of data used to create the report CSV.
+			 *
+			 * @param {Object} reportTableData - data used to create the table.
+			 * @param {string} reportTableData.endpoint - table api endpoint.
+			 * @param {Array} reportTableData.headers - table headers data.
+			 * @param {Array} reportTableData.rows - table rows data.
+			 * @param {Object} reportTableData.totals - total aggregates for request.
+			 * @param {Array} reportTableData.summary - summary numbers data.
+			 * @param {Object} reportTableData.items - response from api requerst.
+			 */
+			const { headers, rows } = applyFilters( TABLE_FILTER, {
+				endpoint,
+				headers: getHeadersContent(),
+				rows: getRowsContent( data ),
+				totals,
+				summary: getSummary ? getSummary( totals, totalResults ) : null,
+				items,
+			} );
+
 			downloadCSVFile(
 				generateCSVFileName( title, params ),
-				generateCSVDataFromTable(
-					getHeadersContent(),
-					getRowsContent( data )
-				)
+				generateCSVDataFromTable( headers, rows )
 			);
 		} else {
 			downloadType = 'email';
