@@ -148,41 +148,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$customer   = new \WC_Customer( $customer_id );
 		$last_order = $customer->get_last_order();
 
-		if ( $order->get_id() !== $last_order->get_id() ) {
+		if ( ! $last_order || $order->get_id() !== $last_order->get_id() ) {
 			return -1;
 		}
 
-		$data   = array(
-			'first_name'       => $order->get_customer_first_name(),
-			'last_name'        => $order->get_customer_last_name(),
-			'email'            => $order->get_billing_email( 'edit' ),
-			'city'             => $order->get_billing_city( 'edit' ),
-			'state'            => $order->get_billing_state( 'edit' ),
-			'postcode'         => $order->get_billing_postcode( 'edit' ),
-			'country'          => $order->get_billing_country( 'edit' ),
-			'date_last_active' => gmdate( 'Y-m-d H:i:s', $order->get_date_created( 'edit' )->getTimestamp() ),
-		);
-		$format = array(
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-			'%s',
-		);
-
-		// Add registered customer data.
-		if ( 0 !== $order->get_user_id() ) {
-			$user_id                 = $order->get_user_id();
-			$data['user_id']         = $user_id;
-			$data['username']        = $customer->get_username( 'edit' );
-			$data['date_registered'] = $customer->get_date_created( 'edit' ) ? $customer->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ) : null;
-			$format[]                = '%d';
-			$format[]                = '%s';
-			$format[]                = '%s';
-		}
+		list($data, $format) = self::get_customer_order_data_and_format( $order );
 
 		$result = $wpdb->update( self::get_db_table_name(), $data, array( 'customer_id' => $customer_id ), $format );
 
@@ -554,6 +524,29 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return $returning_customer_id;
 		}
 
+		list($data, $format) = self::get_customer_order_data_and_format( $order );
+
+		$result      = $wpdb->insert( self::get_db_table_name(), $data, $format );
+		$customer_id = $wpdb->insert_id;
+
+		/**
+		 * Fires when a new report customer is created.
+		 *
+		 * @param int $customer_id Customer ID.
+		 */
+		do_action( 'woocommerce_analytics_new_customer', $customer_id );
+
+		return $result ? $customer_id : false;
+	}
+
+	/**
+	 * Returns a data object and format object of the customers data coming from the order.
+	 *
+	 * @param object      $order         WC_Order where we get customer info from.
+	 * @param object|null $customer_user WC_Customer registered customer WP user.
+	 * @return array ($data, $format)
+	 */
+	public static function get_customer_order_data_and_format( $order, $customer_user = null ) {
 		$data   = array(
 			'first_name'       => $order->get_customer_first_name(),
 			'last_name'        => $order->get_customer_last_name(),
@@ -577,27 +570,18 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		// Add registered customer data.
 		if ( 0 !== $order->get_user_id() ) {
-			$user_id                 = $order->get_user_id();
-			$customer                = new \WC_Customer( $user_id );
+			$user_id = $order->get_user_id();
+			if ( is_null( $customer_user ) ) {
+				$customer_user = new \WC_Customer( $user_id );
+			}
 			$data['user_id']         = $user_id;
-			$data['username']        = $customer->get_username( 'edit' );
-			$data['date_registered'] = $customer->get_date_created( 'edit' ) ? $customer->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ) : null;
+			$data['username']        = $customer_user->get_username( 'edit' );
+			$data['date_registered'] = $customer_user->get_date_created( 'edit' ) ? $customer_user->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ) : null;
 			$format[]                = '%d';
 			$format[]                = '%s';
 			$format[]                = '%s';
 		}
-
-		$result      = $wpdb->insert( self::get_db_table_name(), $data, $format );
-		$customer_id = $wpdb->insert_id;
-
-		/**
-		 * Fires when a new report customer is created.
-		 *
-		 * @param int $customer_id Customer ID.
-		 */
-		do_action( 'woocommerce_analytics_new_customer', $customer_id );
-
-		return $result ? $customer_id : false;
+		return array( $data, $format );
 	}
 
 	/**
