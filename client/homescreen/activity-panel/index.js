@@ -36,7 +36,7 @@ export const ActivityPanel = () => {
 			totalOrderCount,
 			reviewsEnabled,
 			countUnapprovedReviews,
-		} );
+		};
 	} );
 
 	const panels = getAllPanels( panelsData );
