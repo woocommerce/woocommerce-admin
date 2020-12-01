@@ -29,6 +29,7 @@ import Klarna from './klarna';
 import PayFast from './payfast';
 import EWay from './eway';
 import WCPayUsageModal from './wcpay-usage-modal';
+import Razorpay from './razorpay';
 import RazorpayIcon from './images/razorpay';
 
 export function installActivateAndConnectWcpay(
@@ -405,7 +406,7 @@ export function getPaymentMethods( {
 			before: <RazorpayIcon />,
 			visible: countryCode === 'IN' && ! hasCbdIndustry,
 			plugins: [ 'woo-razorpay' ],
-			container: <></>,
+			container: <Razorpay />,
 			isConfigured:
 				options.woocommerce_razorpay_settings &&
 				options.woocommerce_razorpay_settings.key_id &&
