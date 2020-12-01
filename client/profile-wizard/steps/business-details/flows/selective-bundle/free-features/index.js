@@ -14,7 +14,7 @@ import { AppIllustration } from '../app-illustration';
 
 import './style.scss';
 
-export const FreeFeatures = ( { onSubmit } ) => {
+export const FreeFeatures = ( { onSubmit, getInputProps } ) => {
 	// TODO calculate experiment from segmentation
 	// const bundleInstall = true;
 
@@ -24,7 +24,12 @@ export const FreeFeatures = ( { onSubmit } ) => {
 	// 	<BusinessExtensions getInputProps={ getInputProps } values={ values } />
 	// );
 
-	const experiment = <SelectiveExtensionsBundle onSubmit={ onSubmit } />;
+	const experiment = (
+		<ExtensionsBundle
+			onSubmit={ onSubmit }
+			getInputProps={ getInputProps }
+		/>
+	);
 
 	return (
 		<div className="woocommerce-profile-wizard__business-details__free-features">

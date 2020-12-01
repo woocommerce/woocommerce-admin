@@ -50,7 +50,7 @@ class Form extends Component {
 					this.props.onChangeCallback(
 						{ name, value },
 						this.state.values,
-						! Object.keys( this.state.errors ).length
+						! Object.keys( this.state.errors || {} ).length
 					);
 				} );
 			}
@@ -163,9 +163,7 @@ Form.defaultProps = {
 	onSubmitCallback: () => {},
 	onChangeCallback: () => {},
 	touched: {},
-	validate: () => {
-		return {};
-	},
+	validate: () => {},
 };
 
 export default Form;

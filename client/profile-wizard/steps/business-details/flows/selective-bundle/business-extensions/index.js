@@ -12,7 +12,7 @@ import { extensionBenefits } from '../data/extension-benefits';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
-export const BusinessExtensions = ( { values, getInputProps } ) => {
+export const BusinessExtensions = ( {} ) => {
 	return (
 		<>
 			{ extensionBenefits.map( ( benefit ) => (
@@ -33,10 +33,7 @@ export const BusinessExtensions = ( { values, getInputProps } ) => {
 						<p>{ benefit.description }</p>
 					</div>
 					<div className="woocommerce-profile-wizard__benefit-toggle">
-						<FormToggle
-							checked={ values[ benefit.slug ] }
-							{ ...getInputProps( benefit.slug ) }
-						/>
+						<FormToggle checked={ true } />
 					</div>
 				</div>
 			) ) }
