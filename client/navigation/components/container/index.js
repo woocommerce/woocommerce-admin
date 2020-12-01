@@ -30,8 +30,7 @@ const Container = ( { menuItems } ) => {
 
 	const dashboardUrl = getAdminLink( '' );
 
-	const categories = menuItems.filter( ( item ) => item.isCategory );
-	categories.push( {
+	const parentCategory = {
 		capability: 'manage_woocommerce',
 		id: 'woocommerce',
 		isCategory: true,
@@ -40,7 +39,19 @@ const Container = ( { menuItems } ) => {
 		order: 10,
 		parent: '',
 		title: 'WooCommerce',
-	} );
+	};
+	const categoriesMap = menuItems.reduce(
+		( acc, item ) => {
+			if ( item.isCategory ) {
+				return { ...acc, [ item.id ]: item };
+			}
+			return acc;
+		},
+		{
+			woocommerce: parentCategory,
+		}
+	);
+	const categories = Object.values( categoriesMap );
 
 	const [ activeItem, setActiveItem ] = useState( 'woocommerce-home' );
 	const [ activeLevel, setActiveLevel ] = useState( 'woocommerce' );
@@ -66,9 +77,20 @@ const Container = ( { menuItems } ) => {
 
 	const getMenuItemsByCategory = ( items ) => {
 		return items.reduce( ( acc, item ) => {
+			// Set up the category if it doesn't yet exist.
 			if ( ! acc[ item.parent ] ) {
 				acc[ item.parent ] = [ [], [], [] ];
 			}
+
+			// Check if parent category is in the same menu.
+			if (
+				item.parent !== 'woocommerce' &&
+				categoriesMap[ item.parent ] &&
+				categoriesMap[ item.parent ].menuId !== item.menuId
+			) {
+				return acc;
+			}
+
 			let index = 0;
 			if ( item.menuId === 'secondary' ) {
 				index = 1;
@@ -86,26 +108,6 @@ const Container = ( { menuItems } ) => {
 	);
 
 	const navDomRef = useRef( null );
-
-	const renderNavigationGroup = ( category, items, topLevelTitle = null ) => {
-		if ( ! items.length ) {
-			return null;
-		}
-
-		const isTopLevel = category.id === 'woocommerce';
-
-		if ( ! isTopLevel && items[ 0 ].menuId !== category.menuId ) {
-			return null;
-		}
-
-		return (
-			<NavigationGroup title={ isTopLevel ? topLevelTitle : null }>
-				{ items.map( ( item ) => (
-					<Item key={ item.id } item={ item } />
-				) ) }
-			</NavigationGroup>
-		);
-	};
 
 	return (
 		<div className="woocommerce-navigation">
@@ -148,18 +150,40 @@ const Container = ( { menuItems } ) => {
 									category.backButtonLabel || null
 								}
 							>
-								{ renderNavigationGroup(
-									category,
-									primaryItems
+								{ !! primaryItems.length && (
+									<NavigationGroup>
+										{ primaryItems.map( ( item ) => (
+											<Item
+												key={ item.id }
+												item={ item }
+											/>
+										) ) }
+									</NavigationGroup>
 								) }
-								{ renderNavigationGroup(
-									category,
-									pluginItems,
-									__( 'Extensions', 'woocommerce-admin' )
+								{ !! pluginItems.length && (
+									<NavigationGroup
+										title={ __(
+											'Extensions',
+											'woocommerce-admin'
+										) }
+									>
+										{ pluginItems.map( ( item ) => (
+											<Item
+												key={ item.id }
+												item={ item }
+											/>
+										) ) }
+									</NavigationGroup>
 								) }
-								{ renderNavigationGroup(
-									category,
-									secondaryItems
+								{ !! secondaryItems.length && (
+									<NavigationGroup>
+										{ secondaryItems.map( ( item ) => (
+											<Item
+												key={ item.id }
+												item={ item }
+											/>
+										) ) }
+									</NavigationGroup>
 								) }
 							</NavigationMenu>
 						);
