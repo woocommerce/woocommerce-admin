@@ -4,8 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
-import { compose } from '@wordpress/compose';
-import { withDispatch, withSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
@@ -154,22 +153,21 @@ export const Razorpay = ( {
 	);
 };
 
-export default compose(
-	withSelect( ( select ) => {
-		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
-		const isOptionsRequesting = isOptionsUpdating();
+export default ( { installStep, markConfigured } ) => {
+	const { isOptionsUpdating } = useSelect( ( select ) =>
+		select( OPTIONS_STORE_NAME )
+	);
+	const isOptionsRequesting = isOptionsUpdating();
+	const { createNotice } = useDispatch( 'core/notices' );
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 
-		return {
-			isOptionsRequesting,
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
-
-		return {
-			createNotice,
-			updateOptions,
-		};
-	} )
-)( Razorpay );
+	return (
+		<Razorpay
+			createNotice={ createNotice }
+			installStep={ installStep }
+			isOptionsRequesting={ isOptionsRequesting }
+			markConfigured={ markConfigured }
+			updateOptions={ updateOptions }
+		/>
+	);
+};
