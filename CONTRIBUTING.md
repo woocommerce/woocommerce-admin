@@ -60,8 +60,8 @@ After you've made your updates, you're ready to commit:
     1. `cd` down to the Vagrant root (where `www` lives) 
     2. `vagrant ssh`
 2. `cd /srv/www/<name of wp install>/public_html/wp-content/plugins/woocommerce-admin`
-3. Set up environment `bin/install-wp-tests.sh wc-admin-tests root root`
-4. Generate feature config `php bin/generate-feature-config.php`
+3. Set up test environment: `bin/install-wp-tests.sh wc-admin-tests root root`
+4. Generate feature config: `php bin/generate-feature-config.php`
 
 ### Running tests
 
@@ -80,6 +80,7 @@ For example, to just run Order Report Stats tests:
 ## Helper Scripts
 
 There are a number of helper scripts exposed via our `package.json` (below list is not exhaustive, you can view the [`package.json` file directly to see all](https://github.com/woocommerce/woocommerce-admin/blob/main/package.json)):
+
  - `npm run lint` : Run eslint over the javascript files
  - `npm run i18n` : A multi-step process, used to create a pot file from both the JS and PHP gettext calls. First it runs `i18n:js`, which creates a temporary `.pot` file from the JS files. Next it runs `i18n:php`, which converts that `.pot` file to a PHP file. Lastly, it runs `i18n:pot`, which creates the final `.pot` file from all the PHP files in the plugin (including the generated one with the JS strings).
  - `npm test` : Run the JS test suite
@@ -106,7 +107,7 @@ localStorage.setItem( 'debug', 'wc-admin:*' );
 ```
 
 ## Common issues
-The is a list of commonly encountered problems, known issues, and their solutions:
+Commonly encountered problems, known issues, and their solutions:
 
 ### Composer error on `Automattic\Jetpack\Autoloader\AutoloadGenerator`:
 ```
