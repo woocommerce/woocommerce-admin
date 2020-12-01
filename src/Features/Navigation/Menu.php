@@ -231,13 +231,27 @@ class Menu {
 			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
 		}
 
-		$menu_item['menuId'] = isset( self::$menu_items[ $menu_item['parent'] ] ) ? self::$menu_items[ $menu_item['parent'] ]['menuId'] : $menu_item['menuId'];
+		$menu_item['menuId'] = self::get_item_menu_id( $menu_item );
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
 
 		if ( isset( $args['url'] ) ) {
 			self::$callbacks[ $args['url'] ] = $menu_item['migrate'];
 		}
+	}
+
+	/**
+	 * Get an item's menu ID from its parent.
+	 *
+	 * @param array $item Item args.
+	 * @return string
+	 */
+	public static function get_item_menu_id( $item ) {
+		if ( isset( self::$menu_items[ $item['parent'] ] ) ) {
+			return self::$menu_items[ $item['parent'] ]['menuId'];
+		}
+
+		return $item['menuId'];
 	}
 
 	/**
@@ -267,6 +281,12 @@ class Menu {
 				'is_top_level' => ! isset( $args['parent'] ),
 			)
 		);
+
+		$menu_id = self::get_item_menu_id( $item_args );
+		if ( 'plugins' !== $menu_id ) {
+			return;
+		}
+
 		self::add_item( $item_args );
 	}
 
@@ -296,6 +316,12 @@ class Menu {
 				'is_top_level' => ! isset( $args['parent'] ),
 			)
 		);
+
+		$menu_id = self::get_item_menu_id( $category_args );
+		if ( 'plugins' !== $menu_id ) {
+			return;
+		}
+
 		self::add_category( $category_args );
 	}
 
