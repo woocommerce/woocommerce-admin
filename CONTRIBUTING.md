@@ -54,13 +54,14 @@ After you've made your updates, you're ready to commit:
 
 ## PHP Unit tests
 
-### Setting up PHP unit tests using VVV
+### Setting up PHP unit tests using [VVV](https://github.com/Varying-Vagrant-Vagrants/VVV)
 
 1. SSH into the Vagrant box:
     1. `cd` down to the Vagrant root (where `www` lives) 
     2. `vagrant ssh`
 2. `cd /srv/www/<name of wp install>/public_html/wp-content/plugins/woocommerce-admin`
-3. `bin/install-wp-tests.sh wc-admin-tests root root`
+3. Set up environment `bin/install-wp-tests.sh wc-admin-tests root root`
+4. Generate feature config `php bin/generate-feature-config.php`
 
 ### Running tests
 
@@ -79,7 +80,6 @@ For example, to just run Order Report Stats tests:
 ## Helper Scripts
 
 There are a number of helper scripts exposed via our `package.json` (below list is not exhaustive, you can view the [`package.json` file directly to see all](https://github.com/woocommerce/woocommerce-admin/blob/main/package.json)):
-
  - `npm run lint` : Run eslint over the javascript files
  - `npm run i18n` : A multi-step process, used to create a pot file from both the JS and PHP gettext calls. First it runs `i18n:js`, which creates a temporary `.pot` file from the JS files. Next it runs `i18n:php`, which converts that `.pot` file to a PHP file. Lastly, it runs `i18n:pot`, which creates the final `.pot` file from all the PHP files in the plugin (including the generated one with the JS strings).
  - `npm test` : Run the JS test suite
@@ -104,6 +104,27 @@ To activate, open up your browser console and add this:
 ```js
 localStorage.setItem( 'debug', 'wc-admin:*' );
 ```
+
+## Common issues
+The is a list of commonly encountered problems, known issues, and their solutions:
+
+### Composer error on `Automattic\Jetpack\Autoloader\AutoloadGenerator`:
+```
+[ErrorException]
+  Declaration of Automattic\Jetpack\Autoloader\AutoloadGenerator::dump(Composer\Config $config, Composer\Repository\Inst
+  alledRepositoryInterface $localRepo, Composer\Package\PackageInterface $mainPackage, Composer\Installer\InstallationMa
+  nager $installationManager, $targetDir, $scanPsrPackages = false, $suffix = NULL) should be compatible with Composer\A
+  utoload\AutoloadGenerator::dump(Composer\Config $config, Composer\Repository\InstalledRepositoryInterface $localRepo,
+  Composer\Package\RootPackageInterface $rootPackage, Composer\Installer\InstallationManager $installationManager, $targ
+  etDir, $scanPsrPackages = false, $suffix = '')
+```
+A recent [change](https://github.com/composer/composer/commit/b574f10d9d68acfeb8e36cad0b0b25a090140a3b#diff-67d1dfefa9c7b1c7e0b04b07274628d812f82cd82fae635c0aeba643c02e8cd8) in composer released in `2.0.7` had made our autoloader incomptable with the new `AutoloadGenerator` signature. In the meantime, try to downgrade to older composer version `2.0.6` using `composer self-update 2.0.6`.
+
+### VVV: HostsUpdater vagrant plugin error
+```
+...vagrant-hostsupdater/HostsUpdater.rb:126:in ``digest': no implicit conversion of nil into String (TypeError)
+```
+You might be running with an unsupported version of Vagrant. Please check VVV's [requirements](https://github.com/Varying-Vagrant-Vagrants/VVV#minimum-system-requirements).
 
 ## License
 

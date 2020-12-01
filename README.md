@@ -28,7 +28,7 @@ For some debugging tools/help [see here](./CONTRIBUTING.md#debugging)
 
 ### Testing
 #### End-to-end tests
-Tests live in `./tests/e2e`. E2E tests have their own Docker container to run the WordPress server. Start
+Tests live in `./tests/e2e`. An existing build is required prior running, please refer to the section above for steps. E2E tests have their own Docker container to run the WordPress server. Start
 the server using:
 ```
 npm run docker:up
