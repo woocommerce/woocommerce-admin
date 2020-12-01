@@ -137,7 +137,7 @@ const Container = ( { menuItems } ) => {
 						const {
 							primary: primaryItems,
 							secondary: secondaryItems,
-							plugin: pluginItems,
+							plugins: pluginItems,
 						} = categorizedItems[ category.id ] || {};
 						return (
 							<NavigationMenu
