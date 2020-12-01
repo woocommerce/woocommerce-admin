@@ -34,7 +34,14 @@ import {
 } from '../../../header/activity-panel/activity-card';
 import { CurrencyContext } from '../../../lib/currency-context';
 import sanitizeHTML from '../../../lib/sanitize-html';
-import { REVIEW_PAGE_LIMIT } from './utils';
+import { REVIEW_PAGE_LIMIT, unapprovedReviewsQuery } from './utils';
+
+const reviewsQuery = {
+	page: 1,
+	per_page: REVIEW_PAGE_LIMIT,
+	status: 'hold',
+	_embed: 1,
+};
 
 class ReviewsPanel extends Component {
 	recordReviewEvent( eventName, eventData ) {
@@ -378,12 +385,6 @@ export default compose( [
 		let isError = false;
 		let isRequesting = false;
 		if ( hasUnapprovedReviews ) {
-			const reviewsQuery = {
-				page: 1,
-				per_page: REVIEW_PAGE_LIMIT,
-				status: 'hold',
-				_embed: 1,
-			};
 			reviews = getReviews( reviewsQuery );
 			isError = Boolean( getReviewsError( reviewsQuery ) );
 			isRequesting = isResolving( 'getReviews', [ reviewsQuery ] );
@@ -396,17 +397,17 @@ export default compose( [
 		};
 	} ),
 	withDispatch( ( dispatch, props ) => {
-		const {
-			deleteReview,
-			updateReview,
-			invalidateResolutionForStoreSelector,
-		} = dispatch( REVIEWS_STORE_NAME );
+		const { deleteReview, updateReview, invalidateResolution } = dispatch(
+			REVIEWS_STORE_NAME
+		);
 		const { createNotice } = dispatch( 'core/notices' );
 
 		const clearReviewsCache = () => {
-			invalidateResolutionForStoreSelector( 'getReviews' );
+			invalidateResolution( 'getReviews', [ reviewsQuery ] );
 			if ( props.reviews && props.reviews.length < 2 ) {
-				invalidateResolutionForStoreSelector( 'getReviewsTotalCount' );
+				invalidateResolution( 'getReviewsTotalCount', [
+					unapprovedReviewsQuery,
+				] );
 			}
 		};
 
