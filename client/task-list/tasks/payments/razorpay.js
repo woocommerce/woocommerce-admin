@@ -154,8 +154,8 @@ export const Razorpay = ( {
 };
 
 export default ( { installStep, markConfigured } ) => {
-	const { isOptionsUpdating } = useSelect( ( select ) =>
-		select( OPTIONS_STORE_NAME )
+	const isOptionsUpdating = useSelect(
+		( select ) => select( OPTIONS_STORE_NAME ).isOptionsUpdating
 	);
 	const isOptionsRequesting = isOptionsUpdating();
 	const { createNotice } = useDispatch( 'core/notices' );
