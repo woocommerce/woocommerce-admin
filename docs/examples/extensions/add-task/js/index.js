@@ -86,7 +86,7 @@ addFilter(
 				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
 				time: __( '2 minutes', 'woocommerce-admin' ),
 				isDismissable: true,
-				onDismiss: () => ( alert( "The task was dismissed" ) ),
+				onDismiss: () => console.log( "The task was dismissed" ),
 				type: 'extension'
 			},
 		];
