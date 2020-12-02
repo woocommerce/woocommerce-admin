@@ -2,8 +2,8 @@
  * External dependencies
  */
 import { useState } from '@wordpress/element';
-import { Button, CheckboxControl } from '@wordpress/components';
-import { Form, Link } from '@woocommerce/components';
+import { Button, Card, CheckboxControl } from '@wordpress/components';
+import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
@@ -11,6 +11,7 @@ import interpolateComponents from 'interpolate-components';
 /**
  * Internal dependencies
  */
+import { AppIllustration } from '../app-illustration';
 import './style.scss';
 
 const generatePluginDescriptionWithLink = ( description, productName ) => {
@@ -149,87 +150,98 @@ export const SelectiveExtensionsBundle = ( { onSubmit } ) => {
 	const [ values, setValues ] = useState( initialValues );
 
 	return (
-		<>
-			<div className="woocommerce-admin__business-details__selective-extensions-bundle">
-				<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
-					<CheckboxControl
-						id="woocommerce-business-extensions__checkbox"
-						checked={ values.install_extensions }
-						onChange={ ( checked ) => {
-							setValues( setAllPropsToValue( values, checked ) );
-						} }
-					/>
-					<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
-						{ __( 'Add recommended business features to my site' ) }
-					</p>
-					<Icon
-						className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
-						icon={ showExtensions ? chevronUp : chevronDown }
-						onClick={ () => {
-							setShowExtensions( ! showExtensions );
-						} }
-					/>
+		<div className="woocommerce-profile-wizard__business-details__free-features">
+			<Card>
+				<div className="woocommerce-profile-wizard__business-details__free-features__illustration">
+					<AppIllustration />
 				</div>
-				{ showExtensions &&
-					installableExtensions.map( ( { plugins, title } ) => (
-						<div key={ title }>
-							<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
-								{ title }
-							</div>
-							{ plugins.map( ( { description, slug } ) => (
-								<div
-									key={ slug }
-									className="woocommerce-admin__business-details__selective-extensions-bundle__extension"
-								>
-									<CheckboxControl
-										id="woocommerce-business-extensions__checkbox"
-										checked={ values[ slug ] }
-										onChange={ ( checked ) => {
-											const newState = {
-												...values,
-												[ slug ]: checked,
-											};
-
-											const allExtensionsDisabled =
-												Object.entries(
-													newState
-												).filter( ( [ , val ] ) => val )
-													.length === 1 &&
-												newState.install_extensions;
-
-											if ( allExtensionsDisabled ) {
-												// If all the extensions are disabled then disable the "Install Extensions" checkbox too
-												setValues( {
-													...newState,
-													install_extensions: false,
-												} );
-											} else {
-												setValues( {
+				<div className="woocommerce-admin__business-details__selective-extensions-bundle">
+					<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
+						<CheckboxControl
+							id="woocommerce-business-extensions__checkbox"
+							checked={ values.install_extensions }
+							onChange={ ( checked ) => {
+								setValues(
+									setAllPropsToValue( values, checked )
+								);
+							} }
+						/>
+						<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
+							{ __(
+								'Add recommended business features to my site'
+							) }
+						</p>
+						<Icon
+							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
+							icon={ showExtensions ? chevronUp : chevronDown }
+							onClick={ () => {
+								setShowExtensions( ! showExtensions );
+							} }
+						/>
+					</div>
+					{ showExtensions &&
+						installableExtensions.map( ( { plugins, title } ) => (
+							<div key={ title }>
+								<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
+									{ title }
+								</div>
+								{ plugins.map( ( { description, slug } ) => (
+									<div
+										key={ slug }
+										className="woocommerce-admin__business-details__selective-extensions-bundle__extension"
+									>
+										<CheckboxControl
+											id="woocommerce-business-extensions__checkbox"
+											checked={ values[ slug ] }
+											onChange={ ( checked ) => {
+												const newState = {
 													...values,
 													[ slug ]: checked,
-												} );
-											}
-										} }
-									/>
-									<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
-										{ description }
-									</p>
-									<FreeBadge />
-								</div>
-							) ) }
-						</div>
-					) ) }
-			</div>
-			<div className="woocommerce-profile-wizard__business-details__free-features__action">
-				<Button
-					onClick={ () => {
-						onSubmit( values );
-					} }
-					isPrimary
-				>
-					Continue
-				</Button>
-			</div>
-		</>
+												};
+
+												const allExtensionsDisabled =
+													Object.entries(
+														newState
+													).filter(
+														( [ , val ] ) => val
+													).length === 1 &&
+													newState.install_extensions;
+
+												if ( allExtensionsDisabled ) {
+													// If all the extensions are disabled then disable the "Install Extensions" checkbox too
+													setValues( {
+														...newState,
+														install_extensions: false,
+													} );
+												} else {
+													setValues( {
+														...values,
+														[ slug ]: checked,
+														install_extensions: true,
+													} );
+												}
+											} }
+										/>
+										<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
+											{ description }
+										</p>
+										<FreeBadge />
+									</div>
+								) ) }
+							</div>
+						) ) }
+				</div>
+				<div className="woocommerce-profile-wizard__business-details__free-features__action">
+					<Button
+						onClick={ () => {
+							onSubmit( values );
+						} }
+						isPrimary
+					>
+						Continue
+					</Button>
+				</div>
+			</Card>
+		</div>
 	);
 };

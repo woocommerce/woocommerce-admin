@@ -33,12 +33,11 @@ import { recordEvent } from '@woocommerce/tracks';
 import { getCountryCode } from '../../../../../dashboard/utils';
 import { CurrencyContext } from '../../../../../lib/currency-context';
 import { createNoticesFromResponse } from '../../../../../lib/notices';
-import { platformOptions } from './data/platform-options';
-import { sellingVenueOptions } from './data/selling-venue-options';
-import { getRevenueOptions } from './data/revenue-options';
-import { getProductCountOptions } from './data/product-options';
-import { FreeFeatures } from './free-features';
-
+import { platformOptions } from '../../data/platform-options';
+import { sellingVenueOptions } from '../../data/selling-venue-options';
+import { getRevenueOptions } from '../../data/revenue-options';
+import { getProductCountOptions } from '../../data/product-options';
+import { SelectiveExtensionsBundle } from './selective-extensions-bundle';
 import './style.scss';
 
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
@@ -429,6 +428,7 @@ class BusinessDetails extends Component {
 												'woocommerce-admin'
 											) }
 											options={ getRevenueOptions(
+												getCurrencyConfig(),
 												this.props.settings
 													.woocommerce_default_country
 											) }
@@ -511,6 +511,7 @@ class BusinessDetails extends Component {
 	renderFreeFeaturesStep() {
 		const onSubmit = ( values ) => {
 			// TODO - surface installed extensions to the onContinue
+			// we now have the other values saved in state at this point.
 			console.log( values );
 		};
 
@@ -537,7 +538,7 @@ class BusinessDetails extends Component {
 					</Text>
 				</div>
 
-				<FreeFeatures onSubmit={ onSubmit } />
+				<SelectiveExtensionsBundle onSubmit={ onSubmit } />
 			</>
 		);
 	}
@@ -547,7 +548,6 @@ class BusinessDetails extends Component {
 		// We set the tab name "current-tab". when its the one we want selected. This tricks
 		// the logic in the TabPanel and allows us to switch which tab has the name "current-tab"
 		// and force it to re-render with a different tab selected.
-		console.log( this.state.currentTab );
 		return (
 			<TabPanel
 				activeClass="is-active"
@@ -602,6 +602,8 @@ export const SelectiveFeaturesBusinessStep = compose(
 			PLUGINS_STORE_NAME
 		);
 		const { general: settings = {} } = getSettings( 'general' );
+
+		console.log( settings );
 
 		return {
 			hasInstallActivateError:
