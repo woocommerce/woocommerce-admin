@@ -184,14 +184,15 @@ class Menu {
 	 *
 	 * @param array $args Array containing the necessary arguments.
 	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'parent'     => (string) Parent menu item ID.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'order'      => (int) Menu item order.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'menuId'     => (string) The ID of the menu to add the item to.
+	 *      'id'          => (string) The unique ID of the menu item. Required.
+	 *      'title'       => (string) Title of the menu item. Required.
+	 *      'parent'      => (string) Parent menu item ID.
+	 *      'capability'  => (string) Capability to view this menu item.
+	 *      'url'         => (string) URL or callback to be used. Required.
+	 *      'order'       => (int) Menu item order.
+	 *      'migrate'     => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'menuId'      => (string) The ID of the menu to add the item to.
+	 *      'queryParams' => (array) Array of required params used to determine if this item should be active.
 	 *    ).
 	 */
 	private static function add_item( $args ) {
@@ -211,13 +212,14 @@ class Menu {
 		}
 
 		$defaults           = array(
-			'id'         => '',
-			'title'      => '',
-			'capability' => 'manage_woocommerce',
-			'url'        => '',
-			'order'      => 100,
-			'migrate'    => true,
-			'menuId'     => 'primary',
+			'id'          => '',
+			'title'       => '',
+			'capability'  => 'manage_woocommerce',
+			'url'         => '',
+			'order'       => 100,
+			'migrate'     => true,
+			'menuId'      => 'primary',
+			'queryParams' => array( 'page' ),
 		);
 		$menu_item          = wp_parse_args( $args, $defaults );
 		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
@@ -243,7 +245,7 @@ class Menu {
 	 * @return string
 	 */
 	public static function get_item_menu_id( $item ) {
-		if ( isset( self::$menu_items[ $item['parent'] ] ) ) {
+		if ( isset( $item['parent'] ) && isset( self::$menu_items[ $item['parent'] ] ) ) {
 			return self::$menu_items[ $item['parent'] ]['menuId'];
 		}
 
@@ -255,13 +257,14 @@ class Menu {
 	 *
 	 * @param array $args Array containing the necessary arguments.
 	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'parent'     => (string) Parent menu item ID.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'order'      => (int) Menu item order.
+	 *      'id'          => (string) The unique ID of the menu item. Required.
+	 *      'title'       => (string) Title of the menu item. Required.
+	 *      'parent'      => (string) Parent menu item ID.
+	 *      'capability'  => (string) Capability to view this menu item.
+	 *      'url'         => (string) URL or callback to be used. Required.
+	 *      'migrate'     => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'order'       => (int) Menu item order.
+	 *      'queryParams' => (array) Array of required params used to determine if this item should be active.
 	 *    ).
 	 */
 	public static function add_plugin_item( $args ) {

@@ -54,12 +54,13 @@ class CoreMenu {
 			$order       += 10;
 			$menu_items[] = (
 				array(
-					'parent'     => 'woocommerce-settings',
-					'title'      => $setting,
-					'capability' => 'manage_woocommerce',
-					'id'         => 'settings-' . $key,
-					'url'        => 'admin.php?page=wc-settings&tab=' . $key,
-					'order'      => $order,
+					'parent'      => 'woocommerce-settings',
+					'title'       => $setting,
+					'capability'  => 'manage_woocommerce',
+					'id'          => 'settings-' . $key,
+					'url'         => 'admin.php?page=wc-settings&tab=' . $key,
+					'order'       => $order,
+					'queryParams' => array( 'page', 'tab' ),
 				)
 			);
 		}
@@ -137,10 +138,11 @@ class CoreMenu {
 			$path = isset( $page['path'] ) ? $page['path'] : null;
 			$item = array_merge(
 				array(
-					'id'         => 'wc_admin-' . $path,
-					'url'        => $path,
-					'title'      => $page['title'][0],
-					'capability' => isset( $page['capability'] ) ? $page['capability'] : 'manage_woocommerce',
+					'id'          => 'wc_admin-' . $path,
+					'url'         => $path,
+					'title'       => $page['title'][0],
+					'capability'  => isset( $page['capability'] ) ? $page['capability'] : 'manage_woocommerce',
+					'queryParams' => array( 'page', 'path' ),
 				),
 				$page['nav_args']
 			);
@@ -156,20 +158,22 @@ class CoreMenu {
 		$home_item = array();
 		if ( defined( '\Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG' ) ) {
 			$home_item = array(
-				'id'    => 'wc_admin-wc-admin&path=/',
-				'title' => __( 'Home', 'woocommerce-admin' ),
-				'url'   => \Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG,
-				'order' => 0,
+				'id'          => 'wc_admin-wc-admin&path=/',
+				'title'       => __( 'Home', 'woocommerce-admin' ),
+				'url'         => \Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG,
+				'order'       => 0,
+				'queryParams' => array( 'page', 'path' ),
 			);
 		}
 
 		$customers_item = array();
 		if ( class_exists( '\Automattic\WooCommerce\Admin\Features\Analytics' ) ) {
 			$customers_item = array(
-				'id'    => 'woocommerce-analytics-customers',
-				'title' => __( 'Customers', 'woocommerce-admin' ),
-				'url'   => wc_admin_url( '/customers' ),
-				'order' => 50,
+				'id'          => 'woocommerce-analytics-customers',
+				'title'       => __( 'Customers', 'woocommerce-admin' ),
+				'url'         => 'wc-admin&path=/customers',
+				'order'       => 50,
+				'queryParams' => array( 'page', 'path' ),
 			);
 		}
 

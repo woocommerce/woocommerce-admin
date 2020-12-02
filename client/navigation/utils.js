@@ -46,23 +46,14 @@ export const getFullUrl = ( url ) => {
  *
  * @param {Object} location Window location
  * @param {string} url URL to compare
- * @param {Array} itemDeterminantParams Params required to match this item.
+ * @param {Array} queryParams Params required to match this item.
  * @return {number} Number of matches or 0 if not matched.
  */
-export const getMatchScore = (
-	location,
-	url,
-	itemDeterminantParams = null
-) => {
+export const getMatchScore = ( location, url, queryParams = [] ) => {
 	if ( ! url ) {
 		return;
 	}
 
-	const determinantParams = itemDeterminantParams || [
-		'page',
-		'tab',
-		'path',
-	];
 	const fullUrl = getFullUrl( url );
 	const urlLocation = new URL( fullUrl );
 	const { origin: urlOrigin, pathname: urlPathname } = urlLocation;
@@ -96,7 +87,7 @@ export const getMatchScore = (
 		if ( urlParams[ key ] === locationParams[ key ] ) {
 			matchingParamCount++;
 		} else if (
-			determinantParams.includes( key ) &&
+			queryParams.includes( key ) &&
 			( urlParams[ key ] || locationParams[ key ] )
 		) {
 			// A determinant param was found and not matched.
@@ -163,7 +154,8 @@ export const getMatchingItem = ( items ) => {
 	items.forEach( ( item ) => {
 		const score = getMatchScore(
 			window.location,
-			getAdminLink( item.url )
+			getAdminLink( item.url ),
+			item.queryParams
 		);
 		if ( score >= highestMatch && score > 0 ) {
 			matchedItem = item;
