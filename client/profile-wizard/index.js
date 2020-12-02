@@ -26,7 +26,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import Benefits from './steps/benefits';
-import BusinessDetails from './steps/business-details';
+import { BusinessDetailsStep } from './steps/business-details';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
@@ -135,7 +135,7 @@ class ProfileWizard extends Component {
 		} );
 		steps.push( {
 			key: 'business-details',
-			container: BusinessDetails,
+			container: BusinessDetailsStep,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'product_count' ) &&

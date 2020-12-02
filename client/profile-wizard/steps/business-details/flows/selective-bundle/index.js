@@ -30,9 +30,9 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { getCountryCode } from '../../../dashboard/utils';
-import { CurrencyContext } from '../../../lib/currency-context';
-import { createNoticesFromResponse } from '../../../lib/notices';
+import { getCountryCode } from '../../../../../dashboard/utils';
+import { CurrencyContext } from '../../../../../lib/currency-context';
+import { createNoticesFromResponse } from '../../../../../lib/notices';
 import { platformOptions } from './data/platform-options';
 import { sellingVenueOptions } from './data/selling-venue-options';
 import { getRevenueOptions } from './data/revenue-options';
@@ -547,12 +547,15 @@ class BusinessDetails extends Component {
 		// We set the tab name "current-tab". when its the one we want selected. This tricks
 		// the logic in the TabPanel and allows us to switch which tab has the name "current-tab"
 		// and force it to re-render with a different tab selected.
+		console.log( this.state.currentTab );
 		return (
 			<TabPanel
 				activeClass="is-active"
 				initialTabName="current-tab"
 				onSelect={ ( tabName ) => {
-					this.setState( { currentTab: tabName } );
+					if ( this.state.currentTab !== tabName ) {
+						this.setState( { currentTab: tabName } );
+					}
 				} }
 				tabs={ [
 					{
@@ -589,7 +592,7 @@ class BusinessDetails extends Component {
 
 BusinessDetails.contextType = CurrencyContext;
 
-export default compose(
+export const SelectiveFeaturesBusinessStep = compose(
 	withSelect( ( select ) => {
 		const { getSettings, getSettingsError } = select( SETTINGS_STORE_NAME );
 		const { getProfileItems, getOnboardingError } = select(
