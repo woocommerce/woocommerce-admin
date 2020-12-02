@@ -80,10 +80,12 @@ addFilter(
 				key: 'example',
 				title: __( 'Example', 'plugin-domain' ),
 				content: __( 'This is an example task.', 'plugin-domain' ),
-				icon: 'info',
 				container: <Task />,
 				completed: addTaskData.isComplete,
 				visible: true,
+				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
+				time: __( '2 minutes', 'woocommerce-admin' ),
+				type: 'extension'
 			},
 		];
 	}
