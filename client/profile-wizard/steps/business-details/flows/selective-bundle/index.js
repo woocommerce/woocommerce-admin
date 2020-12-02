@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, _n, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
@@ -9,12 +9,10 @@ import {
 	TabPanel,
 	__experimentalText as Text,
 } from '@wordpress/components';
-import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, pickBy } from 'lodash';
 import {
 	Card,
-	Link,
 	SelectControl,
 	Form,
 	TextControl,
@@ -22,7 +20,6 @@ import {
 import {
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
-	pluginNames,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -52,8 +49,6 @@ class BusinessDetails extends Component {
 			( industry ) => industry.slug
 		);
 
-		const businessExtensions = profileItems.business_extensions || false;
-
 		this.state = {
 			isPopoverVisible: false,
 			isValid: false,
@@ -67,21 +62,6 @@ class BusinessDetails extends Component {
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
-			// 'facebook-for-woocommerce': businessExtensions
-			// 	? businessExtensions.includes( 'facebook-for-woocommerce' )
-			// 	: true,
-			// 'mailchimp-for-woocommerce': businessExtensions
-			// 	? businessExtensions.includes( 'mailchimp-for-woocommerce' )
-			// 	: true,
-			// 'creative-mail-by-constant-contact': businessExtensions
-			// 	? businessExtensions.includes(
-			// 			'creative-mail-by-constant-contact'
-			// 	  )
-			// 	: true,
-			// 'kliken-marketing-for-google': businessExtensions
-			// 	? businessExtensions.includes( 'kliken-marketing-for-google' )
-			// 	: true,
-			// install_extensions: true,
 		};
 
 		this.extensions = [
@@ -102,49 +82,51 @@ class BusinessDetails extends Component {
 		this.validate = this.validate.bind( this );
 	}
 
-	async onContinue( values ) {
+	async onContinue( extensionInstallationOptions ) {
 		const {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
 			updateProfileItems,
 		} = this.props;
+
 		const {
-			install_extensions: installExtensions,
 			other_platform: otherPlatform,
 			other_platform_name: otherPlatformName,
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
-		} = values;
-		const businessExtensions = this.getBusinessExtensions( values );
+		} = this.state.savedValues;
+
 		const { getCurrencyConfig } = this.context;
 
-		recordEvent( 'storeprofiler_store_business_details_continue', {
+		const {
+			// eslint-disable-next-line no-unused-vars
+			all_extensions_installed: _,
+			...businessExtensions
+		} = extensionInstallationOptions;
+
+		recordEvent( 'wcadmin_storeprofiler_store_business_features_continue', {
 			product_number: productCount,
 			already_selling: sellingVenues,
 			currency: getCurrencyConfig().code,
 			revenue,
 			used_platform: otherPlatform,
 			used_platform_name: otherPlatformName,
-			install_woocommerce_services: businessExtensions.includes(
-				'woocommerce-services'
-			),
-			install_jetpack: businessExtensions.includes( 'jetpack' ),
-			install_facebook: businessExtensions.includes(
-				'facebook-for-woocommerce'
-			),
-			install_mailchimp: businessExtensions.includes(
-				'mailchimp-for-woocommerce'
-			),
-			install_creative_mail: businessExtensions.includes(
-				'creative-mail-by-constant-contact'
-			),
-			install_google_ads: businessExtensions.includes(
-				'kliken-marketing-for-google'
-			),
-			install_extensions: installExtensions,
-			bundle_install: this.bundleInstall,
+			all_extensions_installed: Object.values(
+				extensionInstallationOptions
+			).every( ( val ) => val ),
+			install_woocommerce_services:
+				businessExtensions[ 'woocommerce-services' ],
+			install_mailchimp:
+				businessExtensions[ 'mailchimp-for-woocommerce' ],
+			install_jetpack: businessExtensions.jetpack,
+			install_google_ads:
+				businessExtensions[ 'kliken-marketing-for-google' ],
+			install_facebook: businessExtensions[ 'facebook-for-woocommerce' ],
+			install_wcpay: businessExtensions[ 'woocommerce-payments' ],
+			install_creative_mail:
+				businessExtensions[ 'creative-mail-by-constant-contact' ],
 		} );
 
 		const _updates = {
@@ -154,7 +136,9 @@ class BusinessDetails extends Component {
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
-			business_extensions: businessExtensions,
+			business_extensions: Object.keys( businessExtensions ).filter(
+				( key ) => businessExtensions[ key ]
+			),
 		};
 
 		// Remove possible empty values like `revenue` and `other_platform`.
@@ -274,79 +258,6 @@ class BusinessDetails extends Component {
 
 		return keys( pickBy( values ) ).filter( ( name ) =>
 			this.extensions.includes( name )
-		);
-	}
-
-	renderBusinessExtensionHelpText( values ) {
-		const { isInstallingActivating } = this.props;
-		const extensions = this.getBusinessExtensions( values );
-
-		if ( extensions.length === 0 ) {
-			return null;
-		}
-
-		const extensionsList = extensions
-			.map( ( extension ) => {
-				return pluginNames[ extension ];
-			} )
-			.join( ', ' );
-
-		if ( isInstallingActivating ) {
-			return (
-				<Text variant="caption" as="p">
-					{ sprintf(
-						_n(
-							'Installing the following plugin: %s',
-							'Installing the following plugins: %s',
-							extensions.length,
-							'woocommerce-admin'
-						),
-						extensionsList
-					) }
-				</Text>
-			);
-		}
-		const accountRequiredText = this.bundleInstall
-			? __(
-					'User accounts are required to use these features.',
-					'woocommerce-admin'
-			  )
-			: '';
-
-		return (
-			<div className="woocommerce-profile-wizard__footnote">
-				<Text variant="caption" as="p">
-					{ sprintf(
-						_n(
-							'The following plugin will be installed for free: %s. %s',
-							'The following plugins will be installed for free: %s. %s',
-							extensions.length,
-							'woocommerce-admin'
-						),
-						extensionsList,
-						accountRequiredText
-					) }
-				</Text>
-				{ this.bundleInstall && (
-					<Text variant="caption" as="p">
-						{ interpolateComponents( {
-							mixedString: __(
-								'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
-								'woocommerce-admin'
-							),
-							components: {
-								link: (
-									<Link
-										href="https://wordpress.com/tos/"
-										target="_blank"
-										type="external"
-									/>
-								),
-							},
-						} ) }
-					</Text>
-				) }
-			</div>
 		);
 	}
 
@@ -509,11 +420,7 @@ class BusinessDetails extends Component {
 	}
 
 	renderFreeFeaturesStep() {
-		const onSubmit = ( values ) => {
-			// TODO - surface installed extensions to the onContinue
-			// we now have the other values saved in state at this point.
-			console.log( values );
-		};
+		const { isInstallingActivating } = this.props;
 
 		return (
 			<>
@@ -538,7 +445,10 @@ class BusinessDetails extends Component {
 					</Text>
 				</div>
 
-				<SelectiveExtensionsBundle onSubmit={ onSubmit } />
+				<SelectiveExtensionsBundle
+					isInstallingActivating={ isInstallingActivating }
+					onSubmit={ this.onContinue }
+				/>
 			</>
 		);
 	}
@@ -602,8 +512,6 @@ export const SelectiveFeaturesBusinessStep = compose(
 			PLUGINS_STORE_NAME
 		);
 		const { general: settings = {} } = getSettings( 'general' );
-
-		console.log( settings );
 
 		return {
 			hasInstallActivateError:

@@ -2,11 +2,17 @@
  * External dependencies
  */
 import { useState } from '@wordpress/element';
-import { Button, Card, CheckboxControl } from '@wordpress/components';
+import {
+	Button,
+	Card,
+	CheckboxControl,
+	__experimentalText as Text,
+} from '@wordpress/components';
 import { Link } from '@woocommerce/components';
-import { __ } from '@wordpress/i18n';
+import { __, _n } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
+import { pluginNames } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -145,7 +151,88 @@ const setAllPropsToValue = ( obj, value ) => {
 	}, {} );
 };
 
-export const SelectiveExtensionsBundle = ( { onSubmit } ) => {
+const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
+	const extensions = Object.keys( values ).filter(
+		( key ) => values[ key ] && key !== 'install_extensions'
+	);
+
+	if ( extensions.length === 0 ) {
+		return null;
+	}
+
+	const extensionsList = extensions
+		.map( ( extension ) => {
+			return pluginNames[ extension ];
+		} )
+		.join( ', ' );
+
+	if ( isInstallingActivating ) {
+		return (
+			<Text variant="caption" as="p">
+				{ sprintf(
+					_n(
+						'Installing the following plugin: %s',
+						'Installing the following plugins: %s',
+						extensions.length,
+						'woocommerce-admin'
+					),
+					extensionsList
+				) }
+			</Text>
+		);
+	}
+
+	// TODO is this conditional ok, and is the existing copy ok?
+	const installingJetpackOrWcShipping =
+		extensions.includes( 'jetpack' ) ||
+		extensions.includes( 'woocommerce-shipping' );
+
+	// TODO - do we need to switch this off if no extensions are chosen?
+	const accountRequiredText = __(
+		'User accounts are required to use these features.',
+		'woocommerce-admin'
+	);
+	return (
+		<div className="woocommerce-profile-wizard__footnote">
+			<Text variant="caption" as="p">
+				{ sprintf(
+					_n(
+						'The following plugin will be installed for free: %s. %s',
+						'The following plugins will be installed for free: %s. %s',
+						extensions.length,
+						'woocommerce-admin'
+					),
+					extensionsList,
+					accountRequiredText
+				) }
+			</Text>
+			{ installingJetpackOrWcShipping && (
+				<Text variant="caption" as="p">
+					{ interpolateComponents( {
+						mixedString: __(
+							'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
+							'woocommerce-admin'
+						),
+						components: {
+							link: (
+								<Link
+									href="https://wordpress.com/tos/"
+									target="_blank"
+									type="external"
+								/>
+							),
+						},
+					} ) }
+				</Text>
+			) }
+		</div>
+	);
+};
+
+export const SelectiveExtensionsBundle = ( {
+	isInstallingActivating,
+	onSubmit,
+} ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( initialValues );
 
@@ -242,6 +329,10 @@ export const SelectiveExtensionsBundle = ( { onSubmit } ) => {
 					</Button>
 				</div>
 			</Card>
+			{ renderBusinessExtensionHelpText(
+				values,
+				isInstallingActivating
+			) }
 		</div>
 	);
 };
