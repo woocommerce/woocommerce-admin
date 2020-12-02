@@ -46,13 +46,23 @@ export const getFullUrl = ( url ) => {
  *
  * @param {Object} location Window location
  * @param {string} url URL to compare
+ * @param {Array} itemDeterminantParams Params required to match this item.
  * @return {number} Number of matches or 0 if not matched.
  */
-export const getMatchScore = ( location, url ) => {
+export const getMatchScore = (
+	location,
+	url,
+	itemDeterminantParams = null
+) => {
 	if ( ! url ) {
 		return;
 	}
 
+	const determinantParams = itemDeterminantParams || [
+		'page',
+		'tab',
+		'path',
+	];
 	const fullUrl = getFullUrl( url );
 	const urlLocation = new URL( fullUrl );
 	const { origin: urlOrigin, pathname: urlPathname } = urlLocation;
@@ -82,11 +92,17 @@ export const getMatchScore = ( location, url ) => {
 	// Add points for each matching param.
 	let matchingParamCount = 0;
 	const locationParams = getParams( location );
-	Object.keys( urlParams ).forEach( ( key ) => {
+	for ( const key in urlParams ) {
 		if ( urlParams[ key ] === locationParams[ key ] ) {
 			matchingParamCount++;
+		} else if (
+			determinantParams.includes( key ) &&
+			( urlParams[ key ] || locationParams[ key ] )
+		) {
+			// A determinant param was found and not matched.
+			return 0;
 		}
-	} );
+	}
 
 	return origin === urlOrigin && pathname === urlPathname
 		? matchingParamCount
