@@ -344,6 +344,12 @@ export class TaskList extends Component {
 			return task;
 		} );
 
+		if ( isExtended && ! listTasks.length ) {
+			return (
+				<div className="woocommerce-task-dashboard__container"></div>
+			);
+		}
+
 		return (
 			<>
 				<div className="woocommerce-task-dashboard__container">
