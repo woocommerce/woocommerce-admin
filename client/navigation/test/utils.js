@@ -145,6 +145,30 @@ describe( 'getMatchScore', () => {
 			)
 		).toBe( 0 );
 	} );
+
+	it( 'should return the match score if required params are found', () => {
+		expect(
+			getMatchScore(
+				new URL(
+					getAdminLink(
+						'admin.php?page=testpage&required_param=a&optional_param=b'
+					)
+				),
+				getAdminLink( 'admin.php?page=testpage&required_param=a' ),
+				[ 'required_param' ]
+			)
+		).toBe( 2 );
+	} );
+
+	it( "should return 0 for paths that don't contain the required params", () => {
+		expect(
+			getMatchScore(
+				new URL( getAdminLink( 'admin.php?page=testpage' ) ),
+				getAdminLink( 'admin.php?page=testpage&required_param=a' ),
+				[ 'required_param' ]
+			)
+		).toBe( 0 );
+	} );
 } );
 
 describe( 'getFullUrl', () => {
