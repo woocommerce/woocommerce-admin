@@ -78,6 +78,7 @@ addFilter(
 			...tasks,
 			{
 				key: 'example',
+				isDismissable: true,
 				title: __( 'Example', 'plugin-domain' ),
 				content: __( 'This is an example task.', 'plugin-domain' ),
 				container: <Task />,
