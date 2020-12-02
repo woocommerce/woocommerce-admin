@@ -61,6 +61,9 @@ export class TaskList extends Component {
 			isExtendedTaskListComplete,
 			updateOptions,
 		} = this.props;
+		const isSetupTaskListInComplete = ! isExtended && ! isTaskListComplete;
+		const isExtendedTaskListInComplete =
+			isExtended && ! isExtendedTaskListComplete;
 		const taskListToComplete = isExtended
 			? { woocommerce_extended_task_list_complete: 'yes' }
 			: {
@@ -70,8 +73,7 @@ export class TaskList extends Component {
 
 		if (
 			! this.getIncompleteTasks().length &&
-			( ( ! isExtended && ! isTaskListComplete ) ||
-				( isExtended && ! isExtendedTaskListComplete ) )
+			( isSetupTaskListInComplete || isExtendedTaskListInComplete )
 		) {
 			updateOptions( {
 				...taskListToComplete,
