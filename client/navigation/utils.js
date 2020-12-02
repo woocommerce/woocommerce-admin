@@ -45,35 +45,35 @@ export const getFullUrl = ( url ) => {
  * Check to see if a URL matches a given window location.
  *
  * @param {Object} location Window location
- * @param {string} url URL to compare
+ * @param {string} itemUrl Item URL to compare
  * @param {Array} queryParams Params required to match this item.
  * @return {number} Number of matches or 0 if not matched.
  */
-export const getMatchScore = ( location, url, queryParams = [] ) => {
-	if ( ! url ) {
+export const getMatchScore = ( location, itemUrl, queryParams = [] ) => {
+	if ( ! itemUrl ) {
 		return;
 	}
 
-	const fullUrl = getFullUrl( url );
-	const urlLocation = new URL( fullUrl );
-	const { origin: urlOrigin, pathname: urlPathname } = urlLocation;
+	const fullItemUrl = getFullUrl( itemUrl );
+	const itemLocation = new URL( fullItemUrl );
+	const { origin: urlOrigin, pathname: urlPathname } = itemLocation;
 	const { hash, origin, pathname, search } = location;
 
 	// Exact match found.
-	if ( origin + pathname + search + hash === fullUrl ) {
+	if ( origin + pathname + search + hash === fullItemUrl ) {
 		return Number.MAX_SAFE_INTEGER;
 	}
 
 	// Matched URL without hash.
-	if ( hash.length && origin + pathname + search === fullUrl ) {
+	if ( hash.length && origin + pathname + search === fullItemUrl ) {
 		return Number.MAX_SAFE_INTEGER - 1;
 	}
 
-	const urlParams = getParams( urlLocation );
+	const itemParams = getParams( itemLocation );
 
 	// Post type match.
 	if (
-		window.wcNavigation.postType === urlParams.post_type &&
+		window.wcNavigation.postType === itemParams.post_type &&
 		urlPathname.indexOf( 'edit.php' ) >= 0 &&
 		origin === urlOrigin
 	) {
@@ -83,12 +83,12 @@ export const getMatchScore = ( location, url, queryParams = [] ) => {
 	// Add points for each matching param.
 	let matchingParamCount = 0;
 	const locationParams = getParams( location );
-	for ( const key in urlParams ) {
-		if ( urlParams[ key ] === locationParams[ key ] ) {
+	for ( const key in itemParams ) {
+		if ( itemParams[ key ] === locationParams[ key ] ) {
 			matchingParamCount++;
 		} else if (
 			queryParams.includes( key ) &&
-			( urlParams[ key ] || locationParams[ key ] )
+			( itemParams[ key ] || locationParams[ key ] )
 		) {
 			// A determinant param was found and not matched.
 			return 0;
@@ -149,7 +149,7 @@ export const addHistoryListener = ( listener ) => {
  */
 export const getMatchingItem = ( items ) => {
 	let matchedItem = null;
-	let highestMatch = 0;
+	let highestMatchScore = 0;
 
 	items.forEach( ( item ) => {
 		const score = getMatchScore(
@@ -157,9 +157,9 @@ export const getMatchingItem = ( items ) => {
 			getAdminLink( item.url ),
 			item.queryParams
 		);
-		if ( score >= highestMatch && score > 0 ) {
+		if ( score >= highestMatchScore && score > 0 ) {
 			matchedItem = item;
-			highestMatch = score;
+			highestMatchScore = score;
 		}
 	} );
 
