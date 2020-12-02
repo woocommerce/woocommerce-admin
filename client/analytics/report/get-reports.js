@@ -123,7 +123,6 @@ export default () => {
 			report: 'customers',
 			title: __( 'Customers', 'woocommerce-admin' ),
 			component: CustomersReport,
-			id: null,
 		},
 		{
 			report: 'downloads',
