@@ -7,6 +7,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\PageController;
 use \Automattic\WooCommerce\Admin\PluginsHelper;
 use \Automattic\WooCommerce\Admin\Features\OnboardingSetUpShipping;
 
@@ -644,21 +645,6 @@ class Onboarding {
 	}
 
 	/**
-	 * Check if the current page is one of the WC Admin pages.
-	 *
-	 * @return bool
-	 */
-	public static function is_woocommerce_admin_page() {
-		$is_wc_admin_page = false;
-		$current_screen   = get_current_screen();
-		if ( null !== $current_screen ) {
-			$is_wc_admin_page = 'woocommerce_page_wc-admin' === $current_screen->id;
-		}
-
-		return $is_wc_admin_page;
-	}
-
-	/**
 	 * Add profiler items to component settings.
 	 *
 	 * @param array $settings Component settings.
@@ -676,7 +662,7 @@ class Onboarding {
 		if (
 			( ! self::should_show_profiler() && ! self::should_show_tasks()
 			||
-			! self::is_woocommerce_admin_page()
+			! PageController::get_instance()->get_current_page()
 		)
 		) {
 			return $settings;
