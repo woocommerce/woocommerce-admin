@@ -88,9 +88,12 @@ export class TaskList extends Component {
 	}
 
 	getIncompleteTasks() {
-		const { specificTasks } = this.props;
+		const { dismissedTasks, specificTasks } = this.props;
 		return specificTasks.filter(
-			( task ) => task.visible && ! task.completed
+			( task ) =>
+				task.visible &&
+				! task.completed &&
+				! dismissedTasks.includes( task.key )
 		);
 	}
 
