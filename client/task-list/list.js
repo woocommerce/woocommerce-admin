@@ -134,7 +134,7 @@ export class TaskList extends Component {
 		}
 	}
 
-	dismissTask( key ) {
+	dismissTask( { key, onDismiss } ) {
 		const { createNotice, dismissedTasks, updateOptions } = this.props;
 
 		createNotice( 'success', __( 'Task dismissed' ), {
@@ -151,6 +151,9 @@ export class TaskList extends Component {
 		updateOptions( {
 			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
 		} );
+		if ( onDismiss ) {
+			onDismiss();
+		}
 	}
 
 	undoDismissTask( key ) {
@@ -319,7 +322,7 @@ export class TaskList extends Component {
 						isTertiary
 						onClick={ ( event ) => {
 							event.stopPropagation();
-							this.dismissTask( task.key );
+							this.dismissTask( task );
 						} }
 					>
 						{ __( 'Dismiss', 'woocommerce-admin' ) }
