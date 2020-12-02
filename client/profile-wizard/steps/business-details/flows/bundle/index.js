@@ -627,6 +627,7 @@ class BusinessDetails extends Component {
 		);
 
 		const revenueOptions = getRevenueOptions(
+			getCurrencyConfig(),
 			this.props.settings.woocommerce_default_country
 		);
 
