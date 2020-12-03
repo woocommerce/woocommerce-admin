@@ -12,7 +12,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Card } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 
-/* global addTaskData */
+/* global addTaskDataTwo */
 const markTaskComplete = () => {
 	apiFetch( {
 		path: '/wc-admin/options',
@@ -21,7 +21,7 @@ const markTaskComplete = () => {
 	} )
 		.then( () => {
 			// Set the local `isComplete` to `true` so that task appears complete on the list.
-			addTaskData.isComplete = true;
+			addTaskDataTwo.isComplete = true;
 			// Redirect back to the root WooCommerce Admin page.
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		} )
@@ -38,7 +38,7 @@ const markTaskIncomplete = () => {
 		data: { woocommerce_admin_add_task_example_complete_two: false },
 	} )
 		.then( () => {
-			addTaskData.isComplete = false;
+			addTaskDataTwo.isComplete = false;
 			getHistory().push( getNewPath( {}, '/', {} ) );
 		} )
 		.catch( ( error ) => {
@@ -53,13 +53,13 @@ const Task = () => {
 			<br />
 			<br />
 			<div>
-				{ addTaskData.isComplete ? (
+				{ addTaskDataTwo.isComplete ? (
 					<button onClick={ markTaskIncomplete }>
-						{ __( 'Mark task incomplete', 'plugin-domain' ) }
+						{ __( 'Mark as incomplete', 'plugin-domain' ) }
 					</button>
 				) : (
 					<button onClick={ markTaskComplete }>
-						{ __( 'Mark task complete', 'plugin-domain' ) }
+						{ __( 'Mark as complete', 'plugin-domain' ) }
 					</button>
 				) }
 			</div>
@@ -81,7 +81,7 @@ addFilter(
 				title: __( 'Example 1', 'plugin-domain' ),
 				content: __( 'This is an example task.', 'plugin-domain' ),
 				container: <Task />,
-				completed: addTaskData.isComplete,
+				completed: addTaskDataTwo.isComplete,
 				visible: true,
 				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
 				time: __( '2 minutes', 'woocommerce-admin' ),
@@ -94,7 +94,7 @@ addFilter(
 				title: __( 'Example 2', 'plugin-domain' ),
 				content: __( 'This is another example task.', 'plugin-domain' ),
 				container: <Task />,
-				completed: addTaskData.isComplete,
+				completed: addTaskDataTwo.isComplete,
 				visible: true,
 				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
 				time: __( '3 minutes', 'woocommerce-admin' ),
@@ -107,7 +107,7 @@ addFilter(
 				title: __( 'Example 3', 'plugin-domain' ),
 				content: __( 'This is an example task.', 'plugin-domain' ),
 				container: <Task />,
-				completed: addTaskData.isComplete,
+				completed: addTaskDataTwo.isComplete,
 				visible: true,
 				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
 				time: __( '2 minutes', 'woocommerce-admin' ),
@@ -120,7 +120,7 @@ addFilter(
 				title: __( 'Example 4', 'plugin-domain' ),
 				content: __( 'This is another example task.', 'plugin-domain' ),
 				container: <Task />,
-				completed: addTaskData.isComplete,
+				completed: addTaskDataTwo.isComplete,
 				visible: true,
 				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
 				time: __( '3 minutes', 'woocommerce-admin' ),
@@ -133,7 +133,7 @@ addFilter(
 				title: __( 'Example 5', 'plugin-domain' ),
 				content: __( 'This is an example task.', 'plugin-domain' ),
 				container: <Task />,
-				completed: addTaskData.isComplete,
+				completed: addTaskDataTwo.isComplete,
 				visible: true,
 				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
 				time: __( '2 minutes', 'woocommerce-admin' ),
@@ -146,7 +146,7 @@ addFilter(
 				title: __( 'Example 6', 'plugin-domain' ),
 				content: __( 'This is another example task.', 'plugin-domain' ),
 				container: <Task />,
-				completed: addTaskData.isComplete,
+				completed: addTaskDataTwo.isComplete,
 				visible: true,
 				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
 				time: __( '3 minutes', 'woocommerce-admin' ),
