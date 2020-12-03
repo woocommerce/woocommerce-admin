@@ -45,52 +45,21 @@ export const getFullUrl = ( url ) => {
  * Check to see if a URL matches a given window location.
  *
  * @param {Object} location Window location
- * @param {string} url URL to compare
+ * @param {string} itemUrl	 URL to compare
+ * @param {string} itemExpression Custom match expression
  * @return {number} Number of matches or 0 if not matched.
  */
-export const getMatchScore = ( location, url ) => {
-	if ( ! url ) {
+export const isMatch = ( location, itemUrl, itemExpression = null ) => {
+	if ( ! itemUrl ) {
 		return;
 	}
 
-	const fullUrl = getFullUrl( url );
-	const urlLocation = new URL( fullUrl );
-	const { origin: urlOrigin, pathname: urlPathname } = urlLocation;
-	const { hash, origin, pathname, search } = location;
+	const fullUrl = getFullUrl( itemUrl );
+	const { href } = location;
 
-	// Exact match found.
-	if ( origin + pathname + search + hash === fullUrl ) {
-		return Number.MAX_SAFE_INTEGER;
-	}
-
-	// Matched URL without hash.
-	if ( hash.length && origin + pathname + search === fullUrl ) {
-		return Number.MAX_SAFE_INTEGER - 1;
-	}
-
-	const urlParams = getParams( urlLocation );
-
-	// Post type match.
-	if (
-		window.wcNavigation.postType === urlParams.post_type &&
-		urlPathname.indexOf( 'edit.php' ) >= 0 &&
-		origin === urlOrigin
-	) {
-		return Number.MAX_SAFE_INTEGER - 2;
-	}
-
-	// Add points for each matching param.
-	let matchingParamCount = 0;
-	const locationParams = getParams( location );
-	Object.keys( urlParams ).forEach( ( key ) => {
-		if ( urlParams[ key ] === locationParams[ key ] ) {
-			matchingParamCount++;
-		}
-	} );
-
-	return origin === urlOrigin && pathname === urlPathname
-		? matchingParamCount
-		: 0;
+	const defaultExpression = '^' + fullUrl.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
+	const regexp = new RegExp( itemExpression || defaultExpression );
+	return Boolean( decodeURIComponent( href ).match( regexp ) );
 };
 
 /**
@@ -142,16 +111,10 @@ export const addHistoryListener = ( listener ) => {
  */
 export const getMatchingItem = ( items ) => {
 	let matchedItem = null;
-	let highestMatch = 0;
 
 	items.forEach( ( item ) => {
-		const score = getMatchScore(
-			window.location,
-			getAdminLink( item.url )
-		);
-		if ( score >= highestMatch && score > 0 ) {
+		if ( isMatch( window.location, getAdminLink( item.url ), item.matchExpression ) ) {
 			matchedItem = item;
-			highestMatch = score;
 		}
 	} );
 
