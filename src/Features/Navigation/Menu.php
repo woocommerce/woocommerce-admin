@@ -372,25 +372,30 @@ class Menu {
 			return;
 		}
 
-		$parent = isset( $menu_args['parent'] ) ? $menu_args['parent'] . '-' : '';
+		$parent           = isset( $menu_args['parent'] ) ? $menu_args['parent'] . '-' : '';
+		$match_expression = isset( $_GET['post'] ) && get_post_type( intval( $_GET['post'] ) ) === $post_type // phpcs:ignore WordPress.Security.NonceVerification
+			? '(edit.php|post.php)'
+			: null;
 
 		return array(
 			'default' => array_merge(
 				array(
-					'title'      => esc_attr( $post_type_object->labels->menu_name ),
-					'capability' => $post_type_object->cap->edit_posts,
-					'id'         => $parent . $post_type,
-					'url'        => "edit.php?post_type={$post_type}",
+					'title'           => esc_attr( $post_type_object->labels->menu_name ),
+					'capability'      => $post_type_object->cap->edit_posts,
+					'id'              => $parent . $post_type,
+					'url'             => "edit.php?post_type={$post_type}",
+					'matchExpression' => $match_expression,
 				),
 				$menu_args
 			),
 			'all'     => array_merge(
 				array(
-					'title'      => esc_attr( $post_type_object->labels->all_items ),
-					'capability' => $post_type_object->cap->edit_posts,
-					'id'         => "{$parent}{$post_type}-all-items",
-					'url'        => "edit.php?post_type={$post_type}",
-					'order'      => 10,
+					'title'           => esc_attr( $post_type_object->labels->all_items ),
+					'capability'      => $post_type_object->cap->edit_posts,
+					'id'              => "{$parent}{$post_type}-all-items",
+					'url'             => "edit.php?post_type={$post_type}",
+					'order'           => 10,
+					'matchExpression' => $match_expression,
 				),
 				$menu_args
 			),
@@ -600,7 +605,6 @@ class Menu {
 
 		$data = array(
 			'menuItems' => self::get_prepared_menu_item_data(),
-			'postType'  => isset( $_GET['post'] ) ? get_post_type( $_GET['post'] ) : null,
 		);
 
 		$paul = wp_add_inline_script( WC_ADMIN_APP, 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );
