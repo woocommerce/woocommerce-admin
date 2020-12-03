@@ -19,6 +19,7 @@ WooCommerce Admin has a host of new reports that are optimized for speed and hav
 - Revenue Report
 - Orders Report
 - Products Report
+- Variations Report
 - Categories Report
 - Coupons Report
 - Taxes Report
@@ -78,7 +79,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Flickering of order panel while loading. #5655
 - Fix: Tax code duplicated when clicking button to remove. #5661
 
-= 1.7.0 11/11/2020 ( unreleased ) =
+= 1.7.0 11/11/2020 =
 
 - Enhancement: Variations report.  #5167
 - Enhancement: Add ability to toggle homescreen layouts. #5429
