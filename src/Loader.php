@@ -1091,7 +1091,9 @@ class Loader {
 				$group_settings   = $setting_options->get_group_settings( $group );
 				$preload_settings = [];
 				foreach ( $group_settings as $option ) {
-					$preload_settings[ $option['id'] ] = $option['value'];
+					if (isset($option['id'])){
+						$preload_settings[ $option['id'] ] = $option['value'];
+					}
 				}
 				$settings['preloadSettings'][ $group ] = $preload_settings;
 			}
