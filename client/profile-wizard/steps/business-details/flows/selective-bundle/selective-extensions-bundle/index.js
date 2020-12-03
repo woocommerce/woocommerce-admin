@@ -13,6 +13,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
 import { pluginNames } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -267,6 +268,10 @@ export const SelectiveExtensionsBundle = ( {
 							icon={ showExtensions ? chevronUp : chevronDown }
 							onClick={ () => {
 								setShowExtensions( ! showExtensions );
+								recordEvent(
+									'wcadmin_storeprofiler_store_business_features_accordion_click',
+									{ open: ! showExtensions }
+								);
 							} }
 						/>
 					</div>

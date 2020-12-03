@@ -10,7 +10,6 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { keys, pickBy } from 'lodash';
 import {
 	Card,
 	SelectControl,
@@ -27,7 +26,6 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { getCountryCode } from '../../../../../dashboard/utils';
 import { CurrencyContext } from '../../../../../lib/currency-context';
 import { createNoticesFromResponse } from '../../../../../lib/notices';
 import { platformOptions } from '../../data/platform-options';
@@ -41,13 +39,8 @@ const BUSINESS_DETAILS_TAB_NAME = 'business-details';
 const FREE_FEATURES_TAB_NAME = 'free-features';
 
 class BusinessDetails extends Component {
-	constructor( props ) {
+	constructor() {
 		super();
-		const settings = props.settings || {};
-		const profileItems = props.profileItems || {};
-		const industrySlugs = ( profileItems.industry || [] ).map(
-			( industry ) => industry.slug
-		);
 
 		this.state = {
 			isPopoverVisible: false,
@@ -55,28 +48,6 @@ class BusinessDetails extends Component {
 			currentTab: 'business-details',
 			savedValues: null,
 		};
-
-		this.initialValues = {
-			other_platform: profileItems.other_platform || '',
-			other_platform_name: profileItems.other_platform_name || '',
-			product_count: profileItems.product_count || '',
-			selling_venues: profileItems.selling_venues || '',
-			revenue: profileItems.revenue || '',
-		};
-
-		this.extensions = [
-			'facebook-for-woocommerce',
-			'mailchimp-for-woocommerce',
-			'kliken-marketing-for-google',
-			'creative-mail-by-constant-contact',
-		];
-
-		// TODO convert this to some kind of segmentation we can use generically and pass to <FreeFeatures>
-		this.bundleInstall =
-			getCountryCode( settings.woocommerce_default_country ) === 'US' &&
-			( industrySlugs.includes( 'fashion-apparel-accessories' ) ||
-				industrySlugs.includes( 'health-beauty' ) ) &&
-			! industrySlugs.includes( 'cbd-other-hemp-derived-products' );
 
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
@@ -244,27 +215,6 @@ class BusinessDetails extends Component {
 		return errors;
 	}
 
-	getBusinessExtensions( values ) {
-		if ( this.bundleInstall ) {
-			return values.install_extensions
-				? [
-						'jetpack',
-						'woocommerce-services',
-						'woocommerce-payments',
-						...this.extensions,
-				  ]
-				: [];
-		}
-
-		if ( values.selling_venues === '' ) {
-			return [];
-		}
-
-		return keys( pickBy( values ) ).filter( ( name ) =>
-			this.extensions.includes( name )
-		);
-	}
-
 	renderBusinessDetailsStep() {
 		const {
 			goToNextStep,
@@ -280,7 +230,9 @@ class BusinessDetails extends Component {
 
 		return (
 			<Form
-				initialValues={ this.state.savedValues || this.initialValues }
+				initialValues={
+					this.state.savedValues || this.props.initialValues
+				}
 				onSubmitCallback={ ( values ) => {
 					this.setState( {
 						savedValues: values,
