@@ -35,6 +35,13 @@ class Screen {
 	protected static $post_types = array();
 
 	/**
+	 * Registered taxonomies.
+	 *
+	 * @var array
+	 */
+	protected static $taxonomies = array();
+
+	/**
 	 * Get class instance.
 	 */
 	final public static function instance() {
@@ -66,12 +73,28 @@ class Screen {
 	}
 
 	/**
+	 * Returns an array of registered post types.
+	 */
+	public static function get_taxonomies() {
+		return apply_filters( 'woocommerce_navigation_taxonomies', self::$taxonomies );
+	}
+
+	/**
 	 * Check if we're on a WooCommerce page
 	 *
 	 * @return bool
 	 */
 	public static function is_woocommerce_page() {
 		global $pagenow;
+
+		// Get taxonomy if on a taxonomy screen.
+		$taxonomy = '';
+		if ( in_array( $pagenow, array( 'edit-tags.php', 'term.php' ), true ) ) {
+			if ( isset( $_GET['taxonomy'] ) ) { // phpcs:ignore CSRF ok.
+				$taxonomy = sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ); // phpcs:ignore CSRF ok.
+			}
+		}
+		$taxonomies = self::get_taxonomies();
 
 		// Get post type if on a post screen.
 		$post_type = '';
@@ -91,6 +114,7 @@ class Screen {
 
 		if (
 			in_array( $post_type, $post_types, true ) ||
+			in_array( $taxonomy, $taxonomies, true ) ||
 			in_array( $current_screen_id, $screen_ids, true )
 		) {
 			return true;
@@ -171,5 +195,14 @@ class Screen {
 	 */
 	public static function register_post_type( $post_type ) {
 		self::$post_types[] = $post_type;
+	}
+
+	/**
+	 * Register taxonomy for use in WooCommerce Navigation screens.
+	 *
+	 * @param string $taxonomy Taxonomy to add.
+	 */
+	public static function register_taxonomy( $taxonomy ) {
+		self::$taxonomies[] = $taxonomy;
 	}
 }
