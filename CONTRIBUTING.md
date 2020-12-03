@@ -108,27 +108,6 @@ To activate, open up your browser console and add this:
 localStorage.setItem( 'debug', 'wc-admin:*' );
 ```
 
-## Common issues
-Commonly encountered problems, known issues, and their solutions:
-
-### Composer error on `Automattic\Jetpack\Autoloader\AutoloadGenerator`:
-```
-[ErrorException]
-  Declaration of Automattic\Jetpack\Autoloader\AutoloadGenerator::dump(Composer\Config $config, Composer\Repository\Inst
-  alledRepositoryInterface $localRepo, Composer\Package\PackageInterface $mainPackage, Composer\Installer\InstallationMa
-  nager $installationManager, $targetDir, $scanPsrPackages = false, $suffix = NULL) should be compatible with Composer\A
-  utoload\AutoloadGenerator::dump(Composer\Config $config, Composer\Repository\InstalledRepositoryInterface $localRepo,
-  Composer\Package\RootPackageInterface $rootPackage, Composer\Installer\InstallationManager $installationManager, $targ
-  etDir, $scanPsrPackages = false, $suffix = '')
-```
-A recent [change](https://github.com/composer/composer/commit/b574f10d9d68acfeb8e36cad0b0b25a090140a3b#diff-67d1dfefa9c7b1c7e0b04b07274628d812f82cd82fae635c0aeba643c02e8cd8) in composer released in `2.0.7` had made our autoloader incomptable with the new `AutoloadGenerator` signature. In the meantime, try to downgrade to older composer version `2.0.6` using `composer self-update 2.0.6`.
-
-### VVV: HostsUpdater vagrant plugin error
-```
-...vagrant-hostsupdater/HostsUpdater.rb:126:in ``digest': no implicit conversion of nil into String (TypeError)
-```
-You might be running with an unsupported version of Vagrant. Please check VVV's [requirements](https://github.com/Varying-Vagrant-Vagrants/VVV#minimum-system-requirements).
-
 ## License
 
 WooCommerce Admin is licensed under [GNU General Public License v3 (or later)](/license.txt).

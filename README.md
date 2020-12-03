@@ -46,6 +46,9 @@ Run a single test by adding the file name:
 npm run test:e2e-dev complete-onboarding-wizard.test.js
 ```
 
+## Common Issues
+If you're encountering any issue setting things up, chances are we have been there too. Please have a look at our [wiki](https://github.com/woocommerce/woocommerce-admin/wiki/Common-Issues) for a list of common problems.
+
 ## Privacy
 
 If you have enabled WooCommerce usage tracking ( option `woocommerce_allow_tracking` ) then, in addition to the tracking described in https://woocommerce.com/usage-tracking/, this plugin also sends information about the actions that site administrators perform to Automattic - see https://automattic.com/privacy/#information-we-collect-automatically for more information.
