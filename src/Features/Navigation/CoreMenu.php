@@ -122,12 +122,14 @@ class CoreMenu {
 	 * @return array
 	 */
 	public static function get_items() {
-		$order_items   = Menu::get_post_type_items( 'shop_order', array( 'parent' => 'woocommerce-orders' ) );
-		$product_items = Menu::get_post_type_items( 'product', array( 'parent' => 'woocommerce-products' ) );
-		$coupon_items  = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'woocommerce-marketing' ) );
-		$setting_items = self::get_setting_items();
-		$wca_items     = array();
-		$wca_pages     = \Automattic\WooCommerce\Admin\PageController::get_instance()->get_pages();
+		$order_items       = Menu::get_post_type_items( 'shop_order', array( 'parent' => 'woocommerce-orders' ) );
+		$product_items     = Menu::get_post_type_items( 'product', array( 'parent' => 'woocommerce-products' ) );
+		$product_tag_items = Menu::get_taxonomy_items( 'product_tag', array( 'parent' => 'woocommerce-products' ) );
+		$product_cat_items = Menu::get_taxonomy_items( 'product_cat', array( 'parent' => 'woocommerce-products' ) );
+		$coupon_items      = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'woocommerce-marketing' ) );
+		$setting_items     = self::get_setting_items();
+		$wca_items         = array();
+		$wca_pages         = \Automattic\WooCommerce\Admin\PageController::get_instance()->get_pages();
 
 		foreach ( $wca_pages as $page ) {
 			if ( ! isset( $page['nav_args'] ) ) {
@@ -181,7 +183,9 @@ class CoreMenu {
 				$order_items['all'],
 				$order_items['new'],
 				$product_items['all'],
-				$product_items['new'],
+				array_merge( $product_cat_items['default'], array( 'order' => 20 ) ),
+				array_merge( $product_tag_items['default'], array( 'order' => 30 ) ),
+				array_merge( $product_items['new'], array( 'order' => 50 ) ),
 				$coupon_items['default'],
 				// Marketplace category.
 				array(
