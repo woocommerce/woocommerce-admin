@@ -69,6 +69,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 2. Activity Panels
 3. Analytics
 
+== Unreleased ==
+
+- Enhancement: Tasks extensibility in Home Screen. #5794
+
+
 == Changelog ==
 
 = 1.7.0 11/11/2020 =
