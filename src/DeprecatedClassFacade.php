@@ -41,14 +41,17 @@ class DeprecatedClassFacade {
 
 	/**
 	 * Log a deprecation to the error log.
+	 *
+	 * @param string $function The name of the deprecated function being called.
 	 */
-	private static function log_deprecation() {
+	private static function log_deprecation( $function ) {
 		error_log( // phpcs:ignore
-			static::class
-			. ' is deprecated since version '
-			. static::$deprecated_in_version
-			. '. Make sure you are using the undeprecated equivalent which '
-			. 'this deprecation facade wraps.'
+			sprintf(
+				'%1$s is deprecated since version %2$s! Use %3$s instead.',
+				static::class . '::' . $function,
+				static::$deprecated_in_version,
+				static::$facade_over_classname . '::' . $function
+			)
 		);
 	}
 
@@ -59,7 +62,7 @@ class DeprecatedClassFacade {
 	 * @param array  $arguments An array of the arguments to the function call.
 	 */
 	public function __call( $name, $arguments ) {
-		self::log_deprecation();
+		self::log_deprecation( $name );
 
 		return call_user_func_array(
 			array(
@@ -77,7 +80,7 @@ class DeprecatedClassFacade {
 	 * @param array  $arguments An array of the arguments to the function call.
 	 */
 	public static function __callStatic( $name, $arguments ) {
-		self::log_deprecation();
+		self::log_deprecation( $name );
 
 		return call_user_func_array(
 			array(
