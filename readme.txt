@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 = 1.7.3 12/03/2020 =
 
 - Fix: Don't show Store Setup link on home screen #5801
+- Fix: Don't show the Orders panel on the homescreen with the Task List (#5552)
 
 = 1.7.2 11/19/2020 =
 
