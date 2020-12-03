@@ -18,6 +18,7 @@ import {
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 	QUERY_DEFAULTS,
+	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
@@ -33,6 +34,7 @@ import ProfileWizardHeader from './header';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
 import './style.scss';
+import { getCountryCode } from '../dashboard/utils';
 
 class ProfileWizard extends Component {
 	constructor( props ) {
@@ -105,7 +107,11 @@ class ProfileWizard extends Component {
 	}
 
 	getSteps() {
-		const { profileItems, query } = this.props;
+		const {
+			profileItems,
+			query,
+			selectiveBundleInstallSegmentation,
+		} = this.props;
 		const { step } = query;
 		const steps = [];
 
@@ -134,7 +140,9 @@ class ProfileWizard extends Component {
 				profileItems.product_types !== null,
 		} );
 		steps.push( {
-			key: 'business-details',
+			key: selectiveBundleInstallSegmentation
+				? 'business-features'
+				: 'business-details',
 			container: BusinessDetailsStep,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
@@ -307,6 +315,22 @@ export default compose(
 			isJetpackConnected,
 		} = select( PLUGINS_STORE_NAME );
 
+		const { general: generalSettings } = select(
+			SETTINGS_STORE_NAME
+		).getSettings( 'general' );
+
+		const profileItems = getProfileItems();
+
+		const country = generalSettings.woocommerce_default_country || null;
+		const industrySlugs = ( profileItems.industry || [] ).map(
+			( industry ) => industry.slug
+		);
+
+		const selectiveBundleInstallSegmentation =
+			getCountryCode( country ) === 'US' &&
+			( industrySlugs.includes( 'food-drink' ) ||
+				industrySlugs.includes( 'other' ) );
+
 		const notesQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
@@ -326,6 +350,7 @@ export default compose(
 			notes,
 			profileItems: getProfileItems(),
 			activePlugins,
+			selectiveBundleInstallSegmentation,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
