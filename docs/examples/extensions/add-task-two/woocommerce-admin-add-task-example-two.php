@@ -21,7 +21,7 @@ function add_task_register_script_two() {
 	}
 
 	wp_register_script(
-		'add-task',
+		'add-task-two',
 		plugins_url( '/dist/index.js', __FILE__ ),
 		array(
 			'wp-hooks',
