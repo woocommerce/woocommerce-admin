@@ -270,6 +270,10 @@ class CoreMenu {
 	public function register_taxonomies() {
 		Screen::register_taxonomy( 'product_cat' );
 		Screen::register_taxonomy( 'product_tag' );
+		$product_attribute_taxonomies = wc_get_attribute_taxonomies();
+		foreach ( $product_attribute_taxonomies as $taxonomy ) {
+			Screen::register_taxonomy( 'pa_' . $taxonomy->attribute_name );
+		}
 	}
 
 	/**
