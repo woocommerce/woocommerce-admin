@@ -26,7 +26,7 @@ export function getUnreadOrders( select, orderStatuses ) {
 
 	const defaultValue = null;
 
-	// Disable eslint rule requiring `latestNote` to be defined below because the next two statements
+	// Disable eslint rule requiring `totalOrders` to be defined below because the next two statements
 	// depend on `getItemsTotalCount` to have been called.
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const totalOrders = getItemsTotalCount(
@@ -54,4 +54,47 @@ export function getOrderStatuses( select ) {
 		woocommerce_actionable_order_statuses: orderStatuses = DEFAULT_ACTIONABLE_STATUSES,
 	} = getMutableSetting( 'wc_admin', 'wcAdminSettings', {} );
 	return orderStatuses;
+}
+
+export const getLowStockCountQuery = {
+	page: 1,
+	per_page: 1,
+	low_in_stock: true,
+	status: 'publish',
+	_fields: [ 'id' ],
+};
+
+export function getLowStockCount( select ) {
+	const { getItemsTotalCount, getItemsError, isResolving } = select(
+		ITEMS_STORE_NAME
+	);
+
+	const defaultValue = null;
+
+	// Disable eslint rule requiring `totalLowStockProducts` to be defined below because the next two statements
+	// depend on `getItemsTotalCount` to have been called.
+	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
+	const totalLowStockProducts = getItemsTotalCount(
+		'products',
+		getLowStockCountQuery,
+		defaultValue
+	);
+
+	const isError = Boolean(
+		getItemsError( 'products', getLowStockCountQuery )
+	);
+	const isRequesting = isResolving( 'getItemsTotalCount', [
+		'products',
+		getLowStockCountQuery,
+		defaultValue,
+	] );
+
+	if (
+		isError ||
+		( isRequesting && totalLowStockProducts === defaultValue )
+	) {
+		return null;
+	}
+
+	return totalLowStockProducts;
 }

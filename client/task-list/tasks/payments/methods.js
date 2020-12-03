@@ -28,6 +28,9 @@ import PayPal from './paypal';
 import Klarna from './klarna';
 import PayFast from './payfast';
 import EWay from './eway';
+import WCPayUsageModal from './wcpay-usage-modal';
+import Razorpay from './razorpay';
+import RazorpayIcon from './images/razorpay';
 
 export function installActivateAndConnectWcpay(
 	resolve,
@@ -147,6 +150,7 @@ export function getPaymentMethods( {
 					{ wcPayIsConnected && wcPaySettingsLink }
 					{ ! wcPayIsConnected && <p>{ tosPrompt }</p> }
 					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
+					<WCPayUsageModal />
 				</Fragment>
 			),
 			before: <WCPayIcon />,
@@ -387,6 +391,30 @@ export function getPaymentMethods( {
 				options.woocommerce_eway_settings &&
 				options.woocommerce_eway_settings.enabled === 'yes',
 			optionName: 'woocommerce_eway_settings',
+		},
+		{
+			key: 'razorpay',
+			title: __( 'Razorpay', 'woocommerce-admin' ),
+			content: (
+				<Fragment>
+					{ __(
+						'The official Razorpay extension for WooCommerce allows you to accept credit cards, debit cards, netbanking, wallet, and UPI payments.',
+						'woocommerce-admin'
+					) }
+				</Fragment>
+			),
+			before: <RazorpayIcon />,
+			visible: countryCode === 'IN' && ! hasCbdIndustry,
+			plugins: [ 'woo-razorpay' ],
+			container: <Razorpay />,
+			isConfigured:
+				options.woocommerce_razorpay_settings &&
+				options.woocommerce_razorpay_settings.key_id &&
+				options.woocommerce_razorpay_settings.key_secret,
+			isEnabled:
+				options.woocommerce_razorpay_settings &&
+				options.woocommerce_razorpay_settings.enabled === 'yes',
+			optionName: 'woocommerce_razorpay_settings',
 		},
 		{
 			key: 'cod',

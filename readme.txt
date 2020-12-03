@@ -72,7 +72,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Enhancement: Tasks extensibility in Home Screen. #5794
-
+- Fix: Invalidate product count if the last product was updated in the list. #5790
 
 == Changelog ==
 

@@ -1,12 +1,18 @@
 /**
  * External dependencies
  */
-import { noop } from 'lodash';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
+
+/**
+ * Internal dependencies
+ */
+import CustomerFeedbackModal from './customer-feedback-modal';
+
+const noop = () => {};
 
 /**
  * Use `CustomerEffortScore` to gather a customer effort score.
@@ -32,11 +38,14 @@ function CustomerEffortScore( {
 	onModalShownCallback = noop,
 	icon,
 } ) {
-	const [ score, setScore ] = useState( 0 );
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 	const [ visible, setVisible ] = useState( false );
 
-	if ( shouldCreateNotice ) {
+	useEffect( () => {
+		if ( ! shouldCreateNotice ) {
+			return;
+		}
+
 		createNotice( 'success', label, {
 			actions: [
 				{
@@ -55,7 +64,9 @@ function CustomerEffortScore( {
 		setShouldCreateNotice( false );
 
 		onNoticeShownCallback();
+	}, [ shouldCreateNotice ] );
 
+	if ( shouldCreateNotice ) {
 		return null;
 	}
 
@@ -63,17 +74,11 @@ function CustomerEffortScore( {
 		return null;
 	}
 
-	function close() {
-		setScore( 3 ); // TODO let this happen in the UI
-
-		setVisible( false );
-		recordScoreCallback( score );
-	}
-
 	return (
-		<p className="customer-effort-score_modal">
-			{ label } <button onClick={ close }>Click me</button>
-		</p>
+		<CustomerFeedbackModal
+			label={ label }
+			recordScoreCallback={ recordScoreCallback }
+		/>
 	);
 }
 
