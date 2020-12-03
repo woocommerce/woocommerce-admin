@@ -199,10 +199,10 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 		<div className="woocommerce-profile-wizard__footnote">
 			<Text variant="caption" as="p">
 				{ sprintf(
-					/* translators: %s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping, %n: text: 'User accounts are required to use these features.'  */
+					/* translators: %1$s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping, %2$s: text: 'User accounts are required to use these features.'  */
 					_n(
-						'The following plugin will be installed for free: %s. %n',
-						'The following plugins will be installed for free: %s. %n',
+						'The following plugin will be installed for free: %1$s. %2$s',
+						'The following plugins will be installed for free: %1$s. %2$s',
 						extensions.length,
 						'woocommerce-admin'
 					),
