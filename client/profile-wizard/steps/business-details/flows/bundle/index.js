@@ -194,7 +194,7 @@ class BusinessDetails extends Component {
 			.then( () => {
 				goToNextStep();
 			} )
-			.catch( ( e ) => {
+			.catch( () => {
 				createNotice(
 					'error',
 					__(
