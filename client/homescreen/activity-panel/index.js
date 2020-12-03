@@ -10,20 +10,37 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import './style.scss';
-import { getOrderStatuses, getUnreadOrders } from './orders/utils';
+import {
+	getLowStockCount,
+	getOrderStatuses,
+	getUnreadOrders,
+} from './orders/utils';
 import { getAllPanels } from './panels';
+import { getUnapprovedReviews } from './reviews/utils';
 
 export const ActivityPanel = () => {
-	const panels = useSelect( ( select ) => {
+	const panelsData = useSelect( ( select ) => {
 		const totalOrderCount = getSetting( 'orderCount', 0 );
 		const orderStatuses = getOrderStatuses( select );
+		const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
 		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
-		return getAllPanels( {
+		const manageStock = getSetting( 'manageStock', 'no' );
+		const countLowStockProducts = getLowStockCount( select );
+		const countUnapprovedReviews = getUnapprovedReviews( select );
+
+		return {
+			countLowStockProducts,
 			countUnreadOrders,
+			manageStock,
 			orderStatuses,
 			totalOrderCount,
-		} );
+			reviewsEnabled,
+			countUnapprovedReviews,
+		};
 	} );
+
+	const panels = getAllPanels( panelsData );
+
 	return (
 		<Accordion>
 			<Fragment>
@@ -43,6 +60,7 @@ export const ActivityPanel = () => {
 							count={ count }
 							initialOpen={ initialOpen }
 							title={ title }
+							collapsible={ count !== 0 }
 						>
 							{ panel }
 						</AccordionPanel>

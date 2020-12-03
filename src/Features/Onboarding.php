@@ -9,7 +9,6 @@ namespace Automattic\WooCommerce\Admin\Features;
 use \Automattic\WooCommerce\Admin\Loader;
 use \Automattic\WooCommerce\Admin\PluginsHelper;
 use \Automattic\WooCommerce\Admin\Features\OnboardingSetUpShipping;
-use \Automattic\WooCommerce\Admin\Features\OnboardingAutomateTaxes;
 
 /**
  * Contains backend logic for the onboarding profile and checklist feature.
@@ -68,7 +67,6 @@ class Onboarding {
 
 		// Hook up dependent classes.
 		new OnboardingSetUpShipping();
-		new OnboardingAutomateTaxes();
 	}
 
 	/**
@@ -576,7 +574,11 @@ class Onboarding {
 		}
 
 		foreach ( $themes as $theme ) {
-			$directory = new \RecursiveDirectoryIterator( $theme->theme_root . '/' . $theme->stylesheet );
+			$stylesheet_file = $theme->theme_root . '/' . $theme->stylesheet;
+			if ( ! file_exists( $stylesheet_file ) ) {
+				continue;
+			}
+			$directory = new \RecursiveDirectoryIterator( $stylesheet_file );
 			$iterator  = new \RecursiveIteratorIterator( $directory );
 			$files     = new \RegexIterator( $iterator, '/^.+\.php$/i', \RecursiveRegexIterator::GET_MATCH );
 
@@ -709,6 +711,7 @@ class Onboarding {
 		$options[] = 'woocommerce_bacs_accounts';
 		$options[] = 'woocommerce_woocommerce_payments_settings';
 		$options[] = 'woocommerce_eway_settings';
+		$options[] = 'woocommerce_razorpay_settings';
 
 		return $options;
 	}
@@ -752,6 +755,7 @@ class Onboarding {
 				'woocommerce-payfast-gateway'         => 'woocommerce-payfast-gateway/gateway-payfast.php',
 				'woocommerce-payments'                => 'woocommerce-payments/woocommerce-payments.php',
 				'woocommerce-gateway-eway'            => 'woocommerce-gateway-eway/woocommerce-gateway-eway.php',
+				'woo-razorpay'                        => 'woo-razorpay/woo-razorpay.php',
 			)
 		);
 		return array_merge( $plugins, $onboarding_plugins );

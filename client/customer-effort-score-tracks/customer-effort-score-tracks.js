@@ -35,7 +35,7 @@ function CustomerEffortScoreTracks( {
 	action,
 	trackProps,
 	label,
-	onSubmitLabel,
+	onSubmitLabel = __( 'Thank you for your feedback!', 'woocommerce-admin' ),
 	cesShownForActions,
 	allowTracking,
 	resolving,
@@ -73,12 +73,23 @@ function CustomerEffortScoreTracks( {
 		} );
 	};
 
+	const addActionToShownOption = () => {
+		updateOptions( {
+			[ SHOWN_FOR_ACTIONS_OPTION_NAME ]: [
+				action,
+				...cesShownForActions,
+			],
+		} );
+	};
+
 	const onNoticeDismissed = () => {
 		recordEvent( 'ces_snackbar_dismiss', {
 			action,
 			store_age: storeAge,
 			...trackProps,
 		} );
+
+		addActionToShownOption();
 	};
 
 	const onModalShown = () => {
@@ -90,18 +101,14 @@ function CustomerEffortScoreTracks( {
 			...trackProps,
 		} );
 
-		updateOptions( {
-			[ SHOWN_FOR_ACTIONS_OPTION_NAME ]: [
-				action,
-				...cesShownForActions,
-			],
-		} );
+		addActionToShownOption();
 	};
 
-	const recordScore = ( score ) => {
+	const recordScore = ( score, comments ) => {
 		recordEvent( 'ces_feedback', {
 			action,
 			score,
+			comments: comments || '',
 			store_age: storeAge,
 			...trackProps,
 		} );
@@ -144,7 +151,7 @@ CustomerEffortScoreTracks.propTypes = {
 	/**
 	 * The label for the snackbar that appears upon survey submission.
 	 */
-	onSubmitLabel: PropTypes.string.isRequired,
+	onSubmitLabel: PropTypes.string,
 	/**
 	 * The array of actions that the CES modal has been shown for.
 	 */
@@ -153,7 +160,6 @@ CustomerEffortScoreTracks.propTypes = {
 	 * Whether tracking is allowed or not.
 	 */
 	allowTracking: PropTypes.bool,
-
 	/**
 	 * Whether props are still being resolved.
 	 */

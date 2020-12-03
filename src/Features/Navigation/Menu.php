@@ -50,13 +50,6 @@ class Menu {
 	const CSS_CLASSES = 4;
 
 	/**
-	 * Default parent menu
-	 *
-	 * @var string
-	 */
-	const DEFAULT_PARENT = 'settings';
-
-	/**
 	 * Store menu items.
 	 *
 	 * @var array
@@ -159,28 +152,24 @@ class Menu {
 		}
 
 		$defaults           = array(
-			'id'           => '',
-			'title'        => '',
-			'capability'   => 'manage_woocommerce',
-			'order'        => 100,
-			'migrate'      => true,
-			'menuId'       => 'primary',
-			'isCategory'   => true,
-			'parent'       => self::DEFAULT_PARENT,
-			'is_top_level' => false,
+			'id'         => '',
+			'title'      => '',
+			'capability' => 'manage_woocommerce',
+			'order'      => 100,
+			'migrate'    => true,
+			'menuId'     => 'primary',
+			'isCategory' => true,
 		);
 		$menu_item          = wp_parse_args( $args, $defaults );
 		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
 		unset( $menu_item['url'] );
 
-		if ( true === $menu_item['is_top_level'] ) {
+		if ( ! isset( $menu_item['parent'] ) ) {
 			$menu_item['parent']          = 'woocommerce';
 			$menu_item['backButtonLabel'] = __(
 				'WooCommerce Home',
 				'woocommerce-admin'
 			);
-		} else {
-			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
 		}
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
@@ -206,36 +195,59 @@ class Menu {
 	 *    ).
 	 */
 	private static function add_item( $args ) {
-		if ( ! isset( $args['id'] ) || isset( self::$menu_items[ $args['id'] ] ) ) {
+		if ( ! isset( $args['id'] ) ) {
+			return;
+		}
+
+		if ( isset( self::$menu_items[ $args['id'] ] ) ) {
+			error_log(  // phpcs:ignore
+				sprintf(
+					/* translators: 1: Duplicate menu item path. */
+					esc_html__( 'You have attempted to register a duplicate item with WooCommerce Navigation: %1$s', 'woocommerce-admin' ),
+					'`' . $args['id'] . '`'
+				)
+			);
 			return;
 		}
 
 		$defaults           = array(
-			'id'           => '',
-			'title'        => '',
-			'parent'       => self::DEFAULT_PARENT,
-			'capability'   => 'manage_woocommerce',
-			'url'          => '',
-			'order'        => 100,
-			'migrate'      => true,
-			'menuId'       => 'primary',
-			'is_top_level' => false,
+			'id'         => '',
+			'title'      => '',
+			'capability' => 'manage_woocommerce',
+			'url'        => '',
+			'order'      => 100,
+			'migrate'    => true,
+			'menuId'     => 'primary',
 		);
 		$menu_item          = wp_parse_args( $args, $defaults );
 		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
 		$menu_item['url']   = self::get_callback_url( $menu_item['url'] );
 
-		if ( true === $menu_item['is_top_level'] ) {
+		if ( ! isset( $menu_item['parent'] ) ) {
 			$menu_item['parent'] = 'woocommerce';
-		} else {
-			$menu_item['parent'] = 'woocommerce' === $menu_item['parent'] ? self::DEFAULT_PARENT : $menu_item['parent'];
 		}
+
+		$menu_item['menuId'] = self::get_item_menu_id( $menu_item );
 
 		self::$menu_items[ $menu_item['id'] ] = $menu_item;
 
 		if ( isset( $args['url'] ) ) {
 			self::$callbacks[ $args['url'] ] = $menu_item['migrate'];
 		}
+	}
+
+	/**
+	 * Get an item's menu ID from its parent.
+	 *
+	 * @param array $item Item args.
+	 * @return string
+	 */
+	public static function get_item_menu_id( $item ) {
+		if ( isset( self::$menu_items[ $item['parent'] ] ) ) {
+			return self::$menu_items[ $item['parent'] ]['menuId'];
+		}
+
+		return $item['menuId'];
 	}
 
 	/**
@@ -249,7 +261,6 @@ class Menu {
 	 *      'capability' => (string) Capability to view this menu item.
 	 *      'url'        => (string) URL or callback to be used. Required.
 	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'menuId'     => (string) The ID of the menu to add the item to.
 	 *      'order'      => (int) Menu item order.
 	 *    ).
 	 */
@@ -261,10 +272,15 @@ class Menu {
 		$item_args = array_merge(
 			$args,
 			array(
-				'menuId'       => 'plugins',
-				'is_top_level' => ! isset( $args['parent'] ),
+				'menuId' => 'plugins',
 			)
 		);
+
+		$menu_id = self::get_item_menu_id( $item_args );
+		if ( 'plugins' !== $menu_id ) {
+			return;
+		}
+
 		self::add_item( $item_args );
 	}
 
@@ -278,7 +294,6 @@ class Menu {
 	 *      'capability' => (string) Capability to view this menu item.
 	 *      'url'        => (string) URL or callback to be used. Required.
 	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'menuId'     => (string) The ID of the menu to add the category to.
 	 *      'order'      => (int) Menu item order.
 	 *    ).
 	 */
@@ -290,55 +305,16 @@ class Menu {
 		$category_args = array_merge(
 			$args,
 			array(
-				'menuId'       => 'plugins',
-				'is_top_level' => ! isset( $args['parent'] ),
+				'menuId' => 'plugins',
 			)
 		);
-		self::add_category( $category_args );
-	}
 
-	/**
-	 * Adds a post type as a menu category.
-	 *
-	 * @param string $post_type Post type.
-	 * @param array  $args Array of menu item args.
-	 */
-	public static function add_post_type_category( $post_type, $args = array() ) {
-		$post_type_object = get_post_type_object( $post_type );
-
-		if ( ! $post_type_object ) {
+		$menu_id = self::get_item_menu_id( $category_args );
+		if ( 'plugins' !== $menu_id ) {
 			return;
 		}
 
-		self::add_category(
-			array_merge(
-				array(
-					'title'        => esc_attr( $post_type_object->labels->menu_name ),
-					'capability'   => $post_type_object->cap->edit_posts,
-					'id'           => $post_type,
-					'is_top_level' => true,
-				),
-				$args
-			)
-		);
-		self::add_item(
-			array(
-				'parent'     => $post_type,
-				'title'      => esc_attr( $post_type_object->labels->all_items ),
-				'capability' => $post_type_object->cap->edit_posts,
-				'id'         => "{$post_type}-all-items",
-				'url'        => "edit.php?post_type={$post_type}",
-			)
-		);
-		self::add_item(
-			array(
-				'parent'     => $post_type,
-				'title'      => esc_attr( $post_type_object->labels->add_new ),
-				'capability' => $post_type_object->cap->create_posts,
-				'id'         => "{$post_type}-add-new",
-				'url'        => "post-new.php?post_type={$post_type}",
-			)
-		);
+		self::add_category( $category_args );
 	}
 
 	/**
@@ -355,12 +331,14 @@ class Menu {
 			return;
 		}
 
+		$parent = isset( $menu_args['parent'] ) ? $menu_args['parent'] . '-' : '';
+
 		return array(
 			'default' => array_merge(
 				array(
 					'title'      => esc_attr( $post_type_object->labels->menu_name ),
 					'capability' => $post_type_object->cap->edit_posts,
-					'id'         => $post_type,
+					'id'         => $parent . $post_type,
 					'url'        => "edit.php?post_type={$post_type}",
 				),
 				$menu_args
@@ -369,7 +347,7 @@ class Menu {
 				array(
 					'title'      => esc_attr( $post_type_object->labels->all_items ),
 					'capability' => $post_type_object->cap->edit_posts,
-					'id'         => "{$post_type}-all-items",
+					'id'         => "{$parent}{$post_type}-all-items",
 					'url'        => "edit.php?post_type={$post_type}",
 					'order'      => 10,
 				),
@@ -379,7 +357,7 @@ class Menu {
 				array(
 					'title'      => esc_attr( $post_type_object->labels->add_new ),
 					'capability' => $post_type_object->cap->create_posts,
-					'id'         => "{$post_type}-add-new",
+					'id'         => "{$parent}{$post_type}-add-new",
 					'url'        => "post-new.php?post_type={$post_type}",
 					'order'      => 20,
 				),
@@ -399,7 +377,11 @@ class Menu {
 
 		$items = CoreMenu::get_items();
 		foreach ( $items as $item ) {
-			self::add_item( $item );
+			if ( isset( $item['is_category'] ) && $item['is_category'] ) {
+				self::add_category( $item );
+			} else {
+				self::add_item( $item );
+			}
 		}
 	}
 
@@ -429,7 +411,7 @@ class Menu {
 
 			self::add_item(
 				array(
-					'parent'     => 'settings',
+					'parent'     => 'woocommerce-settings',
 					'title'      => $menu_item[0],
 					'capability' => $menu_item[1],
 					'id'         => sanitize_title( $menu_item[0] ),
