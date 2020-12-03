@@ -49,7 +49,7 @@
 
 		.components-guide__forward-button,
 		.components-guide__back-button {
-			color: var( --wp-admin-theme-color );
+			color: var(--wp-admin-theme-color);
 		}
 
 		.components-guide__forward-button,
@@ -58,12 +58,12 @@
 		}
 
 		.components-guide__forward-button {
-			box-shadow: inset 0 0 0 1px var( --wp-admin-theme-color );
+			box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
 			outline: 1px solid transparent;
 		}
 	}
 
 	.fill-theme-color {
-		fill: var( --wp-admin-theme-color );
+		fill: var(--wp-admin-theme-color);
 	}
 }
