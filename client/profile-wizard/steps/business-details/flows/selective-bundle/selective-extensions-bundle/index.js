@@ -168,17 +168,19 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 
 	if ( isInstallingActivating ) {
 		return (
-			<Text variant="caption" as="p">
-				{ sprintf(
-					_n(
-						'Installing the following plugin: %s',
-						'Installing the following plugins: %s',
-						extensions.length,
-						'woocommerce-admin'
-					),
-					extensionsList
-				) }
-			</Text>
+			<div className="woocommerce-profile-wizard__footnote">
+				<Text variant="caption" as="p">
+					{ sprintf(
+						_n(
+							'Installing the following plugin: %s',
+							'Installing the following plugins: %s',
+							extensions.length,
+							'woocommerce-admin'
+						),
+						extensionsList
+					) }
+				</Text>
+			</div>
 		);
 	}
 
@@ -323,6 +325,7 @@ export const SelectiveExtensionsBundle = ( {
 						onClick={ () => {
 							onSubmit( values );
 						} }
+						isBusy={ isInstallingActivating }
 						isPrimary
 					>
 						Continue

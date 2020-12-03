@@ -100,11 +100,13 @@ class BusinessDetails extends Component {
 
 		const { getCurrencyConfig } = this.context;
 
-		const {
-			// eslint-disable-next-line no-unused-vars
-			all_extensions_installed: _,
-			...businessExtensions
-		} = extensionInstallationOptions;
+		const businessExtensions = Object.keys(
+			extensionInstallationOptions
+		).filter(
+			( key ) =>
+				extensionInstallationOptions[ key ] &&
+				key !== 'install_extensions'
+		);
 
 		recordEvent( 'wcadmin_storeprofiler_store_business_features_continue', {
 			product_number: productCount,
@@ -117,16 +119,20 @@ class BusinessDetails extends Component {
 				extensionInstallationOptions
 			).every( ( val ) => val ),
 			install_woocommerce_services:
-				businessExtensions[ 'woocommerce-services' ],
+				extensionInstallationOptions[ 'woocommerce-services' ],
 			install_mailchimp:
-				businessExtensions[ 'mailchimp-for-woocommerce' ],
-			install_jetpack: businessExtensions.jetpack,
+				extensionInstallationOptions[ 'mailchimp-for-woocommerce' ],
+			install_jetpack: extensionInstallationOptions.jetpack,
 			install_google_ads:
-				businessExtensions[ 'kliken-marketing-for-google' ],
-			install_facebook: businessExtensions[ 'facebook-for-woocommerce' ],
-			install_wcpay: businessExtensions[ 'woocommerce-payments' ],
+				extensionInstallationOptions[ 'kliken-marketing-for-google' ],
+			install_facebook:
+				extensionInstallationOptions[ 'facebook-for-woocommerce' ],
+			install_wcpay:
+				extensionInstallationOptions[ 'woocommerce-payments' ],
 			install_creative_mail:
-				businessExtensions[ 'creative-mail-by-constant-contact' ],
+				extensionInstallationOptions[
+					'creative-mail-by-constant-contact'
+				],
 		} );
 
 		const _updates = {
@@ -136,9 +142,7 @@ class BusinessDetails extends Component {
 			product_count: productCount,
 			revenue,
 			selling_venues: sellingVenues,
-			business_extensions: Object.keys( businessExtensions ).filter(
-				( key ) => businessExtensions[ key ]
-			),
+			business_extensions: businessExtensions,
 		};
 
 		// Remove possible empty values like `revenue` and `other_platform`.
