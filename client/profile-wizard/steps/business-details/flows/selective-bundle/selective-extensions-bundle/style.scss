@@ -67,6 +67,10 @@
 		justify-content: center;
 		margin-top: 34px;
 		margin-bottom: 18px;
+
+		.fill-theme-color {
+			fill: var( --wp-admin-theme-color );
+		}
 	}
 
 	.woocommerce-profile-wizard__business-details__free-features__action {
