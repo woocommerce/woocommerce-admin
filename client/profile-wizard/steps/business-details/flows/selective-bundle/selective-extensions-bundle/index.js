@@ -9,7 +9,7 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { Link } from '@woocommerce/components';
-import { __, _n } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
 import { pluginNames } from '@woocommerce/data';
@@ -171,6 +171,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 			<div className="woocommerce-profile-wizard__footnote">
 				<Text variant="caption" as="p">
 					{ sprintf(
+						/* translators: %s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping */
 						_n(
 							'Installing the following plugin: %s',
 							'Installing the following plugins: %s',
@@ -198,9 +199,10 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 		<div className="woocommerce-profile-wizard__footnote">
 			<Text variant="caption" as="p">
 				{ sprintf(
+					/* translators: %s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping, %n: text: 'User accounts are required to use these features.'  */
 					_n(
-						'The following plugin will be installed for free: %s. %s',
-						'The following plugins will be installed for free: %s. %s',
+						'The following plugin will be installed for free: %s. %n',
+						'The following plugins will be installed for free: %s. %n',
 						extensions.length,
 						'woocommerce-admin'
 					),
