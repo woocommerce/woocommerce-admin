@@ -75,12 +75,6 @@ CustomerEffortScoreTracksContainer.propTypes = {
 
 export default compose(
 	withSelect( ( select ) => {
-		if (
-			window.wcAdminFeatures &&
-			window.wcAdminFeatures[ 'customer-effort-score-tracks' ] !== true
-		) {
-			return { queue: [], resolving: false };
-		}
 		const { getCesSurveyQueue, isResolving } = select( STORE_KEY );
 		const queue = getCesSurveyQueue();
 		const resolving = isResolving( 'getOption', [ QUEUE_OPTION_NAME ] );
