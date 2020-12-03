@@ -72,6 +72,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.7.3 12/03/2020 =
+
+- Fix: Don't show Store Setup link on home screen #5801
+
 = 1.7.2 11/19/2020 =
 
 - Fix: Load wc-tracks in the homepage notice admin script. #5638
