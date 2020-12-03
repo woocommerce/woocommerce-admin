@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ $# -lt 3 ]; then
-	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation] [-r, --reset]"
+	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
 	exit 1
 fi
 
@@ -11,17 +11,6 @@ DB_PASS=$3
 DB_HOST=${4-localhost}
 WP_VERSION=${5-latest}
 SKIP_DB_CREATE=${6-false}
-RESET_FLAG=false
-
-# get named arguments
-while [ $# -gt 0 ]; do
-  case "$1" in
-    -r|--reset)
-      RESET_FLAG=true
-      ;;
-  esac
-	shift
-done
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
@@ -120,9 +109,7 @@ install_test_suite() {
 	fi
 
 	# removes testing suite
-	if [ ${RESET_FLAG} = true ]; then
-		rm -rf $WP_TESTS_DIR
-	fi
+	rm -rf $WP_TESTS_DIR
 
 	# set up testing suite if it doesn't yet exist
 	if [ ! -d $WP_TESTS_DIR ]; then
@@ -168,9 +155,7 @@ install_db() {
 	fi
 
 	# drop existing database
-	if [ ${RESET_FLAG} = true ]; then
-		mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA || echo "Database $DB_NAME does not exist"
-	fi
+	mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA || echo "Database $DB_NAME does not exist"
 
 	# create database
 	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
@@ -189,10 +174,8 @@ install_deps() {
 	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 
 	# delete existing wp-config and woocommerce repository
-	if [ ${RESET_FLAG} = true ]; then
-		rm wp-config.php || echo "wp-config.php does not exist"
-		rm -rf wp-content/plugins/woocommerce || echo "wp-content/plugins/woocommerce does not exist"
-	fi
+	rm wp-config.php || echo "wp-config.php does not exist"
+	rm -rf wp-content/plugins/woocommerce || echo "wp-content/plugins/woocommerce does not exist"
 
 	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --dbhost=$DB_HOST --dbprefix=wptests_
 	php wp-cli.phar core install --url="$WP_SITE_URL" --title="Example" --admin_user=admin --admin_password=password --admin_email=info@example.com --path=$WP_CORE_DIR --skip-email
