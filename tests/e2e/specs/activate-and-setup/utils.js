@@ -25,6 +25,13 @@ export async function setCheckboxToChecked( checkbox ) {
 	await checkbox.click();
 }
 
+export async function getElementByText( element, text ) {
+	const els = await page.$x(
+		`//${ element }[contains(text(), '${ text }')]`
+	);
+	return els[ 0 ];
+}
+
 export async function setCheckboxToUnchecked( checkbox ) {
 	const checkedProperty = await checkbox.getProperty( 'checked' );
 	const checked = await checkedProperty.jsonValue();
