@@ -5,7 +5,7 @@
 /**
  * Internal dependencies
  */
-import { clickContinue, setCheckboxToChecked, getText } from './utils';
+import { clickContinue, getElementByText } from './utils';
 import { waitForElementCount } from '../../utils/lib';
 const config = require( 'config' );
 
@@ -17,28 +17,18 @@ export async function completeIndustrySection( expectedIndustryCount = 8 ) {
 		expectedIndustryCount
 	);
 
-	const industryCheckboxes = await page.$$(
-		'.components-checkbox-control__input'
+	// Select just "fashion" and "health/beauty" to get the single checkbox business section
+	const fashionLabel = await getElementByText(
+		'label',
+		'Fashion, apparel, and accessories'
 	);
+	await fashionLabel.click();
 
-	const industryLabels = await page.$$(
-		'.components-checkbox-control__label'
+	const healthBeautyLabel = await getElementByText(
+		'label',
+		'Health and beauty'
 	);
-
-	// Select all industries except for CBD to fulfill conditions required by business section tests.
-	for ( let i = 0; i < expectedIndustryCount; i++ ) {
-		const labelText = await getText( industryLabels[ i ] );
-
-		if ( ! labelText.includes( 'CBD' ) ) {
-			await setCheckboxToChecked( industryCheckboxes[ i ] );
-		}
-	}
-
-	// Fill "Other" industry
-	await expect( page ).toFill(
-		'.components-text-control__input',
-		config.get( 'onboardingwizard.industry' )
-	);
+	await healthBeautyLabel.click();
 
 	await clickContinue();
 }
