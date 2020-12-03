@@ -184,14 +184,15 @@ class Menu {
 	 *
 	 * @param array $args Array containing the necessary arguments.
 	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'parent'     => (string) Parent menu item ID.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'order'      => (int) Menu item order.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'menuId'     => (string) The ID of the menu to add the item to.
+	 *      'id'              => (string) The unique ID of the menu item. Required.
+	 *      'title'           => (string) Title of the menu item. Required.
+	 *      'parent'          => (string) Parent menu item ID.
+	 *      'capability'      => (string) Capability to view this menu item.
+	 *      'url'             => (string) URL or callback to be used. Required.
+	 *      'order'           => (int) Menu item order.
+	 *      'migrate'         => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'menuId'          => (string) The ID of the menu to add the item to.
+	 *      'matchExpression' => (string) A regular expression used to identify if the menu item is active.
 	 *    ).
 	 */
 	private static function add_item( $args ) {
@@ -288,13 +289,14 @@ class Menu {
 	 *
 	 * @param array $args Array containing the necessary arguments.
 	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'parent'     => (string) Parent menu item ID.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'order'      => (int) Menu item order.
+	 *      'id'              => (string) The unique ID of the menu item. Required.
+	 *      'title'           => (string) Title of the menu item. Required.
+	 *      'parent'          => (string) Parent menu item ID.
+	 *      'capability'      => (string) Capability to view this menu item.
+	 *      'url'             => (string) URL or callback to be used. Required.
+	 *      'migrate'         => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'order'           => (int) Menu item order.
+	 *      'matchExpression' => (string) A regular expression used to identify if the menu item is active.
 	 *    ).
 	 */
 	public static function add_plugin_item( $args ) {
