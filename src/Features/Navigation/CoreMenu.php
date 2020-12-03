@@ -185,6 +185,14 @@ class CoreMenu {
 				$product_items['all'],
 				array_merge( $product_cat_items['default'], array( 'order' => 20 ) ),
 				array_merge( $product_tag_items['default'], array( 'order' => 30 ) ),
+				array(
+					'id'         => 'woocommerce-product-attributes',
+					'title'      => __( 'Attributes', 'woocommerce-admin' ),
+					'url'        => 'edit.php?post_type=product&page=product_attributes',
+					'capability' => 'manage_product_terms',
+					'order'      => 40,
+					'parent'     => 'woocommerce-products',
+				),
 				array_merge( $product_items['new'], array( 'order' => 50 ) ),
 				$coupon_items['default'],
 				// Marketplace category.
