@@ -645,6 +645,21 @@ class Onboarding {
 	}
 
 	/**
+	 * Determine if the current page is home or setup wizard.
+	 *
+	 * @return bool
+	 */
+	protected function is_home_or_setup_wizard_page() {
+		$allowed_paths = array( 'wc-admin', 'wc-admin&path=/setup-wizard' );
+		$current_page  = PageController::get_instance()->get_current_page();
+		if ( ! $current_page ) {
+			return false;
+		}
+
+		return in_array( $current_page['path'], $allowed_paths );
+	}
+
+	/**
 	 * Add profiler items to component settings.
 	 *
 	 * @param array $settings Component settings.
@@ -662,7 +677,7 @@ class Onboarding {
 		if (
 			( ! self::should_show_profiler() && ! self::should_show_tasks()
 			||
-			! PageController::get_instance()->get_current_page()
+			! $this->is_home_or_setup_wizard_page()
 		)
 		) {
 			return $settings;
