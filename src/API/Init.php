@@ -64,6 +64,7 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\Orders',
 			'Automattic\WooCommerce\Admin\API\Products',
 			'Automattic\WooCommerce\Admin\API\ProductAttributes',
+			'Automattic\WooCommerce\Admin\API\ProductAttributeTerms',
 			'Automattic\WooCommerce\Admin\API\ProductCategories',
 			'Automattic\WooCommerce\Admin\API\ProductVariations',
 			'Automattic\WooCommerce\Admin\API\ProductReviews',
