@@ -64,7 +64,7 @@ class CoreMenu {
 			);
 		}
 
-		return $menu_items;
+		return apply_filters( 'woocommerce_navigation_setting_items', $menu_items, $settings );
 	}
 
 	/**
