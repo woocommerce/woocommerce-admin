@@ -33,6 +33,29 @@ export class TaskDashboard extends Component {
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 	}
 
+	trackStartedTask = ( taskName ) => {
+		const { trackedStartedTasks, updateOptions } = this.props;
+		const taskStarted = trackedStartedTasks.filter(
+			( task ) => task === taskName
+		);
+		if ( taskStarted.length > 1 ) {
+			return;
+		}
+		updateOptions( {
+			woocommerce_task_list_tracked_started_tasks: [
+				...trackedStartedTasks,
+				taskName,
+			],
+		} );
+	};
+
+	onTaskSelect = ( taskName ) => {
+		recordEvent( 'tasklist_click', {
+			task_name: taskName,
+		} );
+		this.trackStartedTask( taskName );
+	};
+
 	getAllTasks() {
 		const {
 			activePlugins,
@@ -57,6 +80,7 @@ export class TaskDashboard extends Component {
 			profileItems,
 			query,
 			toggleCartModal: this.toggleCartModal.bind( this ),
+			onTaskSelect: this.onTaskSelect,
 		} );
 	}
 
@@ -132,6 +156,12 @@ export default compose(
 			isJetpackConnected,
 		} = select( PLUGINS_STORE_NAME );
 		const profileItems = getProfileItems();
+
+		const trackedCompletedTasks =
+			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
+		const trackedStartedTasks =
+			getOption( 'woocommerce_task_list_tracked_started_tasks' ) || [];
+
 		const { general: generalSettings = {} } = getSettings( 'general' );
 		const countryCode = getCountryCode(
 			generalSettings.woocommerce_default_country
@@ -162,6 +192,8 @@ export default compose(
 			trackedCompletedTasks:
 				getOption( 'woocommerce_task_list_tracked_completed_tasks' ) ||
 				[],
+			trackedCompletedTasks,
+			trackedStartedTasks,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

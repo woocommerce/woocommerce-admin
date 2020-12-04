@@ -583,7 +583,7 @@ class Onboarding {
 			$files     = new \RegexIterator( $iterator, '/^.+\.php$/i', \RecursiveRegexIterator::GET_MATCH );
 
 			foreach ( $files as $file ) {
-				$content = file_get_contents( $file[0] );
+				$content = file_get_contents( $file[0] ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 				if ( preg_match( '/add_theme_support\(([^(]*)(\'|\")woocommerce(\'|\")([^(]*)/si', $content, $matches ) ) {
 					return true;
 				}
@@ -737,6 +737,8 @@ class Onboarding {
 		$options[] = 'woocommerce_woocommerce_payments_settings';
 		$options[] = 'woocommerce_eway_settings';
 		$options[] = 'woocommerce_razorpay_settings';
+		$options[] = 'woocommerce_help_panel_highlight_shown';
+		$options[] = 'woocommerce_task_list_tracked_started_tasks';
 
 		return $options;
 	}
@@ -996,7 +998,7 @@ class Onboarding {
 			$connect_url = \Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-onboarding' );
 			$connect_url = add_query_arg( array( 'calypso_env' => $calypso_env ), $connect_url );
 
-			wp_redirect( $connect_url );
+			wp_save_redirect( $connect_url );
 			exit;
 		}
 
@@ -1039,7 +1041,7 @@ class Onboarding {
 
 			$connect_url = add_query_arg( array( 'calypso_env' => $calypso_env ), $connect_url );
 
-			wp_redirect( $connect_url );
+			wp_save_redirect( $connect_url );
 			exit;
 		}
 	}

@@ -26,6 +26,7 @@ import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
 import { DisplayOptions } from './display-options';
+import { HighlightTooltipUncontrolled } from './highlight-tooltip';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -277,14 +278,34 @@ export class ActivityPanel extends Component {
 		}
 	}
 
+	closedHelpPanelHighlight() {
+		const { updateOptions } = this.props;
+		updateOptions( {
+			woocommerce_help_panel_highlight_shown: 'yes',
+		} );
+	}
+
 	render() {
 		const tabs = this.getTabs();
 		const { mobileOpen, currentTab, isPanelOpen } = this.state;
+		const {
+			trackedCompletedTasks,
+			trackedStartedTasks,
+			helpPanelHighlightShown,
+			query,
+		} = this.props;
+		const { task } = query;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
 			'is-mobile-open': this.state.mobileOpen,
 		} );
 
+		const showHelpHighlight =
+			task &&
+			helpPanelHighlightShown !== 'yes' &&
+			( trackedStartedTasks || [] ).filter( ( t ) => t === task ).length >
+				1 &&
+			! trackedCompletedTasks.includes( task );
 		const hasUnread = tabs.some( ( tab ) => tab.unread );
 		const viewLabel = hasUnread
 			? __(
@@ -338,6 +359,14 @@ export class ActivityPanel extends Component {
 						{ this.renderPanel() }
 					</div>
 				</Section>
+				{ showHelpHighlight ? (
+					<HighlightTooltipUncontrolled
+						show={ true }
+						title="test"
+						id="activity-panel-tab-help"
+						onClose={ () => this.closedHelpPanelHighlight() }
+					/>
+				) : null }
 			</div>
 		);
 	}
@@ -359,12 +388,24 @@ export default compose(
 		const requestingTaskListOptions =
 			isResolving( 'getOption', [ 'woocommerce_task_list_complete' ] ) ||
 			isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] );
+		const trackedCompletedTasks = getOption(
+			'woocommerce_task_list_tracked_completed_tasks'
+		);
+		const trackedStartedTasks = getOption(
+			'woocommerce_task_list_tracked_started_tasks'
+		);
+		const helpPanelHighlightShown = getOption(
+			'woocommerce_help_panel_highlight_shown'
+		);
 
 		return {
 			hasUnreadNotes,
 			requestingTaskListOptions,
 			taskListComplete,
 			taskListHidden,
+			trackedCompletedTasks,
+			trackedStartedTasks,
+			helpPanelHighlightShown,
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
