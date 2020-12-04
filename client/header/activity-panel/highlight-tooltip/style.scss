@@ -1,0 +1,36 @@
+.highlight-tooltip__container {
+	position: absolute;
+	width: 0;
+	height: 0;
+	&.highlight-tooltip__show {
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+.highlight-tooltip__portal {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	.highlight-tooltip__highlighter {
+		left: 7%;
+		top: 5%;
+		width: 86%;
+		height: 90%;
+		position: absolute;
+		z-index: 1;
+		box-shadow: 0 0 0 100vw rgba(0, 0, 0, 0.7);
+		transition: box-shadow 0.2s ease-in-out;
+		border-radius: 50%;
+	}
+
+	.highlight-tooltip__overlay {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: z-index('.components-modal__screen-overlay');
+	}
+}
