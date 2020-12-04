@@ -4,24 +4,6 @@
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
- * Get the params from a location as a key/value pair object.
- *
- * @param {Object} location Window location
- * @return {Object} Params
- */
-export const getParams = ( location ) => {
-	const params = {};
-	if ( location.search ) {
-		new URLSearchParams( location.search.substring( 1 ) ).forEach(
-			( value, key ) => {
-				params[ key ] = value;
-			}
-		);
-	}
-	return params;
-};
-
-/**
  * Get the full URL if a relative path is passed.
  *
  * @param {string} url URL
@@ -57,7 +39,8 @@ export const isMatch = ( location, itemUrl, itemExpression = null ) => {
 	const fullUrl = getFullUrl( itemUrl );
 	const { href } = location;
 
-	const defaultExpression = '^' + fullUrl.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
+	const defaultExpression =
+		'^' + fullUrl.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
 	const regexp = new RegExp( itemExpression || defaultExpression );
 	return Boolean( decodeURIComponent( href ).match( regexp ) );
 };
@@ -113,7 +96,13 @@ export const getMatchingItem = ( items ) => {
 	let matchedItem = null;
 
 	items.forEach( ( item ) => {
-		if ( isMatch( window.location, getAdminLink( item.url ), item.matchExpression ) ) {
+		if (
+			isMatch(
+				window.location,
+				getAdminLink( item.url ),
+				item.matchExpression
+			)
+		) {
 			matchedItem = item;
 		}
 	} );
