@@ -555,4 +555,62 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 		$this->assertFalse( 'FL' === $reports[0]['state'] );
 		$this->assertFalse( '54321' === $reports[0]['postcode'] );
 	}
+
+	/**
+	 * Test sync order update with customer latest order info.
+	 */
+	public function test_sync_latest_order_customer_with_multiple_customers() {
+		wp_set_current_user( $this->user );
+
+		$order = WC_Helper_Order::create_order( 0 );
+		$order->set_status( 'completed' );
+		$order->set_total( 100 );
+		$order->save();
+		$order2 = WC_Helper_Order::create_order( 0 );
+		$order2->set_status( 'completed' );
+		$order2->set_total( 100 );
+		$order2->save();
+		$order3 = WC_Helper_Order::create_order( 0 );
+		$order3->set_status( 'completed' );
+		$order3->set_total( 100 );
+		$order3->set_billing_email( 'different@example.org' );
+		$order3->save();
+
+		WC_Helper_Queue::run_all_pending();
+
+		$customer_id  = CustomersDataStore::get_existing_customer_id_from_order( $order );
+		$customer2_id = CustomersDataStore::get_existing_customer_id_from_order( $order2 );
+		$customer3_id = CustomersDataStore::get_existing_customer_id_from_order( $order3 );
+		$this->assertEquals( $customer_id, $customer2_id );
+		$this->assertNotEquals( $customer_id, $customer3_id );
+		// update order info.
+		$order3->set_billing_city( 'Random' );
+		$order3->set_billing_state( 'FL' );
+		$order3->set_billing_postcode( '54321' );
+		$order3->save();
+
+		WC_Helper_Queue::run_all_pending();
+
+		$result = CustomersDataStore::sync_order_customer( $order3->get_id() );
+
+		WC_Helper_Queue::run_all_pending();
+
+		// Didn't update anything.
+		$this->assertEquals( -1, $result );
+		$request  = new WP_REST_Request( 'GET', $this->endpoint );
+		$response = $this->server->dispatch( $request );
+		$reports  = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		// First customer.
+		$this->assertEquals( 'admin@example.org', $reports[0]['email'] );
+		$this->assertNotEquals( 'Random', $reports[0]['city'] );
+		$this->assertNotEquals( 'FL', $reports[0]['state'] );
+		$this->assertNotEquals( '54321', $reports[0]['postcode'] );
+		// Latest customer that should be updated.
+		$this->assertEquals( 'different@example.org', $reports[1]['email'] );
+		$this->assertEquals( 'Random', $reports[1]['city'] );
+		$this->assertEquals( 'FL', $reports[1]['state'] );
+		$this->assertEquals( '54321', $reports[1]['postcode'] );
+	}
 }
