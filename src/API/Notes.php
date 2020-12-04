@@ -403,6 +403,44 @@ class Notes extends \WC_REST_CRUD_Controller {
 	}
 
 	/**
+	 * Parses query to create nonces when available.
+	 *
+	 * @param string $query The query string to parse.
+	 * @return string $parsed_query The parsed query string with nonces attached.
+	 */
+	public function prepare_query_with_nonce( $query ) {
+		$url_parts = ! empty( $query ) ? wp_parse_url( $query ) : '';
+
+		if ( ! isset( $url_parts['query'] ) ) {
+			return $query;
+		}
+
+		wp_parse_str( $url_parts['query'], $params );
+
+		if ( array_key_exists( '_nonce_action', $params ) && array_key_exists( '_nonce_name', $params ) ) {
+			$_params = $params;
+
+			unset( $_params['_nonce_action'] );
+			unset( $_params['_nonce_name'] );
+
+			$url = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'];
+
+			$parsed_query = wp_nonce_url(
+				add_query_arg(
+					$_params,
+					$url
+				),
+				$params['_nonce_action'],
+				$params['_nonce_name']
+			);
+
+			return html_entity_decode( $parsed_query );
+		}
+
+		return $query;
+	}
+
+	/**
 	 * Prepare a note object for serialization.
 	 *
 	 * @param array           $data Note data.
@@ -422,7 +460,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$data['is_deleted']        = (bool) $data['is_deleted'];
 		foreach ( (array) $data['actions'] as $key => $value ) {
 			$data['actions'][ $key ]->label  = stripslashes( $data['actions'][ $key ]->label );
-			$data['actions'][ $key ]->url    = $this->prepare_query_for_response( $data['actions'][ $key ]->query );
+			$data['actions'][ $key ]->url    = $this->prepare_query_for_response( $this->prepare_query_with_nonce( $data['actions'][ $key ]->query ) );
 			$data['actions'][ $key ]->status = stripslashes( $data['actions'][ $key ]->status );
 		}
 		$data = $this->filter_response_by_context( $data, $context );
