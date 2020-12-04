@@ -26,7 +26,7 @@ import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
 import { DisplayOptions } from './display-options';
-import { HighlightTooltipUncontrolled } from './highlight-tooltip';
+import { HighlightTooltip } from './highlight-tooltip';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -360,9 +360,11 @@ export class ActivityPanel extends Component {
 					</div>
 				</Section>
 				{ showHelpHighlight ? (
-					<HighlightTooltipUncontrolled
-						show={ true }
-						title="test"
+					<HighlightTooltip
+						delay={ 500 }
+						title="We're here for help"
+						content="If you have any questions, feel free to explore the WooCommerce docs listed here."
+						closeBtnText="Got it"
 						id="activity-panel-tab-help"
 						onClose={ () => this.closedHelpPanelHighlight() }
 					/>

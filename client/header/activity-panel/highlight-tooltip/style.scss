@@ -34,3 +34,15 @@
 		z-index: z-index('.components-modal__screen-overlay');
 	}
 }
+
+.highlight-tooltip__popover {
+	.components-card__header {
+		.components-button {
+			position: absolute;
+			right: 10px;
+		}
+	}
+	.components-card__footer {
+		justify-content: flex-end;
+	}
+}
