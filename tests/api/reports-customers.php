@@ -602,15 +602,17 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 		$reports  = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
+		$first_customer_index  = array_search( 'admin@example.org', array_column( $reports, 'email' ), true );
+		$second_customer_index = array_search( 'different@example.org', array_column( $reports, 'email' ), true );
 		// First customer.
-		$this->assertEquals( 'admin@example.org', $reports[0]['email'] );
-		$this->assertNotEquals( 'Random', $reports[0]['city'] );
-		$this->assertNotEquals( 'FL', $reports[0]['state'] );
-		$this->assertNotEquals( '54321', $reports[0]['postcode'] );
+		$this->assertEquals( 'admin@example.org', $reports[ $first_customer_index ]['email'] );
+		$this->assertNotEquals( 'Random', $reports[ $first_customer_index ]['city'] );
+		$this->assertNotEquals( 'FL', $reports[ $first_customer_index ]['state'] );
+		$this->assertNotEquals( '54321', $reports[ $first_customer_index ]['postcode'] );
 		// Latest customer that should be updated.
-		$this->assertEquals( 'different@example.org', $reports[1]['email'] );
-		$this->assertEquals( 'Random', $reports[1]['city'] );
-		$this->assertEquals( 'FL', $reports[1]['state'] );
-		$this->assertEquals( '54321', $reports[1]['postcode'] );
+		$this->assertEquals( 'different@example.org', $reports[ $second_customer_index ]['email'] );
+		$this->assertEquals( 'Random', $reports[ $second_customer_index ]['city'] );
+		$this->assertEquals( 'FL', $reports[ $second_customer_index ]['state'] );
+		$this->assertEquals( '54321', $reports[ $second_customer_index ]['postcode'] );
 	}
 }
