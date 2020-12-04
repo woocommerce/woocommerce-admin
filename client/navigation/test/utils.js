@@ -10,8 +10,7 @@ import {
 	addHistoryListener,
 	getFullUrl,
 	getMatchingItem,
-	getMatchScore,
-	getParams,
+	isMatch,
 } from '../utils';
 
 const originalLocation = window.location;
@@ -83,7 +82,7 @@ describe( 'getMatchingItem', () => {
 	} );
 } );
 
-describe( 'getMatchScore', () => {
+describe( 'isMatch', () => {
 	beforeAll( () => {
 		delete window.location;
 		window.location = new URL( getAdminLink( '/' ) );
@@ -93,57 +92,59 @@ describe( 'getMatchScore', () => {
 		window.location = originalLocation;
 	} );
 
-	it( 'should return the largest integer for an exact match', () => {
+	it( 'should retur true if the URL is the same', () => {
 		expect(
-			getMatchScore(
+			isMatch(
 				new URL( getAdminLink( 'admin.php?page=testpage' ) ),
 				getAdminLink( 'admin.php?page=testpage' )
 			)
-		).toBe( Number.MAX_SAFE_INTEGER );
+		).toBe( true );
 	} );
 
-	it( 'should return the largest integer for an exact match with a partial URL', () => {
+	it( 'should return true if the URL starts with the same string', () => {
 		expect(
-			getMatchScore(
-				new URL( getFullUrl( '/wp-admin/admin.php?page=testpage' ) ),
+			isMatch(
+				new URL(
+					getFullUrl(
+						'/wp-admin/admin.php?page=testpage&extra_param=a'
+					)
+				),
 				'/wp-admin/admin.php?page=testpage'
 			)
-		).toBe( Number.MAX_SAFE_INTEGER );
+		).toBe( true );
 	} );
 
-	it( 'should return the largest integer - 1 for an exact match without a hash', () => {
+	it( 'should return false if the URL is not the same', () => {
 		expect(
-			getMatchScore(
-				new URL( getAdminLink( 'admin.php?page=testpage#hash' ) ),
+			isMatch(
+				new URL( getAdminLink( 'admin.php?page=different-page' ) ),
 				getAdminLink( 'admin.php?page=testpage' )
 			)
-		).toBe( Number.MAX_SAFE_INTEGER - 1 );
+		).toBe( false );
 	} );
 
-	it( 'should return a score equal to the number of arguments matched', () => {
+	it( 'should return true for a location matching the expression', () => {
 		expect(
-			getMatchScore(
+			isMatch(
 				new URL(
-					getAdminLink(
-						'admin.php?page=testpage&param1=a&param2=b&param3=c'
-					)
+					getAdminLink( 'admin.php?page=different-page&param1=a' )
 				),
-				getAdminLink( 'admin.php?page=testpage&param1=a&param2=b' )
+				getAdminLink( 'admin.php?page=testpage' ),
+				'param1=a'
 			)
-		).toBe( 3 );
+		).toBe( true );
 	} );
 
-	it( "should return 0 for paths that don't match", () => {
+	it( 'should return false for a location not matching the expression', () => {
 		expect(
-			getMatchScore(
+			isMatch(
 				new URL(
-					getAdminLink(
-						'admin.php?page=testpage&param1=a&param2=b&param3=c'
-					)
+					getAdminLink( 'admin.php?page=different-page&param1=b' )
 				),
-				getAdminLink( 'plugins.php?page=testpage&param1=a&param2=b' )
+				getAdminLink( 'admin.php?page=testpage' ),
+				'param1=a'
 			)
-		).toBe( 0 );
+		).toBe( false );
 	} );
 } );
 
@@ -169,18 +170,6 @@ describe( 'getFullUrl', () => {
 		expect( getFullUrl( getAdminLink( 'admin.php?page=testpage' ) ) ).toBe(
 			getAdminLink( 'admin.php?page=testpage' )
 		);
-	} );
-} );
-
-describe( 'getParams', () => {
-	it( 'should get the params from a location', () => {
-		const location = new URL(
-			getAdminLink( 'admin.php?page=testpage&param1=a' )
-		);
-		const params = getParams( location );
-		expect( Object.keys( params ).length ).toBe( 2 );
-		expect( params.page ).toBe( 'testpage' );
-		expect( params.param1 ).toBe( 'a' );
 	} );
 } );
 
