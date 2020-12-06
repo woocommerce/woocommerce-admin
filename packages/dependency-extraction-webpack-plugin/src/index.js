@@ -19,10 +19,16 @@ function camelCaseDash( string ) {
 
 const wooRequestToExternal = ( request ) => {
 	if ( packages.includes( request ) ) {
-		return [
-			'wc',
-			camelCaseDash( request.substring( WOOCOMMERCE_NAMESPACE.length ) ),
-		];
+		const handle = request.substring( WOOCOMMERCE_NAMESPACE.length );
+		const irregularExternalMap = {
+			'blocks-registry': [ 'wc', 'wcBlocksRegistry' ],
+		};
+
+		if ( irregularExternalMap[ handle ] ) {
+			return irregularExternalMap[ handle ];
+		}
+
+		return [ 'wc', camelCaseDash( handle ) ];
 	}
 };
 
