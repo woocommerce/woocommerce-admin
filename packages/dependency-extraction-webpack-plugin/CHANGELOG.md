@@ -1,6 +1,6 @@
 # 1.1.0
 
--   Fix: Handle csv-export and data packages as they don't conform to a pattern.
+-   Fix: Handle irregular package names that don't conform to a pattern.
 
 # 1.0.1
 

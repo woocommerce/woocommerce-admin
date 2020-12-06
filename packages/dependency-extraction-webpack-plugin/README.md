@@ -26,8 +26,9 @@ module.exports = {
 
 Additional module requests on top of Wordpress [Dependency Extraction Webpack Plugin](https://github.com/WordPress/gutenberg/tree/master/packages/dependency-extraction-webpack-plugin) are:
 
-| Request                   | Global            | Script handle   |
-| ------------------------- | ----------------- | --------------- |
-| `@woocommerce/data`       | `wc['data']`      | `wc-store-data` |
-| `@woocommerce/csv-export` | `wc['csvExport']` | `wc-csv`        |
-| `@woocommerce/*`          | `wc['*']`         | `wc-*`          |
+| Request                        | Global                   | Script handle        |
+| ------------------------------ | ------------------------ | -------------------- |
+| `@woocommerce/data`            | `wc['data']`             | `wc-store-data`      |
+| `@woocommerce/csv-export`      | `wc['csvExport']`        | `wc-csv`             |
+| `@woocommerce/blocks-registry` | `wc['wcBlocksRegistry']` | `wc-blocks-registry` |
+| `@woocommerce/*`               | `wc['*']`                | `wc-*`               |
