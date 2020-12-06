@@ -509,7 +509,7 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 		$params['customer_type']      = array(
-			'description'       => __( 'Limit result set to items that don\'t have the specified coupon(s) assigned.', 'woocommerce-admin' ),
+			'description'       => __( 'Limit result set to orders that have the specified customer_type', 'woocommerce-admin' ),
 			'type'              => 'string',
 			'enum'              => array(
 				'new',
