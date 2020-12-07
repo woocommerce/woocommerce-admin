@@ -300,7 +300,7 @@ export class ActivityPanel extends Component {
 			'is-mobile-open': this.state.mobileOpen,
 		} );
 
-		const showHelpHighlight =
+		const showHelpHighlightTooltip =
 			task &&
 			helpPanelHighlightShown !== 'yes' &&
 			( trackedStartedTasks || [] ).filter( ( t ) => t === task ).length >
@@ -359,12 +359,14 @@ export class ActivityPanel extends Component {
 						{ this.renderPanel() }
 					</div>
 				</Section>
-				{ showHelpHighlight ? (
+				{ showHelpHighlightTooltip ? (
 					<HighlightTooltip
-						delay={ 500 }
-						title="We're here for help"
-						content="If you have any questions, feel free to explore the WooCommerce docs listed here."
-						closeBtnText="Got it"
+						delay={ 1000 }
+						title={ __( "We're here for help" ) }
+						content={ __(
+							'If you have any questions, feel free to explore the WooCommerce docs listed here.'
+						) }
+						closeBtnText={ __( 'Got it' ) }
 						id="activity-panel-tab-help"
 						onClose={ () => this.closedHelpPanelHighlight() }
 					/>

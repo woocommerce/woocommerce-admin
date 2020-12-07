@@ -20,6 +20,10 @@ jest.mock( '../display-options', () => ( {
 	DisplayOptions: jest.fn().mockReturnValue( '[DisplayOptions]' ),
 } ) );
 
+jest.mock( '../highlight-tooltip', () => ( {
+	HighlightTooltip: jest.fn().mockReturnValue( '[HighlightTooltip]' ),
+} ) );
+
 describe( 'Activity Panel', () => {
 	it( 'should render inbox tab on embedded pages', () => {
 		render( <ActivityPanel isEmbedded query={ {} } /> );
@@ -192,5 +196,73 @@ describe( 'Activity Panel', () => {
 		);
 
 		expect( queryByText( 'Store Setup' ) ).toBeDefined();
+	} );
+
+	describe( 'help panel tooltip', () => {
+		it( 'should render highlight tooltip when trackedStartedTasks includes task, task is not completed, and tooltip not shown yet', () => {
+			const { queryByText } = render(
+				<ActivityPanel
+					requestingTaskListOptions={ false }
+					taskListComplete={ false }
+					taskListHidden={ false }
+					trackedStartedTasks={ [ 'payment', 'payment' ] }
+					trackedCompletedTasks={ [] }
+					helpPanelHighlightShown="no"
+					isEmbedded
+					query={ { task: 'payment' } }
+				/>
+			);
+
+			expect( queryByText( '[HighlightTooltip]' ) ).toBeDefined();
+		} );
+
+		it( 'should not render highlight tooltip when trackedStartedTasks does not include task more then once', () => {
+			const { queryByText } = render(
+				<ActivityPanel
+					requestingTaskListOptions={ false }
+					taskListComplete={ false }
+					taskListHidden={ false }
+					trackedStartedTasks={ [ 'payment' ] }
+					trackedCompletedTasks={ [] }
+					isEmbedded
+					query={ { task: 'payment' } }
+				/>
+			);
+
+			expect( queryByText( '[HighlightTooltip]' ) ).toBeNull();
+		} );
+
+		it( 'should not render highlight tooltip when trackedStartedTasks is included twice, but completed already', () => {
+			const { queryByText } = render(
+				<ActivityPanel
+					requestingTaskListOptions={ false }
+					taskListComplete={ false }
+					taskListHidden={ false }
+					trackedStartedTasks={ [ 'payment', 'payment' ] }
+					trackedCompletedTasks={ [ 'payment' ] }
+					isEmbedded
+					query={ { task: 'payment' } }
+				/>
+			);
+
+			expect( queryByText( '[HighlightTooltip]' ) ).toBeNull();
+		} );
+
+		it( 'should not render highlight tooltip when trackedStartedTasks is included twice, not completed, but already shown', () => {
+			const { queryByText } = render(
+				<ActivityPanel
+					requestingTaskListOptions={ false }
+					taskListComplete={ false }
+					taskListHidden={ false }
+					trackedStartedTasks={ [ 'payment', 'payment' ] }
+					trackedCompletedTasks={ [ 'payment' ] }
+					helpPanelHighlightShown="yes"
+					isEmbedded
+					query={ { task: 'payment' } }
+				/>
+			);
+
+			expect( queryByText( '[HighlightTooltip]' ) ).toBeNull();
+		} );
 	} );
 } );

@@ -2,6 +2,7 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
+import { __ } from '@wordpress/i18n';
 import {
 	Popover,
 	Card,
@@ -87,16 +88,19 @@ function HighlightTooltip( {
 			{ showHighlight ? (
 				<>
 					<IsolatedEventContainer className="highlight-tooltip__overlay" />
-					<div className="highlight-tooltip__highlighter"></div>
-					<Popover className="highlight-tooltip__popover">
+					<Popover
+						className="highlight-tooltip__popover"
+						noArrow={ false }
+						focusOnMount="container"
+					>
 						<Card
-							size="small"
+							size="medium"
 							className="woocommerce-task-card woocommerce-homescreen-card"
 						>
-							<CardHeader size="small">
+							<CardHeader>
 								{ title }
 								<Button
-									size="small"
+									isSmall
 									onClick={ triggerClose }
 									icon={ close }
 								/>
@@ -108,7 +112,7 @@ function HighlightTooltip( {
 									isPrimary
 									onClick={ triggerClose }
 								>
-									{ closeBtnText }
+									{ closeBtnText || __( 'Close' ) }
 								</Button>
 							</CardFooter>
 						</Card>
