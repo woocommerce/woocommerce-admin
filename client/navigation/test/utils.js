@@ -81,6 +81,26 @@ describe( 'getMatchingItem', () => {
 		const matchingItem = getMatchingItem( sampleMenuItems );
 		expect( matchingItem.id ).toBe( 'multiple-args' );
 	} );
+
+	it( 'should match an item with irrelevant query parameters', () => {
+		window.location = new URL(
+			getAdminLink(
+				'admin.php?page=wc-admin&path=/test-path&section=section-name&foo=bar'
+			)
+		);
+		const matchingItem = getMatchingItem( sampleMenuItems );
+		expect( matchingItem.id ).toBe( 'multiple-args' );
+	} );
+
+	it( 'should match an item with query parameters in mixed order', () => {
+		window.location = new URL(
+			getAdminLink(
+				'admin.php?foo=bar&page=wc-admin&path=/test-path&section=section-name'
+			)
+		);
+		const matchingItem = getMatchingItem( sampleMenuItems );
+		expect( matchingItem.id ).toBe( 'multiple-args' );
+	} );
 } );
 
 describe( 'getDefaultMatchExpression', () => {
