@@ -328,12 +328,7 @@ export class ActivityPanel extends Component {
 			'is-mobile-open': this.state.mobileOpen,
 		} );
 
-		const showHelpHighlightTooltip =
-			task &&
-			helpPanelHighlightShown !== 'yes' &&
-			( trackedStartedTasks || [] ).filter( ( t ) => t === task ).length >
-				1 &&
-			! trackedCompletedTasks.includes( task );
+		const showHelpHighlightTooltip = this.shouldShowHelpTooltip();
 		const hasUnread = tabs.some( ( tab ) => tab.unread );
 		const viewLabel = hasUnread
 			? __(
