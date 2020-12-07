@@ -550,10 +550,11 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 		$response = $this->server->dispatch( $request );
 		$reports  = $response->get_data();
 
+		$customer_index = array_search( 'admin@example.org', array_column( $reports, 'email' ), true );
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertFalse( 'Random' === $reports[0]['city'] );
-		$this->assertFalse( 'FL' === $reports[0]['state'] );
-		$this->assertFalse( '54321' === $reports[0]['postcode'] );
+		$this->assertNotEquals( 'Random', $reports[ $customer_index ]['city'] );
+		$this->assertNotEquals( 'FL', $reports[ $customer_index ]['state'] );
+		$this->assertNotEquals( '54321', $reports[ $customer_index ]['postcode'] );
 	}
 
 	/**
@@ -614,5 +615,45 @@ class WC_Tests_API_Reports_Customers extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 'Random', $reports[ $second_customer_index ]['city'] );
 		$this->assertEquals( 'FL', $reports[ $second_customer_index ]['state'] );
 		$this->assertEquals( '54321', $reports[ $second_customer_index ]['postcode'] );
+	}
+
+	/**
+	 * Test get_last_order.
+	 */
+	public function test_get_last_order() {
+		wp_set_current_user( $this->user );
+
+		$order = WC_Helper_Order::create_order( 0 );
+		$order->set_status( 'completed' );
+		$order->set_total( 100 );
+		$order->save();
+		$order2 = WC_Helper_Order::create_order( 0 );
+		$order2->set_status( 'completed' );
+		$order2->set_total( 100 );
+		$order2->save();
+		$order3 = WC_Helper_Order::create_order( 0 );
+		$order3->set_status( 'completed' );
+		$order3->set_total( 100 );
+		$order3->save();
+
+		WC_Helper_Queue::run_all_pending();
+
+		$customer_id  = CustomersDataStore::get_existing_customer_id_from_order( $order );
+		$customer2_id = CustomersDataStore::get_existing_customer_id_from_order( $order2 );
+		$customer3_id = CustomersDataStore::get_existing_customer_id_from_order( $order3 );
+		$this->assertEquals( $customer_id, $customer2_id );
+		$this->assertEquals( $customer_id, $customer3_id );
+
+		$latest_order = CustomersDataStore::get_last_order( $customer_id );
+
+		$this->assertEquals( $latest_order->get_id(), $order3->get_id() );
+
+		$order->set_date_created( time() + 60 );
+		$order->save();
+		WC_Helper_Queue::run_all_pending();
+
+		$latest_order = CustomersDataStore::get_last_order( $customer_id );
+
+		$this->assertEquals( $latest_order->get_id(), $order->get_id() );
 	}
 }

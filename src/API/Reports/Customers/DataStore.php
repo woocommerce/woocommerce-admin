@@ -142,7 +142,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$order       = wc_get_order( $post_id );
 		$customer_id = self::get_existing_customer_id_from_order( $order );
-		if ( ! $customer_id ) {
+		if ( false === $customer_id ) {
 			return -1;
 		}
 		$last_order = self::get_last_order( $customer_id );
@@ -629,23 +629,22 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Retrieve the last order made by a customer.
 	 *
 	 * @param int $customer_id Customer ID.
-	 * @return object Order|false.
+	 * @return object WC_Order|false.
 	 */
 	public static function get_last_order( $customer_id ) {
 		global $wpdb;
-		$orders_table                = $wpdb->prefix . 'wc_order_stats';
-		$excluded_statuses_condition = "AND status IN ( '" . implode( "','", array_map( 'esc_sql', array_keys( wc_get_order_statuses() ) ) ) . "' )";
+		$orders_table = $wpdb->prefix . 'wc_order_stats';
 
 		$last_order = $wpdb->get_var(
 			$wpdb->prepare(
 				// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT order_id FROM {$orders_table}
+				"SELECT order_id, date_created_gmt FROM {$orders_table}
 				WHERE customer_id = %d
-				{$excluded_statuses_condition}
-				ORDER BY order_id DESC LIMIT 1",
+				ORDER BY date_created_gmt DESC, order_id DESC LIMIT 1",
 				// phpcs:enable
 				$customer_id
-			)
+			),
+			0
 		);
 		if ( ! $last_order ) {
 			return false;
