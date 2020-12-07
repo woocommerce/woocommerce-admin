@@ -35,11 +35,6 @@
 		@include font-size( 16 );
 		font-weight: 600;
 		height: 60px;
-
-		.components-button {
-			position: absolute;
-			right: 10px;
-		}
 	}
 	.components-card__footer {
 		justify-content: flex-end;
