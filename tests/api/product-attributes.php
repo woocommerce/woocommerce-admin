@@ -18,9 +18,7 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 	protected $endpoint = '/wc-analytics/products/attributes';
 
 	/**
-	 * Setup test reports categories data.
-	 *
-	 * @since 3.5.0
+	 * Setup test user.
 	 */
 	public function setUp() {
 		parent::setUp();
@@ -30,6 +28,28 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 				'role' => 'administrator',
 			)
 		);
+	}
+
+	/**
+	 * Setup test product attributes data.
+	 */
+	public static function setUpBeforeClass() {
+		parent::setUpBeforeClass();
+
+		// Use the test helper to populate some global attributes.
+		$product    = \WC_Helper_Product::create_variation_product();
+		$attributes = $product->get_attributes();
+
+		// Add a custom attribute.
+		$custom_attr = new WC_Product_Attribute();
+		$custom_attr->set_name( 'Numeric Size' );
+		$custom_attr->set_options( array( '1', '2', '3', '4', '5' ) );
+		$custom_attr->set_visible( true );
+		$custom_attr->set_variation( true );
+		$attributes[] = $custom_attr;
+
+		$product->set_attributes( $attributes );
+		$product->save();
 	}
 
 	/**
@@ -69,5 +89,47 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'type', $properties );
 		$this->assertArrayHasKey( 'order_by', $properties );
 		$this->assertArrayHasKey( 'has_archives', $properties );
+	}
+
+	/**
+	 * Test our passthrough case to the wc/v3 endpoint.
+	 */
+	public function test_without_search() {
+		wp_set_current_user( $this->user );
+
+		$request    = new WP_REST_Request( 'GET', $this->endpoint );
+		$response   = $this->server->dispatch( $request );
+		$attributes = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 3, count( $attributes ) );
+
+		// Ensure our custom attribute is not in the results (proof of core endpoint).
+		$names = wp_list_pluck( $attributes, 'name' );
+		$this->assertNotContains( 'Numeric Size', $names );
+	}
+
+	/**
+	 * Test our search functionality.
+	 */
+	public function test_with_search() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'search' => 'num',
+			)
+		);
+		$response   = $this->server->dispatch( $request );
+		$attributes = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 2, count( $attributes ) );
+
+		// Results should include "number" and "Numeric Size".
+		$names = wp_list_pluck( $attributes, 'name' );
+		$this->assertContains( 'number', $names );
+		$this->assertContains( 'Numeric Size', $names );
 	}
 }
