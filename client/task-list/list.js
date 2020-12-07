@@ -365,7 +365,7 @@ export class TaskList extends Component {
 							>
 								<CardHeader size="medium">
 									<div className="wooocommerce-task-card__header">
-										<Text variant="title.small">
+										<Text variant="subtitle">
 											{ listTitle }
 										</Text>
 										<Badge

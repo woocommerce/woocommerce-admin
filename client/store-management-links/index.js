@@ -180,7 +180,7 @@ export const StoreManagementLinks = () => {
 	return (
 		<Card size="medium">
 			<CardHeader size="medium">
-				<Text variant="title.small">
+				<Text variant="subtitle">
 					{ __( 'Store management', 'woocommerce-admin' ) }
 				</Text>
 			</CardHeader>

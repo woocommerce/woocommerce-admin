@@ -67,8 +67,8 @@ p.woocommerce-profile-wizard__themes-skip-this-step {
 	.woocommerce-profile-wizard__theme-name {
 		margin-top: auto;
 		margin-bottom: $gap-smaller;
-		@include font-size(24);
-		font-weight: 400;
+		@include font-size(16);
+		font-weight: 600;
 
 		svg {
 			max-width: 18px;
@@ -85,7 +85,6 @@ p.woocommerce-profile-wizard__themes-skip-this-step {
 		padding: $gap;
 		display: flex;
 		flex-direction: column;
-		margin-top: auto;
 	}
 
 	.woocommerce-profile-wizard__theme-status {
@@ -99,10 +98,7 @@ p.woocommerce-profile-wizard__themes-skip-this-step {
 
 	.woocommerce-profile-wizard__theme-actions {
 		button.components-button {
-			margin: 13px auto 0 auto;
-			display: block;
-			width: auto;
-			min-width: 106px;
+			margin: 12px 12px 0 0;
 			height: 40px;
 			line-height: 1;
 

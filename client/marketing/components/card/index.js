@@ -27,7 +27,7 @@ const Card = ( props ) => {
 		>
 			<CardHeader>
 				<div>
-					<Text variant="title.small">{ title }</Text>
+					<Text variant="subtitle">{ title }</Text>
 					<Text
 						variant="subtitle.small"
 						className="woocommerce-admin-marketing-card-subtitle"

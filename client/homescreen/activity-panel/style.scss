@@ -4,14 +4,18 @@
 		text-align: left;
 		.woocommerce-accordion-title {
 			margin-right: $gap;
+			font-size: 16px;
+			font-weight: 600;
+			line-height: 24px;
 		}
 	}
 }
 .woocommerce-accordion-card {
 	.components-card__header,
 	.components-panel__body-title .components-button {
-		font-size: 20px;
-		line-height: 28px;
+		font-size: 16px;
+		line-height: 24px;
+		font-weight: 600;
 		color: $gray-900;
 		&:focus {
 			box-shadow: unset;

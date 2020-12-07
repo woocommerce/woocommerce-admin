@@ -55,7 +55,7 @@
 		@include font-size( 16 );
 		font-style: normal;
 		line-height: 1.5;
-		font-weight: bold;
+		font-weight: 400;
 		margin: $gap-smaller 0;
 
 		.is-placeholder & {

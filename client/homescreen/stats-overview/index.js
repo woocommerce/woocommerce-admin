@@ -75,7 +75,7 @@ export const StatsOverview = () => {
 			className="woocommerce-stats-overview woocommerce-homescreen-card"
 		>
 			<CardHeader size="medium">
-				<Text variant="title.small">
+				<Text variant="subtitle">
 					{ __( 'Stats overview', 'woocommerce-admin' ) }
 				</Text>
 				<EllipsisMenu
