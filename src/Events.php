@@ -38,7 +38,7 @@ use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
 use \Automattic\WooCommerce\Admin\Notes\EditProductsOnTheMove;
 use \Automattic\WooCommerce\Admin\Notes\PerformanceOnMobile;
 use \Automattic\WooCommerce\Admin\Notes\ManageOrdersOnTheGo;
-use \Automattic\WooCommerce\Admin\Notes\NavigationFeedback;
+use \Automattic\WooCommerce\Admin\Notes\NavigationLearnMore;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedbackFollowUp;
 
 /**
@@ -111,7 +111,7 @@ class Events {
 		EditProductsOnTheMove::possibly_add_note();
 		PerformanceOnMobile::possibly_add_note();
 		ManageOrdersOnTheGo::possibly_add_note();
-		NavigationFeedback::possibly_add_note();
+		NavigationLearnMore::possibly_add_note();
 		NavigationFeedbackFollowUp::possibly_add_note();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {

@@ -21,6 +21,7 @@ use \Automattic\WooCommerce\Admin\Notes\HomeScreenFeedback;
 use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
 use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
 use \Automattic\WooCommerce\Admin\Notes\SellingOnlineCourses;
+use \Automattic\WooCommerce\Admin\Notes\NavigationLearnMore;
 
 /**
  * Feature plugin main class.
@@ -193,6 +194,7 @@ class FeaturePlugin {
 		new SetUpAdditionalPaymentTypes();
 		new TestCheckout();
 		new SellingOnlineCourses();
+		new NavigationLearnMore();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();
