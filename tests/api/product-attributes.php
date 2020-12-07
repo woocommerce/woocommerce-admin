@@ -50,6 +50,10 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 
 		$product->set_attributes( $attributes );
 		$product->save();
+
+		// Custom attribute terms can only be found once assigned to variations.
+		$data_store = $product->get_data_store();
+		$data_store->create_all_product_variations( $product );
 	}
 
 	/**
@@ -73,7 +77,7 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 	/**
 	 * Test schema.
 	 */
-	public function test_reports_schema() {
+	public function test_schema() {
 		wp_set_current_user( $this->user );
 
 		$request    = new WP_REST_Request( 'OPTIONS', $this->endpoint );
@@ -131,5 +135,74 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 		$names = wp_list_pluck( $attributes, 'name' );
 		$this->assertContains( 'number', $names );
 		$this->assertContains( 'Numeric Size', $names );
+	}
+
+	/**
+	 * Test terms schema.
+	 */
+	public function test_terms_schema() {
+		wp_set_current_user( $this->user );
+
+		$request    = new WP_REST_Request( 'OPTIONS', $this->endpoint . '/numeric-size/terms' );
+		$response   = $this->server->dispatch( $request );
+		$data       = $response->get_data();
+		$properties = $data['schema']['properties'];
+
+		$this->assertEquals( 6, count( $properties ) );
+		$this->assertArrayHasKey( 'id', $properties );
+		$this->assertEquals( array( 'integer', 'string' ), $properties['id']['type'] );
+		$this->assertArrayHasKey( 'name', $properties );
+		$this->assertArrayHasKey( 'slug', $properties );
+		$this->assertArrayHasKey( 'description', $properties );
+		$this->assertArrayHasKey( 'menu_order', $properties );
+		$this->assertArrayHasKey( 'count', $properties );
+	}
+
+	/**
+	 * Test our passthrough case to the wc/v3 terms endpoint.
+	 */
+	public function test_taxonomy_backed_terms() {
+		wp_set_current_user( $this->user );
+
+		$global_attrs = wc_get_attribute_taxonomies();
+
+		// Grab the size attribute.
+		$size_attr_id = false;
+		foreach ( $global_attrs as $global_attr ) {
+			if ( 'size' === $global_attr->attribute_name ) {
+				$size_attr_id = $global_attr->attribute_id;
+				break;
+			}
+		}
+
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/' . $size_attr_id . '/terms' );
+		$response = $this->server->dispatch( $request );
+		$terms    = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 3, count( $terms ) );
+
+		$slugs = wp_list_pluck( $terms, 'slug' );
+		$this->assertContains( 'small', $slugs );
+		$this->assertContains( 'large', $slugs );
+		$this->assertContains( 'huge', $slugs );
+	}
+
+	/**
+	 * Test that our endpoint supports custom attributes.
+	 */
+	public function test_custom_attribute_terms() {
+		wp_set_current_user( $this->user );
+
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/numeric-size/terms' );
+		$response = $this->server->dispatch( $request );
+		$terms    = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 5, count( $terms ) );
+
+		// All terms will have the same count since we created all possible variations.
+		// Test for ( 3 size * 2 colour * 3 number ) combinations = 18.
+		$this->assertEquals( 18, $terms[0]['count'] );
 	}
 }
