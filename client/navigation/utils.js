@@ -38,11 +38,27 @@ export const isMatch = ( location, itemUrl, itemExpression = null ) => {
 
 	const fullUrl = getFullUrl( itemUrl );
 	const { href } = location;
-
-	const defaultExpression =
-		'^' + fullUrl.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' );
-	const regexp = new RegExp( itemExpression || defaultExpression );
+	const defaultExpression = getDefaultMatchExpression( fullUrl );
+	const regexp = new RegExp( itemExpression || defaultExpression, 'i' );
 	return Boolean( decodeURIComponent( href ).match( regexp ) );
+};
+
+/**
+ * Get a default expression to match the path and provided params.
+ *
+ * @param {string} url URL to match.
+ * @return {string} Regex expression.
+ */
+export const getDefaultMatchExpression = ( url ) => {
+	const escapedUrl = url.replace( /[-\/\\^$*+?.()|[\]{}]/gi, '\\$&' );
+	const [ path, args, hash ] = escapedUrl.split( /\\\?|#/ );
+	const hashExpression = hash ? `(.*#${ hash }$)` : '';
+	const argsExpression = args
+		? args.split( '&' ).reduce( ( acc, param ) => {
+				return `${ acc }(?=.*[?|&]${ param }(&|$|#))`;
+		  }, '' )
+		: '';
+	return '^' + path + argsExpression + hashExpression;
 };
 
 /**

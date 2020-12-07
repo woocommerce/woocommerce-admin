@@ -8,6 +8,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
  */
 import {
 	addHistoryListener,
+	getDefaultMatchExpression,
 	getFullUrl,
 	getMatchingItem,
 	isMatch,
@@ -71,7 +72,7 @@ describe( 'getMatchingItem', () => {
 		expect( matchingItem.id ).toBe( 'hash' );
 	} );
 
-	it( 'should roughly match the item with the highest number of matching arguments', () => {
+	it( 'should roughly match the item if all menu item arguments exist', () => {
 		window.location = new URL(
 			getAdminLink(
 				'admin.php?page=wc-admin&path=/test-path&section=section-name'
@@ -79,6 +80,34 @@ describe( 'getMatchingItem', () => {
 		);
 		const matchingItem = getMatchingItem( sampleMenuItems );
 		expect( matchingItem.id ).toBe( 'multiple-args' );
+	} );
+} );
+
+describe( 'getDefaultMatchExpression', () => {
+	it( 'should return the regex for the path without query args', () => {
+		expect( getDefaultMatchExpression( 'http://wordpress.org' ) ).toBe(
+			'^http:\\/\\/wordpress\\.org'
+		);
+	} );
+
+	it( 'should return the regex for the path and query args', () => {
+		expect(
+			getDefaultMatchExpression(
+				'http://wordpress.org?param1=a&param2=b'
+			)
+		).toBe(
+			'^http:\\/\\/wordpress\\.org(?=.*[?|&]param1=a(&|$|#))(?=.*[?|&]param2=b(&|$|#))'
+		);
+	} );
+
+	it( 'should return the regex with hash if present', () => {
+		expect(
+			getDefaultMatchExpression(
+				'http://wordpress.org?param1=a&param2=b#hash'
+			)
+		).toBe(
+			'^http:\\/\\/wordpress\\.org(?=.*[?|&]param1=a(&|$|#))(?=.*[?|&]param2=b(&|$|#))(.*#hash$)'
+		);
 	} );
 } );
 
@@ -92,7 +121,7 @@ describe( 'isMatch', () => {
 		window.location = originalLocation;
 	} );
 
-	it( 'should retur true if the URL is the same', () => {
+	it( 'should return true if the URL is the same', () => {
 		expect(
 			isMatch(
 				new URL( getAdminLink( 'admin.php?page=testpage' ) ),
@@ -145,6 +174,28 @@ describe( 'isMatch', () => {
 				'param1=a'
 			)
 		).toBe( false );
+	} );
+
+	it( 'should return true if params match but are out of order', () => {
+		expect(
+			isMatch(
+				new URL( getAdminLink( 'admin.php?param1=a&page=testpage' ) ),
+				getAdminLink( 'admin.php?page=testpage' ),
+				'param1=a'
+			)
+		).toBe( true );
+	} );
+
+	it( 'should return true if multiple params match but are out of order', () => {
+		expect(
+			isMatch(
+				new URL(
+					getAdminLink( 'admin.php?param1=a&page=testpage&param2=b' )
+				),
+				getAdminLink( 'admin.php?page=testpage&param1=a' ),
+				'param1=a'
+			)
+		).toBe( true );
 	} );
 } );
 
