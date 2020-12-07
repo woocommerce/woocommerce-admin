@@ -41,6 +41,9 @@ export function recordTaskViewEvent(
 
 const groupBy = ( array, key ) => {
 	return array.reduce( ( result, currentValue ) => {
+		if ( ! currentValue[ key ] ) {
+			currentValue[ key ] = 'extension';
+		}
 		( result[ currentValue[ key ] ] =
 			result[ currentValue[ key ] ] || [] ).push( currentValue );
 		return result;
