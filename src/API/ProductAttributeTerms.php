@@ -33,16 +33,19 @@ class ProductAttributeTerms extends \WC_REST_Product_Attribute_Terms_Controller 
 			$this->namespace,
 			'products/attributes/(?P<slug>[a-z0-9_\-]+)/terms',
 			array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_item_by_slug' ),
-				'permission_callback' => array( $this, 'get_custom_attribute_permissions_check' ),
-				'args'                => array(
+				'args'   => array(
 					'slug' => array(
 						'description' => __( 'Slug identifier for the resource.', 'woocommerce-admin' ),
 						'type'        => 'string',
 					),
 				),
-				'schema'              => array( $this, 'get_public_item_schema' ),
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item_by_slug' ),
+					'permission_callback' => array( $this, 'get_custom_attribute_permissions_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
 	}
