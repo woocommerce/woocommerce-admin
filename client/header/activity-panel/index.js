@@ -15,6 +15,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section, Spinner } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -48,6 +49,8 @@ export class ActivityPanel extends Component {
 			isPanelSwitching: false,
 		};
 	}
+
+	recordedHelpTooltip = false;
 
 	togglePanel( { name: tabName }, isTabOpen ) {
 		this.setState( ( state ) => {
@@ -280,9 +283,34 @@ export class ActivityPanel extends Component {
 
 	closedHelpPanelHighlight() {
 		const { updateOptions } = this.props;
+		recordEvent( 'wcadmin_help_tooltip_click' );
 		updateOptions( {
 			woocommerce_help_panel_highlight_shown: 'yes',
 		} );
+	}
+
+	shouldShowHelpTooltip() {
+		const {
+			trackedCompletedTasks,
+			trackedStartedTasks,
+			helpPanelHighlightShown,
+			query,
+		} = this.props;
+		const { task } = query;
+		if (
+			task &&
+			helpPanelHighlightShown !== 'yes' &&
+			( trackedStartedTasks || [] ).filter( ( t ) => t === task ).length >
+				1 &&
+			! trackedCompletedTasks.includes( task )
+		) {
+			if ( ! this.recordedHelpTooltip ) {
+				this.recordedHelpTooltip = true;
+				recordEvent();
+			}
+			return true;
+		}
+		return false;
 	}
 
 	render() {
