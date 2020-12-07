@@ -316,13 +316,6 @@ export class ActivityPanel extends Component {
 	render() {
 		const tabs = this.getTabs();
 		const { mobileOpen, currentTab, isPanelOpen } = this.state;
-		const {
-			trackedCompletedTasks,
-			trackedStartedTasks,
-			helpPanelHighlightShown,
-			query,
-		} = this.props;
-		const { task } = query;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
 			'is-mobile-open': this.state.mobileOpen,
