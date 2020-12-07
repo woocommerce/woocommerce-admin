@@ -39,6 +39,14 @@ export function recordTaskViewEvent(
 	} );
 }
 
+const groupBy = ( array, key ) => {
+	return array.reduce( ( result, currentValue ) => {
+		( result[ currentValue[ key ] ] =
+			result[ currentValue[ key ] ] || [] ).push( currentValue );
+		return result;
+	}, {} );
+};
+
 export function getAllTasks( {
 	activePlugins,
 	countryCode,
@@ -247,10 +255,8 @@ export function getAllTasks( {
 			type: 'setup',
 		},
 	];
-
-	return applyFilters(
-		'woocommerce_admin_onboarding_task_list',
-		tasks,
-		query
+	return groupBy(
+		applyFilters( 'woocommerce_admin_onboarding_task_list', tasks, query ),
+		'type'
 	);
 }
