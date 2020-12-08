@@ -11,7 +11,7 @@ import {
 	getDefaultMatchExpression,
 	getFullUrl,
 	getMatchingItem,
-	isMatch,
+	getMatchScore,
 } from '../utils';
 
 const originalLocation = window.location;
@@ -131,7 +131,7 @@ describe( 'getDefaultMatchExpression', () => {
 	} );
 } );
 
-describe( 'isMatch', () => {
+describe( 'getMatchScore', () => {
 	beforeAll( () => {
 		delete window.location;
 		window.location = new URL( getAdminLink( '/' ) );
@@ -141,18 +141,18 @@ describe( 'isMatch', () => {
 		window.location = originalLocation;
 	} );
 
-	it( 'should return true if the URL is the same', () => {
+	it( 'should return max safe integer if the url is an exact match', () => {
 		expect(
-			isMatch(
+			getMatchScore(
 				new URL( getAdminLink( 'admin.php?page=testpage' ) ),
 				getAdminLink( 'admin.php?page=testpage' )
 			)
-		).toBe( true );
+		).toBe( Number.MAX_SAFE_INTEGER );
 	} );
 
-	it( 'should return true if the URL starts with the same string', () => {
+	it( 'should return matching path and parameter count', () => {
 		expect(
-			isMatch(
+			getMatchScore(
 				new URL(
 					getFullUrl(
 						'/wp-admin/admin.php?page=testpage&extra_param=a'
@@ -160,62 +160,60 @@ describe( 'isMatch', () => {
 				),
 				'/wp-admin/admin.php?page=testpage'
 			)
-		).toBe( true );
+		).toBe( 2 );
 	} );
 
-	it( 'should return false if the URL is not the same', () => {
+	it( 'should return 0 if the URL does not meet match criteria', () => {
 		expect(
-			isMatch(
+			getMatchScore(
 				new URL( getAdminLink( 'admin.php?page=different-page' ) ),
 				getAdminLink( 'admin.php?page=testpage' )
 			)
-		).toBe( false );
+		).toBe( 0 );
 	} );
 
-	it( 'should return true for a location matching the expression', () => {
+	it( 'should return match count for a custom match expression', () => {
 		expect(
-			isMatch(
+			getMatchScore(
 				new URL(
 					getAdminLink( 'admin.php?page=different-page&param1=a' )
 				),
 				getAdminLink( 'admin.php?page=testpage' ),
 				'param1=a'
 			)
-		).toBe( true );
+		).toBe( 1 );
 	} );
 
-	it( 'should return false for a location not matching the expression', () => {
+	it( 'should return 0 for custom match expression that does not match', () => {
 		expect(
-			isMatch(
+			getMatchScore(
 				new URL(
 					getAdminLink( 'admin.php?page=different-page&param1=b' )
 				),
 				getAdminLink( 'admin.php?page=testpage' ),
 				'param1=a'
 			)
-		).toBe( false );
+		).toBe( 0 );
 	} );
 
-	it( 'should return true if params match but are out of order', () => {
+	it( 'should return match count if params match but are out of order', () => {
 		expect(
-			isMatch(
+			getMatchScore(
 				new URL( getAdminLink( 'admin.php?param1=a&page=testpage' ) ),
-				getAdminLink( 'admin.php?page=testpage' ),
-				'param1=a'
+				getAdminLink( 'admin.php?page=testpage' )
 			)
-		).toBe( true );
+		).toBe( 2 );
 	} );
 
-	it( 'should return true if multiple params match but are out of order', () => {
+	it( 'should return match count if multiple params match but are out of order', () => {
 		expect(
-			isMatch(
+			getMatchScore(
 				new URL(
 					getAdminLink( 'admin.php?param1=a&page=testpage&param2=b' )
 				),
-				getAdminLink( 'admin.php?page=testpage&param1=a' ),
-				'param1=a'
+				getAdminLink( 'admin.php?page=testpage&param1=a' )
 			)
-		).toBe( true );
+		).toBe( 3 );
 	} );
 } );
 
