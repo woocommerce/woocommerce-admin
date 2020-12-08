@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.3.0
 Tested up to: 5.4.2
 Requires PHP: 5.6.20
-Stable tag: 1.8.0-beta.1
+Stable tag: 1.8.0-rc.1
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -74,11 +74,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Changelog ==
 
 == 1.8.0 12/7/2020 ==
+
+- Enhancement: Add "filter by variations in reports" inbox note. #5208
 - Tweak: Fix inconsistent REST API parameter name for customer type filtering. #5823
 - Enhancement: Tasks extensibility in Home Screen. #5794
 - Enhancement: Add page parameter to override default wc-admin page in Navigation API. #5821
 - Fix: Invalidate product count if the last product was updated in the list. #5790
-- Fix: Convert before and after dates to UTC in reports. #5819
 - Fix: Add Customer Type column to the Orders report table. #5820
 - Fix: Product exclusion filter on Orders Report. #5822
 - Enhancement: Introduce the customer effort score (CES) feature.
