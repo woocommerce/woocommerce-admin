@@ -333,13 +333,23 @@ class Menu {
 	public static function add_plugin_setting_item( $args ) {
 		unset( $args['order'] );
 
-			$item_args = array_merge(
-				$args,
-				array(
-					'menuId' => 'secondary',
-					'parent' => 'woocommerce-settings',
+		if ( isset( $args['parent'] ) || isset( $args['menuId'] ) ) {
+			error_log(  // phpcs:ignore
+				sprintf(
+					/* translators: 1: Duplicate menu item path. */
+					esc_html__( 'The item ID %1$s attempted to register using an invalid option. The arguments `menuId` and `parent` are not allowed for add_plugin_setting_item()', 'woocommerce-admin' ),
+					'`' . $args['id'] . '`'
 				)
 			);
+		}
+
+		$item_args = array_merge(
+			$args,
+			array(
+				'menuId' => 'secondary',
+				'parent' => 'woocommerce-settings',
+			)
+		);
 
 		self::add_item( $item_args );
 	}
