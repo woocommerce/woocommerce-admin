@@ -22,6 +22,7 @@ import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import { installActivateAndConnectWcpay } from './tasks/payments/methods';
+import { groupListOfObjectsBy } from '../lib/lists';
 
 export function recordTaskViewEvent(
 	taskName,
@@ -38,17 +39,6 @@ export function recordTaskViewEvent(
 		jetpack_connected: isJetpackConnected,
 	} );
 }
-
-const groupBy = ( array, key ) => {
-	return array.reduce( ( result, currentValue ) => {
-		if ( ! currentValue[ key ] ) {
-			currentValue[ key ] = 'extension';
-		}
-		( result[ currentValue[ key ] ] =
-			result[ currentValue[ key ] ] || [] ).push( currentValue );
-		return result;
-	}, {} );
-};
 
 export function getAllTasks( {
 	activePlugins,
@@ -258,8 +248,9 @@ export function getAllTasks( {
 			type: 'setup',
 		},
 	];
-	return groupBy(
+	return groupListOfObjectsBy(
 		applyFilters( 'woocommerce_admin_onboarding_task_list', tasks, query ),
-		'type'
+		'type',
+		'extension'
 	);
 }
