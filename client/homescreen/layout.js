@@ -44,7 +44,6 @@ export const Layout = ( {
 	isBatchUpdating,
 	query,
 	requestingTaskList,
-	taskListComplete,
 	taskListHidden,
 	shouldShowWelcomeModal,
 	updateOptions,
@@ -55,7 +54,7 @@ export const Layout = ( {
 		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
 
-	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
+	const isTaskListEnabled = taskListHidden === false;
 	const isDashboardShown = ! isTaskListEnabled || ! query.task;
 
 	if ( isBatchUpdating && ! showInbox ) {
@@ -196,15 +195,19 @@ export default compose(
 			defaultHomescreenLayout,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
-			taskListComplete:
-				getOption( 'woocommerce_task_list_complete' ) === 'yes',
 			taskListHidden:
-				getOption( 'woocommerce_task_list_hidden' ) === 'yes',
+				getOption( 'woocommerce_task_list_hidden' ) === 'yes' &&
+				getOption( 'woocommerce_extended_task_list_hidden' ) !== 'no',
 			requestingTaskList:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
 				] ) ||
-				isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] ),
+				isResolving( 'getOption', [
+					'woocommerce_task_list_hidden',
+				] ) ||
+				isResolving( 'getOption', [
+					'woocommerce_extended_task_list_hidden',
+				] ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {

@@ -7,7 +7,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import CustomerEffortScore from '@woocommerce/customer-effort-score';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
-import { OPTIONS_STORE_NAME, MONTH } from '@woocommerce/data';
+import { OPTIONS_STORE_NAME, WEEK } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
 
 const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
@@ -27,7 +27,7 @@ const ALLOW_TRACKING_OPTION_NAME = 'woocommerce_allow_tracking';
  * @param {Array}    props.cesShownForActions The array of actions that the CES modal has been shown for.
  * @param {boolean}  props.allowTracking      Whether tracking is allowed or not.
  * @param {boolean}  props.resolving          Are values still being resolved.
- * @param {number}   props.storeAge           The age of the store in months.
+ * @param {number}   props.storeAgeInWeeks    The age of the store in weeks.
  * @param {Function} props.updateOptions      Function to update options.
  * @param {Function} props.createNotice       Function to create a snackbar.
  */
@@ -35,15 +35,15 @@ function CustomerEffortScoreTracks( {
 	action,
 	trackProps,
 	label,
-	onSubmitLabel,
+	onSubmitLabel = __( 'Thank you for your feedback!', 'woocommerce-admin' ),
 	cesShownForActions,
 	allowTracking,
 	resolving,
-	storeAge,
+	storeAgeInWeeks,
 	updateOptions,
 	createNotice,
 } ) {
-	const [ shown, setShown ] = useState( false );
+	const [ modalShown, setModalShown ] = useState( false );
 
 	if ( resolving ) {
 		return null;
@@ -54,18 +54,26 @@ function CustomerEffortScoreTracks( {
 		return null;
 	}
 
-	if ( cesShownForActions.indexOf( action ) !== -1 && ! shown ) {
+	// We only want to return null early if the modal was already shown
+	// for this action *before* this component was initially instantiated.
+	//
+	// We want to make sure we still render CustomerEffortScore below
+	// (we don't want to return null early), if the modal was shown for this
+	// instantiation, so that the component doesn't go away while we are
+	// still showing it.
+	if ( cesShownForActions.indexOf( action ) !== -1 && ! modalShown ) {
 		return null;
 	}
 
-	const openedCallback = () => {
-		// Use the `shown` state value to only update the shown_for_actions
-		// option once.
-		if ( shown ) {
-			return;
-		}
+	const onNoticeShown = () => {
+		recordEvent( 'ces_snackbar_view', {
+			action,
+			store_age: storeAgeInWeeks,
+			...trackProps,
+		} );
+	};
 
-		setShown( true );
+	const addActionToShownOption = () => {
 		updateOptions( {
 			[ SHOWN_FOR_ACTIONS_OPTION_NAME ]: [
 				action,
@@ -74,11 +82,34 @@ function CustomerEffortScoreTracks( {
 		} );
 	};
 
-	const trackCallback = ( score ) => {
+	const onNoticeDismissed = () => {
+		recordEvent( 'ces_snackbar_dismiss', {
+			action,
+			store_age: storeAgeInWeeks,
+			...trackProps,
+		} );
+
+		addActionToShownOption();
+	};
+
+	const onModalShown = () => {
+		setModalShown( true );
+
+		recordEvent( 'ces_view', {
+			action,
+			store_age: storeAgeInWeeks,
+			...trackProps,
+		} );
+
+		addActionToShownOption();
+	};
+
+	const recordScore = ( score, comments ) => {
 		recordEvent( 'ces_feedback', {
 			action,
 			score,
-			store_age: storeAge,
+			comments: comments || '',
+			store_age: storeAgeInWeeks,
 			...trackProps,
 		} );
 		createNotice( 'success', onSubmitLabel );
@@ -86,9 +117,11 @@ function CustomerEffortScoreTracks( {
 
 	return (
 		<CustomerEffortScore
-			trackCallback={ trackCallback }
+			recordScoreCallback={ recordScore }
 			label={ label }
-			openedCallback={ openedCallback }
+			onNoticeShownCallback={ onNoticeShown }
+			onNoticeDismissedCallback={ onNoticeDismissed }
+			onModalShownCallback={ onModalShown }
 			icon={
 				<span
 					style={ { height: 21, width: 21 } }
@@ -118,7 +151,7 @@ CustomerEffortScoreTracks.propTypes = {
 	/**
 	 * The label for the snackbar that appears upon survey submission.
 	 */
-	onSubmitLabel: PropTypes.string.isRequired,
+	onSubmitLabel: PropTypes.string,
 	/**
 	 * The array of actions that the CES modal has been shown for.
 	 */
@@ -127,15 +160,14 @@ CustomerEffortScoreTracks.propTypes = {
 	 * Whether tracking is allowed or not.
 	 */
 	allowTracking: PropTypes.bool,
-
 	/**
 	 * Whether props are still being resolved.
 	 */
 	resolving: PropTypes.bool.isRequired,
 	/**
-	 * The age of the store in months.
+	 * The age of the store in weeks.
 	 */
-	storeAge: PropTypes.number,
+	storeAgeInWeeks: PropTypes.number,
 	/**
 	 * Function to update options.
 	 */
@@ -158,7 +190,7 @@ export default compose(
 		// Date.now() is ms since Unix epoch, adminInstallTimestamp is in
 		// seconds since Unix epoch.
 		const storeAgeInMs = Date.now() - adminInstallTimestamp * 1000;
-		const storeAge = Math.round( storeAgeInMs / MONTH );
+		const storeAgeInWeeks = Math.round( storeAgeInMs / WEEK );
 
 		const allowTrackingOption =
 			getOption( ALLOW_TRACKING_OPTION_NAME ) || 'no';
@@ -174,7 +206,7 @@ export default compose(
 		return {
 			cesShownForActions,
 			allowTracking,
-			storeAge,
+			storeAgeInWeeks,
 			resolving,
 		};
 	} ),

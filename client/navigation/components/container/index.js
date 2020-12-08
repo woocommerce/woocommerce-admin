@@ -12,6 +12,7 @@ import {
 } from '@wordpress/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 import { withSelect } from '@wordpress/data';
 
 /**
@@ -30,8 +31,7 @@ const Container = ( { menuItems } ) => {
 
 	const dashboardUrl = getAdminLink( '' );
 
-	const categories = menuItems.filter( ( item ) => item.isCategory );
-	categories.push( {
+	const parentCategory = {
 		capability: 'manage_woocommerce',
 		id: 'woocommerce',
 		isCategory: true,
@@ -40,7 +40,19 @@ const Container = ( { menuItems } ) => {
 		order: 10,
 		parent: '',
 		title: 'WooCommerce',
-	} );
+	};
+	const categoriesMap = menuItems.reduce(
+		( acc, item ) => {
+			if ( item.isCategory ) {
+				return { ...acc, [ item.id ]: item };
+			}
+			return acc;
+		},
+		{
+			woocommerce: parentCategory,
+		}
+	);
+	const categories = Object.values( categoriesMap );
 
 	const [ activeItem, setActiveItem ] = useState( 'woocommerce-home' );
 	const [ activeLevel, setActiveLevel ] = useState( 'woocommerce' );
@@ -66,16 +78,26 @@ const Container = ( { menuItems } ) => {
 
 	const getMenuItemsByCategory = ( items ) => {
 		return items.reduce( ( acc, item ) => {
+			// Set up the category if it doesn't yet exist.
 			if ( ! acc[ item.parent ] ) {
-				acc[ item.parent ] = [ [], [], [] ];
+				acc[ item.parent ] = {};
 			}
-			let index = 0;
-			if ( item.menuId === 'secondary' ) {
-				index = 1;
-			} else if ( item.menuId === 'plugins' ) {
-				index = 2;
+
+			// Check if parent category is in the same menu.
+			if (
+				item.parent !== 'woocommerce' &&
+				categoriesMap[ item.parent ] &&
+				categoriesMap[ item.parent ].menuId !== item.menuId
+			) {
+				return acc;
 			}
-			acc[ item.parent ][ index ].push( item );
+
+			// Create the menu object if it doesn't exist in this category.
+			if ( ! acc[ item.parent ][ item.menuId ] ) {
+				acc[ item.parent ][ item.menuId ] = [];
+			}
+
+			acc[ item.parent ][ item.menuId ].push( item );
 			return acc;
 		}, {} );
 	};
@@ -86,6 +108,12 @@ const Container = ( { menuItems } ) => {
 	);
 
 	const navDomRef = useRef( null );
+
+	const trackBackClick = ( id ) => {
+		recordEvent( 'navigation_back_click', {
+			category: id,
+		} );
+	};
 
 	return (
 		<div className="woocommerce-navigation">
@@ -110,14 +138,15 @@ const Container = ( { menuItems } ) => {
 								'WordPress Dashboard',
 								'woocommerce-navigation'
 							) }
+							onClick={ () => trackBackClick( 'woocommerce' ) }
 						></NavigationBackButton>
 					) }
 					{ categories.map( ( category ) => {
-						const [
-							primaryItems,
-							secondaryItems,
-							pluginItems,
-						] = categorizedItems[ category.id ] || [ [], [], [] ];
+						const {
+							primary: primaryItems,
+							secondary: secondaryItems,
+							plugins: pluginItems,
+						} = categorizedItems[ category.id ] || {};
 						return (
 							<NavigationMenu
 								key={ category.id }
@@ -127,8 +156,11 @@ const Container = ( { menuItems } ) => {
 								backButtonLabel={
 									category.backButtonLabel || null
 								}
+								onBackButtonClick={ () =>
+									trackBackClick( category.id )
+								}
 							>
-								{ !! primaryItems.length && (
+								{ !! primaryItems && (
 									<NavigationGroup>
 										{ primaryItems.map( ( item ) => (
 											<Item
@@ -138,7 +170,7 @@ const Container = ( { menuItems } ) => {
 										) ) }
 									</NavigationGroup>
 								) }
-								{ !! pluginItems.length && (
+								{ !! pluginItems && (
 									<NavigationGroup
 										title={
 											category.id === 'woocommerce'
@@ -157,8 +189,12 @@ const Container = ( { menuItems } ) => {
 										) ) }
 									</NavigationGroup>
 								) }
-								{ !! secondaryItems.length && (
-									<NavigationGroup>
+								{ !! secondaryItems && (
+									<NavigationGroup
+										onBackButtonClick={ () =>
+											trackBackClick( category.id )
+										}
+									>
 										{ secondaryItems.map( ( item ) => (
 											<Item
 												key={ item.id }

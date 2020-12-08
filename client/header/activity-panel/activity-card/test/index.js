@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { Button } from '@wordpress/components';
-import Gridicon from 'gridicons';
+import CustomizeIcon from 'gridicons/dist/customize';
 import moment from 'moment';
 import { Gravatar } from '@woocommerce/components';
 import { render } from '@testing-library/react';
@@ -44,10 +44,7 @@ describe( 'ActivityCard', () => {
 
 	test( 'should render a custom icon on a card', () => {
 		const { container } = render(
-			<ActivityCard
-				title="Inbox message"
-				icon={ <Gridicon icon="customize" /> }
-			>
+			<ActivityCard title="Inbox message" icon={ <CustomizeIcon /> }>
 				This card has some content
 			</ActivityCard>
 		);
@@ -71,6 +68,16 @@ describe( 'ActivityCard', () => {
 		const threeDaysAgo = moment().subtract( 3, 'days' ).format();
 		const { container } = render(
 			<ActivityCard title="Inbox message" date={ threeDaysAgo }>
+				This card has some content
+			</ActivityCard>
+		);
+		expect( container ).toMatchSnapshot();
+	} );
+
+	test( 'supports a non-date "date" prop on a card', () => {
+		// We should be able to provide any string to the date prop.
+		const { container } = render(
+			<ActivityCard title="Inbox message" date="A long, long time ago">
 				This card has some content
 			</ActivityCard>
 		);

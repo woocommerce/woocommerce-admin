@@ -3,7 +3,7 @@
  */
 import classnames from 'classnames';
 import { cloneElement, Component } from '@wordpress/element';
-import Gridicon from 'gridicons';
+import NoticeOutline from 'gridicons/dist/notice-outline';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { H, Section } from '@woocommerce/components';
@@ -13,6 +13,16 @@ import { Button } from '@wordpress/components';
  * Internal dependencies
  */
 import './style.scss';
+
+/**
+ * Determine if the provided string is a date, as
+ * formatted by wc_rest_prepare_date_response().
+ *
+ * @param {string} value String value
+ */
+const isDateString = ( value ) =>
+	// PHP date format: Y-m-d\TH:i:s.
+	/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test( value );
 
 class ActivityCard extends Component {
 	getCard() {
@@ -31,6 +41,9 @@ class ActivityCard extends Component {
 			className
 		);
 		const actionsList = Array.isArray( actions ) ? actions : [ actions ];
+		const dateString = isDateString( date )
+			? moment.utc( date ).fromNow()
+			: date;
 
 		return (
 			<section className={ cardClassName }>
@@ -55,9 +68,9 @@ class ActivityCard extends Component {
 								{ subtitle }
 							</div>
 						) }
-						{ date && (
+						{ dateString && (
 							<span className="woocommerce-activity-card__date">
-								{ moment.utc( date ).fromNow() }
+								{ dateString }
 							</span>
 						) }
 					</header>
@@ -110,7 +123,7 @@ ActivityCard.propTypes = {
 };
 
 ActivityCard.defaultProps = {
-	icon: <Gridicon icon="notice-outline" size={ 48 } />,
+	icon: <NoticeOutline size={ 48 } />,
 	unread: false,
 };
 

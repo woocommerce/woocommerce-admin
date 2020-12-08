@@ -5,12 +5,7 @@ import { addQueryArgs } from '@wordpress/url';
 import { parse } from 'qs';
 import { pick, uniq } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
-import {
-	Slot,
-	Fill,
-	SlotFillProvider,
-	__experimentalUseSlot as useSlot,
-} from '@wordpress/components';
+import { Slot, Fill } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -98,14 +93,16 @@ export function getSearchWords( query = navUtils.getQuery() ) {
  * @param {Object} query object of params to be updated.
  * @param {string} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
+ * @param {string} page Page key (defaults to "wc-admin")
  * @return {string}  Updated URL merging query params into existing params.
  */
 export function getNewPath(
 	query,
 	path = getPath(),
-	currentQuery = getQuery()
+	currentQuery = getQuery(),
+	page = 'wc-admin'
 ) {
-	const args = { page: 'wc-admin', ...currentQuery, ...query };
+	const args = { page, ...currentQuery, ...query };
 	if ( path !== '/' ) {
 		args.path = path;
 	}
@@ -161,13 +158,15 @@ export function onQueryChange( param, path = getPath(), query = getQuery() ) {
  * @param {Object} query object of params to be updated.
  * @param {string} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
+ * @param {string} page Page key (defaults to "wc-admin")
  */
 export function updateQueryString(
 	query,
 	path = getPath(),
-	currentQuery = getQuery()
+	currentQuery = getQuery(),
+	page = 'wc-admin'
 ) {
-	const newPath = getNewPath( query, path, currentQuery );
+	const newPath = getNewPath( query, path, currentQuery, page );
 	getHistory().push( newPath );
 }
 
@@ -193,20 +192,13 @@ WooNavigationItem.Slot = ( { name } ) => (
  * the same `context` as those created in the /client folder. This problem is due
  * to WC Admin bundling @wordpress/components instead of enqueuing and using
  * wp.components from the window.
- *
- * @param {Object} param0
- * @param {Array} param0.children - Node children.
  */
-export const NavSlotFillProvider = ( { children } ) => (
-	<SlotFillProvider>{ children }</SlotFillProvider>
-);
+export { SlotFillProvider as NavSlotFillProvider } from '@wordpress/components';
 
 /**
  * Similar to NavSlotFillProvider above, this is a workaround because components
  * exported from this package do not have the same `context` as those created
  * in the /client folder. This problem is due to WC Admin bundling @wordpress/components
  * instead of enqueuing and using wp.components from the window.
- *
- * @param {string} name - slot name.
  */
-export const useNavSlot = ( name ) => useSlot( name );
+export { __experimentalUseSlot as useNavSlot } from '@wordpress/components';

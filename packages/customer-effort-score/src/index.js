@@ -1,12 +1,18 @@
 /**
  * External dependencies
  */
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
-import { noop } from 'lodash';
+
+/**
+ * Internal dependencies
+ */
+import CustomerFeedbackModal from './customer-feedback-modal';
+
+const noop = () => {};
 
 /**
  * Use `CustomerEffortScore` to gather a customer effort score.
@@ -14,43 +20,53 @@ import { noop } from 'lodash';
  * NOTE: This should live in @woocommerce/customer-effort-score to allow
  * reuse.
  *
- * @param {Object}   props                Component props.
- * @param {Function} props.trackCallback  Function to call when the results should be tracked.
- * @param {string}   props.label          The label displayed in the modal.
- * @param {Function} props.createNotice   Create a notice (snackbar).
- * @param {Function} props.openedCallback Function to call when the modal is opened.
- * @param {Object}   props.icon           Icon (React component) to be shown on the notice.
+ * @param {Object} props                             Component props.
+ * @param {Function} props.recordScoreCallback       Function to call when the score should be recorded.
+ * @param {string} props.label                       The label displayed in the modal.
+ * @param {Function} props.createNotice              Create a notice (snackbar).
+ * @param {Function} props.onNoticeShownCallback     Function to call when the notice is shown.
+ * @param {Function} props.onNoticeDismissedCallback Function to call when the notice is dismissed.
+ * @param {Function} props.onModalShownCallback      Function to call when the modal is shown.
+ * @param {Object} props.icon                        Icon (React component) to be shown on the notice.
  */
 function CustomerEffortScore( {
-	trackCallback,
+	recordScoreCallback,
 	label,
 	createNotice,
-	openedCallback = noop,
+	onNoticeShownCallback = noop,
+	onNoticeDismissedCallback = noop,
+	onModalShownCallback = noop,
 	icon,
 } ) {
-	const [ score, setScore ] = useState( 0 );
 	const [ shouldCreateNotice, setShouldCreateNotice ] = useState( true );
 	const [ visible, setVisible ] = useState( false );
 
-	if ( shouldCreateNotice ) {
+	useEffect( () => {
+		if ( ! shouldCreateNotice ) {
+			return;
+		}
+
 		createNotice( 'success', label, {
 			actions: [
 				{
 					label: __( 'Give feedback', 'woocommerce-admin' ),
 					onClick: () => {
 						setVisible( true );
-
-						openedCallback();
+						onModalShownCallback();
 					},
 				},
 			],
 			icon,
 			explicitDismiss: true,
-			onDismiss: openedCallback,
+			onDismiss: onNoticeDismissedCallback,
 		} );
 
 		setShouldCreateNotice( false );
 
+		onNoticeShownCallback();
+	}, [ shouldCreateNotice ] );
+
+	if ( shouldCreateNotice ) {
 		return null;
 	}
 
@@ -58,25 +74,19 @@ function CustomerEffortScore( {
 		return null;
 	}
 
-	function close() {
-		setScore( 3 ); // TODO let this happen in the UI
-
-		setVisible( false );
-		trackCallback( score );
-	}
-
 	return (
-		<p className="customer-effort-score_modal">
-			{ label } <button onClick={ close }>Click me</button>
-		</p>
+		<CustomerFeedbackModal
+			label={ label }
+			recordScoreCallback={ recordScoreCallback }
+		/>
 	);
 }
 
 CustomerEffortScore.propTypes = {
 	/**
-	 * The function to call when the modal is actioned.
+	 * The function to call to record the score.
 	 */
-	trackCallback: PropTypes.func.isRequired,
+	recordScoreCallback: PropTypes.func.isRequired,
 	/**
 	 * The label displayed in the modal.
 	 */
@@ -86,9 +96,17 @@ CustomerEffortScore.propTypes = {
 	 */
 	createNotice: PropTypes.func.isRequired,
 	/**
-	 * Callback executed when the modal is opened.
+	 * The function to call when the notice is shown.
 	 */
-	openedCallback: PropTypes.func,
+	onNoticeShownCallback: PropTypes.func,
+	/**
+	 * The function to call when the notice is dismissed.
+	 */
+	onNoticeDismissedCallback: PropTypes.func,
+	/**
+	 * The function to call when the modal is shown.
+	 */
+	onModalShownCallback: PropTypes.func,
 	/**
 	 * Icon (React component) to be displayed.
 	 */

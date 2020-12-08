@@ -26,12 +26,11 @@ const NavigationPlugin = () => {
 	if ( ! isWCAdmin( window.location.href ) ) {
 		return null;
 	}
-
-	const reports = getReports();
+	const reports = getReports().filter( ( item ) => item.navArgs );
 	const pages = getPages()
-		.filter( ( page ) => page.id )
+		.filter( ( page ) => page.navArgs )
 		.map( ( page ) => {
-			if ( page.id === 'woocommerce-analytics-settings' ) {
+			if ( page.path === '/analytics/settings' ) {
 				return {
 					...page,
 					breadcrumbs: [ __( 'Analytics', 'woocommerce-admin' ) ],
@@ -43,7 +42,10 @@ const NavigationPlugin = () => {
 	return (
 		<>
 			{ pages.map( ( page ) => (
-				<WooNavigationItem item={ page.id } key={ page.id }>
+				<WooNavigationItem
+					item={ page.navArgs.id }
+					key={ page.navArgs.id }
+				>
 					<Link
 						className="components-button"
 						href={ getNewPath( persistedQuery, page.path, {} ) }
@@ -54,7 +56,10 @@ const NavigationPlugin = () => {
 				</WooNavigationItem>
 			) ) }
 			{ reports.map( ( item ) => (
-				<WooNavigationItem item={ item.id } key={ item.report }>
+				<WooNavigationItem
+					item={ item.navArgs.id }
+					key={ item.navArgs.id }
+				>
 					<Link
 						className="components-button"
 						href={ getNewPath(

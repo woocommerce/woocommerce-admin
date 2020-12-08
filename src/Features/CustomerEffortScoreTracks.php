@@ -73,6 +73,11 @@ class CustomerEffortScoreTracks {
 			return;
 		}
 
+		// Do not hook up the action handlers if a mobile device is used.
+		if ( wp_is_mobile() ) {
+			return;
+		}
+
 		// Only enqueue a survey if tracking is allowed.
 		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking', 'no' );
 		if ( ! $allow_tracking ) {
@@ -220,6 +225,16 @@ class CustomerEffortScoreTracks {
 			array()
 		);
 
+		$has_duplicate = array_filter(
+			$queue,
+			function ( $queue_item ) use ( $item ) {
+				return $queue_item['action'] === $item['action'];
+			}
+		);
+		if ( $has_duplicate ) {
+			return;
+		}
+
 		$queue[] = $item;
 
 		update_option(
@@ -349,14 +364,15 @@ class CustomerEffortScoreTracks {
 
 		$this->enqueue_to_ces_tracks(
 			array(
-				'action'    => self::SETTINGS_CHANGE_ACTION_NAME,
-				'label'     => __(
+				'action'         => self::SETTINGS_CHANGE_ACTION_NAME,
+				'label'          => __(
 					'How easy was it to update your settings?',
 					'woocommerce-admin'
 				),
-				'pagenow'   => 'woocommerce_page_wc-settings',
-				'adminpage' => 'woocommerce_page_wc-settings',
-				'props'     => array(),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'woocommerce_page_wc-settings',
+				'adminpage'      => 'woocommerce_page_wc-settings',
+				'props'          => (object) array(),
 			)
 		);
 	}

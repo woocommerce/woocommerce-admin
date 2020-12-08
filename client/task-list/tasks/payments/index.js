@@ -65,7 +65,7 @@ class Payments extends Component {
 			: 'stripe';
 	}
 
-	markConfigured( method ) {
+	markConfigured( method, queryParams = {} ) {
 		const { clearTaskStatusCache } = this.props;
 		const { enabledMethods } = this.state;
 
@@ -82,7 +82,9 @@ class Payments extends Component {
 			payment_method: method,
 		} );
 
-		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
+		getHistory().push(
+			getNewPath( { ...queryParams, task: 'payments' }, '/', {} )
+		);
 	}
 
 	getCurrentMethod() {
@@ -351,6 +353,7 @@ export default compose(
 			'woocommerce_bacs_settings',
 			'woocommerce_bacs_accounts',
 			'woocommerce_eway_settings',
+			'woocommerce_razorpay_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {
