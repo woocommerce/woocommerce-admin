@@ -171,7 +171,6 @@ export class Search extends Component {
 					hideBeforeSearch
 					inlineTags={ inlineTags }
 					isSearchable
-					label={ placeholder }
 					getSearchExpression={ autocompleter.getSearchExpression }
 					multiple={ multiple }
 					placeholder={ placeholder }
