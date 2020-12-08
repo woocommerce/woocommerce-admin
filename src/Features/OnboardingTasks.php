@@ -396,7 +396,7 @@ class OnboardingTasks {
 	}
 
 	/**
-	 * Removes item to the extended task list.
+	 * Removes an item from the extended task list.
 	 *
 	 * @param mixed $task_name Task name to remove.
 	 */
