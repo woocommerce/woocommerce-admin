@@ -105,7 +105,8 @@ class ProductAttributes extends \WC_REST_Product_Attributes_Controller {
 				"SELECT meta_value
 				FROM {$wpdb->postmeta}
 				WHERE meta_key = '_product_attributes'
-				AND meta_value LIKE %s",
+				AND meta_value LIKE %s
+				LIMIT 100",
 				$like
 			),
 			ARRAY_A
