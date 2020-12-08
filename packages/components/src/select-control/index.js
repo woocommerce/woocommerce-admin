@@ -16,23 +16,17 @@ import List from './list';
 import Tags from './tags';
 import Control from './control';
 
+const initialState = { isExpanded: false, isFocused: false, query: '' };
+
 /**
  * A search box which filters options while typing,
  * allowing a user to select from an option from a filtered list.
  */
 export class SelectControl extends Component {
-	static getInitialState() {
-		return {
-			isExpanded: false,
-			isFocused: false,
-			query: '',
-		};
-	}
-
 	constructor( props ) {
 		super( props );
 		this.state = {
-			...this.constructor.getInitialState(),
+			...initialState,
 			filteredOptions: [],
 			selectedIndex: 0,
 		};
@@ -55,15 +49,14 @@ export class SelectControl extends Component {
 	}
 
 	reset( selected = this.getSelected() ) {
-		const { multiple } = this.props;
-		const initialState = this.constructor.getInitialState();
-
+		const { inlineTags } = this.props;
+		const newState = { ...initialState };
 		// Reset to the option label if not using tags.
-		if ( ! multiple && selected.length && selected[ 0 ].label ) {
-			initialState.query = selected[ 0 ].label;
+		if ( ! inlineTags && selected.length && selected[ 0 ].label ) {
+			newState.query = selected[ 0 ].label;
 		}
 
-		this.setState( initialState );
+		this.setState( newState );
 	}
 
 	handleFocusOutside() {

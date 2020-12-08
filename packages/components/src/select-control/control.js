@@ -122,6 +122,8 @@ class Control extends Component {
 			onSearch,
 			placeholder,
 			searchInputType,
+			multiple,
+			selected,
 		} = this.props;
 		const { isActive } = this.state;
 
@@ -132,6 +134,7 @@ class Control extends Component {
 				id={ `woocommerce-select-control-${ instanceId }__control-input` }
 				ref={ this.input }
 				type={ isSearchable ? searchInputType : 'button' }
+				disabled={ ! multiple && inlineTags && selected.length > 0 }
 				value={ this.getInputValue() }
 				placeholder={ isActive ? placeholder : '' }
 				onChange={ this.updateSearch( onSearch ) }
@@ -156,6 +159,7 @@ class Control extends Component {
 
 	getInputValue() {
 		const {
+			inlineTags,
 			isFocused,
 			isSearchable,
 			multiple,
@@ -165,7 +169,7 @@ class Control extends Component {
 		const selectedValue = selected.length ? selected[ 0 ].label : '';
 
 		// Show the selected value for simple select dropdowns.
-		if ( ! multiple && ! isFocused ) {
+		if ( ! multiple && ! isFocused && ! inlineTags ) {
 			return selectedValue;
 		}
 
