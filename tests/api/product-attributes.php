@@ -138,6 +138,35 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * Test getting a single attribute by slug.
+	 */
+	public function test_by_slug() {
+		wp_set_current_user( $this->user );
+
+		$request   = new WP_REST_Request( 'GET', $this->endpoint . '/numeric-size' );
+		$response  = $this->server->dispatch( $request );
+		$attribute = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 'numeric-size', $attribute['id'] );
+		$this->assertEquals( 'numeric-size', $attribute['slug'] );
+		$this->assertEquals( 'Numeric Size', $attribute['name'] );
+	}
+
+	/**
+	 * Test not finding a single attribute by slug.
+	 */
+	public function test_by_slug_404() {
+		wp_set_current_user( $this->user );
+
+		$request   = new WP_REST_Request( 'GET', $this->endpoint . '/not-a-real-slug' );
+		$response  = $this->server->dispatch( $request );
+		$attribute = $response->get_data();
+
+		$this->assertEquals( 404, $response->get_status() );
+	}
+
+	/**
 	 * Test terms schema.
 	 */
 	public function test_terms_schema() {

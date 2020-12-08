@@ -23,6 +23,32 @@ class ProductAttributes extends \WC_REST_Product_Attributes_Controller {
 	protected $namespace = 'wc-analytics';
 
 	/**
+	 * Register the routes for custom product attributes.
+	 */
+	public function register_routes() {
+		parent::register_routes();
+
+		register_rest_route(
+			$this->namespace,
+			'products/attributes/(?P<slug>[a-z0-9_\-]+)',
+			array(
+				'args'   => array(
+					'slug' => array(
+						'description' => __( 'Slug identifier for the resource.', 'woocommerce-admin' ),
+						'type'        => 'string',
+					),
+				),
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item_by_slug' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+	}
+
+	/**
 	 * Get the query params for collections
 	 *
 	 * @return array
@@ -63,7 +89,7 @@ class ProductAttributes extends \WC_REST_Product_Attributes_Controller {
 		}
 
 		$search_string       = $request['search'];
-		$matching_attributes = $this->get_custom_attributes( $search_string );
+		$matching_attributes = $this->get_custom_attributes( array( 'name' => $search_string ) );
 		$taxonomy_attributes = wc_get_attribute_taxonomies();
 
 		foreach ( $taxonomy_attributes as $attribute_obj ) {
@@ -84,20 +110,63 @@ class ProductAttributes extends \WC_REST_Product_Attributes_Controller {
 	}
 
 	/**
-	 * Query custom attributes by name.
+	 * Get a single attribute by it's slug.
 	 *
-	 * @param string $search Search string.
-	 * @return array Matching attributes, formatted for response.
+	 * @param WP_REST_Request $request The API request.
+	 * @return WP_REST_Response
 	 */
-	protected function get_custom_attributes( $search ) {
-		global $wpdb;
-
-		if ( empty( $search ) ) {
+	public function get_item_by_slug( $request ) {
+		if ( empty( $request['slug'] ) ) {
 			return array();
 		}
 
-		// Get as close as we can to matching the name property of custom attributes using SQL.
-		$like = '%"name";s:%:"%' . $wpdb->esc_like( $search ) . '%"%';
+		$matching_attributes = $this->get_custom_attributes( array( 'slug' => $request['slug'] ) );
+
+		if ( empty( $matching_attributes ) ) {
+			return new \WP_Error(
+				'woocommerce_rest_product_attribute_not_found',
+				__( 'No product attribute with that slug was found.', 'woocommerce-admin' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$response = rest_ensure_response( $matching_attributes[0] );
+
+		return $response;
+	}
+
+	/**
+	 * Query custom attributes by name or slug.
+	 *
+	 * @param string $args Search arguments, either name or slug.
+	 * @return array Matching attributes, formatted for response.
+	 */
+	protected function get_custom_attributes( $args ) {
+		global $wpdb;
+
+		$args = wp_parse_args(
+			$args,
+			array(
+				'name' => '',
+				'slug' => '',
+			)
+		);
+
+		if ( empty( $args['name'] ) && empty( $args['slug'] ) ) {
+			return array();
+		}
+
+		$mode = $args['name'] ? 'name' : 'slug';
+
+		if ( 'name' === $mode ) {
+			$name = $args['name'];
+			// Get as close as we can to matching the name property of custom attributes using SQL.
+			$like = '%"name";s:%:"%' . $wpdb->esc_like( $name ) . '%"%';
+		} else {
+			$slug = sanitize_title_for_query( $args['slug'] );
+			// Get as close as we can to matching the slug property of custom attributes using SQL.
+			$like = '%s:' . strlen( $slug ) . ':"' . $slug . '";a:6:{%';
+		}
 
 		// Find all serialized product attributes with names like the search string.
 		$query_results = $wpdb->get_results(
@@ -138,7 +207,11 @@ class ProductAttributes extends \WC_REST_Product_Attributes_Controller {
 
 				// Skip custom attributes that didn't match the query.
 				// (There can be any number of attributes in the meta value).
-				if ( false === stripos( $meta_value['name'], $search ) ) {
+				if ( ( 'name' === $mode ) && ( false === stripos( $meta_value['name'], $name ) ) ) {
+					continue;
+				}
+
+				if ( ( 'slug' === $mode ) && ( $meta_attribute_key !== $slug ) ) {
 					continue;
 				}
 
