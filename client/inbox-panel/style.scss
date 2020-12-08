@@ -11,7 +11,6 @@
 		flex-direction: column;
 		img {
 			width: 100%;
-			height: 120px;
 		}
 	}
 	&.thumbnail {
@@ -176,7 +175,7 @@
 	}
 }
 
-.woocommerce-layout__activity-panel-content {
+.woocommerce-homepage-notes-wrapper {
 	padding-top: $gap-large;
 }
 
