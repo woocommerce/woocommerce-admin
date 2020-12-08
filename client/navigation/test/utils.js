@@ -39,7 +39,93 @@ const sampleMenuItems = [
 		title: 'Page with multiple arguments',
 		url: 'admin.php?page=wc-admin&path=/test-path&section=section-name',
 	},
+	{
+		id: 'multiple-args-plus-one',
+		title: 'Page with same multiple arguments plus an additional one',
+		url:
+			'admin.php?page=wc-admin&path=/test-path&section=section-name&version=22',
+	},
+	{
+		id: 'hash-and-multiple-args',
+		title: 'Page with multiple arguments and a hash',
+		url:
+			'admin.php?page=wc-admin&path=/test-path&section=section-name#anchor',
+	},
 ];
+
+const runGetMatchingItemTests = ( items ) => {
+	it( 'should get the closest matched item', () => {
+		window.location = new URL( getAdminLink( 'admin.php?page=wc-admin' ) );
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'main' );
+	} );
+
+	it( 'should match the item without hash if a better match does not exist', () => {
+		window.location = new URL(
+			getAdminLink( 'admin.php?page=wc-admin#hash' )
+		);
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'main' );
+	} );
+
+	it( 'should exactly match the item with a hash if it exists', () => {
+		window.location = new URL(
+			getAdminLink( 'admin.php?page=wc-admin&path=/test-path#anchor' )
+		);
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'hash' );
+	} );
+
+	it( 'should roughly match the item if all menu item arguments exist', () => {
+		window.location = new URL(
+			getAdminLink(
+				'admin.php?page=wc-admin&path=/test-path&section=section-name'
+			)
+		);
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'multiple-args' );
+	} );
+
+	it( 'should match an item with irrelevant query parameters', () => {
+		window.location = new URL(
+			getAdminLink(
+				'admin.php?page=wc-admin&path=/test-path&section=section-name&foo=bar'
+			)
+		);
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'multiple-args' );
+	} );
+
+	it( 'should match an item with similar query args plus one additional arg', () => {
+		window.location = new URL(
+			getAdminLink(
+				'admin.php?page=wc-admin&path=/test-path&section=section-name&version=22'
+			)
+		);
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'multiple-args-plus-one' );
+	} );
+
+	it( 'should match an item with query parameters in mixed order', () => {
+		window.location = new URL(
+			getAdminLink(
+				'admin.php?foo=bar&page=wc-admin&path=/test-path&section=section-name'
+			)
+		);
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'multiple-args' );
+	} );
+
+	it( 'should match an item with query parameters and a hash', () => {
+		window.location = new URL(
+			getAdminLink(
+				'admin.php?foo=bar&page=wc-admin&path=/test-path&section=section-name#anchor'
+			)
+		);
+		const matchingItem = getMatchingItem( items );
+		expect( matchingItem.id ).toBe( 'hash-and-multiple-args' );
+	} );
+};
 
 describe( 'getMatchingItem', () => {
 	beforeAll( () => {
@@ -50,57 +136,9 @@ describe( 'getMatchingItem', () => {
 		window.location = originalLocation;
 	} );
 
-	it( 'should get the closest matched item', () => {
-		window.location = new URL( getAdminLink( 'admin.php?page=wc-admin' ) );
-		const matchingItem = getMatchingItem( sampleMenuItems );
-		expect( matchingItem.id ).toBe( 'main' );
-	} );
-
-	it( 'should match the item without hash if a better match does not exist', () => {
-		window.location = new URL(
-			getAdminLink( 'admin.php?page=wc-admin#hash' )
-		);
-		const matchingItem = getMatchingItem( sampleMenuItems );
-		expect( matchingItem.id ).toBe( 'main' );
-	} );
-
-	it( 'should exactly match the item with a hash if it exists', () => {
-		window.location = new URL(
-			getAdminLink( 'admin.php?page=wc-admin&path=/test-path#anchor' )
-		);
-		const matchingItem = getMatchingItem( sampleMenuItems );
-		expect( matchingItem.id ).toBe( 'hash' );
-	} );
-
-	it( 'should roughly match the item if all menu item arguments exist', () => {
-		window.location = new URL(
-			getAdminLink(
-				'admin.php?page=wc-admin&path=/test-path&section=section-name'
-			)
-		);
-		const matchingItem = getMatchingItem( sampleMenuItems );
-		expect( matchingItem.id ).toBe( 'multiple-args' );
-	} );
-
-	it( 'should match an item with irrelevant query parameters', () => {
-		window.location = new URL(
-			getAdminLink(
-				'admin.php?page=wc-admin&path=/test-path&section=section-name&foo=bar'
-			)
-		);
-		const matchingItem = getMatchingItem( sampleMenuItems );
-		expect( matchingItem.id ).toBe( 'multiple-args' );
-	} );
-
-	it( 'should match an item with query parameters in mixed order', () => {
-		window.location = new URL(
-			getAdminLink(
-				'admin.php?foo=bar&page=wc-admin&path=/test-path&section=section-name'
-			)
-		);
-		const matchingItem = getMatchingItem( sampleMenuItems );
-		expect( matchingItem.id ).toBe( 'multiple-args' );
-	} );
+	runGetMatchingItemTests( sampleMenuItems );
+	// re-run the tests with sampleMenuItems in reverse order.
+	runGetMatchingItemTests( sampleMenuItems.reverse() );
 } );
 
 describe( 'getDefaultMatchExpression', () => {
