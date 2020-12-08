@@ -24,14 +24,14 @@ export const getFullUrl = ( url ) => {
 };
 
 /**
- * Check to see if a URL matches a given window location.
+ * Get a match score for a menu item given a location.
  *
  * @param {Object} location Window location
  * @param {string} itemUrl	 URL to compare
  * @param {string} itemExpression Custom match expression
  * @return {number} Number of matches or 0 if not matched.
  */
-export const isMatch = ( location, itemUrl, itemExpression = null ) => {
+export const getMatchScore = ( location, itemUrl, itemExpression = null ) => {
 	if ( ! itemUrl ) {
 		return;
 	}
@@ -40,7 +40,7 @@ export const isMatch = ( location, itemUrl, itemExpression = null ) => {
 	const { href } = location;
 	const defaultExpression = getDefaultMatchExpression( fullUrl );
 	const regexp = new RegExp( itemExpression || defaultExpression, 'i' );
-	return Boolean( decodeURIComponent( href ).match( regexp ) );
+	return ( decodeURIComponent( href ).match( regexp ) || [] ).length;
 };
 
 /**
@@ -110,15 +110,16 @@ export const addHistoryListener = ( listener ) => {
  */
 export const getMatchingItem = ( items ) => {
 	let matchedItem = null;
+	let highestMatchScore = 0;
 
 	items.forEach( ( item ) => {
-		if (
-			isMatch(
-				window.location,
-				getAdminLink( item.url ),
-				item.matchExpression
-			)
-		) {
+		const score = getMatchScore(
+			window.location,
+			getAdminLink( item.url ),
+			item.matchExpression
+		);
+		if ( score > 0 && score >= highestMatchScore ) {
+			highestMatchScore = score;
 			matchedItem = item;
 		}
 	} );
