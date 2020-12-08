@@ -11,6 +11,7 @@ import classnames from 'classnames';
  */
 import SelectControl from '../select-control';
 import {
+	attributes,
 	countries,
 	coupons,
 	customers,
@@ -42,6 +43,8 @@ export class Search extends Component {
 
 	getAutocompleter() {
 		switch ( this.props.type ) {
+			case 'attributes':
+				return attributes;
 			case 'categories':
 				return productCategory;
 			case 'countries':
@@ -202,6 +205,7 @@ Search.propTypes = {
 	 * The object type to be used in searching.
 	 */
 	type: PropTypes.oneOf( [
+		'attributes',
 		'categories',
 		'countries',
 		'coupons',
