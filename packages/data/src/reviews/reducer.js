@@ -23,9 +23,16 @@ const reducer = (
 	switch ( type ) {
 		case TYPES.UPDATE_REVIEWS:
 			const ids = [];
+			const justFields =
+				query && query._fields && query._fields.length > 0;
 			const nextReviews = reviews.reduce( ( result, review ) => {
 				ids.push( review.id );
-				result[ review.id ] = review;
+				result[ review.id ] = {
+					...( justFields && state.data[ review.id ]
+						? state.data[ review.id ]
+						: {} ),
+					...review,
+				};
 				return result;
 			}, {} );
 			return {
