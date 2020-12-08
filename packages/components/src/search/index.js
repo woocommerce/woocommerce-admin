@@ -229,17 +229,22 @@ Search.propTypes = {
 	 */
 	placeholder: PropTypes.string,
 	/**
-	 * An array of objects describing selected values. If the label of the selected
-	 * value is omitted, the Tag of that value will not be rendered inside the
-	 * search box.
+	 * An array of objects describing selected values or optionally a string for a single value.
+	 * If the label of the selected value is omitted, the Tag of that value will not
+	 * be rendered inside the search box.
 	 */
-	selected: PropTypes.arrayOf(
-		PropTypes.shape( {
-			key: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] )
-				.isRequired,
-			label: PropTypes.string,
-		} )
-	),
+	selected: PropTypes.oneOfType( [
+		PropTypes.string,
+		PropTypes.arrayOf(
+			PropTypes.shape( {
+				key: PropTypes.oneOfType( [
+					PropTypes.number,
+					PropTypes.string,
+				] ).isRequired,
+				label: PropTypes.string,
+			} )
+		),
+	] ),
 	/**
 	 * Render tags inside input, otherwise render below input.
 	 */
