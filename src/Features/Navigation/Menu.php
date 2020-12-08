@@ -330,14 +330,14 @@ class Menu {
 	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
 	 *    ).
 	 */
-	public static function add_plugin_setting_item( $args ) {
+	public static function add_setting_item( $args ) {
 		unset( $args['order'] );
 
 		if ( isset( $args['parent'] ) || isset( $args['menuId'] ) ) {
 			error_log(  // phpcs:ignore
 				sprintf(
 					/* translators: 1: Duplicate menu item path. */
-					esc_html__( 'The item ID %1$s attempted to register using an invalid option. The arguments `menuId` and `parent` are not allowed for add_plugin_setting_item()', 'woocommerce-admin' ),
+					esc_html__( 'The item ID %1$s attempted to register using an invalid option. The arguments `menuId` and `parent` are not allowed for add_setting_item()', 'woocommerce-admin' ),
 					'`' . $args['id'] . '`'
 				)
 			);
