@@ -38,6 +38,12 @@ export const getMatchScore = ( location, itemUrl, itemExpression = null ) => {
 
 	const fullUrl = getFullUrl( itemUrl );
 	const { href } = location;
+
+	// Return highest possible score for exact match.
+	if ( fullUrl === href ) {
+		return Number.MAX_SAFE_INTEGER;
+	}
+
 	const defaultExpression = getDefaultMatchExpression( fullUrl );
 	const regexp = new RegExp( itemExpression || defaultExpression, 'i' );
 	return ( decodeURIComponent( href ).match( regexp ) || [] ).length;
