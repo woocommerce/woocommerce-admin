@@ -154,6 +154,7 @@ export class Search extends Component {
 			showClearButton,
 			staticResults,
 			disabled,
+			multiple,
 		} = this.props;
 		const { options } = this.state;
 		const inputType = autocompleter.inputType
@@ -172,7 +173,7 @@ export class Search extends Component {
 					isSearchable
 					label={ placeholder }
 					getSearchExpression={ autocompleter.getSearchExpression }
-					multiple
+					multiple={ multiple }
 					placeholder={ placeholder }
 					onChange={ this.updateSelected }
 					onFilter={ this.appendFreeTextSearch }
@@ -266,6 +267,7 @@ Search.defaultProps = {
 	showClearButton: false,
 	staticResults: false,
 	disabled: false,
+	multiple: true,
 };
 
 export default Search;
