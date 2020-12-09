@@ -23,6 +23,7 @@ class Init {
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_admin_features', array( $this, 'maybe_remove_nav_feature' ), 0 );
 		add_action( 'update_option_woocommerce_navigation_enabled', array( $this, 'reload_page_on_toggle' ), 10, 2 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_opt_out_scripts' ) );
 
 		if ( Loader::is_feature_enabled( 'navigation' ) ) {
 			add_action( 'in_admin_header', array( __CLASS__, 'embed_navigation' ) );
@@ -104,5 +105,26 @@ class Init {
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
 			wp_safe_redirect( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 		}
+	}
+
+	/**
+	 * Enqueue the opt out scripts.
+	 */
+	public function enqueue_opt_out_scripts() {
+		$rtl = is_rtl() ? '.rtl' : '';
+		wp_enqueue_style(
+			'wc-admin-navigation-opt-out',
+			Loader::get_url( "navigation-opt-out/style{$rtl}", 'css' ),
+			array( 'wp-components' ),
+			Loader::get_file_version( 'css' )
+		);
+
+		wp_enqueue_script(
+			'wc-admin-navigation-opt-out',
+			Loader::get_url( 'wp-admin-scripts/navigation-opt-out', 'js' ),
+			array( 'wp-i18n', 'wp-element', WC_ADMIN_APP ),
+			Loader::get_file_version( 'js' ),
+			true
+		);
 	}
 }
