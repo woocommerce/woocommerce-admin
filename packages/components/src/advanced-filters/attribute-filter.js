@@ -27,7 +27,8 @@ const getScreenReaderText = ( {
 	if (
 		! attributeTerms ||
 		attributeTerms.length === 0 ||
-		selectedAttribute === false ||
+		! selectedAttribute ||
+		selectedAttribute.length === 0 ||
 		selectedAttributeTerm === ''
 	) {
 		return '';
@@ -39,8 +40,11 @@ const getScreenReaderText = ( {
 		  ) || {}
 		: {};
 
-	const attributeName = selectedAttribute.label;
-	const attributeTerm = selectedAttributeTerm.label;
+	const attributeName = selectedAttribute[ 0 ].label;
+	const termObject = attributeTerms.find(
+		( { key } ) => key === selectedAttributeTerm
+	);
+	const attributeTerm = termObject && termObject.label;
 
 	if ( ! attributeName || ! attributeTerm ) {
 		return '';
