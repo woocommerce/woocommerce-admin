@@ -2,10 +2,10 @@ version: "3"
 
 services:
   phpunit:
-    build: "phpunit"
+    build: "."
     volumes:
-      - "testsuite:/tmp"
-      - "../:/app"
+      - "test-suite:/tmp"
+      - "../../:/app"
     environment:
       - WC_CORE_DIR=/tmp/wordpress/wp-content/plugins/woocommerce
       - DB_USER=root
@@ -27,4 +27,4 @@ services:
       timeout: 5s
 
 volumes:
-  testsuite: {}
+  test-suite: {}
