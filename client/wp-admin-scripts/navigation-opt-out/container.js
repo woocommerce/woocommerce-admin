@@ -46,6 +46,9 @@ export default class NavigationOptOutContainer extends Component {
 						isPrimary
 						target="_blank"
 						href="https://automattic.survey.fm/new-navigation-opt-out"
+						onClick={ () =>
+							this.setState( { isModalOpen: false } )
+						}
 					>
 						{ __( 'Share feedback', 'woocommerce-admin' ) }
 					</Button>
