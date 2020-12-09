@@ -26,7 +26,7 @@
 	],
 	"main": "index.js",
 	"dependencies": {
-		"@wordpress/eslint-plugin": "^7.1.0",
+		"@wordpress/eslint-plugin": "^7.2.1",
 		"eslint": "^7",
 		"eslint-plugin-react-hooks": "^4.0.4",
 		"eslint-plugin-testing-library": "^3.3.1",
