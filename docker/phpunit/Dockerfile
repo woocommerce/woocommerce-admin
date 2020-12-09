@@ -50,5 +50,8 @@ RUN curl -sL https://phar.phpunit.de/phpunit-7.phar > /usr/local/bin/phpunit && 
 VOLUME ["/app"]
 WORKDIR /app
 
-ENTRYPOINT ["/usr/local/bin/phpunit"]
-CMD ["--help"]
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["-c phpunit.xml.dist"]

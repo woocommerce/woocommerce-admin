@@ -5,11 +5,13 @@ services:
     build: "phpunit"
     volumes:
       - "testsuite:/tmp"
-      - "../:/plugin"
-    working_dir: "/plugin"
-    command: "-c /plugin/phpunit.xml.dist"
+      - "../:/app"
     environment:
       - WC_CORE_DIR=/tmp/wordpress/wp-content/plugins/woocommerce
+      - DB_USER=root
+      - DB_PASS=password
+      - DB_NAME=wordpress_test
+      - DB_HOST=phpunit-db
     depends_on:
       - phpunit-db
 
