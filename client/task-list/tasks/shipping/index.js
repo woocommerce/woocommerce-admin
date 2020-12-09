@@ -23,7 +23,7 @@ import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import { createNoticesFromResponse } from '../../../lib/notices';
 
-class Shipping extends Component {
+export class Shipping extends Component {
 	constructor( props ) {
 		super( props );
 
