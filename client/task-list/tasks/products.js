@@ -11,8 +11,22 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
+import { ProductTemplateModal } from './products/product-template-modal';
 
 const subTasks = [
+	{
+		title: __( 'Start with a template (recommended)', 'woocommerce-admin' ),
+		content: __(
+			'For small stores we recommend adding products manually',
+			'woocommerce-admin'
+		),
+		before: <i className="material-icons-outlined">add_box</i>,
+		after: <i className="material-icons-outlined">chevron_right</i>,
+		onClick: () =>
+			recordEvent( 'tasklist_add_product', {
+				method: 'product_template',
+			} ),
+	},
 	{
 		title: __( 'Add manually (recommended)', 'woocommerce-admin' ),
 		content: __(
@@ -57,16 +71,16 @@ const subTasks = [
 	},
 ];
 
-export default class Products extends Component {
-	render() {
-		return (
-			<Fragment>
-				<Card className="woocommerce-task-card">
-					<CardBody size={ null }>
-						<List items={ subTasks } />
-					</CardBody>
-				</Card>
-			</Fragment>
-		);
-	}
+export default function Products() {
+	const [ selectTemplate, setSelectTemplate ] = useState( null );
+	return (
+		<Fragment>
+			<Card className="woocommerce-task-card">
+				<CardBody size={ null }>
+					<List items={ subTasks } />
+				</CardBody>
+			</Card>
+			<ProductTemplateModal />
+		</Fragment>
+	);
 }
