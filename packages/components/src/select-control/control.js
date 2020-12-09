@@ -126,6 +126,7 @@ class Control extends Component {
 			selected,
 		} = this.props;
 		const { isActive } = this.state;
+		const disabled = ! multiple && inlineTags && selected.length > 0;
 
 		return (
 			<input
@@ -134,9 +135,9 @@ class Control extends Component {
 				id={ `woocommerce-select-control-${ instanceId }__control-input` }
 				ref={ this.input }
 				type={ isSearchable ? searchInputType : 'button' }
-				disabled={ ! multiple && inlineTags && selected.length > 0 }
+				disabled={ disabled }
 				value={ this.getInputValue() }
-				placeholder={ isActive ? placeholder : '' }
+				placeholder={ isActive && ! disabled ? placeholder : '' }
 				onChange={ this.updateSearch( onSearch ) }
 				onFocus={ this.onFocus( onSearch ) }
 				onBlur={ this.onBlur }
@@ -191,8 +192,11 @@ class Control extends Component {
 			isSearchable,
 			label,
 			query,
+			multiple,
+			selected,
 		} = this.props;
 		const { isActive } = this.state;
+		const disabled = ! multiple && inlineTags && selected.length > 0;
 
 		return (
 			// Disable reason: The div below visually simulates an input field. Its
@@ -208,7 +212,7 @@ class Control extends Component {
 					className,
 					{
 						empty: ! query || query.length === 0,
-						'is-active': isActive,
+						'is-active': isActive && ! disabled,
 						'has-tags': inlineTags && hasTags,
 						'with-value': this.getInputValue().length,
 						'has-error': !! help,
