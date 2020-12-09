@@ -77,6 +77,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 - Enhancement: Add "filter by variations in reports" inbox note. #5208
 - Tweak: Fix inconsistent REST API parameter name for customer type filtering. #5823
+- Fix: Move collapsible config to panels object, to allow for more control. #5855
 - Enhancement: Tasks extensibility in Home Screen. #5794
 - Enhancement: Add page parameter to override default wc-admin page in Navigation API. #5821
 - Fix: Invalidate product count if the last product was updated in the list. #5790
