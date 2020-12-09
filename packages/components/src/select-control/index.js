@@ -64,13 +64,17 @@ export class SelectControl extends Component {
 	}
 
 	hasTags() {
-		const { multiple, selected } = this.props;
+		const { inlineTags, selected } = this.props;
 
-		if ( ! multiple ) {
+		if ( ! inlineTags ) {
 			return false;
 		}
 
-		return selected.some( ( item ) => Boolean( item.label ) );
+		if ( Array.isArray( selected ) ) {
+			return selected.some( ( item ) => Boolean( item.label ) );
+		}
+
+		return Boolean( selected );
 	}
 
 	getSelected() {
