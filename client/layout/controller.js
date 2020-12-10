@@ -245,7 +245,7 @@ window.wpNavMenuClassChange = function ( page, url ) {
 	const pageUrl =
 		url === '/'
 			? 'admin.php?page=wc-admin'
-			: 'admin.php?page=wc-admin&path=' + encodeURIComponent( url );
+			: 'admin.php?page=wc-admin&path=' + url;
 	const currentItemsSelector =
 		url === '/'
 			? `li > a[href$="${ pageUrl }"], li > a[href*="${ pageUrl }?"]`
