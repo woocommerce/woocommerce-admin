@@ -43,3 +43,7 @@ export async function setCheckboxToUnchecked( checkbox ) {
 
 	await checkbox.click();
 }
+
+export async function getPreviousSibling( el ) {
+	return page.evaluateHandle( ( el ) => el.previousElementSibling, el );
+}

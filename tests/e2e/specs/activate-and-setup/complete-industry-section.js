@@ -5,7 +5,12 @@
 /**
  * Internal dependencies
  */
-import { clickContinue, getElementByText } from './utils';
+import {
+	clickContinue,
+	getElementByText,
+	getPreviousSibling,
+	setCheckboxToChecked,
+} from './utils';
 import { waitForElementCount } from '../../utils/lib';
 const config = require( 'config' );
 
@@ -22,13 +27,23 @@ export async function completeIndustrySection( expectedIndustryCount = 8 ) {
 		'label',
 		'Fashion, apparel, and accessories'
 	);
-	await fashionLabel.click();
+	// get sibling checkbox
+	const fashionCheckboxContainer = await getPreviousSibling( fashionLabel );
+	const fashionCheckbox = await fashionCheckboxContainer.$( 'input' );
+
+	await setCheckboxToChecked( fashionCheckbox );
 
 	const healthBeautyLabel = await getElementByText(
 		'label',
 		'Health and beauty'
 	);
-	await healthBeautyLabel.click();
+	const healthBeautyCheckboxContainer = await getPreviousSibling(
+		fashionLabel
+	);
+	const healthBeautyCheckbox = await healthBeautyCheckboxContainer.$(
+		'input'
+	);
+	await setCheckboxToChecked( healthBeautyCheckbox );
 
 	await clickContinue();
 }
