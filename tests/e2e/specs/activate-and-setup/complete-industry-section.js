@@ -22,7 +22,8 @@ export async function completeIndustrySection( expectedIndustryCount = 8 ) {
 		expectedIndustryCount
 	);
 
-	// Select just "fashion" and "health/beauty" to get the single checkbox business section
+	// Select just "fashion" and "health/beauty" to get the single checkbox business section when
+	// filling out details for a US store.
 	const fashionLabel = await getElementByText(
 		'label',
 		'Fashion, apparel, and accessories'
