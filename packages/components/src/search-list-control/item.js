@@ -104,7 +104,7 @@ SearchListItem.propTypes = {
 	 */
 	className: PropTypes.string,
 	/**
-	 * Label to display if `showCount` is set to true. If undefined, it will use `item.count`.
+	 * Label to display in the count bubble. Takes preference over `item.count`.
 	 */
 	countLabel: PropTypes.node,
 	/**
