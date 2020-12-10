@@ -26,6 +26,7 @@ use \Automattic\WooCommerce\Admin\Notes\LaunchChecklist;
 use \Automattic\WooCommerce\Admin\Notes\RealTimeOrderAlerts;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
+use \Automattic\WooCommerce\Admin\MerchantEmailNotifications\MerchantEmailNotifications;
 use \Automattic\WooCommerce\Admin\Loader;
 use \Automattic\WooCommerce\Admin\Notes\InsightFirstSale;
 use \Automattic\WooCommerce\Admin\Notes\HomeScreenFeedback;
@@ -85,6 +86,22 @@ class Events {
 	 * Note: Order_Milestones::other_milestones is hooked to this as well.
 	 */
 	public function do_wc_admin_daily() {
+		$this->possibly_add_notes();
+
+		if ( $this->is_remote_inbox_notifications_enabled() ) {
+			DataSourcePoller::read_specs_from_data_sources();
+			RemoteInboxNotificationsEngine::run();
+		}
+
+		if ( $this->is_merchant_email_notifications_enabled() || true ) {
+			MerchantEmailNotifications::possible_send();
+		}
+	}
+
+	/**
+	 * Adds notes that should be added.
+	 */
+	protected function possibly_add_notes() {
 		NewSalesRecord::possibly_add_note();
 		MobileApp::possibly_add_note();
 		TrackingOptIn::possibly_add_note();
@@ -115,11 +132,6 @@ class Events {
 		NavigationFeedback::possibly_add_note();
 		NavigationFeedbackFollowUp::possibly_add_note();
 		FilterByProductVariationsInReports::possibly_add_note();
-
-		if ( $this->is_remote_inbox_notifications_enabled() ) {
-			DataSourcePoller::read_specs_from_data_sources();
-			RemoteInboxNotificationsEngine::run();
-		}
 	}
 
 	/**
@@ -135,6 +147,21 @@ class Events {
 
 		// Check if the site has opted out of marketplace suggestions.
 		if ( 'yes' !== get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+			return false;
+		}
+
+		// All checks have passed.
+		return true;
+	}
+
+	/**
+	 * Checks if merchant email notifications are enabled.
+	 *
+	 * @return bool Whether merchant email notifications are enabled.
+	 */
+	protected function is_merchant_email_notifications_enabled() {
+		// Check if the feature flag is disabled.
+		if ( ! Loader::is_feature_enabled( 'merchant-email-notifications' ) ) {
 			return false;
 		}
 
