@@ -22,7 +22,7 @@ services:
       MYSQL_DATABASE: "wordpress_test"
       MYSQL_ROOT_PASSWORD: "password"
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", '-u', 'root', '-ppassword' ]
       interval: 10s
       timeout: 5s
 
