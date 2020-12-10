@@ -2,22 +2,16 @@
  * External dependencies
  */
 import { Component, Suspense, lazy } from '@wordpress/element';
-import { parse, stringify } from 'qs';
-import { find, isEqual, last, omit } from 'lodash';
+import { find, isEqual, omit } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import {
-	getNewPath,
-	getPersistedQuery,
-	getHistory,
-} from '@woocommerce/navigation';
+import { getNewPath, getHistory } from '@woocommerce/navigation';
 import { Spinner } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import getReports from '../analytics/report/get-reports';
-import { isWCAdmin } from '../dashboard/utils';
 
 const AnalyticsReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report" */ '../analytics/report' )
@@ -42,8 +36,6 @@ const MarketingOverview = lazy( () =>
 const ProfileWizard = lazy( () =>
 	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
 );
-
-const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
 
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
@@ -198,7 +190,6 @@ export class Controller extends Component {
 		const { page, match, query } = this.props;
 		const { url, params } = match;
 
-		window.wpNavMenuUrlUpdate( query );
 		window.wpNavMenuClassChange( page, url );
 		return (
 			<Suspense fallback={ <Spinner /> }>
@@ -212,54 +203,6 @@ export class Controller extends Component {
 		);
 	}
 }
-
-/**
- * Update an anchor's link in sidebar to include persisted queries. Leave excluded screens
- * as is.
- *
- * @param {HTMLElement} item - Sidebar anchor link.
- * @param {Object} nextQuery - A query object to be added to updated hrefs.
- * @param {Array} excludedScreens - wc-admin screens to avoid updating.
- */
-export function updateLinkHref( item, nextQuery, excludedScreens ) {
-	if ( isWCAdmin( item.href ) ) {
-		const search = last( item.href.split( '?' ) );
-		const query = parse( search );
-		const path = query.path || 'homescreen';
-		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
-
-		const isExcludedScreen = excludedScreens.includes( screen );
-
-		const href =
-			'admin.php?' +
-			stringify(
-				Object.assign( query, isExcludedScreen ? {} : nextQuery )
-			);
-
-		// Replace the href so you can see the url on hover.
-		item.href = href;
-
-		item.onclick = ( e ) => {
-			e.preventDefault();
-			getHistory().push( href );
-		};
-	}
-}
-
-// Update's wc-admin links in wp-admin menu
-window.wpNavMenuUrlUpdate = function ( query ) {
-	const excludedScreens = applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
-		'stock',
-		'settings',
-		'customers',
-		'homescreen',
-	] );
-	const nextQuery = getPersistedQuery( query );
-
-	Array.from(
-		document.querySelectorAll( '#adminmenu a' )
-	).forEach( ( item ) => updateLinkHref( item, nextQuery, excludedScreens ) );
-};
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
 window.wpNavMenuClassChange = function ( page, url ) {

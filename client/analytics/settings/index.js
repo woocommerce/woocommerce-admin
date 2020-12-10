@@ -98,15 +98,6 @@ const Settings = ( { createNotice, query } ) => {
 	const saveChanges = () => {
 		persistSettings();
 		recordEvent( 'analytics_settings_save', wcAdminSettings );
-
-		// On save, reset persisted query properties of Nav Menu links to default
-		query.period = undefined;
-		query.compare = undefined;
-		query.before = undefined;
-		query.after = undefined;
-		query.interval = undefined;
-		query.type = undefined;
-		window.wpNavMenuUrlUpdate( query );
 	};
 
 	const handleInputChange = ( e ) => {

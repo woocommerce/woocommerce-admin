@@ -2,7 +2,12 @@
  * External dependencies
  */
 import { createBrowserHistory } from 'history';
-import { parse } from 'qs';
+import { parse, stringify } from 'qs';
+
+/**
+ * Internal dependencies
+ */
+import { patchPersistedQueries } from './index';
 
 // See https://github.com/ReactTraining/react-router/blob/master/FAQ.md#how-do-i-access-the-history-object-outside-of-components
 
@@ -44,8 +49,17 @@ function getHistory() {
 			},
 			createHref: ( ...args ) =>
 				browserHistory.createHref.apply( browserHistory, args ),
-			push: ( ...args ) =>
-				browserHistory.push.apply( browserHistory, args ),
+			push( ...args ) {
+				const [ href ] = args;
+				const search = href.split( '?' )[
+					href.indexOf( '?' ) >= 0 ? 1 : 0
+				];
+				const query = patchPersistedQueries( parse( search ) );
+
+				browserHistory.push.apply( browserHistory, [
+					'admin.php?' + stringify( query ),
+				] );
+			},
 			replace: ( ...args ) =>
 				browserHistory.replace.apply( browserHistory, args ),
 			go: ( ...args ) => browserHistory.go.apply( browserHistory, args ),

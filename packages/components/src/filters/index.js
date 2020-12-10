@@ -85,6 +85,7 @@ class ReportFilters extends Component {
 
 	onRangeSelect( data ) {
 		const { query, path, onDateSelect } = this.props;
+		data.updatePersistedQueries = true;
 		updateQueryString( data, path, query );
 		onDateSelect( data );
 	}
