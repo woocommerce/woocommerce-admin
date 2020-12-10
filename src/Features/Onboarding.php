@@ -7,6 +7,7 @@
 namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\PageController;
 use \Automattic\WooCommerce\Admin\PluginsHelper;
 use \Automattic\WooCommerce\Admin\Features\OnboardingSetUpShipping;
 
@@ -355,7 +356,7 @@ class Onboarding {
 	 * @return bool
 	 */
 	public static function should_show_tasks() {
-		return 'no' === get_option( 'woocommerce_task_list_hidden', 'no' );
+		return 'no' === get_option( 'woocommerce_task_list_hidden', 'no' ) || 'no' === get_option( 'woocommerce_extended_task_list_hidden', 'no' );
 	}
 
 	/**
@@ -507,9 +508,8 @@ class Onboarding {
 			$active_theme     = get_option( 'stylesheet' );
 
 			foreach ( $installed_themes as $slug => $theme ) {
-				$theme_data       = self::get_theme_data( $theme );
-				$installed_themes = wp_get_themes();
-				$themes[ $slug ]  = $theme_data;
+				$theme_data      = self::get_theme_data( $theme );
+				$themes[ $slug ] = $theme_data;
 			}
 
 			// Add the WooCommerce support tag for default themes that don't explicitly declare support.
@@ -649,9 +649,26 @@ class Onboarding {
 	}
 
 	/**
+	 * Determine if the current page is home or setup wizard.
+	 *
+	 * @return bool
+	 */
+	protected function is_home_or_setup_wizard_page() {
+		$allowed_paths = array( 'wc-admin', 'wc-admin&path=/setup-wizard' );
+		$current_page  = PageController::get_instance()->get_current_page();
+		if ( ! $current_page ) {
+			return false;
+		}
+
+		return in_array( $current_page['path'], $allowed_paths );
+	}
+
+	/**
 	 * Add profiler items to component settings.
 	 *
 	 * @param array $settings Component settings.
+	 *
+	 * @return array
 	 */
 	public function component_settings( $settings ) {
 		$profile                = (array) get_option( self::PROFILE_DATA_OPTION, array() );
@@ -659,8 +676,14 @@ class Onboarding {
 			'profile' => $profile,
 		);
 
-		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown.
-		if ( ! self::should_show_profiler() && ! self::should_show_tasks() ) {
+		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown
+		// or the current page is one of the WooCommerce Admin pages.
+		if (
+			( ! self::should_show_profiler() && ! self::should_show_tasks()
+			||
+			! $this->is_home_or_setup_wizard_page()
+		)
+		) {
 			return $settings;
 		}
 
@@ -688,6 +711,8 @@ class Onboarding {
 		$options[] = 'woocommerce_task_list_complete';
 		$options[] = 'woocommerce_task_list_do_this_later';
 		$options[] = 'woocommerce_task_list_hidden';
+		$options[] = 'woocommerce_extended_task_list_complete';
+		$options[] = 'woocommerce_extended_task_list_hidden';
 
 		if ( ! self::should_show_tasks() && ! self::should_show_profiler() ) {
 			return $options;
@@ -923,7 +948,7 @@ class Onboarding {
 			'id'    => 'woocommerce_onboard_tab',
 		);
 
-		$task_list_hidden = get_option( 'woocommerce_task_list_hidden', 'no' );
+		$task_list_hidden = get_option( 'woocommerce_task_list_hidden', 'no' ) || get_option( 'woocommerce_extended_task_list_hidden', 'no' );
 
 		$help_tab['content'] = '<h2>' . __( 'WooCommerce Onboarding', 'woocommerce-admin' ) . '</h2>';
 
@@ -932,7 +957,7 @@ class Onboarding {
 			'<p><a href="' . wc_admin_url( '&path=/setup-wizard' ) . '" class="button button-primary">' . __( 'Setup wizard', 'woocommerce-admin' ) . '</a></p>';
 
 		$help_tab['content'] .= '<h3>' . __( 'Task List', 'woocommerce-admin' ) . '</h3>';
-		$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the task list, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
+		$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the task lists, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
 		( 'yes' === $task_list_hidden
 			? '<p><a href="' . wc_admin_url( '&reset_task_list=1' ) . '" class="button button-primary">' . __( 'Enable', 'woocommerce-admin' ) . '</a></p>'
 			: '<p><a href="' . wc_admin_url( '&reset_task_list=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>'
@@ -1069,6 +1094,7 @@ class Onboarding {
 
 		$task_list_hidden = 1 === absint( $_GET['reset_task_list'] ) ? 'no' : 'yes'; // phpcs:ignore CSRF ok.
 		update_option( 'woocommerce_task_list_hidden', $task_list_hidden );
+		update_option( 'woocommerce_extended_task_list_hidden', $task_list_hidden );
 
 		wc_admin_record_tracks_event(
 			'tasklist_toggled',

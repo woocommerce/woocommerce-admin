@@ -184,14 +184,15 @@ class Menu {
 	 *
 	 * @param array $args Array containing the necessary arguments.
 	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'parent'     => (string) Parent menu item ID.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'order'      => (int) Menu item order.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'menuId'     => (string) The ID of the menu to add the item to.
+	 *      'id'              => (string) The unique ID of the menu item. Required.
+	 *      'title'           => (string) Title of the menu item. Required.
+	 *      'parent'          => (string) Parent menu item ID.
+	 *      'capability'      => (string) Capability to view this menu item.
+	 *      'url'             => (string) URL or callback to be used. Required.
+	 *      'order'           => (int) Menu item order.
+	 *      'migrate'         => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'menuId'          => (string) The ID of the menu to add the item to.
+	 *      'matchExpression' => (string) A regular expression used to identify if the menu item is active.
 	 *    ).
 	 */
 	private static function add_item( $args ) {
@@ -243,45 +244,11 @@ class Menu {
 	 * @return string
 	 */
 	public static function get_item_menu_id( $item ) {
-		if ( isset( self::$menu_items[ $item['parent'] ] ) ) {
+		if ( isset( $item['parent'] ) && isset( self::$menu_items[ $item['parent'] ] ) ) {
 			return self::$menu_items[ $item['parent'] ]['menuId'];
 		}
 
 		return $item['menuId'];
-	}
-
-	/**
-	 * Adds a plugin item.
-	 *
-	 * @param array $args Array containing the necessary arguments.
-	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'parent'     => (string) Parent menu item ID.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'order'      => (int) Menu item order.
-	 *    ).
-	 */
-	public static function add_plugin_item( $args ) {
-		if ( ! isset( $args['parent'] ) ) {
-			unset( $args['order'] );
-		}
-
-		$item_args = array_merge(
-			$args,
-			array(
-				'menuId' => 'plugins',
-			)
-		);
-
-		$menu_id = self::get_item_menu_id( $item_args );
-		if ( 'plugins' !== $menu_id ) {
-			return;
-		}
-
-		self::add_item( $item_args );
 	}
 
 	/**
@@ -318,6 +285,80 @@ class Menu {
 	}
 
 	/**
+	 * Adds a plugin item.
+	 *
+	 * @param array $args Array containing the necessary arguments.
+	 *    $args = array(
+	 *      'id'              => (string) The unique ID of the menu item. Required.
+	 *      'title'           => (string) Title of the menu item. Required.
+	 *      'parent'          => (string) Parent menu item ID.
+	 *      'capability'      => (string) Capability to view this menu item.
+	 *      'url'             => (string) URL or callback to be used. Required.
+	 *      'migrate'         => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'order'           => (int) Menu item order.
+	 *      'matchExpression' => (string) A regular expression used to identify if the menu item is active.
+	 *    ).
+	 */
+	public static function add_plugin_item( $args ) {
+		if ( ! isset( $args['parent'] ) ) {
+			unset( $args['order'] );
+		}
+
+		$item_args = array_merge(
+			$args,
+			array(
+				'menuId' => 'plugins',
+			)
+		);
+
+		$menu_id = self::get_item_menu_id( $item_args );
+
+		if ( 'plugins' !== $menu_id ) {
+			return;
+		}
+
+		self::add_item( $item_args );
+	}
+
+	/**
+	 * Adds a plugin setting item.
+	 *
+	 * @param array $args Array containing the necessary arguments.
+	 *    $args = array(
+	 *      'id'         => (string) The unique ID of the menu item. Required.
+	 *      'title'      => (string) Title of the menu item. Required.
+	 *      'capability' => (string) Capability to view this menu item.
+	 *      'url'        => (string) URL or callback to be used. Required.
+	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
+	 *    ).
+	 */
+	public static function add_setting_item( $args ) {
+		unset( $args['order'] );
+
+		if ( isset( $args['parent'] ) || isset( $args['menuId'] ) ) {
+			error_log(  // phpcs:ignore
+				sprintf(
+					/* translators: 1: Duplicate menu item path. */
+					esc_html__( 'The item ID %1$s attempted to register using an invalid option. The arguments `menuId` and `parent` are not allowed for add_setting_item()', 'woocommerce-admin' ),
+					'`' . $args['id'] . '`'
+				)
+			);
+		}
+
+		$item_args = array_merge(
+			$args,
+			array(
+				'menuId' => 'secondary',
+				'parent' => 'woocommerce-settings',
+			)
+		);
+
+		self::add_item( $item_args );
+	}
+
+
+
+	/**
 	 * Get menu item templates for a given post type.
 	 *
 	 * @param string $post_type Post type to add.
@@ -331,25 +372,30 @@ class Menu {
 			return;
 		}
 
-		$parent = isset( $menu_args['parent'] ) ? $menu_args['parent'] . '-' : '';
+		$parent           = isset( $menu_args['parent'] ) ? $menu_args['parent'] . '-' : '';
+		$match_expression = isset( $_GET['post'] ) && get_post_type( intval( $_GET['post'] ) ) === $post_type // phpcs:ignore WordPress.Security.NonceVerification
+			? '(edit.php|post.php)'
+			: null;
 
 		return array(
 			'default' => array_merge(
 				array(
-					'title'      => esc_attr( $post_type_object->labels->menu_name ),
-					'capability' => $post_type_object->cap->edit_posts,
-					'id'         => $parent . $post_type,
-					'url'        => "edit.php?post_type={$post_type}",
+					'title'           => esc_attr( $post_type_object->labels->menu_name ),
+					'capability'      => $post_type_object->cap->edit_posts,
+					'id'              => $parent . $post_type,
+					'url'             => "edit.php?post_type={$post_type}",
+					'matchExpression' => $match_expression,
 				),
 				$menu_args
 			),
 			'all'     => array_merge(
 				array(
-					'title'      => esc_attr( $post_type_object->labels->all_items ),
-					'capability' => $post_type_object->cap->edit_posts,
-					'id'         => "{$parent}{$post_type}-all-items",
-					'url'        => "edit.php?post_type={$post_type}",
-					'order'      => 10,
+					'title'           => esc_attr( $post_type_object->labels->all_items ),
+					'capability'      => $post_type_object->cap->edit_posts,
+					'id'              => "{$parent}{$post_type}-all-items",
+					'url'             => "edit.php?post_type={$post_type}",
+					'order'           => 10,
+					'matchExpression' => $match_expression,
 				),
 				$menu_args
 			),
@@ -559,7 +605,6 @@ class Menu {
 
 		$data = array(
 			'menuItems' => self::get_prepared_menu_item_data(),
-			'postType'  => isset( $_GET['post'] ) ? get_post_type( $_GET['post'] ) : null,
 		);
 
 		$paul = wp_add_inline_script( WC_ADMIN_APP, 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );
