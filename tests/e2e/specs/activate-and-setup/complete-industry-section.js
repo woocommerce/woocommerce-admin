@@ -39,12 +39,12 @@ export async function completeIndustrySection( expectedIndustryCount = 8 ) {
 		'Health and beauty'
 	);
 	const healthBeautyCheckboxContainer = await getPreviousSibling(
-		fashionLabel
+		healthBeautyLabel
 	);
 	const healthBeautyCheckbox = await healthBeautyCheckboxContainer.$(
 		'input'
 	);
-	await setCheckboxToChecked( healthBeautyCheckbox );
 
+	await setCheckboxToChecked( healthBeautyCheckbox );
 	await clickContinue();
 }
