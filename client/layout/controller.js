@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { Component, Suspense, lazy } from '@wordpress/element';
-import { find, isEqual, omit } from 'lodash';
+import { find, isEqual, omit, last } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { getNewPath, getHistory } from '@woocommerce/navigation';
@@ -12,6 +12,7 @@ import { Spinner } from '@woocommerce/components';
  * Internal dependencies
  */
 import getReports from '../analytics/report/get-reports';
+import { isWCAdmin } from '../dashboard/utils';
 
 const AnalyticsReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report" */ '../analytics/report' )
@@ -189,7 +190,7 @@ export class Controller extends Component {
 	render() {
 		const { page, match, query } = this.props;
 		const { url, params } = match;
-
+		patchMenuLinks();
 		window.wpNavMenuClassChange( page, url );
 		return (
 			<Suspense fallback={ <Spinner /> }>
@@ -203,6 +204,24 @@ export class Controller extends Component {
 		);
 	}
 }
+
+// Add click handlers to wc-admin links in wp-admin menu to suppress page refresh when possible
+const patchMenuLinks = function () {
+	Array.from( document.querySelectorAll( '#adminmenu a' ) ).forEach(
+		( item ) => {
+			if ( ! isWCAdmin( item.href ) ) {
+				return;
+			}
+
+			item.onclick = ( e ) => {
+				e.preventDefault();
+				getHistory().push(
+					`admin.php?${ last( item.href.split( '?' ) ) }`
+				);
+			};
+		}
+	);
+};
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
 window.wpNavMenuClassChange = function ( page, url ) {
