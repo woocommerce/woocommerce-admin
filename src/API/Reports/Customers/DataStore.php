@@ -132,6 +132,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * Only updates customer if it is the customers last order.
 	 *
 	 * @param int $post_id of order.
+	 * @return true|-1
 	 */
 	public static function sync_order_customer( $post_id ) {
 		global $wpdb;
@@ -643,8 +644,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				ORDER BY date_created_gmt DESC, order_id DESC LIMIT 1",
 				// phpcs:enable
 				$customer_id
-			),
-			0
+			)
 		);
 		if ( ! $last_order ) {
 			return false;
