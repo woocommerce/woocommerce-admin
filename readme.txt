@@ -19,12 +19,14 @@ WooCommerce Admin has a host of new reports that are optimized for speed and hav
 - Revenue Report
 - Orders Report
 - Products Report
+- Variations Report
 - Categories Report
 - Coupons Report
 - Taxes Report
 - Downloads Report
 - Stock Report
 - Customers Report
+
 
 **Customizable Dashboard**
 
@@ -69,10 +71,21 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 2. Activity Panels
 3. Analytics
 
+== Unreleased ==
+
+- Fix: Move collapsible config to panels object, to allow for more control. #5855
+- Tweak: Fix inconsistent REST API paramater name for customer type filtering.
+- Enhancement: Tasks extensibility in Home Screen. #5794
+- Enhancement: Add page parameter to override default wc-admin page in Navigation API. #5821
+- Fix: Invalidate product count if the last product was updated in the list. #5790
+
 == Changelog ==
 
-= 1.7.0 11/11/2020 =
+= vnext =
+- Fix: Add Customer Type column to the Orders report table. #5820
+- Fix: Product exclusion filter on Orders Report.
 
+= 1.7.0 11/11/2020 =
 - Enhancement: Variations report.  #5167
 - Enhancement: Add ability to toggle homescreen layouts. #5429
 - Enhancement: Accordion component  #5474

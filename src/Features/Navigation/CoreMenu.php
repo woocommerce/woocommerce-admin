@@ -156,10 +156,11 @@ class CoreMenu {
 		$home_item = array();
 		if ( defined( '\Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG' ) ) {
 			$home_item = array(
-				'id'    => 'woocommerce-home',
-				'title' => __( 'Home', 'woocommerce-admin' ),
-				'url'   => \Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG,
-				'order' => 0,
+				'id'              => 'woocommerce-home',
+				'title'           => __( 'Home', 'woocommerce-admin' ),
+				'url'             => \Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG,
+				'order'           => 0,
+				'matchExpression' => 'page=wc-admin((?!path=).)*$',
 			);
 		}
 
@@ -168,7 +169,7 @@ class CoreMenu {
 			$customers_item = array(
 				'id'    => 'woocommerce-analytics-customers',
 				'title' => __( 'Customers', 'woocommerce-admin' ),
-				'url'   => wc_admin_url( '/customers' ),
+				'url'   => 'wc-admin&path=/customers',
 				'order' => 50,
 			);
 		}
