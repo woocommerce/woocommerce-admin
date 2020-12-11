@@ -998,7 +998,7 @@ class Onboarding {
 			$connect_url = \Jetpack::init()->build_connect_url( true, $redirect_url, 'woocommerce-onboarding' );
 			$connect_url = add_query_arg( array( 'calypso_env' => $calypso_env ), $connect_url );
 
-			wp_save_redirect( $connect_url );
+			wp_redirect( $connect_url );
 			exit;
 		}
 
@@ -1041,7 +1041,7 @@ class Onboarding {
 
 			$connect_url = add_query_arg( array( 'calypso_env' => $calypso_env ), $connect_url );
 
-			wp_save_redirect( $connect_url );
+			wp_redirect( $connect_url );
 			exit;
 		}
 	}
