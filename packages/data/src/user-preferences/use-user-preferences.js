@@ -137,7 +137,7 @@ export const useUserPreferences = () => {
 				hasStartedResolution( 'getCurrentUser' ) &&
 				! hasFinishedResolution( 'getCurrentUser' ),
 			user: getCurrentUser(),
-			getCurrentUser: getCurrentUser,
+			getCurrentUser,
 			getEntity,
 			getEntityRecord,
 			getLastEntitySaveError,

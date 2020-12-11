@@ -300,12 +300,16 @@ export class ActivityPanel extends Component {
 			query,
 		} = this.props;
 		const { task } = query;
-		const { task_list_tracked_started_tasks, help_panel_highlight_shown } =
-			userPreferencesData || {};
+		const startedTasks =
+			userPreferencesData &&
+			userPreferencesData[ 'task_list_tracked_started_tasks' ];
+		const highlightShown =
+			userPreferencesData &&
+			userPreferencesData[ 'help_panel_highlight_shown' ];
 		if (
 			task &&
-			help_panel_highlight_shown !== 'yes' &&
-			( task_list_tracked_started_tasks || {} )[ task ] > 1 &&
+			highlightShown !== 'yes' &&
+			( startedTasks || {} )[ task ] > 1 &&
 			! trackedCompletedTasks.includes( task )
 		) {
 			if ( ! this.recordedHelpTooltip ) {
