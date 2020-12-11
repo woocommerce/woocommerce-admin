@@ -186,12 +186,10 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 		);
 	}
 
-	// TODO is this conditional ok, and is the existing copy ok?
 	const installingJetpackOrWcShipping =
 		extensions.includes( 'jetpack' ) ||
 		extensions.includes( 'woocommerce-shipping' );
 
-	// TODO - do we need to switch this off if no extensions are chosen?
 	const accountRequiredText = __(
 		'User accounts are required to use these features.',
 		'woocommerce-admin'
@@ -267,11 +265,15 @@ export const SelectiveExtensionsBundle = ( {
 							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
 							icon={ showExtensions ? chevronUp : chevronDown }
 							onClick={ () => {
-								setShowExtensions( ! showExtensions );
-								recordEvent(
-									'wcadmin_storeprofiler_store_business_features_accordion_click',
-									{ open: ! showExtensions }
-								);
+								const shouldShowExtensions = ! showExtensions;
+								setShowExtensions( shouldShowExtensions );
+
+								if ( shouldShowExtensions ) {
+									// only record the accordion click when the accordion is opened.
+									recordEvent(
+										'storeprofiler_store_business_features_accordion_click'
+									);
+								}
 							} }
 						/>
 					</div>

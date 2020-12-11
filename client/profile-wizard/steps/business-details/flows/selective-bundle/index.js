@@ -79,7 +79,7 @@ class BusinessDetails extends Component {
 				key !== 'install_extensions'
 		);
 
-		recordEvent( 'wcadmin_storeprofiler_store_business_features_continue', {
+		recordEvent( 'storeprofiler_store_business_features_continue', {
 			product_number: productCount,
 			already_selling: sellingVenues,
 			currency: getCurrencyConfig().code,
