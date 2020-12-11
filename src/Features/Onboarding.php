@@ -737,8 +737,6 @@ class Onboarding {
 		$options[] = 'woocommerce_woocommerce_payments_settings';
 		$options[] = 'woocommerce_eway_settings';
 		$options[] = 'woocommerce_razorpay_settings';
-		$options[] = 'woocommerce_help_panel_highlight_shown';
-		$options[] = 'woocommerce_task_list_tracked_started_tasks';
 
 		return $options;
 	}

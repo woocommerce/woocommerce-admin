@@ -34,18 +34,22 @@ export class TaskDashboard extends Component {
 	}
 
 	trackStartedTask = ( taskName ) => {
-		const { trackedStartedTasks, updateOptions } = this.props;
-		const taskStarted = ( trackedStartedTasks || [] ).filter(
-			( task ) => task === taskName
-		);
-		if ( taskStarted.length > 1 ) {
+		const { userPreferences } = this.props;
+		const trackedStartedTasks =
+			userPreferences.task_list_tracked_started_tasks || {};
+		const currentTaskCount =
+			trackedStartedTasks && trackedStartedTasks[ taskName ]
+				? trackedStartedTasks[ taskName ]
+				: 0;
+		// Only record task visits up to 2 times
+		if ( currentTaskCount > 1 ) {
 			return;
 		}
-		updateOptions( {
-			woocommerce_task_list_tracked_started_tasks: [
-				...( trackedStartedTasks || [] ),
-				taskName,
-			],
+		userPreferences.updateUserPreferences( {
+			task_list_tracked_started_tasks: {
+				...( trackedStartedTasks || {} ),
+				[ taskName ]: currentTaskCount + 1,
+			},
 		} );
 	};
 
@@ -107,6 +111,7 @@ export class TaskDashboard extends Component {
 		const { isCartModalOpen } = this.state;
 		const allTasks = this.getAllTasks();
 		const { extension: extensionTasks, setup: setupTasks } = allTasks;
+		console.log( 'render task-list' );
 
 		return (
 			<>
@@ -160,9 +165,6 @@ export default compose(
 		const trackedCompletedTasks = getOption(
 			'woocommerce_task_list_tracked_completed_tasks'
 		);
-		const trackedStartedTasks = getOption(
-			'woocommerce_task_list_tracked_started_tasks'
-		);
 
 		const { general: generalSettings = {} } = getSettings( 'general' );
 		const countryCode = getCountryCode(
@@ -193,16 +195,13 @@ export default compose(
 			onboardingStatus,
 			profileItems,
 			trackedCompletedTasks,
-			trackedStartedTasks,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 
 		return {
-			updateOptions,
 			createNotice,
 			installAndActivatePlugins,
 		};

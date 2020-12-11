@@ -48,9 +48,8 @@ export class ActivityPanel extends Component {
 			currentTab: '',
 			isPanelSwitching: false,
 		};
+		this.recordedHelpTooltip = false;
 	}
-
-	recordedHelpTooltip = false;
 
 	togglePanel( { name: tabName }, isTabOpen ) {
 		this.setState( ( state ) => {
@@ -282,26 +281,31 @@ export class ActivityPanel extends Component {
 	}
 
 	closedHelpPanelHighlight() {
-		const { updateOptions } = this.props;
-		recordEvent( 'wcadmin_help_tooltip_click' );
-		updateOptions( {
-			woocommerce_help_panel_highlight_shown: 'yes',
-		} );
+		const { userPreferencesData } = this.props;
+		recordEvent( 'help_tooltip_click' );
+		if (
+			userPreferencesData &&
+			userPreferencesData.updateUserPreferences
+		) {
+			userPreferencesData.updateUserPreferences( {
+				help_panel_highlight_shown: 'yes',
+			} );
+		}
 	}
 
 	shouldShowHelpTooltip() {
 		const {
+			userPreferencesData,
 			trackedCompletedTasks,
-			trackedStartedTasks,
-			helpPanelHighlightShown,
 			query,
 		} = this.props;
 		const { task } = query;
+		const { task_list_tracked_started_tasks, help_panel_highlight_shown } =
+			userPreferencesData || {};
 		if (
 			task &&
-			helpPanelHighlightShown !== 'yes' &&
-			( trackedStartedTasks || [] ).filter( ( t ) => t === task ).length >
-				1 &&
+			help_panel_highlight_shown !== 'yes' &&
+			( task_list_tracked_started_tasks || {} )[ task ] > 1 &&
 			! trackedCompletedTasks.includes( task )
 		) {
 			if ( ! this.recordedHelpTooltip ) {
@@ -415,12 +419,6 @@ export default compose(
 		const trackedCompletedTasks = getOption(
 			'woocommerce_task_list_tracked_completed_tasks'
 		);
-		const trackedStartedTasks = getOption(
-			'woocommerce_task_list_tracked_started_tasks'
-		);
-		const helpPanelHighlightShown = getOption(
-			'woocommerce_help_panel_highlight_shown'
-		);
 
 		return {
 			hasUnreadNotes,
@@ -428,8 +426,6 @@ export default compose(
 			taskListComplete,
 			taskListHidden,
 			trackedCompletedTasks,
-			trackedStartedTasks,
-			helpPanelHighlightShown,
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {

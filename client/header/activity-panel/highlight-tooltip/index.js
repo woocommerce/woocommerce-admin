@@ -93,10 +93,7 @@ function HighlightTooltip( {
 						noArrow={ false }
 						focusOnMount="container"
 					>
-						<Card
-							size="medium"
-							className="woocommerce-task-card woocommerce-homescreen-card"
-						>
+						<Card size="medium">
 							<CardHeader>
 								{ title }
 								<Button
@@ -112,7 +109,8 @@ function HighlightTooltip( {
 									isPrimary
 									onClick={ triggerClose }
 								>
-									{ closeButtonText || __( 'Close' ) }
+									{ closeButtonText ||
+										__( 'Close', 'woocommerce-admin' ) }
 								</Button>
 							</CardFooter>
 						</Card>
