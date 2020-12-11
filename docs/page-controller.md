@@ -137,16 +137,24 @@ add_filter( 'woocommerce_admin_report_menu_items', 'add_report_menu_item' );
 Alternatively, register a regular page with the controller.
 
 ```php
-wc_admin_register_page( array(
-	'id'       => 'my-example-page',
-	'title'    => __( 'My Example Page', 'my-textdomain' ),
-	'parent'   => 'woocommerce',
-	'path'     => '/example',
-	'nav_args' => array(
-		'order'  => 10,
-		'parent' => 'woocommerce',
-	),
-), );
+function add_extension_register_page() {
+    if ( ! function_exists( 'wc_admin_register_page' ) {
+        return;
+	}
+
+    wc_admin_register_page( array(
+		'id'       => 'my-example-page',
+		'title'    => __( 'My Example Page', 'my-textdomain' ),
+		'parent'   => 'woocommerce',
+		'path'     => '/example',
+		'nav_args' => array(
+			'order'  => 10,
+			'parent' => 'woocommerce',
+		),
+	) );
+}
+
+add_action( 'admin_menu', 'add_extension_register_page' );
 ```
 
 Supply a React component on the client side. Be sure to use the same id supplied in PHP in `navArgs`.
