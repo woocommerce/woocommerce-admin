@@ -181,6 +181,6 @@ addFilter( 'woocommerce_admin_pages_list', 'my-namespace', ( pages ) => {
 
 ### Further Reading
 
--   Check out the [`PageController`](../includes/page-controller/class-wc-admin-page-controller.php) class.
--   See how we're [connecting existing WooCommerce pages](../includes/page-controller/connect-existing-pages.php).
--   See how we're [registering Analytics Reports](../includes/features/analytics/class-wc-admin-analytics.php#L75).
+-   Check out the [`PageController`](../src/PageController.php) class.
+-   See how we're [connecting existing WooCommerce pages](../includes/page-controller-functions.php).
+-   See how we're [registering Analytics Reports](../src/Features/Analytics.php).
