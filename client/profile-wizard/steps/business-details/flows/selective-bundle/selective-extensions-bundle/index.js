@@ -20,6 +20,7 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import { AppIllustration } from '../app-illustration';
 import './style.scss';
+import { setAllPropsToValue } from '../../../../../../lib';
 
 const generatePluginDescriptionWithLink = ( description, productName ) => {
 	return interpolateComponents( {
@@ -140,16 +141,6 @@ const FreeBadge = () => {
 			{ __( 'Free', 'woocommerce-admin' ) }
 		</div>
 	);
-};
-
-// Set all props of an object to a value
-const setAllPropsToValue = ( obj, value ) => {
-	return Object.entries( obj ).reduce( ( acc, [ key ] ) => {
-		return {
-			...acc,
-			[ key ]: value,
-		};
-	}, {} );
 };
 
 const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
