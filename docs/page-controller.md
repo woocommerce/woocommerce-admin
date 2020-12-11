@@ -161,6 +161,7 @@ Supply a React component on the client side. Be sure to use the same id supplied
 
 ```javascript
 import { addFilter } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 
 const MyExamplePage = () => <h1>My Example Extension</h1>;
 
