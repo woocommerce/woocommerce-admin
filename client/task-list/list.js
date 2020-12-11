@@ -56,11 +56,7 @@ export class TaskList extends Component {
 
 	getUngroupedTasks() {
 		const { tasks: groupedTasks } = this.props;
-		return [].concat(
-			...Object.keys( groupedTasks ).map(
-				( taskType ) => groupedTasks[ taskType ]
-			)
-		);
+		return Object.values( groupedTasks ).flat();
 	}
 
 	getSpecificTasks() {
