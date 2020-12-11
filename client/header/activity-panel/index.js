@@ -306,7 +306,7 @@ export class ActivityPanel extends Component {
 		) {
 			if ( ! this.recordedHelpTooltip ) {
 				this.recordedHelpTooltip = true;
-				recordEvent();
+				recordEvent( 'help_tooltip_view' );
 			}
 			return true;
 		}
@@ -378,11 +378,15 @@ export class ActivityPanel extends Component {
 				{ showHelpHighlightTooltip ? (
 					<HighlightTooltip
 						delay={ 1000 }
-						title={ __( "We're here for help" ) }
-						content={ __(
-							'If you have any questions, feel free to explore the WooCommerce docs listed here.'
+						title={ __(
+							"We're here for help",
+							'woocommerce-admin'
 						) }
-						closeBtnText={ __( 'Got it' ) }
+						content={ __(
+							'If you have any questions, feel free to explore the WooCommerce docs listed here.',
+							'woocommerce-admin'
+						) }
+						closeButtonText={ __( 'Got it', 'woocommerce-admin' ) }
 						id="activity-panel-tab-help"
 						onClose={ () => this.closedHelpPanelHighlight() }
 					/>

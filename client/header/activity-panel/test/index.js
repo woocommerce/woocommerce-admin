@@ -255,7 +255,7 @@ describe( 'Activity Panel', () => {
 					taskListComplete={ false }
 					taskListHidden={ false }
 					trackedStartedTasks={ [ 'payment', 'payment' ] }
-					trackedCompletedTasks={ [ 'payment' ] }
+					trackedCompletedTasks={ [] }
 					helpPanelHighlightShown="yes"
 					isEmbedded
 					query={ { task: 'payment' } }

@@ -23,7 +23,7 @@ import './style.scss';
 const SHOW_CLASS = 'highlight-tooltip__show';
 function HighlightTooltip( {
 	title,
-	closeBtnText,
+	closeButtonText,
 	content,
 	show = true,
 	id,
@@ -112,7 +112,7 @@ function HighlightTooltip( {
 									isPrimary
 									onClick={ triggerClose }
 								>
-									{ closeBtnText || __( 'Close' ) }
+									{ closeButtonText || __( 'Close' ) }
 								</Button>
 							</CardFooter>
 						</Card>
@@ -136,7 +136,7 @@ HighlightTooltip.propTypes = {
 	/**
 	 * Text of the close button.
 	 */
-	closeBtnText: PropTypes.string.isRequired,
+	closeButtonText: PropTypes.string.isRequired,
 	/**
 	 * Content of the popup, can be either text or react element.
 	 */
