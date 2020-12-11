@@ -302,10 +302,10 @@ export class ActivityPanel extends Component {
 		const { task } = query;
 		const startedTasks =
 			userPreferencesData &&
-			userPreferencesData[ 'task_list_tracked_started_tasks' ];
+			userPreferencesData.task_list_tracked_started_tasks;
 		const highlightShown =
 			userPreferencesData &&
-			userPreferencesData[ 'help_panel_highlight_shown' ];
+			userPreferencesData.help_panel_highlight_shown;
 		if (
 			task &&
 			highlightShown !== 'yes' &&
