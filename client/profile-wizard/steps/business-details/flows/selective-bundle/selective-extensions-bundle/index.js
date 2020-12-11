@@ -20,7 +20,7 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import { AppIllustration } from '../app-illustration';
 import './style.scss';
-import { setAllPropsToValue } from '../../../../../../lib';
+import { setAllPropsToValue } from '../../../../../../lib/collections';
 
 const generatePluginDescriptionWithLink = ( description, productName ) => {
 	return interpolateComponents( {
