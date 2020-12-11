@@ -111,7 +111,6 @@ export class TaskDashboard extends Component {
 		const { isCartModalOpen } = this.state;
 		const allTasks = this.getAllTasks();
 		const { extension: extensionTasks, setup: setupTasks } = allTasks;
-		console.log( 'render task-list' );
 
 		return (
 			<>
