@@ -159,9 +159,10 @@ class ProfileWizard extends Component {
 		} );
 
 		if (
-			! this.cachedActivePlugins.includes( 'woocommerce-services' ) ||
-			! this.cachedActivePlugins.includes( 'jetpack' ) ||
-			step === 'benefits'
+			! selectiveBundleInstallSegmentation &&
+			( ! this.cachedActivePlugins.includes( 'woocommerce-services' ) ||
+				! this.cachedActivePlugins.includes( 'jetpack' ) ||
+				step === 'benefits' )
 		) {
 			steps.push( {
 				key: 'benefits',
