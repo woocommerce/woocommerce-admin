@@ -41,7 +41,7 @@ class Init {
 		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		$gutenberg_minimum_version = '9.0.0'; // https://github.com/WordPress/gutenberg/releases/tag/v9.0.0.
-		$wp_minimum_version        = '5.6.0';
+		$wp_minimum_version        = '5.6';
 		$has_gutenberg             = is_plugin_active( 'gutenberg/gutenberg.php' );
 		$gutenberg_version         = $has_gutenberg ? get_plugin_data( WP_PLUGIN_DIR . '/gutenberg/gutenberg.php' )['Version'] : false;
 
