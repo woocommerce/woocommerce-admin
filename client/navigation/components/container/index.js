@@ -10,7 +10,6 @@ import {
 	__experimentalNavigationMenu as NavigationMenu,
 	__experimentalNavigationGroup as NavigationGroup,
 } from '@wordpress/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { withSelect } from '@wordpress/data';
@@ -29,7 +28,7 @@ const Container = ( { menuItems } ) => {
 		adminMenu.classList.add( 'folded' );
 	}, [] );
 
-	const dashboardUrl = getAdminLink( '' );
+	const { rootBackUrl } = window.wcNavigation;
 
 	const parentCategory = {
 		capability: 'manage_woocommerce',
@@ -130,10 +129,10 @@ const Container = ( { menuItems } ) => {
 						setActiveLevel( ...args );
 					} }
 				>
-					{ activeLevel === 'woocommerce' && dashboardUrl && (
+					{ activeLevel === 'woocommerce' && rootBackUrl && (
 						<NavigationBackButton
 							className="woocommerce-navigation__back-to-dashboard"
-							href={ dashboardUrl }
+							href={ rootBackUrl }
 							backButtonLabel={ __(
 								'WordPress Dashboard',
 								'woocommerce-navigation'
