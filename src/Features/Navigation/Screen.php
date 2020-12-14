@@ -115,7 +115,7 @@ class Screen {
 		if (
 			in_array( $post_type, $post_types, true ) ||
 			in_array( $taxonomy, $taxonomies, true ) ||
-			self::is_woocommerce_taxonomy( $taxonomy ) ||
+			self::is_woocommerce_core_taxonomy( $taxonomy ) ||
 			in_array( $current_screen_id, $screen_ids, true )
 		) {
 			return true;
@@ -125,12 +125,12 @@ class Screen {
 	}
 
 	/**
-	 * Check if a given taxonomy is a WooCommerce related taxonomy.
+	 * Check if a given taxonomy is a WooCommerce core related taxonomy.
 	 *
 	 * @param string $taxonomy Taxonomy.
 	 * @return bool
 	 */
-	public static function is_woocommerce_taxonomy( $taxonomy ) {
+	public static function is_woocommerce_core_taxonomy( $taxonomy ) {
 		if ( in_array( $taxonomy, array( 'product_cat', 'product_tag' ), true ) ) {
 			return true;
 		}
