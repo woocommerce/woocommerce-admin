@@ -39,6 +39,7 @@ function HighlightTooltip( {
 		const element = document.getElementById( id );
 		let container;
 		if ( element && ! node ) {
+			// Add tooltip container
 			const parent = element.parentElement;
 			container = document.createElement( 'div' );
 			container.classList.add(
@@ -48,13 +49,8 @@ function HighlightTooltip( {
 			parent.appendChild( container );
 			setNode( container );
 		}
-		let timeoutId;
-		if ( delay > 0 ) {
-			timeoutId = setTimeout( () => {
-				timeoutId = null;
-				setShowHighlight( show );
-			}, delay );
-		}
+		const timeoutId = showTooltip();
+
 		return () => {
 			if ( container ) {
 				const parent = container.parentElement;
@@ -71,6 +67,33 @@ function HighlightTooltip( {
 			node.classList.remove( SHOW_CLASS );
 		}
 	}, [ showHighlight ] );
+
+	useEffect( () => {
+		if ( show !== showHighlight ) {
+			setShowHighlight( show );
+			if ( ! show && node ) {
+				node.classList.remove( SHOW_CLASS );
+			} else if ( node ) {
+				showTooltip();
+			}
+		}
+	}, [ show ] );
+
+	const showTooltip = () => {
+		let timeoutId = null;
+		if ( delay > 0 ) {
+			timeoutId = setTimeout( () => {
+				timeoutId = null;
+				setShowHighlight( show );
+				if ( node ) {
+					node.classList.add( SHOW_CLASS );
+				}
+			}, delay );
+		} else if ( ! showHighlight ) {
+			setShowHighlight( true );
+		}
+		return timeoutId;
+	};
 
 	const triggerClose = () => {
 		setShowHighlight( false );
@@ -124,7 +147,7 @@ function HighlightTooltip( {
 
 HighlightTooltip.propTypes = {
 	/**
-	 * The id of the element it should highlight.
+	 * The id of the element it should highlight, should be unique per HighlightTooltip.
 	 */
 	id: PropTypes.string.isRequired,
 	/**
