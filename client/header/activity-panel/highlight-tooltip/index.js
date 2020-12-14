@@ -31,7 +31,7 @@ function HighlightTooltip( {
 	delay,
 } ) {
 	const [ showHighlight, setShowHighlight ] = useState(
-		delay > 0 ? false : show
+		delay > 0 ? null : show
 	);
 	const [ node, setNode ] = useState( null );
 
@@ -42,14 +42,11 @@ function HighlightTooltip( {
 			// Add tooltip container
 			const parent = element.parentElement;
 			container = document.createElement( 'div' );
-			container.classList.add(
-				'highlight-tooltip__container',
-				SHOW_CLASS
-			);
+			container.classList.add( 'highlight-tooltip__container' );
 			parent.appendChild( container );
 			setNode( container );
 		}
-		const timeoutId = showTooltip();
+		const timeoutId = showTooltip( container );
 
 		return () => {
 			if ( container ) {
@@ -69,27 +66,30 @@ function HighlightTooltip( {
 	}, [ showHighlight ] );
 
 	useEffect( () => {
-		if ( show !== showHighlight ) {
+		if ( show !== showHighlight && showHighlight !== null && node ) {
 			setShowHighlight( show );
-			if ( ! show && node ) {
+			if ( ! show ) {
 				node.classList.remove( SHOW_CLASS );
 			} else if ( node ) {
-				showTooltip();
+				showTooltip( node );
 			}
 		}
 	}, [ show ] );
 
-	const showTooltip = () => {
+	const showTooltip = ( container ) => {
 		let timeoutId = null;
 		if ( delay > 0 ) {
 			timeoutId = setTimeout( () => {
 				timeoutId = null;
-				setShowHighlight( show );
-				if ( node ) {
-					node.classList.add( SHOW_CLASS );
+				if ( container ) {
+					container.classList.add( SHOW_CLASS );
 				}
+				setShowHighlight( show );
 			}, delay );
 		} else if ( ! showHighlight ) {
+			if ( container ) {
+				container.classList.add( SHOW_CLASS );
+			}
 			setShowHighlight( true );
 		}
 		return timeoutId;
