@@ -34,7 +34,7 @@ import ProfileWizardHeader from './header';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
 import './style.scss';
-import { getCountryCode } from '../dashboard/utils';
+import { isSelectiveBundleInstallSegmentation } from './steps/business-details/data/segmentation';
 
 class ProfileWizard extends Component {
 	constructor( props ) {
@@ -327,10 +327,10 @@ export default compose(
 			( industry ) => industry.slug
 		);
 
-		const selectiveBundleInstallSegmentation =
-			getCountryCode( country ) === 'US' &&
-			( industrySlugs.includes( 'food-drink' ) ||
-				industrySlugs.includes( 'other' ) );
+		const selectiveBundleInstallSegmentation = isSelectiveBundleInstallSegmentation(
+			country,
+			industrySlugs
+		);
 
 		const notesQuery = {
 			page: 1,

@@ -10,8 +10,8 @@ import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
  */
 import { BundleBusinessDetailsStep } from './flows/bundle';
 import { SelectiveFeaturesBusinessStep } from './flows/selective-bundle';
-import { getCountryCode } from '../../../dashboard/utils';
 import './style.scss';
+import { isSelectiveBundleInstallSegmentation } from './data/segmentation';
 
 export const BusinessDetailsStep = ( props ) => {
 	const { profileItems, settings, isLoading } = useSelect( ( select ) => {
@@ -37,10 +37,10 @@ export const BusinessDetailsStep = ( props ) => {
 		( industry ) => industry.slug
 	);
 
-	const selectiveBundleInstallSegmentation =
-		getCountryCode( country ) === 'US' &&
-		( industrySlugs.includes( 'food-drink' ) ||
-			industrySlugs.includes( 'other' ) );
+	const selectiveBundleInstallSegmentation = isSelectiveBundleInstallSegmentation(
+		country,
+		industrySlugs
+	);
 
 	if ( isLoading ) {
 		return (
