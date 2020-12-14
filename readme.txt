@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.3.0
 Tested up to: 5.4.2
 Requires PHP: 5.6.20
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -87,7 +87,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add page parameter to override default wc-admin page in Navigation API. #5821
 - Fix: Invalidate product count if the last product was updated in the list. #5790
 - Fix: Add Customer Type column to the Orders report table. #5820
-<<<<<<< HEAD
 - Fix: Product exclusion filter on Orders Report. #5822
 - Enhancement: Introduce the customer effort score (CES) feature.
 - Enhancement: Rework task extensibility in the homescreen. #5794
