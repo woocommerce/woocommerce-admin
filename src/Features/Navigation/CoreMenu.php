@@ -36,7 +36,6 @@ class CoreMenu {
 	 */
 	public function init() {
 		add_action( 'admin_menu', array( $this, 'register_post_types' ) );
-		add_action( 'admin_menu', array( $this, 'register_taxonomies' ) );
 	}
 
 	/**
@@ -275,18 +274,6 @@ class CoreMenu {
 		Screen::register_post_type( 'shop_order' );
 		Screen::register_post_type( 'product' );
 		Screen::register_post_type( 'shop_coupon' );
-	}
-
-	/**
-	 * Register all core post types.
-	 */
-	public function register_taxonomies() {
-		Screen::register_taxonomy( 'product_cat' );
-		Screen::register_taxonomy( 'product_tag' );
-		$product_attribute_taxonomies = wc_get_attribute_taxonomies();
-		foreach ( $product_attribute_taxonomies as $taxonomy ) {
-			Screen::register_taxonomy( 'pa_' . $taxonomy->attribute_name );
-		}
 	}
 
 	/**

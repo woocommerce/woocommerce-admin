@@ -115,8 +115,27 @@ class Screen {
 		if (
 			in_array( $post_type, $post_types, true ) ||
 			in_array( $taxonomy, $taxonomies, true ) ||
+			self::is_woocommerce_taxonomy( $taxonomy ) ||
 			in_array( $current_screen_id, $screen_ids, true )
 		) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if a given taxonomy is a WooCommerce related taxonomy.
+	 *
+	 * @param string $taxonomy Taxonomy.
+	 * @return bool
+	 */
+	public static function is_woocommerce_taxonomy( $taxonomy ) {
+		if ( in_array( $taxonomy, array( 'product_cat', 'product_tag' ), true ) ) {
+			return true;
+		}
+
+		if ( 'pa_' === substr( $taxonomy, 0, 3 ) ) {
 			return true;
 		}
 
