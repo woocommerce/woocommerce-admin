@@ -73,6 +73,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 1.8.1 12/15/2020 ==
+
+- Fix: Product exclusion filter on Orders Report.
+- Fix: Typo in Variation Stats DataStore context filter value. #5784
+
 == 1.8.0 12/7/2020 ==
 
 - Enhancement: Add "filter by variations in reports" inbox note. #5208
@@ -82,6 +87,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add page parameter to override default wc-admin page in Navigation API. #5821
 - Fix: Invalidate product count if the last product was updated in the list. #5790
 - Fix: Add Customer Type column to the Orders report table. #5820
+<<<<<<< HEAD
 - Fix: Product exclusion filter on Orders Report. #5822
 - Enhancement: Introduce the customer effort score (CES) feature.
 - Enhancement: Rework task extensibility in the homescreen. #5794
@@ -108,7 +114,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Stop order panels flickering on load. #5655
 - Fix: Load wc-tracks to avoid fatal errors. #5645 #5638
 - Fix: Preventing desktop-sized navigation placeholder from appearing on mobile during load. #5616
-
 
 = 1.7.0 11/11/2020 =
 - Enhancement: Variations report.  #5167
