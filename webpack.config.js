@@ -35,6 +35,8 @@ const externals = {
 	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
 	'@wordpress/plugins': { this: [ 'wp', 'plugins' ] },
 	'@wordpress/components': { this: [ 'wp', 'components' ] },
+	'@wordpress/date': { this: [ 'wp', 'date' ] },
+	'@wordpress/compose': { this: [ 'wp', 'compose' ] },
 	tinymce: 'tinymce',
 	moment: 'moment',
 	react: 'React',
