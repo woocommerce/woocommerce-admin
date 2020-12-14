@@ -430,7 +430,11 @@ class Menu {
 		$product_type_query = ! empty( $taxonomy_object->object_type )
 			? "&post_type={$taxonomy_object->object_type[0]}"
 			: '';
-		$match_expression   = "term.php(?=.*[?|&]taxonomy=${taxonomy}(&|$|#))|edit-tags.php(?=.*[?|&]taxonomy=${taxonomy}(&|$|#))";
+		$match_expression   = 'term.php';                               // Match term.php pages.
+		$match_expression  .= "(?=.*[?|&]taxonomy=${taxonomy}(&|$|#))"; // Lookahead to match a taxonomy URL param.
+		$match_expression  .= '|';                                      // Or.
+		$match_expression  .= 'edit-tags.php';                          // Match edit-tags.php pages.
+		$match_expression  .= "(?=.*[?|&]taxonomy=${taxonomy}(&|$|#))"; // Lookahead to match a taxonomy URL param.
 
 		return array(
 			'default' => array_merge(
