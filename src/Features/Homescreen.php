@@ -60,7 +60,7 @@ class Homescreen {
 				'homepage_layout',
 				'homepage_stats',
 				'task_list_tracked_started_tasks',
-				'help_panel_highlight_shown'
+				'help_panel_highlight_shown',
 			)
 		);
 	}
