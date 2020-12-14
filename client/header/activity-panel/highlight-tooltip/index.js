@@ -14,6 +14,7 @@ import {
 } from '@wordpress/components';
 import { useState, useEffect, createPortal } from '@wordpress/element';
 import { close } from '@wordpress/icons';
+import { noop } from 'lodash';
 
 /**
  * Internal dependencies
@@ -29,6 +30,7 @@ function HighlightTooltip( {
 	id,
 	onClose,
 	delay,
+	onShow = noop,
 } ) {
 	const [ showHighlight, setShowHighlight ] = useState(
 		delay > 0 ? null : show
@@ -85,12 +87,14 @@ function HighlightTooltip( {
 					container.classList.add( SHOW_CLASS );
 				}
 				setShowHighlight( show );
+				onShow();
 			}, delay );
 		} else if ( ! showHighlight ) {
 			if ( container ) {
 				container.classList.add( SHOW_CLASS );
 			}
 			setShowHighlight( true );
+			onShow();
 		}
 		return timeoutId;
 	};
@@ -174,6 +178,10 @@ HighlightTooltip.propTypes = {
 	 * This will delay the popup from appearing by the number of ms.
 	 */
 	delay: PropTypes.number,
+	/**
+	 * A callback for when the tooltip is shown.
+	 */
+	onShow: PropTypes.func,
 };
 
 export { HighlightTooltip };

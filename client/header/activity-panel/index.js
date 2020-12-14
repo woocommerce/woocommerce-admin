@@ -48,7 +48,6 @@ export class ActivityPanel extends Component {
 			currentTab: '',
 			isPanelSwitching: false,
 		};
-		this.recordedHelpTooltip = false;
 	}
 
 	togglePanel( { name: tabName }, isTabOpen ) {
@@ -312,10 +311,6 @@ export class ActivityPanel extends Component {
 			( startedTasks || {} )[ task ] > 1 &&
 			! trackedCompletedTasks.includes( task )
 		) {
-			if ( ! this.recordedHelpTooltip ) {
-				this.recordedHelpTooltip = true;
-				recordEvent( 'help_tooltip_view' );
-			}
 			return true;
 		}
 		return false;
@@ -397,6 +392,7 @@ export class ActivityPanel extends Component {
 						closeButtonText={ __( 'Got it', 'woocommerce-admin' ) }
 						id="activity-panel-tab-help"
 						onClose={ () => this.closedHelpPanelHighlight() }
+						onShow={ () => recordEvent( 'help_tooltip_view' ) }
 					/>
 				) : null }
 			</div>

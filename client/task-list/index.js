@@ -33,31 +33,35 @@ export class TaskDashboard extends Component {
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 	}
 
-	trackStartedTask = ( taskName ) => {
+	getTaskStartedCount = ( taskName ) => {
+		const { userPreferences } = this.props;
+		const trackedStartedTasks =
+			userPreferences.task_list_tracked_started_tasks;
+		if ( ! trackedStartedTasks || ! trackedStartedTasks[ taskName ] ) {
+			return 0;
+		}
+		return trackedStartedTasks[ taskName ];
+	};
+
+	updateTrackStartedCount = ( taskName, newCount ) => {
 		const { userPreferences } = this.props;
 		const trackedStartedTasks =
 			userPreferences.task_list_tracked_started_tasks || {};
-		const currentTaskCount =
-			trackedStartedTasks && trackedStartedTasks[ taskName ]
-				? trackedStartedTasks[ taskName ]
-				: 0;
-		// Only record task visits up to 2 times
-		if ( currentTaskCount > 1 ) {
-			return;
-		}
 		userPreferences.updateUserPreferences( {
 			task_list_tracked_started_tasks: {
 				...( trackedStartedTasks || {} ),
-				[ taskName ]: currentTaskCount + 1,
+				[ taskName ]: newCount,
 			},
 		} );
 	};
 
 	onTaskSelect = ( taskName ) => {
+		const trackStartedCount = this.getTaskStartedCount( taskName );
 		recordEvent( 'tasklist_click', {
 			task_name: taskName,
+			visit_count: trackStartedCount + 1,
 		} );
-		this.trackStartedTask( taskName );
+		this.updateTrackStartedCount( taskName, trackStartedCount + 1 );
 	};
 
 	getAllTasks() {
