@@ -28,7 +28,7 @@ const Container = ( { menuItems } ) => {
 		adminMenu.classList.add( 'folded' );
 	}, [] );
 
-	const { rootBackUrl } = window.wcNavigation;
+	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
 
 	const parentCategory = {
 		capability: 'manage_woocommerce',
@@ -133,10 +133,7 @@ const Container = ( { menuItems } ) => {
 						<NavigationBackButton
 							className="woocommerce-navigation__back-to-dashboard"
 							href={ rootBackUrl }
-							backButtonLabel={ __(
-								'WordPress Dashboard',
-								'woocommerce-navigation'
-							) }
+							backButtonLabel={ rootBackLabel }
 							onClick={ () => trackBackClick( 'woocommerce' ) }
 						></NavigationBackButton>
 					) }

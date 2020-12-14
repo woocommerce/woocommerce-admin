@@ -602,8 +602,9 @@ class Menu {
 	 */
 	public function enqueue_data( $menu ) {
 		$data = array(
-			'menuItems'   => self::get_prepared_menu_item_data(),
-			'rootBackUrl' => apply_filters( 'woocommerce_navigation_root_back_url', get_dashboard_url() ),
+			'menuItems'     => self::get_prepared_menu_item_data(),
+			'rootBackUrl'   => apply_filters( 'woocommerce_navigation_root_back_url', get_dashboard_url() ),
+			'rootBackLabel' => apply_filters( 'woocommerce_navigation_root_back_label', __( 'WordPress Dashboard', 'woocommerce-admin' ) ),
 		);
 
 		wp_add_inline_script( WC_ADMIN_APP, 'window.wcNavigation = ' . wp_json_encode( $data ), 'before' );
