@@ -4,12 +4,17 @@
 import { Component } from '@wordpress/element';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import {
+	Card as WPCard,
+	CardBody,
+	CardHeader,
+	__experimentalText as Text,
+} from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import EllipsisMenu from '../ellipsis-menu';
-import { H, Section } from '../section';
 import { validateComponent } from '../lib/proptype-validator';
 
 /**
@@ -20,14 +25,16 @@ class Card extends Component {
 		const {
 			action,
 			children,
+			className,
 			description,
 			isInactive,
 			menu,
+			size,
 			title,
 		} = this.props;
-		const className = classnames(
+		const cardClasses = classnames(
 			'woocommerce-card',
-			this.props.className,
+			className,
 			{
 				'has-menu': !! menu,
 				'has-action': !! action,
@@ -35,17 +42,17 @@ class Card extends Component {
 			}
 		);
 		return (
-			<div className={ className }>
+			<WPCard className={ cardClasses }>
 				{ title && (
-					<div className="woocommerce-card__header">
+					<CardHeader>
 						<div className="woocommerce-card__title-wrapper">
-							<H className="woocommerce-card__title woocommerce-card__header-item">
+							<Text variant="title.small">
 								{ title }
-							</H>
+							</Text>
 							{ description && (
-								<H className="woocommerce-card__description woocommerce-card__header-item">
+								<Text variant="caption">
 									{ description }
-								</H>
+								</Text>
 							) }
 						</div>
 						{ action && (
@@ -58,15 +65,19 @@ class Card extends Component {
 								{ menu }
 							</div>
 						) }
-					</div>
+					</CardHeader>
 				) }
-				<Section className="woocommerce-card__body">
+				<CardBody size={ size }>
 					{ children }
-				</Section>
-			</div>
+				</CardBody>
+			</WPCard>
 		);
 	}
 }
+
+Card.defaultProps = {
+	size: 'none',
+};
 
 Card.propTypes = {
 	/**
@@ -89,6 +100,10 @@ Card.propTypes = {
 	 * An `EllipsisMenu`, with filters used to control the content visible in this card
 	 */
 	menu: validateComponent( EllipsisMenu ),
+	/**
+	 * Size of card spacing.
+	 */
+	size: PropTypes.string,
 	/**
 	 * The title to use for this card.
 	 */
