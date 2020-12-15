@@ -239,7 +239,6 @@ export const SelectiveExtensionsBundle = ( {
 				<div className="woocommerce-admin__business-details__selective-extensions-bundle">
 					<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
 						<CheckboxControl
-							id="woocommerce-business-extensions__checkbox"
 							checked={ values.install_extensions }
 							onChange={ ( checked ) => {
 								setValues(
