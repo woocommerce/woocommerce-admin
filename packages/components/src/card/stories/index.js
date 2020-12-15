@@ -11,14 +11,6 @@ export const Basic = () => (
 	</>
 );
 
-export const Inactive = () => (
-	<>
-		<Card title="Inactive Card" isInactive>
-			<p>This Card is grayed out and has no box-shadow.</p>
-		</Card>
-	</>
-);
-
 export default {
 	title: 'WooCommerce Admin/components/Card',
 	component: Card,

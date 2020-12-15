@@ -27,7 +27,6 @@ class Card extends Component {
 			children,
 			className,
 			description,
-			isInactive,
 			menu,
 			size,
 			title,
@@ -38,7 +37,6 @@ class Card extends Component {
 			{
 				'has-menu': !! menu,
 				'has-action': !! action,
-				'is-inactive': !! isInactive,
 			}
 		);
 		return (
@@ -92,10 +90,6 @@ Card.propTypes = {
 	 * The description displayed beneath the title.
 	 */
 	description: PropTypes.oneOfType( [ PropTypes.string, PropTypes.node ] ),
-	/**
-	 * Boolean representing whether the card is inactive or not.
-	 */
-	isInactive: PropTypes.bool,
 	/**
 	 * An `EllipsisMenu`, with filters used to control the content visible in this card
 	 */
