@@ -293,6 +293,7 @@ class Loader {
 					'desc'  => $description . $update_text,
 					'id'    => 'woocommerce_navigation_enabled',
 					'type'  => 'checkbox',
+					'class' => $needs_update ? 'disabled' : '',
 				),
 				array(
 					'type' => 'sectionend',
