@@ -6,7 +6,7 @@ import { render } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import NavigationOptOutContainer from './container';
+import { NavigationOptOutContainer } from './container';
 import './style.scss';
 
 const navigationOptOutRoot = document.createElement( 'div' );

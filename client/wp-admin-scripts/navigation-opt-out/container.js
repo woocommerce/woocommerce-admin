@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { Button, Modal } from '@wordpress/components';
 
-export default class NavigationOptOutContainer extends Component {
+export class NavigationOptOutContainer extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
