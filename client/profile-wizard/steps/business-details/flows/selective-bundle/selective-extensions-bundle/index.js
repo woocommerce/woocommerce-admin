@@ -223,7 +223,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 	);
 };
 
-const BundleExtension = ( { onChange, description, isChecked } ) => {
+const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 	return (
 		<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
 			<CheckboxControl
@@ -316,7 +316,7 @@ export const SelectiveExtensionsBundle = ( {
 									{ title }
 								</div>
 								{ plugins.map( ( { description, slug } ) => (
-									<BundleExtension
+									<BundleExtensionCheckbox
 										key={ slug }
 										description={ description }
 										isChecked={ values[ slug ] }
