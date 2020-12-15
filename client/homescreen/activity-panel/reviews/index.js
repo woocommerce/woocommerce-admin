@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
-import { Button } from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
@@ -193,7 +193,13 @@ class ReviewsPanel extends Component {
 				),
 				verifiedCustomerIcon: review.verified ? (
 					<span className="woocommerce-review-activity-card__verified">
-						<CheckmarkCircleIcon />
+						<Tooltip
+							text={ __( 'Verified owner', 'woocommerce-admin' ) }
+						>
+							<span>
+								<CheckmarkCircleIcon />
+							</span>
+						</Tooltip>
 					</span>
 				) : null,
 			},
