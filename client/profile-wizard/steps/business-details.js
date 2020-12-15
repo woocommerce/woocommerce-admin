@@ -6,6 +6,9 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
 	Button,
+	Card,
+	CardBody,
+	CardFooter,
 	CheckboxControl,
 	FormToggle,
 	Popover,
@@ -16,7 +19,6 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, get, pickBy } from 'lodash';
 import {
 	H,
-	Card,
 	Link,
 	SelectControl,
 	Form,
@@ -833,7 +835,7 @@ class BusinessDetails extends Component {
 								</Text>
 							</div>
 							<Card>
-								<Fragment>
+								<CardBody>
 									<SelectControl
 										label={ __(
 											'How many products do you plan to display?',
@@ -916,40 +918,39 @@ class BusinessDetails extends Component {
 												values,
 												getInputProps
 										  ) }
-
-									<div className="woocommerce-profile-wizard__card-actions">
-										<Button
-											isPrimary
-											onClick={ handleSubmit }
-											disabled={
-												! isValidForm ||
-												isUpdatingProfileItems ||
-												isInstallingActivating
-											}
-											isBusy={ isInstallingActivating }
-										>
-											{ ! hasInstallActivateError
-												? __(
-														'Continue',
-														'woocommerce-admin'
-												  )
-												: __(
-														'Retry',
-														'woocommerce-admin'
-												  ) }
-										</Button>
-										{ hasInstallActivateError && (
-											<Button
-												onClick={ () => goToNextStep() }
-											>
-												{ __(
-													'Continue without installing',
+								</CardBody>
+								<CardFooter justify="center">
+									<Button
+										isPrimary
+										onClick={ handleSubmit }
+										disabled={
+											! isValidForm ||
+											isUpdatingProfileItems ||
+											isInstallingActivating
+										}
+										isBusy={ isInstallingActivating }
+									>
+										{ ! hasInstallActivateError
+											? __(
+													'Continue',
+													'woocommerce-admin'
+												)
+											: __(
+													'Retry',
 													'woocommerce-admin'
 												) }
-											</Button>
-										) }
-									</div>
-								</Fragment>
+									</Button>
+									{ hasInstallActivateError && (
+										<Button
+											onClick={ () => goToNextStep() }
+										>
+											{ __(
+												'Continue without installing',
+												'woocommerce-admin'
+											) }
+										</Button>
+									) }
+								</CardFooter>
 							</Card>
 
 							{ this.renderBusinessExtensionHelpText( values ) }
