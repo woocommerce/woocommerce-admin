@@ -255,10 +255,9 @@ export const SelectiveExtensionsBundle = ( {
 							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
 							icon={ showExtensions ? chevronUp : chevronDown }
 							onClick={ () => {
-								const shouldShowExtensions = ! showExtensions;
-								setShowExtensions( shouldShowExtensions );
+								setShowExtensions( ! showExtensions );
 
-								if ( shouldShowExtensions ) {
+								if ( ! showExtensions ) {
 									// only record the accordion click when the accordion is opened.
 									recordEvent(
 										'storeprofiler_store_business_features_accordion_click'
