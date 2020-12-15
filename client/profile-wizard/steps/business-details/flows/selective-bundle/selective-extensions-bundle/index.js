@@ -223,12 +223,55 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 	);
 };
 
+const BundleExtension = ( { onChange, description, isChecked } ) => {
+	return (
+		<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
+			<CheckboxControl
+				id="woocommerce-business-extensions__checkbox"
+				checked={ isChecked }
+				onChange={ onChange }
+			/>
+			<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
+				{ description }
+			</p>
+			<FreeBadge />
+		</div>
+	);
+};
+
 export const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( initialValues );
+
+	const getCheckboxChangeHandler = ( slug ) => {
+		return ( checked ) => {
+			const newState = {
+				...values,
+				[ slug ]: checked,
+			};
+
+			const allExtensionsDisabled =
+				Object.entries( newState ).filter( ( [ , val ] ) => val )
+					.length === 1 && newState.install_extensions;
+
+			if ( allExtensionsDisabled ) {
+				// If all the extensions are disabled then disable the "Install Extensions" checkbox too
+				setValues( {
+					...newState,
+					install_extensions: false,
+				} );
+			} else {
+				setValues( {
+					...values,
+					[ slug ]: checked,
+					install_extensions: true,
+				} );
+			}
+		};
+	};
 
 	return (
 		<div className="woocommerce-profile-wizard__business-details__free-features">
@@ -273,47 +316,14 @@ export const SelectiveExtensionsBundle = ( {
 									{ title }
 								</div>
 								{ plugins.map( ( { description, slug } ) => (
-									<div
+									<BundleExtension
 										key={ slug }
-										className="woocommerce-admin__business-details__selective-extensions-bundle__extension"
-									>
-										<CheckboxControl
-											id="woocommerce-business-extensions__checkbox"
-											checked={ values[ slug ] }
-											onChange={ ( checked ) => {
-												const newState = {
-													...values,
-													[ slug ]: checked,
-												};
-
-												const allExtensionsDisabled =
-													Object.entries(
-														newState
-													).filter(
-														( [ , val ] ) => val
-													).length === 1 &&
-													newState.install_extensions;
-
-												if ( allExtensionsDisabled ) {
-													// If all the extensions are disabled then disable the "Install Extensions" checkbox too
-													setValues( {
-														...newState,
-														install_extensions: false,
-													} );
-												} else {
-													setValues( {
-														...values,
-														[ slug ]: checked,
-														install_extensions: true,
-													} );
-												}
-											} }
-										/>
-										<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
-											{ description }
-										</p>
-										<FreeBadge />
-									</div>
+										description={ description }
+										isChecked={ values[ slug ] }
+										onChange={ getCheckboxChangeHandler(
+											slug
+										) }
+									/>
 								) ) }
 							</div>
 						) ) }
