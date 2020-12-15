@@ -9,7 +9,7 @@ svn co https://plugins.svn.wordpress.org/woocommerce-admin/ $SVN_WOOCOMMERCE_ADM
 cd  $SVN_WOOCOMMERCE_ADMIN_PATH
 
 # Get the tagged version to release.
-echo "Please enter the version number to release to woocommerce.org, for example, 1.0.0: "
+echo "Please enter the version number to release to wordpress.org, for example, 1.0.0: "
 read -r VERSION
 
 # Empty trunk/.
