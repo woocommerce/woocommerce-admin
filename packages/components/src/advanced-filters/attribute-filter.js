@@ -227,6 +227,12 @@ const AttributeFilter = ( props ) => {
 													selectedAttributeTerm
 												}
 												onChange={ ( term ) => {
+													// Clearing the input using delete/backspace causes an empty array to be passed here.
+													if (
+														typeof term !== 'string'
+													) {
+														term = '';
+													}
 													setSelectedAttributeTerm(
 														term
 													);
