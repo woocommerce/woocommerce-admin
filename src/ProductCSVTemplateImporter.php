@@ -42,8 +42,8 @@ class ProductCSVTemplateImporter extends \WC_Product_CSV_Importer {
 			$this->set_mapped_keys();
 		}
 
-		if ( params['parse'] ) {
-			$this->params['parse'] = params['parse'];
+		if ( $params['parse'] ) {
+			$this->params['parse'] = $params['parse'];
 			$this->set_parsed_data();
 		}
 	}
