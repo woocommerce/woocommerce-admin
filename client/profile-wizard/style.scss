@@ -401,13 +401,9 @@
 }
 
 .woocommerce-business-extensions {
-	margin-left: -$gap;
-	margin-right: -$gap;
-	padding: $gap $gap-large;
-	border-top: 1px solid $gray-100;
-	border-bottom: 1px solid $gray-100;
 	display: flex;
 	align-items: center;
+	width: 100%;
 
 	label {
 		display: flex;

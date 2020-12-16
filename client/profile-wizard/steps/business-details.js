@@ -464,7 +464,7 @@ class BusinessDetails extends Component {
 		];
 
 		return (
-			<Fragment>
+			<div>
 				{ extensionBenefits.map( ( benefit ) => (
 					<div
 						className="woocommerce-profile-wizard__benefit"
@@ -490,7 +490,7 @@ class BusinessDetails extends Component {
 						</div>
 					</div>
 				) ) }
-			</Fragment>
+			</div>
 		);
 	}
 
@@ -818,6 +818,16 @@ class BusinessDetails extends Component {
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
+					const businessExtensions = this.bundleInstall
+						? this.renderBusinessExtensionsBundle(
+								values,
+								getInputProps
+						  )
+						: this.renderBusinessExtensions(
+								values,
+								getInputProps
+						  );
+
 					return (
 						<Fragment>
 							<div className="woocommerce-profile-wizard__step-header">
@@ -908,17 +918,12 @@ class BusinessDetails extends Component {
 											</div>
 										</Fragment>
 									) }
-
-									{ this.bundleInstall
-										? this.renderBusinessExtensionsBundle(
-												values,
-												getInputProps
-										  )
-										: this.renderBusinessExtensions(
-												values,
-												getInputProps
-										  ) }
 								</CardBody>
+								{ businessExtensions && (
+									<CardFooter>
+										{ businessExtensions }
+									</CardFooter>
+								) }
 								<CardFooter justify="center">
 									<Button
 										isPrimary
@@ -934,11 +939,11 @@ class BusinessDetails extends Component {
 											? __(
 													'Continue',
 													'woocommerce-admin'
-												)
+											  )
 											: __(
 													'Retry',
 													'woocommerce-admin'
-												) }
+											  ) }
 									</Button>
 									{ hasInstallActivateError && (
 										<Button
