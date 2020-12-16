@@ -63,11 +63,11 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
-		if ( defined('JETPACK_MASTER_USER') ) {
+		if ( defined('JETPACK_MASTER_USER' ) ) {
 			$user_token = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
 			$jetpack_connected = isset( $user_token->external_user_id );
 		} else {
-			$jetpack_connected = apply_filters( 'woocommerce_admin_is_jetpack_connected', false);
+			$jetpack_connected = apply_filters( 'woocommerce_admin_is_jetpack_connected', false );
 		}
 
 		$wcs_version       = \WC_Connect_Loader::get_wcs_version();
