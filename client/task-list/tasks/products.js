@@ -15,6 +15,7 @@ import { ProductTemplateModal } from './products/product-template-modal';
 
 const subTasks = [
 	{
+		key: 'addProductTemplate',
 		title: __( 'Start with a template (recommended)', 'woocommerce-admin' ),
 		content: __(
 			'For small stores we recommend adding products manually',
@@ -28,6 +29,7 @@ const subTasks = [
 			} ),
 	},
 	{
+		key: 'addProductManually',
 		title: __( 'Add manually (recommended)', 'woocommerce-admin' ),
 		content: __(
 			'For small stores we recommend adding products manually',
@@ -42,6 +44,7 @@ const subTasks = [
 		),
 	},
 	{
+		key: 'importProducts',
 		title: __( 'Import', 'woocommerce-admin' ),
 		content: __(
 			'For larger stores we recommend importing all products at once via CSV file',
@@ -56,6 +59,7 @@ const subTasks = [
 		),
 	},
 	{
+		key: 'migrateProducts',
 		title: __( 'Migrate', 'woocommerce-admin' ),
 		content: __(
 			'For stores currently selling elsewhere we suggest using a product migration service',
@@ -73,14 +77,26 @@ const subTasks = [
 
 export default function Products() {
 	const [ selectTemplate, setSelectTemplate ] = useState( null );
+
+	const onTaskClick = ( task ) => {
+		task.onClick();
+		if ( task.key === 'addProductTemplate' ) {
+			setSelectTemplate( true );
+		}
+	};
+
+	const listItems = subTasks.map( ( task ) => ( {
+		...task,
+		onClick: () => onTaskClick( task ),
+	} ) );
 	return (
 		<Fragment>
 			<Card className="woocommerce-task-card">
 				<CardBody size={ null }>
-					<List items={ subTasks } />
+					<List items={ listItems } />
 				</CardBody>
 			</Card>
-			<ProductTemplateModal />
+			{ selectTemplate ? <ProductTemplateModal /> : null }
 		</Fragment>
 	);
 }
