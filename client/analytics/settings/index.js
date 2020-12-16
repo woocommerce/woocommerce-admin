@@ -9,6 +9,7 @@ import { withDispatch } from '@wordpress/data';
 import { SectionHeader, ScrollTo } from '@woocommerce/components';
 import { useSettings } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { resetPersistedQueries } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -98,6 +99,8 @@ const Settings = ( { createNotice, query } ) => {
 	const saveChanges = () => {
 		persistSettings();
 		recordEvent( 'analytics_settings_save', wcAdminSettings );
+
+		resetPersistedQueries();
 	};
 
 	const handleInputChange = ( e ) => {

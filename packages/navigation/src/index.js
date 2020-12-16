@@ -14,7 +14,11 @@ import { getHistory } from './history';
 import * as navUtils from './index';
 // For the above, import the module into itself. Functions consumed from this import can be mocked in tests.
 
-const PERSISTED_QUERIES_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
+const PERSISTED_QUERIES_EXCLUDED_SCREENS_FILTER =
+	'woocommerce_admin_time_excluded_screens';
+
+// Variable to store persisted queries across excluded screens
+let persistedQueryRetainer = {};
 
 // Expose history so all uses get the same history object.
 export { getHistory };
@@ -49,13 +53,13 @@ export const getPersistedQuery = ( query = navUtils.getQuery() ) => {
 };
 
 /**
- * Accepts a query, and returns a query that has updated persistent queries
- * conditionally.
+ * Accepts a query, and returns a boolean value indicating whether to exclude
+ * the future screen from persisted query logic
  *
  * @param {Object} query Query containing the parameters.
- * @return {Object} Modified query object
+ * @return {boolean} True or false to indicate if the screen is excluded
  */
-export const patchPersistedQueries = ( query ) => {
+export const isQueryExcludedScreen = ( query ) => {
 	const excludedScreens = applyFilters(
 		PERSISTED_QUERIES_EXCLUDED_SCREENS_FILTER,
 		[ 'stock', 'settings', 'customers', 'homescreen' ]
@@ -65,14 +69,50 @@ export const patchPersistedQueries = ( query ) => {
 	const screen = path.replace( '/analytics', '' ).replace( '/', '' );
 
 	if ( excludedScreens.includes( screen ) ) {
+		return true;
+	}
+
+	return false;
+};
+
+/**
+ * Removes any persisted queries from backup variable
+ */
+export const resetPersistedQueries = () => {
+	persistedQueryRetainer = {};
+};
+
+/**
+ * Accepts a query, and returns a query that has updated persistent queries
+ * conditionally.
+ *
+ * @param {Object} query Query containing the parameters.
+ * @return {Object} Modified query object
+ */
+export const patchPersistedQueries = ( query ) => {
+	if ( isQueryExcludedScreen( query ) ) {
 		return query;
 	}
 
-	const persisted = getPersistedQuery();
-	const patchedQuery =
-		query.updatePersistedQueries && query.updatePersistedQueries === 'true'
-			? Object.assign( persisted, query )
-			: Object.assign( query, persisted );
+	const updatePersisted =
+		query.updatePersistedQueries && query.updatePersistedQueries === 'true';
+
+	let persisted = getPersistedQuery();
+
+	// This condition allows you to persist queries even when you navigate to an excluded screen and back
+	if (
+		! updatePersisted &&
+		! Object.keys( persisted ).length &&
+		Object.keys( persistedQueryRetainer ).length
+	) {
+		persisted = persistedQueryRetainer;
+	}
+
+	persistedQueryRetainer = persisted;
+
+	const patchedQuery = updatePersisted
+		? Object.assign( persisted, query )
+		: Object.assign( query, persisted );
 
 	delete patchedQuery.updatePersistedQueries;
 
