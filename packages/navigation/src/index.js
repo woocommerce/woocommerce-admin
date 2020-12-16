@@ -14,7 +14,7 @@ import { getHistory } from './history';
 import * as navUtils from './index';
 // For the above, import the module into itself. Functions consumed from this import can be mocked in tests.
 
-const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
+const PERSISTED_QUERIES_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
 
 // Expose history so all uses get the same history object.
 export { getHistory };
@@ -56,12 +56,10 @@ export const getPersistedQuery = ( query = navUtils.getQuery() ) => {
  * @return {Object} Modified query object
  */
 export const patchPersistedQueries = ( query ) => {
-	const excludedScreens = applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
-		'stock',
-		'settings',
-		'customers',
-		'homescreen',
-	] );
+	const excludedScreens = applyFilters(
+		PERSISTED_QUERIES_EXCLUDED_SCREENS_FILTER,
+		[ 'stock', 'settings', 'customers', 'homescreen' ]
+	);
 
 	const path = query.path || 'homescreen';
 	const screen = path.replace( '/analytics', '' ).replace( '/', '' );
