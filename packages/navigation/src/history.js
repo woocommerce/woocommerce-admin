@@ -50,6 +50,11 @@ function getHistory() {
 			createHref: ( ...args ) =>
 				browserHistory.createHref.apply( browserHistory, args ),
 			push( ...args ) {
+				if ( args.length !== 1 ) {
+					browserHistory.push.apply( browserHistory, args );
+					return;
+				}
+
 				const [ href ] = args;
 				const search = href.split( '?' )[
 					href.indexOf( '?' ) >= 0 ? 1 : 0
