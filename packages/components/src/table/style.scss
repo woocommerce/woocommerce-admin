@@ -1,6 +1,4 @@
 .woocommerce-table {
-	position: relative;
-
 	.woocommerce-table__actions {
 		display: inline-flex;
 		justify-content: flex-end;
@@ -39,6 +37,10 @@
 .woocommerce-table__caption {
 	@include font-size( 24 );
 	text-align: left;
+}
+
+.components-card__body {
+	position: relative;
 }
 
 .woocommerce-table__table {
@@ -224,6 +226,7 @@ th.woocommerce-table__item {
 }
 
 .woocommerce-table__summary {
+	text-align: center;
 	margin: 0;
 }
 
