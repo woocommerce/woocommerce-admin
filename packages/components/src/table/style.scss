@@ -9,6 +9,14 @@
 		}
 	}
 
+	.components-card__footer {
+		flex-direction: column;
+
+		> * {
+			padding-right: 0;
+		}
+	}
+
 	$row-text-height: 1.1375rem;
 	$row-height: #{$gap * 2} + #{$row-text-height} + 1px;
 	$header-row-height: #{$gap-smaller * 2} + #{$row-text-height} + 1px;
@@ -26,8 +34,7 @@
 	}
 
 	.woocommerce-pagination {
-		padding-top: $gap;
-		padding-bottom: $gap;
+		margin-bottom: $gap;
 		z-index: 1;
 		background: $studio-white;
 		position: relative;
