@@ -3,6 +3,13 @@
  */
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
+import {
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	__experimentalText as Text,
+} from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { find, first, isEqual, without } from 'lodash';
 import PropTypes from 'prop-types';
@@ -10,7 +17,6 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
-import Card from '../card';
 import EllipsisMenu from '../ellipsis-menu';
 import MenuItem from '../ellipsis-menu/menu-item';
 import MenuTitle from '../ellipsis-menu/menu-title';
@@ -150,19 +156,16 @@ class TableCard extends Component {
 		const allHeaders = this.props.headers;
 		const headers = this.getVisibleHeaders();
 		const rows = this.getVisibleRows();
-		const classes = classnames(
-			'woocommerce-table',
-			'woocommerce-analytics__card',
-			className
-		);
+		const classes = classnames( 'woocommerce-table', className );
 
 		return (
-			<Card
-				className={ classes }
-				title={ title }
-				action={ actions }
-				menu={
-					showMenu && (
+			<Card className={ classes }>
+				<CardHeader>
+					<Text variant="title.small">{ title }</Text>
+					<div className="woocommerce-table__actions">
+						{ actions }
+					</div>
+					{ showMenu && (
 						<EllipsisMenu
 							label={ __(
 								'Choose which values to display',
@@ -201,46 +204,49 @@ class TableCard extends Component {
 								</Fragment>
 							) }
 						/>
-					)
-				}
-			>
-				{ isLoading ? (
-					<Fragment>
-						<span className="screen-reader-text">
-							{ __(
-								'Your requested data is loading',
-								'woocommerce-admin'
-							) }
-						</span>
-						<TablePlaceholder
-							numberOfRows={ rowsPerPage }
+					) }
+				</CardHeader>
+				<CardBody size={ null }>
+					{ isLoading ? (
+						<Fragment>
+							<span className="screen-reader-text">
+								{ __(
+									'Your requested data is loading',
+									'woocommerce-admin'
+								) }
+							</span>
+							<TablePlaceholder
+								numberOfRows={ rowsPerPage }
+								headers={ headers }
+								rowHeader={ rowHeader }
+								caption={ title }
+								query={ query }
+							/>
+						</Fragment>
+					) : (
+						<Table
+							rows={ rows }
 							headers={ headers }
 							rowHeader={ rowHeader }
 							caption={ title }
 							query={ query }
+							onSort={ onSort || onQueryChange( 'sort' ) }
 						/>
-					</Fragment>
-				) : (
-					<Table
-						rows={ rows }
-						headers={ headers }
-						rowHeader={ rowHeader }
-						caption={ title }
-						query={ query }
-						onSort={ onSort || onQueryChange( 'sort' ) }
+					) }
+				</CardBody>
+
+				<CardFooter justify="center">
+					<Pagination
+						key={ parseInt( query.paged, 10 ) || 1 }
+						page={ parseInt( query.paged, 10 ) || 1 }
+						perPage={ rowsPerPage }
+						total={ totalRows }
+						onPageChange={ this.onPageChange }
+						onPerPageChange={ onQueryChange( 'per_page' ) }
 					/>
-				) }
 
-				<Pagination
-					key={ parseInt( query.paged, 10 ) || 1 }
-					page={ parseInt( query.paged, 10 ) || 1 }
-					perPage={ rowsPerPage }
-					total={ totalRows }
-					onPageChange={ this.onPageChange }
-					onPerPageChange={ onQueryChange( 'per_page' ) }
-				/>
-
-				{ summary && <TableSummary data={ summary } /> }
+					{ summary && <TableSummary data={ summary } /> }
+				</CardFooter>
 			</Card>
 		);
 	}

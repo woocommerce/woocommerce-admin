@@ -1,16 +1,13 @@
 .woocommerce-table {
-	.woocommerce-card__body {
-		padding: 0;
-		position: relative;
-	}
+	position: relative;
 
-	.woocommerce-card__action {
-		justify-self: flex-end;
-		margin: -($gap - 3) 0;
-	}
+	.woocommerce-table__actions {
+		display: inline-flex;
+		justify-content: flex-end;
 
-	.woocommerce-card__menu {
-		justify-self: flex-end;
+		> div {
+			width: 100%;
+		}
 	}
 
 	$row-text-height: 1.1375rem;
@@ -251,11 +248,6 @@ th.woocommerce-table__item {
 
 .woocommerce-table__summary {
 	margin: 0;
-	padding: $gap 0;
-	text-align: center;
-	z-index: 1;
-	background: $studio-white;
-	position: relative;
 }
 
 .woocommerce-table__summary-item {

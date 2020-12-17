@@ -20,17 +20,23 @@
 		flex-grow: 1;
 	}
 
-	.woocommerce-card__header {
-		position: relative;
+	.components-card__header {
+		display: grid;
+		grid-gap: $gap-small;
+		grid-template-columns: min-content 1fr min-content;
 	}
 
 	.woocommerce-table__compare.components-button {
 		padding: 8px;
 	}
 
+	.woocommerce-ellipsis-menu {
+		justify-self: flex-end;
+	}
+
 	&.has-compare,
 	&.has-search {
-		.woocommerce-card__action {
+		.components-card__header {
 			align-items: center;
 			text-align: left;
 			display: grid;
@@ -39,7 +45,7 @@
 		}
 
 		@include breakpoint( '<960px' ) {
-			.woocommerce-card__action {
+			.woocommerce-table__actions {
 				grid-gap: $gap-small;
 				grid-template-columns: auto 1fr;
 				grid-row-start: 2;
@@ -76,7 +82,7 @@
 				.woocommerce-table__download-button {
 					grid-area: 1 / 2 / 2 / 3;
 				}
-				.woocommerce-card__action {
+				.woocommerce-table__actions {
 					grid-template-columns: auto;
 
 					.woocommerce-table__compare {
@@ -89,7 +95,7 @@
 		}
 
 		&.has-search:not(.has-compare) {
-			.woocommerce-card__action {
+			.woocommerce-table__actions {
 				grid-template-columns: 1fr auto;
 
 				.woocommerce-search {
@@ -106,7 +112,7 @@
 			}
 
 			@include breakpoint( '<960px' ) {
-				.woocommerce-card__action {
+				.woocommerce-table__actions {
 					grid-template-columns: auto;
 
 					.woocommerce-search {
