@@ -219,7 +219,7 @@ describe( 'Activity Panel', () => {
 		} );
 
 		it( 'should not render highlight tooltip when task is not visited more then once', () => {
-			const screen = render(
+			render(
 				<ActivityPanel
 					requestingTaskListOptions={ false }
 					taskListComplete={ false }
@@ -234,7 +234,8 @@ describe( 'Activity Panel', () => {
 			);
 
 			expect( screen.queryByText( '[HighlightTooltip]' ) ).toBeNull();
-			const screen2 = render(
+
+			render(
 				<ActivityPanel
 					requestingTaskListOptions={ false }
 					taskListComplete={ false }
@@ -248,7 +249,7 @@ describe( 'Activity Panel', () => {
 				/>
 			);
 
-			expect( screen2.queryByText( '[HighlightTooltip]' ) ).toBeNull();
+			expect( screen.queryByText( '[HighlightTooltip]' ) ).toBeNull();
 		} );
 
 		it( 'should not render highlight tooltip when task is visited twice, but completed already', () => {
