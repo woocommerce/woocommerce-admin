@@ -155,10 +155,14 @@
 		height: 16px;
 	}
 
-	.components-card__header h2 {
-		.is-placeholder {
+	.components-card__header {
+		.is-placeholder:nth-child(1) {
 			width: 340px;
-			height: 20px;
+			height: 32px;
+		}
+		.is-placeholder:nth-child(2) {
+			width: 137px;
+			height: 38px;
 		}
 	}
 
@@ -169,7 +173,7 @@
 		}
 	}
 
-	.woocommerce-store-alerts__message {
+	.components-card__body {
 		.is-placeholder {
 			&:nth-child(1) {
 				width: 75%;
