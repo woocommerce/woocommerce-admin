@@ -583,7 +583,7 @@ class Onboarding {
 			$files     = new \RegexIterator( $iterator, '/^.+\.php$/i', \RecursiveRegexIterator::GET_MATCH );
 
 			foreach ( $files as $file ) {
-				$content = file_get_contents( $file[0] ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+				$content = file_get_contents( $file[0] );
 				if ( preg_match( '/add_theme_support\(([^(]*)(\'|\")woocommerce(\'|\")([^(]*)/si', $content, $matches ) ) {
 					return true;
 				}
