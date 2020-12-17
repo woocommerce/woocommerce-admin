@@ -141,3 +141,26 @@
 		}
 	}
 }
+
+button.woocommerce-table__download-button {
+	padding: 6px $gap-small;
+	color: $studio-black;
+	text-decoration: none;
+	align-items: center;
+
+	svg {
+		margin-right: $gap-smaller;
+		height: 24px;
+		width: 24px;
+	}
+
+	@include breakpoint( '<782px' ) {
+		svg {
+			margin-right: 0;
+		}
+
+		.woocommerce-table__download-button__label {
+			display: none;
+		}
+	}
+}

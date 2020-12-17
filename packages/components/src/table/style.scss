@@ -4,6 +4,7 @@
 	.woocommerce-table__actions {
 		display: inline-flex;
 		justify-content: flex-end;
+		align-items: center;
 
 		> div {
 			width: 100%;
@@ -24,29 +25,6 @@
 		justify-content: center;
 		padding: $gap;
 		text-align: center;
-	}
-
-	button.woocommerce-table__download-button {
-		padding: 6px $gap-small;
-		color: $studio-black;
-		text-decoration: none;
-		align-items: center;
-
-		svg {
-			margin-right: $gap-smaller;
-			height: 24px;
-			width: 24px;
-		}
-
-		@include breakpoint( '<782px' ) {
-			svg {
-				margin-right: 0;
-			}
-
-			.woocommerce-table__download-button__label {
-				display: none;
-			}
-		}
 	}
 
 	.woocommerce-pagination {
@@ -113,7 +91,6 @@
 .woocommerce-table__item,
 .woocommerce-table__empty-item {
 	padding: $gap $gap-large;
-	border-bottom: 1px solid $gray-100;
 }
 
 .woocommerce-table__header,
