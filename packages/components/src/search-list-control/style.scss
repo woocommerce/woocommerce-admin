@@ -43,12 +43,11 @@
 }
 
 .woocommerce-search-list__list {
+	border: 1px solid $gray-100;
 	padding: 0;
 	max-height: 17em;
 	overflow-x: hidden;
 	overflow-y: auto;
-	border-top: 1px solid $gray-100;
-	border-bottom: 1px solid $gray-100;
 
 	&.is-loading {
 		padding: $gap-small 0;
