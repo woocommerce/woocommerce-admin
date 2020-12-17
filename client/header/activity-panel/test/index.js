@@ -185,7 +185,7 @@ describe( 'Activity Panel', () => {
 	} );
 
 	it( 'should render the store setup link when on embedded pages and TaskList is not complete', () => {
-		const { queryByText } = render(
+		const { getByText } = render(
 			<ActivityPanel
 				requestingTaskListOptions={ false }
 				taskListComplete={ false }
@@ -195,17 +195,19 @@ describe( 'Activity Panel', () => {
 			/>
 		);
 
-		expect( queryByText( 'Store Setup' ) ).toBeDefined();
+		expect( getByText( 'Store Setup' ) ).toBeInTheDocument();
 	} );
 
 	describe( 'help panel tooltip', () => {
-		it( 'should render highlight tooltip when trackedStartedTasks includes task, task is not completed, and tooltip not shown yet', () => {
-			const { queryByText } = render(
+		it( 'should render highlight tooltip when task count is at-least 2, task is not completed, and tooltip not shown yet', () => {
+			const { getByText } = render(
 				<ActivityPanel
 					requestingTaskListOptions={ false }
 					taskListComplete={ false }
 					taskListHidden={ false }
-					trackedStartedTasks={ [ 'payment', 'payment' ] }
+					userPreferencesData={ {
+						task_list_tracked_started_tasks: { payment: 2 },
+					} }
 					trackedCompletedTasks={ [] }
 					helpPanelHighlightShown="no"
 					isEmbedded
@@ -213,32 +215,51 @@ describe( 'Activity Panel', () => {
 				/>
 			);
 
-			expect( queryByText( '[HighlightTooltip]' ) ).toBeDefined();
+			expect( getByText( '[HighlightTooltip]' ) ).toBeInTheDocument();
 		} );
 
-		it( 'should not render highlight tooltip when trackedStartedTasks does not include task more then once', () => {
-			const { queryByText } = render(
+		it( 'should not render highlight tooltip when task is not visited more then once', () => {
+			const screen = render(
 				<ActivityPanel
 					requestingTaskListOptions={ false }
 					taskListComplete={ false }
 					taskListHidden={ false }
-					trackedStartedTasks={ [ 'payment' ] }
+					userPreferencesData={ {
+						task_list_tracked_started_tasks: { payment: 1 },
+					} }
 					trackedCompletedTasks={ [] }
 					isEmbedded
 					query={ { task: 'payment' } }
 				/>
 			);
 
-			expect( queryByText( '[HighlightTooltip]' ) ).toBeNull();
+			expect( screen.queryByText( '[HighlightTooltip]' ) ).toBeNull();
+			const screen2 = render(
+				<ActivityPanel
+					requestingTaskListOptions={ false }
+					taskListComplete={ false }
+					taskListHidden={ false }
+					userPreferencesData={ {
+						task_list_tracked_started_tasks: {},
+					} }
+					trackedCompletedTasks={ [] }
+					isEmbedded
+					query={ { task: 'payment' } }
+				/>
+			);
+
+			expect( screen2.queryByText( '[HighlightTooltip]' ) ).toBeNull();
 		} );
 
-		it( 'should not render highlight tooltip when trackedStartedTasks is included twice, but completed already', () => {
+		it( 'should not render highlight tooltip when task is visited twice, but completed already', () => {
 			const { queryByText } = render(
 				<ActivityPanel
 					requestingTaskListOptions={ false }
 					taskListComplete={ false }
 					taskListHidden={ false }
-					trackedStartedTasks={ [ 'payment', 'payment' ] }
+					userPreferencesData={ {
+						task_list_tracked_started_tasks: { payment: 2 },
+					} }
 					trackedCompletedTasks={ [ 'payment' ] }
 					isEmbedded
 					query={ { task: 'payment' } }
@@ -248,15 +269,17 @@ describe( 'Activity Panel', () => {
 			expect( queryByText( '[HighlightTooltip]' ) ).toBeNull();
 		} );
 
-		it( 'should not render highlight tooltip when trackedStartedTasks is included twice, not completed, but already shown', () => {
+		it( 'should not render highlight tooltip when task is visited twice, not completed, but already shown', () => {
 			const { queryByText } = render(
 				<ActivityPanel
 					requestingTaskListOptions={ false }
 					taskListComplete={ false }
 					taskListHidden={ false }
-					trackedStartedTasks={ [ 'payment', 'payment' ] }
+					userPreferencesData={ {
+						task_list_tracked_started_tasks: { payment: 2 },
+						help_panel_highlight_shown: 'yes',
+					} }
 					trackedCompletedTasks={ [] }
-					helpPanelHighlightShown="yes"
 					isEmbedded
 					query={ { task: 'payment' } }
 				/>
