@@ -31,7 +31,7 @@ import StoreAlertsPlaceholder from './placeholder';
 
 import './style.scss';
 
-class StoreAlerts extends Component {
+export class StoreAlerts extends Component {
 	constructor( props ) {
 		super( props );
 		const { alerts } = this.props;
@@ -196,19 +196,18 @@ class StoreAlerts extends Component {
 		const numberOfAlerts = alerts.length;
 		const alert = alerts[ currentIndex ];
 		const type = alert.type;
-		const className = classnames(
-			'woocommerce-store-alerts',
-			{
-				'is-alert-error': type === 'error',
-				'is-alert-update': type === 'update',
-			}
-		);
+		const className = classnames( 'woocommerce-store-alerts', {
+			'is-alert-error': type === 'error',
+			'is-alert-update': type === 'update',
+		} );
 
 		return (
 			<Card className={ className } size={ null }>
 				<CardHeader isBorderless>
 					<Text variant="title.medium" as="h2">
-						{ alert.icon && <Dashicon key="icon" icon={ alert.icon } /> }
+						{ alert.icon && (
+							<Dashicon key="icon" icon={ alert.icon } />
+						) }
 						{ alert.title }
 					</Text>
 					{ numberOfAlerts > 1 && (
@@ -263,7 +262,9 @@ class StoreAlerts extends Component {
 				<CardBody>
 					<div
 						className="woocommerce-store-alerts__message"
-						dangerouslySetInnerHTML={ sanitizeHTML( alert.content ) }
+						dangerouslySetInnerHTML={ sanitizeHTML(
+							alert.content
+						) }
 					/>
 				</CardBody>
 				<CardFooter isBorderless>
