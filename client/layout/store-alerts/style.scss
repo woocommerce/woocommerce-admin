@@ -16,22 +16,12 @@
 		background: transparent;
 	}
 
-	.woocommerce-card__header {
-		padding: 0;
-		border: 0;
+	.components-card__header {
 		margin-bottom: 12px;
-	}
-
-	.woocommerce-card__title {
-		display: inline-flex;
 
 		svg {
 			margin-right: 6px;
 		}
-	}
-
-	.woocommerce-card__body {
-		padding: 0;
 	}
 
 	a.components-button {
@@ -58,7 +48,7 @@
 		margin-bottom: $gap-large;
 		padding: $gap;
 
-		.woocommerce-card__header {
+		.components-card__header {
 			display: flex;
 			flex-direction: column-reverse;
 			align-items: flex-start;
@@ -82,7 +72,7 @@
 		background-color: $alert-color;
 	}
 
-	.woocommerce-card__title {
+	.components-card__header h2 {
 		svg {
 			color: $alert-color;
 		}
@@ -96,7 +86,7 @@
 		background-color: $alert-color;
 	}
 
-	.woocommerce-card__title {
+	.components-card__header h2 {
 		svg {
 			color: $alert-color;
 		}
@@ -165,14 +155,14 @@
 		height: 16px;
 	}
 
-	.woocommerce-card__title {
+	.components-card__header h2 {
 		.is-placeholder {
 			width: 340px;
 			height: 20px;
 		}
 	}
 
-	.woocommerce-card__action {
+	.components-card__footer {
 		.is-placeholder {
 			min-width: 120px;
 			height: 30px;
@@ -199,7 +189,7 @@
 	}
 
 	@include breakpoint( '<782px' ) {
-		.woocommerce-card__title {
+		.components-card__header h2 {
 			width: 100%;
 
 			.is-placeholder {
@@ -207,7 +197,7 @@
 			}
 		}
 
-		.woocommerce-card__action {
+		.components-card__footer {
 			margin-bottom: 14px;
 		}
 	}

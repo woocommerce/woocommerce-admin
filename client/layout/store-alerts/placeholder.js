@@ -10,7 +10,7 @@ class StoreAlertsPlaceholder extends Component {
 
 		return (
 			<div
-				className="woocommerce-card woocommerce-store-alerts is-loading"
+				className="woocommerce-store-alerts is-loading"
 				aria-hidden
 			>
 				<div className="woocommerce-card__header">
