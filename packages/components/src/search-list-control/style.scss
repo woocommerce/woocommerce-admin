@@ -103,6 +103,11 @@
 			background: $gray-100;
 		}
 
+		&:active,
+		&:focus {
+			box-shadow: none;
+		}
+
 		&:last-child {
 			border-bottom: none !important;
 		}
