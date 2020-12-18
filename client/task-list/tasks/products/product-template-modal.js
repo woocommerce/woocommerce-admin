@@ -3,15 +3,15 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button, Modal, RadioControl } from '@wordpress/components';
-import { Icon } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
+import { useDispatch } from '@wordpress/data';
+import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
 import './product-template-modal.scss';
-import selectedRadioButtonIcon from './selected-radio-button-icon';
 
 const templates = [
 	{
@@ -31,33 +31,30 @@ const templates = [
 export function ProductTemplateModal( { onClose } ) {
 	const [ selectedTemplate, setSelectedTemplate ] = useState();
 	const [ isRedirecting, setIsRedirecting ] = useState( false );
+	const { createProductTemplate } = useDispatch( ITEMS_STORE_NAME );
 
 	const onSelectTemplateClick = ( template ) => {
 		setIsRedirecting( true );
 		if ( template ) {
-			window.location = getAdminLink(
-				'post-new.php?post_type=product&wc_onboarding_active_task=products&tutorial=true&product_template=' +
-					template
-			);
-		}
-		if ( onClose ) {
+			createProductTemplate(
+				template,
+				{
+					template_name: template,
+					status: 'draft',
+				},
+				{ _fields: [ 'id' ] }
+			).then( ( data ) => {
+				if ( data && data.id ) {
+					const link = getAdminLink(
+						`post.php?post=${ data.id }&action=edit&wc_onboarding_active_task=products&tutorial=true`
+					);
+					window.location = link;
+				}
+			} );
+		} else if ( onClose ) {
 			onClose();
 		}
 	};
-
-	const templateList = templates.map( ( task ) => {
-		task.onClick = () => {
-			setSelectedTemplate( task.key );
-		};
-		task.before = (
-			<div className="woocommerce-task__icon">
-				{ task.key === selectedTemplate ? (
-					<Icon icon={ selectedRadioButtonIcon } />
-				) : null }
-			</div>
-		);
-		return task;
-	} );
 
 	return (
 		<Modal
@@ -69,7 +66,7 @@ export function ProductTemplateModal( { onClose } ) {
 			<div className="woocommerce-product-template-modal__wrapper">
 				<div className="woocommerce-product-template-modal__list">
 					<RadioControl
-						options={ templateList.map( ( item ) => ( {
+						options={ templates.map( ( item ) => ( {
 							label: item.title,
 							value: item.key,
 						} ) ) }

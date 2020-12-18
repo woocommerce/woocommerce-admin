@@ -101,7 +101,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	public static function init() {
 		add_action( 'woocommerce_analytics_delete_order_stats', array( __CLASS__, 'sync_on_order_delete' ), 10 );
-		add_action( 'load-post-new.php', array( __CLASS__, 'possibly_add_product_template' ), 10 );
 	}
 
 	/**
@@ -526,91 +525,5 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->subquery->add_sql_clause( 'select', 'product_id' );
 		$this->subquery->add_sql_clause( 'from', self::get_db_table_name() );
 		$this->subquery->add_sql_clause( 'group_by', 'product_id' );
-	}
-
-	/**
-	 * Possible add filter to insert product template.
-	 */
-	public static function possibly_add_product_template() {
-		if ( isset( $_GET['post_type'] ) && 'product' === wc_clean( wp_unslash( $_GET['post_type'] ) ) && isset( $_GET['product_template'] ) ) { // phpcs:ignore CSRF ok, sanitation ok.
-			// default_excerpt is last filter called in get_default_post_to_edit.
-			add_filter( 'default_excerpt', array( __CLASS__, 'insert_product_template' ), 10, 2 );
-			// add_action('wp_insert_post', array(__CLASS__, 'insert_product_template_action'), 10, 2);
-		}
-	}
-
-	/**
-	 * Loads the product template by the 'product_template' param, and updates the new post with the template data.
-	 *
-	 * @param string  $excerpt Default post excerpt.
-	 * @param WP_Post $post    Post object.
-	 * @return string $excerpt
-	 */
-	public static function insert_product_template_action( $excerpt, $post ) {
-		if ( 'product' === $post->post_type && 'auto-draft' === $post->post_status && ! empty( $_REQUEST['product_template'] ) ) {
-			remove_action('wp_insert_post', array(__CLASS__, 'insert_product_template_action'), 10, 2);
-			include_once WC_ADMIN_ABSPATH . 'src/ProductCSVTemplateImporter.php';
-			$template_name = wp_unslash( $_REQUEST['product_template'] ); // phpcs:ignore csrf ok, sanitization ok.
-			$template_path = __DIR__ . '/Templates/' . $template_name . '.csv';
-			$template_path = apply_filters( 'woocommerce_product_template_csv_file_path', $template_path, $template_name );
-
-			if ( file_exists( $template_path ) && class_exists( '\Automattic\WooCommerce\Admin\ProductCSVTemplateImporter' ) ) {
-				$importer_class = apply_filters( 'woocommerce_product_csv_importer_template_class', '\Automattic\WooCommerce\Admin\ProductCSVTemplateImporter' );
-				$args           = array(
-					'parse' => true,
-				);
-
-				$importer = new $importer_class( $template_path, $args );
-				$importer->update_product( $post->ID );
-
-				add_filter('default_content', function($content, $post) {
-					$product = wc_get_product($post->ID);
-					return $product->get_description();
-				}, 10, 2);
-				add_filter('default_excerpt', function($excerpt, $post) {
-					$product = wc_get_product($post->ID);
-					return $product->get_short_description();
-				}, 10, 2);
-			}
-		}
-	}
-
-	/**
-	 * Loads the product template by the 'product_template' param, and updates the new post with the template data.
-	 *
-	 * @param string  $excerpt Default post excerpt.
-	 * @param WP_Post $post    Post object.
-	 * @return string $excerpt
-	 */
-	public static function insert_product_template( $excerpt, $post ) {
-		if ( 'product' === $post->post_type && 'auto-draft' === $post->post_status && ! empty( $_REQUEST['product_template'] ) ) {
-			include_once WC_ADMIN_ABSPATH . 'src/ProductCSVTemplateImporter.php';
-			$template_name = wp_unslash( $_REQUEST['product_template'] ); // phpcs:ignore csrf ok, sanitization ok.
-			$template_path = __DIR__ . '/Templates/' . $template_name . '.csv';
-			$template_path = apply_filters( 'woocommerce_product_template_csv_file_path', $template_path, $template_name );
-
-			if ( file_exists( $template_path ) && class_exists( '\Automattic\WooCommerce\Admin\ProductCSVTemplateImporter' ) ) {
-				$importer_class = apply_filters( 'woocommerce_product_csv_importer_template_class', '\Automattic\WooCommerce\Admin\ProductCSVTemplateImporter' );
-				$args           = array(
-					'parse' => true,
-				);
-
-				$importer = new $importer_class( $template_path, $args );
-				$importer->update_product( $post->ID );
-
-				// Go to new post edit page.
-				$edit_product_url = add_query_arg(
-					array_diff_key( $_REQUEST, array_flip( array( 'post_type', 'product_template' ) ) ),
-					get_edit_post_link( $post->ID, '' )
-				);
-				self::redirect_and_exit_to_product_edit_page($edit_product_url);
-			}
-		}
-		return $excerpt;
-	}
-
-	public static function redirect_and_exit_to_product_edit_page($url) {
-		wp_safe_redirect( $url );
-		exit();
 	}
 }

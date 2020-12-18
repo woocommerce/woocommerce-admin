@@ -96,7 +96,11 @@ export default function Products() {
 					<List items={ listItems } />
 				</CardBody>
 			</Card>
-			{ selectTemplate ? <ProductTemplateModal /> : null }
+			{ selectTemplate ? (
+				<ProductTemplateModal
+					onClose={ () => setSelectTemplate( null ) }
+				/>
+			) : null }
 		</Fragment>
 	);
 }
