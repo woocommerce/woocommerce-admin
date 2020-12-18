@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles emailing users CSV Export download links.
+ * Handles emailing user notes.
  */
 
 namespace Automattic\WooCommerce\Admin\MerchantEmailNotifications;
@@ -24,6 +24,8 @@ if ( ! class_exists( 'WC_Email', false ) ) {
 class NotificationEmail extends \WC_Email {
 	/**
 	 * Constructor.
+	 *
+	 * @param Note $note The notification to send.
 	 */
 	public function __construct( $note ) {
 		$this->note           = $note;
@@ -93,7 +95,7 @@ class NotificationEmail extends \WC_Email {
 	 * @return stdClass
 	 */
 	public function get_actions() {
-		return $this->note->get_actions()[0];
+		return $this->note->get_actions();
 	}
 
 	/**
@@ -105,12 +107,13 @@ class NotificationEmail extends \WC_Email {
 		return wc_get_template_html(
 			$this->template_html,
 			array(
-				'email_heading' => $this->get_heading(),
-				'email_content' => $this->get_note_content(),
-				'email_action'  => $this->get_actions(),
-				'sent_to_admin' => true,
-				'plain_text'    => false,
-				'email'         => $this,
+				'email_heading'       => $this->get_heading(),
+				'email_content'       => $this->get_note_content(),
+				'email_actions'       => $this->get_actions(),
+				'sent_to_admin'       => true,
+				'plain_text'          => false,
+				'email'               => $this,
+				'opened_tracking_url' => $this->opened_tracking_url,
 			),
 			'',
 			$this->template_base
@@ -126,12 +129,13 @@ class NotificationEmail extends \WC_Email {
 		return wc_get_template_html(
 			$this->template_plain,
 			array(
-				'email_heading' => $this->get_heading(),
-				'email_content' => $this->get_note_content(),
-				'email_action'  => $this->get_actions(),
-				'sent_to_admin' => true,
-				'plain_text'    => true,
-				'email'         => $this,
+				'email_heading'       => $this->get_heading(),
+				'email_content'       => $this->get_note_content(),
+				'email_actions'       => $this->get_actions(),
+				'sent_to_admin'       => true,
+				'plain_text'          => true,
+				'email'               => $this,
+				'opened_tracking_url' => $this->opened_tracking_url,
 			),
 			'',
 			$this->template_base
@@ -141,11 +145,15 @@ class NotificationEmail extends \WC_Email {
 	/**
 	 * Trigger the sending of this email.
 	 *
-	 * @param int $user_id User ID to email.
+	 * @param string $email Email to send the note.
 	 */
-	public function trigger( $user_id ) {
-		$user            = new \WP_User( $user_id );
-		$this->recipient = $user->user_email;
+	public function trigger( $email ) {
+		$this->recipient           = $email;
+		$this->opened_tracking_url = sprintf(
+			'%1$s/wp-json/wc-analytics/admin/notes/tracker/note/%2$d',
+			site_url(),
+			$this->note->get_id()
+		);
 		$this->send(
 			$this->get_recipient(),
 			$this->get_subject(),
