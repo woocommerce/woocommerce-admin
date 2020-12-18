@@ -19,6 +19,7 @@ import {
 } from '@woocommerce/components';
 import { getDateParamsFromQuery } from '@woocommerce/date';
 import { recordEvent } from '@woocommerce/tracks';
+import memoize from 'memoize-one';
 
 /**
  * Internal dependencies
@@ -30,9 +31,20 @@ import { getIndicatorData, getIndicatorValues } from './utils';
 const { performanceIndicators: indicators } = getSetting( 'dataEndpoints', {
 	performanceIndicators: [],
 } );
+const getUserIndicators = memoize( ( hiddenBlocks ) =>
+	indicators.filter(
+		( indicator ) => ! hiddenBlocks.includes( indicator.stat )
+	)
+);
 
 class StorePerformance extends Component {
-	renderMenu() {
+	constructor() {
+		super();
+		this.renderMenuContent = this.renderMenuContent.bind( this );
+		this.renderSummaryNumbers = this.renderSummaryNumbers.bind( this );
+	}
+
+	renderMenuContent( { onToggle } ) {
 		const {
 			hiddenBlocks,
 			isFirst,
@@ -47,69 +59,122 @@ class StorePerformance extends Component {
 		} = this.props;
 
 		return (
+			<Fragment>
+				<MenuTitle>
+					{ __( 'Display Stats:', 'woocommerce-admin' ) }
+				</MenuTitle>
+				{ indicators.map( ( indicator, i ) => {
+					const checked = ! hiddenBlocks.includes( indicator.stat );
+					return (
+						<MenuItem
+							checked={ checked }
+							isCheckbox
+							isClickable
+							key={ i }
+							onInvoke={ () => {
+								onToggleHiddenBlock( indicator.stat )();
+								recordEvent( 'dash_indicators_toggle', {
+									status: checked ? 'off' : 'on',
+									key: indicator.stat,
+								} );
+							} }
+						>
+							{ indicator.label }
+						</MenuItem>
+					);
+				} ) }
+				{ window.wcAdminFeatures[
+					'analytics-dashboard/customizable'
+				] && (
+					<Controls
+						onToggle={ onToggle }
+						onMove={ onMove }
+						onRemove={ onRemove }
+						isFirst={ isFirst }
+						isLast={ isLast }
+						onTitleBlur={ onTitleBlur }
+						onTitleChange={ onTitleChange }
+						titleInput={ titleInput }
+					/>
+				) }
+			</Fragment>
+		);
+	}
+
+	renderMenu() {
+		return (
 			<EllipsisMenu
 				label={ __(
 					'Choose which analytics to display and the section name',
 					'woocommerce-admin'
 				) }
-				renderContent={ ( { onToggle } ) => (
-					<Fragment>
-						<MenuTitle>
-							{ __( 'Display Stats:', 'woocommerce-admin' ) }
-						</MenuTitle>
-						{ indicators.map( ( indicator, i ) => {
-							const checked = ! hiddenBlocks.includes(
-								indicator.stat
-							);
-							return (
-								<MenuItem
-									checked={ checked }
-									isCheckbox
-									isClickable
-									key={ i }
-									onInvoke={ () => {
-										onToggleHiddenBlock( indicator.stat )();
-										recordEvent( 'dash_indicators_toggle', {
-											status: checked ? 'off' : 'on',
-											key: indicator.stat,
-										} );
-									} }
-								>
-									{ indicator.label }
-								</MenuItem>
-							);
-						} ) }
-						{ window.wcAdminFeatures[
-							'analytics-dashboard/customizable'
-						] && (
-							<Controls
-								onToggle={ onToggle }
-								onMove={ onMove }
-								onRemove={ onRemove }
-								isFirst={ isFirst }
-								isLast={ isLast }
-								onTitleBlur={ onTitleBlur }
-								onTitleChange={ onTitleChange }
-								titleInput={ titleInput }
-							/>
-						) }
-					</Fragment>
-				) }
+				renderContent={ this.renderMenuContent }
 			/>
 		);
 	}
 
-	renderList() {
+	renderSummaryNumbers() {
 		const {
 			query,
-			primaryRequesting,
-			secondaryRequesting,
-			primaryError,
-			secondaryError,
 			primaryData,
 			secondaryData,
 			userIndicators,
 			defaultDateRange,
+		} = this.props;
+
+		const persistedQuery = getPersistedQuery( query );
+
+		const { compare } = getDateParamsFromQuery( query, defaultDateRange );
+		const prevLabel =
+			compare === 'previous_period'
+				? __( 'Previous Period:', 'woocommerce-admin' )
+				: __( 'Previous Year:', 'woocommerce-admin' );
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
+
+		return userIndicators.map( ( indicator, i ) => {
+			const {
+				primaryValue,
+				secondaryValue,
+				delta,
+				reportUrl,
+				reportUrlType,
+			} = getIndicatorValues( {
+				indicator,
+				primaryData,
+				secondaryData,
+				currency,
+				formatAmount,
+				persistedQuery,
+			} );
+
+			return (
+				<SummaryNumber
+					key={ i }
+					href={ reportUrl }
+					hrefType={ reportUrlType }
+					label={ indicator.label }
+					value={ primaryValue }
+					prevLabel={ prevLabel }
+					prevValue={ secondaryValue }
+					delta={ delta }
+					onLinkClickCallback={ () => {
+						recordEvent( 'dash_indicators_click', {
+							key: indicator.stat,
+						} );
+					} }
+				/>
+			);
+		} );
+	}
+
+	renderList() {
+		const {
+			primaryRequesting,
+			secondaryRequesting,
+			primaryError,
+			secondaryError,
+			userIndicators,
 		} = this.props;
 		if ( primaryRequesting || secondaryRequesting ) {
 			return (
@@ -123,55 +188,7 @@ class StorePerformance extends Component {
 			return null;
 		}
 
-		const persistedQuery = getPersistedQuery( query );
-
-		const { compare } = getDateParamsFromQuery( query, defaultDateRange );
-		const prevLabel =
-			compare === 'previous_period'
-				? __( 'Previous Period:', 'woocommerce-admin' )
-				: __( 'Previous Year:', 'woocommerce-admin' );
-		const { formatAmount, getCurrencyConfig } = this.context;
-		const currency = getCurrencyConfig();
-		return (
-			<SummaryList>
-				{ () =>
-					userIndicators.map( ( indicator, i ) => {
-						const {
-							primaryValue,
-							secondaryValue,
-							delta,
-							reportUrl,
-							reportUrlType,
-						} = getIndicatorValues( {
-							indicator,
-							primaryData,
-							secondaryData,
-							currency,
-							formatAmount,
-							persistedQuery,
-						} );
-
-						return (
-							<SummaryNumber
-								key={ i }
-								href={ reportUrl }
-								hrefType={ reportUrlType }
-								label={ indicator.label }
-								value={ primaryValue }
-								prevLabel={ prevLabel }
-								prevValue={ secondaryValue }
-								delta={ delta }
-								onLinkClickCallback={ () => {
-									recordEvent( 'dash_indicators_click', {
-										key: indicator.stat,
-									} );
-								} }
-							/>
-						);
-					} )
-				}
-			</SummaryList>
-		);
+		return <SummaryList>{ this.renderSummaryNumbers }</SummaryList>;
 	}
 
 	render() {
@@ -199,9 +216,7 @@ StorePerformance.contextType = CurrencyContext;
 export default compose(
 	withSelect( ( select, props ) => {
 		const { hiddenBlocks, query, filters } = props;
-		const userIndicators = indicators.filter(
-			( indicator ) => ! hiddenBlocks.includes( indicator.stat )
-		);
+		const userIndicators = getUserIndicators( hiddenBlocks );
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
