@@ -39,6 +39,12 @@ const stats = performanceIndicators.filter( ( indicator ) => {
 	return DEFAULT_STATS.includes( indicator.stat );
 } );
 
+const clickViewDetailedStats = () => {
+	recordEvent( 'statsoverview_indicators_click', {
+		key: 'view_detailed_stats',
+	} );
+};
+
 export const StatsOverview = () => {
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const hiddenStats = get(
@@ -156,11 +162,7 @@ export const StatsOverview = () => {
 					className="woocommerce-stats-overview__more-btn"
 					href={ getNewPath( {}, '/analytics/overview' ) }
 					type="wc-admin"
-					onClick={ () => {
-						recordEvent( 'statsoverview_indicators_click', {
-							key: 'view_detailed_stats',
-						} );
-					} }
+					onClick={ clickViewDetailedStats }
 				>
 					{ __( 'View detailed stats', 'woocommerce-admin' ) }
 				</Link>

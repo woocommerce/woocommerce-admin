@@ -35,6 +35,18 @@ class OrdersPanel extends Component {
 		recordEvent( `activity_panel_orders_${ eventName }`, {} );
 	}
 
+	manageOrdersClick() {
+		this.recordOrderEvent( 'orders_manage' );
+	}
+
+	orderLinkClick() {
+		this.recordOrderEvent( 'order_number' );
+	}
+
+	customerLinkClick() {
+		this.recordOrderEvent( 'customer_name' );
+	}
+
 	renderEmptyCard() {
 		return (
 			<Fragment>
@@ -59,7 +71,7 @@ class OrdersPanel extends Component {
 				</ActivityCard>
 				<Link
 					href={ 'edit.php?post_type=shop_order' }
-					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+					onClick={ this.manageOrdersClick }
 					className="woocommerce-layout__activity-panel-outbound-link woocommerce-layout__activity-panel-empty"
 					type="wp-admin"
 				>
@@ -123,9 +135,7 @@ class OrdersPanel extends Component {
 									href={ getAdminLink(
 										'post.php?action=edit&post=' + orderId
 									) }
-									onClick={ () =>
-										this.recordOrderEvent( 'order_number' )
-									}
+									onClick={ this.orderLinkClick }
 									type="wp-admin"
 								/>
 							),
@@ -138,9 +148,7 @@ class OrdersPanel extends Component {
 							customerLink: customerUrl ? (
 								<Link
 									href={ customerUrl }
-									onClick={ () =>
-										this.recordOrderEvent( 'customer_name' )
-									}
+									onClick={ this.customerLinkClick }
 									type="wc-admin"
 								/>
 							) : (
@@ -211,7 +219,7 @@ class OrdersPanel extends Component {
 				<Link
 					href={ 'edit.php?post_type=shop_order' }
 					className="woocommerce-layout__activity-panel-outbound-link"
-					onClick={ () => this.recordOrderEvent( 'orders_manage' ) }
+					onClick={ this.manageOrdersClick }
 					type="wp-admin"
 				>
 					{ __( 'Manage all orders', 'woocommerce-admin' ) }
