@@ -314,7 +314,9 @@ export class Shipping extends Component {
 				<Card className="woocommerce-task-card">
 					<CardBody>
 						<Stepper
-							isPending={ isPending || isUpdateSettingsRequesting }
+							isPending={
+								isPending || isUpdateSettingsRequesting
+							}
 							isVertical
 							currentStep={ step }
 							steps={ this.getSteps() }

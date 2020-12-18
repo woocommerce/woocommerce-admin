@@ -9,11 +9,7 @@ import { compose } from '@wordpress/compose';
 import { filter } from 'lodash';
 import { withDispatch, withSelect } from '@wordpress/data';
 
-import {
-	Stepper,
-	TextControl,
-	ImageUpload,
-} from '@woocommerce/components';
+import { Stepper, TextControl, ImageUpload } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
 	OPTIONS_STORE_NAME,

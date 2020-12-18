@@ -6,7 +6,7 @@ import {
 	Button,
 	Card,
 	CardBody,
-	__experimentalText as Text
+	__experimentalText as Text,
 } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';

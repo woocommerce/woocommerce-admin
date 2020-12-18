@@ -11,7 +11,7 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
-	FormToggle
+	FormToggle,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { H, Plugins } from '@woocommerce/components';
