@@ -2,7 +2,13 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { Button, Card, CardBody, CardFooter, __experimentalText as Text } from '@wordpress/components';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	__experimentalText as Text,
+} from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -255,7 +261,6 @@ class Benefits extends Component {
 					</Button>
 				</CardFooter>
 
-
 				<CardFooter isBorderless justify="center">
 					<p className="woocommerce-profile-wizard__benefits-install-notice">
 						{ isAcceptingTos
@@ -277,7 +282,7 @@ class Benefits extends Component {
 											/>
 										),
 									},
-							} )
+							  } )
 							: sprintf(
 									__(
 										'%s %s will be installed & activated for free.',
@@ -285,7 +290,7 @@ class Benefits extends Component {
 									),
 									pluginNamesString,
 									pluralizedPlugins
-							) }
+							  ) }
 					</p>
 				</CardFooter>
 			</Card>

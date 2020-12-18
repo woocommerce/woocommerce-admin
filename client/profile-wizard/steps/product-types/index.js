@@ -162,8 +162,7 @@ export class ProductTypes extends Component {
 							isPrimary
 							onClick={ this.onContinue }
 							disabled={
-								! selected.length ||
-								isProfileItemsRequesting
+								! selected.length || isProfileItemsRequesting
 							}
 						>
 							{ __( 'Continue', 'woocommerce-admin' ) }

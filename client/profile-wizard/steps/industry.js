@@ -161,31 +161,26 @@ class Industry extends Component {
 	renderIndustryLabel( slug, industry, selectedIndustry ) {
 		const { textInputListContent } = this.state;
 
-		return <>
-			{ industry.label }
-			{ industry.use_description && selectedIndustry && (
-				<TextControl
-					key={ `text-control-${ slug }` }
-					label={
-						industry.description_label
-					}
-					value={
-						selectedIndustry.detail ||
-						textInputListContent[
-							slug
-						] ||
-						''
-					}
-					onChange={ ( value ) =>
-						this.onDetailChange(
-							value,
-							slug
-						)
-					}
-					className="woocommerce-profile-wizard__text"
-				/> )
-			}
-		</>
+		return (
+			<>
+				{ industry.label }
+				{ industry.use_description && selectedIndustry && (
+					<TextControl
+						key={ `text-control-${ slug }` }
+						label={ industry.description_label }
+						value={
+							selectedIndustry.detail ||
+							textInputListContent[ slug ] ||
+							''
+						}
+						onChange={ ( value ) =>
+							this.onDetailChange( value, slug )
+						}
+						className="woocommerce-profile-wizard__text"
+					/>
+				) }
+			</>
+		);
 	}
 
 	render() {
@@ -221,12 +216,18 @@ class Industry extends Component {
 					<CardBody size={ null }>
 						<div className="woocommerce-profile-wizard__checkbox-group">
 							{ filteredIndustryKeys.map( ( slug ) => {
-								const selectedIndustry = find( selected, { slug } );
+								const selectedIndustry = find( selected, {
+									slug,
+								} );
 
 								return (
 									<CheckboxControl
 										key={ `checkbox-control-${ slug }` }
-										label={ this.renderIndustryLabel( slug, industries[ slug ], selectedIndustry ) }
+										label={ this.renderIndustryLabel(
+											slug,
+											industries[ slug ],
+											selectedIndustry
+										) }
 										onChange={ () =>
 											this.onIndustryChange( slug )
 										}
