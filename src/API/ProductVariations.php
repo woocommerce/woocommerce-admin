@@ -34,6 +34,7 @@ class ProductVariations extends \WC_REST_Product_Variations_Controller {
 			'/variations',
 			array(
 				array(
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => $this->get_collection_params(),
