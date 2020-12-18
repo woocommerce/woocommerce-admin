@@ -518,7 +518,7 @@ class Loader {
 		wp_register_style(
 			WC_ADMIN_APP,
 			self::get_url( "app/style{$rtl}", 'css' ),
-			array( 'wc-components', 'wc-customer-effort-score' ),
+			array( 'wc-components', 'wc-customer-effort-score', 'wp-components' ),
 			$css_file_version
 		);
 
