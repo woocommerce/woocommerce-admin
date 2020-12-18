@@ -135,6 +135,28 @@ const InboxPanel = ( props ) => {
 	);
 };
 
+const inboxQuery = {
+	page: 1,
+	per_page: QUERY_DEFAULTS.pageSize,
+	status: 'unactioned',
+	orderby: 'date',
+	order: 'desc',
+	_fields: [
+		'id',
+		'name',
+		'title',
+		'content',
+		'type',
+		'status',
+		'actions',
+		'date_created',
+		'date_created_gmt',
+		'layout',
+		'image',
+		'is_deleted',
+	],
+};
+
 export default compose(
 	withSelect( ( select ) => {
 		const {
@@ -143,28 +165,6 @@ export default compose(
 			isResolving,
 			isNotesRequesting,
 		} = select( NOTES_STORE_NAME );
-		const inboxQuery = {
-			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			status: 'unactioned',
-			type: QUERY_DEFAULTS.noteTypes,
-			orderby: 'date',
-			order: 'desc',
-			_fields: [
-				'id',
-				'name',
-				'title',
-				'content',
-				'type',
-				'status',
-				'actions',
-				'date_created',
-				'date_created_gmt',
-				'layout',
-				'image',
-				'is_deleted',
-			],
-		};
 
 		return {
 			notes: getNotes( inboxQuery ),

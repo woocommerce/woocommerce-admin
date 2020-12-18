@@ -265,15 +265,16 @@ class StoreAlerts extends Component {
 	}
 }
 
+const alertsQuery = {
+	page: 1,
+	per_page: QUERY_DEFAULTS.pageSize,
+	type: 'error,update',
+	status: 'unactioned',
+};
+
 export default compose(
 	withSelect( ( select ) => {
 		const { getNotes, isResolving } = select( NOTES_STORE_NAME );
-		const alertsQuery = {
-			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			type: 'error,update',
-			status: 'unactioned',
-		};
 
 		// Filter out notes that may have been marked actioned or not delayed after the initial request
 		const filterNotes = ( note ) => note.status === 'unactioned';

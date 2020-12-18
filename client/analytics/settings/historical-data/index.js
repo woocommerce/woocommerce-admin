@@ -141,6 +141,13 @@ class HistoricalData extends Component {
 	}
 }
 
+const notesQuery = {
+	page: 1,
+	per_page: QUERY_DEFAULTS.pageSize,
+	type: 'update',
+	status: 'unactioned',
+};
+
 export default compose( [
 	withSelect( ( select ) => {
 		const { getNotes } = select( NOTES_STORE_NAME );
@@ -148,12 +155,6 @@ export default compose( [
 			IMPORT_STORE_NAME
 		);
 
-		const notesQuery = {
-			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			type: 'update',
-			status: 'unactioned',
-		};
 		const notes = getNotes( notesQuery );
 		const { activeImport, lastImportStartTimestamp } = getImportStarted();
 		const {
