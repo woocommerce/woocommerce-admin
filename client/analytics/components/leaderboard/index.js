@@ -71,7 +71,9 @@ export class Leaderboard extends Component {
 			return (
 				<Card className={ classes }>
 					<CardHeader>
-						<Text variant="title.small" as="h3">{ title }</Text>
+						<Text variant="title.small" as="h3">
+							{ title }
+						</Text>
 					</CardHeader>
 					<CardBody size={ null }>
 						<EmptyTable>
