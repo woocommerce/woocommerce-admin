@@ -1,4 +1,6 @@
 .woocommerce-table {
+	margin-bottom: $gap-largest;
+
 	.woocommerce-table__actions {
 		display: inline-flex;
 		justify-content: flex-end;
@@ -106,6 +108,13 @@
 .woocommerce-table__item {
 	@include font-size( 13 );
 	text-align: left;
+	border-bottom: 1px solid $table-border;
+
+	& + .woocommerce-table__header,
+	& + .woocommerce-table__item {
+		border-left: 1px solid $table-border;
+	}
+
 
 	> a:only-child {
 		display: block;
@@ -158,6 +167,10 @@
 	}
 }
 
+.woocommerce-table tr:last-child .woocommerce-table__item {
+	border-bottom: 0;
+}
+
 .woocommerce-table__empty-item {
 	text-align: center;
 	@include font-size( 18 );
@@ -176,13 +189,8 @@ th.woocommerce-table__item {
 .woocommerce-table__header {
 	padding: $gap-smaller $gap-large;
 	background-color: #f8f9fa;
-	border-bottom: 1px solid $gray-400;
 	font-weight: bold;
 	white-space: nowrap;
-
-	& + .woocommerce-table__header {
-		border-left: 1px solid $gray-400;
-	}
 
 	&.is-left-aligned.is-sortable {
 		padding-left: $gap;
