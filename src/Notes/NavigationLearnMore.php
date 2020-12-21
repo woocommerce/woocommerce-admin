@@ -1,6 +1,6 @@
 <?php
 /**
- * WooCommerce Admin Navigation Feature Feedback
+ * WooCommerce Admin Navigation Learn More
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
