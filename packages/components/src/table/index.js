@@ -141,6 +141,7 @@ class TableCard extends Component {
 		const {
 			actions,
 			className,
+			hasSearch,
 			isLoading,
 			onQueryChange,
 			onSort,
@@ -156,7 +157,11 @@ class TableCard extends Component {
 		const allHeaders = this.props.headers;
 		const headers = this.getVisibleHeaders();
 		const rows = this.getVisibleRows();
-		const classes = classnames( 'woocommerce-table', className );
+		const classes = classnames( 'woocommerce-table', className, {
+			'has-actions': !! actions,
+			'has-menu': showMenu,
+			'has-search': hasSearch,
+		} );
 
 		return (
 			<Card className={ classes }>
@@ -253,6 +258,10 @@ class TableCard extends Component {
 }
 
 TableCard.propTypes = {
+	/**
+	 * If a search is provided in actions and should reorder actions on mobile.
+	 */
+	hasSearch: PropTypes.bool,
 	/**
 	 * An array of column headers (see `Table` props).
 	 */
