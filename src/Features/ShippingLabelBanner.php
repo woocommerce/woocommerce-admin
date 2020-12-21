@@ -59,12 +59,16 @@ class ShippingLabelBanner {
 			$wcs_version       = null;
 			$wcs_tos_accepted  = null;
 
-			if ( defined( 'JETPACK__VERSION' ) ) {
-				$jetpack_version = JETPACK__VERSION;
-			}
+			if ( class_exists( '\Jetpack_Data' ) ) {
 
-			if ( class_exists( Jetpack_Connection_Manager::class ) ) {
-				$jetpack_connected = ( new Jetpack_Connection_Manager() )->is_active();
+				if ( defined( 'JETPACK_MASTER_USER' ) ) {
+					$user_token        = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
+					$jetpack_connected = isset( $user_token->external_user_id );
+				} else {
+					$jetpack_connected = apply_filters( 'woocommerce_admin_is_jetpack_connected', false );
+				}
+
+				$jetpack_version = JETPACK__VERSION;
 			}
 
 			if ( class_exists( '\WC_Connect_Loader' ) ) {
@@ -151,10 +155,12 @@ class ShippingLabelBanner {
 			Loader::get_file_version( 'css' )
 		);
 
+		$script_assets = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/print-shipping-label-banner.min.asset.php';
+
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner', 'js' ),
-			array( 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wp-api-fetch', WC_ADMIN_APP ),
+			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
 			Loader::get_file_version( 'js' ),
 			true
 		);
