@@ -26,7 +26,7 @@ use \Automattic\WooCommerce\Admin\Notes\LaunchChecklist;
 use \Automattic\WooCommerce\Admin\Notes\RealTimeOrderAlerts;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
-use \Automattic\WooCommerce\Admin\MerchantEmailNotifications\MerchantEmailNotifications;
+use \Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications\MerchantEmailNotifications;
 use \Automattic\WooCommerce\Admin\Loader;
 use \Automattic\WooCommerce\Admin\Notes\InsightFirstSale;
 use \Automattic\WooCommerce\Admin\Notes\HomeScreenFeedback;
