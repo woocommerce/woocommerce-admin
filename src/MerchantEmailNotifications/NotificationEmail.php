@@ -28,11 +28,12 @@ class NotificationEmail extends \WC_Email {
 	 * @param Note $note The notification to send.
 	 */
 	public function __construct( $note ) {
+		$content_data         = $note->get_content_data();
 		$this->note           = $note;
 		$this->id             = 'merchant_notification';
 		$this->template_base  = WC_ADMIN_ABSPATH . 'includes/emails/';
-		$this->template_html  = 'html-mechant-notification.php';
-		$this->template_plain = 'plain-mechant-notification.php';
+		$this->template_html  = isset( $content_data->template_html ) ? $content_data->template_html : 'html-mechant-notification.php';
+		$this->template_plain = isset( $content_data->template_plain ) ? $content_data->template_plain : 'plain-mechant-notification.php';
 
 		// Call parent constructor.
 		parent::__construct();
