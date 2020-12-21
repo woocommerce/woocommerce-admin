@@ -7,7 +7,6 @@ import {
 	withCurrentUserHydration,
 	withSettingsHydration,
 } from '@woocommerce/data';
-import '@wordpress/core-data'; // best way?
 
 /**
  * Internal dependencies
