@@ -80,7 +80,7 @@ class NotificationEmail extends \WC_Email {
 	 */
 	public function get_default_heading() {
 		$content_data = $this->note->get_content_data();
-		if ( $content_data->heading ) {
+		if ( isset( $content_data->heading ) ) {
 			return $content_data->heading;
 		}
 
