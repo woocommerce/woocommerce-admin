@@ -567,6 +567,9 @@ ReportTable.defaultProps = {
 	baseSearchQuery: {},
 };
 
+const EMPTY_ARRAY = [];
+const EMPTY_OBJECT = {};
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const {
@@ -587,7 +590,7 @@ export default compose(
 			( query.search &&
 				! ( query[ endpoint ] && query[ endpoint ].length ) )
 		) {
-			return {};
+			return EMPTY_OBJECT;
 		}
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
@@ -603,11 +606,10 @@ export default compose(
 					select,
 					filters,
 					advancedFilters,
-					tableQuery,
 					defaultDateRange,
 					fields: summaryFields,
 			  } )
-			: {};
+			: EMPTY_OBJECT;
 		const queriedTableData =
 			tableData ||
 			getReportTableData( {
@@ -632,9 +634,9 @@ export default compose(
 					? extendedTableData.items.data.map(
 							( item ) => item[ itemIdField ]
 					  )
-					: [],
+					: EMPTY_ARRAY,
 			tableData: extendedTableData,
-			query: { ...tableQuery, ...query },
+			query,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
