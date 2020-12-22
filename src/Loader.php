@@ -241,52 +241,6 @@ class Loader {
 	}
 
 	/**
-	 * Adds the Features section to the advanced tab of WooCommerce Settings
-	 *
-	 * @param array $sections Sections.
-	 * @return array
-	 */
-	public static function add_features_section( $sections ) {
-		$sections['features'] = __( 'Features', 'woocommerce-admin' );
-		return $sections;
-	}
-
-	/**
-	 * Adds the Features settings.
-	 *
-	 * @param array  $settings Settings.
-	 * @param string $current_section Current section slug.
-	 * @return array
-	 */
-	public static function add_features_settings( $settings, $current_section ) {
-		if ( 'features' !== $current_section ) {
-			return $settings;
-		}
-
-		return apply_filters(
-			'woocommerce_settings_features',
-			array(
-				array(
-					'title' => __( 'Features', 'woocommerce-admin' ),
-					'type'  => 'title',
-					'desc'  => __( 'Start using new features that are being progressively rolled out to improve the store management experience.', 'woocommerce-admin' ),
-					'id'    => 'features_options',
-				),
-				array(
-					'title' => __( 'Navigation', 'woocommerce-admin' ),
-					'desc'  => __( 'Adds the new WooCommerce navigation experience to the dashboard', 'woocommerce-admin' ),
-					'id'    => 'woocommerce_navigation_enabled',
-					'type'  => 'checkbox',
-				),
-				array(
-					'type' => 'sectionend',
-					'id'   => 'features_options',
-				),
-			)
-		);
-	}
-
-	/**
 	 * Connects existing WooCommerce pages.
 	 *
 	 * @todo The entry point for the embed needs moved to this class as well.
