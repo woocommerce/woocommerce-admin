@@ -28,12 +28,9 @@ class NotificationEmail extends \WC_Email {
 	 * @param Note $note The notification to send.
 	 */
 	public function __construct( $note ) {
-		$content_data         = $note->get_content_data();
-		$this->note           = $note;
-		$this->id             = 'merchant_notification';
-		$this->template_base  = WC_ADMIN_ABSPATH . 'includes/emails/';
-		$this->template_html  = isset( $content_data->template_html ) ? $content_data->template_html : 'html-mechant-notification.php';
-		$this->template_plain = isset( $content_data->template_plain ) ? $content_data->template_plain : 'plain-mechant-notification.php';
+		$this->note          = $note;
+		$this->id            = 'merchant_notification';
+		$this->template_base = WC_ADMIN_ABSPATH . 'includes/emails/';
 
 		// Call parent constructor.
 		parent::__construct();
@@ -48,6 +45,24 @@ class NotificationEmail extends \WC_Email {
 	 * This email has no user-facing settings.
 	 */
 	public function init_settings() {}
+
+	/**
+	 * Return template filename.
+	 *
+	 * @param string $type Type of email to send.
+	 * @return string
+	 */
+	public function get_template_filename( $type ) {
+		if ( ! in_array( $type, array( 'html', 'plain' ), true ) ) {
+			return;
+		}
+		$content_data      = $this->note->get_content_data();
+		$template_filename = "{$type}-mechant-notification.php";
+		if ( isset( $content_data->{"template_{$type}"} ) && file_exists( $this->template_base . $content_data->{ "template_{$type}" } ) ) {
+			$template_filename = $content_data[ "template_{$type}" ];
+		}
+		return $template_filename;
+	}
 
 	/**
 	 * Return email type.
@@ -69,7 +84,7 @@ class NotificationEmail extends \WC_Email {
 			return $content_data->heading;
 		}
 
-		return $this->note->set_title();
+		return $this->note->get_title();
 	}
 
 	/**
@@ -106,7 +121,7 @@ class NotificationEmail extends \WC_Email {
 	 */
 	public function get_content_html() {
 		return wc_get_template_html(
-			$this->template_html,
+			$this->get_template_filename( 'html' ),
 			array(
 				'email_heading'       => $this->get_heading(),
 				'email_content'       => $this->get_note_content(),
@@ -128,7 +143,7 @@ class NotificationEmail extends \WC_Email {
 	 */
 	public function get_content_plain() {
 		return wc_get_template_html(
-			$this->template_plain,
+			$this->get_template_filename( 'plain' ),
 			array(
 				'email_heading'       => $this->get_heading(),
 				'email_content'       => $this->get_note_content(),
