@@ -156,12 +156,6 @@
 	text-align: left;
 	border-bottom: 1px solid $table-border;
 
-	& + .woocommerce-table__header,
-	& + .woocommerce-table__item {
-		border-left: 1px solid $table-border;
-	}
-
-
 	> a:only-child {
 		display: block;
 	}
