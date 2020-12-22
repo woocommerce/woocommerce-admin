@@ -6,6 +6,14 @@
 		justify-content: flex-end;
 		align-items: center;
 
+		> * {
+			margin-right: $gap;
+
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+
 		> div {
 			width: 100%;
 		}
