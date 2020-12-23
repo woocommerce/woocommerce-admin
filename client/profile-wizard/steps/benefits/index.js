@@ -7,7 +7,8 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -32,6 +33,8 @@ import ManagementIcon from './images/management';
 import SalesTaxIcon from './images/sales_tax';
 import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';
+
+const Text = TextComponent || __experimentalText;
 
 class Benefits extends Component {
 	constructor( props ) {

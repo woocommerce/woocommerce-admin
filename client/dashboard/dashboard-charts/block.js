@@ -8,7 +8,8 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import {
 	getHistory,
@@ -22,6 +23,8 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
  */
 import ReportChart from '../../analytics/components/report-chart';
 import './block.scss';
+
+const Text = TextComponent || __experimentalText;
 
 class ChartBlock extends Component {
 	handleChartClick = () => {

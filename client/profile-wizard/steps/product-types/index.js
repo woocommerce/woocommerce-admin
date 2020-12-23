@@ -11,7 +11,8 @@ import {
 	CardFooter,
 	CheckboxControl,
 	FormToggle,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { includes, filter, get } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
@@ -24,6 +25,8 @@ import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
  */
 import ProductTypeLabel from './label';
 import './style.scss';
+
+const Text = TextComponent || __experimentalText;
 
 export class ProductTypes extends Component {
 	constructor( props ) {

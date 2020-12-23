@@ -7,7 +7,8 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import {
 	megaphone,
@@ -28,6 +29,8 @@ import { recordEvent } from '@woocommerce/tracks';
 import './style.scss';
 import { QuickLinkCategory } from './quick-link-category';
 import { QuickLink } from './quick-link';
+
+const Text = TextComponent || __experimentalText;
 
 export function getItemsByCategory( siteUrl ) {
 	return [

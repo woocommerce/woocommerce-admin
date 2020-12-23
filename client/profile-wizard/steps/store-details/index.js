@@ -9,7 +9,8 @@ import {
 	CardFooter,
 	CheckboxControl,
 	FlexItem as MaybeFlexItem,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 	Popover,
 } from '@wordpress/components';
 import { Component } from '@wordpress/element';
@@ -31,6 +32,8 @@ import {
 import UsageModal from '../usage-modal';
 import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
+
+const Text = TextComponent || __experimentalText;
 
 // FlexItem is not available until WP version 5.5. This code is safe to remove
 // once the minimum WP supported version becomes 5.5.

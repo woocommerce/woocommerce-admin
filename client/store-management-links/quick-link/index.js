@@ -3,13 +3,18 @@
  */
 import React from '@wordpress/element';
 import { external, Icon } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
+import {
+	__experimentalText,
+	Text as TextComponent,
+} from '@wordpress/components';
 import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
+
+const Text = TextComponent || __experimentalText;
 
 export const QuickLink = ( { icon, title, href, linkType, onClick } ) => {
 	const isExternal = linkType === 'external';

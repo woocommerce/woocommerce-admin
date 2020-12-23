@@ -11,7 +11,8 @@ import {
 	CardHeader,
 	Dashicon,
 	SelectControl,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import classnames from 'classnames';
 import interpolateComponents from 'interpolate-components';
@@ -30,6 +31,8 @@ import sanitizeHTML from '../../lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
 
 import './style.scss';
+
+const Text = TextComponent || __experimentalText;
 
 export class StoreAlerts extends Component {
 	constructor( props ) {

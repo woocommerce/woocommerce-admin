@@ -10,7 +10,8 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
@@ -30,6 +31,8 @@ import { recordEvent } from '@woocommerce/tracks';
 import { recordTaskViewEvent } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
 import sanitizeHTML from '../lib/sanitize-html';
+
+const Text = TextComponent || __experimentalText;
 
 export class TaskList extends Component {
 	componentDidMount() {

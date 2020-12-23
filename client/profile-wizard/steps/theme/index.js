@@ -14,7 +14,8 @@ import {
 	CardFooter,
 	TabPanel,
 	Tooltip,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { H } from '@woocommerce/components';
@@ -29,6 +30,8 @@ import './style.scss';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
 import { getPriceValue } from '../../../dashboard/utils';
+
+const Text = TextComponent || __experimentalText;
 
 class Theme extends Component {
 	constructor() {

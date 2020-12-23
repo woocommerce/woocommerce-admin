@@ -5,7 +5,8 @@ import {
 	Card as WPCard,
 	CardBody,
 	CardHeader,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -14,6 +15,8 @@ import classnames from 'classnames';
  * Internal dependencies
  */
 import './style.scss';
+
+const Text = TextComponent || __experimentalText;
 
 const Card = ( props ) => {
 	const { title, description, children, className } = props;

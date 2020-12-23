@@ -6,7 +6,8 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -26,6 +27,8 @@ import {
 import ReportError from '../report-error';
 import sanitizeHTML from '../../../lib/sanitize-html';
 import './style.scss';
+
+const Text = TextComponent || __experimentalText;
 
 export class Leaderboard extends Component {
 	getFormattedHeaders() {

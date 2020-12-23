@@ -10,7 +10,8 @@ import {
 	CardHeader,
 	CardBody,
 	CardFooter,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { get, xor } from 'lodash';
 import {
@@ -31,6 +32,8 @@ import './style.scss';
 import { DEFAULT_STATS, DEFAULT_HIDDEN_STATS } from './defaults';
 import StatsList from './stats-list';
 import { InstallJetpackCTA } from './install-jetpack-cta';
+
+const Text = TextComponent || __experimentalText;
 
 const { performanceIndicators } = getSetting( 'dataEndpoints', {
 	performanceIndicators: [],

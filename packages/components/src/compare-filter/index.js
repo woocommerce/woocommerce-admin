@@ -9,7 +9,8 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { isEqual, isFunction } from 'lodash';
 import PropTypes from 'prop-types';
@@ -21,6 +22,8 @@ import { getIdsFromQuery, updateQueryString } from '@woocommerce/navigation';
  */
 import CompareButton from './button';
 import Search from '../search';
+
+const Text = TextComponent || __experimentalText;
 
 export { default as CompareButton } from './button';
 

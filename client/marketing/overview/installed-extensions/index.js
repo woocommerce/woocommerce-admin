@@ -9,7 +9,8 @@ import PropTypes from 'prop-types';
 import {
 	Card,
 	CardHeader,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 
 /**
@@ -18,6 +19,8 @@ import {
 import './style.scss';
 import InstalledExtensionRow from './row';
 import { STORE_KEY } from '../../data/constants';
+
+const Text = TextComponent || __experimentalText;
 
 class InstalledExtensions extends Component {
 	activatePlugin( pluginSlug ) {

@@ -10,7 +10,8 @@ import {
 	CardHeader,
 	Dropdown,
 	SelectControl,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { Component, createRef } from '@wordpress/element';
 import { partial, difference, isEqual } from 'lodash';
@@ -36,6 +37,8 @@ const matches = [
 	{ value: 'all', label: __( 'All', 'woocommerce-admin' ) },
 	{ value: 'any', label: __( 'Any', 'woocommerce-admin' ) },
 ];
+
+const Text = TextComponent || __experimentalText;
 
 /**
  * Displays a configurable set of filters which can modify query parameters.

@@ -6,7 +6,8 @@ import {
 	Button,
 	Card,
 	CardBody,
-	__experimentalText as Text,
+	__experimentalText,
+	Text as TextComponent,
 } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
@@ -31,6 +32,8 @@ import Connect from '../../dashboard/components/connect';
 import { createNoticesFromResponse } from '../../lib/notices';
 import { getCountryCode } from '../../dashboard/utils';
 import StoreLocation from './steps/location';
+
+const Text = TextComponent || __experimentalText;
 
 class Tax extends Component {
 	constructor( props ) {
