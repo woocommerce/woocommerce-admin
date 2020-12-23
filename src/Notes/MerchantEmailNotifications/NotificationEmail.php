@@ -52,7 +52,7 @@ class NotificationEmail extends \WC_Email {
 	 * @param string $type Type of email to send.
 	 * @return string
 	 */
-	public function get_template_filename( $type ) {
+	public function get_template_filename( $type = 'html' ) {
 		if ( ! in_array( $type, array( 'html', 'plain' ), true ) ) {
 			return;
 		}
