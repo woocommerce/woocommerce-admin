@@ -163,7 +163,7 @@ class Events {
 	 */
 	protected function is_merchant_email_notifications_enabled() {
 		// Check if the feature flag is disabled.
-		if ( ! Loader::is_feature_enabled( 'merchant-email-notifications' ) ) {
+		if ( 'yes' !== get_option( 'woocommerce_merchant_email_notifications', 'no' ) ) {
 			return false;
 		}
 
