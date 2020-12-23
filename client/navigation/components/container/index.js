@@ -5,10 +5,14 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
-	__experimentalNavigation as Navigation,
-	__experimentalNavigationBackButton as NavigationBackButton,
-	__experimentalNavigationMenu as NavigationMenu,
-	__experimentalNavigationGroup as NavigationGroup,
+	__experimentalNavigation,
+	__experimentalNavigationBackButton,
+	__experimentalNavigationMenu,
+	__experimentalNavigationGroup,
+	Navigation as NavigationComponent,
+	NavigationBackButton as NavigationBackButtonComponent,
+	NavigationMenu as NavigationMenuComponent,
+	NavigationGroup as NavigationGroupComponent,
 } from '@wordpress/components';
 import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -20,6 +24,13 @@ import { withSelect } from '@wordpress/data';
 import { addHistoryListener, getMatchingItem } from '../../utils';
 import Header from '../header';
 import Item from '../../components/Item';
+
+const Navigation = NavigationComponent || __experimentalNavigation;
+const NavigationBackButton =
+	NavigationBackButtonComponent || __experimentalNavigationBackButton;
+const NavigationMenu = NavigationMenuComponent || __experimentalNavigationMenu;
+const NavigationGroup =
+	NavigationGroupComponent || __experimentalNavigationGroup;
 
 const Container = ( { menuItems } ) => {
 	useEffect( () => {

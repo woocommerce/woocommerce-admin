@@ -5,7 +5,12 @@ import { addQueryArgs } from '@wordpress/url';
 import { parse } from 'qs';
 import { pick, uniq } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
-import { Slot, Fill } from '@wordpress/components';
+import {
+	Slot,
+	Fill,
+	__experimentalUseSlot,
+	useNavSlotHook,
+} from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -228,4 +233,4 @@ export { SlotFillProvider as NavSlotFillProvider } from '@wordpress/components';
  * in the /client folder. This problem is due to WC Admin bundling @wordpress/components
  * instead of enqueuing and using wp.components from the window.
  */
-export { __experimentalUseSlot as useNavSlot } from '@wordpress/components';
+export const useNavSlot = useNavSlotHook || __experimentalUseSlot;
