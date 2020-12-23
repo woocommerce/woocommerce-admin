@@ -56,19 +56,16 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
-		if (
-			! class_exists( '\Jetpack_Data' ) ||
-			! class_exists( '\WC_Connect_Loader' ) ||
-			! class_exists( '\WC_Connect_Options' )
-		) {
-			return;
-		}
-
 		// Check Jetpack connection.
 		if ( class_exists( Jetpack_Connection_Manager::class ) ) {
  			$jetpack_connected = ( new Jetpack_Connection_Manager() )->is_active();
  		} else {
 			$jetpack_connected = false;
+		}
+
+		// Check WooCommerce Shipping & Tax plugin classes.
+		if ( ! class_exists( '\WC_Connect_Loader' ) || ! class_exists( '\WC_Connect_Options' ) ) {
+			return;
 		}
 
 		$wcs_version       = \WC_Connect_Loader::get_wcs_version();
