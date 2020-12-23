@@ -64,6 +64,7 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
+		// Check Jetpack connection.
 		if ( class_exists( Jetpack_Connection_Manager::class ) ) {
  			$jetpack_connected = ( new Jetpack_Connection_Manager() )->is_active();
  		} else {
