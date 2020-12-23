@@ -73,6 +73,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 1.8.2 12/22/2020 ==
+
+- Fix: Completed tasks tracking causing infinite loop #5941
+- Fix: Remove Navigation access #5940
+
 == 1.8.1 12/15/2020 ==
 
 - Fix: Product exclusion filter on Orders Report.
