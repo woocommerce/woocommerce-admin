@@ -9,6 +9,7 @@ namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\PluginsHelper;
 use \Automattic\WooCommerce\Admin\Notes\ReviewShippingSettings;
+use \Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
 
 /**
  * This contains logic for setting up shipping when the profiler completes.
@@ -63,16 +64,10 @@ class OnboardingSetUpShipping {
 			return;
 		}
 
-		if ( defined( 'JETPACK_MASTER_USER' ) ) {
-			$user_token = \Jetpack_Data::get_access_token( JETPACK_MASTER_USER );
-			$jetpack_connected = isset( $user_token->external_user_id );
-		} else {
-			/**
-			 * Filter allowing to set the status of the jetpack connection wiuthout setting constant `JETPACK_MASTER_USER`
-			 *
-			 * @param bool $is_connected False.
-			 */
-			$jetpack_connected = apply_filters( 'woocommerce_admin_is_jetpack_connected', false );
+		if ( class_exists( Jetpack_Connection_Manager::class ) ) {
+ 			$jetpack_connected = ( new Jetpack_Connection_Manager() )->is_active();
+ 		} else {
+			$jetpack_connected = false;
 		}
 
 		$wcs_version       = \WC_Connect_Loader::get_wcs_version();
