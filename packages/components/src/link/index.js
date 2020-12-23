@@ -15,6 +15,11 @@ class Link extends Component {
 	// With React Router 5+, <RouterLink /> cannot be used outside of the main <Router /> elements,
 	// which seems to include components imported from @woocommerce/components. For now, we can use the history object directly.
 	wcAdminLinkHandler( onClick, event ) {
+		// If cmd or ctrl are used, use default behavior to allow opening in a new tab.
+		if ( event.ctrlKey || event.metaKey ) {
+			return;
+		}
+
 		event.preventDefault();
 
 		// If there is an onclick event, execute it.
