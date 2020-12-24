@@ -80,9 +80,17 @@ class StoreDetails extends Component {
 			return null;
 		}
 
+		const Currency = this.context;
 		const region = getCurrencyRegion( countryState );
-		const localeInfo = getSetting( 'localeInfo', {} );
-		return localeInfo[ region ] || localeInfo.US;
+		const { currencySymbols = {}, localeInfo = {} } = getSetting(
+			'onboarding',
+			{}
+		);
+		const regionInfo = localeInfo[ region ] || localeInfo.US;
+		const symbol =
+			currencySymbols[ regionInfo.currency_code ] || currencySymbols.USD;
+
+		return Currency.formatPhpToJs( { ...regionInfo, symbol } );
 	}
 
 	onSubmit() {
@@ -124,11 +132,13 @@ class StoreDetails extends Component {
 				woocommerce_default_country: values.countryState,
 				woocommerce_store_city: values.city,
 				woocommerce_store_postcode: values.postCode,
-				woocommerce_currency: currencySettings.currency_code,
-				woocommerce_currency_pos: currencySettings.currency_pos,
-				woocommerce_price_thousand_sep: currencySettings.thousand_sep,
-				woocommerce_price_decimal_sep: currencySettings.decimal_sep,
-				woocommerce_price_num_decimals: currencySettings.num_decimals,
+				woocommerce_currency: currencySettings.code,
+				woocommerce_currency_pos: currencySettings.symbolPosition,
+				woocommerce_price_thousand_sep:
+					currencySettings.thousandSeparator,
+				woocommerce_price_decimal_sep:
+					currencySettings.decimalSeparator,
+				woocommerce_price_num_decimals: currencySettings.precision,
 			},
 		} );
 
