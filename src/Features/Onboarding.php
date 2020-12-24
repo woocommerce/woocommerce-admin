@@ -694,6 +694,7 @@ class Onboarding {
 		$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
 		$settings['onboarding']['euCountries']  = WC()->countries->get_european_union_countries();
 		$settings['onboarding']['industries']   = self::get_allowed_industries();
+		$settings['onboarding']['localeInfo']   = include WC()->plugin_path() . '/i18n/locale-info.php';
 		$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
 		$settings['onboarding']['profile']      = $profile;
 		$settings['onboarding']['themes']       = self::get_themes();

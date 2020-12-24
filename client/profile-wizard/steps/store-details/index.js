@@ -16,7 +16,7 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Form } from '@woocommerce/components';
-import { getCurrencyData } from '@woocommerce/currency';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -81,8 +81,8 @@ class StoreDetails extends Component {
 		}
 
 		const region = getCurrencyRegion( countryState );
-		const currencyData = getCurrencyData();
-		return currencyData[ region ] || currencyData.US;
+		const localeInfo = getSetting( 'localeInfo', {} );
+		return localeInfo[ region ] || localeInfo.US;
 	}
 
 	onSubmit() {
@@ -112,7 +112,7 @@ class StoreDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
-			derived_currency: currencySettings.code,
+			derived_currency: currencySettings.currency_code,
 			setup_client: values.isClient,
 		} );
 
@@ -124,13 +124,11 @@ class StoreDetails extends Component {
 				woocommerce_default_country: values.countryState,
 				woocommerce_store_city: values.city,
 				woocommerce_store_postcode: values.postCode,
-				woocommerce_currency: currencySettings.code,
-				woocommerce_currency_pos: currencySettings.symbolPosition,
-				woocommerce_price_thousand_sep:
-					currencySettings.thousandSeparator,
-				woocommerce_price_decimal_sep:
-					currencySettings.decimalSeparator,
-				woocommerce_price_num_decimals: currencySettings.precision,
+				woocommerce_currency: currencySettings.currency_code,
+				woocommerce_currency_pos: currencySettings.currency_pos,
+				woocommerce_price_thousand_sep: currencySettings.thousand_sep,
+				woocommerce_price_decimal_sep: currencySettings.decimal_sep,
+				woocommerce_price_num_decimals: currencySettings.num_decimals,
 			},
 		} );
 
