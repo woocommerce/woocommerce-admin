@@ -330,7 +330,9 @@ const getReportChartDataResponse = memoize(
 		isError: false,
 		isRequesting: false,
 		data: { totals, intervals },
-	} )
+	} ),
+	( requestString, totals, intervals ) =>
+		[ requestString, totals.length, intervals.length ].join( ':' )
 );
 
 /**
