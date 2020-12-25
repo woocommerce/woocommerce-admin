@@ -8,6 +8,7 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
+	__experimentalText as Text,
 } from '@wordpress/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
@@ -47,7 +48,7 @@ export const ActivityPanel = () => {
 	const panels = getAllPanels( panelsData );
 
 	return (
-		<Panel>
+		<Panel className="woocommerce-activity-panel">
 			{ panels.map( ( panelData ) => {
 				const {
 					className,
@@ -61,7 +62,9 @@ export const ActivityPanel = () => {
 				return collapsible ? (
 					<PanelBody
 						title={ [
-							title,
+							<Text key={ title } variant="title.small">
+								{ title }
+							</Text>,
 							count !== null && <Badge count={ count } />,
 						] }
 						key={ id }
@@ -80,7 +83,7 @@ export const ActivityPanel = () => {
 								aria-expanded={ false }
 								disabled={ true }
 							>
-								{ title }
+								<Text variant="title.small">{ title }</Text>,
 								{ count !== null && <Badge count={ count } /> }
 							</Button>
 						</h2>
