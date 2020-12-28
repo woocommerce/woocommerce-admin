@@ -14,8 +14,9 @@ echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 echo wp_kses_post( $email_content );
 
 foreach ( $email_actions as $an_action ) {
+	echo "\n";
 	/* translators: %1$s: action label, %2$s: action URL */
-	echo wp_kses_post( sprintf( __( '\n%1$s: %2$s', 'woocommerce-admin' ), $an_action->label, $an_action->query ) );
+	echo wp_kses_post( sprintf( __( '%1$s: %2$s', 'woocommerce-admin' ), $an_action->label, $an_action->query ) );
 }
 echo "\n\n----------------------------------------\n\n";
 
