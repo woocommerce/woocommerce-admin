@@ -33,7 +33,7 @@ $buttons_styles   = "
 ?>
 <?php foreach ( $email_actions as $an_action ) : ?>
 <div style="<?php echo esc_attr( $container_styles ); ?>">
-	<a href="<?php echo esc_url( $an_action->query ); ?>" style="<?php echo esc_attr( $buttons_styles ); ?>">
+	<a href="<?php echo esc_url( $opened_tracking_url . '\/action\/' . $an_action->id ); ?>" style="<?php echo esc_attr( $buttons_styles ); ?>">
 		<?php
 			echo esc_html( $an_action->label );
 		?>

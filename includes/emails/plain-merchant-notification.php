@@ -16,7 +16,7 @@ echo wp_kses_post( $email_content );
 foreach ( $email_actions as $an_action ) {
 	echo "\n";
 	/* translators: %1$s: action label, %2$s: action URL */
-	echo wp_kses_post( sprintf( __( '%1$s: %2$s', 'woocommerce-admin' ), $an_action->label, $an_action->query ) );
+	echo wp_kses_post( sprintf( __( '%1$s: %2$s', 'woocommerce-admin' ), $an_action->label, $opened_tracking_url . '\/action\/' . $an_action->id ) );
 }
 echo "\n\n----------------------------------------\n\n";
 
