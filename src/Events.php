@@ -42,6 +42,7 @@ use \Automattic\WooCommerce\Admin\Notes\ManageOrdersOnTheGo;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedback;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedbackFollowUp;
 use \Automattic\WooCommerce\Admin\Notes\FilterByProductVariationsInReports;
+use \Automattic\WooCommerce\Admin\Notes\TestingEmailNote;
 
 /**
  * Events Class.
@@ -132,6 +133,7 @@ class Events {
 		NavigationFeedback::possibly_add_note();
 		NavigationFeedbackFollowUp::possibly_add_note();
 		FilterByProductVariationsInReports::possibly_add_note();
+		TestingEmailNote::possibly_add_note();
 	}
 
 	/**
