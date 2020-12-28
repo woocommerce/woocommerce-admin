@@ -29,16 +29,20 @@ class TestingEmailNote {
 	 * @return Note
 	 */
 	public static function get_note() {
-		$content = __( 'Lorem ipsum dolor sit amet consectetur adipiscing elit, placerat per facilisi netus justo magnis feugiat, parturient montes dis ad cras ut. Vel ultrices nullam suspendisse malesuada maecenas cubilia sollicitudin nec gravida mi, nulla lacinia ridiculus quis phasellus senectus massa himenaeos fringilla, faucibus penatibus tristique rhoncus a ante habitasse enim risus. Primis leo aptent magna platea class natoque bibendum pharetra magnis non phasellus sociis, suscipit luctus vivamus vel sagittis ante placerat molestie venenatis rutrum arcu.', 'woocommerce-admin' );
+		$additional_data = array(
+			'heading' => 'Testing email note',
+			'role'    => 'administrator',
+		);
+		$content         = __( 'Lorem ipsum dolor sit amet consectetur adipiscing elit, placerat per facilisi netus justo magnis feugiat, parturient montes dis ad cras ut. Vel ultrices nullam suspendisse malesuada maecenas cubilia sollicitudin nec gravida mi, nulla lacinia ridiculus quis phasellus senectus massa himenaeos fringilla, faucibus penatibus tristique rhoncus a ante habitasse enim risus. Primis leo aptent magna platea class natoque bibendum pharetra magnis non phasellus sociis, suscipit luctus vivamus vel sagittis ante placerat molestie venenatis rutrum arcu.', 'woocommerce-admin' );
 
 		$note = new Note();
 		$note->set_title( __( 'Lorem ipsum title', 'woocommerce-admin' ) );
 		$note->set_content( $content );
-		$note->set_content_data( (object) array( 'heading' => '<img src="https://serv3.raiolanetworks.es/blog/wp-content/uploads/alternativaswoocommercewordpress1.png"/>' ) );
+		$note->set_content_data( (object) $additional_data );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_EMAIL );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
-		$note->add_action( 'testing-action', __( 'Yes please!', 'woocommerce-admin' ), 'https://woocommerce.us8.list-manage.com/subscribe/post?u=2c1434dc56f9506bf3c3ecd21&amp;id=13860df971&amp;SIGNUPPAGE=plugin' );
+		$note->add_action( 'testing-action', __( 'Take me there!', 'woocommerce-admin' ), 'https://github.com/woocommerce/woocommerce-admin' );
 		return $note;
 	}
 }
