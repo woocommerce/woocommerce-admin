@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { decodeEntities } from '@wordpress/html-entities';
 import { sprintf } from '@wordpress/i18n';
 import { numberFormat } from '@woocommerce/number';
 import deprecated from '@wordpress/deprecated';
@@ -91,9 +92,9 @@ const CurrencyFactory = ( currencySetting ) => {
 			case 'right':
 				return '%2$s%1$s';
 			case 'left_space':
-				return '%1$s&nbsp;%2$s';
+				return '%1$s %2$s';
 			case 'right_space':
-				return '%2$s&nbsp;%1$s';
+				return '%2$s %1$s';
 		}
 
 		return '%1$s%2$s';
@@ -176,7 +177,7 @@ const CurrencyFactory = ( currencySetting ) => {
 		formatPhpToJs( phpCurrency ) {
 			return {
 				code: phpCurrency.currency_code,
-				symbol: phpCurrency.symbol,
+				symbol: decodeEntities( phpCurrency.symbol ),
 				symbolPosition: phpCurrency.currency_pos,
 				thousandSeparator: phpCurrency.thousand_sep,
 				decimalSeparator: phpCurrency.decimal_sep,
