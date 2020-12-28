@@ -166,7 +166,7 @@ class NotificationEmail extends \WC_Email {
 	public function trigger( $email ) {
 		$this->recipient           = $email;
 		$this->opened_tracking_url = sprintf(
-			'%1$s/wp-json/wc-analytics/admin/notes/tracker/note/%2$d',
+			'%1$s/wp-json/wc-analytics/admin/notes/tracker/%2$d',
 			site_url(),
 			$this->note->get_id()
 		);

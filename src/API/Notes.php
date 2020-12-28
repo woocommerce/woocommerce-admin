@@ -103,7 +103,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/tracker/note/(?P<note_id>[\d-]+)',
+			'/' . $this->rest_base . '/tracker/(?P<note_id>[\d-]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
