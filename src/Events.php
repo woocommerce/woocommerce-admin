@@ -94,7 +94,7 @@ class Events {
 			RemoteInboxNotificationsEngine::run();
 		}
 
-		if ( $this->is_merchant_email_notifications_enabled() || true ) {
+		if ( $this->is_merchant_email_notifications_enabled() ) {
 			MerchantEmailNotifications::possible_send();
 		}
 	}
