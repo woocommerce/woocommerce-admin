@@ -45,6 +45,7 @@
 		}
 
 		input:checked + label {
+			outline: 2px solid $studio-wordpress-blue;
 			background-color: $studio-wordpress-blue-0;
 		}
 
