@@ -81,16 +81,16 @@ class StoreDetails extends Component {
 		}
 
 		const Currency = this.context;
-		const region = getCurrencyRegion( countryState );
+		const country = getCountryCode( countryState );
 		const { currencySymbols = {}, localeInfo = {} } = getSetting(
 			'onboarding',
 			{}
 		);
-		const regionInfo = localeInfo[ region ] || localeInfo.US;
+		const countryInfo = localeInfo[ country ] || localeInfo.US;
 		const symbol =
-			currencySymbols[ regionInfo.currency_code ] || currencySymbols.USD;
+			currencySymbols[ countryInfo.currency_code ] || currencySymbols.USD;
 
-		return Currency.formatPhpToJs( { ...regionInfo, symbol } );
+		return Currency.formatPhpToJs( { ...countryInfo, symbol } );
 	}
 
 	onSubmit() {
