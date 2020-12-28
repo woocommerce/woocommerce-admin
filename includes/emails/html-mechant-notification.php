@@ -1,6 +1,6 @@
 <?php
 /**
- * Merchant notification
+ * Merchant notification email
  *
  * @package WooCommerce\Admin\Templates\Emails\HTML
  */
