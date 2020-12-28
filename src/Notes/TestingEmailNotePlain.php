@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Testing Email Note
  */
-class TestingEmailNote {
+class TestingEmailNotePlain {
 	/**
 	 * Note traits.
 	 */
@@ -21,7 +21,7 @@ class TestingEmailNote {
 	/**
 	 * Name of the note for use in the database.
 	 */
-	const NOTE_NAME = 'wc-admin-testing-email-note';
+	const NOTE_NAME = 'wc-admin-testing-email-note-plain';
 
 	/**
 	 * Get the note.
@@ -30,7 +30,7 @@ class TestingEmailNote {
 	 */
 	public static function get_note() {
 		$additional_data = array(
-			'heading' => 'Testing email note',
+			'heading' => 'Testing email note plain',
 			'role'    => 'administrator',
 		);
 		$content         = __( 'Lorem ipsum dolor sit amet consectetur adipiscing elit, placerat per facilisi netus justo magnis feugiat, parturient montes dis ad cras ut. Vel ultrices nullam suspendisse malesuada maecenas cubilia sollicitudin nec gravida mi, nulla lacinia ridiculus quis phasellus senectus massa himenaeos fringilla, faucibus penatibus tristique rhoncus a ante habitasse enim risus. Primis leo aptent magna platea class natoque bibendum pharetra magnis non phasellus sociis, suscipit luctus vivamus vel sagittis ante placerat molestie venenatis rutrum arcu.', 'woocommerce-admin' );

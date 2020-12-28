@@ -70,7 +70,7 @@ class NotificationEmail extends \WC_Email {
 	 * @return string
 	 */
 	public function get_email_type() {
-		return class_exists( 'DOMDocument' ) ? 'html' : 'plain';
+		return 'plain';
 	}
 
 	/**

@@ -471,7 +471,6 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @param WP_REST_Request $request Request object.
 	 */
 	public function track_opened_email( $request ) {
-		error_log( 'Email opened' );
 		$note = NotesRepository::get_note( $request->get_param( 'note_id' ) );
 		if ( ! $note ) {
 			return;
