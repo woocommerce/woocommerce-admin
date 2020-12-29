@@ -1,23 +1,18 @@
 /**
  * External dependencies
  */
-import {
-	Button,
-	Tooltip,
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { sprintf, __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import ChevronDownIcon from 'gridicons/dist/chevron-down';
 import { isNil, noop } from 'lodash';
 import PropTypes from 'prop-types';
+import { Text } from '@woocommerce/experimental';
+
 /**
  * Internal dependencies
  */
 import Link from '../link';
-
-const Text = TextComponent || __experimentalText;
 
 /**
  * A component to show a value, label, and an optional change percentage. Can also act as a link to a specific report focus.

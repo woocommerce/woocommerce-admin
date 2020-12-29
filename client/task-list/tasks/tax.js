@@ -2,13 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	Button,
-	Card,
-	CardBody,
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Button, Card, CardBody } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
@@ -24,6 +18,7 @@ import {
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent, queueRecordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -32,8 +27,6 @@ import Connect from '../../dashboard/components/connect';
 import { createNoticesFromResponse } from '../../lib/notices';
 import { getCountryCode } from '../../dashboard/utils';
 import StoreLocation from './steps/location';
-
-const Text = TextComponent || __experimentalText;
 
 class Tax extends Component {
 	constructor( props ) {

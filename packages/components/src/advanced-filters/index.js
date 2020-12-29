@@ -10,15 +10,12 @@ import {
 	CardHeader,
 	Dropdown,
 	SelectControl,
-	__experimentalText,
-	Text as TextComponent,
 } from '@wordpress/components';
 import { Component, createRef } from '@wordpress/element';
 import { partial, difference, isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import AddOutlineIcon from 'gridicons/dist/add-outline';
 import interpolateComponents from 'interpolate-components';
-
 import {
 	getActiveFiltersFromQuery,
 	getDefaultOptionValue,
@@ -26,6 +23,7 @@ import {
 	getQueryFromActiveFilters,
 	getHistory,
 } from '@woocommerce/navigation';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -37,8 +35,6 @@ const matches = [
 	{ value: 'all', label: __( 'All', 'woocommerce-admin' ) },
 	{ value: 'any', label: __( 'Any', 'woocommerce-admin' ) },
 ];
-
-const Text = TextComponent || __experimentalText;
 
 /**
  * Displays a configurable set of filters which can modify query parameters.

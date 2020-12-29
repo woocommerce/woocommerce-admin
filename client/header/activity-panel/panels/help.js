@@ -2,10 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 import { withSelect } from '@wordpress/data';
 import { Fragment, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
@@ -27,8 +24,6 @@ import { recordEvent } from '@woocommerce/tracks';
 import ActivityHeader from '../activity-header';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from '../../../task-list/tasks/payments/methods';
-
-const Text = TextComponent || __experimentalText;
 
 export const SETUP_TASK_HELP_ITEMS_FILTER =
 	'woocommerce_admin_setup_task_help_items';

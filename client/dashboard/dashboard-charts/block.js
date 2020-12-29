@@ -4,27 +4,20 @@
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __, sprintf } from '@wordpress/i18n';
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import {
 	getHistory,
 	getNewPath,
 	getPersistedQuery,
 } from '@woocommerce/navigation';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
 import ReportChart from '../../analytics/components/report-chart';
 import './block.scss';
-
-const Text = TextComponent || __experimentalText;
 
 class ChartBlock extends Component {
 	handleChartClick = () => {

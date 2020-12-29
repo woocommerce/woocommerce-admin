@@ -2,14 +2,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import {
-	Button,
-	Card,
-	CardBody,
-	CardFooter,
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Button, Card, CardBody, CardFooter } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -23,6 +16,7 @@ import {
 	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -33,8 +27,6 @@ import ManagementIcon from './images/management';
 import SalesTaxIcon from './images/sales_tax';
 import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';
-
-const Text = TextComponent || __experimentalText;
 
 class Benefits extends Component {
 	constructor( props ) {

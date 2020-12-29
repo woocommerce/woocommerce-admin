@@ -7,10 +7,7 @@ import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
 import { useUserPreferences } from '@woocommerce/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import {
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -19,8 +16,6 @@ import './style.scss';
 import ActivityPanel from './activity-panel';
 import { MobileAppBanner } from '../mobile-banner';
 import useIsScrolled from '../hooks/useIsScrolled';
-
-const Text = TextComponent || __experimentalText;
 
 export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );

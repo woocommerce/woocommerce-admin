@@ -14,14 +14,13 @@ import {
 	CardFooter,
 	TabPanel,
 	Tooltip,
-	__experimentalText,
-	Text as TextComponent,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -30,8 +29,6 @@ import './style.scss';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
 import { getPriceValue } from '../../../dashboard/utils';
-
-const Text = TextComponent || __experimentalText;
 
 class Theme extends Component {
 	constructor() {

@@ -6,12 +6,8 @@ import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
-import {
-	Card,
-	CardHeader,
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Card, CardHeader } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -19,8 +15,6 @@ import {
 import './style.scss';
 import InstalledExtensionRow from './row';
 import { STORE_KEY } from '../../data/constants';
-
-const Text = TextComponent || __experimentalText;
 
 class InstalledExtensions extends Component {
 	activatePlugin( pluginSlug ) {

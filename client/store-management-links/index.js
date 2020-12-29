@@ -3,13 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import {
 	megaphone,
 	box,
@@ -22,6 +16,7 @@ import {
 } from '@wordpress/icons';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -29,8 +24,6 @@ import { recordEvent } from '@woocommerce/tracks';
 import './style.scss';
 import { QuickLinkCategory } from './quick-link-category';
 import { QuickLink } from './quick-link';
-
-const Text = TextComponent || __experimentalText;
 
 export function getItemsByCategory( siteUrl ) {
 	return [

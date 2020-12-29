@@ -2,13 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { EmptyTable, TableCard } from '@woocommerce/components';
@@ -20,6 +14,7 @@ import {
 	getLeaderboard,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -27,8 +22,6 @@ import {
 import ReportError from '../report-error';
 import sanitizeHTML from '../../../lib/sanitize-html';
 import './style.scss';
-
-const Text = TextComponent || __experimentalText;
 
 export class Leaderboard extends Component {
 	getFormattedHeaders() {

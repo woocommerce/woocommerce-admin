@@ -1,12 +1,7 @@
 /**
  * External dependencies
- */
-import {
-	__experimentalText,
-	Text as TextComponent,
-} from '@wordpress/components';
-
-const Text = TextComponent || __experimentalText;
+ */;
+import { Text } from '@woocommerce/experimental';
 
 export function Pill( { children } ) {
 	return (

@@ -9,8 +9,6 @@ import {
 	CardBody,
 	CardFooter,
 	CheckboxControl,
-	__experimentalText,
-	Text as TextComponent,
 } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { filter, find, findIndex, get } from 'lodash';
@@ -19,6 +17,7 @@ import { getSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { TextControl } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -26,8 +25,6 @@ import { recordEvent } from '@woocommerce/tracks';
 import { getCurrencyRegion } from '../../dashboard/utils';
 
 const onboarding = getSetting( 'onboarding', {} );
-
-const Text = TextComponent || __experimentalText;
 
 class Industry extends Component {
 	constructor( props ) {

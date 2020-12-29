@@ -7,13 +7,10 @@ import {
 	Button,
 	Modal,
 	RadioControl,
-	__experimentalText,
-	Text as TextComponent,
 	TextareaControl,
 } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 import { __ } from '@wordpress/i18n';
-
-const Text = TextComponent || __experimentalText;
 
 /**
  * Provides a modal requesting customer feedback.

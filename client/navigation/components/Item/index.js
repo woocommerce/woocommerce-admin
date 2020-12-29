@@ -1,14 +1,9 @@
 /**
  * External dependencies
  */
-import {
-	__experimentalNavigationItem,
-	NavigationItem as NavigationItemComponent,
-} from '@wordpress/components';
+import { NavigationItem } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
 import { WooNavigationItem, useNavSlot } from '@woocommerce/navigation';
-
-const NavigationItem = NavigationItemComponent || __experimentalNavigationItem;
 
 const Item = ( { item } ) => {
 	const slot = useNavSlot( 'woocommerce_navigation_' + item.id );
