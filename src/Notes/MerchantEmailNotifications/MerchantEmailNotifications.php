@@ -53,7 +53,14 @@ class MerchantEmailNotifications {
 
 		Notes::trigger_note_action( $note, $triggered_action );
 
-		wp_safe_redirect( $triggered_action->query );
+		$url = $triggered_action->query;
+
+		// We will use "wp_safe_redirect" when it's an internal redirect.
+		if ( strpos( $url, 'http' ) === false ) {
+			wp_safe_redirect( $url );
+		} else {
+			header( 'Location: ' . $url );
+		}
 		exit();
 	}
 
