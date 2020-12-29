@@ -55,11 +55,7 @@ class MerchantEmailNotifications {
 		}
 
 		if ( ! $triggered_action ) {
-			return new \WP_Error(
-				'woocommerce_note_action_invalid_id',
-				__( 'Sorry, there is no resource with that ID.', 'woocommerce-admin' ),
-				array( 'status' => 404 )
-			);
+			return;
 		}
 
 		/**
