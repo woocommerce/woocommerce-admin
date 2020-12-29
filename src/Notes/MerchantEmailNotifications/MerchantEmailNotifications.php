@@ -23,7 +23,7 @@ class MerchantEmailNotifications {
 	}
 
 	/**
-	 * Trigger the notification's action.
+	 * Trigger the note action.
 	 */
 	public static function trigger_notification_action() {
 		/* phpcs:disable WordPress.Security.NonceVerification */
@@ -45,59 +45,13 @@ class MerchantEmailNotifications {
 			return;
 		}
 
-		$actions          = $note->get_actions( 'edit' );
-		$triggered_action = false;
-
-		foreach ( $actions as $action ) {
-			if ( $action->id === $action_id ) {
-				$triggered_action = $action;
-			}
-		}
+		$triggered_action = Notes::get_action_by_id( $note, $action_id );
 
 		if ( ! $triggered_action ) {
 			return;
 		}
 
-		/**
-		 * Fires when an admin note action is taken.
-		 *
-		 * @param string $name The triggered action name.
-		 * @param Note   $note The corresponding Note.
-		 */
-		do_action( 'woocommerce_note_action', $triggered_action->name, $note );
-
-		/**
-		 * Fires when an admin note action is taken.
-		 * For more specific targeting of note actions.
-		 *
-		 * @param Note $note The corresponding Note.
-		 */
-		do_action( 'woocommerce_note_action_' . $triggered_action->name, $note );
-
-		// Update the note with the status for this action.
-		if ( ! empty( $triggered_action->status ) ) {
-			$note->set_status( $triggered_action->status );
-		}
-
-		$note->save();
-
-		if ( in_array( $note->get_type(), array( 'error', 'update' ), true ) ) {
-			$tracks_event = 'wcadmin_store_alert_action';
-		} else {
-			$tracks_event = 'wcadmin_inbox_action_click';
-		}
-
-		wc_admin_record_tracks_event(
-			$tracks_event,
-			array(
-				'note_name'    => $note->get_name(),
-				'note_type'    => $note->get_type(),
-				'note_title'   => $note->get_title(),
-				'note_content' => $note->get_content(),
-				'action_name'  => $triggered_action->name,
-				'action_label' => $triggered_action->label,
-			)
-		);
+		Notes::trigger_note_action( $note, $triggered_action );
 
 		wp_safe_redirect( $triggered_action->query );
 		exit();
