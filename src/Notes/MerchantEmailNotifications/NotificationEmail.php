@@ -123,13 +123,14 @@ class NotificationEmail extends \WC_Email {
 		return wc_get_template_html(
 			$this->get_template_filename( 'html' ),
 			array(
-				'email_heading'       => $this->get_heading(),
-				'email_content'       => $this->get_note_content(),
-				'email_actions'       => $this->get_actions(),
-				'sent_to_admin'       => true,
-				'plain_text'          => false,
-				'email'               => $this,
-				'opened_tracking_url' => $this->opened_tracking_url,
+				'email_heading'           => $this->get_heading(),
+				'email_content'           => $this->get_note_content(),
+				'email_actions'           => $this->get_actions(),
+				'sent_to_admin'           => true,
+				'plain_text'              => false,
+				'email'                   => $this,
+				'opened_tracking_url'     => $this->opened_tracking_url,
+				'trigger_note_action_url' => $this->trigger_note_action_url,
 			),
 			'',
 			$this->template_base
@@ -145,13 +146,14 @@ class NotificationEmail extends \WC_Email {
 		return wc_get_template_html(
 			$this->get_template_filename( 'plain' ),
 			array(
-				'email_heading'       => $this->get_heading(),
-				'email_content'       => $this->get_note_content(),
-				'email_actions'       => $this->get_actions(),
-				'sent_to_admin'       => true,
-				'plain_text'          => true,
-				'email'               => $this,
-				'opened_tracking_url' => $this->opened_tracking_url,
+				'email_heading'           => $this->get_heading(),
+				'email_content'           => $this->get_note_content(),
+				'email_actions'           => $this->get_actions(),
+				'sent_to_admin'           => true,
+				'plain_text'              => true,
+				'email'                   => $this,
+				'opened_tracking_url'     => $this->opened_tracking_url,
+				'trigger_note_action_url' => $this->trigger_note_action_url,
 			),
 			'',
 			$this->template_base
@@ -164,9 +166,14 @@ class NotificationEmail extends \WC_Email {
 	 * @param string $email Email to send the note.
 	 */
 	public function trigger( $email ) {
-		$this->recipient           = $email;
-		$this->opened_tracking_url = sprintf(
+		$this->recipient               = $email;
+		$this->opened_tracking_url     = sprintf(
 			'%1$s/wp-json/wc-analytics/admin/notes/tracker/%2$d',
+			site_url(),
+			$this->note->get_id()
+		);
+		$this->trigger_note_action_url = sprintf(
+			'%1$s?external_redirect=1&note=%2$d?action=',
 			site_url(),
 			$this->note->get_id()
 		);
