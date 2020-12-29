@@ -173,7 +173,7 @@ class NotificationEmail extends \WC_Email {
 			$this->note->get_id()
 		);
 		$this->trigger_note_action_url = sprintf(
-			'%1$s?external_redirect=1&note=%2$d?action=',
+			'%1$s&external_redirect=1&note=%2$d&action=',
 			wc_admin_url(),
 			$this->note->get_id()
 		);
