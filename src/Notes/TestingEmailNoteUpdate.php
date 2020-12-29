@@ -34,11 +34,11 @@ class TestingEmailNoteUpdate {
 		$note = new Note();
 		$note->set_title( __( 'Lorem ipsum title', 'woocommerce-admin' ) );
 		$note->set_content( $content );
-		$note->set_content_data( (object) array( 'heading' => '<img src="https://serv3.raiolanetworks.es/blog/wp-content/uploads/alternativaswoocommercewordpress1.png"/>' ) );
+		$note->set_content_data( (object) array( 'heading' => 'Testing note' ) );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_EMAIL );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
-		$note->add_action( 'testing-action', __( 'Take me there!', 'woocommerce-admin' ), 'https://github.com/woocommerce/woocommerce-admin' );
+		$note->add_action( 'testing-action-update', __( 'Take me there!', 'woocommerce-admin' ), 'https://github.com/woocommerce/woocommerce-admin' );
 		return $note;
 	}
 }
