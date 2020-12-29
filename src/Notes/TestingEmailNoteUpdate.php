@@ -10,9 +10,9 @@ namespace Automattic\WooCommerce\Admin\Notes;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Testing Email Note
+ * Testing Email Note Update
  */
-class TestingEmailNote {
+class TestingEmailNoteUpdate {
 	/**
 	 * Note traits.
 	 */
@@ -21,7 +21,7 @@ class TestingEmailNote {
 	/**
 	 * Name of the note for use in the database.
 	 */
-	const NOTE_NAME = 'wc-admin-testing-email-note';
+	const NOTE_NAME = 'wc-admin-testing-email-note-update';
 
 	/**
 	 * Get the note.
@@ -38,7 +38,7 @@ class TestingEmailNote {
 		$note->set_type( Note::E_WC_ADMIN_NOTE_EMAIL );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
-		$note->add_action( 'testing-action', __( 'Yes please!', 'woocommerce-admin' ), 'https://woocommerce.us8.list-manage.com/subscribe/post?u=2c1434dc56f9506bf3c3ecd21&amp;id=13860df971&amp;SIGNUPPAGE=plugin' );
+		$note->add_action( 'testing-action', __( 'Take me there!', 'woocommerce-admin' ), 'https://github.com/woocommerce/woocommerce-admin' );
 		return $note;
 	}
 }
