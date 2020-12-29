@@ -1,0 +1,30 @@
+{
+	"name": "@woocommerce/experimental",
+	"version": "1.0.0",
+	"description": "WooCommerce experimental components.",
+	"author": "Automattic",
+	"license": "GPL-3.0-or-later",
+	"keywords": [
+		"wordpress",
+		"woocommerce",
+		"experimental"
+	],
+	"homepage": "https://github.com/woocommerce/woocommerce-admin/tree/main/packages/experimental/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/woocommerce/woocommerce-admin.git"
+	},
+	"bugs": {
+		"url": "https://github.com/woocommerce/woocommerce-admin/issues"
+	},
+	"main": "build/index.js",
+	"module": "build-module/index.js",
+	"react-native": "src/index",
+	"dependencies": {
+		"@babel/runtime": "^7.11.2",
+		"@wordpress/components": "10.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

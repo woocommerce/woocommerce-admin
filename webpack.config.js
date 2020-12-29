@@ -50,6 +50,7 @@ const wcAdminPackages = [
 	'currency',
 	'customer-effort-score',
 	'date',
+	'experimental',
 	'navigation',
 	'notices',
 	'number',
