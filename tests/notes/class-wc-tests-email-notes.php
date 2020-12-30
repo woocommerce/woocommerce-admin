@@ -84,10 +84,11 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 		);
 		$note->set_content_data( (object) $content_data );
 		$note->save();
-		$notification_email                      = new NotificationEmail( $note );
-		$notification_email->opened_tracking_url = 'PHPUNIT_TEST_NOTE_EMAIL_TRACKING_URL';
-		$content_html                            = $notification_email->get_content_html();
-		$content_plain                           = $notification_email->get_content_plain();
+		$notification_email                          = new NotificationEmail( $note );
+		$notification_email->opened_tracking_url     = 'PHPUNIT_TEST_NOTE_EMAIL_TRACKING_URL';
+		$notification_email->trigger_note_action_url = 'PHPUNIT_TEST_NOTE_EMAIL_TRIGGER_ACTION_URL';
+		$content_html                                = $notification_email->get_content_html();
+		$content_plain                               = $notification_email->get_content_plain();
 
 		$this->assertEquals( $notification_email->get_default_heading(), $content_data['heading'] );
 		$this->assertEquals( $notification_email->get_default_subject(), $note->get_title() );
@@ -97,6 +98,7 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 		$this->assertTrue( strpos( $content_html, 'PHPUNIT_TEST_NOTE_5_ACTION_LABEL' ) >= 0 );
 		$this->assertTrue( strpos( $content_html, 'PHPUNIT_TEST_NOTE_5_CONTENT' ) >= 0 );
 		$this->assertTrue( strpos( $content_html, 'PHPUNIT_TEST_NOTE_EMAIL_TRACKING_URL' ) >= 0 );
+		$this->assertTrue( strpos( $content_html, 'PHPUNIT_TEST_NOTE_EMAIL_TRIGGER_ACTION_URL' ) >= 0 );
 		$this->assertTrue( strpos( $content_plain, 'PHPUNIT_TEST_NOTE_5_ACTION_URL' ) >= 0 );
 		$this->assertTrue( strpos( $content_plain, 'PHPUNIT_TEST_NOTE_5_ACTION_LABEL' ) >= 0 );
 		$this->assertTrue( strpos( $content_plain, 'PHPUNIT_TEST_NOTE_5_CONTENT' ) >= 0 );
