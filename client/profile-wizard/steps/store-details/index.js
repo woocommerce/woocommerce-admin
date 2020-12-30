@@ -86,11 +86,11 @@ class StoreDetails extends Component {
 			'onboarding',
 			{}
 		);
-		const countryInfo = localeInfo[ country ] || localeInfo.US;
-		const symbol =
-			currencySymbols[ countryInfo.currency_code ] || currencySymbols.USD;
-
-		return Currency.formatPhpToJs( { ...countryInfo, symbol } );
+		return Currency.getDataForCountry(
+			country,
+			localeInfo,
+			currencySymbols
+		);
 	}
 
 	onSubmit() {

@@ -100,10 +100,44 @@ const CurrencyFactory = ( currencySetting ) => {
 		return '%1$s%2$s';
 	}
 
+	/**
+	 * Get formatted data for a country from supplied locale and symbol info.
+	 *
+	 * @param {string} countryCode Country code.
+	 * @param {Object} localeInfo Locale info by country code.
+	 * @param {Object} currencySymbols Currency symbols by symbol code.
+	 * @return {Object} Formatted currency data for country.
+	 */
+	function getDataForCountry(
+		countryCode,
+		localeInfo = {},
+		currencySymbols = {}
+	) {
+		const countryInfo = localeInfo[ countryCode ] || {};
+		const symbol = currencySymbols[ countryInfo.currency_code ] || {};
+
+		if (
+			! Object.keys( symbol ).length ||
+			! Object.keys( countryInfo ).length
+		) {
+			return {};
+		}
+
+		return {
+			code: countryInfo.currency_code,
+			symbol: decodeEntities( symbol ),
+			symbolPosition: countryInfo.currency_pos,
+			thousandSeparator: countryInfo.thousand_sep,
+			decimalSeparator: countryInfo.decimal_sep,
+			precision: countryInfo.num_decimals,
+		};
+	}
+
 	return {
 		getCurrencyConfig: () => {
 			return { ...currency };
 		},
+		getDataForCountry,
 		setCurrency,
 		formatAmount,
 		formatCurrency,
@@ -167,24 +201,134 @@ const CurrencyFactory = ( currencySetting ) => {
 			}
 			return formatAmount( number );
 		},
-
-		/**
-		 * Format currency from WooCommerce PHP version to WCA JS version.
-		 *
-		 * @param {Object} phpCurrency Currency to format
-		 * @return {Object} Formatted JS currency.
-		 */
-		formatPhpToJs( phpCurrency ) {
-			return {
-				code: phpCurrency.currency_code,
-				symbol: decodeEntities( phpCurrency.symbol ),
-				symbolPosition: phpCurrency.currency_pos,
-				thousandSeparator: phpCurrency.thousand_sep,
-				decimalSeparator: phpCurrency.decimal_sep,
-				precision: phpCurrency.num_decimals,
-			};
-		},
 	};
 };
 
 export default CurrencyFactory;
+
+/**
+ * Returns currency data by country/region. Contains code, symbol, position, thousands separator, decimal separator, and precision.
+ *
+ * Dev Note: When adding new currencies below, the exchange rate array should also be updated in WooCommerce Admin's `business-details.js`.
+ *
+ * @deprecated
+ *
+ * @return {Object} Curreny data.
+ */
+export function getCurrencyData() {
+	deprecated( 'getCurrencyData', {
+		version: '3.1.0',
+		alternative: 'CurrencyFactory.getDataForCountry',
+		plugin: 'WooCommerce Admin',
+		hint:
+			'Pass in the country, locale data, and symbol info to use getDataForCountry',
+	} );
+
+	// See https://github.com/woocommerce/woocommerce-admin/issues/3101.
+	return {
+		US: {
+			code: 'USD',
+			symbol: '$',
+			symbolPosition: 'left',
+			thousandSeparator: ',',
+			decimalSeparator: '.',
+			precision: 2,
+		},
+		EU: {
+			code: 'EUR',
+			symbol: '€',
+			symbolPosition: 'left',
+			thousandSeparator: '.',
+			decimalSeparator: ',',
+			precision: 2,
+		},
+		IN: {
+			code: 'INR',
+			symbol: '₹',
+			symbolPosition: 'left',
+			thousandSeparator: ',',
+			decimalSeparator: '.',
+			precision: 2,
+		},
+		GB: {
+			code: 'GBP',
+			symbol: '£',
+			symbolPosition: 'left',
+			thousandSeparator: ',',
+			decimalSeparator: '.',
+			precision: 2,
+		},
+		BR: {
+			code: 'BRL',
+			symbol: 'R$',
+			symbolPosition: 'left',
+			thousandSeparator: '.',
+			decimalSeparator: ',',
+			precision: 2,
+		},
+		VN: {
+			code: 'VND',
+			symbol: '₫',
+			symbolPosition: 'right',
+			thousandSeparator: '.',
+			decimalSeparator: ',',
+			precision: 1,
+		},
+		ID: {
+			code: 'IDR',
+			symbol: 'Rp',
+			symbolPosition: 'left',
+			thousandSeparator: '.',
+			decimalSeparator: ',',
+			precision: 0,
+		},
+		BD: {
+			code: 'BDT',
+			symbol: '৳',
+			symbolPosition: 'left',
+			thousandSeparator: ',',
+			decimalSeparator: '.',
+			precision: 0,
+		},
+		PK: {
+			code: 'PKR',
+			symbol: '₨',
+			symbolPosition: 'left',
+			thousandSeparator: ',',
+			decimalSeparator: '.',
+			precision: 2,
+		},
+		RU: {
+			code: 'RUB',
+			symbol: '₽',
+			symbolPosition: 'right',
+			thousandSeparator: ' ',
+			decimalSeparator: ',',
+			precision: 2,
+		},
+		TR: {
+			code: 'TRY',
+			symbol: '₺',
+			symbolPosition: 'left',
+			thousandSeparator: '.',
+			decimalSeparator: ',',
+			precision: 2,
+		},
+		MX: {
+			code: 'MXN',
+			symbol: '$',
+			symbolPosition: 'left',
+			thousandSeparator: ',',
+			decimalSeparator: '.',
+			precision: 2,
+		},
+		CA: {
+			code: 'CAD',
+			symbol: '$',
+			symbolPosition: 'left',
+			thousandSeparator: ',',
+			decimalSeparator: '.',
+			precision: 2,
+		},
+	};
+}
