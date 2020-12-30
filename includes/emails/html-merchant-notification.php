@@ -11,8 +11,27 @@ defined( 'ABSPATH' ) || exit;
  * @hooked WC_Emails::email_header() Output the email header
  */
 do_action( 'woocommerce_email_header', $email_heading, $email );
+?>
 
-echo esc_html( $email_content );
+<?php if ( isset( $email_image ) ) { ?>
+<div>
+	<img src="<?php echo esc_url( $email_image ); ?>" style="display: block; margin-bottom: 24px;"/>
+</div>
+<?php } ?>
+
+<?php
+echo wp_kses(
+	$email_content,
+	array(
+		'a'      => array(
+			'href'  => array(),
+			'title' => array(),
+		),
+		'br'     => array(),
+		'em'     => array(),
+		'strong' => array(),
+	)
+);
 
 $base_color       = get_option( 'woocommerce_email_base_color' );
 $base_text        = wc_light_or_dark( $base_color, '#202020', '#ffffff' );

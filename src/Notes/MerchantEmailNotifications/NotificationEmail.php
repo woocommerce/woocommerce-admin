@@ -106,6 +106,15 @@ class NotificationEmail extends \WC_Email {
 	}
 
 	/**
+	 * Get note image.
+	 *
+	 * @return string
+	 */
+	public function get_image() {
+		return $this->note->get_image();
+	}
+
+	/**
 	 * Get email action.
 	 *
 	 * @return stdClass
@@ -123,9 +132,10 @@ class NotificationEmail extends \WC_Email {
 		return wc_get_template_html(
 			$this->get_template_filename( 'html' ),
 			array(
-				'email_heading'           => $this->get_heading(),
-				'email_content'           => $this->get_note_content(),
 				'email_actions'           => $this->get_actions(),
+				'email_content'           => $this->get_note_content(),
+				'email_heading'           => $this->get_heading(),
+				'email_image'             => $this->get_image(),
 				'sent_to_admin'           => true,
 				'plain_text'              => false,
 				'email'                   => $this,
@@ -152,7 +162,6 @@ class NotificationEmail extends \WC_Email {
 				'sent_to_admin'           => true,
 				'plain_text'              => true,
 				'email'                   => $this,
-				'opened_tracking_url'     => $this->opened_tracking_url,
 				'trigger_note_action_url' => $this->trigger_note_action_url,
 			),
 			'',
