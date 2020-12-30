@@ -47,20 +47,35 @@ class AddFirstProduct {
 			return;
 		}
 
-		$content         = __( 'Lorem ipsum dolor sit amet consectetur adipiscing elit, placerat per facilisi netus justo magnis feugiat, parturient montes dis ad cras ut. Vel ultrices nullam suspendisse malesuada maecenas cubilia sollicitudin nec gravida mi, nulla lacinia ridiculus quis phasellus senectus massa himenaeos fringilla, faucibus penatibus tristique rhoncus a ante habitasse enim risus. Primis leo aptent magna platea class natoque bibendum pharetra magnis non phasellus sociis, suscipit luctus vivamus vel sagittis ante placerat molestie venenatis rutrum arcu.', 'woocommerce-admin' );
+		$image_url = plugins_url(
+			'/images/admin_notes/img-product-light.svg',
+			WC_ADMIN_PLUGIN_FILE
+		);
+
+		$content_lines = array(
+			__( 'Nice one, you’ve created a WooCommerce store! Now it’s time to add your first product.<br/><br/>', 'woocommerce-admin' ),
+			__( 'There are three ways to add your products: you can <strong>create products manually, import them at once via CSV file</strong>, or <strong>migrate them from another service</strong>.<br/><br/>', 'woocommerce-admin' ),
+			__( '<a href="https://docs.woocommerce.com/document/managing-products/?utm_source=help_panel">Explore our docs</a> for more information, or just get started!', 'woocommerce-admin' ),
+		);
+
 		$additional_data = array(
-			'heading' => 'Add your first product!',
-			'role'    => 'administrator',
+			'role' => 'administrator',
 		);
 
 		$note = new Note();
 		$note->set_title( __( 'Store setup', 'woocommerce-admin' ) );
-		$note->set_content( $content );
+		$note->set_content( implode( '', $content_lines ) );
 		$note->set_content_data( (object) $additional_data );
+		$note->set_image(
+			plugins_url(
+				'/images/admin_notes/img-product-light.svg',
+				WC_ADMIN_PLUGIN_FILE
+			)
+		);
 		$note->set_type( Note::E_WC_ADMIN_NOTE_EMAIL );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_source( 'woocommerce-admin' );
-		$note->add_action( 'add-first-product', __( 'Add Products', 'woocommerce-admin' ), admin_url( 'admin.php?page=wc-admin&task=products' ) );
+		$note->add_action( 'add-first-product', __( 'Add a product', 'woocommerce-admin' ), admin_url( 'admin.php?page=wc-admin&task=products' ) );
 		return $note;
 	}
 }
