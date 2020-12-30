@@ -50,15 +50,15 @@ $buttons_styles   = "
 	border-radius: 3px;
 	padding: 5px;";
 ?>
-<?php foreach ( $email_actions as $an_action ) : ?>
 <div style="<?php echo esc_attr( $container_styles ); ?>">
+<?php foreach ( $email_actions as $an_action ) : ?>
 	<a href="<?php echo esc_url( $trigger_note_action_url . $an_action->id ); ?>" style="<?php echo esc_attr( $buttons_styles ); ?>">
 		<?php
 			echo esc_html( $an_action->label );
 		?>
 	</a>
-</div>
 <?php endforeach; ?>
+</div>
 <div style="opacity: 0;">
 	<img src="<?php echo esc_url( $opened_tracking_url ); ?>" />
 </div>
