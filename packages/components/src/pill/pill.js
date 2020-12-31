@@ -1,6 +1,6 @@
 /**
  * External dependencies
- */;
+ */
 import { Text } from '@woocommerce/experimental';
 
 export function Pill( { children } ) {

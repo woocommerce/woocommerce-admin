@@ -399,7 +399,7 @@ class Loader {
 		wp_register_script(
 			'wc-navigation',
 			self::get_url( 'navigation/index', 'js' ),
-			array( 'wp-url', 'wp-hooks', 'wp-element', 'wp-data', 'moment', 'wp-components', 'wc-experimental' ),
+			array( 'wp-url', 'wp-hooks', 'wp-element', 'wp-data', 'moment', 'wp-components' ),
 			$js_file_version,
 			true
 		);
@@ -479,14 +479,6 @@ class Loader {
 
 		wp_set_script_translations( 'wc-components', 'woocommerce-admin' );
 
-		wp_register_script(
-			'wc-experimental',
-			self::get_url( 'experimental/index', 'js' ),
-			array( 'wp-components' ),
-			$js_file_version,
-			true
-		);
-
 		wp_register_style(
 			'wc-components',
 			self::get_url( 'components/style', 'css' ),
@@ -522,7 +514,6 @@ class Loader {
 				'wp-plugins',
 				'wc-tracks',
 				'wc-navigation',
-				'wc-experimental',
 			),
 			$js_file_version,
 			true
