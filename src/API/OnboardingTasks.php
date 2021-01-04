@@ -144,10 +144,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	/**
 	 * Import sample products from given CSV path.
 	 *
-	 * @param  string $csv_file CSV file path
+	 * @param  string $csv_file CSV file path.
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public static function import_sample_products_from_csv($csv_file) {
+	public static function import_sample_products_from_csv( $csv_file ) {
 		include_once WC_ABSPATH . 'includes/import/class-wc-product-csv-importer.php';
 
 		if ( file_exists( $csv_file ) && class_exists( 'WC_Product_CSV_Importer' ) ) {
@@ -176,7 +176,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public static function import_sample_products() {
 		$sample_csv_file = WC_ABSPATH . 'sample-data/sample_products.csv';
 
-		$import = self::import_sample_products_from_csv($sample_csv_file);
+		$import = self::import_sample_products_from_csv( $sample_csv_file );
 		return rest_ensure_response( $import );
 	}
 
@@ -192,22 +192,25 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$template_path = __DIR__ . '/Templates/' . $template_name . '.csv';
 		$template_path = apply_filters( 'woocommerce_product_template_csv_file_path', $template_path, $template_name );
 
-		$import = self::import_sample_products_from_csv($template_path);
+		$import = self::import_sample_products_from_csv( $template_path );
 
-			if ( is_wp_error( $import ) || 0 === count( $import['imported'] ) ) {
-				return new \WP_Error(
-					'woocommerce_rest_import_error',
-					__( 'Sorry, creating the product with ' . $template_name . ' template failed.', 'woocommerce-admin' ),
-					array( 'status' => 404 )
-				);
-			}
+		if ( is_wp_error( $import ) || 0 === count( $import['imported'] ) ) {
+			return new \WP_Error(
+				'woocommerce_rest_import_error',
+				/* translators: %s is template name */
+				sprintf( __( 'Sorry, creating the product with %s template failed.', 'woocommerce-admin' ), $template_name ),
+				array( 'status' => 404 )
+			);
+		}
 			$product = wc_get_product( $import['imported'][0] );
 			$product->set_status( 'auto-draft' );
 			$product->save();
 
-			return rest_ensure_response( array(
-				'id' => $product->get_id()
-			) );
+			return rest_ensure_response(
+				array(
+					'id' => $product->get_id(),
+				)
+			);
 	}
 
 
