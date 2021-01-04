@@ -20,6 +20,8 @@ export { getHistory };
 // Export all filter utilities
 export * from './filters';
 
+const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
+
 /**
  * Get the current path from history.
  *
@@ -45,6 +47,19 @@ export const getPersistedQuery = ( query = navUtils.getQuery() ) => {
 	] );
 	return pick( query, params );
 };
+
+/**
+ * Get array of screens that should ignore persisted queries
+ *
+ * @return {Array} Array containing list of screens
+ */
+export const getQueryExcludedScreens = () =>
+	applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
+		'stock',
+		'settings',
+		'customers',
+		'homescreen',
+	] );
 
 /**
  * Get an array of IDs from a comma-separated query parameter.

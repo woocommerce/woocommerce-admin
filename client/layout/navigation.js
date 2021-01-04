@@ -6,6 +6,7 @@ import {
 	WooNavigationItem,
 	getNewPath,
 	getPersistedQuery,
+	getQueryExcludedScreens,
 } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
@@ -40,7 +41,18 @@ const NavigationPlugin = () => {
 		return null;
 	}
 
-	const reports = getReports().filter( ( item ) => item.navArgs );
+	const getExcludePersisted = ( screen ) => {
+		const excludedScreens = getQueryExcludedScreens();
+		return excludedScreens.includes( screen );
+	};
+
+	const reports = getReports()
+		.filter( ( item ) => item.navArgs )
+		.map( ( item ) => ( {
+			...item,
+			excludePersisted: getExcludePersisted( item.report ),
+		} ) );
+
 	const pages = getPages()
 		.filter( ( page ) => page.navArgs )
 		.map( ( page ) => {
@@ -51,6 +63,15 @@ const NavigationPlugin = () => {
 				};
 			}
 			return page;
+		} )
+		.map( ( page ) => {
+			const path = page.path || 'homescreen';
+			return {
+				...page,
+				excludePersisted: getExcludePersisted(
+					path.replace( '/analytics', '' ).replace( '/', '' )
+				),
+			};
 		} );
 
 	return (
@@ -62,7 +83,11 @@ const NavigationPlugin = () => {
 				>
 					<Link
 						className="components-button"
-						href={ getNewPath( persistedQuery, page.path, {} ) }
+						href={ getNewPath(
+							page.excludePersisted ? {} : persistedQuery,
+							page.path,
+							{}
+						) }
 						type="wc-admin"
 					>
 						{ page.breadcrumbs[ page.breadcrumbs.length - 1 ] }
@@ -77,7 +102,7 @@ const NavigationPlugin = () => {
 					<Link
 						className="components-button"
 						href={ getNewPath(
-							persistedQuery,
+							item.excludePersisted ? {} : persistedQuery,
 							`/analytics/${ item.report }`,
 							{}
 						) }
