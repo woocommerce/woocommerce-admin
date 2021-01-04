@@ -64,7 +64,6 @@ export class TaskDashboard extends Component {
 	};
 
 	onTaskSelect = ( taskName ) => {
-		const { trackedCompletedTasks } = this.props;
 		const trackStartedCount = this.getTaskStartedCount( taskName );
 		recordEvent( 'tasklist_click', {
 			task_name: taskName,
