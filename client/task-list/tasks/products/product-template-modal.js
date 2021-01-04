@@ -31,12 +31,12 @@ const templates = [
 export function ProductTemplateModal( { onClose } ) {
 	const [ selectedTemplate, setSelectedTemplate ] = useState();
 	const [ isRedirecting, setIsRedirecting ] = useState( false );
-	const { createProductTemplate } = useDispatch( ITEMS_STORE_NAME );
+	const { createProductFromTemplate } = useDispatch( ITEMS_STORE_NAME );
 
 	const onSelectTemplateClick = ( template ) => {
 		setIsRedirecting( true );
 		if ( template ) {
-			createProductTemplate(
+			createProductFromTemplate(
 				template,
 				{
 					template_name: template,

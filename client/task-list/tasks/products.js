@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, Fragment } from '@wordpress/element';
+import { Fragment, useState } from '@wordpress/element';
 import { Card, CardBody } from '@wordpress/components';
 import { List } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';

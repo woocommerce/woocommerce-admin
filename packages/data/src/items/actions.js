@@ -8,7 +8,7 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import TYPES from './action-types';
-import { NAMESPACE } from '../constants';
+import { NAMESPACE, WC_ADMIN_NAMESPACE } from '../constants';
 
 export function setItem( itemType, id, item ) {
 	return {
@@ -80,10 +80,10 @@ export function* updateProductStock( product, quantity ) {
 	}
 }
 
-export function* createProductTemplate( itemFields, query ) {
+export function* createProductFromTemplate( itemFields, query ) {
 	try {
 		const url = addQueryArgs(
-			`${ NAMESPACE }/products/templates`,
+			`${ WC_ADMIN_NAMESPACE }/onboarding/tasks/create_product_from_template`,
 			query || {}
 		);
 		const newItem = yield apiFetch( {
@@ -94,7 +94,7 @@ export function* createProductTemplate( itemFields, query ) {
 		yield setItem( 'products', newItem.id, newItem );
 		return newItem;
 	} catch ( error ) {
-		yield setError( 'createItem', error );
+		yield setError( 'createProductFromTemplate', error );
 		throw new Error();
 	}
 }
