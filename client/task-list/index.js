@@ -55,13 +55,23 @@ export class TaskDashboard extends Component {
 		} );
 	};
 
+	isTaskCompleted = ( taskName ) => {
+		const { trackedCompletedTasks } = this.props;
+		if ( ! trackedCompletedTasks ) {
+			return false;
+		}
+		return trackedCompletedTasks.includes( taskName );
+	};
+
 	onTaskSelect = ( taskName ) => {
+		const { trackedCompletedTasks } = this.props;
 		const trackStartedCount = this.getTaskStartedCount( taskName );
 		recordEvent( 'tasklist_click', {
 			task_name: taskName,
-			visit_count: trackStartedCount + 1,
 		} );
-		this.updateTrackStartedCount( taskName, trackStartedCount + 1 );
+		if ( ! this.isTaskCompleted( taskName ) ) {
+			this.updateTrackStartedCount( taskName, trackStartedCount + 1 );
+		}
 	};
 
 	getAllTasks() {
