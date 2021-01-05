@@ -247,6 +247,15 @@ class Loader {
 	 * @return array
 	 */
 	public static function add_features_section( $sections ) {
+		$features = apply_filters(
+			'woocommerce_settings_features',
+			array()
+		);
+
+		if ( empty( $features ) ) {
+			return $sections;
+		}
+
 		$sections['features'] = __( 'Features', 'woocommerce-admin' );
 		return $sections;
 	}
