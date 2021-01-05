@@ -2,10 +2,15 @@ $border-color: $gray-100;
 
 .woocommerce-product-template-modal {
 	min-width: 565px;
+
+	.woocommerce-product-template-modal__actions {
+		padding-top: $gap-large;
+	}
 }
 .woocommerce-product-template-modal__list {
 	.components-radio-control__option {
-		padding: $gap 0px;
+		margin: 0px #{-1 * $gap-large};
+		padding: $gap $gap-large;
 		border-top: 1px solid $border-color;
 		&:last-child {
 			border-bottom: 1px solid $border-color;

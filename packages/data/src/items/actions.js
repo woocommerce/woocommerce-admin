@@ -94,7 +94,7 @@ export function* createProductFromTemplate( itemFields, query ) {
 		yield setItem( 'products', newItem.id, newItem );
 		return newItem;
 	} catch ( error ) {
-		yield setError( 'createProductFromTemplate', error );
-		throw new Error();
+		yield setError( 'createProductFromTemplate', query, error );
+		throw error;
 	}
 }

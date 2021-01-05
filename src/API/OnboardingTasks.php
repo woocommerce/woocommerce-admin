@@ -182,14 +182,14 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 
 	/**
-	 * Get a single note.
+	 * Creates a product from a template name passed in through the template_name param.
 	 *
 	 * @param WP_REST_Request $request Request data.
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public static function create_product_from_template( $request ) {
 		$template_name = $request->get_param( 'template_name' );
-		$template_path = __DIR__ . '/Templates/' . $template_name . '.csv';
+		$template_path = __DIR__ . '/Templates/' . $template_name . '_product.csv';
 		$template_path = apply_filters( 'woocommerce_product_template_csv_file_path', $template_path, $template_name );
 
 		$import = self::import_sample_products_from_csv( $template_path );
@@ -198,19 +198,19 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			return new \WP_Error(
 				'woocommerce_rest_import_error',
 				/* translators: %s is template name */
-				sprintf( __( 'Sorry, creating the product with %s template failed.', 'woocommerce-admin' ), $template_name ),
+				__( 'Sorry, creating the product with template failed.', 'woocommerce-admin' ),
 				array( 'status' => 404 )
 			);
 		}
-			$product = wc_get_product( $import['imported'][0] );
-			$product->set_status( 'auto-draft' );
-			$product->save();
+		$product = wc_get_product( $import['imported'][0] );
+		$product->set_status( 'auto-draft' );
+		$product->save();
 
-			return rest_ensure_response(
-				array(
-					'id' => $product->get_id(),
-				)
-			);
+		return rest_ensure_response(
+			array(
+				'id' => $product->get_id(),
+			)
+		);
 	}
 
 

@@ -5,25 +5,31 @@ import { __ } from '@wordpress/i18n';
 import { Button, Modal, RadioControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
+import { applyFilters } from '@wordpress/hooks';
 import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import './product-template-modal.scss';
+import { createNoticesFromResponse } from '../../../lib/notices';
 
-const templates = [
+export const ONBOARDING_PRODUCT_TEMPLATES_FILTER =
+	'woocommerce_admin_onboarding_product_templates';
+
+const PRODUCT_TEMPLATES = [
 	{
-		key: 'physical_product',
+		key: 'physical',
 		title: __( 'Physical product', 'woocommerce-admin' ),
 	},
 	{
-		key: 'digital_product',
+		key: 'digital',
 		title: __( 'Digital product', 'woocommerce-admin' ),
 	},
 	{
-		key: 'variable_product',
+		key: 'variable',
 		title: __( 'Variable product', 'woocommerce-admin' ),
 	},
 ];
@@ -35,6 +41,9 @@ export function ProductTemplateModal( { onClose } ) {
 
 	const onSelectTemplateClick = ( template ) => {
 		setIsRedirecting( true );
+		recordEvent( 'tasklist_product_template_selection', {
+			product_type: template,
+		} );
 		if ( template ) {
 			createProductFromTemplate(
 				template,
@@ -43,18 +52,31 @@ export function ProductTemplateModal( { onClose } ) {
 					status: 'draft',
 				},
 				{ _fields: [ 'id' ] }
-			).then( ( data ) => {
-				if ( data && data.id ) {
-					const link = getAdminLink(
-						`post.php?post=${ data.id }&action=edit&wc_onboarding_active_task=products&tutorial=true`
-					);
-					window.location = link;
+			).then(
+				( data ) => {
+					if ( data && data.id ) {
+						const link = getAdminLink(
+							`post.php?post=${ data.id }&action=edit&wc_onboarding_active_task=products&tutorial=true`
+						);
+						window.location = link;
+					}
+				},
+				( error ) => {
+					// failed creating product with template
+					createNoticesFromResponse( error );
+					setIsRedirecting( false );
 				}
-			} );
+			);
 		} else if ( onClose ) {
+			recordEvent( 'tasklist_product_template_dismiss' );
 			onClose();
 		}
 	};
+
+	const templates = applyFilters(
+		ONBOARDING_PRODUCT_TEMPLATES_FILTER,
+		PRODUCT_TEMPLATES
+	);
 
 	return (
 		<Modal

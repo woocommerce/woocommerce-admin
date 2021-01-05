@@ -69,7 +69,6 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\ProductVariations',
 			'Automattic\WooCommerce\Admin\API\ProductReviews',
 			'Automattic\WooCommerce\Admin\API\ProductVariations',
-			'Automattic\WooCommerce\Admin\API\ProductTemplates',
 			'Automattic\WooCommerce\Admin\API\Reports\Controller',
 			'Automattic\WooCommerce\Admin\API\SettingOptions',
 			'Automattic\WooCommerce\Admin\API\Reports\Import\Controller',
