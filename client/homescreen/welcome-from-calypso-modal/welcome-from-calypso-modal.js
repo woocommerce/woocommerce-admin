@@ -36,11 +36,11 @@ const page = {
 							type="external"
 							target="_blank"
 						/>
-					)
-				}
+					),
+				},
 			} ) }
 		/>
-	)
+	),
 };
 
 export default function WelcomeFromCalypsoModal( { onClose } ) {

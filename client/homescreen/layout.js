@@ -146,7 +146,8 @@ export const Layout = ( {
 				<WelcomeFromCalypsoModal
 					onClose={ () => {
 						updateOptions( {
-							[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]: 'yes',
+							[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]:
+								'yes',
 						} );
 					} }
 				/>
@@ -192,9 +193,10 @@ export default compose(
 		const { getOption, isResolving, hasFinishedResolution } = select(
 			OPTIONS_STORE_NAME
 		);
-		
+
 		const welcomeFromCalypsoModalDismissed =
-			getOption( WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ) === 'yes';
+			getOption( WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ) ===
+			'yes';
 		const welcomeFromCalypsoModalDismissedResolved = hasFinishedResolution(
 			'getOption',
 			[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]
@@ -204,9 +206,9 @@ export default compose(
 		);
 
 		const shouldShowWelcomeFromCalypsoModal =
-			welcomeFromCalypsoModalDismissedResolved
-			&& ! welcomeFromCalypsoModalDismissed
-			&& fromCalypsoUrlArgIsPresent;
+			welcomeFromCalypsoModalDismissedResolved &&
+			! welcomeFromCalypsoModalDismissed &&
+			fromCalypsoUrlArgIsPresent;
 
 		const welcomeModalDismissed =
 			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
@@ -218,10 +220,10 @@ export default compose(
 		);
 
 		const shouldShowWelcomeModal =
-			welcomeModalDismissedHasResolved
-			&& ! welcomeModalDismissed
-			&& welcomeFromCalypsoModalDismissedResolved
-			&& ! welcomeFromCalypsoModalDismissed;
+			welcomeModalDismissedHasResolved &&
+			! welcomeModalDismissed &&
+			welcomeFromCalypsoModalDismissedResolved &&
+			! welcomeFromCalypsoModalDismissed;
 
 		const defaultHomescreenLayout =
 			getOption( 'woocommerce_default_homepage_layout' ) ||
