@@ -8,6 +8,10 @@
 
 		&.is-opened {
 			margin-bottom: $gap-large;
+
+			.components-panel__body-toggle {
+				border-bottom: 1px solid $gray-200;
+			}
 		}
 	}
 
@@ -19,6 +23,14 @@
 		margin: 0 -#{$gap} -#{$gap} -#{$gap};
 		> div {
 			width: 100%;
+		}
+	}
+
+	.components-panel__body-toggle {
+		border-radius: 0;
+
+		&:disabled {
+			opacity: 1;
 		}
 	}
 
