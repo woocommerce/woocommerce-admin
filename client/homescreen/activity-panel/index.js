@@ -83,7 +83,7 @@ export const ActivityPanel = () => {
 								aria-expanded={ false }
 								disabled={ true }
 							>
-								<Text variant="title.small">{ title }</Text>,
+								<Text variant="title.small">{ title }</Text>
 								{ count !== null && <Badge count={ count } /> }
 							</Button>
 						</h2>
