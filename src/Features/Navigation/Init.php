@@ -20,6 +20,7 @@ class Init {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
+		add_filter( 'woocommerce_settings_features', array( $this, 'add_feature_toggle' ) );
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 		add_filter( 'woocommerce_admin_features', array( $this, 'maybe_remove_nav_feature' ), 0 );
 		add_action( 'update_option_woocommerce_navigation_enabled', array( $this, 'reload_page_on_toggle' ), 10, 2 );
@@ -33,6 +34,23 @@ class Init {
 			CoreMenu::instance()->init();
 			Screen::instance()->init();
 		}
+	}
+
+	/**
+	 * Add the feature toggle to the features settings.
+	 *
+	 * @param array $features Feature sections.
+	 * @return array
+	 */
+	public static function add_feature_toggle( $features ) {
+		$features[] = array(
+			'title' => __( 'Navigation', 'woocommerce-admin' ),
+			'desc'  => __( 'Adds the new WooCommerce navigation experience to the dashboard', 'woocommerce-admin' ),
+			'id'    => 'woocommerce_navigation_enabled',
+			'type'  => 'checkbox',
+		);
+
+		return $features;
 	}
 
 	/**
