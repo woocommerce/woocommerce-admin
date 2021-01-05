@@ -73,6 +73,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 1.8.3 1/5/2021 ==
+
+- Fix: Compile the debug module so it can be used in older browsers like IE11. #5987
+
 == 1.8.2 12/22/2020 ==
 
 - Fix: Completed tasks tracking causing infinite loop #5941
