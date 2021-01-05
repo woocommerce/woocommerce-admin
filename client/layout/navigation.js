@@ -7,6 +7,7 @@ import {
 	getNewPath,
 	getPersistedQuery,
 	getQueryExcludedScreens,
+	getScreenFromPath,
 } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
@@ -28,7 +29,14 @@ const NavigationPlugin = () => {
 	// Update the persisted queries when history is updated
 	useEffect( () => {
 		return addHistoryListener( () => {
-			setTimeout( () => setPersistedQuery( getPersistedQuery() ), 0 );
+			setTimeout( () => {
+				if (
+					getQueryExcludedScreens().includes( getScreenFromPath() )
+				) {
+					return;
+				}
+				setPersistedQuery( getPersistedQuery() );
+			}, 0 );
 		} );
 	}, [] );
 
@@ -41,16 +49,11 @@ const NavigationPlugin = () => {
 		return null;
 	}
 
-	const getExcludePersisted = ( screen ) => {
-		const excludedScreens = getQueryExcludedScreens();
-		return excludedScreens.includes( screen );
-	};
-
 	const reports = getReports()
 		.filter( ( item ) => item.navArgs )
 		.map( ( item ) => ( {
 			...item,
-			excludePersisted: getExcludePersisted( item.report ),
+			excludePersisted: getQueryExcludedScreens().includes( item.report ),
 		} ) );
 
 	const pages = getPages()
@@ -68,7 +71,7 @@ const NavigationPlugin = () => {
 			const path = page.path || 'homescreen';
 			return {
 				...page,
-				excludePersisted: getExcludePersisted(
+				excludePersisted: getQueryExcludedScreens().includes(
 					path.replace( '/analytics', '' ).replace( '/', '' )
 				),
 			};

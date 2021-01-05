@@ -62,6 +62,18 @@ export const getQueryExcludedScreens = () =>
 	] );
 
 /**
+ * Retrieve a string 'name' representing the current screen
+ *
+ * @param {Object} path Path to resolve, default to current
+ * @return {string} Screen name
+ */
+export const getScreenFromPath = ( path = getPath() ) => {
+	return path === '/'
+		? 'homescreen'
+		: path.replace( '/analytics', '' ).replace( '/', '' );
+};
+
+/**
  * Get an array of IDs from a comma-separated query parameter.
  *
  * @param {string} queryString string value extracted from URL.

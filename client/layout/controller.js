@@ -11,6 +11,7 @@ import {
 	getPersistedQuery,
 	getHistory,
 	getQueryExcludedScreens,
+	getScreenFromPath,
 } from '@woocommerce/navigation';
 import { Spinner } from '@woocommerce/components';
 
@@ -225,7 +226,7 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
 		const path = query.path || 'homescreen';
-		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
+		const screen = getScreenFromPath( path );
 
 		const isExcludedScreen = excludedScreens.includes( screen );
 
