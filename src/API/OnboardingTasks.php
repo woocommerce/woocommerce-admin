@@ -43,7 +43,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'import_sample_products' ),
-					'permission_callback' => array( $this, 'import_products_permission_check' ),
+					'permission_callback' => array( $this, 'create_products_permission_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -82,7 +82,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'create_product_from_template' ),
-					'permission_callback' => array( $this, 'import_products_permission_check' ),
+					'permission_callback' => array( $this, 'create_products_permission_check' ),
 					'args'                => array_merge(
 						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::CREATABLE ),
 						array(
@@ -105,7 +105,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|boolean
 	 */
-	public function import_products_permission_check( $request ) {
+	public function create_products_permission_check( $request ) {
 		if ( ! wc_rest_check_post_permissions( 'product', 'create' ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to create resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
