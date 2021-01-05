@@ -93,6 +93,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: support custom attributes in Attribute advanced report filter.
 - Fix: Don't show Stock and Reviews Homescreen panels too early.
 
+== 1.8.3 1/5/2021 ==
+
+- Fix: Fix lacking support for Array.prototype.flat #5987
+
 == 1.8.2 12/22/2020 ==
 
 - Fix: Completed tasks tracking causing infinite loop #5941
