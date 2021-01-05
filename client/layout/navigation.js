@@ -26,13 +26,14 @@ const NavigationPlugin = () => {
 		getPersistedQuery()
 	);
 
+	const pathIsExcluded = ( path ) =>
+		getQueryExcludedScreens().includes( getScreenFromPath( path ) );
+
 	// Update the persisted queries when history is updated
 	useEffect( () => {
 		return addHistoryListener( () => {
 			setTimeout( () => {
-				if (
-					getQueryExcludedScreens().includes( getScreenFromPath() )
-				) {
+				if ( pathIsExcluded() ) {
 					return;
 				}
 				setPersistedQuery( getPersistedQuery() );
@@ -49,12 +50,7 @@ const NavigationPlugin = () => {
 		return null;
 	}
 
-	const reports = getReports()
-		.filter( ( item ) => item.navArgs )
-		.map( ( item ) => ( {
-			...item,
-			excludePersisted: getQueryExcludedScreens().includes( item.report ),
-		} ) );
+	const reports = getReports().filter( ( item ) => item.navArgs );
 
 	const pages = getPages()
 		.filter( ( page ) => page.navArgs )
@@ -66,15 +62,6 @@ const NavigationPlugin = () => {
 				};
 			}
 			return page;
-		} )
-		.map( ( page ) => {
-			const path = page.path || 'homescreen';
-			return {
-				...page,
-				excludePersisted: getQueryExcludedScreens().includes(
-					path.replace( '/analytics', '' ).replace( '/', '' )
-				),
-			};
 		} );
 
 	return (
@@ -87,7 +74,7 @@ const NavigationPlugin = () => {
 					<Link
 						className="components-button"
 						href={ getNewPath(
-							page.excludePersisted ? {} : persistedQuery,
+							pathIsExcluded( page.path ) ? {} : persistedQuery,
 							page.path,
 							{}
 						) }
@@ -105,7 +92,7 @@ const NavigationPlugin = () => {
 					<Link
 						className="components-button"
 						href={ getNewPath(
-							item.excludePersisted ? {} : persistedQuery,
+							pathIsExcluded( item.report ) ? {} : persistedQuery,
 							`/analytics/${ item.report }`,
 							{}
 						) }
