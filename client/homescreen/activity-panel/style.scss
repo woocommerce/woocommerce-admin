@@ -52,8 +52,14 @@
 	}
 
 	.woocommerce-empty-activity-card {
-		background: transparent;
 		margin: 0;
+		background: unset;
+		text-align: center;
+		padding: $gap-large $gutter $gap-smallest;
+
+		h4 {
+			color: $gray-900;
+		}
 	}
 
 	.woocommerce-layout__activity-panel-outbound-link {
