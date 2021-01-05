@@ -30,7 +30,7 @@ const subTasks = [
 	},
 	{
 		key: 'addProductManually',
-		title: __( 'Add manually (recommended)', 'woocommerce-admin' ),
+		title: __( 'Add manually', 'woocommerce-admin' ),
 		content: __(
 			'For small stores we recommend adding products manually',
 			'woocommerce-admin'
