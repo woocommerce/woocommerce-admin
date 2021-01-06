@@ -12,6 +12,7 @@ use \Automattic\WooCommerce\Admin\Notes\ChooseNiche;
 use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
 use \Automattic\WooCommerce\Admin\Notes\GivingFeedbackNotes;
 use \Automattic\WooCommerce\Admin\Notes\InsightFirstProductAndPayment;
+use \Automattic\WooCommerce\Admin\Notes\LearnMoreAboutVariableProducts;
 use \Automattic\WooCommerce\Admin\Notes\MobileApp;
 use \Automattic\WooCommerce\Admin\Notes\NewSalesRecord;
 use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
@@ -117,6 +118,7 @@ class Events {
 		FilterByProductVariationsInReports::possibly_add_note();
 		ChoosingTheme::possibly_add_note();
 		InsightFirstProductAndPayment::possibly_add_note();
+		LearnMoreAboutVariableProducts::possibly_add_note();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {
 			DataSourcePoller::read_specs_from_data_sources();
