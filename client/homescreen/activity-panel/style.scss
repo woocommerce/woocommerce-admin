@@ -44,7 +44,10 @@
 
 	.woocommerce-activity-card {
 		padding: $gap-largest/2 $gutter $gutter;
-		border: 0;
+
+		&:not(:last-of-type) {
+			border-bottom: 1px solid $gray-200;
+		}
 
 		&__header {
 			margin-bottom: $gap-small;
