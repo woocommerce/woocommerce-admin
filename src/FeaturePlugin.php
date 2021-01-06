@@ -192,7 +192,6 @@ class FeaturePlugin {
 		new SetUpAdditionalPaymentTypes();
 		new TestCheckout();
 		new SellingOnlineCourses();
-		new ChoosingTheme();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();
