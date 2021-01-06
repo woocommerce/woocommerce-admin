@@ -25,11 +25,28 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 	public function setUp() {
 		parent::setUp();
 
+		update_option( 'woocommerce_default_country', 'US' );
+
 		$this->user = $this->factory->user->create(
 			array(
 				'role' => 'administrator',
 			)
 		);
+	}
+
+
+
+	/**
+	 * Test that we get an error when template_name does not exist.
+	 */
+	public function test_create_product_from_wrong_template_name() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/create_product_from_template' );
+		$request->set_param( 'template_name', 'random' );
+		$response = $this->server->dispatch( $request );
+
+		$this->assertEquals( 404, $response->get_status() );
 	}
 
 	/**
@@ -48,6 +65,25 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'imported', $data );
 		$this->assertArrayHasKey( 'skipped', $data );
 		$this->assertArrayHasKey( 'updated', $data );
+	}
+
+	/**
+	 * Test creating a product from a template name.
+	 */
+	public function test_create_product_from_template() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/create_product_from_template' );
+		$request->set_param( 'template_name', 'physical' );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$this->assertArrayHasKey( 'id', $data );
+		$product = wc_get_product( $data['id'] );
+		$this->assertEquals( 'auto-draft', $product->get_status());
+		$this->assertEquals( 'simple', $product->get_type());
 	}
 
 	/**
@@ -85,4 +121,6 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 
 		$this->assertSame( 'Custom post content', get_the_content( null, null, $data['post_id'] ) );
 	}
+
+
 }

@@ -196,7 +196,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( is_wp_error( $import ) || 0 === count( $import['imported'] ) ) {
 			return new \WP_Error(
-				'woocommerce_rest_import_error',
+				'woocommerce_rest_product_creation_error',
 				/* translators: %s is template name */
 				__( 'Sorry, creating the product with template failed.', 'woocommerce-admin' ),
 				array( 'status' => 404 )
