@@ -6,6 +6,9 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
 	Button,
+	Card,
+	CardBody,
+	CardFooter,
 	CheckboxControl,
 	FormToggle,
 	Popover,
@@ -16,7 +19,6 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { keys, get, pickBy } from 'lodash';
 import {
 	H,
-	Card,
 	Link,
 	SelectControl,
 	Form,
@@ -29,6 +31,7 @@ import {
 	PLUGINS_STORE_NAME,
 	pluginNames,
 	SETTINGS_STORE_NAME,
+	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -108,6 +111,25 @@ class BusinessDetails extends Component {
 		this.numberFormat = this.numberFormat.bind( this );
 	}
 
+	onCreativeMailInstallAndActivated() {
+		const { updateOptions } = this.props;
+		updateOptions( {
+			ce4wp_referred_by: {
+				plugin: 'woocommerce',
+				version: getSetting( 'wcVersion' ),
+				time: Math.floor( new Date().getTime() / 1000 ),
+				source: 'onboarding',
+			},
+		} );
+	}
+
+	onPostInstallAndActivePlugins( response ) {
+		const activated = response.data.activated;
+		if ( activated.includes( 'creative-mail-by-constant-contact' ) ) {
+			this.onCreativeMailInstallAndActivated();
+		}
+	}
+
 	async onContinue( values ) {
 		const {
 			createNotice,
@@ -182,6 +204,7 @@ class BusinessDetails extends Component {
 				installAndActivatePlugins( businessExtensions )
 					.then( ( response ) => {
 						createNoticesFromResponse( response );
+						this.onPostInstallAndActivePlugins( response );
 					} )
 					.catch( ( error ) => {
 						createNoticesFromResponse( error );
@@ -422,7 +445,7 @@ class BusinessDetails extends Component {
 		}
 
 		return (
-			<Fragment>
+			<div>
 				{ extensionBenefits.map( ( benefit ) => (
 					<div
 						className="woocommerce-profile-wizard__benefit"
@@ -448,7 +471,7 @@ class BusinessDetails extends Component {
 						</div>
 					</div>
 				) ) }
-			</Fragment>
+			</div>
 		);
 	}
 
@@ -638,6 +661,16 @@ class BusinessDetails extends Component {
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
+					const businessExtensions = this.bundleInstall
+						? this.renderBusinessExtensionsBundle(
+								values,
+								getInputProps
+						  )
+						: this.renderBusinessExtensions(
+								values,
+								getInputProps
+						  );
+
 					return (
 						<Fragment>
 							<div className="woocommerce-profile-wizard__step-header">
@@ -655,7 +688,7 @@ class BusinessDetails extends Component {
 								</Text>
 							</div>
 							<Card>
-								<Fragment>
+								<CardBody>
 									<SelectControl
 										label={ __(
 											'How many products do you plan to display?',
@@ -726,50 +759,44 @@ class BusinessDetails extends Component {
 											</div>
 										</Fragment>
 									) }
-
-									{ this.bundleInstall
-										? this.renderBusinessExtensionsBundle(
-												values,
-												getInputProps
-										  )
-										: this.renderBusinessExtensions(
-												values,
-												getInputProps
-										  ) }
-
-									<div className="woocommerce-profile-wizard__card-actions">
-										<Button
-											isPrimary
-											onClick={ handleSubmit }
-											disabled={
-												! isValidForm ||
-												isUpdatingProfileItems ||
-												isInstallingActivating
-											}
-											isBusy={ isInstallingActivating }
-										>
-											{ ! hasInstallActivateError
-												? __(
-														'Continue',
-														'woocommerce-admin'
-												  )
-												: __(
-														'Retry',
-														'woocommerce-admin'
-												  ) }
-										</Button>
-										{ hasInstallActivateError && (
-											<Button
-												onClick={ () => goToNextStep() }
-											>
-												{ __(
-													'Continue without installing',
+								</CardBody>
+								{ businessExtensions && (
+									<CardFooter>
+										{ businessExtensions }
+									</CardFooter>
+								) }
+								<CardFooter justify="center">
+									<Button
+										isPrimary
+										onClick={ handleSubmit }
+										disabled={
+											! isValidForm ||
+											isUpdatingProfileItems ||
+											isInstallingActivating
+										}
+										isBusy={ isInstallingActivating }
+									>
+										{ ! hasInstallActivateError
+											? __(
+													'Continue',
 													'woocommerce-admin'
-												) }
-											</Button>
-										) }
-									</div>
-								</Fragment>
+											  )
+											: __(
+													'Retry',
+													'woocommerce-admin'
+											  ) }
+									</Button>
+									{ hasInstallActivateError && (
+										<Button
+											onClick={ () => goToNextStep() }
+										>
+											{ __(
+												'Continue without installing',
+												'woocommerce-admin'
+											) }
+										</Button>
+									) }
+								</CardFooter>
 							</Card>
 
 							{ this.renderBusinessExtensionHelpText( values ) }
@@ -821,11 +848,13 @@ export const BundleBusinessDetailsStep = compose(
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 
 		return {
 			createNotice,
 			installAndActivatePlugins,
 			updateProfileItems,
+			updateOptions,
 		};
 	} )
 )( BusinessDetails );

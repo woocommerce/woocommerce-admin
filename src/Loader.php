@@ -263,6 +263,22 @@ class Loader {
 			return $settings;
 		}
 
+		$description  = __(
+			'Adds the new WooCommerce navigation experience to the dashboard',
+			'woocommerce-admin'
+		);
+		$update_text  = '';
+		$needs_update = version_compare( get_bloginfo( 'version' ), '5.6', '<' );
+		if ( $needs_update && current_user_can( 'update_core' ) && current_user_can( 'update_php' ) ) {
+			$update_text = sprintf(
+				/* translators: 1: line break tag, 2: open link to WordPress update link, 3: close link tag. */
+				__( '%1$s %2$sUpdate WordPress to enable the new navigation%3$s', 'woocommerce-admin' ),
+				'<br/>',
+				'<a href="' . self_admin_url( 'update-core.php' ) . '" target="_blank">',
+				'</a>'
+			);
+		}
+
 		return apply_filters(
 			'woocommerce_settings_features',
 			array(
@@ -274,9 +290,10 @@ class Loader {
 				),
 				array(
 					'title' => __( 'Navigation', 'woocommerce-admin' ),
-					'desc'  => __( 'Adds the new WooCommerce navigation experience to the dashboard', 'woocommerce-admin' ),
+					'desc'  => $description . $update_text,
 					'id'    => 'woocommerce_navigation_enabled',
 					'type'  => 'checkbox',
+					'class' => $needs_update ? 'disabled' : '',
 				),
 				array(
 					'type' => 'sectionend',
@@ -382,7 +399,7 @@ class Loader {
 		wp_register_script(
 			'wc-navigation',
 			self::get_url( 'navigation/index', 'js' ),
-			array( 'wp-url', 'wp-hooks', 'wp-element', 'wp-data', 'moment' ),
+			array( 'wp-url', 'wp-hooks', 'wp-element', 'wp-data', 'moment', 'wp-components' ),
 			$js_file_version,
 			true
 		);
@@ -454,6 +471,7 @@ class Loader {
 				'wc-notices',
 				'wc-number',
 				'wc-store-data',
+				'wp-components',
 			),
 			$js_file_version,
 			true
@@ -490,6 +508,7 @@ class Loader {
 			self::get_url( 'app/index', 'js' ),
 			array(
 				'wp-core-data',
+				'wp-components',
 				'wc-components',
 				'wp-date',
 				'wp-plugins',
@@ -516,7 +535,7 @@ class Loader {
 		wp_register_style(
 			WC_ADMIN_APP,
 			self::get_url( "app/style{$rtl}", 'css' ),
-			array( 'wc-components', 'wc-customer-effort-score' ),
+			array( 'wc-components', 'wc-customer-effort-score', 'wp-components' ),
 			$css_file_version
 		);
 

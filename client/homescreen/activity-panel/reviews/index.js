@@ -4,11 +4,10 @@
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
-import { Button } from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
-import CheckmarkIcon from 'gridicons/dist/checkmark';
 import StarIcon from 'gridicons/dist/star';
 import StarOutlineIcon from 'gridicons/dist/star-outline';
 import interpolateComponents from 'interpolate-components';
@@ -32,6 +31,7 @@ import {
 	ActivityCard,
 	ActivityCardPlaceholder,
 } from '../../../header/activity-panel/activity-card';
+import CheckmarkCircleIcon from './checkmark-circle-icon';
 import { CurrencyContext } from '../../../lib/currency-context';
 import sanitizeHTML from '../../../lib/sanitize-html';
 import { REVIEW_PAGE_LIMIT, unapprovedReviewsQuery } from './utils';
@@ -149,7 +149,7 @@ class ReviewsPanel extends Component {
 				review._embedded.up[ 0 ] ) ||
 			null;
 
-		if ( review.isUpdating || this.props.isRequesting ) {
+		if ( review.isUpdating ) {
 			return (
 				<ActivityCardPlaceholder
 					key={ review.id }
@@ -160,14 +160,14 @@ class ReviewsPanel extends Component {
 				/>
 			);
 		}
-		if ( isNull( product ) ) {
+		if ( isNull( product ) || review.status !== reviewsQuery.status ) {
 			return null;
 		}
 
 		const title = interpolateComponents( {
 			mixedString: sprintf(
 				__(
-					'{{authorLink}}%s{{/authorLink}} reviewed {{productLink}}%s{{/productLink}}',
+					'{{authorLink}}%s{{/authorLink}}{{verifiedCustomerIcon/}} reviewed {{productLink}}%s{{/productLink}}',
 					'woocommerce-admin'
 				),
 				review.reviewer,
@@ -191,6 +191,17 @@ class ReviewsPanel extends Component {
 						type="external"
 					/>
 				),
+				verifiedCustomerIcon: review.verified ? (
+					<span className="woocommerce-review-activity-card__verified">
+						<Tooltip
+							text={ __( 'Verified owner', 'woocommerce-admin' ) }
+						>
+							<span>
+								<CheckmarkCircleIcon />
+							</span>
+						</Tooltip>
+					</span>
+				) : null,
 			},
 		} );
 
@@ -202,12 +213,6 @@ class ReviewsPanel extends Component {
 					outlineIcon={ StarIcon }
 					size={ 13 }
 				/>
-				{ review.verified && (
-					<span className="woocommerce-review-activity-card__verified">
-						<CheckmarkIcon size={ 18 } />
-						{ __( 'Verified customer', 'woocommerce-admin' ) }
-					</span>
-				) }
 			</Fragment>
 		);
 
@@ -292,14 +297,15 @@ class ReviewsPanel extends Component {
 	}
 
 	renderReviews( reviews ) {
-		if ( reviews.length === 0 ) {
+		const renderedReviews = reviews.map( ( review ) =>
+			this.renderReview( review, this.props )
+		);
+		if ( renderedReviews.filter( Boolean ).length === 0 ) {
 			return <></>;
 		}
 		return (
 			<>
-				{ reviews.map( ( review ) =>
-					this.renderReview( review, this.props )
-				) }
+				{ renderedReviews }
 				<Link
 					href={ getAdminLink(
 						'edit-comments.php?comment_type=review'
@@ -351,7 +357,7 @@ class ReviewsPanel extends Component {
 							lines={ 1 }
 						/>
 					) : (
-						<>{ this.renderReviews( reviews, this.props ) }</>
+						<>{ this.renderReviews( reviews ) }</>
 					) }
 				</Section>
 			</Fragment>

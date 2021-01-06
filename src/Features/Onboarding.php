@@ -9,7 +9,6 @@ namespace Automattic\WooCommerce\Admin\Features;
 use \Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\PageController;
 use \Automattic\WooCommerce\Admin\PluginsHelper;
-use \Automattic\WooCommerce\Admin\Features\OnboardingSetUpShipping;
 
 /**
  * Contains backend logic for the onboarding profile and checklist feature.
@@ -65,9 +64,6 @@ class Onboarding {
 		// Add actions and filters.
 		$this->add_actions();
 		$this->add_filters();
-
-		// Hook up dependent classes.
-		new OnboardingSetUpShipping();
 	}
 
 	/**
@@ -691,12 +687,14 @@ class Onboarding {
 		$wccom_auth                 = \WC_Helper_Options::get( 'auth' );
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
-		$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
-		$settings['onboarding']['euCountries']  = WC()->countries->get_european_union_countries();
-		$settings['onboarding']['industries']   = self::get_allowed_industries();
-		$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
-		$settings['onboarding']['profile']      = $profile;
-		$settings['onboarding']['themes']       = self::get_themes();
+		$settings['onboarding']['activeTheme']     = get_option( 'stylesheet' );
+		$settings['onboarding']['currencySymbols'] = get_woocommerce_currency_symbols();
+		$settings['onboarding']['euCountries']     = WC()->countries->get_european_union_countries();
+		$settings['onboarding']['industries']      = self::get_allowed_industries();
+		$settings['onboarding']['localeInfo']      = include WC()->plugin_path() . '/i18n/locale-info.php';
+		$settings['onboarding']['productTypes']    = self::get_allowed_product_types();
+		$settings['onboarding']['profile']         = $profile;
+		$settings['onboarding']['themes']          = self::get_themes();
 
 		return $settings;
 	}

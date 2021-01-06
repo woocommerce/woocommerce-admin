@@ -34,6 +34,9 @@ const externals = {
 	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
 	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
 	'@wordpress/plugins': { this: [ 'wp', 'plugins' ] },
+	'@wordpress/components': { this: [ 'wp', 'components' ] },
+	'@wordpress/date': { this: [ 'wp', 'date' ] },
+	'@wordpress/compose': { this: [ 'wp', 'compose' ] },
 	tinymce: 'tinymce',
 	moment: 'moment',
 	react: 'React',
@@ -69,6 +72,7 @@ wcAdminPackages.forEach( ( name ) => {
 
 const wpAdminScripts = [
 	'marketing-coupons',
+	'navigation-opt-out',
 	'onboarding-homepage-notice',
 	'onboarding-product-notice',
 	'onboarding-product-import-notice',
