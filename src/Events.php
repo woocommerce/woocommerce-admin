@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Admin\Notes\AddingAndManangingProducts;
 use \Automattic\WooCommerce\Admin\Notes\ChooseNiche;
 use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
 use \Automattic\WooCommerce\Admin\Notes\GivingFeedbackNotes;
@@ -117,6 +118,7 @@ class Events {
 		FilterByProductVariationsInReports::possibly_add_note();
 		ChoosingTheme::possibly_add_note();
 		InsightFirstProductAndPayment::possibly_add_note();
+		AddingAndManangingProducts::possibly_add_note();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {
 			DataSourcePoller::read_specs_from_data_sources();
