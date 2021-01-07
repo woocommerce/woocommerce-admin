@@ -27,10 +27,6 @@ class MerchantEmailNotifications {
 			)
 		);
 
-		if ( empty( $notes ) ) {
-			return;
-		}
-
 		foreach ( $notes as $note ) {
 			$note = Notes::get_note( $note->note_id );
 			if ( $note ) {
