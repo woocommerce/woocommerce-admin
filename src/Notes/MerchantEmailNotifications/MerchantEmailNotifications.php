@@ -30,7 +30,7 @@ class MerchantEmailNotifications {
 		foreach ( $notes as $note ) {
 			$note = Notes::get_note( $note->note_id );
 			if ( $note ) {
-				self::send_mechant_notification( $note );
+				self::send_merchant_notification( $note );
 				$note->set_status( 'sent' );
 				$note->save();
 				wc_admin_record_tracks_event( 'wcadmin_email_note_sent', array( 'note_name' => $note->get_name() ) );
@@ -43,7 +43,7 @@ class MerchantEmailNotifications {
 	 *
 	 * @param object $note The note to send.
 	 */
-	public static function send_mechant_notification( $note ) {
+	public static function send_merchant_notification( $note ) {
 		\WC_Emails::instance();
 		$users_emails = self::get_emails_to_notice( $note );
 		foreach ( $users_emails as $user_email ) {
