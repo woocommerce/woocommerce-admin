@@ -22,6 +22,7 @@ const wooRequestToExternal = ( request ) => {
 		const handle = request.substring( WOOCOMMERCE_NAMESPACE.length );
 		const irregularExternalMap = {
 			'blocks-registry': [ 'wc', 'wcBlocksRegistry' ],
+			experimental: null,
 		};
 
 		if ( irregularExternalMap[ handle ] ) {
