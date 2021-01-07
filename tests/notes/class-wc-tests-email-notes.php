@@ -61,9 +61,9 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 
 		$this->assertEquals( $notification_email->id, 'merchant_notification' );
 		$this->assertEquals( $notification_email->get_default_heading(), $note->get_title() );
-		$this->assertEquals( $notification_email->get_template_filename(), 'html-mechant-notification.php' );
-		$this->assertEquals( $notification_email->get_template_filename( 'html' ), 'html-mechant-notification.php' );
-		$this->assertEquals( $notification_email->get_template_filename( 'plain' ), 'plain-mechant-notification.php' );
+		$this->assertEquals( $notification_email->get_template_filename(), 'html-merchant-notification.php' );
+		$this->assertEquals( $notification_email->get_template_filename( 'html' ), 'html-merchant-notification.php' );
+		$this->assertEquals( $notification_email->get_template_filename( 'plain' ), 'plain-merchant-notification.php' );
 	}
 
 	/**
@@ -121,7 +121,7 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 		$note->set_content_data( (object) $content_data );
 		$notification_email = new NotificationEmail( $note );
 
-		$this->assertEmpty( MerchantEmailNotifications::get_emails_to_notice( $note ) );
+		$this->assertEmpty( MerchantEmailNotifications::get_notification_email_addresses( $note ) );
 		$this->assertEmpty( $notification_email->get_template_filename( 'wrong_type' ) );
 	}
 }
