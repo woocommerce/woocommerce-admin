@@ -45,7 +45,7 @@ class MerchantEmailNotifications {
 	 */
 	public static function send_merchant_notification( $note ) {
 		\WC_Emails::instance();
-		$users_emails = self::get_emails_to_notice( $note );
+		$users_emails = self::get_notification_email_addresses( $note );
 		foreach ( $users_emails as $user_email ) {
 			if ( is_email( $user_email ) ) {
 				$email = new NotificationEmail( $note );
@@ -60,7 +60,7 @@ class MerchantEmailNotifications {
 	 * @param object $note The note to send.
 	 * @return array Emails to notify
 	 */
-	public static function get_emails_to_notice( $note ) {
+	public static function get_notification_email_addresses( $note ) {
 		$content_data = $note->get_content_data();
 		$role         = 'administrator';
 		if ( isset( $content_data->role ) ) {
