@@ -26,7 +26,7 @@ const page = {
 			) }
 			body={ interpolateComponents( {
 				mixedString: __(
-					"{{link}}Learn more{{/link}} about the visual changes you'll see in your store admin, or feel free to have a look around and explore.",
+					"We've designed your navigation and home screen to help you focus on the things that matter most in managing your online store. {{link}}Learn more{{/link}} about these changes – or explore on your own.",
 					'woocommerce-admin'
 				),
 				components: {
