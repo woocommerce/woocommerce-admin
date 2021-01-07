@@ -199,7 +199,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				'woocommerce_rest_product_creation_error',
 				/* translators: %s is template name */
 				__( 'Sorry, creating the product with template failed.', 'woocommerce-admin' ),
-				array( 'status' => 404 )
+				array( 'status' => 500 )
 			);
 		}
 		$product = wc_get_product( $import['imported'][0] );
