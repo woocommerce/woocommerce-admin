@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\Notes\ChooseNiche;
 use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
 use \Automattic\WooCommerce\Admin\Notes\GivingFeedbackNotes;
+use \Automattic\WooCommerce\Admin\Notes\InsightFirstProductAndPayment;
 use \Automattic\WooCommerce\Admin\Notes\MobileApp;
 use \Automattic\WooCommerce\Admin\Notes\NewSalesRecord;
 use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
@@ -29,7 +30,6 @@ use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Admin\Loader;
 use \Automattic\WooCommerce\Admin\Notes\InsightFirstSale;
-use \Automattic\WooCommerce\Admin\Notes\HomeScreenFeedback;
 use \Automattic\WooCommerce\Admin\Notes\NeedSomeInspiration;
 use \Automattic\WooCommerce\Admin\Notes\OnlineClothingStore;
 use \Automattic\WooCommerce\Admin\Notes\FirstProduct;
@@ -101,7 +101,6 @@ class Events {
 		MigrateFromShopify::possibly_add_note();
 		InsightFirstSale::possibly_add_note();
 		LaunchChecklist::possibly_add_note();
-		HomeScreenFeedback::possibly_add_note();
 		NeedSomeInspiration::possibly_add_note();
 		OnlineClothingStore::possibly_add_note();
 		FirstProduct::possibly_add_note();
@@ -117,6 +116,7 @@ class Events {
 		NavigationFeedbackFollowUp::possibly_add_note();
 		FilterByProductVariationsInReports::possibly_add_note();
 		ChoosingTheme::possibly_add_note();
+		InsightFirstProductAndPayment::possibly_add_note();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {
 			DataSourcePoller::read_specs_from_data_sources();
