@@ -179,6 +179,7 @@ export class SearchListControl extends Component {
 			<MenuGroup
 				label={ messages.list }
 				className="woocommerce-search-list__list"
+				role="menu"
 			>
 				{ this.renderList( list ) }
 			</MenuGroup>
