@@ -18,7 +18,7 @@ class MerchantEmailNotifications {
 	/**
 	 * Send all the notifications type `email`.
 	 */
-	public static function possible_send() {
+	public static function run() {
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$notes      = $data_store->get_notes(
 			array(

@@ -95,7 +95,7 @@ class Events {
 		}
 
 		if ( $this->is_merchant_email_notifications_enabled() ) {
-			MerchantEmailNotifications::possible_send();
+			MerchantEmailNotifications::run();
 		}
 	}
 
