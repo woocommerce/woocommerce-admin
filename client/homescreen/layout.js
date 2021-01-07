@@ -55,7 +55,7 @@ export const Layout = ( {
 	const [ showInbox, setShowInbox ] = useState( true );
 
 	const isTaskListEnabled = taskListHidden === false;
-	const isDashboardShown = ! isTaskListEnabled || ! query.task;
+	const isDashboardShown = ! query.task;
 
 	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
@@ -124,9 +124,7 @@ export const Layout = ( {
 				'two-columns': twoColumns,
 			} ) }
 		>
-			{ isDashboardShown
-				? renderColumns()
-				: isTaskListEnabled && renderTaskList() }
+			{ isDashboardShown ? renderColumns() : renderTaskList() }
 			{ shouldShowWelcomeModal && (
 				<WelcomeModal
 					onClose={ () => {
