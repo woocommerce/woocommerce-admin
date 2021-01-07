@@ -57,7 +57,7 @@ class NotificationEmail extends \WC_Email {
 			return;
 		}
 		$content_data      = $this->note->get_content_data();
-		$template_filename = "{$type}-mechant-notification.php";
+		$template_filename = "{$type}-merchant-notification.php";
 		if ( isset( $content_data->{"template_{$type}"} ) && file_exists( $this->template_base . $content_data->{ "template_{$type}" } ) ) {
 			$template_filename = $content_data[ "template_{$type}" ];
 		}
