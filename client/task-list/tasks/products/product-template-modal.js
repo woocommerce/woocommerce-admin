@@ -34,7 +34,7 @@ const PRODUCT_TEMPLATES = [
 	},
 ];
 
-export function ProductTemplateModal( { onClose } ) {
+export default function ProductTemplateModal( { onClose } ) {
 	const [ selectedTemplate, setSelectedTemplate ] = useState();
 	const [ isRedirecting, setIsRedirecting ] = useState( false );
 	const { createProductFromTemplate } = useDispatch( ITEMS_STORE_NAME );

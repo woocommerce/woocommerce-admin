@@ -11,7 +11,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { ProductTemplateModal } from './products/product-template-modal';
+import ProductTemplateModal from './product-template-modal';
 
 const subTasks = [
 	{
@@ -79,6 +79,7 @@ export default function Products() {
 	const [ selectTemplate, setSelectTemplate ] = useState( null );
 
 	const onTaskClick = ( task ) => {
+		console.log( task );
 		task.onClick();
 		if ( task.key === 'addProductTemplate' ) {
 			setSelectTemplate( true );
@@ -89,6 +90,7 @@ export default function Products() {
 		...task,
 		onClick: () => onTaskClick( task ),
 	} ) );
+	console.log( selectTemplate );
 	return (
 		<Fragment>
 			<Card className="woocommerce-task-card">
