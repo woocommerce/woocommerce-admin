@@ -46,9 +46,9 @@ class MerchantEmailNotifications {
 	public static function send_merchant_notification( $note ) {
 		\WC_Emails::instance();
 		$users_emails = self::get_notification_email_addresses( $note );
+		$email        = new NotificationEmail( $note );
 		foreach ( $users_emails as $user_email ) {
 			if ( is_email( $user_email ) ) {
-				$email = new NotificationEmail( $note );
 				$email->trigger( $user_email );
 			}
 		}
