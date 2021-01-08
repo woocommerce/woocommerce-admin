@@ -98,8 +98,24 @@ class Loader {
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
 
-		// Combine JSON translation files (from chunks) when plugin is activated.
-		add_action( 'activated_plugin', array( __CLASS__, 'generate_translation_strings' ), 10, 2 );
+		// Handler for WooCommerce and WooCommerce Admin plugin activation.
+		add_action( 'woocommerce_activated_plugin', array( __CLASS__, 'activated_plugin' ) );
+		add_action( 'activated_plugin', array( __CLASS__, 'activated_plugin' ) );
+	}
+
+	/**
+	 * Run when plugin is activated (can be WooCommerce or WooCommerce Admin).
+	 *
+	 * @param string $filename Activated plugin filename.
+	 */
+	public static function activated_plugin( $filename ) {
+		$plugin_domain           = explode( '/', plugin_basename( __FILE__ ) )[0];
+		$activated_plugin_domain = explode( '/', $filename )[0];
+
+		// Ensure we're only running only on activation hook that originates from our plugin.
+		if ( $plugin_domain === $activated_plugin_domain ) {
+			self::generate_translation_strings();
+		}
 	}
 
 	/**
