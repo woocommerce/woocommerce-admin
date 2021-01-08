@@ -97,6 +97,9 @@ class Loader {
 
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
+
+		// Combine JSON translation files (from chunks) when plugin is activated.
+		add_action( 'activated_plugin', array( __CLASS__, 'generate_translation_strings' ), 10, 2 );
 	}
 
 	/**
@@ -632,6 +635,39 @@ class Loader {
 		unset( $combined_translation_data['comment'] );
 
 		return $combined_translation_data;
+	}
+
+	/**
+	 * Load translation strings from language packs for dynamic imports.
+	 *
+	 * This function combines JSON translation data auto-extracted by GlotPress
+	 * from Webpack-generated JS chunks into a single file. This is necessary
+	 * since the JS chunks are not known to WordPress via wp_register_script()
+	 * and wp_set_script_translations().
+	 */
+	public static function generate_translation_strings() {
+		$plugin_domain = explode( '/', plugin_basename( __FILE__ ) )[0];
+
+		$locale         = determine_locale();
+		$cache_filename = self::get_combined_translation_filename( $plugin_domain, $locale );
+		$lang_dir       = WP_LANG_DIR . '/plugins/';
+
+		// Allow us to easily interact with the filesystem.
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		\WP_Filesystem();
+		global $wp_filesystem;
+
+		// Get all translation chunk data combined into a single object.
+		$translations_from_chunks = self::get_translation_chunk_data( $lang_dir, $plugin_domain, $locale );
+
+		if ( empty( $translations_from_chunks ) ) {
+			return;
+		}
+
+		$chunk_translations_json = wp_json_encode( $translations_from_chunks );
+
+		// Cache combined translations strings to a file.
+		$wp_filesystem->put_contents( $lang_dir . $cache_filename, $chunk_translations_json );
 	}
 
 	/**
