@@ -687,12 +687,14 @@ class Onboarding {
 		$wccom_auth                 = \WC_Helper_Options::get( 'auth' );
 		$profile['wccom_connected'] = empty( $wccom_auth['access_token'] ) ? false : true;
 
-		$settings['onboarding']['activeTheme']  = get_option( 'stylesheet' );
-		$settings['onboarding']['euCountries']  = WC()->countries->get_european_union_countries();
-		$settings['onboarding']['industries']   = self::get_allowed_industries();
-		$settings['onboarding']['productTypes'] = self::get_allowed_product_types();
-		$settings['onboarding']['profile']      = $profile;
-		$settings['onboarding']['themes']       = self::get_themes();
+		$settings['onboarding']['activeTheme']     = get_option( 'stylesheet' );
+		$settings['onboarding']['currencySymbols'] = get_woocommerce_currency_symbols();
+		$settings['onboarding']['euCountries']     = WC()->countries->get_european_union_countries();
+		$settings['onboarding']['industries']      = self::get_allowed_industries();
+		$settings['onboarding']['localeInfo']      = include WC()->plugin_path() . '/i18n/locale-info.php';
+		$settings['onboarding']['productTypes']    = self::get_allowed_product_types();
+		$settings['onboarding']['profile']         = $profile;
+		$settings['onboarding']['themes']          = self::get_themes();
 
 		return $settings;
 	}
@@ -945,7 +947,10 @@ class Onboarding {
 			'id'    => 'woocommerce_onboard_tab',
 		);
 
-		$task_list_hidden = get_option( 'woocommerce_task_list_hidden', 'no' ) || get_option( 'woocommerce_extended_task_list_hidden', 'no' );
+		$task_list_hidden = (
+			'yes' === get_option( 'woocommerce_task_list_hidden', 'no' ) ||
+			'yes' === get_option( 'woocommerce_extended_task_list_hidden', 'no' )
+		);
 
 		$help_tab['content'] = '<h2>' . __( 'WooCommerce Onboarding', 'woocommerce-admin' ) . '</h2>';
 
@@ -955,7 +960,7 @@ class Onboarding {
 
 		$help_tab['content'] .= '<h3>' . __( 'Task List', 'woocommerce-admin' ) . '</h3>';
 		$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the task lists, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
-		( 'yes' === $task_list_hidden
+		( $task_list_hidden
 			? '<p><a href="' . wc_admin_url( '&reset_task_list=1' ) . '" class="button button-primary">' . __( 'Enable', 'woocommerce-admin' ) . '</a></p>'
 			: '<p><a href="' . wc_admin_url( '&reset_task_list=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>'
 		);

@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.6.0
 Requires PHP: 5.6.20
-Stable tag: 1.8.0-dev
+Stable tag: 1.9.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -73,6 +73,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Tweak: Remove visit_count from track, and update task count logic. #5996
 - Fix: Moved certified owner label for review to title. ##5877
 - Fix: Move collapsible config to panels object, to allow for more control. #5855
 - Enhancement: Show Help panel tooltip when user visits unfinished task more then once. #5826
@@ -84,6 +85,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add documentation for filter `woocommerce_admin_pages_list` and `wc_admin_register_page` #5844
 - Dev: Revert work done in #4857 for automated shipping after OBW is completed #5971
 - Add: Welcome modal when coming from Calypso #6004
+- Enhancement: Add an a/b experiment for installing free business features #5786
+- Dev: Add `onChangeCallback` feature to the wc-admin <Form> component #5786 
 
 == Changelog ==
 
@@ -93,6 +96,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Typo in Variation Stats DataStore context filter value.
 - Fix: support custom attributes in Attribute advanced report filter.
 - Fix: Don't show Stock and Reviews Homescreen panels too early.
+
+== 1.8.3 1/5/2021 ==
+
+- Fix: Compile the debug module so it can be used in older browsers like IE11. #5987
 
 == 1.8.2 12/22/2020 ==
 
