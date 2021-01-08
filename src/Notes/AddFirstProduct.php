@@ -47,11 +47,6 @@ class AddFirstProduct {
 			return;
 		}
 
-		$image_url = plugins_url(
-			'/images/admin_notes/img-product-light.svg',
-			WC_ADMIN_PLUGIN_FILE
-		);
-
 		$content_lines = array(
 			__( 'Nice one, you’ve created a WooCommerce store! Now it’s time to add your first product.<br/><br/>', 'woocommerce-admin' ),
 			__( 'There are three ways to add your products: you can <strong>create products manually, import them at once via CSV file</strong>, or <strong>migrate them from another service</strong>.<br/><br/>', 'woocommerce-admin' ),
@@ -68,7 +63,7 @@ class AddFirstProduct {
 		$note->set_content_data( (object) $additional_data );
 		$note->set_image(
 			plugins_url(
-				'/images/admin_notes/img-product-light.svg',
+				'/images/admin_notes/img-product-light.png',
 				WC_ADMIN_PLUGIN_FILE
 			)
 		);
