@@ -86,6 +86,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Revert work done in #4857 for automated shipping after OBW is completed #5971
 - Enhancement: Add an a/b experiment for installing free business features #5786
 - Dev: Add `onChangeCallback` feature to the wc-admin <Form> component #5786 
+- Fix: Generate JSON translation chunks on plugin activation #6028
 
 == Changelog ==
 
