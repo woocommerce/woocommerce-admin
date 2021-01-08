@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\Notes\AddingAndManangingProducts;
 use \Automattic\WooCommerce\Admin\Notes\ChooseNiche;
 use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
+use \Automattic\WooCommerce\Admin\Notes\FirstFiveThingsToCustomize;
 use \Automattic\WooCommerce\Admin\Notes\GivingFeedbackNotes;
 use \Automattic\WooCommerce\Admin\Notes\InsightFirstProductAndPayment;
 use \Automattic\WooCommerce\Admin\Notes\MobileApp;
@@ -121,6 +122,7 @@ class Events {
 		ChoosingTheme::possibly_add_note();
 		InsightFirstProductAndPayment::possibly_add_note();
 		AddingAndManangingProducts::possibly_add_note();
+		FirstFiveThingsToCustomize::possibly_add_note();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {
 			DataSourcePoller::read_specs_from_data_sources();
