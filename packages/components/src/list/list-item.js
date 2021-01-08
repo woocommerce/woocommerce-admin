@@ -11,8 +11,10 @@ import Link from '../link';
 
 /**
  * List component to display a list of items.
+ *
+ * @param {Object} props props for list item
  */
-function ListItem( { item } ) {
+function ListItem( props ) {
 	const handleKeyDown = ( event, onClick ) => {
 		if ( typeof onClick === 'function' && event.keyCode === ENTER ) {
 			onClick();
@@ -28,6 +30,8 @@ function ListItem( { item } ) {
 
 		return href ? 'external' : null;
 	};
+
+	const { item } = props;
 	const hasAction = typeof item.onClick === 'function' || item.href;
 	const InnerTag = item.href ? Link : 'div';
 

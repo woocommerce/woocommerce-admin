@@ -86,10 +86,8 @@ export default function ProductTemplateModal( { onClose } ) {
 		}
 	};
 
-	const onSelectTemplateClick = ( event, value ) => {
-		event.stopPropagation();
-		const val =
-			event.target && event.target.value ? event.target.value : value;
+	const onSelectTemplateClick = ( event ) => {
+		const val = event.target && event.target.value;
 		setSelectedTemplate( val );
 	};
 
@@ -109,12 +107,7 @@ export default function ProductTemplateModal( { onClose } ) {
 				<div className="woocommerce-product-template-modal__list">
 					<List items={ templates }>
 						{ ( item, index ) => (
-							<div
-								className="woocommerce-list__item-inner"
-								onClick={ ( e ) =>
-									onSelectTemplateClick( e, item.key )
-								}
-							>
+							<div className="woocommerce-list__item-inner">
 								<input
 									id={ `product-templates-${
 										item.key || index
@@ -126,19 +119,19 @@ export default function ProductTemplateModal( { onClose } ) {
 									onChange={ onSelectTemplateClick }
 									checked={ item.key === selectedTemplate }
 								/>
-								<div className="woocommerce-list__item-text">
-									<label
-										className="woocommerce-list__item-label"
-										htmlFor={ `product-templates-${
-											item.key || index
-										}` }
-									>
+								<label
+									className="woocommerce-list__item-text"
+									htmlFor={ `product-templates-${
+										item.key || index
+									}` }
+								>
+									<div className="woocommerce-list__item-label">
 										{ item.title }
-									</label>
+									</div>
 									<div className="woocommerce-list__item-subtitle">
 										{ item.subtitle }
 									</div>
-								</div>
+								</label>
 							</div>
 						) }
 					</List>

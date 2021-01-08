@@ -12,8 +12,11 @@ import ListItem from './list-item';
 
 /**
  * List component to display a list of items.
+ *
+ * @param {Object} props props for list
  */
-function List( { className, items, children } ) {
+function List( props ) {
+	const { className, items, children } = props;
 	const listClassName = classnames( 'woocommerce-list', className );
 
 	return (
