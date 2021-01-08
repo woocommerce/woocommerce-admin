@@ -16,6 +16,55 @@ defined( 'ABSPATH' ) || exit;
  */
 class MerchantEmailNotifications {
 	/**
+	 * Initialize the merchant email notifications.
+	 */
+	public static function init() {
+		add_action( 'admin_init', array( __CLASS__, 'trigger_notification_action' ) );
+	}
+
+	/**
+	 * Trigger the note action.
+	 */
+	public static function trigger_notification_action() {
+		/* phpcs:disable WordPress.Security.NonceVerification */
+		if (
+			! isset( $_GET['external_redirect'] ) ||
+			1 !== intval( $_GET['external_redirect'] ) ||
+			! isset( $_GET['note'] ) ||
+			! isset( $_GET['action'] )
+		) {
+			return;
+		}
+		$note_id   = intval( $_GET['note'] );
+		$action_id = intval( $_GET['action'] );
+		/* phpcs:enable */
+
+		$note = Notes::get_note( $note_id );
+
+		if ( ! $note ) {
+			return;
+		}
+
+		$triggered_action = Notes::get_action_by_id( $note, $action_id );
+
+		if ( ! $triggered_action ) {
+			return;
+		}
+
+		Notes::trigger_note_action( $note, $triggered_action );
+
+		$url = $triggered_action->query;
+
+		// We will use "wp_safe_redirect" when it's an internal redirect.
+		if ( strpos( $url, 'http' ) === false ) {
+			wp_safe_redirect( $url );
+		} else {
+			header( 'Location: ' . $url );
+		}
+		exit();
+	}
+
+	/**
 	 * Send all the notifications type `email`.
 	 */
 	public static function run() {
