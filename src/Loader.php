@@ -668,22 +668,36 @@ class Loader {
 		$cache_filename = self::get_combined_translation_filename( $plugin_domain, $locale );
 		$lang_dir       = WP_LANG_DIR . '/plugins/';
 
-		// Allow us to easily interact with the filesystem.
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		\WP_Filesystem();
-		global $wp_filesystem;
-
-		// Get all translation chunk data combined into a single object.
-		$translations_from_chunks = self::get_translation_chunk_data( $lang_dir, $plugin_domain, $locale );
-
-		if ( empty( $translations_from_chunks ) ) {
+		// Bail early if not localized.
+		if ( 'en_US' === $locale ) {
 			return;
 		}
 
-		$chunk_translations_json = wp_json_encode( $translations_from_chunks );
+		if ( ! function_exists( 'get_filesystem_method' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
 
-		// Cache combined translations strings to a file.
-		$wp_filesystem->put_contents( $lang_dir . $cache_filename, $chunk_translations_json );
+		$access_type = get_filesystem_method();
+		if ( 'direct' === $access_type ) {
+			\WP_Filesystem();
+			global $wp_filesystem;
+
+			// Get all translation chunk data combined into a single object.
+			$translations_from_chunks = self::get_translation_chunk_data( $lang_dir, $plugin_domain, $locale );
+
+			if ( empty( $translations_from_chunks ) ) {
+				return;
+			}
+
+			$chunk_translations_json = wp_json_encode( $translations_from_chunks );
+
+			// Cache combined translations strings to a file.
+			$wp_filesystem->put_contents( $lang_dir . $cache_filename, $chunk_translations_json );
+		} else {
+			// I'm reluctant to add support for other filesystems here as it would require
+			// user's input on activating plugin - which I don't think is common.
+			return;
+		}
 	}
 
 	/**
