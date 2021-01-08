@@ -35,6 +35,7 @@ describe( 'products', () => {
 
 			fireEvent(
 				screen.queryByText( 'Start with a template (recommended)' ),
+				// eslint-disable-next-line no-undef
 				new MouseEvent( 'click', { bubbles: true } )
 			);
 			expect(
@@ -53,6 +54,7 @@ describe( 'products', () => {
 
 			fireEvent(
 				screen.queryByText( 'Start with a template (recommended)' ),
+				// eslint-disable-next-line no-undef
 				new MouseEvent( 'click', { bubbles: true } )
 			);
 			expect(

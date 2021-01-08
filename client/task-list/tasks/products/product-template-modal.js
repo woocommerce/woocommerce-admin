@@ -2,13 +2,14 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, Modal, RadioControl } from '@wordpress/components';
+import { Button, Modal } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import { applyFilters } from '@wordpress/hooks';
 import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
+import { List } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -23,14 +24,26 @@ const PRODUCT_TEMPLATES = [
 	{
 		key: 'physical',
 		title: __( 'Physical product', 'woocommerce-admin' ),
+		subtitle: __(
+			'Tangible items that get delivered to customers',
+			'woocommerce-admin'
+		),
 	},
 	{
 		key: 'digital',
 		title: __( 'Digital product', 'woocommerce-admin' ),
+		subtitle: __(
+			'Items that customers download or access through your website',
+			'woocommerce-admin'
+		),
 	},
 	{
 		key: 'variable',
 		title: __( 'Variable product', 'woocommerce-admin' ),
+		subtitle: __(
+			'Products with several versions that customers can choose from',
+			'woocommerce-admin'
+		),
 	},
 ];
 
@@ -39,16 +52,16 @@ export default function ProductTemplateModal( { onClose } ) {
 	const [ isRedirecting, setIsRedirecting ] = useState( false );
 	const { createProductFromTemplate } = useDispatch( ITEMS_STORE_NAME );
 
-	const onSelectTemplateClick = ( template ) => {
+	const createTemplate = () => {
 		setIsRedirecting( true );
 		recordEvent( 'tasklist_product_template_selection', {
-			product_type: template,
+			product_type: selectedTemplate,
 		} );
-		if ( template ) {
+		if ( selectedTemplate ) {
 			createProductFromTemplate(
-				template,
+				selectedTemplate,
 				{
-					template_name: template,
+					template_name: selectedTemplate,
 					status: 'draft',
 				},
 				{ _fields: [ 'id' ] }
@@ -73,6 +86,13 @@ export default function ProductTemplateModal( { onClose } ) {
 		}
 	};
 
+	const onSelectTemplateClick = ( event, value ) => {
+		event.stopPropagation();
+		const val =
+			event.target && event.target.value ? event.target.value : value;
+		setSelectedTemplate( val );
+	};
+
 	const templates = applyFilters(
 		ONBOARDING_PRODUCT_TEMPLATES_FILTER,
 		PRODUCT_TEMPLATES
@@ -87,23 +107,48 @@ export default function ProductTemplateModal( { onClose } ) {
 		>
 			<div className="woocommerce-product-template-modal__wrapper">
 				<div className="woocommerce-product-template-modal__list">
-					<RadioControl
-						options={ templates.map( ( item ) => ( {
-							label: item.title,
-							value: item.key,
-						} ) ) }
-						selected={ selectedTemplate }
-						onChange={ ( option ) => setSelectedTemplate( option ) }
-					/>
+					<List items={ templates }>
+						{ ( item, index ) => (
+							<div
+								className="woocommerce-list__item-inner"
+								onClick={ ( e ) =>
+									onSelectTemplateClick( e, item.key )
+								}
+							>
+								<input
+									id={ `product-templates-${
+										item.key || index
+									}` }
+									className="components-radio-control__input"
+									type="radio"
+									name="product-template-options"
+									value={ item.key }
+									onChange={ onSelectTemplateClick }
+									checked={ item.key === selectedTemplate }
+								/>
+								<div className="woocommerce-list__item-text">
+									<label
+										className="woocommerce-list__item-label"
+										htmlFor={ `product-templates-${
+											item.key || index
+										}` }
+									>
+										{ item.title }
+									</label>
+									<div className="woocommerce-list__item-subtitle">
+										{ item.subtitle }
+									</div>
+								</div>
+							</div>
+						) }
+					</List>
 				</div>
 				<div className="woocommerce-product-template-modal__actions">
 					<Button
 						isPrimary
 						isBusy={ isRedirecting }
 						disabled={ ! selectedTemplate || isRedirecting }
-						onClick={ () =>
-							onSelectTemplateClick( selectedTemplate )
-						}
+						onClick={ createTemplate }
 					>
 						{ __( 'Go' ) }
 					</Button>

@@ -37,6 +37,9 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 	 */
 	public function test_import_sample_products() {
 		wp_set_current_user( $this->user );
+		$taxonomy_name = wc_attribute_taxonomy_name( 'color' );
+		// Degister taxonomy which other tests may have created...
+		unregister_taxonomy( $taxonomy_name );
 
 		$request  = new WP_REST_Request( 'POST', $this->endpoint . '/import_sample_products' );
 		$response = $this->server->dispatch( $request );
