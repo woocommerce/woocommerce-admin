@@ -39,23 +39,23 @@ class GettingStartedInEcommerce {
 		// Make sure that the person who filled out the OBW was not setting up
 		// the store for their customer/client.
 		if (
-			! isset( $onboarding_profile['setup_client'] ) ||
-			$onboarding_profile['setup_client']
+			isset( $onboarding_profile['setup_client'] ) &&
+			true === $onboarding_profile['setup_client']
 		) {
 			return;
 		}
 
 		// Set default values for product_count and revenue if they are missing.
 		$onboarding_profile = array_merge(
-			[
+			array(
 				'product_count' => false,
 				'revenue'       => false,
-			],
+			),
 			$onboarding_profile
 		);
 
 		if (
-			0 === $onboarding_profile['product_count'] ||
+			'0' === $onboarding_profile['product_count'] ||
 			'none' === $onboarding_profile['revenue'] ||
 			'up-to-2500' === $onboarding_profile['revenue']
 		) {
