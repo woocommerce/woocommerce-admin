@@ -29,19 +29,6 @@ class WelcomeToWooCommerceForStoreUsers {
 	}
 
 	/**
-	 * See if a mu plugin is installed.
-	 *
-	 * @param string $plugin_name The name of the mu plugin to check for.
-	 *
-	 * @return bool
-	 */
-	private static function is_mu_plugin_installed( $plugin_name ) {
-		$plugins = get_mu_plugins();
-
-		return isset( $plugins[ $plugin_name ] );
-	}
-
-	/**
 	 * Get the note.
 	 *
 	 * @return Note|null
@@ -49,11 +36,6 @@ class WelcomeToWooCommerceForStoreUsers {
 	public static function get_note() {
 		// Only add if coming from Calypso.
 		if ( ! isset( $_GET['from-calypso'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-			return;
-		}
-
-		// Only add if the WP.com Site Helper is installed.
-		if ( ! self::is_mu_plugin_installed( 'wpcomsh-loader.php' ) ) {
 			return;
 		}
 
