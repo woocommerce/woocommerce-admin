@@ -74,6 +74,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Tweak: Remove deprecated use of Jetpack in shipping label banner. #5929
+- Fix: Undefined $collate variable when database does not have collation capability. #5992
 - Tweak: Remove visit_count from track, and update task count logic. #5996
 - Fix: Moved certified owner label for review to title. ##5877
 - Fix: Move collapsible config to panels object, to allow for more control. #5855
@@ -88,6 +89,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Welcome modal when coming from Calypso #6004
 - Enhancement: Add an a/b experiment for installing free business features #5786
 - Dev: Add `onChangeCallback` feature to the wc-admin <Form> component #5786 
+- Add: Note for users coming from Calypso. #6030
 
 == Changelog ==
 
