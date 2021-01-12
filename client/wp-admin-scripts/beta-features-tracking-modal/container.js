@@ -2,28 +2,46 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { Button, Modal, CheckboxControl } from '@wordpress/components';
+import { withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
-export const BetaFeaturesTrackingContainer = () => {
+const BetaFeaturesTrackingModal = ( { updateOptions } ) => {
 	const [ isModalOpen, setIsModalOpen ] = useState( false );
 	const [ isChecked, setIsChecked ] = useState( false );
+	const enableNavigationCheckbox = useRef(
+		document.querySelector( '#woocommerce_navigation_enabled' )
+	);
+
+	const setTracking = async ( allow ) => {
+		if ( typeof window.wcTracks.enable === 'function' ) {
+			if ( allow ) {
+				window.wcTracks.enable();
+			} else {
+				window.wcTracks.isEnabled = false;
+			}
+		}
+
+		return updateOptions( {
+			woocommerce_allow_tracking: allow ? 'yes' : 'no',
+		} );
+	};
 
 	useEffect( () => {
-		const enableNavigationCheckbox = document.querySelector(
-			'#woocommerce_navigation_enabled'
-		);
+		const listener = ( e ) => {
+			if ( e.target.checked ) {
+				e.target.checked = false;
+				setIsModalOpen( true );
+			}
+		};
 
-		enableNavigationCheckbox.addEventListener(
-			'change',
-			( e ) => {
-				if ( e.target.checked ) {
-					e.target.checked = false;
-					setIsModalOpen( true );
-				}
-			},
-			false
-		);
+		const checkbox = enableNavigationCheckbox.current;
+
+		checkbox.addEventListener( 'change', listener, false );
+
+		return () => checkbox.removeEventListener( 'change', listener );
 	}, [] );
 
 	if ( ! isModalOpen ) {
@@ -57,10 +75,28 @@ export const BetaFeaturesTrackingContainer = () => {
 				/>
 			</div>
 			<div className="woocommerce-beta-features-tracking-modal__actions">
-				<Button isPrimary onClick={ () => setIsModalOpen( false ) }>
+				<Button
+					isPrimary
+					onClick={ async () => {
+						if ( isChecked ) {
+							await setTracking( true );
+							enableNavigationCheckbox.current.checked = true;
+						} else {
+							await setTracking( false );
+						}
+						setIsModalOpen( false );
+					} }
+				>
 					{ __( 'Save', 'woocommerce-admin' ) }
 				</Button>
 			</div>
 		</Modal>
 	);
 };
+
+export const BetaFeaturesTrackingContainer = compose(
+	withDispatch( ( dispatch ) => {
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
+		return { updateOptions };
+	} )
+)( BetaFeaturesTrackingModal );
