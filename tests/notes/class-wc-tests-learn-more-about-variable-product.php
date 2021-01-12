@@ -43,4 +43,40 @@ class WC_Tests_Learn_More_About_Variable_Product extends WC_Unit_Test_Case {
 		$this->assertNotEmpty( $note_ids );
 		$this->assertCount( 1, $note_ids );
 	}
+
+
+	/**
+	 * @dataProvider postProvider
+	 *
+	 * @param string $product product from provider.
+	 */
+	public function test_adding_draft_product_and_non_product_post_does_not_add_note( $product ) {
+		wp_insert_post( $product );
+
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$note_ids   = $data_store->get_notes_with_name( LearnMoreAboutVariableProducts::NOTE_NAME );
+		$this->assertEmpty( $note_ids );
+	}
+
+	/**
+	 * Post provider for draft product and non-product post type
+	 *
+	 * @return array a set of posts.
+	 */
+	public function postProvider() {
+		return array(
+			array(
+				'post_title'   => 'a product',
+				'post_type'    => 'not a product',
+				'post_status'  => 'publish',
+				'post_content' => '',
+			),
+			array(
+				'post_title'   => 'a product',
+				'post_type'    => 'product',
+				'post_status'  => 'draft',
+				'post_content' => '',
+			),
+		);
+	}
 }
