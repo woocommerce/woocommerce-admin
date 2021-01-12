@@ -41,14 +41,9 @@ class LearnMoreAboutVariableProducts {
 	 *
 	 * @param int    $post_id post id.
 	 * @param object $post WordPress post object.
-	 * @param bool   $update true if post is being updated.
 	 */
-	public function maybe_add_new_note( $post_id, $post, $update ) {
-		if ( 'publish' !== $post->post_status || 'product' !== $post->post_type || $update ) {
-			return;
-		}
-
-		static::possibly_add_note();
+	public function maybe_add_new_note( $post_id, $post ) {
+		'publish' === $post->post_status && 'product' === $post->post_type && static::possibly_add_note();
 	}
 
 	/**
