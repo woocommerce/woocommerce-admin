@@ -135,6 +135,24 @@ describe( 'TaskDashboard and TaskList', () => {
 		).toBeNull();
 	} );
 
+	it( 'renders only the extended task list', () => {
+		apiFetch.mockResolvedValue( {} );
+		getAllTasks.mockReturnValue( tasks );
+		const { queryByText } = render(
+			<TaskDashboard
+				dismissedTasks={ [] }
+				isSetupTaskListHidden={ true }
+				profileItems={ {} }
+				query={ {} }
+				updateOptions={ () => {} }
+			/>
+		);
+
+		expect( queryByText( 'Finish setup' ) ).toBeNull();
+
+		expect( queryByText( 'Extensions setup' ) ).not.toBeNull();
+	} );
+
 	it( 'sets homescreen layout default when dismissed', () => {
 		const updateOptions = jest.fn();
 		const { getByRole } = render(
