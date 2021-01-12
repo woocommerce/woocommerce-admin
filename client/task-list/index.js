@@ -55,13 +55,22 @@ export class TaskDashboard extends Component {
 		} );
 	};
 
+	isTaskCompleted = ( taskName ) => {
+		const { trackedCompletedTasks } = this.props;
+		if ( ! trackedCompletedTasks ) {
+			return false;
+		}
+		return trackedCompletedTasks.includes( taskName );
+	};
+
 	onTaskSelect = ( taskName ) => {
 		const trackStartedCount = this.getTaskStartedCount( taskName );
 		recordEvent( 'tasklist_click', {
 			task_name: taskName,
-			visit_count: trackStartedCount + 1,
 		} );
-		this.updateTrackStartedCount( taskName, trackStartedCount + 1 );
+		if ( ! this.isTaskCompleted( taskName ) ) {
+			this.updateTrackStartedCount( taskName, trackStartedCount + 1 );
+		}
 	};
 
 	getAllTasks() {
@@ -107,7 +116,6 @@ export class TaskDashboard extends Component {
 			dismissedTasks,
 			isExtendedTaskListComplete,
 			isExtendedTaskListHidden,
-			isSetupTaskListHidden,
 			isTaskListComplete,
 			query,
 			trackedCompletedTasks,
@@ -118,7 +126,7 @@ export class TaskDashboard extends Component {
 
 		return (
 			<>
-				{ setupTasks && ! isSetupTaskListHidden && (
+				{ setupTasks && (
 					<TaskList
 						dismissedTasks={ dismissedTasks || [] }
 						isTaskListComplete={ isTaskListComplete }
