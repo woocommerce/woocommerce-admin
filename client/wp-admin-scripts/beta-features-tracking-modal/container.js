@@ -2,12 +2,29 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { Button, Modal, CheckboxControl } from '@wordpress/components';
 
 export const BetaFeaturesTrackingContainer = () => {
-	const [ isModalOpen, setIsModalOpen ] = useState( true );
+	const [ isModalOpen, setIsModalOpen ] = useState( false );
 	const [ isChecked, setIsChecked ] = useState( false );
+
+	useEffect( () => {
+		const enableNavigationCheckbox = document.querySelector(
+			'#woocommerce_navigation_enabled'
+		);
+
+		enableNavigationCheckbox.addEventListener(
+			'change',
+			( e ) => {
+				if ( e.target.checked ) {
+					e.target.checked = false;
+					setIsModalOpen( true );
+				}
+			},
+			false
+		);
+	}, [] );
 
 	if ( ! isModalOpen ) {
 		return null;
@@ -40,10 +57,7 @@ export const BetaFeaturesTrackingContainer = () => {
 				/>
 			</div>
 			<div className="woocommerce-beta-features-tracking-modal__actions">
-				<Button
-					isPrimary
-					onClick={ () => this.setState( { isModalOpen: false } ) }
-				>
+				<Button isPrimary onClick={ () => setIsModalOpen( false ) }>
 					{ __( 'Save', 'woocommerce-admin' ) }
 				</Button>
 			</div>
