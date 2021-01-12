@@ -3,7 +3,7 @@ Contributors: woocommerce, automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.4.0
 Tested up to: 5.6.0
-Requires PHP: 5.6.20
+Requires PHP: 7.0
 Stable tag: 1.9.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
@@ -38,7 +38,7 @@ WooCommerce Admin also allows store owners to customize a new dashboard screen w
 
 * WordPress 5.3
 * WooCommerce 4.5 or greater
-* PHP version 5.6.20 or greater. PHP 7.2 or greater is recommended
+* PHP version 7.0 or greater. PHP 7.2 or greater is recommended
 * MySQL version 5.0 or greater. MySQL 5.6 or greater is recommended
 
 Visit the [WooCommerce server requirements documentation](https://docs.woocommerce.com/document/server-requirements/) for a detailed list of server requirements.
