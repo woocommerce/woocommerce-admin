@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/admin-library",
-	"version": "1.8.0-dev",
+	"version": "1.9.0-dev",
 	"homepage": "https://woocommerce.github.io/woocommerce-admin/",
 	"repository": {
 		"type": "git",
@@ -154,6 +154,7 @@
 		"@woocommerce/data": "file:packages/data",
 		"@woocommerce/date": "file:packages/date",
 		"@woocommerce/eslint-plugin": "file:packages/eslint-plugin",
+		"@woocommerce/experimental": "file:packages/experimental",
 		"@woocommerce/navigation": "file:packages/navigation",
 		"@woocommerce/notices": "file:packages/notices",
 		"@woocommerce/number": "file:packages/number",

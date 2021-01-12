@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.6.0
 Requires PHP: 5.6.20
-Stable tag: 1.8.0-dev
+Stable tag: 1.9.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -73,6 +73,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Tweak: Remove deprecated use of Jetpack in shipping label banner. #5929
+- Fix: Undefined $collate variable when database does not have collation capability. #5992
 - Tweak: Remove visit_count from track, and update task count logic. #5996
 - Fix: Moved certified owner label for review to title. ##5877
 - Fix: Move collapsible config to panels object, to allow for more control. #5855
@@ -84,10 +86,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Updating (non wordpress user) customer with order data
 - Dev: Add documentation for filter `woocommerce_admin_pages_list` and `wc_admin_register_page` #5844
 - Dev: Revert work done in #4857 for automated shipping after OBW is completed #5971
+- Add: Welcome modal when coming from Calypso #6004
 - Enhancement: Add an a/b experiment for installing free business features #5786
 - Dev: Add `onChangeCallback` feature to the wc-admin <Form> component #5786 
 - Dev: Add merchant email notifications #5922 
 - Add: Email note to add first product. #6024
+- Add: Note for users coming from Calypso. #6030
+- Enhancement: Add an "unread" indicator to inbox messages. #6047 
 
 == Changelog ==
 
