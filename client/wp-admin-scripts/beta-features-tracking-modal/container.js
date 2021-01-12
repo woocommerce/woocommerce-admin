@@ -30,6 +30,9 @@ const BetaFeaturesTrackingModal = ( { updateOptions } ) => {
 	};
 
 	useEffect( () => {
+		if ( ! enableNavigationCheckbox.current ) {
+			return;
+		}
 		const listener = ( e ) => {
 			if ( e.target.checked ) {
 				e.target.checked = false;
@@ -43,6 +46,10 @@ const BetaFeaturesTrackingModal = ( { updateOptions } ) => {
 
 		return () => checkbox.removeEventListener( 'change', listener );
 	}, [] );
+
+	if ( ! enableNavigationCheckbox.current ) {
+		return null;
+	}
 
 	if ( ! isModalOpen ) {
 		return null;
