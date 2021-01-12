@@ -90,7 +90,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add an a/b experiment for installing free business features #5786
 - Dev: Add `onChangeCallback` feature to the wc-admin <Form> component #5786 
 - Add: Note for users coming from Calypso. #6030
-- Fix: Fixed error hiding core task list. #6049
+- Fix: Fixed error hiding core task list. #6050
 
 == Changelog ==
 
