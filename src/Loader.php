@@ -281,12 +281,28 @@ class Loader {
 			return $settings;
 		}
 
+		$rtl = is_rtl() ? '.rtl' : '';
+		wp_enqueue_style(
+			'wc-admin-beta-features-tracking-modal',
+			self::get_url( "beta-features-tracking-modal/style{$rtl}", 'css' ),
+			array( 'wp-components' ),
+			self::get_file_version( 'css' )
+		);
+
+		wp_enqueue_script(
+			'wc-admin-beta-features-tracking-modal',
+			self::get_url( 'wp-admin-scripts/beta-features-tracking-modal', 'js' ),
+			array( 'wp-i18n', 'wp-element', WC_ADMIN_APP ),
+			self::get_file_version( 'js' ),
+			true
+		);
+
 		return array_merge(
 			array(
 				array(
 					'title' => __( 'Features', 'woocommerce-admin' ),
 					'type'  => 'title',
-					'desc'  => __( 'Start using new features that are being progressively rolled out to improve the store management experience.', 'woocommerce-admin' ),
+					'desc'  => __( 'Test new features to improve the store management experience. These features might be included in future versions of WooCommerce. <a href="https://href.li/?https://woocommerce.com/usage-tracking/">Requires usage tracking.</a>', 'woocommerce-admin' ),
 					'id'    => 'features_options',
 				),
 			),
