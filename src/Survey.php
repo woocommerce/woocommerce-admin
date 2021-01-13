@@ -21,25 +21,13 @@ class Survey {
 	public static function get_url( $path, $query = array() ) {
 		$url = 'https://automattic.survey.fm' . $path;
 
-		$source = self::get_source();
-		if ( $source ) {
-			$query['source'] = $source;
-		}
+		$query_args = apply_filters( 'woocommerce_admin_survey_query', $query );
 
-		if ( ! empty( $query ) ) {
-			$query_string = http_build_query( $query );
+		if ( ! empty( $query_args ) ) {
+			$query_string = http_build_query( $query_args );
 			$url          = $url . '?' . $query_string;
 		}
 
 		return $url;
-	}
-
-	/**
-	 * Get the source.
-	 *
-	 * @return string|null
-	 */
-	public static function get_source() {
-		return apply_filters( 'woocommerce_admin_survey_source', null );
 	}
 }
