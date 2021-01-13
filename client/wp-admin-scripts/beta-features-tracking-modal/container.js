@@ -7,6 +7,7 @@ import { Button, Modal, CheckboxControl } from '@wordpress/components';
 import { withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 const BetaFeaturesTrackingModal = ( { updateOptions } ) => {
 	const [ isModalOpen, setIsModalOpen ] = useState( false );
@@ -22,6 +23,10 @@ const BetaFeaturesTrackingModal = ( { updateOptions } ) => {
 			} else {
 				window.wcTracks.isEnabled = false;
 			}
+		}
+
+		if ( allow ) {
+			recordEvent( 'settings_features_tracking_enabled' );
 		}
 
 		return updateOptions( {
