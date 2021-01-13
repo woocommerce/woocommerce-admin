@@ -71,8 +71,15 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 2. Activity Panels
 3. Analytics
 
-== Unreleased ==
+== Changelog ==
 
+== 1.9.0 1/15/2021 ==
+
+- Fix: Add Customer Type column to the Orders report table. #5820
+- Fix: Product exclusion filter on Orders Report.
+- Fix: Typo in Variation Stats DataStore context filter value.
+- Fix: support custom attributes in Attribute advanced report filter.
+- Fix: Don't show Stock and Reviews Homescreen panels too early.
 - Tweak: Remove deprecated use of Jetpack in shipping label banner. #5929
 - Fix: Undefined $collate variable when database does not have collation capability. #5992
 - Tweak: Remove visit_count from track, and update task count logic. #5996
@@ -93,15 +100,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Email note to add first product. #6024
 - Add: Note for users coming from Calypso. #6030
 - Enhancement: Add an "unread" indicator to inbox messages. #6047 
-
-== Changelog ==
-
-= vnext =
-- Fix: Add Customer Type column to the Orders report table. #5820
-- Fix: Product exclusion filter on Orders Report.
-- Fix: Typo in Variation Stats DataStore context filter value.
-- Fix: support custom attributes in Attribute advanced report filter.
-- Fix: Don't show Stock and Reviews Homescreen panels too early.
 
 == 1.8.3 1/5/2021 ==
 
