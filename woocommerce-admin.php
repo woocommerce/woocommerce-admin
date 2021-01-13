@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce Admin (ADD beta features tracked)
+ * Plugin Name: WooCommerce Admin
  * Plugin URI: https://github.com/woocommerce/woocommerce-admin
  * Description: A new JavaScript-driven interface for managing your store. The plugin includes new and improved reports, and a dashboard to monitor all the important key metrics of your site.
  * Author: WooCommerce
