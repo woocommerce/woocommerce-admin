@@ -32,11 +32,23 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		);
 	}
 
+	public function clear_product_attribute_taxonomies() {
+		$taxonomies = get_taxonomies();
+		foreach ( (array) $taxonomies as $taxonomy ) {
+			// pa - product attribute.
+			if ( 'pa_' === substr( $taxonomy, 0, 3 ) ) {
+				unregister_taxonomy( $taxonomy );
+			}
+		}
+	}
+
 	/**
 	 * Test that sample product data is imported.
 	 */
 	public function test_import_sample_products() {
 		wp_set_current_user( $this->user );
+
+		$this->clear_product_attribute_taxonomies();
 
 		$request  = new WP_REST_Request( 'POST', $this->endpoint . '/import_sample_products' );
 		$response = $this->server->dispatch( $request );
@@ -55,9 +67,7 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 	 */
 	public function test_create_product_from_template() {
 		wp_set_current_user( $this->user );
-		$taxonomy_name = wc_attribute_taxonomy_name( 'color' );
-		// Degister taxonomy which other tests may have created...
-		unregister_taxonomy( $taxonomy_name );
+		$this->clear_product_attribute_taxonomies();
 
 		$request = new WP_REST_Request( 'POST', $this->endpoint . '/create_product_from_template' );
 		$request->set_param( 'template_name', 'physical' );
