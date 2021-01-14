@@ -12,6 +12,11 @@ defined( 'ABSPATH' ) || exit;
  */
 class Survey {
 	/**
+	 * Survey URL.
+	 */
+	const SURVEY_URL = 'https://automattic.survey.fm';
+
+	/**
 	 * Get a survey's URL from a path.
 	 *
 	 * @param  string $path Path of the survey.
@@ -19,7 +24,7 @@ class Survey {
 	 * @return string Full URL to survey.
 	 */
 	public static function get_url( $path, $query = array() ) {
-		$url = 'https://automattic.survey.fm' . $path;
+		$url = self::SURVEY_URL . $path;
 
 		$query_args = apply_filters( 'woocommerce_admin_survey_query', $query );
 
