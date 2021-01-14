@@ -32,6 +32,9 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		);
 	}
 
+	/**
+	 * Remove product attributes that where created in previous tests.
+	 */
 	public function clear_product_attribute_taxonomies() {
 		$taxonomies = get_taxonomies();
 		foreach ( (array) $taxonomies as $taxonomy ) {
@@ -57,7 +60,9 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 200, $response->get_status() );
 
 		$this->assertArrayHasKey( 'failed', $data );
+		$this->assertEquals( 0, count( $data['failed'] ) );
 		$this->assertArrayHasKey( 'imported', $data );
+		$this->assertGreaterThan( 10, count( $data['imported'] ) );
 		$this->assertArrayHasKey( 'skipped', $data );
 		$this->assertArrayHasKey( 'updated', $data );
 	}
