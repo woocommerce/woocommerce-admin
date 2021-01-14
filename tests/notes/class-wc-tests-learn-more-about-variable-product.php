@@ -20,7 +20,7 @@ class WC_Tests_Learn_More_About_Variable_Product extends WC_Unit_Test_Case {
 		parent::setUp();
 		global $wpdb;
 
-		$wpdb->query( "delete from {$wpdb->prefix} wc_admin_notes" );
+		$wpdb->query( "delete from {$wpdb->prefix}wc_admin_notes" );
 	}
 
 	/**
