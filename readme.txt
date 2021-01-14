@@ -95,6 +95,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add an "unread" indicator to inbox messages. #6047 
 - Tweak: update the content for the ChooseNiche note. #6048
 - Fix: Generate JSON translation chunks on plugin activation #6028
+- Fix: Add support for a floating-point number as a SummaryNumber's delta. #5926
 
 == Changelog ==
 
