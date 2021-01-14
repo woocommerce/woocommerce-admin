@@ -63,6 +63,7 @@ class Loader {
 		add_action( 'init', array( __CLASS__, 'load_features' ), 4 );
 		add_filter( 'woocommerce_get_sections_advanced', array( __CLASS__, 'add_features_section' ) );
 		add_filter( 'woocommerce_get_settings_advanced', array( __CLASS__, 'add_features_settings' ), 10, 2 );
+		add_filter( 'woocommerce_get_settings_advanced', array( __CLASS__, 'maybe_load_beta_features_modal' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
@@ -97,6 +98,25 @@ class Loader {
 
 		// Combine JSON translation files (from chunks) when language packs are updated.
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
+
+		// Handler for WooCommerce and WooCommerce Admin plugin activation.
+		add_action( 'woocommerce_activated_plugin', array( __CLASS__, 'activated_plugin' ) );
+		add_action( 'activated_plugin', array( __CLASS__, 'activated_plugin' ) );
+	}
+
+	/**
+	 * Run when plugin is activated (can be WooCommerce or WooCommerce Admin).
+	 *
+	 * @param string $filename Activated plugin filename.
+	 */
+	public static function activated_plugin( $filename ) {
+		$plugin_domain           = explode( '/', plugin_basename( __FILE__ ) )[0];
+		$activated_plugin_domain = explode( '/', $filename )[0];
+
+		// Ensure we're only running only on activation hook that originates from our plugin.
+		if ( $plugin_domain === $activated_plugin_domain ) {
+			self::generate_translation_strings();
+		}
 	}
 
 	/**
@@ -247,8 +267,50 @@ class Loader {
 	 * @return array
 	 */
 	public static function add_features_section( $sections ) {
+		$features = apply_filters(
+			'woocommerce_settings_features',
+			array()
+		);
+
+		if ( empty( $features ) ) {
+			return $sections;
+		}
+
 		$sections['features'] = __( 'Features', 'woocommerce-admin' );
 		return $sections;
+	}
+
+	/**
+	 * Conditionally loads the beta features tracking modal.
+	 *
+	 * @param array $settings Settings.
+	 * @return array
+	 */
+	public static function maybe_load_beta_features_modal( $settings ) {
+		$tracking_enabled = get_option( 'woocommerce_allow_tracking', 'no' );
+
+		if ( 'yes' === $tracking_enabled ) {
+			return $settings;
+		}
+
+		$rtl = is_rtl() ? '.rtl' : '';
+
+		wp_enqueue_style(
+			'wc-admin-beta-features-tracking-modal',
+			self::get_url( "beta-features-tracking-modal/style{$rtl}", 'css' ),
+			array( 'wp-components' ),
+			self::get_file_version( 'css' )
+		);
+
+		wp_enqueue_script(
+			'wc-admin-beta-features-tracking-modal',
+			self::get_url( 'wp-admin-scripts/beta-features-tracking-modal', 'js' ),
+			array( 'wp-i18n', 'wp-element', WC_ADMIN_APP ),
+			self::get_file_version( 'js' ),
+			true
+		);
+
+		return $settings;
 	}
 
 	/**
@@ -263,21 +325,26 @@ class Loader {
 			return $settings;
 		}
 
-		return apply_filters(
+		$features = apply_filters(
 			'woocommerce_settings_features',
+			array()
+		);
+
+		if ( empty( $features ) ) {
+			return $settings;
+		}
+
+		return array_merge(
 			array(
 				array(
 					'title' => __( 'Features', 'woocommerce-admin' ),
 					'type'  => 'title',
-					'desc'  => __( 'Start using new features that are being progressively rolled out to improve the store management experience.', 'woocommerce-admin' ),
+					'desc'  => __( 'Test new features to improve the store management experience. These features might be included in future versions of WooCommerce. <a href="https://href.li/?https://woocommerce.com/usage-tracking/">Requires usage tracking.</a>', 'woocommerce-admin' ),
 					'id'    => 'features_options',
 				),
-				array(
-					'title' => __( 'Navigation', 'woocommerce-admin' ),
-					'desc'  => __( 'Adds the new WooCommerce navigation experience to the dashboard', 'woocommerce-admin' ),
-					'id'    => 'woocommerce_navigation_enabled',
-					'type'  => 'checkbox',
-				),
+			),
+			$features,
+			array(
 				array(
 					'type' => 'sectionend',
 					'id'   => 'features_options',
@@ -618,6 +685,63 @@ class Loader {
 	}
 
 	/**
+	 * Combine translation chunks when plugin is activated.
+	 *
+	 * This function combines JSON translation data auto-extracted by GlotPress
+	 * from Webpack-generated JS chunks into a single file. This is necessary
+	 * since the JS chunks are not known to WordPress via wp_register_script()
+	 * and wp_set_script_translations().
+	 */
+	public static function generate_translation_strings() {
+		$plugin_domain = explode( '/', plugin_basename( __FILE__ ) )[0];
+		$locale        = determine_locale();
+		$lang_dir      = WP_LANG_DIR . '/plugins/';
+
+		// Bail early if not localized.
+		if ( 'en_US' === $locale ) {
+			return;
+		}
+
+		if ( ! function_exists( 'get_filesystem_method' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+
+		$access_type = get_filesystem_method();
+		if ( 'direct' === $access_type ) {
+			\WP_Filesystem();
+			self::build_and_save_translations( $lang_dir, $plugin_domain, $locale );
+		} else {
+			// I'm reluctant to add support for other filesystems here as it would require
+			// user's input on activating plugin - which I don't think is common.
+			return;
+		}
+	}
+
+	/**
+	 * Combine and save translations for a specific locale.
+	 *
+	 * Note that this assumes \WP_Filesystem is already initialized with write access.
+	 *
+	 * @param string $language_dir Path to language files.
+	 * @param string $plugin_domain Text domain.
+	 * @param string $locale Locale being retrieved.
+	 */
+	public static function build_and_save_translations( $language_dir, $plugin_domain, $locale ) {
+		global $wp_filesystem;
+		$translations_from_chunks = self::get_translation_chunk_data( $language_dir, $plugin_domain, $locale );
+
+		if ( empty( $translations_from_chunks ) ) {
+			return;
+		}
+
+		$cache_filename          = self::get_combined_translation_filename( $plugin_domain, $locale );
+		$chunk_translations_json = wp_json_encode( $translations_from_chunks );
+
+		// Cache combined translations strings to a file.
+		$wp_filesystem->put_contents( $language_dir . $cache_filename, $chunk_translations_json );
+	}
+
+	/**
 	 * Combine translation chunks when files are updated.
 	 *
 	 * This function combines JSON translation data auto-extracted by GlotPress
@@ -629,10 +753,6 @@ class Loader {
 	 * @param array                  $hook_extra Info about the upgraded language packs.
 	 */
 	public static function combine_translation_chunk_files( $instance, $hook_extra ) {
-		// So long as this function is hooked to the 'upgrader_process_complete' action,
-		// the filesystem object should be hooked up.
-		global $wp_filesystem;
-
 		if (
 			! is_a( $instance, 'Language_Pack_Upgrader' ) ||
 			! isset( $hook_extra['translations'] ) ||
@@ -658,17 +778,9 @@ class Loader {
 
 		// Build combined translation files for all updated locales.
 		foreach ( $locales as $locale ) {
-			$translations_from_chunks = self::get_translation_chunk_data( $language_dir, $plugin_domain, $locale );
-
-			if ( empty( $translations_from_chunks ) ) {
-				continue;
-			}
-
-			$cache_filename          = self::get_combined_translation_filename( $plugin_domain, $locale );
-			$chunk_translations_json = wp_json_encode( $translations_from_chunks );
-
-			// Cache combined translations strings to a file.
-			$wp_filesystem->put_contents( $language_dir . $cache_filename, $chunk_translations_json );
+			// So long as this function is hooked to the 'upgrader_process_complete' action,
+			// WP_Filesystem should be hooked up to be able to call build_and_save_translations.
+			self::build_and_save_translations( $language_dir, $plugin_domain, $locale );
 		}
 	}
 

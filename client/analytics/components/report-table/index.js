@@ -9,7 +9,6 @@ import { focus } from '@wordpress/dom';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { get, noop, partial, uniq } from 'lodash';
 import { __, sprintf } from '@wordpress/i18n';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { CompareButton, Search, TableCard } from '@woocommerce/components';
 import {
@@ -375,10 +374,6 @@ const ReportTable = ( props ) => {
 
 	// Hide any headers based on user prefs, if loaded.
 	const filteredHeaders = filterShownHeaders( headers, userPrefColumns );
-	const className = classnames( 'woocommerce-report-table', {
-		'has-compare': !! compareBy,
-		'has-search': !! searchBy,
-	} );
 
 	return (
 		<Fragment>
@@ -388,7 +383,8 @@ const ReportTable = ( props ) => {
 				aria-hidden
 			/>
 			<TableCard
-				className={ className }
+				className={ 'woocommerce-report-table' }
+				hasSearch={ !! searchBy }
 				actions={ [
 					compareBy && (
 						<CompareButton
@@ -567,6 +563,9 @@ ReportTable.defaultProps = {
 	baseSearchQuery: {},
 };
 
+const EMPTY_ARRAY = [];
+const EMPTY_OBJECT = {};
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const {
@@ -587,7 +586,7 @@ export default compose(
 			( query.search &&
 				! ( query[ endpoint ] && query[ endpoint ].length ) )
 		) {
-			return {};
+			return EMPTY_OBJECT;
 		}
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
@@ -603,11 +602,10 @@ export default compose(
 					select,
 					filters,
 					advancedFilters,
-					tableQuery,
 					defaultDateRange,
 					fields: summaryFields,
 			  } )
-			: {};
+			: EMPTY_OBJECT;
 		const queriedTableData =
 			tableData ||
 			getReportTableData( {
@@ -632,9 +630,9 @@ export default compose(
 					? extendedTableData.items.data.map(
 							( item ) => item[ itemIdField ]
 					  )
-					: [],
+					: EMPTY_ARRAY,
 			tableData: extendedTableData,
-			query: { ...tableQuery, ...query },
+			query,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

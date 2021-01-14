@@ -1,13 +1,14 @@
 # Unreleased
 
 -   Change styling of `<ProductImage />`.
--   Add new `<Accordion>` component.
 -   Remove the `showCount` prop from `<SearchListItem>`. Count will always be displayed if any of those props is not undefined/null: `countLabel` and `item.count`.
 -   Fix alignment of `<SearchListItem>` count bubble in newest versions of `@wordpress/components`.
+-   `<SearchListControl>` no longer has different styles when it's used inside a panel. Those styles are available now with the `isCompact` prop.
 -   Support custom attributes in `<AttributeFilter />`.
 -   Add product attributes support to `<Search />`.
 -   Allow single-selection support to `<Search />`.
 -   Improve handling of `multiple` and `inlineTags` in `<SelectControl />`.
+-   Deprecate use of `<Card>` in favor of the `<Card>` component in `@wordpress/components`.
 
 # 5.1.2
 

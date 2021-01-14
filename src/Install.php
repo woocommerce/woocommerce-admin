@@ -188,9 +188,7 @@ class Install {
 	protected static function get_schema() {
 		global $wpdb;
 
-		if ( $wpdb->has_cap( 'collation' ) ) {
-			$collate = $wpdb->get_charset_collate();
-		}
+		$collate = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : '';
 
 		// Max DB index length. See wp_get_db_schema().
 		$max_index_length = 191;
@@ -478,6 +476,8 @@ class Install {
 			'wc-admin-learn-more-about-product-settings',
 			'wc-admin-onboarding-profiler-reminder',
 			'wc-admin-historical-data',
+			'wc-admin-review-shipping-settings',
+			'wc-admin-home-screen-feedback',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(

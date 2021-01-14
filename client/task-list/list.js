@@ -5,13 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, cloneElement } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { List, EllipsisMenu, Badge } from '@woocommerce/components';
@@ -23,6 +17,7 @@ import {
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -56,7 +51,9 @@ export class TaskList extends Component {
 
 	getUngroupedTasks() {
 		const { tasks: groupedTasks } = this.props;
-		return Object.values( groupedTasks ).flat();
+		return Object.values( groupedTasks ).reduce( ( acc, task ) => {
+			return acc.concat( task );
+		}, [] );
 	}
 
 	getSpecificTasks() {
@@ -111,18 +108,22 @@ export class TaskList extends Component {
 		);
 	}
 
-	isTrackingListUpdated( list, subList ) {
-		if ( subList.length === 0 ) {
+	shouldUpdateCompletedTasks( tasks, completedTasks ) {
+		if ( completedTasks.length === 0 ) {
 			return false;
 		}
-		return subList.every( ( taskName ) => list.indexOf( taskName ) >= 0 );
+		return ! completedTasks.every(
+			( taskName ) => tasks.indexOf( taskName ) >= 0
+		);
 	}
 
-	getIncludedTasks( list, subList ) {
-		if ( ! subList ) {
+	getTrackedCompletedTasks( completedTasks, trackedTasks ) {
+		if ( ! trackedTasks ) {
 			return [];
 		}
-		return list.filter( ( taskName ) => subList.includes( taskName ) );
+		return completedTasks.filter( ( taskName ) =>
+			trackedTasks.includes( taskName )
+		);
 	}
 
 	possiblyTrackCompletedTasks() {
@@ -131,13 +132,13 @@ export class TaskList extends Component {
 			updateOptions,
 		} = this.props;
 		const completedTaskKeys = this.getCompletedTaskKeys();
-		const trackedCompletedTasks = this.getIncludedTasks(
+		const trackedCompletedTasks = this.getTrackedCompletedTasks(
 			completedTaskKeys,
 			totalTrackedCompletedTasks
 		);
 
 		if (
-			! this.isTrackingListUpdated(
+			this.shouldUpdateCompletedTasks(
 				trackedCompletedTasks,
 				completedTaskKeys
 			)

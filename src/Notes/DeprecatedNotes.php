@@ -29,6 +29,7 @@ class WC_Admin_Note extends DeprecatedClassFacade {
 	const E_WC_ADMIN_NOTE_UNACTIONED    = Note::E_WC_ADMIN_NOTE_UNACTIONED;
 	const E_WC_ADMIN_NOTE_ACTIONED      = Note::E_WC_ADMIN_NOTE_ACTIONED;
 	const E_WC_ADMIN_NOTE_SNOOZED       = Note::E_WC_ADMIN_NOTE_SNOOZED;
+	const E_WC_ADMIN_NOTE_EMAIL         = Note::E_WC_ADMIN_NOTE_EMAIL;
 
 	/**
 	 * The name of the non-deprecated class that this facade covers.
@@ -276,27 +277,6 @@ class WC_Admin_Notes_Giving_Feedback_Notes extends DeprecatedClassFacade {
 	 * @var string
 	 */
 	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\GivingFeedbackNotes';
-
-	/**
-	 * The version that this class was deprecated in.
-	 *
-	 * @var string
-	 */
-	protected static $deprecated_in_version = '1.7.0';
-}
-
-/**
- * WC_Admin_Notes_Home_Screen_Feedback.
- *
- * @deprecated since 1.7.0, use HomeScreenFeedback
- */
-class WC_Admin_Notes_Home_Screen_Feedback extends DeprecatedClassFacade {
-	/**
-	 * The name of the non-deprecated class that this facade covers.
-	 *
-	 * @var string
-	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\HomeScreenFeedback';
 
 	/**
 	 * The version that this class was deprecated in.
@@ -612,27 +592,6 @@ class WC_Admin_Notes_Real_Time_Order_Alerts extends DeprecatedClassFacade {
 	 * @var string
 	 */
 	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\RealTimeOrderAlerts';
-
-	/**
-	 * The version that this class was deprecated in.
-	 *
-	 * @var string
-	 */
-	protected static $deprecated_in_version = '1.7.0';
-}
-
-/**
- * WC_Admin_Notes_Review_Shipping_Settings.
- *
- * @deprecated since 1.7.0, use ReviewShippingSettings
- */
-class WC_Admin_Notes_Review_Shipping_Settings extends DeprecatedClassFacade {
-	/**
-	 * The name of the non-deprecated class that this facade covers.
-	 *
-	 * @var string
-	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\ReviewShippingSettings';
 
 	/**
 	 * The version that this class was deprecated in.

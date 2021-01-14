@@ -22,7 +22,7 @@ import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
 import Payments from './tasks/payments';
 import { installActivateAndConnectWcpay } from './tasks/payments/methods';
-import { groupListOfObjectsBy } from '../lib/lists';
+import { groupListOfObjectsBy } from '../lib/collections';
 
 export function recordTaskViewEvent(
 	taskName,
@@ -85,7 +85,10 @@ export function getAllTasks( {
 		product_types: productTypes,
 	} = profileItems;
 
-	let purchaseAndInstallText = __( 'Add paid extensions to my store' );
+	let purchaseAndInstallText = __(
+		'Add paid extensions to my store',
+		'woocommerce-admin'
+	);
 
 	if ( uniqueItemsList.length === 1 ) {
 		const { name: itemName } = uniqueItemsList[ 0 ];
