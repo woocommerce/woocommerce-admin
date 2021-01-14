@@ -164,16 +164,16 @@ class Features {
 
 		wp_enqueue_style(
 			'wc-admin-beta-features-tracking-modal',
-			self::get_url( "beta-features-tracking-modal/style{$rtl}", 'css' ),
+			Loader::get_url( "beta-features-tracking-modal/style{$rtl}", 'css' ),
 			array( 'wp-components' ),
-			self::get_file_version( 'css' )
+			Loader::get_file_version( 'css' )
 		);
 
 		wp_enqueue_script(
 			'wc-admin-beta-features-tracking-modal',
-			self::get_url( 'wp-admin-scripts/beta-features-tracking-modal', 'js' ),
+			Loader::get_url( 'wp-admin-scripts/beta-features-tracking-modal', 'js' ),
 			array( 'wp-i18n', 'wp-element', WC_ADMIN_APP ),
-			self::get_file_version( 'js' ),
+			Loader::get_file_version( 'js' ),
 			true
 		);
 
