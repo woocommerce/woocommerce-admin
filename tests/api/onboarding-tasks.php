@@ -62,9 +62,13 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'failed', $data );
 		$this->assertEquals( 0, count( $data['failed'] ) );
 		$this->assertArrayHasKey( 'imported', $data );
-		$this->assertGreaterThan( 10, count( $data['imported'] ) );
 		$this->assertArrayHasKey( 'skipped', $data );
+		// There might be previous products present.
+		if ( 0 === count( $data['skipped'] ) ) {
+			$this->assertGreaterThan( 10, count( $data['imported'] ) );
+		}
 		$this->assertArrayHasKey( 'updated', $data );
+		$this->assertEquals( 0, count( $data['updated'] ) );
 	}
 
 	/**
