@@ -89,8 +89,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Welcome modal when coming from Calypso #6004
 - Enhancement: Add an a/b experiment for installing free business features #5786
 - Dev: Add `onChangeCallback` feature to the wc-admin <Form> component #5786 
+- Dev: Add merchant email notifications #5922 
+- Add: Email note to add first product. #6024
 - Add: Note for users coming from Calypso. #6030
 - Fix: Fixed error hiding core task list. #6050
+- Enhancement: Add an "unread" indicator to inbox messages. #6047 
+- Tweak: update the content for the ChooseNiche note. #6048
+- Fix: Generate JSON translation chunks on plugin activation #6028
+- Dev: Update travis CI distribution. #6067
 
 == Changelog ==
 
