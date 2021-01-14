@@ -38,7 +38,7 @@ class ManageStoreActivityFromHomeScreen {
 	 */
 	public static function get_note() {
 		$installed_version = get_option( 'woocommerce_admin_version' );
-		if ( ! version_compare( $installed_version, '1.9.0-dev', '=' ) ) {
+		if ( ! version_compare( $installed_version, '1.9.0', '=' ) ) {
 			return;
 		}
 
