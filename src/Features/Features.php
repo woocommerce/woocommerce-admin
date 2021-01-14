@@ -45,6 +45,7 @@ class Features {
 		add_filter( 'woocommerce_get_settings_advanced', array( __CLASS__, 'maybe_load_beta_features_modal' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
+		add_filter( 'update_option_woocommerce_allow_tracking', array( __CLASS__, 'maybe_disable_features' ), 10, 2 );
 	}
 
 	/**
@@ -68,22 +69,71 @@ class Features {
 	}
 
 	/**
+	 * Get the feature class as a string.
+	 *
+	 * @param string $feature Feature name.
+	 * @return string|null
+	 */
+	public static function get_feature_class( $feature ) {
+		$feature       = str_replace( '-', '', ucwords( strtolower( $feature ), '-' ) );
+		$feature_class = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
+
+		if ( class_exists( $feature_class ) ) {
+			return $feature_class;
+		}
+
+		// Handle features contained in subdirectory.
+		if ( class_exists( $feature_class . '\\Init' ) ) {
+			return $feature_class . '\\Init';
+		}
+
+		return null;
+	}
+
+	/**
 	 * Class loader for enabled WooCommerce Admin features/sections.
 	 */
 	public static function load_features() {
 		$features = self::get_features();
 		foreach ( $features as $feature ) {
-			$feature       = str_replace( '-', '', ucwords( strtolower( $feature ), '-' ) );
-			$feature_class = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
+			$feature_class = self::get_feature_class( $feature );
 
-			// Handle features contained in subdirectory.
-			if ( ! class_exists( $feature_class ) && class_exists( $feature_class . '\\Init' ) ) {
-				$feature_class = $feature_class . '\\Init';
-			}
-
-			if ( class_exists( $feature_class ) ) {
+			if ( $feature_class ) {
 				new $feature_class();
 			}
+		}
+	}
+
+	/**
+	 * Disable a toggleable feature.
+	 *
+	 * @param string $feature Feature name.
+	 * @return bool
+	 */
+	public static function disable( $feature ) {
+		$feature_class = self::get_feature_class( $feature );
+
+		if ( $feature_class && defined( "$feature_class::TOGGLE_OPTION_NAME" ) ) {
+			update_option( constant( "$feature_class::TOGGLE_OPTION_NAME" ), 'no' );
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Disable features when opting out of tracking.
+	 *
+	 * @param string $old_value Old value.
+	 * @param string $value New value.
+	 */
+	public static function maybe_disable_features( $old_value, $value ) {
+		if ( 'yes' === $value ) {
+			return;
+		}
+
+		foreach ( self::get_features() as $feature ) {
+			self::disable( $feature );
 		}
 	}
 
