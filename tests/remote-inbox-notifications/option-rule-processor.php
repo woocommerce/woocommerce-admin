@@ -57,4 +57,54 @@ class WC_Tests_RemoteInboxNotifications_OptionRuleProcessor extends WC_Unit_Test
 
 		$this->assertEquals( true, $result );
 	}
+
+	/**
+	 * Test accessing primitive values
+	 */
+	public function test_it_can_access_value_without_dot_notation() {
+		add_option( 'hello', 'world' );
+
+		$processor = new OptionRuleProcessor();
+		$rule      = json_decode(
+			'
+			{
+				"type": "option",
+				"option_name": "hello",
+				"value": "world",
+				"operation": "="
+			}
+			'
+		);
+
+		$result = $processor->process( $rule, null );
+		$this->assertEquals( true, $result );
+	}
+
+	/**
+	 * Test accessing option value using dot notation
+	 */
+	public function test_it_can_access_value_using_dot_notation() {
+		add_option(
+			'an_array',
+			array(
+				'name' => 'test',
+			)
+		);
+
+		$processor = new OptionRuleProcessor();
+		$rule      = json_decode(
+			'
+			{
+				"type": "option",
+				"option_name": "an_array.name",
+				"value": "test",
+				"default": "default",
+				"operation": "="
+			}
+			'
+		);
+
+		$result = $processor->process( $rule, null );
+		$this->assertEquals( true, $result );
+	}
 }
