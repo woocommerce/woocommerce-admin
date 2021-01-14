@@ -14,11 +14,19 @@ use \Automattic\WooCommerce\Admin\Notes\Notes;
 class WC_Tests_Learn_More_About_Variable_Product extends WC_Unit_Test_Case {
 
 	/**
+	 * Reset the notes table for each test.
+	 */
+	public function setUp() {
+		parent::setUp();
+		global $wpdb;
+
+		$wpdb->query( "delete from {$wpdb->prefix} wc_admin_notes" );
+	}
+
+	/**
 	 * Tests LearnMoreAboutVariableProducts gets created when a products gets published
 	 */
 	public function test_adding_note_when_product_gets_published() {
-		Notes::delete_all_notes();
-
 		// Given a new product.
 		$product = array(
 			'post_title'   => 'a product',
@@ -53,12 +61,12 @@ class WC_Tests_Learn_More_About_Variable_Product extends WC_Unit_Test_Case {
 	 * @param string $product product from provider.
 	 */
 	public function test_adding_draft_product_and_non_product_post_does_not_add_note( $product ) {
-		Notes::delete_all_notes();
 		wp_insert_post( $product );
 
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$note_ids   = $data_store->get_notes_with_name( LearnMoreAboutVariableProducts::NOTE_NAME );
-		$this->assertEmpty( $note_ids );
+		$note_count = count( $note_ids );
+		$this->assertEmpty( $note_ids, "{$note_count} notes found." );
 	}
 
 	/**
