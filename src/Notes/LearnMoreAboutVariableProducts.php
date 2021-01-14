@@ -28,22 +28,30 @@ class LearnMoreAboutVariableProducts {
 	const NOTE_NAME = 'wc-admin-learn-more-about-variable-products';
 
 	/**
-	 * Add save_post action.
+	 * Add transition_post_status action.
 	 *
 	 * LearnMoreAboutVariableProducts constructor.
 	 */
 	public function __construct() {
-		add_action( 'save_post', array( $this, 'maybe_add_new_note' ), 10, 3 );
+		add_action( 'transition_post_status', array( $this, 'maybe_add_new_note' ), 10, 3 );
 	}
 
 	/**
-	 * Maybe attempt to add a new note if product is published
+	 * Maybe attempt to add a new note if product is published.
 	 *
-	 * @param int    $post_id post id.
-	 * @param object $post WordPress post object.
+	 * @param string $new_status new status.
+	 * @param string $old_status old status.
+	 * @param object $post post object.
 	 */
-	public function maybe_add_new_note( $post_id, $post ) {
-		'publish' === $post->post_status && 'product' === $post->post_type && static::possibly_add_note();
+	public function maybe_add_new_note( $new_status, $old_status, $post ) {
+		if ( 'publish' === $new_status && 'publish' !== $old_status && 'product' === $post->post_type ) {
+			$product = wc_get_product( $post->ID );
+			if ( ! $product ) {
+				return;
+			}
+
+			$product->is_type( 'simple' ) && static::possibly_add_note();
+		}
 	}
 
 	/**
