@@ -78,6 +78,7 @@ const wpAdminScripts = [
 	'onboarding-product-import-notice',
 	'onboarding-tax-notice',
 	'print-shipping-label-banner',
+	'beta-features-tracking-modal',
 ];
 wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
@@ -116,7 +117,7 @@ const webpackConfig = {
 			},
 			{
 				test: /\.js?$/,
-				exclude: /node_modules/,
+				exclude: /node_modules(\/|\\)(?!(debug))/,
 				use: {
 					loader: 'babel-loader',
 					options: {
