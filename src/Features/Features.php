@@ -5,13 +5,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
-use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Loader;
-use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
-use Automattic\WooCommerce\Admin\API\Plugins;
-use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
-use WC_Marketplace_Suggestions;
 
 /**
  * Features Class.
