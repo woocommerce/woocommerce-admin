@@ -234,7 +234,7 @@ export default compose(
 			shouldShowWelcomeFromCalypsoModal,
 			taskListHidden:
 				getOption( 'woocommerce_task_list_hidden' ) === 'yes' &&
-				getOption( 'woocommerce_extended_task_list_hidden' ) !== 'no',
+				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
 			requestingTaskList:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
