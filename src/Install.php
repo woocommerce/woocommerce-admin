@@ -146,7 +146,7 @@ class Install {
 				/**
 				 * WooCommerce Admin has been installed.
 				 */
-				do_action( 'woocommerce_admin_installed' );
+				do_action( 'woocommerce_admin_newly_installed' );
 			}
 
 			if ( $requires_update ) {
