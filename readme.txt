@@ -97,6 +97,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: update the content for the ChooseNiche note. #6048
 - Fix: Generate JSON translation chunks on plugin activation #6028
 - Dev: Update travis CI distribution. #6067
+- Tweak: update the content and timing of the NeedSomeInspiration note. #6076
 
 == Changelog ==
 
