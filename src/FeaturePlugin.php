@@ -7,8 +7,7 @@ namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
-use \Automattic\WooCommerce\Admin\Notes\InsightFirstProductAndPayment;
+use \Automattic\WooCommerce\Admin\Notes\LearnMoreAboutVariableProducts;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
 use \Automattic\WooCommerce\Admin\Notes\OrderMilestones;
 use \Automattic\WooCommerce\Admin\Notes\WooSubscriptionsNotes;
@@ -16,13 +15,13 @@ use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
 use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
 use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 use \Automattic\WooCommerce\Admin\Notes\DrawAttention;
-use \Automattic\WooCommerce\Admin\Notes\CouponPageMoved;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
 use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
 use \Automattic\WooCommerce\Admin\Notes\SellingOnlineCourses;
 use \Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications\MerchantEmailNotifications;
 use \Automattic\WooCommerce\Admin\Notes\WelcomeToWooCommerceForStoreUsers;
+use \Automattic\WooCommerce\Admin\Notes\ManageStoreActivityFromHomeScreen;
 
 /**
  * Feature plugin main class.
@@ -193,7 +192,9 @@ class FeaturePlugin {
 		new SetUpAdditionalPaymentTypes();
 		new TestCheckout();
 		new SellingOnlineCourses();
+		new LearnMoreAboutVariableProducts();
 		new WelcomeToWooCommerceForStoreUsers();
+		new ManageStoreActivityFromHomeScreen();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();
