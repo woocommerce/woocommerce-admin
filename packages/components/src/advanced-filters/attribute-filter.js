@@ -91,7 +91,7 @@ const AttributeFilter = ( props ) => {
 			value[ 0 ]
 		) {
 			apiFetch( {
-				path: `/wc-analytics/products/attributes/${ value[ 0 ] }`,
+				path: `/wc-analytics/products/attributes/${ value[ 0 ] }?per_page=-1`,
 			} )
 				.then( ( { id, name } ) => [
 					{
@@ -112,7 +112,7 @@ const AttributeFilter = ( props ) => {
 		}
 		setAttributeTerms( false );
 		apiFetch( {
-			path: `/wc-analytics/products/attributes/${ selectedAttribute[ 0 ].key }/terms`,
+			path: `/wc-analytics/products/attributes/${ selectedAttribute[ 0 ].key }/terms?per_page=-1`,
 		} )
 			.then( ( terms ) =>
 				terms.map( ( { id, name } ) => ( {
