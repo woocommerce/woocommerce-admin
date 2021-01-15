@@ -100,6 +100,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Email note to add first product. #6024
 - Add: Note for users coming from Calypso. #6030
 - Enhancement: Add an "unread" indicator to inbox messages. #6047 
+- Add: Manage activity from home screen inbox message. #6072
 
 == 1.8.3 1/5/2021 ==
 
