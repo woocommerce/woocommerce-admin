@@ -35,6 +35,7 @@ import './style.scss';
 import '../dashboard/style.scss';
 import { StoreManagementLinks } from '../store-management-links';
 import { Column } from './column';
+import { taskListsHidden } from './utils';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -48,7 +49,7 @@ export const Layout = ( {
 	isBatchUpdating,
 	query,
 	requestingTaskList,
-	taskListsHidden,
+	bothTaskListsHidden,
 	shouldShowWelcomeModal,
 	shouldShowWelcomeFromCalypsoModal,
 	updateOptions,
@@ -59,7 +60,7 @@ export const Layout = ( {
 		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
 
-	const isTaskListEnabled = taskListsHidden === false;
+	const isTaskListEnabled = bothTaskListsHidden === false;
 	const isDashboardShown = ! query.task;
 
 	if ( isBatchUpdating && ! showInbox ) {
@@ -166,7 +167,7 @@ Layout.propTypes = {
 	/**
 	 * If the task list is hidden.
 	 */
-	taskListsHidden: PropTypes.bool,
+	bothTaskListsHidden: PropTypes.bool,
 	/**
 	 * Page query, used to determine the current task if any.
 	 */
@@ -232,9 +233,7 @@ export default compose(
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			shouldShowWelcomeFromCalypsoModal,
-			taskListsHidden:
-				getOption( 'woocommerce_task_list_hidden' ) === 'yes' &&
-				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
+			bothTaskListsHidden: taskListsHidden( select ),
 			requestingTaskList:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
