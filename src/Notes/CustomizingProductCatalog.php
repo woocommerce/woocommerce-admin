@@ -31,7 +31,7 @@ class CustomizingProductCatalog {
 	 * @return Note
 	 */
 	public static function get_note() {
-		$query    = new \WC_Product_Query(
+		$query = new \WC_Product_Query(
 			array(
 				'limit'    => 1,
 				'paginate' => true,
@@ -40,6 +40,7 @@ class CustomizingProductCatalog {
 				'order'    => 'DESC',
 			)
 		);
+
 		$products = $query->get_products();
 
 		// we need at least 1 product.
@@ -49,9 +50,15 @@ class CustomizingProductCatalog {
 
 		$product           = $products->products[0];
 		$created_timestamp = $product->get_date_created()->getTimestamp();
-		$is_a_day_old      = ( time() - $created_timestamp ) > DAY_IN_SECONDS;
+		$is_a_day_old      = ( time() - $created_timestamp ) >= DAY_IN_SECONDS;
+
 		// the product must be at least 1 day old.
 		if ( ! $is_a_day_old ) {
+			return;
+		}
+
+		// store must not been active more than 14 days.
+		if ( self::wc_admin_active_for( DAY_IN_SECONDS * 14 ) ) {
 			return;
 		}
 
