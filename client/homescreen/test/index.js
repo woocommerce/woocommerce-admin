@@ -30,7 +30,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList
-				taskListHidden={ false }
+				taskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -46,7 +46,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				taskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -67,7 +67,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				taskListsHidden={ false }
 				query={ {
 					task: 'products',
 				} }
@@ -90,7 +90,7 @@ describe( 'Homescreen Layout', () => {
 		render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden
+				taskListsHidden
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -104,7 +104,7 @@ describe( 'Homescreen Layout', () => {
 		render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden
+				taskListsHidden
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -118,7 +118,7 @@ describe( 'Homescreen Layout', () => {
 		render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				taskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -136,7 +136,7 @@ describe( 'Homescreen Layout', () => {
 			<Layout
 				defaultHomescreenLayout="two_columns"
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				taskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -159,7 +159,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				taskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -182,7 +182,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				taskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
