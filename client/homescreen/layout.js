@@ -48,7 +48,7 @@ export const Layout = ( {
 	isBatchUpdating,
 	query,
 	requestingTaskList,
-	taskListHidden,
+	taskListsHidden,
 	shouldShowWelcomeModal,
 	shouldShowWelcomeFromCalypsoModal,
 	updateOptions,
@@ -59,7 +59,7 @@ export const Layout = ( {
 		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
 
-	const isTaskListEnabled = taskListHidden === false;
+	const isTaskListEnabled = taskListsHidden === false;
 	const isDashboardShown = ! query.task;
 
 	if ( isBatchUpdating && ! showInbox ) {
@@ -166,7 +166,7 @@ Layout.propTypes = {
 	/**
 	 * If the task list is hidden.
 	 */
-	taskListHidden: PropTypes.bool,
+	taskListsHidden: PropTypes.bool,
 	/**
 	 * Page query, used to determine the current task if any.
 	 */
@@ -232,7 +232,7 @@ export default compose(
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			shouldShowWelcomeFromCalypsoModal,
-			taskListHidden:
+			taskListsHidden:
 				getOption( 'woocommerce_task_list_hidden' ) === 'yes' &&
 				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
 			requestingTaskList:
