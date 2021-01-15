@@ -182,7 +182,7 @@ describe( 'TaskDashboard and TaskList', () => {
 				query={ {} }
 				trackedCompletedTasks={ shorterTasksList }
 				updateOptions={ updateOptions }
-				tasks={ { setup: shorterTasksList } }
+				tasks={ shorterTasksList }
 			/>
 		);
 
@@ -207,13 +207,60 @@ describe( 'TaskDashboard and TaskList', () => {
 					query={ {} }
 					trackedCompletedTasks={ shorterTasksList }
 					updateOptions={ updateOptions }
-					tasks={ { setup: shorterTasksList } }
+					tasks={ shorterTasksList }
 				/>
 			);
 		} );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
 			woocommerce_task_list_complete: 'yes',
+			woocommerce_default_homepage_layout: 'two_columns',
+		} );
+	} );
+
+	it( 'sets setup tasks list as completed', () => {
+		apiFetch.mockResolvedValue( {} );
+		const updateOptions = jest.fn();
+		act( () => {
+			render(
+				<TaskList
+					dismissedTasks={ [] }
+					isComplete={ false }
+					profileItems={ {} }
+					query={ {} }
+					trackedCompletedTasks={ shorterTasksList }
+					updateOptions={ updateOptions }
+					tasks={ shorterTasksList }
+				/>
+			);
+		} );
+
+		expect( updateOptions ).toHaveBeenCalledWith( {
+			woocommerce_task_list_complete: 'yes',
+			woocommerce_default_homepage_layout: 'two_columns',
+		} );
+	} );
+
+	it( 'sets setup tasks list as uncompleted', () => {
+		apiFetch.mockResolvedValue( {} );
+		const updateOptions = jest.fn();
+		const { setup } = tasks;
+		act( () => {
+			render(
+				<TaskList
+					dismissedTasks={ [] }
+					isComplete={ true }
+					profileItems={ {} }
+					query={ {} }
+					trackedCompletedTasks={ shorterTasksList }
+					updateOptions={ updateOptions }
+					tasks={ [ ...setup ] }
+				/>
+			);
+		} );
+
+		expect( updateOptions ).toHaveBeenCalledWith( {
+			woocommerce_task_list_complete: 'no',
 			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	} );
@@ -225,12 +272,13 @@ describe( 'TaskDashboard and TaskList', () => {
 			render(
 				<TaskList
 					dismissedTasks={ [] }
-					isExtended={ true }
+					isComplete={ false }
 					profileItems={ {} }
 					query={ {} }
-					trackedCompletedTasks={ shorterTasksList }
+					trackedCompletedTasks={ [] }
 					updateOptions={ updateOptions }
-					tasks={ { extension: shorterTasksList } }
+					tasks={ shorterTasksList }
+					name={ 'extended_task_list' }
 				/>
 			);
 		} );
@@ -243,16 +291,16 @@ describe( 'TaskDashboard and TaskList', () => {
 	it( 'Add untracked completed task', () => {
 		apiFetch.mockResolvedValue( {} );
 		const updateOptions = jest.fn();
+		const { setup, extension } = tasks;
 		act( () => {
 			render(
 				<TaskList
-					tasks={ tasks }
 					dismissedTasks={ [] }
-					isTaskListComplete={ true }
 					profileItems={ {} }
 					query={ {} }
 					trackedCompletedTasks={ shorterTasksList }
 					updateOptions={ updateOptions }
+					tasks={ [ ...setup, ...extension ] }
 				/>
 			);
 		} );
