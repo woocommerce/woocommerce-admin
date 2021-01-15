@@ -52,6 +52,22 @@ class Features {
 	}
 
 	/**
+	 * Gets the beta feature options as an associative array that can be toggled on or off.
+	 *
+	 * @return array
+	 */
+	public static function get_beta_feature_options() {
+		$features = [];
+
+		$navigation_class = self::get_feature_class( 'navigation' );
+		if ( $navigation_class ) {
+			$features['navigation'] = $navigation_class::TOGGLE_OPTION_NAME;
+		}
+
+		return $features;
+	}
+
+	/**
 	 * Returns if a specific wc-admin feature is enabled.
 	 *
 	 * @param  string $feature Feature slug.
@@ -99,16 +115,16 @@ class Features {
 	}
 
 	/**
-	 * Disable a toggleable feature.
+	 * Disable a toggleable beta feature.
 	 *
 	 * @param string $feature Feature name.
 	 * @return bool
 	 */
 	public static function disable( $feature ) {
-		$feature_class = self::get_feature_class( $feature );
+		$features = self::get_beta_feature_options();
 
-		if ( $feature_class && defined( "$feature_class::TOGGLE_OPTION_NAME" ) ) {
-			update_option( constant( "$feature_class::TOGGLE_OPTION_NAME" ), 'no' );
+		if ( isset( $features[ $feature ] ) ) {
+			update_option( $features[ $feature ], 'no' );
 			return true;
 		}
 
