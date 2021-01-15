@@ -91,7 +91,7 @@ const AttributeFilter = ( props ) => {
 			value[ 0 ]
 		) {
 			apiFetch( {
-				path: `/wc-analytics/products/attributes/${ value[ 0 ] }?per_page=-1`,
+				path: `/wc-analytics/products/attributes/${ value[ 0 ] }`,
 			} )
 				.then( ( { id, name } ) => [
 					{
