@@ -71,6 +71,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 2. Activity Panels
 3. Analytics
 
+== Unreleased ==
+
+- Fix: allow for more terms to be shown for product attributes in the Analytics orders report.
+
 == Changelog ==
 
 == 1.9.0 1/15/2021 ==
