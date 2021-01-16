@@ -24,7 +24,6 @@ import Tag from '../tag';
 
 const defaultMessages = {
 	clear: __( 'Clear all selected items', 'woocommerce-admin' ),
-	list: __( 'Results', 'woocommerce-admin' ),
 	noItems: __( 'No items found.', 'woocommerce-admin' ),
 	noResults: __( 'No results for %s', 'woocommerce-admin' ),
 	search: __( 'Search for items', 'woocommerce-admin' ),
@@ -292,10 +291,6 @@ SearchListControl.propTypes = {
 		 * A more detailed label for the "Clear all" button, read to screen reader users.
 		 */
 		clear: PropTypes.string,
-		/**
-		 * Label for the list of selectable items, only read to screen reader users.
-		 */
-		list: PropTypes.string,
 		/**
 		 * Message to display when the list is empty (implies nothing loaded from the server
 		 * or parent component).
