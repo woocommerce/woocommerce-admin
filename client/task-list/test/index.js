@@ -298,7 +298,29 @@ describe( 'TaskDashboard and TaskList', () => {
 					dismissedTasks={ [] }
 					profileItems={ {} }
 					query={ {} }
-					trackedCompletedTasks={ shorterTasksList }
+					trackedCompletedTasks={ [] }
+					updateOptions={ updateOptions }
+					tasks={ [ ...setup, ...extension ] }
+				/>
+			);
+		} );
+
+		expect( updateOptions ).toHaveBeenCalledWith( {
+			woocommerce_task_list_tracked_completed_tasks: [ 'completed' ],
+		} );
+	} );
+
+	it( 'Untrack an uncompleted but tracked task', () => {
+		apiFetch.mockResolvedValue( {} );
+		const updateOptions = jest.fn();
+		const { setup, extension } = tasks;
+		act( () => {
+			render(
+				<TaskList
+					dismissedTasks={ [] }
+					profileItems={ {} }
+					query={ {} }
+					trackedCompletedTasks={ [ 'completed', 'extension' ] }
 					updateOptions={ updateOptions }
 					tasks={ [ ...setup, ...extension ] }
 				/>
