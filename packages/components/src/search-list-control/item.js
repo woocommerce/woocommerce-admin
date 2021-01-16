@@ -4,16 +4,6 @@
 import { escapeRegExp, first, last, isNil } from 'lodash';
 import PropTypes from 'prop-types';
 
-/**
- * Internal dependencies
- */
-import {
-	IconCheckChecked,
-	IconCheckUnchecked,
-	IconRadioSelected,
-	IconRadioUnselected,
-} from './icons';
-
 function getHighlightedName( name, search ) {
 	if ( ! search ) {
 		return name;
@@ -32,13 +22,6 @@ function getBreadcrumbsForDisplay( breadcrumbs ) {
 
 	return first( breadcrumbs ) + ' … ' + last( breadcrumbs );
 }
-
-const getInteractionIcon = ( isSingle = false, isSelected = false ) => {
-	if ( isSingle ) {
-		return isSelected ? <IconRadioSelected /> : <IconRadioUnselected />;
-	}
-	return isSelected ? <IconCheckChecked /> : <IconCheckUnchecked />;
-};
 
 const SearchListItem = ( {
 	countLabel,
@@ -86,9 +69,6 @@ const SearchListItem = ( {
 				></input>
 			) }
 
-			<span className="woocommerce-search-list__item-state">
-				{ getInteractionIcon( isSingle, isSelected ) }
-			</span>
 			<span className="woocommerce-search-list__item-label">
 				{ hasBreadcrumbs ? (
 					<span className="woocommerce-search-list__item-prefix">
