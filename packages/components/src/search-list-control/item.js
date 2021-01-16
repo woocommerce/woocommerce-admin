@@ -55,6 +55,7 @@ const SearchListItem = ( {
 					value={ item.value }
 					onChange={ onSelect( item ) }
 					checked={ isSelected }
+					className="woocommerce-search-list__item-input"
 					{ ...props }
 				></input>
 			) : (
@@ -65,6 +66,7 @@ const SearchListItem = ( {
 					value={ item.value }
 					onChange={ onSelect( item ) }
 					checked={ isSelected }
+					className="woocommerce-search-list__item-input"
 					{ ...props }
 				></input>
 			) }
