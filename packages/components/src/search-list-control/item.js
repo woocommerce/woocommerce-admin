@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { escapeRegExp, first, last, isNil } from 'lodash';
-import { MenuItem } from '@wordpress/components';
 import PropTypes from 'prop-types';
 
 /**
@@ -64,17 +63,32 @@ const SearchListItem = ( {
 	const hasBreadcrumbs = item.breadcrumbs && item.breadcrumbs.length;
 
 	return (
-		<MenuItem
-			role={ isSingle ? 'menuitemradio' : 'menuitemcheckbox' }
-			className={ classes.join( ' ' ) }
-			onClick={ onSelect( item ) }
-			isSelected={ isSelected }
-			{ ...props }
-		>
+		<label htmlFor={ item.id } className={ classes.join( ' ' ) }>
+			{ isSingle ? (
+				<input
+					type="radio"
+					id={ item.id }
+					name={ item.name }
+					value={ item.value }
+					onChange={ onSelect( item ) }
+					checked={ isSelected }
+					{ ...props }
+				></input>
+			) : (
+				<input
+					type="checkbox"
+					id={ item.id }
+					name={ item.name }
+					value={ item.value }
+					onChange={ onSelect( item ) }
+					checked={ isSelected }
+					{ ...props }
+				></input>
+			) }
+
 			<span className="woocommerce-search-list__item-state">
 				{ getInteractionIcon( isSingle, isSelected ) }
 			</span>
-
 			<span className="woocommerce-search-list__item-label">
 				{ hasBreadcrumbs ? (
 					<span className="woocommerce-search-list__item-prefix">
@@ -94,7 +108,7 @@ const SearchListItem = ( {
 					{ countLabel || item.count }
 				</span>
 			) }
-		</MenuItem>
+		</label>
 	);
 };
 

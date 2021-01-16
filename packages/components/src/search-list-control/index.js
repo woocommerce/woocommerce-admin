@@ -4,7 +4,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import {
 	Button,
-	MenuGroup,
 	Spinner,
 	TextControl,
 	withSpokenMessages,
@@ -31,6 +30,7 @@ const defaultMessages = {
 	search: __( 'Search for items', 'woocommerce-admin' ),
 	selected: ( n ) =>
 		sprintf(
+			/* translators: Number of items selected from list. */
 			_n(
 				'%d item selected',
 				'%d items selected',
@@ -127,6 +127,7 @@ export class SearchListControl extends Component {
 		if ( ! list ) {
 			return null;
 		}
+
 		return list.map( ( item ) => (
 			<Fragment key={ item.id }>
 				{ renderItem( {
@@ -176,12 +177,9 @@ export class SearchListControl extends Component {
 		}
 
 		return (
-			<MenuGroup
-				label={ messages.list }
-				className="woocommerce-search-list__list"
-			>
+			<div className="woocommerce-search-list__list">
 				{ this.renderList( list ) }
-			</MenuGroup>
+			</div>
 		);
 	}
 
