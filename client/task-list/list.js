@@ -86,7 +86,10 @@ export class TaskList extends Component {
 		);
 	}
 
-	shouldUpdateCompletedTasks( tasks, completedTasks ) {
+	shouldUpdateCompletedTasks( tasks, untrackedTasks, completedTasks ) {
+		if ( untrackedTasks.length > 0 ) {
+			return true;
+		}
 		if ( completedTasks.length === 0 ) {
 			return false;
 		}
@@ -104,6 +107,32 @@ export class TaskList extends Component {
 		);
 	}
 
+	getTrackedIncompletedTasks( partialCompletedTasks, allTrackedTask ) {
+		return this.getVisibleTasks()
+			.filter(
+				( task ) =>
+					allTrackedTask.includes( task.key ) &&
+					! partialCompletedTasks.includes( task.key )
+			)
+			.map( ( task ) => task.key );
+	}
+
+	getTasksForUpdate(
+		completedTaskKeys,
+		totalTrackedCompletedTasks,
+		trackedUncompleteTasks
+	) {
+		const mergedLists = [
+			...new Set( [
+				...completedTaskKeys,
+				...totalTrackedCompletedTasks,
+			] ),
+		];
+		return mergedLists.filter(
+			( taskName ) => ! trackedUncompleteTasks.includes( taskName )
+		);
+	}
+
 	possiblyTrackCompletedTasks() {
 		const {
 			trackedCompletedTasks: totalTrackedCompletedTasks,
@@ -115,14 +144,24 @@ export class TaskList extends Component {
 			totalTrackedCompletedTasks
 		);
 
+		const trackedUncompleteTasks = this.getTrackedIncompletedTasks(
+			trackedCompletedTasks,
+			totalTrackedCompletedTasks
+		);
+
 		if (
 			this.shouldUpdateCompletedTasks(
 				trackedCompletedTasks,
+				trackedUncompleteTasks,
 				completedTaskKeys
 			)
 		) {
 			updateOptions( {
-				woocommerce_task_list_tracked_completed_tasks: completedTaskKeys,
+				woocommerce_task_list_tracked_completed_tasks: this.getTasksForUpdate(
+					completedTaskKeys,
+					totalTrackedCompletedTasks,
+					trackedUncompleteTasks
+				),
 			} );
 		}
 	}
