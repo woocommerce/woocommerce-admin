@@ -405,7 +405,7 @@ class OnboardingTasks {
 		}
 		$extended_tasks_list_items            = get_option( 'woocommerce_extended_task_list_items', array() );
 		$registered_extended_tasks_list_items = apply_filters( 'woocommerce_get_registered_extended_tasks', array() );
-		if ( ! empty( array_diff( $registered_extended_tasks_list_items, $extended_tasks_list_items ) ) || ! empty( array_diff( $extended_tasks_list_items, $registered_extended_tasks_list_items ) ) ) {
+		if ( $registered_extended_tasks_list_items !== $extended_tasks_list_items ) {
 			update_option( 'woocommerce_extended_task_list_items', $registered_extended_tasks_list_items );
 			update_option( 'woocommerce_extended_task_list_hidden', 'no' );
 		}
