@@ -50,20 +50,20 @@ const Task = () => {
 	return (
 		<Card className="woocommerce-task-card">
 			<CardBody>
-			{ __( 'Example task card content.', 'plugin-domain' ) }
-			<br />
-			<br />
-			<div>
-				{ addTaskData.isComplete ? (
-					<button onClick={ markTaskIncomplete }>
-						{ __( 'Mark task incomplete', 'plugin-domain' ) }
-					</button>
-				) : (
-					<button onClick={ markTaskComplete }>
-						{ __( 'Mark task complete', 'plugin-domain' ) }
-					</button>
-				) }
-			</div>
+				{ __( 'Example task card content.', 'plugin-domain' ) }
+				<br />
+				<br />
+				<div>
+					{ addTaskData.isComplete ? (
+						<button onClick={ markTaskIncomplete }>
+							{ __( 'Mark task incomplete', 'plugin-domain' ) }
+						</button>
+					) : (
+						<button onClick={ markTaskComplete }>
+							{ __( 'Mark task complete', 'plugin-domain' ) }
+						</button>
+					) }
+				</div>
 			</CardBody>
 		</Card>
 	);
