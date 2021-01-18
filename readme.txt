@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.6.0
 Requires PHP: 5.6.20
-Stable tag: 1.9.0-dev
+Stable tag: 2.0.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -73,6 +73,20 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: allow for more terms to be shown for product attributes in the Analytics orders report. #5868
+- Tweak: update the content and timing of the NeedSomeInspiration note. #6076
+- Fix: Add support for a floating-point number as a SummaryNumber's delta. #5926
+
+
+== Changelog ==
+
+== 1.9.0 1/15/2021 ==
+
+- Fix: Add Customer Type column to the Orders report table. #5820
+- Fix: Product exclusion filter on Orders Report.
+- Fix: Typo in Variation Stats DataStore context filter value.
+- Fix: support custom attributes in Attribute advanced report filter.
+- Fix: Don't show Stock and Reviews Homescreen panels too early.
 - Tweak: Remove deprecated use of Jetpack in shipping label banner. #5929
 - Fix: Undefined $collate variable when database does not have collation capability. #5992
 - Tweak: Remove visit_count from track, and update task count logic. #5996
@@ -92,19 +106,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add merchant email notifications #5922 
 - Add: Email note to add first product. #6024
 - Add: Note for users coming from Calypso. #6030
+- Fix: Fixed error hiding core task list. #6050
 - Enhancement: Add an "unread" indicator to inbox messages. #6047 
 - Tweak: update the content for the ChooseNiche note. #6048
 - Fix: Generate JSON translation chunks on plugin activation #6028
-- Fix: Add support for a floating-point number as a SummaryNumber's delta. #5926
-
-== Changelog ==
-
-= vnext =
-- Fix: Add Customer Type column to the Orders report table. #5820
-- Fix: Product exclusion filter on Orders Report.
-- Fix: Typo in Variation Stats DataStore context filter value.
-- Fix: support custom attributes in Attribute advanced report filter.
-- Fix: Don't show Stock and Reviews Homescreen panels too early.
+- Dev: Update travis CI distribution. #6067
+- Add: Manage activity from home screen inbox message. #6072
 
 == 1.8.3 1/5/2021 ==
 
