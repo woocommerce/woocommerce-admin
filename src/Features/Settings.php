@@ -44,7 +44,8 @@ class Settings {
 			return;
 		}
 
-		add_action( 'admin_menu', array( $this, 'register_pages' ), 5 );
+		// Run this after the original WooCommerce settings have been added.
+		add_action( 'admin_menu', array( $this, 'register_pages' ), 60 );
 	}
 
 	/**
@@ -63,17 +64,43 @@ class Settings {
 		foreach ( $settings as $key => $setting ) {
 			$order        += 10;
 			$settings_page = array(
-				'parent'   => 'woocommerce',
+				'parent'   => 'woocommerce-settings',
 				'title'    => $setting,
 				'id'       => 'settings-' . $key,
 				'path'     => "/settings/$key",
 				'nav_args' => array(
 					'capability' => 'manage_woocommerce',
 					'order'      => $order,
-					'parent'     => 'woocommerce-settings',
 				),
 			);
+
+			// Replace the old menu with the first settings item.
+			if ( 10 === $order ) {
+				$this->replace_settings_page( $settings_page );
+			}
+
 			$controller->register_page( $settings_page );
+		}
+	}
+
+	/**
+	 * Replace the Settings page in the original WooCommerce menu.
+	 *
+	 * @param array $page Page used to replace the original.
+	 */
+	protected function replace_settings_page( $page ) {
+		global $submenu;
+
+		// Check if WooCommerce parent menu has been registered.
+		if ( ! isset( $submenu['woocommerce'] ) ) {
+			return;
+		}
+
+		foreach ( $submenu['woocommerce'] as &$item ) {
+			// The "slug" (aka the path) is the third item in the array.
+			if ( 0 === strpos( $item[2], 'wc-settings' ) ) {
+				$item[2] = wc_admin_url( "&path={$page['path']}" );
+			}
 		}
 	}
 }
