@@ -9,47 +9,55 @@ import PropTypes from 'prop-types';
  */
 import Link from '../link';
 
+function handleKeyDown( event, onClick ) {
+	if ( typeof onClick === 'function' && event.keyCode === ENTER ) {
+		onClick();
+	}
+}
+
+function getItemLinkType( item ) {
+	const { href, linkType } = item;
+
+	if ( linkType ) {
+		return linkType;
+	}
+
+	return href ? 'external' : null;
+}
+
 /**
  * List component to display a list of items.
  *
  * @param {Object} props props for list item
  */
 function ListItem( props ) {
-	const handleKeyDown = ( event, onClick ) => {
-		if ( typeof onClick === 'function' && event.keyCode === ENTER ) {
-			onClick();
-		}
-	};
-
-	const getItemLinkType = ( item ) => {
-		const { href, linkType } = item;
-
-		if ( linkType ) {
-			return linkType;
-		}
-
-		return href ? 'external' : null;
-	};
-
 	const { item } = props;
-	const hasAction = typeof item.onClick === 'function' || item.href;
-	const InnerTag = item.href ? Link : 'div';
+	const {
+		before,
+		title,
+		after,
+		content,
+		onClick,
+		href,
+		target,
+		listItemTag,
+	} = item;
+	const hasAction = typeof onClick === 'function' || href;
+	const InnerTag = href ? Link : 'div';
 
 	const innerTagProps = {
 		className: 'woocommerce-list__item-inner',
-		onClick: typeof item.onClick === 'function' ? item.onClick : null,
+		onClick: typeof onClick === 'function' ? onClick : null,
 		'aria-disabled': hasAction ? 'false' : null,
 		tabIndex: hasAction ? '0' : null,
 		role: hasAction ? 'menuitem' : null,
-		onKeyDown: ( e ) =>
-			hasAction ? handleKeyDown( e, item.onClick ) : null,
-		target: item.href ? item.target : null,
+		onKeyDown: ( e ) => ( hasAction ? handleKeyDown( e, onClick ) : null ),
+		target: href ? target : null,
 		type: getItemLinkType( item ),
-		href: item.href,
-		'data-list-item-tag': item.listItemTag,
+		href,
+		'data-list-item-tag': listItemTag,
 	};
 
-	const { before, title, after, content } = item;
 	return (
 		<InnerTag { ...innerTagProps }>
 			{ before && (
