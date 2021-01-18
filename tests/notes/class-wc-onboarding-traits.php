@@ -20,7 +20,7 @@ class WC_Tests_Onboarding_Traits extends WC_Unit_Test_Case {
 	 * Test revenue_is_within functionality.
 	 */
 	public function test_revenue_is_within() {
-		update_option( 'onboarding_profile', array( 'revenue' => 1500 ) );
+		update_option( 'onboarding_profile', (object) array( 'revenue' => 1500 ) );
 
 		$this->assertEquals( self::revenue_is_within( 1200, 1500 ), true );
 		$this->assertEquals( self::revenue_is_within( 0, 1500 ), true );
@@ -33,23 +33,23 @@ class WC_Tests_Onboarding_Traits extends WC_Unit_Test_Case {
 	 */
 	public function test_onboarding_started() {
 		update_option( 'onboarding_profile', null );
-		$this->assertEquals( self::onboarding_started(), false );
+		$this->assertEquals( self::onboarding_profile_started(), false );
 
 		update_option( 'onboarding_profile', array() );
-		$this->assertEquals( self::onboarding_started(), true );
+		$this->assertEquals( self::onboarding_profile_started(), true );
 	}
 
 	/**
 	 * Test store_setup_for_client functionality.
 	 */
 	public function test_store_setup_for_client() {
-		update_option( 'onboarding_profile', array( 'setup_client' => true ) );
+		update_option( 'onboarding_profile', (object) array( 'setup_client' => true ) );
 		$this->assertEquals( self::store_setup_for_client(), true );
 
 		update_option( 'onboarding_profile', null );
 		$this->assertEquals( self::store_setup_for_client(), false );
 
-		update_option( 'onboarding_profile', array( 'setup_client' => false ) );
+		update_option( 'onboarding_profile', (object) array( 'setup_client' => false ) );
 		$this->assertEquals( self::store_setup_for_client(), false );
 	}
 }
