@@ -23,7 +23,7 @@ import { MollieLogo } from './images/mollie';
 import Stripe from './stripe';
 import Square from './square';
 import WCPay from './wcpay';
-import PayPal from './paypal';
+import PayPal, { PAYPAL_PLUGIN } from './paypal';
 import Klarna from './klarna';
 import PayFast from './payfast';
 import EWay from './eway';
@@ -122,7 +122,7 @@ export function getPaymentMethods( {
 		},
 		{
 			key: 'paypal',
-			title: __( 'PayPal Checkout', 'woocommerce-admin' ),
+			title: __( 'PayPal Payments', 'woocommerce-admin' ),
 			content: (
 				<>
 					{ __(
@@ -133,7 +133,7 @@ export function getPaymentMethods( {
 			),
 			before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
 			visible: ! hasCbdIndustry,
-			plugins: [ 'woocommerce-gateway-paypal-express-checkout' ],
+			plugins: [ PAYPAL_PLUGIN ],
 			container: <PayPal />,
 			isConfigured:
 				options.woocommerce_ppec_paypal_settings &&
