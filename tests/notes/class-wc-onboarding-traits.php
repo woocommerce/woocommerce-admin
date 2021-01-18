@@ -59,7 +59,7 @@ class WC_Tests_Onboarding_Traits extends WC_Unit_Test_Case {
 		update_option( 'woocommerce_onboarding_profile', null );
 		$this->assertEquals( self::onboarding_profile_started(), false );
 
-		update_option( 'woocommerce_onboarding_profile', array() );
+		update_option( 'woocommerce_onboarding_profile', array( 'setup-client' => false ) );
 		$this->assertEquals( self::onboarding_profile_started(), true );
 	}
 
