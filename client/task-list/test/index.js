@@ -241,7 +241,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		} );
 	} );
 
-	it( 'sets setup tasks list as uncompleted', () => {
+	it( 'sets setup tasks list as incompleted', () => {
 		apiFetch.mockResolvedValue( {} );
 		const updateOptions = jest.fn();
 		const { setup } = tasks;
@@ -310,7 +310,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		} );
 	} );
 
-	it( 'Untrack an uncompleted but tracked task', () => {
+	it( 'Untrack an incomplete but already tracked task', () => {
 		apiFetch.mockResolvedValue( {} );
 		const updateOptions = jest.fn();
 		const { setup, extension } = tasks;
