@@ -120,7 +120,7 @@ export class TaskList extends Component {
 	getTasksForUpdate(
 		completedTaskKeys,
 		totalTrackedCompletedTasks,
-		trackedUncompleteTasks
+		trackedIncompleteTasks
 	) {
 		const mergedLists = [
 			...new Set( [
@@ -129,7 +129,7 @@ export class TaskList extends Component {
 			] ),
 		];
 		return mergedLists.filter(
-			( taskName ) => ! trackedUncompleteTasks.includes( taskName )
+			( taskName ) => ! trackedIncompleteTasks.includes( taskName )
 		);
 	}
 
@@ -144,7 +144,7 @@ export class TaskList extends Component {
 			totalTrackedCompletedTasks
 		);
 
-		const trackedUncompleteTasks = this.getTrackedIncompletedTasks(
+		const trackedIncompleteTasks = this.getTrackedIncompletedTasks(
 			trackedCompletedTasks,
 			totalTrackedCompletedTasks
 		);
@@ -152,7 +152,7 @@ export class TaskList extends Component {
 		if (
 			this.shouldUpdateCompletedTasks(
 				trackedCompletedTasks,
-				trackedUncompleteTasks,
+				trackedIncompleteTasks,
 				completedTaskKeys
 			)
 		) {
@@ -160,7 +160,7 @@ export class TaskList extends Component {
 				woocommerce_task_list_tracked_completed_tasks: this.getTasksForUpdate(
 					completedTaskKeys,
 					totalTrackedCompletedTasks,
-					trackedUncompleteTasks
+					trackedIncompleteTasks
 				),
 			} );
 		}
