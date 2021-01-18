@@ -44,8 +44,34 @@ class Settings {
 			return;
 		}
 
+		add_filter( 'woocommerce_settings_features', array( $this, 'add_feature_toggle' ) );
+
+		if ( 'yes' !== get_option( 'woocommerce_settings_enabled', 'no' ) ) {
+			return;
+		}
+
 		// Run this after the original WooCommerce settings have been added.
 		add_action( 'admin_menu', array( $this, 'register_pages' ), 60 );
+	}
+
+	/**
+	 * Add the feature toggle to the features settings.
+	 *
+	 * @param array $features Feature sections.
+	 * @return array
+	 */
+	public static function add_feature_toggle( $features ) {
+		$features[] = array(
+			'title' => __( 'Settings', 'woocommerce-admin' ),
+			'desc'  => __(
+				'Adds the new WooCommerce settings UI.',
+				'woocommerce-admin'
+			),
+			'id'    => 'woocommerce_settings_enabled',
+			'type'  => 'checkbox',
+		);
+
+		return $features;
 	}
 
 	/**
