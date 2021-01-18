@@ -1,8 +1,8 @@
 <?php
 /**
- * WC Admin Note Traits
+ * WC Admin Onboarding Traits
  *
- * WC Admin Note Traits class that houses shared functionality across notes.
+ * WC Admin Onboarding Traits class that houses shared functionality useful for checking status of onboarding.
  */
 
 namespace Automattic\WooCommerce\Admin\Notes;
