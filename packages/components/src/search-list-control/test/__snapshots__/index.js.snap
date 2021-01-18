@@ -40,263 +40,173 @@ exports[`SearchListControl should render a search box and list of hierarchical o
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-8"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={1}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-8"
-      role="group"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={1}
+        name="Apricots"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
+      >
+        <span
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Apricots",
+            }
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-1"
+      htmlFor={2}
     >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={2}
+        name="Clementine"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
+          className="woocommerce-search-list__item-prefix"
         >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
+          Apricots
         </span>
         <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Apricots",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Clementine",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-1"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-1"
+      htmlFor={3}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
+          className="woocommerce-search-list__item-prefix"
         >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
+          Apricots
         </span>
         <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-prefix"
-          >
-            Apricots
-          </span>
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Clementine",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elderberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-1"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-2"
+      htmlFor={4}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={4}
+        name="Guava"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
+          className="woocommerce-search-list__item-prefix"
         >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
+          Apricots › Elderberry
         </span>
         <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-prefix"
-          >
-            Apricots
-          </span>
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elderberry",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Guava",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-2"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={5}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={5}
+        name="Lychee"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-prefix"
-          >
-            Apricots › Elderberry
-          </span>
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Guava",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Lychee",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Lychee",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mulberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
-      >
-        <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mulberry",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
@@ -341,248 +251,158 @@ exports[`SearchListControl should render a search box and list of options 1`] = 
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-0"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={1}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-0"
-      role="group"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={1}
+        name="Apricots"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
+      >
+        <span
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Apricots",
+            }
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={2}
     >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={2}
+        name="Clementine"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Apricots",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Clementine",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={3}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Clementine",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elderberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={4}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={4}
+        name="Guava"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elderberry",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Guava",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={5}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={5}
+        name="Lychee"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Guava",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Lychee",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Lychee",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mulberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
-      >
-        <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mulberry",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
@@ -627,248 +447,158 @@ exports[`SearchListControl should render a search box and list of options with a
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-1"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={1}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-1"
-      role="group"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={1}
+        name="Apricots"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
+      >
+        <span
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Apricots",
+            }
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={2}
     >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={2}
+        name="Clementine"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Apricots",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Clementine",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={3}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Clementine",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elderberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={4}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={4}
+        name="Guava"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elderberry",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Guava",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={5}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={5}
+        name="Lychee"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Guava",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Lychee",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Lychee",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mulberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
-      >
-        <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mulberry",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
@@ -913,43 +643,31 @@ exports[`SearchListControl should render a search box and list of options, with 
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-7"
-    >
-      Results
+    <div>
+      Apricots
+      !
     </div>
-    <div
-      aria-labelledby="components-menu-group-label-7"
-      role="group"
-    >
-      <div>
-        Apricots
-        !
-      </div>
-      <div>
-        Clementine
-        !
-      </div>
-      <div>
-        Elderberry
-        !
-      </div>
-      <div>
-        Guava
-        !
-      </div>
-      <div>
-        Lychee
-        !
-      </div>
-      <div>
-        Mulberry
-        !
-      </div>
+    <div>
+      Clementine
+      !
+    </div>
+    <div>
+      Elderberry
+      !
+    </div>
+    <div>
+      Guava
+      !
+    </div>
+    <div>
+      Lychee
+      !
+    </div>
+    <div>
+      Mulberry
+      !
     </div>
   </div>
 </div>
@@ -995,248 +713,158 @@ exports[`SearchListControl should render a search box and list of options, with 
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-6"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={1}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-6"
-      role="group"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={1}
+        name="Apricots"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
+      >
+        <span
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Apricots",
+            }
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={2}
     >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={2}
+        name="Clementine"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Apricots",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Clementine",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={3}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Clementine",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elderberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={4}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={4}
+        name="Guava"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elderberry",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Guava",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={5}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={5}
+        name="Lychee"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Guava",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Lychee",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Lychee",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mulberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
-      >
-        <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mulberry",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
@@ -1425,96 +1053,58 @@ exports[`SearchListControl should render a search box with a search term, and on
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-4"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={3}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-4"
-      role="group"
-    >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elder<strong>berry</strong>",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elder<strong>berry</strong>",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mul<strong>berry</strong>",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mul<strong>berry</strong>",
             }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
@@ -1560,96 +1150,58 @@ exports[`SearchListControl should render a search box with a search term, and on
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-5"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={3}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-5"
-      role="group"
-    >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elder<strong>berry</strong>",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elder<strong>berry</strong>",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mul<strong>berry</strong>",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mul<strong>berry</strong>",
             }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
@@ -1747,248 +1299,158 @@ exports[`SearchListControl should render a search box, a list of options, and 1 
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-2"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={1}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-2"
-      role="group"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={1}
+        name="Apricots"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
+      >
+        <span
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Apricots",
+            }
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={2}
     >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={true}
+        className="woocommerce-search-list__item-input"
+        id={2}
+        name="Clementine"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Apricots",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Clementine",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={true}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={3}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              fill="#1E8CBE"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Clementine",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elderberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={4}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={4}
+        name="Guava"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elderberry",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Guava",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={5}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={5}
+        name="Lychee"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Guava",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Lychee",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Lychee",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mulberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
-      >
-        <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mulberry",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
@@ -2129,248 +1591,158 @@ exports[`SearchListControl should render a search box, a list of options, and 2 
     </div>
   </div>
   <div
-    className="woocommerce-search-list__list components-menu-group"
+    className="woocommerce-search-list__list"
   >
-    <div
-      aria-hidden="true"
-      className="components-menu-group__label"
-      id="components-menu-group-label-3"
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={1}
     >
-      Results
-    </div>
-    <div
-      aria-labelledby="components-menu-group-label-3"
-      role="group"
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={1}
+        name="Apricots"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
+      >
+        <span
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Apricots",
+            }
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={2}
     >
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+      <input
+        checked={true}
+        className="woocommerce-search-list__item-input"
+        id={2}
+        name="Clementine"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Apricots",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Clementine",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={true}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={3}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={3}
+        name="Elderberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              fill="#1E8CBE"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Clementine",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Elderberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={4}
+    >
+      <input
+        checked={true}
+        className="woocommerce-search-list__item-input"
+        id={4}
+        name="Guava"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Elderberry",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Guava",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={true}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={5}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={5}
+        name="Lychee"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              fill="#1E8CBE"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Guava",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Lychee",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
+          }
+        />
+      </span>
+    </label>
+    <label
+      className=" woocommerce-search-list__item depth-0"
+      htmlFor={6}
+    >
+      <input
+        checked={false}
+        className="woocommerce-search-list__item-input"
+        id={6}
+        name="Mulberry"
+        onChange={[Function]}
+        type="checkbox"
+      />
+      <span
+        className="woocommerce-search-list__item-label"
       >
         <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Lychee",
-              }
+          className="woocommerce-search-list__item-name"
+          dangerouslySetInnerHTML={
+            Object {
+              "__html": "Mulberry",
             }
-          />
-        </span>
-      </button>
-      <button
-        aria-checked={false}
-        className="components-button components-menu-item__button  woocommerce-search-list__item depth-0"
-        onClick={[Function]}
-        role="menuitemcheckbox"
-        type="button"
-      >
-        <span
-          className="woocommerce-search-list__item-state"
-        >
-          <svg
-            aria-hidden={true}
-            focusable={false}
-            height="24"
-            role="img"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
-              fill="#6C7781"
-            />
-          </svg>
-        </span>
-        <span
-          className="woocommerce-search-list__item-label"
-        >
-          <span
-            className="woocommerce-search-list__item-name"
-            dangerouslySetInnerHTML={
-              Object {
-                "__html": "Mulberry",
-              }
-            }
-          />
-        </span>
-      </button>
-    </div>
+          }
+        />
+      </span>
+    </label>
   </div>
 </div>
 `;
