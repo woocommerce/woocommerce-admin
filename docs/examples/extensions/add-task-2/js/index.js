@@ -9,7 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * WooCommerce dependencies
  */
-import { Card } from '@woocommerce/components';
+import { Card, CardBody } from '@wordpress/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /* global addTaskData2 */
@@ -49,20 +49,22 @@ const markTaskIncomplete2 = () => {
 const Task2 = () => {
 	return (
 		<Card className="woocommerce-task-card">
-			{ __( 'Example task card content.', 'plugin-domain' ) }
-			<br />
-			<br />
-			<div>
-				{ addTaskData2.isComplete ? (
-					<button onClick={ markTaskIncomplete2 }>
-						{ __( 'Mark task 2 incomplete', 'plugin-domain' ) }
-					</button>
-				) : (
-					<button onClick={ markTaskComplete2 }>
-						{ __( 'Mark task 2 complete', 'plugin-domain' ) }
-					</button>
-				) }
-			</div>
+			<CardBody>
+				{ __( 'Example task card content.', 'plugin-domain' ) }
+				<br />
+				<br />
+				<div>
+					{ addTaskData2.isComplete ? (
+						<button onClick={ markTaskIncomplete2 }>
+							{ __( 'Mark task incomplete', 'plugin-domain' ) }
+						</button>
+					) : (
+						<button onClick={ markTaskComplete2 }>
+							{ __( 'Mark task complete', 'plugin-domain' ) }
+						</button>
+					) }
+				</div>
+			</CardBody>
 		</Card>
 	);
 };
