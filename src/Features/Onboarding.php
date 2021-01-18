@@ -771,7 +771,7 @@ class Onboarding {
 				'jetpack'                             => 'jetpack/jetpack.php',
 				'woocommerce-services'                => 'woocommerce-services/woocommerce-services.php',
 				'woocommerce-gateway-stripe'          => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
-				'woocommerce-gateway-paypal-express-checkout' => 'woocommerce-gateway-paypal-express-checkout/woocommerce-gateway-paypal-express-checkout.php',
+				'woocommerce-paypal-payments'         => 'woocommerce-paypal-payments/woocommerce-paypal-payments.php',
 				'klarna-checkout-for-woocommerce'     => 'klarna-checkout-for-woocommerce/klarna-checkout-for-woocommerce.php',
 				'klarna-payments-for-woocommerce'     => 'klarna-payments-for-woocommerce/klarna-payments-for-woocommerce.php',
 				'woocommerce-square'                  => 'woocommerce-square/woocommerce-square.php',

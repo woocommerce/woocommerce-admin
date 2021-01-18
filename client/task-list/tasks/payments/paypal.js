@@ -17,6 +17,8 @@ import {
 	WC_ADMIN_NAMESPACE,
 } from '@woocommerce/data';
 
+export const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
+
 export class PayPal extends Component {
 	constructor( props ) {
 		super( props );
@@ -61,12 +63,8 @@ export class PayPal extends Component {
 		const { activePlugins } = this.props;
 
 		if (
-			! prevProps.activePlugins.includes(
-				'woocommerce-gateway-paypal-express-checkout'
-			) &&
-			activePlugins.includes(
-				'woocommerce-gateway-paypal-express-checkout'
-			)
+			! prevProps.activePlugins.includes( PAYPAL_PLUGIN ) &&
+			activePlugins.includes( PAYPAL_PLUGIN )
 		) {
 			this.fetchOAuthConnectURL();
 		}
@@ -89,11 +87,7 @@ export class PayPal extends Component {
 	async fetchOAuthConnectURL() {
 		const { activePlugins } = this.props;
 
-		if (
-			! activePlugins.includes(
-				'woocommerce-gateway-paypal-express-checkout'
-			)
-		) {
+		if ( ! activePlugins.includes( PAYPAL_PLUGIN ) ) {
 			return;
 		}
 
@@ -291,7 +285,7 @@ export class PayPal extends Component {
 												components: {
 													link: (
 														<Link
-															href="https://docs.woocommerce.com/document/paypal-express-checkout/#section-8"
+															href="https://docs.woocommerce.com/document/2-0/woocommerce-paypal-payments/#section-4"
 															target="_blank"
 															type="external"
 														/>
