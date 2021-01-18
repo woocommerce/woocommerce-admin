@@ -44,6 +44,9 @@ const MarketingOverview = lazy( () =>
 const ProfileWizard = lazy( () =>
 	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
 );
+const SettingsGroup = lazy( () =>
+	import( /* webpackChunkName: "profile-wizard" */ '../settings' )
+);
 
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
@@ -156,6 +159,31 @@ export const getPages = () => {
 				...initialBreadcrumbs,
 				[ '/setup-wizard', __( 'Setup Wizard', 'woocommerce-admin' ) ],
 			],
+		} );
+	}
+
+	if ( window.wcAdminFeatures.settings ) {
+		pages.push( {
+			container: SettingsGroup,
+			path: '/settings/:group',
+			breadcrumbs: ( { match } ) => {
+				const groups = [];
+				const group = find( groups, {
+					id: match.params.group,
+				} );
+				if ( ! group ) {
+					return [];
+				}
+				return [
+					...initialBreadcrumbs,
+					[
+						'/settings/' + groups[ 0 ].id,
+						__( 'Settings', 'woocommerce-admin' ),
+					],
+					group.title,
+				];
+			},
+			wpOpenMenu: 'toplevel_page_woocommerce',
 		} );
 	}
 
