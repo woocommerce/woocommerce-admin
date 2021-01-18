@@ -38,15 +38,15 @@ function add_task_register_script() {
 	);
 	wp_localize_script( 'add-task', 'addTaskData', $client_data );
 	wp_enqueue_script( 'add-task' );
-	add_filter( 'woocommerce_get_registered_extended_tasks', 'pluginprefix_register_extended_tasklist', 10, 1 );
+	add_filter( 'woocommerce_get_registered_extended_tasks', 'pluginprefix_register_extended_task', 10, 1 );
 }
 
 /**
- * Register task list item.
+ * Register task.
  *
  * @param array $registered_tasks_list_items List of registered extended task list items.
  */
-function pluginprefix_register_extended_tasklist( $registered_tasks_list_items ) {
+function pluginprefix_register_extended_task( $registered_tasks_list_items ) {
 	$new_task_name = 'woocommerce_admin_add_task_example_name';
 	if ( ! in_array( $new_task_name, $registered_tasks_list_items, true ) ) {
 		array_push( $registered_tasks_list_items, $new_task_name );
@@ -55,10 +55,10 @@ function pluginprefix_register_extended_tasklist( $registered_tasks_list_items )
 }
 
 /**
- * Unregister task list item.
+ * Unregister task.
  */
 function pluginprefix_deactivate() {
-	remove_filter( 'woocommerce_get_registered_extended_tasks', 'pluginprefix_register_extended_tasklist', 10, 1 );
+	remove_filter( 'woocommerce_get_registered_extended_tasks', 'pluginprefix_register_extended_task', 10, 1 );
 }
 
 add_action( 'admin_enqueue_scripts', 'add_task_register_script' );
