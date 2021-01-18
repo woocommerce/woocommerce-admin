@@ -75,7 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 - Fix: allow for more terms to be shown for product attributes in the Analytics orders report. #5868
 - Tweak: update the content and timing of the NeedSomeInspiration note. #6076
-
+- Add: new inbox message - Getting started in Ecommerce - watch this webinar. #6086
 
 == Changelog ==
 
