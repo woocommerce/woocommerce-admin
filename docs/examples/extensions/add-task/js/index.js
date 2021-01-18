@@ -9,7 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * WooCommerce dependencies
  */
-import { Card } from '@woocommerce/components';
+import { Card, CardBody } from '@wordpress/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /* global addTaskData */
@@ -49,6 +49,7 @@ const markTaskIncomplete = () => {
 const Task = () => {
 	return (
 		<Card className="woocommerce-task-card">
+			<CardBody>
 			{ __( 'Example task card content.', 'plugin-domain' ) }
 			<br />
 			<br />
@@ -63,6 +64,7 @@ const Task = () => {
 					</button>
 				) }
 			</div>
+			</CardBody>
 		</Card>
 	);
 };
