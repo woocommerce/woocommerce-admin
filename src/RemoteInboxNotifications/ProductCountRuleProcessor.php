@@ -40,12 +40,8 @@ class ProductCountRuleProcessor implements RuleProcessorInterface {
 	 * @return bool The result of the operation.
 	 */
 	public function process( $rule, $stored_state ) {
-		$products          = $this->product_query->get_products();
-		$new_product_count = get_option(
-			'wc_remote_inbox_notifications_new_product_count',
-			0
-		);
-		$count             = $products->total + $new_product_count;
+		$products = $this->product_query->get_products();
+		$count    = $products->total + $stored_state->new_product_count;
 
 		return ComparisonOperation::compare(
 			$count,

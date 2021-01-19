@@ -14,8 +14,6 @@ use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
  * Handles stored state setup for products.
  */
 class StoredStateSetupForProducts {
-	const NEW_PRODUCT_COUNT_OPTION_NAME = 'wc_remote_inbox_notifications_new_product_count';
-
 	/**
 	 * Initialize the class
 	 */
@@ -95,14 +93,20 @@ class StoredStateSetupForProducts {
 			return;
 		}
 
-		update_option( self::NEW_PRODUCT_COUNT_OPTION_NAME, 1 );
-
 		$stored_state                         = RemoteInboxNotificationsEngine::get_stored_state();
 		$stored_state->there_are_now_products = true;
+
+		// This is used to increment the product count yielded by the query,
+		// which is one less than the actual product count at this point in the
+		// product publish lifecycle. This is currently being used by
+		// ProductCountRuleProcessor.
+		$stored_state->new_product_count = 1;
+
 		RemoteInboxNotificationsEngine::update_stored_state( $stored_state );
 
 		RemoteInboxNotificationsEngine::run();
 
-		update_option( self::NEW_PRODUCT_COUNT_OPTION_NAME, 0 );
+		$stored_state->new_product_count = 0;
+		RemoteInboxNotificationsEngine::update_stored_state( $stored_state );
 	}
 }
