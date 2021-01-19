@@ -49,6 +49,10 @@
 	overflow-x: hidden;
 	overflow-y: auto;
 
+	li {
+		margin-bottom: 0;
+	}
+
 	&.is-loading {
 		padding: $gap-small 0;
 		text-align: center;
