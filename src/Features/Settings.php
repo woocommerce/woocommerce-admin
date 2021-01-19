@@ -97,6 +97,7 @@ class Settings {
 				'nav_args' => array(
 					'capability' => 'manage_woocommerce',
 					'order'      => $order,
+					'parent'     => 'woocommerce-settings',
 				),
 			);
 
