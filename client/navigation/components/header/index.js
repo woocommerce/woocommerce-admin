@@ -105,6 +105,7 @@ const Header = () => {
 			<Button
 				onClick={ () => toggleFolded() }
 				className="woocommerce-navigation-header__site-icon"
+				aria-label="Toggle navigation"
 			>
 				{ buttonIcon }
 			</Button>
