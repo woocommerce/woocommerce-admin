@@ -293,6 +293,7 @@ The currently available indices are:
 ```
 there_were_no_products
 there_are_now_products
+new_product_count
 ```
 
 `index`, `operation`, and `value` are required.
