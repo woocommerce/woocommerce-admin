@@ -39,175 +39,187 @@ exports[`SearchListControl should render a search box and list of hierarchical o
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={1}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={1}
-        name="Apricots"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={1}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Apricots",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={1}
+          name="Apricots"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-1"
-      htmlFor={2}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={2}
-        name="Clementine"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
-      >
         <span
-          className="woocommerce-search-list__item-prefix"
+          className="woocommerce-search-list__item-label"
         >
-          Apricots
-        </span>
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Clementine",
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Apricots",
+              }
             }
-          }
-        />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-1"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
-      >
-        <span
-          className="woocommerce-search-list__item-prefix"
+          />
+        </span>
+      </label>
+      <li>
+        <label
+          className=" woocommerce-search-list__item depth-1"
+          htmlFor={2}
         >
-          Apricots
-        </span>
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elderberry",
-            }
-          }
-        />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-2"
-      htmlFor={4}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={4}
-        name="Guava"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
-      >
-        <span
-          className="woocommerce-search-list__item-prefix"
+          <input
+            checked={false}
+            className="woocommerce-search-list__item-input"
+            id={2}
+            name="Clementine"
+            onChange={[Function]}
+            type="checkbox"
+          />
+          <span
+            className="woocommerce-search-list__item-label"
+          >
+            <span
+              className="woocommerce-search-list__item-prefix"
+            >
+              Apricots
+            </span>
+            <span
+              className="woocommerce-search-list__item-name"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Clementine",
+                }
+              }
+            />
+          </span>
+        </label>
+      </li>
+      <li>
+        <label
+          className=" woocommerce-search-list__item depth-1"
+          htmlFor={3}
         >
-          Apricots › Elderberry
+          <input
+            checked={false}
+            className="woocommerce-search-list__item-input"
+            id={3}
+            name="Elderberry"
+            onChange={[Function]}
+            type="checkbox"
+          />
+          <span
+            className="woocommerce-search-list__item-label"
+          >
+            <span
+              className="woocommerce-search-list__item-prefix"
+            >
+              Apricots
+            </span>
+            <span
+              className="woocommerce-search-list__item-name"
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Elderberry",
+                }
+              }
+            />
+          </span>
+        </label>
+        <li>
+          <label
+            className=" woocommerce-search-list__item depth-2"
+            htmlFor={4}
+          >
+            <input
+              checked={false}
+              className="woocommerce-search-list__item-input"
+              id={4}
+              name="Guava"
+              onChange={[Function]}
+              type="checkbox"
+            />
+            <span
+              className="woocommerce-search-list__item-label"
+            >
+              <span
+                className="woocommerce-search-list__item-prefix"
+              >
+                Apricots › Elderberry
+              </span>
+              <span
+                className="woocommerce-search-list__item-name"
+                dangerouslySetInnerHTML={
+                  Object {
+                    "__html": "Guava",
+                  }
+                }
+              />
+            </span>
+          </label>
+        </li>
+      </li>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={5}
+      >
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={5}
+          name="Lychee"
+          onChange={[Function]}
+          type="checkbox"
+        />
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Lychee",
+              }
+            }
+          />
         </span>
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Guava",
-            }
-          }
-        />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={5}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={5}
-        name="Lychee"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Lychee",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
-      >
         <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mulberry",
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mulberry",
+              }
             }
-          }
-        />
-      </span>
-    </label>
-  </div>
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -250,160 +262,172 @@ exports[`SearchListControl should render a search box and list of options 1`] = 
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={1}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={1}
-        name="Apricots"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={1}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Apricots",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={1}
+          name="Apricots"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={2}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={2}
-        name="Clementine"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Apricots",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={2}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Clementine",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={2}
+          name="Clementine"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Clementine",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={3}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elderberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={3}
+          name="Elderberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={4}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={4}
-        name="Guava"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Elderberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={4}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Guava",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={4}
+          name="Guava"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={5}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={5}
-        name="Lychee"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Guava",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={5}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Lychee",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={5}
+          name="Lychee"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Lychee",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mulberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-  </div>
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mulberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -446,160 +470,172 @@ exports[`SearchListControl should render a search box and list of options with a
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={1}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={1}
-        name="Apricots"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={1}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Apricots",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={1}
+          name="Apricots"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={2}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={2}
-        name="Clementine"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Apricots",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={2}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Clementine",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={2}
+          name="Clementine"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Clementine",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={3}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elderberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={3}
+          name="Elderberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={4}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={4}
-        name="Guava"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Elderberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={4}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Guava",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={4}
+          name="Guava"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={5}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={5}
-        name="Lychee"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Guava",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={5}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Lychee",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={5}
+          name="Lychee"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Lychee",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mulberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-  </div>
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mulberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -642,34 +678,46 @@ exports[`SearchListControl should render a search box and list of options, with 
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <div>
-      Apricots
-      !
-    </div>
-    <div>
-      Clementine
-      !
-    </div>
-    <div>
-      Elderberry
-      !
-    </div>
-    <div>
-      Guava
-      !
-    </div>
-    <div>
-      Lychee
-      !
-    </div>
-    <div>
-      Mulberry
-      !
-    </div>
-  </div>
+    <li>
+      <div>
+        Apricots
+        !
+      </div>
+    </li>
+    <li>
+      <div>
+        Clementine
+        !
+      </div>
+    </li>
+    <li>
+      <div>
+        Elderberry
+        !
+      </div>
+    </li>
+    <li>
+      <div>
+        Guava
+        !
+      </div>
+    </li>
+    <li>
+      <div>
+        Lychee
+        !
+      </div>
+    </li>
+    <li>
+      <div>
+        Mulberry
+        !
+      </div>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -712,160 +760,172 @@ exports[`SearchListControl should render a search box and list of options, with 
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={1}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={1}
-        name="Apricots"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={1}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Apricots",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={1}
+          name="Apricots"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={2}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={2}
-        name="Clementine"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Apricots",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={2}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Clementine",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={2}
+          name="Clementine"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Clementine",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={3}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elderberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={3}
+          name="Elderberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={4}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={4}
-        name="Guava"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Elderberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={4}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Guava",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={4}
+          name="Guava"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={5}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={5}
-        name="Lychee"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Guava",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={5}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Lychee",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={5}
+          name="Lychee"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Lychee",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mulberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-  </div>
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mulberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -1052,60 +1112,64 @@ exports[`SearchListControl should render a search box with a search term, and on
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={3}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elder<strong>berry</strong>",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={3}
+          name="Elderberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Elder<strong>berry</strong>",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mul<strong>berry</strong>",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-  </div>
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mul<strong>berry</strong>",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -1149,60 +1213,64 @@ exports[`SearchListControl should render a search box with a search term, and on
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={3}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elder<strong>berry</strong>",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={3}
+          name="Elderberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Elder<strong>berry</strong>",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mul<strong>berry</strong>",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-  </div>
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mul<strong>berry</strong>",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -1298,160 +1366,172 @@ exports[`SearchListControl should render a search box, a list of options, and 1 
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={1}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={1}
-        name="Apricots"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={1}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Apricots",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={1}
+          name="Apricots"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={2}
-    >
-      <input
-        checked={true}
-        className="woocommerce-search-list__item-input"
-        id={2}
-        name="Clementine"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Apricots",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={2}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Clementine",
-            }
-          }
+        <input
+          checked={true}
+          className="woocommerce-search-list__item-input"
+          id={2}
+          name="Clementine"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Clementine",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={3}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elderberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={3}
+          name="Elderberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={4}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={4}
-        name="Guava"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Elderberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={4}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Guava",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={4}
+          name="Guava"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={5}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={5}
-        name="Lychee"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Guava",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={5}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Lychee",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={5}
+          name="Lychee"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Lychee",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mulberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-  </div>
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mulberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
 
@@ -1590,159 +1670,171 @@ exports[`SearchListControl should render a search box, a list of options, and 2 
       </div>
     </div>
   </div>
-  <div
+  <ul
     className="woocommerce-search-list__list"
   >
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={1}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={1}
-        name="Apricots"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={1}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Apricots",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={1}
+          name="Apricots"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={2}
-    >
-      <input
-        checked={true}
-        className="woocommerce-search-list__item-input"
-        id={2}
-        name="Clementine"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Apricots",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={2}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Clementine",
-            }
-          }
+        <input
+          checked={true}
+          className="woocommerce-search-list__item-input"
+          id={2}
+          name="Clementine"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={3}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={3}
-        name="Elderberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Clementine",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={3}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Elderberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={3}
+          name="Elderberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={4}
-    >
-      <input
-        checked={true}
-        className="woocommerce-search-list__item-input"
-        id={4}
-        name="Guava"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Elderberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={4}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Guava",
-            }
-          }
+        <input
+          checked={true}
+          className="woocommerce-search-list__item-input"
+          id={4}
+          name="Guava"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={5}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={5}
-        name="Lychee"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Guava",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={5}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Lychee",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={5}
+          name="Lychee"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-    <label
-      className=" woocommerce-search-list__item depth-0"
-      htmlFor={6}
-    >
-      <input
-        checked={false}
-        className="woocommerce-search-list__item-input"
-        id={6}
-        name="Mulberry"
-        onChange={[Function]}
-        type="checkbox"
-      />
-      <span
-        className="woocommerce-search-list__item-label"
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Lychee",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+    <li>
+      <label
+        className=" woocommerce-search-list__item depth-0"
+        htmlFor={6}
       >
-        <span
-          className="woocommerce-search-list__item-name"
-          dangerouslySetInnerHTML={
-            Object {
-              "__html": "Mulberry",
-            }
-          }
+        <input
+          checked={false}
+          className="woocommerce-search-list__item-input"
+          id={6}
+          name="Mulberry"
+          onChange={[Function]}
+          type="checkbox"
         />
-      </span>
-    </label>
-  </div>
+        <span
+          className="woocommerce-search-list__item-label"
+        >
+          <span
+            className="woocommerce-search-list__item-name"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "Mulberry",
+              }
+            }
+          />
+        </span>
+      </label>
+    </li>
+  </ul>
 </div>
 `;
