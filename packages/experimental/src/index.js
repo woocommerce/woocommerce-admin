@@ -7,6 +7,7 @@ import {
 	__experimentalNavigationGroup,
 	__experimentalNavigationMenu,
 	__experimentalNavigationItem,
+	__experimentalNumberControl,
 	__experimentalText,
 	__experimentalUseSlot,
 	Navigation as NavigationComponent,
@@ -14,6 +15,7 @@ import {
 	NavigationGroup as NavigationGroupComponent,
 	NavigationMenu as NavigationMenuComponent,
 	NavigationItem as NavigationItemComponent,
+	NumberControl as NumberControlComponent,
 	Text as TextComponent,
 	useSlot as useSlotHook,
 } from '@wordpress/components';
@@ -30,5 +32,7 @@ export const NavigationMenu =
 	NavigationMenuComponent || __experimentalNavigationMenu;
 export const NavigationItem =
 	NavigationItemComponent || __experimentalNavigationItem;
+export const NumberControl =
+	NumberControlComponent || __experimentalNumberControl;
 export const Text = TextComponent || __experimentalText;
 export const useSlot = useSlotHook || __experimentalUseSlot;
