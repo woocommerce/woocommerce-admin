@@ -8,7 +8,7 @@ import {
 	TextControl,
 	withSpokenMessages,
 } from '@wordpress/components';
-import { Component, Fragment } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose, withInstanceId, withState } from '@wordpress/compose';
 import { escapeRegExp, findIndex } from 'lodash';
 import NoticeOutlineIcon from 'gridicons/dist/notice-outline';
@@ -128,7 +128,7 @@ export class SearchListControl extends Component {
 		}
 
 		return list.map( ( item ) => (
-			<Fragment key={ item.id }>
+			<li key={ item.id }>
 				{ renderItem( {
 					item,
 					isSelected: this.isSelected( item ),
@@ -138,7 +138,7 @@ export class SearchListControl extends Component {
 					depth,
 				} ) }
 				{ this.renderList( item.children, depth + 1 ) }
-			</Fragment>
+			</li>
 		) );
 	}
 
@@ -176,9 +176,9 @@ export class SearchListControl extends Component {
 		}
 
 		return (
-			<div className="woocommerce-search-list__list">
+			<ul className="woocommerce-search-list__list">
 				{ this.renderList( list ) }
-			</div>
+			</ul>
 		);
 	}
 
