@@ -5,14 +5,21 @@ import { useSelect } from '@wordpress/data';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { Spinner } from '@wordpress/components';
 
-export default ( { params } ) => {
-	const { settings, isLoading } = useSelect( ( select ) => {
+/**
+ * Internal dependencies
+ */
+import { SettingOptions } from './setting-options';
+import './style.scss';
+
+export const SettingsPage = ( { params } ) => {
+	const group = params.page;
+	const { settingOptions, isLoading } = useSelect( ( select ) => {
 		return {
 			isLoading: ! select(
 				SETTINGS_STORE_NAME
-			).hasFinishedResolution( 'getSettings', [ params.page ] ),
-			settings:
-				select( SETTINGS_STORE_NAME ).getSettings( params.page ) || {},
+			).hasFinishedResolution( 'getSettingOptions', [ group ] ),
+			settingOptions:
+				select( SETTINGS_STORE_NAME ).getSettingOptions( group ) || {},
 		};
 	} );
 
@@ -20,5 +27,7 @@ export default ( { params } ) => {
 		return <Spinner />;
 	}
 
-	return <div>Settings page</div>;
+	return <SettingOptions options={ settingOptions[ group ] } />;
 };
+
+export default SettingsPage;
