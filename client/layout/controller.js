@@ -13,6 +13,7 @@ import {
 	getQueryExcludedScreens,
 	getScreenFromPath,
 } from '@woocommerce/navigation';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { Spinner } from '@woocommerce/components';
 
 /**
@@ -165,22 +166,25 @@ export const getPages = () => {
 	if ( window.wcAdminFeatures.settings ) {
 		pages.push( {
 			container: SettingsGroup,
-			path: '/settings/:group',
+			path: '/settings/:page',
 			breadcrumbs: ( { match } ) => {
-				const groups = [];
-				const group = find( groups, {
-					id: match.params.group,
-				} );
-				if ( ! group ) {
+				// @todo This might need to be refactored to retreive groups via data store.
+				const settingsPages = getSetting( 'settingsPages' );
+				const page = settingsPages[ match.params.page ];
+				if ( ! page ) {
 					return [];
 				}
 				return [
 					...initialBreadcrumbs,
 					[
-						'/settings/' + groups[ 0 ].id,
+						settingsPages.general
+							? '/settings/general'
+							: `/settings/${
+									Object.keys( settingsPages )[ 0 ]
+							  }`,
 						__( 'Settings', 'woocommerce-admin' ),
 					],
-					group.title,
+					page,
 				];
 			},
 			wpOpenMenu: 'toplevel_page_woocommerce',
