@@ -10,13 +10,6 @@ import { NAMESPACE } from '../constants';
 import { STORE_NAME } from './constants';
 import { updateSettingsForGroup, updateErrorForGroup } from './actions';
 
-function settingsToSettingsResource( settings ) {
-	return settings.reduce( ( resource, setting ) => {
-		resource[ setting.id ] = setting.value;
-		return resource;
-	}, {} );
-}
-
 export function* getSettings( group ) {
 	yield dispatch( STORE_NAME, 'setIsRequesting', group, true );
 
@@ -27,12 +20,14 @@ export function* getSettings( group ) {
 			method: 'GET',
 		} );
 
-		const resource = settingsToSettingsResource( results );
-
-		return updateSettingsForGroup( group, { [ group ]: resource } );
+		return updateSettingsForGroup( group, { [ group ]: results } );
 	} catch ( error ) {
 		return updateErrorForGroup( group, null, error.message );
 	}
+}
+
+export function* getSettingOptions( group ) {
+	yield getSettings( group );
 }
 
 export function* getSettingsForGroup( group ) {

@@ -18,6 +18,30 @@ export const getSettings = ( state, group ) => {
 	if ( settingIds.length === 0 ) {
 		return settings;
 	}
+
+	settingIds.forEach( ( id ) => {
+		settings[ id ] = getSettingValues(
+			state[ getResourceName( group, id ) ].data
+		);
+	} );
+	return settings;
+};
+
+const getSettingValues = ( settings ) => {
+	return settings.reduce( ( resource, setting ) => {
+		resource[ setting.id ] = setting.value;
+		return resource;
+	}, {} );
+};
+
+export const getSettingOptions = ( state, group ) => {
+	const settings = {};
+
+	const settingIds = ( state[ group ] && state[ group ].data ) || [];
+	if ( settingIds.length === 0 ) {
+		return settings;
+	}
+
 	settingIds.forEach( ( id ) => {
 		settings[ id ] = state[ getResourceName( group, id ) ].data;
 	} );
