@@ -59,7 +59,6 @@ export default function ProductTemplateModal( { onClose } ) {
 		} );
 		if ( selectedTemplate ) {
 			createProductFromTemplate(
-				selectedTemplate,
 				{
 					template_name: selectedTemplate,
 					status: 'draft',
