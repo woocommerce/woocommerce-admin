@@ -10,7 +10,8 @@ services:
     - docker
 
 env:
-    - WC_VERSION=4.5.0
+    - global:
+          - WC_VERSION=4.5.0
 
 matrix:
     include:
