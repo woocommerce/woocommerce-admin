@@ -142,11 +142,6 @@ class Events {
 		AddFirstProduct::possibly_add_note();
 		AddingAndManangingProducts::possibly_add_note();
 		CustomizingProductCatalog::possibly_add_note();
-
-		if ( $this->is_remote_inbox_notifications_enabled() ) {
-			DataSourcePoller::read_specs_from_data_sources();
-			RemoteInboxNotificationsEngine::run();
-		}
 	}
 
 	/**
