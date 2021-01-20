@@ -35,7 +35,6 @@ import './style.scss';
 import '../dashboard/style.scss';
 import { StoreManagementLinks } from '../store-management-links';
 import { Column } from './column';
-import { taskListsHidden } from './utils';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -233,7 +232,9 @@ export default compose(
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			shouldShowWelcomeFromCalypsoModal,
-			bothTaskListsHidden: taskListsHidden( select ),
+			bothTaskListsHidden:
+				getOption( 'woocommerce_task_list_hidden' ) === 'yes' &&
+				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
 			requestingTaskList:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
