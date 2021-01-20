@@ -192,7 +192,12 @@ install_deps() {
 
 	# Bring in WooCommerce Core dependencies
 	cd "woocommerce"
- 	composer install --no-dev
+	composer --version
+	if [[ "$COMPOSER_DEV" == "1" ]]; then
+		composer install
+	else
+		composer install --no-dev
+	fi
 
 	cd "$WP_CORE_DIR"
 	php wp-cli.phar plugin activate woocommerce
