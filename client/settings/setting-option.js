@@ -34,16 +34,6 @@ export const SettingOption = ( {
 			);
 		}
 
-		if ( type === 'password' ) {
-			return (
-				<TextControl
-					value={ value }
-					onChange={ onChange }
-					placeholder={ placeholder }
-				/>
-			);
-		}
-
 		if ( type === 'textarea' ) {
 			return (
 				<TextareaControl
