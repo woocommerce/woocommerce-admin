@@ -157,19 +157,21 @@ export class SelectControl extends Component {
 	}
 
 	getOptions() {
-		const { isSearchable, options } = this.props;
+		const { isSearchable, options, excludeSelectedOptions } = this.props;
 		const { filteredOptions } = this.state;
-		return isSearchable ? filteredOptions : options;
+		const selectedKeys = this.getSelected().map( ( option ) => option.key );
+		const shownOptions = isSearchable ? filteredOptions : options;
+
+		if ( excludeSelectedOptions ) {
+			return shownOptions.filter(
+				( option ) => ! selectedKeys.includes( option.key )
+			);
+		}
+		return shownOptions;
 	}
 
 	getFilteredOptions( options, query ) {
-		const {
-			excludeSelectedOptions,
-			getSearchExpression,
-			maxResults,
-			onFilter,
-		} = this.props;
-		const selectedKeys = this.getSelected().map( ( option ) => option.key );
+		const { getSearchExpression, maxResults, onFilter } = this.props;
 		const filtered = [];
 
 		// Create a regular expression to filter the options.
@@ -180,13 +182,6 @@ export class SelectControl extends Component {
 
 		for ( let i = 0; i < options.length; i++ ) {
 			const option = options[ i ];
-
-			if (
-				excludeSelectedOptions &&
-				selectedKeys.includes( option.key )
-			) {
-				continue;
-			}
 
 			// Merge label into keywords
 			let { keywords = [] } = option;
