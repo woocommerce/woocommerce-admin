@@ -68,12 +68,12 @@ class Features {
 	}
 
 	/**
-	 * Returns if a specific wc-admin feature is enabled.
+	 * Returns if a specific wc-admin feature exists in the current environment.
 	 *
 	 * @param  string $feature Feature slug.
-	 * @return bool Returns true if the feature is enabled.
+	 * @return bool Returns true if the feature exists.
 	 */
-	public static function is_enabled( $feature ) {
+	public static function exists( $feature ) {
 		$features = self::get_features();
 		return in_array( $feature, $features, true );
 	}
@@ -112,6 +112,26 @@ class Features {
 				new $feature_class();
 			}
 		}
+	}
+
+	/**
+	 * Check if a feature is enabled.  Defaults to true for all features unless they are in beta.
+	 *
+	 * @param string $feature Feature slug.
+	 * @return bool
+	 */
+	public static function is_enabled( $feature ) {
+		if ( ! self::exists( $feature ) ) {
+			return false;
+		}
+
+		$features = self::get_beta_feature_options();
+
+		if ( isset( $features[ $feature ] ) ) {
+			return 'yes' === get_option( $features[ $feature ], 'no' );
+		}
+
+		return true;
 	}
 
 	/**
@@ -255,7 +275,7 @@ class Features {
 		$features         = self::get_features();
 		$enabled_features = array();
 		foreach ( $features as $key ) {
-			$enabled_features[ $key ] = self::is_enabled( $key );
+			$enabled_features[ $key ] = self::exists( $key );
 		}
 		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $enabled_features ), 'before' );
 	}

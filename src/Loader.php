@@ -175,10 +175,10 @@ class Loader {
 	 * @param  string $feature Feature slug.
 	 * @return bool Returns true if the feature is enabled.
 	 *
-	 * @deprecated since 1.9.0, use Features::is_enabled( $feature )
+	 * @deprecated since 1.9.0, use Features::exists( $feature )
 	 */
 	public static function is_feature_enabled( $feature ) {
-		return Features::is_enabled( $feature );
+		return Features::exists( $feature );
 	}
 
 	/**
@@ -189,7 +189,7 @@ class Loader {
 	 */
 	public static function should_use_minified_js_file( $script_debug ) {
 		// minified files are only shipped in non-core versions of wc-admin, return false if minified files are not available.
-		if ( ! Features::is_enabled( 'minified-js' ) ) {
+		if ( ! Features::exists( 'minified-js' ) ) {
 			return false;
 		}
 
