@@ -6,13 +6,12 @@
  */
 
 use \Automattic\WooCommerce\Admin\Features\OnboardingTasks;
-use \Automattic\WooCommerce\Admin\Features\Onboarding;
 use \Automattic\WooCommerce\Admin\PageController;
 
 /**
- * Class WC_Tests_Task_Lists
+ * Class WC_Tests_Extended_Task_List
  */
-class WC_Tests_Task_Lists extends WC_Unit_Test_Case {
+class WC_Tests_Extended_Task_List extends WC_Unit_Test_Case {
 
 	/**
 	 * Overridden setUp method from PHPUnit
@@ -47,7 +46,7 @@ class WC_Tests_Task_Lists extends WC_Unit_Test_Case {
 	 * Verify that the extended task list items are added correctly.
 	 */
 	public function test_add_extended_task_list_item() {
-		// At least one task list should be visible to add a extended task.
+		// At least one task list should be visible to add a task.
 		update_option( 'woocommerce_task_list_hidden', 'yes' );
 		update_option( 'woocommerce_extended_task_list_hidden', 'yes' );
 		add_filter( 'woocommerce_get_registered_extended_tasks', array( $this, 'add_tasks' ), 10, 1 );
