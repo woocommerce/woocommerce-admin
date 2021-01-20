@@ -17,6 +17,9 @@ matrix:
         - name: 'PHP 7.3 unit tests, PHP Coding standards check and JS tests'
           php: 7.3
           env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress RUN_PHPCS=1 RUN_JS=1 COMPOSER_DEV=1
+        - name: 'Latest WooCommerce'
+          php: 7.3
+          env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress COMPOSER_DEV=1 WC_VERSION=
         - name: 'PHP 7.3 unit tests, run in random order'
           php: 7.3
           env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress RUN_RANDOM=1 COMPOSER_DEV=1
@@ -34,7 +37,7 @@ matrix:
           env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress WC_VERSION=3.8.1
     allow_failures:
         php: 7.3
-        env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress RUN_RANDOM=1 COMPOSER_DEV=1
+        env: WP_VERSION=latest WP_MULTISITE=0 WP_CORE_DIR=/tmp/wordpress COMPOSER_DEV=1 WC_VERSION=
 
 before_install:
     - nvm install 'lts/*'
