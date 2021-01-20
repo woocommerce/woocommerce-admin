@@ -9,6 +9,9 @@ services:
     - mysql
     - docker
 
+env:
+    - WC_VERSION=4.5.0
+
 matrix:
     include:
         - name: 'PHP 7.3 unit tests, PHP Coding standards check and JS tests'
