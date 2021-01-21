@@ -194,7 +194,6 @@ install_deps() {
  	composer self-update --1
 	cd "woocommerce"
  	composer install --no-dev
-	composer self-update --2
 
 	cd "$WP_CORE_DIR"
 	php wp-cli.phar plugin activate woocommerce
