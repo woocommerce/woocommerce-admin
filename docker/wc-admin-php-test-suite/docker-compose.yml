@@ -8,6 +8,7 @@ services:
       - "../../:/app"
     environment:
       - WC_CORE_DIR=/tmp/wordpress/wp-content/plugins/woocommerce
+      - WC_VERSION=${WC_VERSION:-4.5.0}
       - DB_USER=root
       - DB_PASS=password
       - DB_NAME=wordpress_test
