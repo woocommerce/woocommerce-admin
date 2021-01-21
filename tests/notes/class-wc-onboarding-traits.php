@@ -16,31 +16,6 @@ class WC_Tests_Onboarding_Traits extends WC_Unit_Test_Case {
 	use OnboardingTraits;
 
 	/**
-	 * The options that we modify during this test suite.
-	 *
-	 * @var array
-	 */
-	private static $original_options;
-
-	/**
-	 * Setup for the whole test class.
-	 */
-	public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-
-		self::$original_options = get_option( 'woocommerce_onboarding_profile', array() );
-	}
-
-		/**
-		 * Cleans up test data once all test have run.
-		 */
-	public static function tearDownAfterClass() {
-		parent::tearDownAfterClass();
-
-		update_option( 'woocommerce_onboarding_profile', self::$original_options );
-	}
-
-	/**
 	 * Test revenue_is_within functionality.
 	 */
 	public function test_revenue_is_within() {
