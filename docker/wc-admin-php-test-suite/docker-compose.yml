@@ -3,6 +3,7 @@ version: "3"
 services:
   phpunit:
     build: "."
+    image: wc-admin-php-test-suite-phpunit:1.1.0
     volumes:
       - "test-suite:/tmp"
       - "../../:/app"
