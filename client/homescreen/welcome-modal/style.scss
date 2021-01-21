@@ -8,6 +8,10 @@
 
 		.components-button {
 			color: $white;
+
+			span {
+				display: none;
+			}
 		}
 	}
 
