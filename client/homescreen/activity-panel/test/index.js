@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 /**
  * Internal dependencies
@@ -33,12 +33,16 @@ jest.mock( '../panels', () => {
 } );
 
 // Mock the orders and order statuses.
-jest.mock( '../orders/utils', () => {
-	return {
-		getLowStockCount: jest.fn().mockImplementation( () => 0 ),
-		getUnreadOrders: jest.fn().mockImplementation( () => 100 ),
-		getOrderStatuses: jest.fn().mockImplementation( () => [ 'status' ] ),
-	};
+act( () => {
+	jest.mock( '../orders/utils', () => {
+		return {
+			getLowStockCount: jest.fn().mockImplementation( () => 0 ),
+			getUnreadOrders: jest.fn().mockImplementation( () => 100 ),
+			getOrderStatuses: jest
+				.fn()
+				.mockImplementation( () => [ 'status' ] ),
+		};
+	} );
 } );
 
 describe( 'ActivityPanel', () => {
