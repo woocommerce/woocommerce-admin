@@ -707,9 +707,15 @@ class Menu {
 		}
 
 		// Sort the menu items.
-		$order = array_column( $menu_items, 'order' );
-		$title = array_column( $menu_items, 'title' );
-		array_multisort( $order, SORT_ASC, $title, SORT_ASC, $menu_items );
+		$menuOrder = array(
+			'primary'   => 0,
+			'secondary' => 1,
+			'plugins'   => 2,
+		);
+		$menu      = array_map( function( $item ) use( $menuOrder ) { return $menuOrder[ $item['menuId'] ]; }, $menu_items );
+		$order     = array_column( $menu_items, 'order' );
+		$title     = array_column( $menu_items, 'title' );
+		array_multisort( $menu, SORT_ASC, $order, SORT_ASC, $title, SORT_ASC, $menu_items );
 
 		return $menu_items;
 	}
