@@ -1,0 +1,55 @@
+name: Lint and test
+on: [pull_request]
+
+jobs:
+    test-lint:
+        env:
+            WP_VERSION: latest
+            WP_MULTISITE: 0
+            WP_CORE_DIR: /tmp/wordpress
+            COMPOSER_DEV: 1
+
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php: [7.0, 7.1, 7.3]
+                wordpress: [5.3, 5.4, 5.5]
+                woocommerce: [4.7.1, 4.8.0, 4.9.0, 4.9.1]
+                phpunit: latest
+                include:
+                    - php: 7.0
+                      phpunit: 6
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v2
+            - name: Setup PHP
+              uses: shivammathur/setup-php@2.9.0
+              with:
+                  php-version: ${{matrix.php}}
+            - name: Install PHP dependencies
+              run: |
+                  composer self-update 2.0.6
+                  composer i
+            - name: Setup Node.js
+              uses: actions/setup-node@v2-beta
+              with:
+                  node-version: '14'
+            - name: Set up the tests
+              env:
+                  WC_VERSION: ${{matrix.woocommerce}}
+                  PHP_UNIT: ${{matrix.phpunit}}
+              run: |
+                  bash bin/install-wp-tests.sh wc_admin_test root '' localhost ${{matrix.wordpress}}
+                  bash bin/travis.sh before
+                  node --version
+                  npm --version
+                  timedatectl
+            - name: Lint the JS
+              run: bin/js_lint_test.sh
+              shell: bash
+            - name: Lint the PHP
+              run: bin/phpunit.sh
+              shell: bash
+            - name: Run the PHP unit tests
+              run: bin/phpcs.sh
+              shell: bash
