@@ -21,6 +21,4 @@ jobs:
                   stale-pr-label: 'status: stale'
                   stale-issue-label: 'status: stale'
                   exempt-issue-labels: 'cooldown period,priority: high,priority: critical'
-                  debug-only: true
-                  operations-per-run: 500
                   ascending: true
