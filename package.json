@@ -200,6 +200,7 @@
 		"node-watch": "0.7.1",
 		"postcss-color-function": "4.1.0",
 		"postcss-loader": "3.0.0",
+		"prettier": "npm:wp-prettier@2.2.1-beta-1",
 		"promptly": "3.2.0",
 		"prop-types": "15.7.2",
 		"raw-loader": "4.0.2",
