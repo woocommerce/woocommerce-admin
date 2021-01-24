@@ -25,7 +25,7 @@ export const controls = {
 		optionNames.push( optionName );
 
 		return new Promise( ( resolve ) => {
-			setTimeout( function() {
+			setTimeout( function () {
 				const names = optionNames.join( ',' );
 				if ( fetches[ names ] ) {
 					return fetches[ names ].then( ( result ) => {

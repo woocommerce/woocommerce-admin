@@ -136,9 +136,7 @@ export function getRangeLabel( after, before ) {
  * @return {DateValue} -  DateValue data about the selected period
  */
 export function getLastPeriod( period, compare ) {
-	const primaryStart = moment()
-		.startOf( period )
-		.subtract( 1, period );
+	const primaryStart = moment().startOf( period ).subtract( 1, period );
 	const primaryEnd = primaryStart.clone().endOf( period );
 	let secondaryStart;
 	let secondaryEnd;
@@ -146,9 +144,7 @@ export function getLastPeriod( period, compare ) {
 	if ( compare === 'previous_period' ) {
 		if ( period === 'year' ) {
 			// Subtract two entire periods for years to take into account leap year
-			secondaryStart = moment()
-				.startOf( period )
-				.subtract( 2, period );
+			secondaryStart = moment().startOf( period ).subtract( 2, period );
 			secondaryEnd = secondaryStart.clone().endOf( period );
 		} else {
 			// Otherwise, use days in primary period to figure out how far to go back

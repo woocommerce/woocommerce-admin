@@ -411,7 +411,7 @@ export function getReportChartData( options ) {
 			return reportChartDataResponses.error;
 		}
 
-		forEach( pagedData, function( _data ) {
+		forEach( pagedData, function ( _data ) {
 			if (
 				_data.data &&
 				_data.data.intervals &&

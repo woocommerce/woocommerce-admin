@@ -90,7 +90,7 @@ if (
 	window.wcAdminFeatures[ 'customer-effort-score-tracks' ] === true
 ) {
 	// Set up customer effort score survey.
-	( function() {
+	( function () {
 		const root = appRoot || embeddedRoot;
 
 		render(
