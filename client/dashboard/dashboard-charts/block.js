@@ -67,13 +67,11 @@ class ChartBlock extends Component {
 								this.getChartPath( selectedChart )
 							) }
 						>
-							{
-								/* translators: %s is the chart type */
-								sprintf(
-									__( '%s Report', 'woocommerce-admin' ),
-									selectedChart.label
-								)
-							}
+							{ /* translators: %s is the chart type */
+							sprintf(
+								__( '%s Report', 'woocommerce-admin' ),
+								selectedChart.label
+							) }
 						</a>
 						<ReportChart
 							charts={ charts }

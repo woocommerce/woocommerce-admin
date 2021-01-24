@@ -41,6 +41,11 @@ export function getTaxCode( tax ) {
 		tax.priority,
 	]
 		.filter( Boolean )
-		.map( ( item ) => item.toString().toUpperCase().trim() )
+		.map( ( item ) =>
+			item
+				.toString()
+				.toUpperCase()
+				.trim()
+		)
 		.join( '-' );
 }

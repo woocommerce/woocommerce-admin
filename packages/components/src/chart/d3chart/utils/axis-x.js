@@ -56,7 +56,9 @@ const getFirstDatePerMonth = ( dates ) => {
 	return dates.filter(
 		( date, i ) =>
 			i === 0 ||
-			moment( date ).toDate().getMonth() !==
+			moment( date )
+				.toDate()
+				.getMonth() !==
 				moment( dates[ i - 1 ] )
 					.toDate()
 					.getMonth()

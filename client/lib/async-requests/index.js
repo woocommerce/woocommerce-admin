@@ -22,7 +22,7 @@ import { getTaxCode } from '../../analytics/report/taxes/utils';
  * @return {Function} - a function of ids returning a promise
  */
 export function getRequestByIdString( path, handleData = identity ) {
-	return function ( queryString = '', query ) {
+	return function( queryString = '', query ) {
 		const pathString = typeof path === 'function' ? path( query ) : path;
 		const idList = getIdsFromQuery( queryString );
 		if ( idList.length < 1 ) {

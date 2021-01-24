@@ -65,7 +65,9 @@ describe( 'ActivityCard', () => {
 
 	test( 'should render a timestamp on a card', () => {
 		// We're generating this via moment to ensure it's always "3 days ago".
-		const threeDaysAgo = moment().subtract( 3, 'days' ).format();
+		const threeDaysAgo = moment()
+			.subtract( 3, 'days' )
+			.format();
 		const { container } = render(
 			<ActivityCard title="Inbox message" date={ threeDaysAgo }>
 				This card has some content

@@ -420,11 +420,15 @@ describe( 'getLastPeriod', () => {
 		.subtract( 1, 'years' );
 
 	// week
-	const lastWeekStart = moment().startOf( 'week' ).subtract( 1, 'week' );
+	const lastWeekStart = moment()
+		.startOf( 'week' )
+		.subtract( 1, 'week' );
 	const lastWeekEnd = lastWeekStart.clone().endOf( 'week' );
 
 	// month
-	const lastMonthStart = moment().startOf( 'month' ).subtract( 1, 'month' );
+	const lastMonthStart = moment()
+		.startOf( 'month' )
+		.subtract( 1, 'month' );
 	const lastMonthEnd = lastMonthStart.clone().endOf( 'month' );
 
 	// quarter
@@ -434,9 +438,13 @@ describe( 'getLastPeriod', () => {
 	const lastQuarterEnd = lastQuarterStart.clone().endOf( 'quarter' );
 
 	// year
-	const lastYearStart = moment().startOf( 'year' ).subtract( 1, 'year' );
+	const lastYearStart = moment()
+		.startOf( 'year' )
+		.subtract( 1, 'year' );
 	const lastYearEnd = lastYearStart.clone().endOf( 'year' );
-	const twoYearsAgoStart = moment().startOf( 'year' ).subtract( 2, 'year' );
+	const twoYearsAgoStart = moment()
+		.startOf( 'year' )
+		.subtract( 2, 'year' );
 
 	describe( 'day', () => {
 		it( 'should return correct values for primary period', () => {
@@ -837,7 +845,10 @@ describe( 'validateDateInputForRange', () => {
 
 	it( 'should return a correct error for start after end', () => {
 		const end = moment().subtract( 5, 'months' );
-		const value = end.clone().add( 1, 'months' ).format( dateFormat );
+		const value = end
+			.clone()
+			.add( 1, 'months' )
+			.format( dateFormat );
 		const validated = validateDateInputForRange(
 			'after',
 			value,

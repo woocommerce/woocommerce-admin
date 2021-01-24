@@ -80,14 +80,14 @@ export const addHistoryListener = ( listener ) => {
 			/* global CustomEvent */
 			const pushState = history.pushState;
 			const replaceState = history.replaceState;
-			history.pushState = function ( state ) {
+			history.pushState = function( state ) {
 				const pushStateEvent = new CustomEvent( 'pushstate', {
 					state,
 				} );
 				window.dispatchEvent( pushStateEvent );
 				return pushState.apply( history, arguments );
 			};
-			history.replaceState = function ( state ) {
+			history.replaceState = function( state ) {
 				const replaceStateEvent = new CustomEvent( 'replacestate', {
 					state,
 				} );
