@@ -11,6 +11,7 @@ import {
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -46,8 +47,14 @@ export const ActivityPanel = () => {
 			publishedProductCount,
 		};
 	} );
+	const setupTaskListData = useSelect( ( select ) => {
+		const { getOption } = select( OPTIONS_STORE_NAME );
+		return {
+			isTaskListHidden: getOption( 'woocommerce_task_list_hidden' ),
+		};
+	} );
 
-	const panels = getAllPanels( panelsData );
+	const panels = getAllPanels( { ...panelsData, ...setupTaskListData } );
 
 	if ( panels.length === 0 ) {
 		return null;

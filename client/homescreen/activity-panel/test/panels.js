@@ -68,6 +68,7 @@ describe( 'ActivityPanel', () => {
 			totalOrderCount: 10,
 			publishedProductCount: 2,
 			manageStock: 'yes',
+			isTaskListHidden: 'no',
 		} );
 
 		expect( panels ).toEqual(
@@ -81,6 +82,7 @@ describe( 'ActivityPanel', () => {
 		const panels = getAllPanels( {
 			publishedProductCount: 5,
 			reviewsEnabled: 'yes',
+			isTaskListHidden: 'no',
 		} );
 
 		expect( panels ).toEqual(
