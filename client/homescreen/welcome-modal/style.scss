@@ -8,11 +8,6 @@
 
 		.components-button {
 			color: $white;
-
-			// @todo Remove this after https://github.com/WordPress/gutenberg/issues/28311 is fixed
-			span {
-				display: none;
-			}
 		}
 	}
 
