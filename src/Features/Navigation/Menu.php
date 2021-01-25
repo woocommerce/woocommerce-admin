@@ -490,11 +490,14 @@ class Menu {
 	public function migrate_core_child_items( $menu ) {
 		global $submenu;
 
-		if ( ! isset( $submenu['woocommerce'] ) || ! isset( $submenu['edit.php?post_type=product'] ) ) {
+		if ( ! isset( $submenu['woocommerce'] ) && ! isset( $submenu['edit.php?post_type=product'] ) ) {
 			return;
 		}
 
-		$submenu_items = array_merge( $submenu['woocommerce'], $submenu['edit.php?post_type=product'] );
+		$submenu_items = array_merge(
+			isset( $submenu['woocommerce'] ) ? $submenu['woocommerce'] : array(),
+			isset( $submenu['edit.php?post_type=product'] ) ? $submenu['edit.php?post_type=product'] : array()
+		);
 
 		foreach ( $submenu_items as $key => $menu_item ) {
 			if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
