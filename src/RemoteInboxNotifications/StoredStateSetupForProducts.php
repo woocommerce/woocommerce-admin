@@ -18,8 +18,6 @@ class StoredStateSetupForProducts {
 	 * Initialize the class
 	 */
 	public static function init() {
-//		add_action( 'product_page_product_importer', array( __CLASS__, 'run_on_product_importer' ) );
-//		add_action( 'transition_post_status', array( __CLASS__, 'run_on_transition_post_status' ), 10, 3 );
 	}
 
 	/**
