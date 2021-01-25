@@ -521,14 +521,12 @@ class Menu {
 				continue;
 			}
 
-			self::add_item(
+			self::add_plugin_item(
 				array(
-					'parent'     => 'woocommerce',
 					'title'      => $menu_item[0],
 					'capability' => $menu_item[1],
 					'id'         => sanitize_title( $menu_item[0] ),
 					'url'        => $menu_item[2],
-					'menuId'     => 'plugins',
 				)
 			);
 		}
