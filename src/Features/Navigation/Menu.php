@@ -511,9 +511,11 @@ class Menu {
 				continue;
 			}
 
+			$menu_item[2] = htmlspecialchars_decode( $menu_item[2] );
+
 			// Don't add already added items.
 			$callbacks = self::get_callbacks();
-			if ( array_key_exists( htmlspecialchars_decode( $menu_item[2] ), $callbacks ) ) {
+			if ( array_key_exists( $menu_item[2], $callbacks ) ) {
 				continue;
 			}
 
