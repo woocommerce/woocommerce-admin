@@ -13,7 +13,7 @@
 				}
 			}
 
-			.woocommerce-list__item:not(.is-complete) {
+			.woocommerce-list__item:not( .is-complete ) {
 				.woocommerce-task__icon {
 					border: 1px solid $gray-100;
 					background: $white;
@@ -32,7 +32,7 @@
 				height: 32px;
 			}
 
-			.woocommerce-list__item-before svg {
+			.woocommerce-list__item-before .woocommerce-task__icon svg {
 				fill: $white;
 				position: relative;
 				top: 4px;
@@ -57,7 +57,7 @@
 	}
 
 	.components-modal__screen-overlay {
-		background: rgba(43, 45, 47, 0.4);
+		background: rgba( 43, 45, 47, 0.4 );
 	}
 
 	.components-modal__frame {
@@ -195,6 +195,17 @@
 	}
 }
 
+.task-list-recommended-label {
+	border: 1px solid $gray-700;
+	color: $gray-700;
+	border-radius: 12px;
+	margin: 0 $gap-smaller;
+	padding: 0 $gap-small;
+	line-height: 18px;
+	font-size: 12px;
+	display: inline-block;
+}
+
 .woocommerce-task-payment {
 	display: flex;
 	flex-direction: row;
@@ -205,7 +216,7 @@
 
 	.woocommerce-task-payment__recommended-ribbon {
 		position: absolute;
-		transform: rotate(-45deg) translate(-50%, -50%);
+		transform: rotate( -45deg ) translate( -50%, -50% );
 		background: $studio-gray-80;
 		color: $studio-white;
 		font-size: 11px;
