@@ -13,7 +13,7 @@
 				}
 			}
 
-			.woocommerce-list__item:not( .is-complete ) {
+			.woocommerce-list__item:not(.is-complete) {
 				.woocommerce-task__icon {
 					border: 1px solid $gray-100;
 					background: $white;
@@ -57,7 +57,7 @@
 	}
 
 	.components-modal__screen-overlay {
-		background: rgba( 43, 45, 47, 0.4 );
+		background: rgba(43, 45, 47, 0.4);
 	}
 
 	.components-modal__frame {
@@ -216,7 +216,7 @@
 
 	.woocommerce-task-payment__recommended-ribbon {
 		position: absolute;
-		transform: rotate( -45deg ) translate( -50%, -50% );
+		transform: rotate(-45deg) translate(-50%, -50%);
 		background: $studio-gray-80;
 		color: $studio-white;
 		font-size: 11px;
