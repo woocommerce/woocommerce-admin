@@ -523,11 +523,12 @@ class Menu {
 
 			self::add_item(
 				array(
-					'parent'     => 'woocommerce-settings',
+					'parent'     => 'woocommerce',
 					'title'      => $menu_item[0],
 					'capability' => $menu_item[1],
 					'id'         => sanitize_title( $menu_item[0] ),
 					'url'        => $menu_item[2],
+					'menuId'     => 'plugins',
 				)
 			);
 		}
