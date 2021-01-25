@@ -490,11 +490,13 @@ class Menu {
 	public function migrate_core_child_items( $menu ) {
 		global $submenu;
 
-		if ( ! isset( $submenu['woocommerce'] ) ) {
+		if ( ! isset( $submenu['woocommerce'] ) || ! isset( $submenu['edit.php?post_type=product'] ) ) {
 			return;
 		}
 
-		foreach ( $submenu['woocommerce'] as $key => $menu_item ) {
+		$submenu_items = array_merge( $submenu['woocommerce'], $submenu['edit.php?post_type=product'] );
+
+		foreach ( $submenu_items as $key => $menu_item ) {
 			if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
 				// phpcs:disable
 				if ( ! isset( $menu_item[ self::CSS_CLASSES ] ) ) {
@@ -508,7 +510,11 @@ class Menu {
 
 			// Don't add already added items.
 			$callbacks = self::get_callbacks();
-			if ( array_key_exists( $menu_item[2], $callbacks ) ) {
+			if ( array_key_exists( htmlspecialchars_decode( $menu_item[2] ), $callbacks ) ) {
+				continue;
+			}
+
+			if ( in_array( $menu_item[2], array( 'product_importer', 'product_exporter', 'product_attributes' ), true ) ) {
 				continue;
 			}
 
