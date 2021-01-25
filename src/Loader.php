@@ -1085,9 +1085,11 @@ class Loader {
 			}
 		}
 
-		$current_user_data                     = (array) get_userdata( get_current_user_id() );
-		$woocommerce_meta                      = self::get_user_data_values( array( 'id' => get_current_user_id() ) );
-		$current_user_data['woocommerce_meta'] = $woocommerce_meta;
+		$user_controller = new \WP_REST_Users_Controller();
+		$request         = new \WP_REST_Request();
+		$request->set_query_params( array( 'context' => 'edit' ) );
+		$user_response     = $user_controller->get_current_item( $request );
+		$current_user_data = is_wp_error( $user_response ) ? (object) array() : $user_response->get_data();
 
 		$settings['currentUserData']      = $current_user_data;
 		$settings['reviewsEnabled']       = get_option( 'woocommerce_enable_reviews' );

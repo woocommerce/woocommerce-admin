@@ -99,7 +99,8 @@ export const InstallJetpackCTA = () => {
 				isBusy: busyState,
 				jetpackInstallState: installState,
 				canUserInstallPlugins:
-					currentUser.allcaps && currentUser.allcaps.install_plugins,
+					currentUser.capabilities &&
+					currentUser.capabilities.install_plugins,
 			};
 		}
 	);
