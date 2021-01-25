@@ -30,6 +30,16 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 				'role' => 'administrator',
 			)
 		);
+
+		$products = wc_get_products(
+			array(
+				'return' => 'ids',
+			)
+		);
+		// delete all products.
+		foreach ( $products as $product ) {
+			$product->delete( true );
+		}
 	}
 
 	/**
