@@ -131,7 +131,7 @@ class Screen {
 	 * @return bool
 	 */
 	public static function is_woocommerce_core_taxonomy( $taxonomy ) {
-		if ( in_array( $taxonomy, array( 'product_cat', 'product_tag' ), true ) ) {
+		if ( in_array( $taxonomy, array( 'product_cat', 'product_tag', 'product_brand' ), true ) ) {
 			return true;
 		}
 
