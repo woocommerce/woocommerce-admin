@@ -28,12 +28,12 @@ class RemoteInboxNotificationsEngine {
 		add_action( 'admin_init', array( __CLASS__, 'on_admin_init' ) );
 
 		// Trigger when the profile data option is updated (during onboarding).
-		add_action(
-			'update_option_' . Onboarding::PROFILE_DATA_OPTION,
-			array( __CLASS__, 'update_profile_option' ),
-			10,
-			2
-		);
+//		add_action(
+//			'update_option_' . Onboarding::PROFILE_DATA_OPTION,
+//			array( __CLASS__, 'update_profile_option' ),
+//			10,
+//			2
+//		);
 	}
 
 	/**
@@ -66,8 +66,8 @@ class RemoteInboxNotificationsEngine {
 			return;
 		}
 
-		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
-		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
+//		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
+//		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
 		StoredStateSetupForProducts::init();
 
 		// Pre-fetch stored state so it has the correct initial values.
