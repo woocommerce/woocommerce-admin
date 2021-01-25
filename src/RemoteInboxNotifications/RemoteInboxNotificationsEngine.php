@@ -66,6 +66,11 @@ class RemoteInboxNotificationsEngine {
 			return;
 		}
 
+		// Remote inbox can also be turned off by disabling marketplace suggestions.
+		if ( 'yes' !== get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+			return false;
+		}
+
 		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
 		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
 		StoredStateSetupForProducts::init();
