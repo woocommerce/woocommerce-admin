@@ -218,13 +218,19 @@ export class SelectControl extends Component {
 				? cacheSearchOptions
 				: this.getOptionsByQuery( cacheSearchOptions, query );
 
-		this.setState( {
-			query,
-			isFocused: true,
-			selectedIndex: 0,
-			searchOptions,
-			isExpanded: Boolean( searchOptions.length ),
-		} );
+		this.setState(
+			{
+				query,
+				isFocused: true,
+				selectedIndex: 0,
+				searchOptions,
+			},
+			() => {
+				this.setState( {
+					isExpanded: Boolean( this.getOptions().length ),
+				} );
+			}
+		);
 
 		this.updateSearchOptions( query );
 	}
@@ -253,9 +259,13 @@ export class SelectControl extends Component {
 				{
 					selectedIndex: 0,
 					searchOptions,
-					isExpanded: Boolean( searchOptions.length ),
 				},
-				() => this.announce( searchOptions )
+				() => {
+					this.setState( {
+						isExpanded: Boolean( this.getOptions().length ),
+					} );
+					this.announce( searchOptions );
+				}
 			);
 		} ) );
 	}
