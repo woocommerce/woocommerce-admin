@@ -134,6 +134,7 @@ install_deps() {
 	git clone --depth 1 --branch $LATEST_WC_TAG https://github.com/woocommerce/woocommerce.git
 
 	# Bring in WooCommerce Core dependencies
+	composer self-update $COMPOSER_VERSION
 	cd "woocommerce"
  	composer install --no-dev
 
@@ -151,7 +152,6 @@ install_deps() {
 
 	# Back to original dir
 	cd "$WORKING_DIR"
-
 }
 
 install_wp

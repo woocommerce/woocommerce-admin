@@ -8,31 +8,30 @@ jobs:
             WP_MULTISITE: 0
             WP_CORE_DIR: '/tmp/wordpress'
             COMPOSER_DEV: 1
+            PHPUNIT_VERSION: '7.5.20'
+            COMPOSER_VERSION: '2.0.6'
 
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
-                php: ['7.0', '7.1', '7.2', '7.3']
+                php: [7.0, 7.1, 7.2, 7.3]
                 wordpress: [5.3, 5.4, 5.5]
                 woocommerce: ['4.7.1', '4.8.0', '4.9.0', '4.9.1']
-                phpunit: ['7.5.20']
-                include:
-                    - php: '7.0'
-                      phpunit: '6.5.9'
         steps:
+            - name: Configure composer and phpunit versions
+              env:
+                  WC_VERSION: ${{matrix.woocommerce}}
+                  PHP_VERSION: ${{matrix.php}}
+              run: bin/ci/determine-versions.sh
             - name: Check out repository code
               uses: actions/checkout@v2
             - name: Setup PHP
               uses: shivammathur/setup-php@2.9.0
               with:
                   php-version: ${{matrix.php}}
-                  tools: phpunit:${{matrix.phpunit}}
+                  tools: phpunit:$PHPUNIT_VERSION
                   extensions: mysqli
-            - name: Install PHP dependencies
-              run: |
-                  composer self-update 2.0.6
-                  composer i
             - name: Setup Node.js
               uses: actions/setup-node@v2-beta
               with:
@@ -44,8 +43,8 @@ jobs:
                   PHP_UNIT: ${{matrix.phpunit}}
               run: |
                   sudo /etc/init.d/mysql start
-                  bash bin/gh-install-wp-tests.sh wc_admin_test root 'root' localhost
-                  bash bin/gh.sh
+                  bash bin/ci/gh-install-wp-tests.sh wc_admin_test root 'root' localhost
+                  bash bin/ci/gh.sh
                   node --version
                   npm --version
                   timedatectl
