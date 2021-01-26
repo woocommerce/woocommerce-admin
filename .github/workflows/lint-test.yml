@@ -15,23 +15,23 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.0, 7.1, 7.2, 7.3]
-                wordpress: [5.3, 5.4, 5.5]
+                php: ['7.1', '7.2', '7.3']
+                wordpress: ['5.3', '5.4', '5.5']
                 woocommerce: ['4.7.1', '4.8.0', '4.9.0', '4.9.1']
+                phpunit: ['7.5.20']
+                include:
+                    php: '7.0'
+                    wordpress: ['5.3', '5.4', '5.5']
+                    woocommerce: ['4.7.1', '4.8.0', '4.9.0', '4.9.1']
+                    phpunit: ['6.5.9']
         steps:
             - name: Check out repository code
               uses: actions/checkout@v2
-            - name: Configure composer and phpunit versions
-              env:
-                  WC_VERSION: ${{matrix.woocommerce}}
-                  PHP_VERSION: ${{matrix.php}}
-              run: bin/ci/determine-versions.sh
-              shell: bash
             - name: Setup PHP
               uses: shivammathur/setup-php@2.9.0
               with:
                   php-version: ${{matrix.php}}
-                  tools: phpunit:$PHPUNIT_VERSION
+                  tools: phpunit:${{matrix.phpunit}}
                   extensions: mysqli
             - name: Setup Node.js
               uses: actions/setup-node@v2-beta
