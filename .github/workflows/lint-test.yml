@@ -29,6 +29,7 @@ jobs:
               uses: shivammathur/setup-php@2.9.0
               with:
                   php-version: ${{matrix.php}}
+                  tools: phpunit
             - name: Install PHP dependencies
               run: |
                   composer self-update 2.0.6
@@ -58,8 +59,8 @@ jobs:
               run: bin/js_lint_test.sh
               shell: bash
             - name: Lint the PHP
-              run: bin/phpunit.sh
+              run: bin/phpcs.sh
               shell: bash
             - name: Run the PHP unit tests
-              run: bin/phpcs.sh
+              run: bin/phpunit.sh
               shell: bash
