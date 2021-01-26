@@ -30,7 +30,20 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 				'role' => 'administrator',
 			)
 		);
+	}
 
+	/**
+	 * Tear down.
+	 */
+	public function tearDown() {
+		parent::tearDown();
+		$this->delete_products();
+	}
+
+	/**
+	 * Remove products.
+	 */
+	public function delete_products() {
 		$products = wc_get_products(
 			array(
 				'return' => 'ids',
@@ -62,6 +75,8 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		wp_set_current_user( $this->user );
 
 		$this->clear_product_attribute_taxonomies();
+
+		$this->delete_products();
 
 		$request  = new WP_REST_Request( 'POST', $this->endpoint . '/import_sample_products' );
 		$response = $this->server->dispatch( $request );
