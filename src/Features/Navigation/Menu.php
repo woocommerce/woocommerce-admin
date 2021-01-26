@@ -519,6 +519,7 @@ class Menu {
 				continue;
 			}
 
+			// Don't add these Product submenus because they are added elsewhere.
 			if ( in_array( $menu_item[2], array( 'product_importer', 'product_exporter', 'product_attributes' ), true ) ) {
 				continue;
 			}
@@ -531,6 +532,23 @@ class Menu {
 					'url'        => $menu_item[2],
 				)
 			);
+
+			// Determine if migrated items are a taxonomy or post_type. If they are, register them.
+			$parsed_url   = wp_parse_url( $menu_item[2] );
+			$query_string = isset( $parsed_url['query'] ) ? $parsed_url['query'] : false;
+
+			if ( $query_string ) {
+				$query = array();
+				parse_str( $query_string, $query );
+
+				if ( isset( $query['taxonomy'] ) ) {
+					Screen::register_taxonomy( $query['taxonomy'] );
+				}
+
+				if ( isset( $query['post_type'] ) ) {
+					Screen::register_post_type( $query['post_type'] );
+				}
+			}
 		}
 
 		return $menu;
