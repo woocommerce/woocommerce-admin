@@ -14,6 +14,7 @@ TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
 WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
 WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
+WP_TESTS_TAG="branches/$WP_VERSION"
 
 download() {
     if [ `which curl` ]; then
@@ -23,25 +24,9 @@ download() {
     fi
 }
 
-if [[ $WP_VERSION =~ ^[0-9]+\.[0-9]+$ ]]; then
-	WP_TESTS_TAG="branches/$WP_VERSION"
-elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
-	if [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
-		# version x.x.0 means the first release of the major version, so strip off the .0 and download version x.x
-		WP_TESTS_TAG="tags/${WP_VERSION%??}"
-	else
-		WP_TESTS_TAG="tags/$WP_VERSION"
-	fi
-fi
-
 set -ex
 
 install_wp() {
-
-	if [ -d $WP_CORE_DIR ]; then
-		return;
-	fi
-
 	mkdir -p $WP_CORE_DIR
 	download https://api.wordpress.org/core/version-check/1.7/ $TMPDIR/wp-latest.json
 	if [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
@@ -122,15 +107,9 @@ install_deps() {
 	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=root --dbpass=$DB_PASS --dbhost=localhost --dbprefix=wptests_ --allow-root
 	php wp-cli.phar core install --url="$WP_SITE_URL" --title="Example" --admin_user=admin --admin_password=password --admin_email=info@example.com --path=$WP_CORE_DIR --skip-email --allow-root
 
-	# Install WooCommerce (latest non-hyphenated (beta, RC) tag)
-	if [[ "$WC_VERSION" == "" ]]; then
-		LATEST_WC_TAG="$(git ls-remote --tags https://github.com/woocommerce/woocommerce.git | awk '{print $2}' | sed 's/^refs\/tags\///' | grep -E '^[0-9]\.[0-9]\.[0-9]$' | sort -V | tail -n 1)"
-	else
-		LATEST_WC_TAG="$WC_VERSION"
-	fi
 	cd "wp-content/plugins/"
 	# As zip file does not include tests, we have to get it from git repo.
-	git clone --depth 1 --branch $LATEST_WC_TAG https://github.com/woocommerce/woocommerce.git
+	git clone --depth 1 --branch $WC_VERSION https://github.com/woocommerce/woocommerce.git
 
 	# Bring in WooCommerce Core dependencies
 	composer self-update $COMPOSER_VERSION
