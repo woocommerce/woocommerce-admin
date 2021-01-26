@@ -115,7 +115,7 @@ install_deps() {
 	composer self-update $COMPOSER_VERSION
 	cd "woocommerce"
  	composer install --no-dev
-	composer self-update 2.0.8
+	composer self-update 2.0.6
 
   # Activate WooCommerce
 	cd "$WP_CORE_DIR"
