@@ -98,33 +98,12 @@ install_test_suite() {
 }
 
 install_db() {
-
-	if [ ${SKIP_DB_CREATE} = "true" ]; then
-		return 0
-	fi
-
-	# parse DB_HOST for port or socket references
-	local PARTS=(${DB_HOST//\:/ })
-	local DB_HOSTNAME=${PARTS[0]};
-	local DB_SOCK_OR_PORT=${PARTS[1]};
-	local EXTRA=""
-
-	if ! [ -z $DB_HOSTNAME ] ; then
-		if [ $(echo $DB_SOCK_OR_PORT | grep -e '^[0-9]\{1,\}$') ]; then
-			EXTRA=" --host=$DB_HOSTNAME --port=$DB_SOCK_OR_PORT --protocol=tcp"
-		elif ! [ -z $DB_SOCK_OR_PORT ] ; then
-			EXTRA=" --socket=$DB_SOCK_OR_PORT"
-		elif ! [ -z $DB_HOSTNAME ] ; then
-			EXTRA=" --host=$DB_HOSTNAME --protocol=tcp"
-		fi
-	fi
-
 	# drop existing database
-	echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql --password="$DB_PASS" $EXTRA
+	echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql -uroot -e --password="$DB_PASS"
 	# mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA 2>/dev/null || true
 
 	# create database
-  echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql --password="$DB_PASS" $EXTRA	
+  echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql -uroot -e --password="$DB_PASS" $EXTRA	
 }
 
 install_deps() {
@@ -143,7 +122,7 @@ install_deps() {
 	rm -f wp-config.php
 	rm -rf wp-content/plugins/woocommerce
 
-	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --dbhost=$DB_HOST --dbprefix=wptests_ --allow-root
+	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=root --dbpass=$DB_PASS --dbhost=localhost --dbprefix=wptests_ --allow-root
 	php wp-cli.phar core install --url="$WP_SITE_URL" --title="Example" --admin_user=admin --admin_password=password --admin_email=info@example.com --path=$WP_CORE_DIR --skip-email --allow-root
 
 	# Install WooCommerce (latest non-hyphenated (beta, RC) tag)
