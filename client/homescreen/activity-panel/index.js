@@ -26,7 +26,7 @@ import { getAllPanels } from './panels';
 import { getUnapprovedReviews } from './reviews/utils';
 
 export const ActivityPanel = () => {
-	const settings = useSelect( () => {
+	const settingsData = useSelect( () => {
 		const manageStock = getSetting( 'manageStock', 'no' );
 		const publishedProductCount = getSetting( 'publishedProductCount', 0 );
 		const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
@@ -65,9 +65,9 @@ export const ActivityPanel = () => {
 	} );
 
 	const panels = getAllPanels( {
-		...settings,
 		...ordersData,
 		...reviewsData,
+		...settingsData,
 		...taskListData,
 	} );
 
