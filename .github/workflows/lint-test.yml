@@ -1,27 +1,32 @@
 name: Lint and test
-on: [pull_request]
+on: [push]
 
 jobs:
     test-lint:
         env:
-            WP_VERSION: latest
+            WP_VERSION: 'latest'
             WP_MULTISITE: 0
-            WP_CORE_DIR: /tmp/wordpress
+            WP_CORE_DIR: '/tmp/wordpress'
             COMPOSER_DEV: 1
 
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php: [7.0, 7.1, 7.3]
-                wordpress: [5.3, 5.4, 5.5]
-                woocommerce: [4.7.1, 4.8.0, 4.9.0, 4.9.1]
-                phpunit: latest
-                include:
-                    - php: 7.0
-                      phpunit: 6
+                # php: ['7.0', '7.1', '7.2', '7.3']
+                php: ['7.3']
+                # wordpress: ['5.3', '5.4', '5.5']
+                wordpress: [5.5]
+                # woocommerce: ['4.7.1', '4.8.0', '4.9.0', '4.9.1']
+                woocommerce: ['4.9.1']
+                phpunit: ['latest']
+                # include:
+                #     - php: '7.0'
+                #       phpunit: 6
         steps:
             - name: Check out repository code
               uses: actions/checkout@v2
+              with:
+                  repository: woocommerce/woocommerce-admin
             - name: Setup PHP
               uses: shivammathur/setup-php@2.9.0
               with:
@@ -34,12 +39,19 @@ jobs:
               uses: actions/setup-node@v2-beta
               with:
                   node-version: '14'
+            # - name: Install supporting tools
+            #   run: |
+            #     sudo apt update
+            #     sudo apt-get install subversion -y
+            #     sudo apt-get install mysql-client -y
             - name: Set up the tests
               env:
+                  WP_VERSION: ${{matrix.wordpress}}
                   WC_VERSION: ${{matrix.woocommerce}}
                   PHP_UNIT: ${{matrix.phpunit}}
               run: |
-                  bash bin/install-wp-tests.sh wc_admin_test root '' localhost ${{matrix.wordpress}}
+                  sudo /etc/init.d/mysql start
+                  bash bin/gh-install-wp-tests.sh wc_admin_test root 'root' localhost
                   bash bin/travis.sh before
                   node --version
                   npm --version
