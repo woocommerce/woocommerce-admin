@@ -26,35 +26,50 @@ import { getAllPanels } from './panels';
 import { getUnapprovedReviews } from './reviews/utils';
 
 export const ActivityPanel = () => {
-	const panelsData = useSelect( ( select ) => {
-		const totalOrderCount = getSetting( 'orderCount', 0 );
-		const orderStatuses = getOrderStatuses( select );
-		const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
-		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
+	const settings = useSelect( () => {
 		const manageStock = getSetting( 'manageStock', 'no' );
-		const countLowStockProducts = getLowStockCount( select );
-		const countUnapprovedReviews = getUnapprovedReviews( select );
 		const publishedProductCount = getSetting( 'publishedProductCount', 0 );
+		const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
+		const totalOrderCount = getSetting( 'orderCount', 0 );
+		return {
+			manageStock,
+			publishedProductCount,
+			reviewsEnabled,
+			totalOrderCount,
+		};
+	} );
 
+	const ordersData = useSelect( ( select ) => {
+		const orderStatuses = getOrderStatuses( select );
+		const countLowStockProducts = getLowStockCount( select );
+		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
 		return {
 			countLowStockProducts,
 			countUnreadOrders,
-			manageStock,
 			orderStatuses,
-			totalOrderCount,
-			reviewsEnabled,
-			countUnapprovedReviews,
-			publishedProductCount,
 		};
 	} );
-	const setupTaskListData = useSelect( ( select ) => {
+
+	const reviewsData = useSelect( ( select ) => {
+		const countUnapprovedReviews = getUnapprovedReviews( select );
+		return {
+			countUnapprovedReviews,
+		};
+	} );
+
+	const taskListData = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
 		return {
 			isTaskListHidden: getOption( 'woocommerce_task_list_hidden' ),
 		};
 	} );
 
-	const panels = getAllPanels( { ...panelsData, ...setupTaskListData } );
+	const panels = getAllPanels( {
+		...settings,
+		...ordersData,
+		...reviewsData,
+		...taskListData,
+	} );
 
 	if ( panels.length === 0 ) {
 		return null;
