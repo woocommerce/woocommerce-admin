@@ -37,33 +37,17 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		$this->delete_products();
-		$this->remove_color_attribute_taxonomy();
-	}
-
-	/**
-	 * Remove products.
-	 */
-	public function delete_products() {
-		$products = wc_get_products(
-			array(
-				'return' => 'ids',
-			)
-		);
-		// delete all products.
-		foreach ( $products as $product ) {
-			$product->delete( true );
-		}
+		$this->remove_color_or_logo_attribute_taxonomy();
 	}
 
 	/**
 	 * Remove product attributes that where created in previous tests.
 	 */
-	public function remove_color_attribute_taxonomy() {
+	public function remove_color_or_logo_attribute_taxonomy() {
 		$taxonomies = get_taxonomies();
 		foreach ( (array) $taxonomies as $taxonomy ) {
 			// pa - product attribute.
-			if ( 'pa_color' === $taxonomy ) {
+			if ( 'pa_color' === $taxonomy || 'pa_logo' === $taxonomy) {
 				unregister_taxonomy( $taxonomy );
 			}
 		}
@@ -75,9 +59,7 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 	public function test_import_sample_products() {
 		wp_set_current_user( $this->user );
 
-		$this->remove_color_attribute_taxonomy();
-
-		$this->delete_products();
+		$this->remove_color_or_logo_attribute_taxonomy();
 
 		$request  = new WP_REST_Request( 'POST', $this->endpoint . '/import_sample_products' );
 		$response = $this->server->dispatch( $request );
@@ -91,7 +73,7 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'skipped', $data );
 		// There might be previous products present.
 		if ( 0 === count( $data['skipped'] ) ) {
-			$this->assertGreaterThan( 10, count( $data['imported'] ) );
+			$this->assertGreaterThan( 2, count( $data['imported'] ) );
 		}
 		$this->assertArrayHasKey( 'updated', $data );
 		$this->assertEquals( 0, count( $data['updated'] ) );
