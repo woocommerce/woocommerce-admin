@@ -15,7 +15,7 @@ jobs:
                 wordpress: ['5.3', '5.4', '5.5']
                 woocommerce: ['4.8.0', '4.9.0', '4.9.1']
                 phpunit: ['7.5.20']
-                composer: ['2.0.8']
+                composer: ['2.0.6']
                 include:
                     - php: '7.0'
                       wordpress: '5.3'
@@ -26,12 +26,12 @@ jobs:
                       wordpress: '5.4'
                       woocommerce: '4.8.0'
                       phpunit: '6.5.9'
-                      composer: '2.0.8'
+                      composer: '2.0.6'
                     - php: '7.0'
                       wordpress: '5.5'
                       woocommerce: '4.9.0'
                       phpunit: '6.5.9'
-                      composer: '2.0.8'
+                      composer: '2.0.6'
 
         steps:
             - name: Check out repository code
