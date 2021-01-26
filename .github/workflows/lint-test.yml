@@ -24,6 +24,7 @@ jobs:
                   WC_VERSION: ${{matrix.woocommerce}}
                   PHP_VERSION: ${{matrix.php}}
               run: bin/ci/determine-versions.sh
+              shell: bash
             - name: Check out repository code
               uses: actions/checkout@v2
             - name: Setup PHP
