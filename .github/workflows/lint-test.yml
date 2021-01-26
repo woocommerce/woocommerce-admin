@@ -38,11 +38,6 @@ jobs:
               uses: actions/setup-node@v2-beta
               with:
                   node-version: '14'
-            # - name: Install supporting tools
-            #   run: |
-            #     sudo apt update
-            #     sudo apt-get install subversion -y
-            #     sudo apt-get install mysql-client -y
             - name: Set up the tests
               env:
                   WP_VERSION: ${{matrix.wordpress}}
