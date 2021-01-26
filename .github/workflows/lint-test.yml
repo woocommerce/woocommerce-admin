@@ -28,6 +28,7 @@ jobs:
               with:
                   php-version: ${{matrix.php}}
                   tools: phpunit:${{matrix.phpunit}}
+                  extensions: mysqli
             - name: Install PHP dependencies
               run: |
                   composer self-update 2.0.6
