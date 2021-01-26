@@ -543,9 +543,7 @@ class Menu {
 
 				if ( isset( $query['taxonomy'] ) ) {
 					Screen::register_taxonomy( $query['taxonomy'] );
-				}
-
-				if ( isset( $query['post_type'] ) ) {
+				} elseif ( isset( $query['post_type'] ) ) {
 					Screen::register_post_type( $query['post_type'] );
 				}
 			}
