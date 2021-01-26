@@ -99,11 +99,10 @@ install_test_suite() {
 
 install_db() {
 	# drop existing database
-	echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql -uroot -e --password="$DB_PASS"
-	# mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA 2>/dev/null || true
+	echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql --user="root" --password="$DB_PASS"
 
 	# create database
-  echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql -uroot -e --password="$DB_PASS" $EXTRA	
+  echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql --user="root" --password="$DB_PASS" $EXTRA	
 }
 
 install_deps() {
