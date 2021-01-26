@@ -11,6 +11,7 @@ jobs:
 
         runs-on: ubuntu-latest
         strategy:
+            fail-fast: false
             matrix:
                 # php: ['7.0', '7.1', '7.2', '7.3']
                 php: ['7.3']
@@ -19,9 +20,9 @@ jobs:
                 # woocommerce: ['4.7.1', '4.8.0', '4.9.0', '4.9.1']
                 woocommerce: ['4.9.1']
                 phpunit: ['7.5.20']
-                # include:
-                #     - php: '7.0'
-                #       phpunit: '6.5.9'
+                include:
+                    - php: '7.0'
+                      phpunit: '6.5.9'
         steps:
             - name: Check out repository code
               uses: actions/checkout@v2
