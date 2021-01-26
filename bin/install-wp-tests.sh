@@ -9,12 +9,21 @@ DB_NAME=$1
 DB_USER=$2
 DB_PASS=$3
 DB_HOST=${4-localhost}
-SKIP_DB_CREATE=${5-false}
+WP_VERSION=${5-latest}
+SKIP_DB_CREATE=${6-false}
 
 TMPDIR=${TMPDIR-/tmp}
 TMPDIR=$(echo $TMPDIR | sed -e "s/\/$//")
 WP_TESTS_DIR=${WP_TESTS_DIR-$TMPDIR/wordpress-tests-lib}
 WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress/}
+
+# Error if WP < 5
+if [[ $WP_VERSION =~ ^([0-9]+)[0-9\.]+\-? ]]; then
+	if [ "5.3" -gt "${BASH_REMATCH[1]}" ]; then
+		echo "You must use WordPress 5.3 or greater."
+		exit 1
+	fi
+fi
 
 download() {
     if [ `which curl` ]; then
@@ -33,6 +42,18 @@ elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
 	else
 		WP_TESTS_TAG="tags/$WP_VERSION"
 	fi
+elif [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
+	WP_TESTS_TAG="trunk"
+else
+	# http serves a single offer, whereas https serves multiple. we only want one
+	download http://api.wordpress.org/core/version-check/1.7/ /tmp/wp-latest.json
+	grep '[0-9]+\.[0-9]+(\.[0-9]+)?' /tmp/wp-latest.json
+	LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
+	if [[ -z "$LATEST_VERSION" ]]; then
+		echo "Latest WordPress version could not be found"
+		exit 1
+	fi
+	WP_TESTS_TAG="tags/$LATEST_VERSION"
 fi
 
 set -ex
@@ -44,24 +65,38 @@ install_wp() {
 	fi
 
 	mkdir -p $WP_CORE_DIR
-	download https://api.wordpress.org/core/version-check/1.7/ $TMPDIR/wp-latest.json
-	if [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
-		# version x.x.0 means the first release of the major version, so strip off the .0 and download version x.x
-		LATEST_VERSION=${WP_VERSION%??}
+
+	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
+		mkdir -p $TMPDIR/wordpress-nightly
+		download https://wordpress.org/nightly-builds/wordpress-latest.zip  $TMPDIR/wordpress-nightly/wordpress-nightly.zip
+		unzip -q $TMPDIR/wordpress-nightly/wordpress-nightly.zip -d $TMPDIR/wordpress-nightly/
+		mv $TMPDIR/wordpress-nightly/wordpress/* $WP_CORE_DIR
 	else
-		# otherwise, scan the releases and get the most up to date minor version of the major release
-		local VERSION_ESCAPED=`echo $WP_VERSION | sed 's/\./\\\\./g'`
-		LATEST_VERSION=$(grep -o '"version":"'$VERSION_ESCAPED'[^"]*' $TMPDIR/wp-latest.json | sed 's/"version":"//' | head -1)
-	fi
-			
-	if [[ -z "$LATEST_VERSION" ]]; then
-		local ARCHIVE_NAME="wordpress-$WP_VERSION"
-	else
-		local ARCHIVE_NAME="wordpress-$LATEST_VERSION"
+		if [ $WP_VERSION == 'latest' ]; then
+			local ARCHIVE_NAME='latest'
+		elif [[ $WP_VERSION =~ [0-9]+\.[0-9]+ ]]; then
+			# https serves multiple offers, whereas http serves single.
+			download https://api.wordpress.org/core/version-check/1.7/ $TMPDIR/wp-latest.json
+			if [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
+				# version x.x.0 means the first release of the major version, so strip off the .0 and download version x.x
+				LATEST_VERSION=${WP_VERSION%??}
+			else
+				# otherwise, scan the releases and get the most up to date minor version of the major release
+				local VERSION_ESCAPED=`echo $WP_VERSION | sed 's/\./\\\\./g'`
+				LATEST_VERSION=$(grep -o '"version":"'$VERSION_ESCAPED'[^"]*' $TMPDIR/wp-latest.json | sed 's/"version":"//' | head -1)
+			fi
+			if [[ -z "$LATEST_VERSION" ]]; then
+				local ARCHIVE_NAME="wordpress-$WP_VERSION"
+			else
+				local ARCHIVE_NAME="wordpress-$LATEST_VERSION"
+			fi
+		else
+			local ARCHIVE_NAME="wordpress-$WP_VERSION"
+		fi
+		download https://wordpress.org/${ARCHIVE_NAME}.tar.gz  $TMPDIR/wordpress.tar.gz
+		tar --strip-components=1 -zxmf $TMPDIR/wordpress.tar.gz -C $WP_CORE_DIR
 	fi
 
-	download https://wordpress.org/${ARCHIVE_NAME}.tar.gz  $TMPDIR/wordpress.tar.gz
-	tar --strip-components=1 -zxmf $TMPDIR/wordpress.tar.gz -C $WP_CORE_DIR
 	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
 }
 
@@ -80,8 +115,8 @@ install_test_suite() {
 	if [ ! -d $WP_TESTS_DIR ]; then
 		# set up testing suite
 		mkdir -p $WP_TESTS_DIR
-		svn co  https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-		svn co  https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+		svn co --quiet https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
+		svn co --quiet https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
 	fi
 
 	if [ ! -f wp-tests-config.php ]; then
@@ -120,11 +155,10 @@ install_db() {
 	fi
 
 	# drop existing database
-	echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql --password="$DB_PASS" $EXTRA
-	# mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA 2>/dev/null || true
+	mysqladmin drop -f $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA 2>/dev/null || true
 
 	# create database
-  echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql --password="$DB_PASS" $EXTRA	
+	mysqladmin create $DB_NAME --user="$DB_USER" --password="$DB_PASS"$EXTRA
 }
 
 install_deps() {
@@ -143,8 +177,8 @@ install_deps() {
 	rm -f wp-config.php
 	rm -rf wp-content/plugins/woocommerce
 
-	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --dbhost=$DB_HOST --dbprefix=wptests_ --allow-root
-	php wp-cli.phar core install --url="$WP_SITE_URL" --title="Example" --admin_user=admin --admin_password=password --admin_email=info@example.com --path=$WP_CORE_DIR --skip-email --allow-root
+	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=$DB_USER --dbpass=$DB_PASS --dbhost=$DB_HOST --dbprefix=wptests_
+	php wp-cli.phar core install --url="$WP_SITE_URL" --title="Example" --admin_user=admin --admin_password=password --admin_email=info@example.com --path=$WP_CORE_DIR --skip-email
 
 	# Install WooCommerce (latest non-hyphenated (beta, RC) tag)
 	if [[ "$WC_VERSION" == "" ]]; then
@@ -157,8 +191,10 @@ install_deps() {
 	git clone --depth 1 --branch $LATEST_WC_TAG https://github.com/woocommerce/woocommerce.git
 
 	# Bring in WooCommerce Core dependencies
+ 	composer self-update --1
 	cd "woocommerce"
  	composer install --no-dev
+	composer self-update --2
 
 	cd "$WP_CORE_DIR"
 	php wp-cli.phar plugin activate woocommerce
@@ -179,6 +215,7 @@ install_deps() {
 		# Activate the plugin
 		cd "$WP_CORE_DIR"
 		php wp-cli.phar plugin activate woocommerce-admin
+
 	fi
 
 	# Back to original dir
