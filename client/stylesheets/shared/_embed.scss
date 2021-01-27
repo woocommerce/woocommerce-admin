@@ -49,8 +49,10 @@
 	}
 
 	#screen-meta-links {
-        position: relative;
-        margin-bottom: $header-height + 31px;
+		position: relative;
+		@include breakpoint( '<782px' ) {
+			margin-bottom: $header-height + 31px;
+		}
 	}
 
 	.notice {
