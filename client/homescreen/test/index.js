@@ -208,7 +208,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
