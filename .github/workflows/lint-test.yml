@@ -13,7 +13,7 @@ jobs:
             matrix:
                 php: ['7.1', '7.2', '7.3']
                 wordpress: ['5.5', '5.6']
-                woocommerce: ['4.7.0', '4.9.1']
+                woocommerce: ['4.8.0', '4.9.1']
                 phpunit: ['7.5.20']
                 composer: ['2.0.6']
                 include:
@@ -27,6 +27,11 @@ jobs:
                       woocommerce: '4.9.1'
                       phpunit: '6.5.9'
                       composer: '2.0.6'
+                    - php: '7.3'
+                      wordpress: '5.6'
+                      woocommerce: '4.7.0'
+                      phpunit: '6.5.9'
+                      composer: '1.10.19'
         steps:
             - name: Check out repository code
               uses: actions/checkout@v2
