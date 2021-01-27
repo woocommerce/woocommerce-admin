@@ -302,9 +302,7 @@ class Loader {
 		$css_file_version = self::get_file_version( 'css' );
 
 		$scripts = array(
-			'wc-currency',
 			'wc-customer-effort-score',
-			'wc-navigation',
 			// NOTE: This should be removed when Gutenberg is updated and the notices package is removed from WooCommerce Admin.
 			'wc-notices',
 			'wc-number',
@@ -314,6 +312,8 @@ class Loader {
 			WC_ADMIN_APP,
 			'wc-csv',
 			'wc-store-data',
+			'wc-currency',
+			'wc-navigation',
 		);
 
 		$scripts_map = array(
