@@ -47,7 +47,7 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$taxonomies = get_taxonomies();
 		foreach ( (array) $taxonomies as $taxonomy ) {
 			// pa - product attribute.
-			if ( 'pa_color' === $taxonomy || 'pa_logo' === $taxonomy) {
+			if ( 'pa_color' === $taxonomy || 'pa_logo' === $taxonomy ) {
 				unregister_taxonomy( $taxonomy );
 			}
 		}
