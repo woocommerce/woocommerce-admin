@@ -26,50 +26,31 @@ import { getAllPanels } from './panels';
 import { getUnapprovedReviews } from './reviews/utils';
 
 export const ActivityPanel = () => {
-	const settingsData = useSelect( () => {
-		const manageStock = getSetting( 'manageStock', 'no' );
-		const publishedProductCount = getSetting( 'publishedProductCount', 0 );
-		const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
+	const panelsData = useSelect( ( select ) => {
 		const totalOrderCount = getSetting( 'orderCount', 0 );
+		const orderStatuses = getOrderStatuses( select );
+		const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
+		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
+		const manageStock = getSetting( 'manageStock', 'no' );
+		const countLowStockProducts = getLowStockCount( select );
+		const countUnapprovedReviews = getUnapprovedReviews( select );
+		const publishedProductCount = getSetting( 'publishedProductCount', 0 );
+		const { getOption } = select( OPTIONS_STORE_NAME );
+		const isTaskListHidden = getOption( 'woocommerce_task_list_hidden' );
 		return {
+			countLowStockProducts,
+			countUnapprovedReviews,
+			countUnreadOrders,
+			isTaskListHidden,
 			manageStock,
 			publishedProductCount,
 			reviewsEnabled,
 			totalOrderCount,
-		};
-	} );
-
-	const ordersData = useSelect( ( select ) => {
-		const orderStatuses = getOrderStatuses( select );
-		const countLowStockProducts = getLowStockCount( select );
-		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
-		return {
-			countLowStockProducts,
-			countUnreadOrders,
 			orderStatuses,
 		};
 	} );
 
-	const reviewsData = useSelect( ( select ) => {
-		const countUnapprovedReviews = getUnapprovedReviews( select );
-		return {
-			countUnapprovedReviews,
-		};
-	} );
-
-	const taskListData = useSelect( ( select ) => {
-		const { getOption } = select( OPTIONS_STORE_NAME );
-		return {
-			isTaskListHidden: getOption( 'woocommerce_task_list_hidden' ),
-		};
-	} );
-
-	const panels = getAllPanels( {
-		...ordersData,
-		...reviewsData,
-		...settingsData,
-		...taskListData,
-	} );
+	const panels = getAllPanels( panelsData );
 
 	if ( panels.length === 0 ) {
 		return null;
