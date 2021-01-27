@@ -123,13 +123,19 @@
 		a.components-button:not(.is-primary) {
 			color: $gray-text;
 		}
-    }
+	}
 }
 
 // for the embed page with the new navigation enabled
 .woocommerce-feature-enabled-navigation.woocommerce-embed-page {
-    #screen-meta,
-    #screen-meta-links {
-        top: $header-height-with-new-nav;
-    }
+	@include breakpoint( '<782px' ) {
+		#screen-meta,
+		#screen-meta-links {
+			top: $header-height-with-new-nav;
+		}
+
+		#screen-meta-links {
+			margin-bottom: 77px;
+		}
+	}
 }
