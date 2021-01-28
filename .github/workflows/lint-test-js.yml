@@ -1,0 +1,10 @@
+name: Lint and test JS
+on: [push]
+
+jobs:
+    test-lint-js:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Lint and test the JS
+              run: bin/js_lint_test.sh
+              shell: bash

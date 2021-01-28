@@ -1,4 +1,4 @@
-name: Lint and test
+name: Lint and test PHP
 on: [push]
 
 jobs:
@@ -60,9 +60,6 @@ jobs:
                   node --version
                   npm --version
                   timedatectl
-            - name: Lint the JS
-              run: bin/js_lint_test.sh
-              shell: bash
             - name: Lint the PHP
               run: bin/phpcs.sh
               shell: bash
