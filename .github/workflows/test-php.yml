@@ -1,8 +1,8 @@
-name: Lint and test PHP
+name: Run PHP unit tests
 on: [pull_request]
 
 jobs:
-    test-lint-php:
+    test-php:
         env:
             WP_CORE_DIR: '/tmp/wordpress'
             COMPOSER_DEV: 1

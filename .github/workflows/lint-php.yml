@@ -1,0 +1,17 @@
+name: Lint the PHP
+on: [pull_request]
+
+jobs:
+    lint-php:
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v2
+            - name: Setup PHP
+              uses: shivammathur/setup-php@2.9.0
+              with:
+                  php-version: ${{matrix.php}}
+                  tools: phpunit:${{matrix.phpunit}}
+                  extensions: mysqli
+            - name: Run the PHP unit tests
+              run: bin/phpunit.sh
+              shell: bash
