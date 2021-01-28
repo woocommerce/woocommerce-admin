@@ -85,7 +85,7 @@ install_db() {
 	echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql --user="root" --password="$DB_PASS"
 
 	# create database
-  echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql --user="root" --password="$DB_PASS" $EXTRA	
+  echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql --user="root" --password="$DB_PASS"
 }
 
 install_deps() {
