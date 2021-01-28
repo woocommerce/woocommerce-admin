@@ -1,5 +1,5 @@
 name: Lint and test JS
-on: [push]
+on: [pull_request]
 
 jobs:
     test-lint-js:
