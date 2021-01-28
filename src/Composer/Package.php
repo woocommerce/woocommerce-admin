@@ -51,10 +51,12 @@ class Package {
 			self::$active_version = WC_ADMIN_VERSION_NUMBER;
 			$update_version       = new DeactivatePlugin();
 			if ( version_compare( WC_ADMIN_VERSION_NUMBER, self::VERSION, '<' ) ) {
+				echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " . WC_ADMIN_VERSION_NUMBER . " < " . self::version . " ";
 				if ( method_exists( $update_version, 'possibly_add_note' ) ) {
 					$update_version::possibly_add_note();
 				}
 			} else {
+				echo "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB " . WC_ADMIN_VERSION_NUMBER . " >= " . self::version . " ";
 				$update_version::delete_note();
 			}
 
