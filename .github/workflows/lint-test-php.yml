@@ -2,7 +2,7 @@ name: Lint and test PHP
 on: [pull_request]
 
 jobs:
-    test-lint:
+    test-lint-php:
         env:
             WP_CORE_DIR: '/tmp/wordpress'
             COMPOSER_DEV: 1
