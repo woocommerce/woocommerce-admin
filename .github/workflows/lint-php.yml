@@ -9,9 +9,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@2.9.0
               with:
-                  php-version: ${{matrix.php}}
-                  tools: phpunit:${{matrix.phpunit}}
-                  extensions: mysqli
-            - name: Run the PHP unit tests
-              run: bin/phpunit.sh
+                  php-version: 7.3
+            - name: Lint the PHP
+              run: bin/phpcs.sh
               shell: bash
