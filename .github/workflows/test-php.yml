@@ -60,9 +60,6 @@ jobs:
                   node --version
                   npm --version
                   timedatectl
-            - name: Lint the PHP
-              run: bin/phpcs.sh
-              shell: bash
             - name: Run the PHP unit tests
               run: bin/phpunit.sh
               shell: bash
