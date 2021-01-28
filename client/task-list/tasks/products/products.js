@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Fragment, useState } from '@wordpress/element';
 import { Card, CardBody } from '@wordpress/components';
 import { Icon, templatePartSidebar } from '@wordpress/icons';
-import { List } from '@woocommerce/components';
+import { List, Pill } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -20,9 +20,7 @@ const subTasks = [
 		title: (
 			<>
 				{ __( 'Start with a template', 'woocommerce-admin' ) }
-				<span className="task-list-recommended-label">
-					{ __( 'Recommended', 'woocommerce-admin' ) }
-				</span>
+				<Pill>{ __( 'Recommended', 'woocommerce-admin' ) }</Pill>
 			</>
 		),
 		content: __(

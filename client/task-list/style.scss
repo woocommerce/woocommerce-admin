@@ -39,6 +39,13 @@
 				left: 5px;
 			}
 
+			.woocommerce-list__item-text {
+				.woocommerce-pill {
+					padding: 1px $gap-smaller;
+					margin-left: $gap-smaller;
+				}
+			}
+
 			.components-popover__content {
 				min-width: unset;
 			}
@@ -193,17 +200,6 @@
 		margin-top: 0;
 		font-size: 16px;
 	}
-}
-
-.task-list-recommended-label {
-	border: 1px solid $gray-700;
-	color: $gray-700;
-	border-radius: 12px;
-	margin: 0 $gap-smaller;
-	padding: 0 $gap-small;
-	line-height: 18px;
-	font-size: 12px;
-	display: inline-block;
 }
 
 .woocommerce-task-payment {
