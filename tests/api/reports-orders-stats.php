@@ -134,7 +134,7 @@ class WC_Tests_API_Reports_Orders_Stats extends WC_REST_Unit_Test_Case {
 	public function test_product_attributes_filter() {
 		global $wp_version;
 		if ( version_compare( $wp_version, '5.5', '<' ) ) {
-			$this->markTestSkipped();
+			$this->markTestSkipped( 'Skipped in older versions of WordPress due to a bug in WP when validating arrays.' );
 		}
 
 		global $wpdb;
