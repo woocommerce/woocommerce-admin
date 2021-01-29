@@ -116,7 +116,6 @@
 		"interpolate-components": "1.1.1",
 		"memoize-one": "5.1.1",
 		"qs": "6.9.6",
-		"react-click-outside": "3.0.1",
 		"react-dates": "17.2.0",
 		"react-router-dom": "5.2.0",
 		"react-transition-group": "4.4.1",
