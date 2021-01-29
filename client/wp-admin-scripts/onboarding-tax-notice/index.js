@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { dispatch } from '@wordpress/data';
-import domReady from '@wordpress/dom-ready';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -28,30 +27,36 @@ const saveCompleted = () => {
 const showTaxCompletionNotice = () => {
 	const saveButton = document.querySelector( '.woocommerce-save-button' );
 
-	if ( saveButton.classList.contains( 'is-clicked' ) ) {
+	if ( saveButton.classList.contains( 'has-tax' ) ) {
 		return;
 	}
 
-	saveButton.classList.add( 'is-clicked' );
-	saveCompleted().then( () =>
-		dispatch( 'core/notices' ).createSuccessNotice(
-			__( "You've added your first tax rate!", 'woocommerce-admin' ),
-			{
-				id: 'WOOCOMMERCE_ONBOARDING_TAX_NOTICE',
-				actions: [
-					{
-						url: getAdminLink( 'admin.php?page=wc-admin' ),
-						label: __( 'Continue setup.', 'woocommerce-admin' ),
-					},
-				],
+	saveCompleted().then( () => {
+		// Check if a row was added successfully after WooCommerce removes invalid rows.
+		setTimeout( () => {
+			if ( ! document.querySelector( '.tips' ) ) {
+				return;
 			}
-		)
-	);
+			saveButton.classList.add( 'has-tax' );
+			dispatch( 'core/notices' ).createSuccessNotice(
+				__( "You've added your first tax rate!", 'woocommerce-admin' ),
+				{
+					id: 'WOOCOMMERCE_ONBOARDING_TAX_NOTICE',
+					actions: [
+						{
+							url: getAdminLink( 'admin.php?page=wc-admin' ),
+							label: __( 'Continue setup.', 'woocommerce-admin' ),
+						},
+					],
+				}
+			);
+		}, 500 );
+	} );
 };
 
-domReady( () => {
+window.onload = () => {
 	const saveButton = document.querySelector( '.woocommerce-save-button' );
-	if ( saveButton ) {
+	if ( ! document.querySelector( '.tips' ) && saveButton ) {
 		saveButton.addEventListener( 'click', showTaxCompletionNotice );
 	}
-} );
+};
