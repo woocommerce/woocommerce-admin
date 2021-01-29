@@ -1,0 +1,33 @@
+version: '3'
+services:
+  nginx:
+    env_file:
+      - .env
+    image: nginx:latest
+    ports:
+      - "${DEV_NGINX_PORT}:80"
+    volumes:
+       - ./wordpress:/opt/wordpress
+       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+       - ../..:/opt/wordpress/wp-content/plugins/woocommerce-admin
+       - /opt/wordpress/wp-content/plugins/woocommerce-admin/docker       
+    links:
+      - php
+  php:
+    env_file:
+      - .env
+    build:
+      context: .
+    volumes:
+       - ./wordpress:/opt/wordpress
+       - ../..:/opt/wordpress/wp-content/plugins/woocommerce-admin
+       - /opt/wordpress/wp-content/plugins/woocommerce-admin/docker
+       - ${HOME_DIR}/.npm/_cacache:/root/.npm/_cacache
+    links:
+      - db
+  db:
+    env_file:
+      - .env  
+    image: mysql:5.7
+    ports:
+      - "${DEV_MYSQL_PORT}:3306"

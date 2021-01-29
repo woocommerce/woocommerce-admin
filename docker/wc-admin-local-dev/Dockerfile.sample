@@ -1,0 +1,16 @@
+FROM :php_version
+WORKDIR /opt/wordpress
+RUN DEBIAN_FRONTEND=noninteractive && \
+  curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh && \
+  bash nodesource_setup.sh && \
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+  apt-get update -y && apt-get install -y nodejs yarn git zip unzip && \
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+  php composer-setup.php --version=1.10.16 --install-dir=/usr/local/bin --filename=composer && \
+  rm -rf /tmp/composer-setup.php && \
+  apt-get autoremove -y && \
+  apt-get clean
+
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+COPY ./php.ini /usr/local/etc/php/php.ini

@@ -74,7 +74,15 @@
 		"storybook": "./bin/import-wp-css-storybook.sh && start-storybook  -c ./storybook -p 6007 --ci",
 		"build-storybook": "build-storybook  -c ./storybook",
 		"changelog": "node ./bin/changelog --changelogSrcType='ZENHUB_RELEASE'",
-		"bump-version": "npm run -s install-if-deps-outdated && php ./bin/update-version.php"
+		"bump-version": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
+		"docker-dev:config": "bash ./docker/wc-admin-local-dev/config.sh",
+		"docker-dev:setup": "cd docker/wc-admin-local-dev && make setup",
+		"docker-dev:up": "cd docker/wc-admin-local-dev && make docker-up",
+		"docker-dev:stop": "cd docker/wc-admin-local-dev && make docker-stop",
+		"docker-dev:npm-start": "cd docker/wc-admin-local-dev && make npm-start",
+		"docker-dev:ssh": "cd docker/wc-admin-local-dev && make docker-ssh",
+		"docker-dev:logs": "cd docker/wc-admin-local-dev && make docker-logs",
+		"docker-dev:build": "cd docker/wc-admin-local-dev && make docker-build"
 	},
 	"changelog": {
 		"labelPrefix": "[Type]",

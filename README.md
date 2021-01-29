@@ -26,6 +26,8 @@ For more helper scripts [see here](./CONTRIBUTING.md#helper-scripts)
 
 For some debugging tools/help [see here](./CONTRIBUTING.md#debugging)
 
+For setting up local environment with Docker [see here](docker/wc-admin-local-dev/README.md)
+
 ### Testing
 #### End-to-end tests
 Tests live in `./tests/e2e`. An existing build is required prior running, please refer to the section above for steps. E2E tests have their own Docker container to run the WordPress server. Start
