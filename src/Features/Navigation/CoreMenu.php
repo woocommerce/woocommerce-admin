@@ -297,7 +297,6 @@ class CoreMenu {
 				in_array(
 					$item['id'],
 					array(
-						'woocommerce-marketplace',
 						'woocommerce-tools',
 					),
 					true
