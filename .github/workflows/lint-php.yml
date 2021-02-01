@@ -3,11 +3,10 @@ on: [pull_request]
 
 jobs:
     lint-php:
-        env:
-            COMMIT_START: ${{ github.event.before }}
-            COMMIT_END: ${{ github.event.after }}
         runs-on: ubuntu-latest
         steps:
+            - id: changed-files
+              uses: wyrihaximus/github-action-files-in-commit
             - name: Cancel Previous Runs
               uses: styfle/cancel-workflow-action@0.7.0
               with:
@@ -19,5 +18,7 @@ jobs:
               with:
                   php-version: 7.3
             - name: Lint the PHP
+              env:
+                  CHANGED_FILES: ${{ steps.changed-files.files }}
               run: bin/phpcs.sh
               shell: bash
