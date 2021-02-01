@@ -19,7 +19,7 @@ import { addHistoryListener } from '../../utils';
 
 const Header = () => {
 	const siteTitle = getSetting( 'siteTitle', '' );
-	const siteUrl = getSetting( 'siteUrl', '' );
+	const homeUrl = getSetting( 'homeUrl', '' );
 	const isScrolled = useIsScrolled();
 	const navClasses = {
 		folded: 'is-wc-nav-folded',
@@ -109,7 +109,7 @@ const Header = () => {
 				{ buttonIcon }
 			</Button>
 			<Button
-				href={ siteUrl }
+				href={ homeUrl }
 				className="woocommerce-navigation-header__site-title"
 				as="span"
 			>
