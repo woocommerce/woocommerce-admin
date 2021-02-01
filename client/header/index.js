@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect, useLayoutEffect, useRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
 import { useUserPreferences } from '@woocommerce/data';
@@ -30,6 +30,21 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const className = classnames( 'woocommerce-layout__header', {
 		'is-scrolled': isScrolled,
 	} );
+
+	const updateBodyMargin = () => {
+		const wpBody = document.querySelector( '#wpbody' );
+		if ( ! wpBody ) {
+			return;
+		}
+
+		wpBody.style.marginTop = `${ headerElement.current.offsetHeight }px`;
+	};
+
+	useLayoutEffect( () => {
+		updateBodyMargin();
+		window.addEventListener( 'resize', updateBodyMargin );
+		return () => window.removeEventListener( 'resize', updateBodyMargin );
+	}, [ isModalDismissed ] );
 
 	useEffect( () => {
 		if ( ! isEmbedded ) {
