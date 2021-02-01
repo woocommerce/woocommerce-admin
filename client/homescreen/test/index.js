@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { useUserPreferences } from '@woocommerce/data';
 
 /**
@@ -11,7 +11,7 @@ import { Layout } from '../layout';
 
 // Rendering <StatsOverview /> breaks tests.
 jest.mock( 'homescreen/stats-overview', () =>
-	jest.fn().mockReturnValue( null )
+	jest.fn().mockReturnValue( '[StatsOverview]' )
 );
 
 // We aren't testing the <TaskList /> component here.
@@ -25,12 +25,17 @@ jest.mock( '@woocommerce/data', () => ( {
 	useUserPreferences: jest.fn().mockReturnValue( {} ),
 } ) );
 
+// We aren't testing the <ActivityPanel /> component here.
+jest.mock( '../activity-panel', () => ( {
+	ActivityPanel: jest.fn().mockReturnValue( '[ActivityPanel]' ),
+} ) );
+
 describe( 'Homescreen Layout', () => {
 	it( 'should show TaskList placeholder when loading', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -42,11 +47,11 @@ describe( 'Homescreen Layout', () => {
 		expect( placeholder ).not.toBeNull();
 	} );
 
-	it( 'should show TaskList inline', async () => {
+	it( 'should show TaskList inline', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -59,15 +64,15 @@ describe( 'Homescreen Layout', () => {
 		expect( columns ).not.toBeNull();
 
 		// Expect that the <TaskList /> is there too.
-		const taskList = await screen.findByText( '[TaskList]' );
+		const taskList = screen.queryByText( /\[TaskList\]/ );
 		expect( taskList ).toBeDefined();
 	} );
 
-	it( 'should render TaskList alone when on task', async () => {
+	it( 'should render TaskList alone when on task', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {
 					task: 'products',
 				} }
@@ -82,7 +87,7 @@ describe( 'Homescreen Layout', () => {
 		expect( columns ).toBeNull();
 
 		// Expect that the <TaskList /> is there though.
-		const taskList = await screen.findByText( '[TaskList]' );
+		const taskList = screen.queryByText( '[TaskList]' );
 		expect( taskList ).toBeDefined();
 	} );
 
@@ -90,7 +95,7 @@ describe( 'Homescreen Layout', () => {
 		render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden
+				bothTaskListsHidden
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -104,7 +109,7 @@ describe( 'Homescreen Layout', () => {
 		render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden
+				bothTaskListsHidden
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -118,7 +123,7 @@ describe( 'Homescreen Layout', () => {
 		render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -136,7 +141,7 @@ describe( 'Homescreen Layout', () => {
 			<Layout
 				defaultHomescreenLayout="two_columns"
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -159,7 +164,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -182,7 +187,7 @@ describe( 'Homescreen Layout', () => {
 		const { container } = render(
 			<Layout
 				requestingTaskList={ false }
-				taskListHidden={ false }
+				bothTaskListsHidden={ false }
 				query={ {} }
 				updateOptions={ () => {} }
 			/>
@@ -194,5 +199,46 @@ describe( 'Homescreen Layout', () => {
 				'woocommerce-homescreen two-columns'
 			)
 		).toHaveLength( 1 );
+	} );
+
+	it( 'should display the correct blocks in each column', () => {
+		useUserPreferences.mockReturnValue( {
+			homepage_layout: 'two_columns',
+		} );
+		const { container } = render(
+			<Layout
+				requestingTaskList={ false }
+				bothTaskListsHidden={ false }
+				query={ {} }
+				updateOptions={ () => {} }
+			/>
+		);
+
+		const columns = container.getElementsByClassName(
+			'woocommerce-homescreen-column'
+		);
+		expect( columns ).toHaveLength( 2 );
+		const firstColumn = columns[ 0 ];
+		const secondColumn = columns[ 1 ];
+
+		expect(
+			within( firstColumn ).getByText( /\[TaskList\]/ )
+		).toBeInTheDocument();
+		expect(
+			within( firstColumn ).getByText( /\[InboxPanel\]/ )
+		).toBeInTheDocument();
+		expect(
+			within( secondColumn ).queryByText( /\[TaskList\]/ )
+		).toBeNull();
+		expect(
+			within( secondColumn ).queryByText( /\[InboxPanel\]/ )
+		).toBeNull();
+
+		expect(
+			within( secondColumn ).getByText( /\[StatsOverview\]/ )
+		).toBeInTheDocument();
+		expect(
+			within( firstColumn ).queryByText( /\[StatsOverview\]/ )
+		).toBeNull();
 	} );
 } );
