@@ -45,7 +45,6 @@
 	.woocommerce-navigation {
 		position: relative;
 		width: $navigation-width;
-		height: 100%;
 		box-sizing: border-box;
 		background-color: $gray-900;
 		z-index: 1100; //Must be greater than z-index on .woocommerce-layout__header
@@ -99,13 +98,32 @@
 		.woocommerce-transient-notices {
 			left: $gap;
 		}
+
+		#wpbody {
+			margin-left: 0;
+		}
 	}
 
-	.woocommerce-transient-notices {
-		left: $navigation-width + $gap;
+	.woocommerce-layout__header.is-embed-loading {
+		&::before {
+			content: '';
+			position: fixed;
+			width: $navigation-width;
+			height: 100%;
+			background: $gray-900;
 
-		@include breakpoint( '<782px' ) {
-			left: $gap;
+			@include breakpoint( '<960px' ) {
+				width: $header-height;
+				height: $header-height;
+			}
+		}
+
+		.woocommerce-layout__header-heading {
+			margin-left: $navigation-width;
+
+			@include breakpoint( '<960px' ) {
+				margin-left: $header-height;
+			}
 		}
 	}
 }
