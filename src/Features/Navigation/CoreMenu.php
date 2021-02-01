@@ -42,15 +42,11 @@ class CoreMenu {
 	 * Add registered admin settings as menu items.
 	 */
 	public static function get_setting_items() {
-		$setting_pages = \WC_Admin_Settings::get_settings_pages();
-		$settings      = array();
-		foreach ( $setting_pages as $setting_page ) {
-			$settings = $setting_page->add_settings_page( $settings );
-		}
+		$tabs = apply_filters( 'woocommerce_settings_tabs_array', array() );
 
 		$menu_items = array();
 		$order      = 0;
-		foreach ( $settings as $key => $setting ) {
+		foreach ( $tabs as $key => $setting ) {
 			$order       += 10;
 			$menu_items[] = (
 				array(
@@ -138,10 +134,11 @@ class CoreMenu {
 				'order'  => 20,
 			)
 		);
-		$coupon_items      = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'woocommerce-marketing' ) );
-		$setting_items     = self::get_setting_items();
-		$wca_items         = array();
-		$wca_pages         = \Automattic\WooCommerce\Admin\PageController::get_instance()->get_pages();
+
+		$coupon_items  = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'woocommerce-marketing' ) );
+		$setting_items = self::get_setting_items();
+		$wca_items     = array();
+		$wca_pages     = \Automattic\WooCommerce\Admin\PageController::get_instance()->get_pages();
 
 		foreach ( $wca_pages as $page ) {
 			if ( ! isset( $page['nav_args'] ) ) {

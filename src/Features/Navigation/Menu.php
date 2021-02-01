@@ -490,14 +490,28 @@ class Menu {
 	public function migrate_core_child_items( $menu ) {
 		global $submenu;
 
-		if ( ! isset( $submenu['woocommerce'] ) ) {
+		if ( ! isset( $submenu['woocommerce'] ) && ! isset( $submenu['edit.php?post_type=product'] ) ) {
 			return;
 		}
 
-		foreach ( $submenu['woocommerce'] as $menu_item ) {
+		$submenu_items = array_merge(
+			isset( $submenu['woocommerce'] ) ? $submenu['woocommerce'] : array(),
+			isset( $submenu['edit.php?post_type=product'] ) ? $submenu['edit.php?post_type=product'] : array()
+		);
+
+		foreach ( $submenu_items as $key => $menu_item ) {
 			if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
+				// phpcs:disable
+				if ( ! isset( $menu_item[ self::CSS_CLASSES ] ) ) {
+					$submenu['woocommerce'][ $key ][] .= ' hide-if-js';
+				} else {
+					$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+				}
+				// phpcs:enable
 				continue;
 			}
+
+			$menu_item[2] = htmlspecialchars_decode( $menu_item[2] );
 
 			// Don't add already added items.
 			$callbacks = self::get_callbacks();
@@ -505,15 +519,34 @@ class Menu {
 				continue;
 			}
 
-			self::add_item(
+			// Don't add these Product submenus because they are added elsewhere.
+			if ( in_array( $menu_item[2], array( 'product_importer', 'product_exporter', 'product_attributes' ), true ) ) {
+				continue;
+			}
+
+			self::add_plugin_item(
 				array(
-					'parent'     => 'woocommerce-settings',
 					'title'      => $menu_item[0],
 					'capability' => $menu_item[1],
 					'id'         => sanitize_title( $menu_item[0] ),
 					'url'        => $menu_item[2],
 				)
 			);
+
+			// Determine if migrated items are a taxonomy or post_type. If they are, register them.
+			$parsed_url   = wp_parse_url( $menu_item[2] );
+			$query_string = isset( $parsed_url['query'] ) ? $parsed_url['query'] : false;
+
+			if ( $query_string ) {
+				$query = array();
+				parse_str( $query_string, $query );
+
+				if ( isset( $query['taxonomy'] ) ) {
+					Screen::register_taxonomy( $query['taxonomy'] );
+				} elseif ( isset( $query['post_type'] ) ) {
+					Screen::register_post_type( $query['post_type'] );
+				}
+			}
 		}
 
 		return $menu;

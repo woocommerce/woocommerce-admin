@@ -14,12 +14,17 @@ export function getAllPanels( {
 	countLowStockProducts,
 	countUnapprovedReviews,
 	countUnreadOrders,
+	isTaskListHidden,
 	manageStock,
 	orderStatuses,
 	publishedProductCount,
 	reviewsEnabled,
 	totalOrderCount,
 } ) {
+	if ( isTaskListHidden !== 'yes' ) {
+		return [];
+	}
+
 	return [
 		totalOrderCount > 0 && {
 			className: 'woocommerce-homescreen-card',
