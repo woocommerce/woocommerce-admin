@@ -1,7 +1,15 @@
 .woocommerce-embed-page {
+	#wpwrap {
+		display: inline-block;
+	}
+
+	#wpbody {
+		margin-top: $header-height;
+	}
+
 	#wpbody .woocommerce-layout,
 	.woocommerce-layout__notice-list-hide + .wrap {
-		padding-top: $header-height + 10;
+		padding-top: 10px;
 	}
 
 	#wpcontent,
@@ -36,11 +44,6 @@
 		@include breakpoint( '<782px' ) {
 			padding-top: 30px;
 		}
-	}
-
-	#screen-meta,
-	#screen-meta-links {
-		top: $header-height;
 	}
 
 	#screen-meta {
