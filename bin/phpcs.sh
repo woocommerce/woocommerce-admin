@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-composer install --no-dev
+composer install
 
 PHP_FILES_CHANGED=""
 
@@ -12,7 +12,7 @@ done
 
 if [ "$CHANGED_FILES" != "" ]; then
 	echo "Running Code Sniffer."
-	./vendor/bin/phpcs --encoding=utf-8 -n -p $CHANGED_FILES
+	./vendor/bin/phpcs --encoding=utf-8 -n -p $PHP_FILES_CHANGED
 else
 	echo "No changed files detected, sniffer not run."
 fi
