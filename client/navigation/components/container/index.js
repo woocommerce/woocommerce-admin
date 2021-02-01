@@ -24,6 +24,7 @@ import Item from '../../components/Item';
 const Container = ( { menuItems } ) => {
 	useEffect( () => {
 		// Collapse the original WP Menu.
+		document.documentElement.classList.remove( 'wp-toolbar' );
 		const adminMenu = document.getElementById( 'adminmenumain' );
 		adminMenu.classList.add( 'folded' );
 	}, [] );
