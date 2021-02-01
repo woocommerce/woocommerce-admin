@@ -5,7 +5,7 @@ PHP_FILES_CHANGED=""
 
 for FILE in $(echo $CHANGED_FILES | tr ',' '\n')
 do
-	if [[ $string =~ ".php" ]]; then
+	if [[ $FILE =~ ".php" ]]; then
 		PHP_FILES_CHANGED += "$FILE,"
 	fi	
 done
