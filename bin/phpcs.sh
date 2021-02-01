@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-composer install
-
 PHP_FILES_CHANGED=""
 
 for FILE in $(echo $CHANGED_FILES | tr ',' '\n')
@@ -11,6 +9,7 @@ do
 done
 
 if [ "$PHP_FILES_CHANGED" != "" ]; then
+	composer install
 	echo "Running Code Sniffer."
 	./vendor/bin/phpcs --encoding=utf-8 -n -p $PHP_FILES_CHANGED
 else
