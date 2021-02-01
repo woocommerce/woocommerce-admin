@@ -352,7 +352,7 @@ export default compose(
 		const optionNames = [
 			'woocommerce_woocommerce_payments_settings',
 			'woocommerce_stripe_settings',
-			'woocommerce_ppec_paypal_settings',
+			'woocommerce-ppcp-settings',
 			'woocommerce_payfast_settings',
 			'woocommerce_square_credit_card_settings',
 			'woocommerce_klarna_payments_settings',
