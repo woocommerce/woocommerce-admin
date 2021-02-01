@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-CHANGED_FILES=`git diff --name-only --diff-filter=ACMR $TRAVIS_COMMIT_RANGE | grep \\\\.php | awk '{print}' ORS=' '`
+CHANGED_FILES=`git diff --name-only --diff-filter=ACMR $COMMIT_START...$COMMIT_END | grep \\\\.php | awk '{print}' ORS=' '`
 
 if [ "$CHANGED_FILES" != "" ]; then
 	echo "Running Code Sniffer."

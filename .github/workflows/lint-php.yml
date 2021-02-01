@@ -3,8 +3,15 @@ on: [pull_request]
 
 jobs:
     lint-php:
+        env:
+            COMMIT_START: ${{ github.event.before }}
+            COMMIT_END: ${{ github.event.after }}
         runs-on: ubuntu-latest
         steps:
+            - name: Cancel Previous Runs
+              uses: styfle/cancel-workflow-action@0.7.0
+              with:
+                  access_token: ${{ github.token }}
             - name: Check out repository code
               uses: actions/checkout@v2
             - name: Setup PHP
