@@ -20,6 +20,6 @@ jobs:
                   php-version: 7.3
             - name: Lint the PHP
               env:
-                  CHANGED_FILES: ${{ steps.changed-files.files }}
+                  CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
               run: bin/phpcs.sh
               shell: bash
