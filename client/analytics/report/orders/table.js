@@ -1,25 +1,24 @@
 /**
  * External dependencies
  */
-import { __, _n, _x, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { map } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-import { defaultTableDateFormat } from 'lib/date';
+import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
+import { defaultTableDateFormat } from '@woocommerce/date';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
-import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { CurrencyContext } from 'lib/currency-context';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
+
+const capitalizeFirstLetter = ( expr ) =>
+	expr.charAt( 0 ).toUpperCase() + expr.slice( 1 );
 
 class OrdersReportTable extends Component {
 	constructor() {
@@ -59,6 +58,12 @@ class OrdersReportTable extends Component {
 				isSortable: false,
 			},
 			{
+				label: __( 'Customer Type', 'woocommerce-admin' ),
+				key: 'customer_type',
+				required: false,
+				isSortable: false,
+			},
+			{
 				label: __( 'Product(s)', 'woocommerce-admin' ),
 				screenReaderLabel: __( 'Products', 'woocommerce-admin' ),
 				key: 'products',
@@ -90,27 +95,25 @@ class OrdersReportTable extends Component {
 		];
 	}
 
-	getCustomerType( customerType ) {
-		switch ( customerType ) {
-			case 'new':
-				return _x( 'New', 'customer type', 'woocommerce-admin' );
-			case 'returning':
-				return _x( 'Returning', 'customer type', 'woocommerce-admin' );
-			default:
-				return _x( 'N/A', 'customer type', 'woocommerce-admin' );
+	getCustomerName( customer ) {
+		const { first_name: firstName, last_name: lastName } = customer || {};
+
+		if ( ! firstName && ! lastName ) {
+			return '';
 		}
+
+		return [ firstName, lastName ].join( ' ' );
 	}
 
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
 		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
-		const { render: renderCurrency, getCurrency } = this.context;
+		const { render: renderCurrency, getCurrencyConfig } = this.context;
 
 		return map( tableData, ( row ) => {
 			const {
 				currency,
-				customer_type: customerType,
 				date_created: dateCreated,
 				net_total: netTotal,
 				num_items_sold: numItemsSold,
@@ -118,9 +121,10 @@ class OrdersReportTable extends Component {
 				order_number: orderNumber,
 				parent_id: parentId,
 				status,
+				customer_type: customerType,
 			} = row;
 			const extendedInfo = row.extended_info || {};
-			const { coupons, products } = extendedInfo;
+			const { coupons, customer, products } = extendedInfo;
 
 			const formattedProducts = products
 				.sort( ( itemA, itemB ) => itemB.quantity - itemA.quantity )
@@ -178,7 +182,11 @@ class OrdersReportTable extends Component {
 					value: status,
 				},
 				{
-					display: this.getCustomerType( customerType ),
+					display: this.getCustomerName( customer ),
+					value: this.getCustomerName( customer ),
+				},
+				{
+					display: capitalizeFirstLetter( customerType ),
 					value: customerType,
 				},
 				{
@@ -207,7 +215,7 @@ class OrdersReportTable extends Component {
 				},
 				{
 					display: formatValue(
-						getCurrency(),
+						getCurrencyConfig(),
 						'number',
 						numItemsSold
 					),
@@ -235,15 +243,14 @@ class OrdersReportTable extends Component {
 	getSummary( totals ) {
 		const {
 			orders_count: ordersCount = 0,
-			num_new_customers: numNewCustomers = 0,
-			num_returning_customers: numReturningCustomers = 0,
+			total_customers: totalCustomers = 0,
 			products = 0,
 			num_items_sold: numItemsSold = 0,
 			coupons_count: couponsCount = 0,
 			net_revenue: netRevenue = 0,
 		} = totals;
-		const { formatCurrency, getCurrency } = this.context;
-		const currency = getCurrency();
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -256,21 +263,12 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: _n(
-					'new customer',
-					'new customers',
-					numNewCustomers,
+					' customer',
+					' customers',
+					totalCustomers,
 					'woocommerce-admin'
 				),
-				value: formatValue( currency, 'number', numNewCustomers ),
-			},
-			{
-				label: _n(
-					'returning customer',
-					'returning customers',
-					numReturningCustomers,
-					'woocommerce-admin'
-				),
-				value: formatValue( currency, 'number', numReturningCustomers ),
+				value: formatValue( currency, 'number', totalCustomers ),
 			},
 			{
 				label: _n(
@@ -301,7 +299,7 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: __( 'net sales', 'woocommerce-admin' ),
-				value: formatCurrency( netRevenue ),
+				value: formatAmount( netRevenue ),
 			},
 		];
 	}
@@ -336,8 +334,7 @@ class OrdersReportTable extends Component {
 				getSummary={ this.getSummary }
 				summaryFields={ [
 					'orders_count',
-					'num_new_customers',
-					'num_returning_customers',
+					'total_customers',
 					'products',
 					'num_items_sold',
 					'coupons_count',

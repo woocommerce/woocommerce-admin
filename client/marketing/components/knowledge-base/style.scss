@@ -1,5 +1,4 @@
 .woocommerce-marketing-knowledgebase-card {
-
 	.woocommerce-marketing-slider {
 		margin: 0 0 14px;
 	}
@@ -16,12 +15,6 @@
 		@include breakpoint( '<960px' ) {
 			display: block;
 		}
-	}
-
-	.components-spinner {
-		float: none;
-		margin: 45px auto 50px;
-		display: block;
 	}
 
 	&__post {
@@ -79,8 +72,9 @@
 
 		&-text {
 			margin: 10px 0 0;
+			flex: 1;
 
-			@include breakpoint('>960px') {
+			@include breakpoint( '>960px' ) {
 				margin: 0;
 			}
 		}
@@ -92,12 +86,13 @@
 			line-height: 24px;
 			font-weight: 600;
 			white-space: normal;
-			color: $core-grey-dark-800;
+			color: $gray-900;
+			transition: color 0.2s ease;
 		}
 
 		&:hover {
 			h3 {
-				color: $core-blue-dark-900;
+				color: var(--wp-admin-theme-color);
 			}
 		}
 
@@ -107,7 +102,7 @@
 			align-items: center;
 			font-size: 12px;
 			line-height: 17px;
-			color: $core-grey-dark-500;
+			color: $gray-700;
 			margin: 0;
 			padding: 0;
 			height: 17px;
@@ -116,5 +111,17 @@
 				margin: 1px 0 0 5px;
 			}
 		}
+
+		&.is-loading {
+			.is-placeholder {
+				@include placeholder();
+			}
+
+			p {
+				width: 40%;
+			}
+		}
+
 	}
+
 }

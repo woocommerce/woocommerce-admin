@@ -3,8 +3,6 @@
  * REST API Reports controller extended by WC Admin plugin.
  *
  * Handles requests to the reports endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports;
@@ -14,7 +12,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * REST API Reports controller class.
  *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller {
@@ -95,6 +92,14 @@ class Controller extends \WC_REST_Reports_Controller {
 			array(
 				'slug'        => 'products/stats',
 				'description' => __( 'Stats about products.', 'woocommerce-admin' ),
+			),
+			array(
+				'slug'        => 'variations',
+				'description' => __( 'Variations detailed reports.', 'woocommerce-admin' ),
+			),
+			array(
+				'slug'        => 'variations/stats',
+				'description' => __( 'Stats about variations.', 'woocommerce-admin' ),
 			),
 			array(
 				'slug'        => 'categories',
@@ -184,6 +189,10 @@ class Controller extends \WC_REST_Reports_Controller {
 	 */
 	public function get_order_number( $order_id ) {
 		$order = wc_get_order( $order_id );
+
+		if ( ! $order instanceof \WC_Order ) {
+			return null;
+		}
 
 		if ( 'shop_order_refund' === $order->get_type() ) {
 			$order = wc_get_order( $order->get_parent_id() );
@@ -290,11 +299,22 @@ class Controller extends \WC_REST_Reports_Controller {
 
 	/**
 	 * Get order statuses without prefixes.
+	 * Includes unregistered statuses that have been marked "actionable".
 	 *
 	 * @return array
 	 */
-	public function get_order_statuses() {
-		return array_keys( $this->get_order_status_labels() );
+	public static function get_order_statuses() {
+		// Allow all statuses selected as "actionable" - this may include unregistered statuses.
+		// See: https://github.com/woocommerce/woocommerce-admin/issues/5592.
+		$actionable_statuses = get_option( 'woocommerce_actionable_order_statuses', array() );
+
+		// See WC_REST_Orders_V2_Controller::get_collection_params() re: any/trash statuses.
+		$registered_statuses = array_merge( array( 'any', 'trash' ), array_keys( self::get_order_status_labels() ) );
+
+		// Merge the status arrays (using flip to avoid array_unique()).
+		$allowed_statuses = array_keys( array_merge( array_flip( $registered_statuses ), array_flip( $actionable_statuses ) ) );
+
+		return $allowed_statuses;
 	}
 
 	/**
@@ -302,7 +322,7 @@ class Controller extends \WC_REST_Reports_Controller {
 	 *
 	 * @return array
 	 */
-	public function get_order_status_labels() {
+	public static function get_order_status_labels() {
 		$order_statuses = array();
 
 		foreach ( wc_get_order_statuses() as $key => $label ) {

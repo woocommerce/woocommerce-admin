@@ -2,10 +2,6 @@
  * External dependencies
  */
 import { addQueryArgs } from '@wordpress/url';
-
-/**
- * WooCommerce dependencies
- */
 import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
@@ -25,7 +21,7 @@ export const getInAppPurchaseUrl = ( url, queryArgs = {} ) => {
 		'wccom-woo-version': getSetting( 'wcVersion' ),
 		'wccom-connect-nonce': connectNonce,
 		...queryArgs,
-	}
+	};
 
 	return addQueryArgs( url, queryArgs );
-}
+};

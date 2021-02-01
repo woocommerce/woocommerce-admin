@@ -7,6 +7,11 @@ import { format as formatDate } from '@wordpress/date';
 /**
  * Use the `Date` component to display accessible dates or times.
  *
+ * @param {Object} props
+ * @param {Object} props.date
+ * @param {string} props.machineFormat
+ * @param {string} props.screenReaderFormat
+ * @param {string} props.visibleFormat
  * @return {Object} -
  */
 const Date = ( { date, machineFormat, screenReaderFormat, visibleFormat } ) => {

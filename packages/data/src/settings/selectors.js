@@ -3,9 +3,9 @@
  */
 import { getResourceName, getResourcePrefix } from '../utils';
 
-export const getSettingsGroupNames = state => {
+export const getSettingsGroupNames = ( state ) => {
 	const groupNames = new Set(
-		Object.keys( state ).map( resourceName => {
+		Object.keys( state ).map( ( resourceName ) => {
 			return getResourcePrefix( resourceName );
 		} )
 	);
@@ -14,11 +14,11 @@ export const getSettingsGroupNames = state => {
 
 export const getSettings = ( state, group ) => {
 	const settings = {};
-	const settingIds = state[ group ] && state[ group ].data || [];
+	const settingIds = ( state[ group ] && state[ group ].data ) || [];
 	if ( settingIds.length === 0 ) {
 		return settings;
 	}
-	settingIds.forEach( id => {
+	settingIds.forEach( ( id ) => {
 		settings[ id ] = state[ getResourceName( group, id ) ].data;
 	} );
 	return settings;
@@ -47,14 +47,13 @@ export const getSettingsForGroup = ( state, group, keys ) => {
 	}, {} );
 };
 
-export const isGetSettingsRequesting = ( state, group ) => {
+export const isUpdateSettingsRequesting = ( state, group ) => {
 	return state[ group ] && Boolean( state[ group ].isRequesting );
 };
 
 /**
  * Retrieves a setting value from the setting store.
  *
- * @export
  * @param {Object}   state                        State param added by wp.data.
  * @param {string}   group                        The settings group.
  * @param {string}   name                         The identifier for the setting.
@@ -70,9 +69,16 @@ export const isGetSettingsRequesting = ( state, group ) => {
  * @return {*}  The value present in the settings state for the given
  *                   name.
  */
-export function getSetting( state, group, name, fallback = false, filter = val => val ) {
+export function getSetting(
+	state,
+	group,
+	name,
+	fallback = false,
+	filter = ( val ) => val
+) {
 	const resourceName = getResourceName( group, name );
-	const value = ( state[ resourceName ] && state[ resourceName ].data ) || fallback;
+	const value =
+		( state[ resourceName ] && state[ resourceName ].data ) || fallback;
 	return filter( value, fallback );
 }
 
@@ -86,7 +92,7 @@ export const getLastSettingsErrorForGroup = ( state, group ) => {
 
 export const getSettingsError = ( state, group, id ) => {
 	if ( ! id ) {
-		return state[ group ] && state[ group ].error || false;
+		return ( state[ group ] && state[ group ].error ) || false;
 	}
 	return state[ getResourceName( group, id ) ].error || false;
 };

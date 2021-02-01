@@ -63,6 +63,7 @@ global.wcSettings = {
 		woocommerce_excluded_report_order_statuses: [],
 	},
 	dataEndpoints: {
+    countries: [],
 		performanceIndicators: [
 			{
 				chart: 'total_sales',
@@ -101,7 +102,11 @@ wooCommercePackages.forEach( ( lib ) => {
 } );
 
 const config = require( '../../config/development.json' );
-window.wcAdminFeatures = config && config.features ? config.features : {};
+
+// Check if test is jsdom or node
+if ( global.window ) {
+	window.wcAdminFeatures = config && config.features ? config.features : {};
+}
 
 setLocaleData(
 	{ '': { domain: 'woocommerce-admin', lang: 'en_US' } },

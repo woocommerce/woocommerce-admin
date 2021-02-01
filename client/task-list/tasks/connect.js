@@ -5,20 +5,10 @@ import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import apiFetch from '@wordpress/api-fetch';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { omit } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { getHistory, getNewPath } from '@woocommerce/navigation';
-import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
-
-/**
- * Internal dependencies
- */
-import { WC_ADMIN_NAMESPACE } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
+import { ONBOARDING_STORE_NAME, WC_ADMIN_NAMESPACE } from '@woocommerce/data';
 
 class Connect extends Component {
 	componentDidMount() {
@@ -130,7 +120,9 @@ export default compose(
 	withSelect( ( select ) => {
 		const { getOnboardingError } = select( ONBOARDING_STORE_NAME );
 
-		const isProfileItemsError = Boolean( getOnboardingError( 'updateProfileItems' ) );
+		const isProfileItemsError = Boolean(
+			getOnboardingError( 'updateProfileItems' )
+		);
 
 		return { isProfileItemsError };
 	} ),

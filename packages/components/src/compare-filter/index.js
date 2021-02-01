@@ -3,19 +3,21 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
-import { Button } from '@wordpress/components';
-import { isEqual } from 'lodash';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+} from '@wordpress/components';
+import { isEqual, isFunction } from 'lodash';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
+import { Text } from '@woocommerce/experimental';
 import { getIdsFromQuery, updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
  */
-import Card from '../card';
 import CompareButton from './button';
 import Search from '../search';
 
@@ -30,11 +32,10 @@ export class CompareFilter extends Component {
 		this.state = {
 			selected: [],
 		};
-
 		this.clearQuery = this.clearQuery.bind( this );
 		this.updateQuery = this.updateQuery.bind( this );
 		this.updateLabels = this.updateLabels.bind( this );
-
+		this.onButtonClicked = this.onButtonClicked.bind( this );
 		if ( query[ param ] ) {
 			getLabels( query[ param ], query ).then( this.updateLabels );
 		}
@@ -82,15 +83,22 @@ export class CompareFilter extends Component {
 		updateQueryString( { [ param ]: idList.join( ',' ) }, path, query );
 	}
 
+	onButtonClicked( e ) {
+		this.updateQuery( e );
+		if ( isFunction( this.props.onClick ) ) {
+			this.props.onClick( e );
+		}
+	}
+
 	render() {
 		const { labels, type } = this.props;
 		const { selected } = this.state;
 		return (
-			<Card
-				title={ labels.title }
-				className="woocommerce-filters__compare woocommerce-analytics__card"
-			>
-				<div className="woocommerce-filters__compare-body">
+			<Card className="woocommerce-filters__compare">
+				<CardHeader>
+					<Text variant="subtitle.small">{ labels.title }</Text>
+				</CardHeader>
+				<CardBody>
 					<Search
 						type={ type }
 						selected={ selected }
@@ -99,12 +107,12 @@ export class CompareFilter extends Component {
 							this.setState( { selected: value } );
 						} }
 					/>
-				</div>
-				<div className="woocommerce-filters__compare-footer">
+				</CardBody>
+				<CardFooter justify="flex-start">
 					<CompareButton
 						count={ selected.length }
 						helpText={ labels.helpText }
-						onClick={ this.updateQuery }
+						onClick={ this.onButtonClicked }
 					>
 						{ labels.update }
 					</CompareButton>
@@ -113,7 +121,7 @@ export class CompareFilter extends Component {
 							{ __( 'Clear all', 'woocommerce-admin' ) }
 						</Button>
 					) }
-				</div>
+				</CardFooter>
 			</Card>
 		);
 	}

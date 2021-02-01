@@ -1,23 +1,33 @@
 /**
  * Internal dependencies
  */
-import { getPersistedQuery, getSearchWords } from '../index';
-
-jest.mock( '../index', () => ( {
-	...require.requireActual( '../index' ),
-	getQuery: jest.fn().mockReturnValue( {
-		filter: 'advanced',
-		product_includes: 127,
-		period: 'year',
-		compare: 'previous_year',
-		after: '2018-02-01',
-		before: '2018-01-01',
-		interval: 'day',
-		search: 'lorem',
-	} ),
-} ) );
+import {
+	getHistory,
+	getPersistedQuery,
+	getSearchWords,
+	getNewPath,
+} from '../index';
 
 describe( 'getPersistedQuery', () => {
+	beforeEach( () => {
+		getHistory().push(
+			getNewPath(
+				{
+					filter: 'advanced',
+					product_includes: 127,
+					period: 'year',
+					compare: 'previous_year',
+					after: '2018-02-01',
+					before: '2018-01-01',
+					interval: 'day',
+					search: 'lorem',
+				},
+				'/',
+				{}
+			)
+		);
+	} );
+
 	it( "should return an empty object it the query doesn't contain any time related parameters", () => {
 		const query = {
 			filter: 'advanced',
@@ -106,5 +116,32 @@ describe( 'getSearchWords', () => {
 		};
 
 		expect( () => getSearchWords( query ) ).toThrow( Error );
+	} );
+} );
+
+describe( 'getNewPath', () => {
+	it( 'should have default page as "wc-admin"', () => {
+		const path = getNewPath( {}, '', {} );
+
+		expect( path ).toEqual( 'admin.php?page=wc-admin&path=' );
+	} );
+
+	it( 'should override default page when page parameter is specified', () => {
+		const path = getNewPath( {}, '', {}, 'custom-page' );
+
+		expect( path ).toEqual( 'admin.php?page=custom-page&path=' );
+	} );
+
+	it( 'should override default page by query parameter over page parameter', () => {
+		const path = getNewPath(
+			{
+				page: 'custom-page',
+			},
+			'',
+			{},
+			'default-page'
+		);
+
+		expect( path ).toEqual( 'admin.php?page=custom-page&path=' );
 	} );
 } );

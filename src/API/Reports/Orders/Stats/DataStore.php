@@ -1,8 +1,6 @@
 <?php
 /**
  * API\Reports\Orders\Stats\DataStore class file.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Orders\Stats;
@@ -14,6 +12,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
 use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
+use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDataStore;
 
 /**
  * API\Reports\Orders\Stats\DataStore.
@@ -45,22 +44,21 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @var array
 	 */
 	protected $column_types = array(
-		'orders_count'            => 'intval',
-		'num_items_sold'          => 'intval',
-		'gross_sales'             => 'floatval',
-		'total_sales'             => 'floatval',
-		'coupons'                 => 'floatval',
-		'coupons_count'           => 'intval',
-		'refunds'                 => 'floatval',
-		'taxes'                   => 'floatval',
-		'shipping'                => 'floatval',
-		'net_revenue'             => 'floatval',
-		'avg_items_per_order'     => 'floatval',
-		'avg_order_value'         => 'floatval',
-		'num_returning_customers' => 'intval',
-		'num_new_customers'       => 'intval',
-		'products'                => 'intval',
-		'segment_id'              => 'intval',
+		'orders_count'        => 'intval',
+		'num_items_sold'      => 'intval',
+		'gross_sales'         => 'floatval',
+		'total_sales'         => 'floatval',
+		'coupons'             => 'floatval',
+		'coupons_count'       => 'intval',
+		'refunds'             => 'floatval',
+		'taxes'               => 'floatval',
+		'shipping'            => 'floatval',
+		'net_revenue'         => 'floatval',
+		'avg_items_per_order' => 'floatval',
+		'avg_order_value'     => 'floatval',
+		'total_customers'     => 'intval',
+		'products'            => 'intval',
+		'segment_id'          => 'intval',
 	);
 
 	/**
@@ -86,21 +84,19 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			' ) as gross_sales';
 
 		$this->report_columns = array(
-			'orders_count'            => "SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) as orders_count",
-			'num_items_sold'          => "SUM({$table_name}.num_items_sold) as num_items_sold",
-			'gross_sales'             => $gross_sales,
-			'total_sales'             => "SUM({$table_name}.total_sales) AS total_sales",
-			'coupons'                 => 'COALESCE( SUM(discount_amount), 0 ) AS coupons', // SUM() all nulls gives null.
-			'coupons_count'           => 'COALESCE( coupons_count, 0 ) as coupons_count',
-			'refunds'                 => "{$refunds} AS refunds",
-			'taxes'                   => "SUM({$table_name}.tax_total) AS taxes",
-			'shipping'                => "SUM({$table_name}.shipping_total) AS shipping",
-			'net_revenue'             => "SUM({$table_name}.net_total) AS net_revenue",
-			'avg_items_per_order'     => "SUM( {$table_name}.num_items_sold ) / SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) AS avg_items_per_order",
-			'avg_order_value'         => "SUM( {$table_name}.net_total ) / SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) AS avg_order_value",
-			// Count returning customers as ( total_customers - new_customers ) to get an accurate number and count customers in with both new and old statuses as new.
-			'num_returning_customers' => "( COUNT( DISTINCT( {$table_name}.customer_id ) ) -  COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 0 THEN {$table_name}.customer_id END ) ) ) AS num_returning_customers",
-			'num_new_customers'       => "COUNT( DISTINCT( CASE WHEN {$table_name}.returning_customer = 0 THEN {$table_name}.customer_id END ) ) AS num_new_customers",
+			'orders_count'        => "SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) as orders_count",
+			'num_items_sold'      => "SUM({$table_name}.num_items_sold) as num_items_sold",
+			'gross_sales'         => $gross_sales,
+			'total_sales'         => "SUM({$table_name}.total_sales) AS total_sales",
+			'coupons'             => 'COALESCE( SUM(discount_amount), 0 ) AS coupons', // SUM() all nulls gives null.
+			'coupons_count'       => 'COALESCE( coupons_count, 0 ) as coupons_count',
+			'refunds'             => "{$refunds} AS refunds",
+			'taxes'               => "SUM({$table_name}.tax_total) AS taxes",
+			'shipping'            => "SUM({$table_name}.shipping_total) AS shipping",
+			'net_revenue'         => "SUM({$table_name}.net_total) AS net_revenue",
+			'avg_items_per_order' => "SUM( {$table_name}.num_items_sold ) / SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) AS avg_items_per_order",
+			'avg_order_value'     => "SUM( {$table_name}.net_total ) / SUM( CASE WHEN {$table_name}.parent_id = 0 THEN 1 ELSE 0 END ) AS avg_order_value",
+			'total_customers'     => "COUNT( DISTINCT( {$table_name}.customer_id ) ) as total_customers",
 		);
 	}
 
@@ -147,6 +143,24 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->get_excluded_products( $query_args )
 		);
 
+		// Variations filters.
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$product_lookup,
+			'variation_id',
+			'IN',
+			$this->get_included_variations( $query_args )
+		);
+		$where_filters[] = $this->get_object_where_filter(
+			$orders_stats_table,
+			'order_id',
+			$product_lookup,
+			'variation_id',
+			'NOT IN',
+			$this->get_excluded_variations( $query_args )
+		);
+
 		// Coupons filters.
 		$where_filters[] = $this->get_object_where_filter(
 			$orders_stats_table,
@@ -182,6 +196,29 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'NOT IN',
 			implode( ',', $query_args['tax_rate_excludes'] )
 		);
+
+		// Product attribute filters.
+		$attribute_subqueries = $this->get_attribute_subqueries( $query_args );
+		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
+			// Build a subquery for getting order IDs by product attribute(s).
+			// Done here since our use case is a little more complicated than get_object_where_filter() can handle.
+			$attribute_subquery = new SqlQuery();
+			$attribute_subquery->add_sql_clause( 'select', "{$orders_stats_table}.order_id" );
+			$attribute_subquery->add_sql_clause( 'from', $orders_stats_table );
+
+			// JOIN on product lookup.
+			$attribute_subquery->add_sql_clause( 'join', "JOIN {$product_lookup} ON {$orders_stats_table}.order_id = {$product_lookup}.order_id" );
+
+			// Add JOINs for matching attributes.
+			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
+				$attribute_subquery->add_sql_clause( 'join', $attribute_join );
+			}
+			// Add WHEREs for matching attributes.
+			$attribute_subquery->add_sql_clause( 'where', 'AND (' . implode( " {$operator} ", $attribute_subqueries['where'] ) . ')' );
+
+			// Generate subquery statement and add to our where filters.
+			$where_filters[] = "{$orders_stats_table}.order_id IN (" . $attribute_subquery->get_query_statement() . ')';
+		}
 
 		$where_filters[] = $this->get_customer_subquery( $query_args );
 		$refund_subquery = $this->get_refund_subquery( $query_args );
@@ -243,8 +280,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'coupon_excludes'   => array(),
 			'tax_rate_includes' => array(),
 			'tax_rate_excludes' => array(),
-			'customer'          => '',
-			'categories'        => array(),
+			'customer_type'     => '',
+			'category_includes' => array(),
 		);
 		$query_args = wp_parse_args( $query_args, $defaults );
 		$this->normalize_timezones( $query_args, $defaults );
@@ -463,20 +500,31 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return -1;
 		}
 
-		$data   = array(
-			'order_id'           => $order->get_id(),
-			'parent_id'          => $order->get_parent_id(),
-			'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
-			'date_created_gmt'   => gmdate( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ),
-			'num_items_sold'     => self::get_num_items_sold( $order ),
-			'total_sales'        => $order->get_total(),
-			'tax_total'          => $order->get_total_tax(),
-			'shipping_total'     => $order->get_shipping_total(),
-			'net_total'          => self::get_net_total( $order ),
-			'status'             => self::normalize_order_status( $order->get_status() ),
-			'customer_id'        => $order->get_report_customer_id(),
-			'returning_customer' => $order->is_returning_customer(),
+		/**
+		 * Filters order stats data.
+		 *
+		 * @param array $data Data written to order stats lookup table.
+		 * @param WC_Order $order  Order object.
+		 */
+		$data = apply_filters(
+			'woocommerce_analytics_update_order_stats_data',
+			array(
+				'order_id'           => $order->get_id(),
+				'parent_id'          => $order->get_parent_id(),
+				'date_created'       => $order->get_date_created()->date( 'Y-m-d H:i:s' ),
+				'date_created_gmt'   => gmdate( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ),
+				'num_items_sold'     => self::get_num_items_sold( $order ),
+				'total_sales'        => $order->get_total(),
+				'tax_total'          => $order->get_total_tax(),
+				'shipping_total'     => $order->get_shipping_total(),
+				'net_total'          => self::get_net_total( $order ),
+				'status'             => self::normalize_order_status( $order->get_status() ),
+				'customer_id'        => $order->get_report_customer_id(),
+				'returning_customer' => $order->is_returning_customer(),
+			),
+			$order
 		);
+
 		$format = array(
 			'%d',
 			'%d',
@@ -529,13 +577,19 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return;
 		}
 
+		// Retrieve customer details before the order is deleted.
+		$order       = wc_get_order( $order_id );
+		$customer_id = absint( CustomersDataStore::get_existing_customer_id_from_order( $order ) );
+
+		// Delete the order.
 		$wpdb->delete( self::get_db_table_name(), array( 'order_id' => $order_id ) );
 		/**
 		 * Fires when orders stats are deleted.
 		 *
 		 * @param int $order_id Order ID.
+		 * @param int $customer_id Customer ID.
 		 */
-		do_action( 'woocommerce_analytics_delete_order_stats', $order_id );
+		do_action( 'woocommerce_analytics_delete_order_stats', $order_id, $customer_id );
 
 		ReportsCache::invalidate();
 	}

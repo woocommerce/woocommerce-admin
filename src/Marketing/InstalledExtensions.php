@@ -1,8 +1,6 @@
 <?php
 /**
  * InstalledExtensions class file.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\Marketing;
@@ -66,6 +64,7 @@ class InstalledExtensions {
 		return [
 			'automatewoo',
 			'mailchimp-for-woocommerce',
+			'creative-mail-by-constant-contact',
 			'facebook-for-woocommerce',
 			'kliken-marketing-for-google',
 			'hubspot-for-woocommerce',

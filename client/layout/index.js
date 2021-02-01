@@ -7,32 +7,36 @@ import { Component, lazy, Suspense } from '@wordpress/element';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction, identity } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
-import { useFilters, Spinner } from '@woocommerce/components';
-import { getHistory } from '@woocommerce/navigation';
+import { parse } from 'qs';
+import { Spinner } from '@woocommerce/components';
+import { getHistory, getQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 	withOptionsHydration,
 } from '@woocommerce/data';
+import { recordPageView } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { Controller, getPages, PAGES_FILTER } from './controller';
-import Header from 'header';
+import { Controller, getPages } from './controller';
+import { Header } from '../header';
 import Notices from './notices';
-import { recordPageView } from 'lib/tracks';
 import TransientNotices from './transient-notices';
+import './navigation';
+
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )
 );
-import { REPORTS_FILTER } from 'analytics/report';
+
+const WCPayUsageModal = lazy( () =>
+	import(
+		/* webpackChunkName: "wcpay-usage-modal" */ '../task-list/tasks/payments/wcpay-usage-modal'
+	)
+);
 
 export class PrimaryLayout extends Component {
 	render() {
@@ -80,9 +84,16 @@ class _Layout extends Component {
 			isJetpackConnected,
 		} = this.props;
 
+		const navigationFlag = {
+			has_navigation: !! window.wcNavigation,
+		};
+
 		if ( isEmbedded ) {
 			const path = document.location.pathname + document.location.search;
-			recordPageView( path, { is_embedded: true } );
+			recordPageView( path, {
+				is_embedded: true,
+				...navigationFlag,
+			} );
 			return;
 		}
 
@@ -94,23 +105,42 @@ class _Layout extends Component {
 		// Remove leading slash, and camel case remaining pathname
 		let path = pathname.substring( 1 ).replace( /\//g, '_' );
 
-		// When pathname is `/` we are on the dashboard
+		// When pathname is `/` we are on the home screen.
 		if ( path.length === 0 ) {
-			path = window.wcAdminFeatures.homescreen
-				? 'home_screen'
-				: 'dashboard';
+			path = 'home_screen';
 		}
 
 		recordPageView( path, {
 			jetpack_installed: installedPlugins.includes( 'jetpack' ),
 			jetpack_active: activePlugins.includes( 'jetpack' ),
 			jetpack_connected: isJetpackConnected,
+			...navigationFlag,
 		} );
+	}
+
+	getQuery( searchString ) {
+		if ( ! searchString ) {
+			return {};
+		}
+
+		const search = searchString.substring( 1 );
+		return parse( search );
+	}
+
+	isWCPaySettingsPage() {
+		const { page, section, tab } = getQuery();
+		return (
+			page === 'wc-settings' &&
+			tab === 'checkout' &&
+			section === 'woocommerce_payments'
+		);
 	}
 
 	render() {
 		const { isEmbedded, ...restProps } = this.props;
-		const { breadcrumbs } = this.props.page;
+		const { location, page } = this.props;
+		const { breadcrumbs } = page;
+		const query = this.getQuery( location && location.search );
 
 		return (
 			<div className="woocommerce-layout">
@@ -121,14 +151,21 @@ class _Layout extends Component {
 							: breadcrumbs
 					}
 					isEmbedded={ isEmbedded }
+					query={ query }
 				/>
 				<TransientNotices />
 				{ ! isEmbedded && (
 					<PrimaryLayout>
 						<div className="woocommerce-layout__main">
-							<Controller { ...restProps } />
+							<Controller { ...restProps } query={ query } />
 						</div>
 					</PrimaryLayout>
+				) }
+
+				{ isEmbedded && this.isWCPaySettingsPage() && (
+					<Suspense fallback={ null }>
+						<WCPayUsageModal />
+					</Suspense>
 				) }
 			</div>
 		);
@@ -208,8 +245,6 @@ class _PageLayout extends Component {
 }
 
 export const PageLayout = compose(
-	// Use the useFilters HoC so PageLayout is re-rendered when filters are used to add new pages or reports
-	useFilters( [ PAGES_FILTER, REPORTS_FILTER ] ),
 	window.wcSettings.preloadOptions
 		? withOptionsHydration( {
 				...window.wcSettings.preloadOptions,
@@ -217,15 +252,19 @@ export const PageLayout = compose(
 		: identity
 )( _PageLayout );
 
-export class EmbedLayout extends Component {
-	render() {
-		return (
-			<Layout
-				page={ {
-					breadcrumbs: getSetting( 'embedBreadcrumbs', [] ),
-				} }
-				isEmbedded
-			/>
-		);
-	}
-}
+const _EmbedLayout = () => (
+	<Layout
+		page={ {
+			breadcrumbs: getSetting( 'embedBreadcrumbs', [] ),
+		} }
+		isEmbedded
+	/>
+);
+
+export const EmbedLayout = compose(
+	window.wcSettings.preloadOptions
+		? withOptionsHydration( {
+				...window.wcSettings.preloadOptions,
+		  } )
+		: identity
+)( _EmbedLayout );

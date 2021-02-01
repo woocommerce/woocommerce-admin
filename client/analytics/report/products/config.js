@@ -7,7 +7,10 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import { getProductLabels, getVariationLabels } from 'lib/async-requests';
+import {
+	getProductLabels,
+	getVariationLabels,
+} from '../../../lib/async-requests';
 
 const PRODUCTS_REPORT_CHARTS_FILTER =
 	'woocommerce_admin_products_report_charts';
@@ -109,6 +112,32 @@ const variationsConfig = {
 			label: __( 'All Variations', 'woocommerce-admin' ),
 			chartMode: 'item-comparison',
 			value: 'all',
+		},
+		{
+			label: __( 'Single Variation', 'woocommerce-admin' ),
+			value: 'select_variation',
+			subFilters: [
+				{
+					component: 'Search',
+					value: 'single_variation',
+					path: [ 'select_variation' ],
+					settings: {
+						type: 'variations',
+						param: 'variations',
+						getLabels: getVariationLabels,
+						labels: {
+							placeholder: __(
+								'Type to search for a variation',
+								'woocommerce-admin'
+							),
+							button: __(
+								'Single Variation',
+								'woocommerce-admin'
+							),
+						},
+					},
+				},
+			],
 		},
 		{
 			label: __( 'Comparison', 'woocommerce-admin' ),

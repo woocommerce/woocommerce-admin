@@ -7,10 +7,6 @@ import { Button } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
@@ -75,7 +71,7 @@ class PayFast extends Component {
 			createNotice(
 				'error',
 				__(
-					'There was a problem saving your payment setings',
+					'There was a problem saving your payment settings',
 					'woocommerce-admin'
 				)
 			);

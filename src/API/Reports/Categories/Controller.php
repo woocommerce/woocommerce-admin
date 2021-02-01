@@ -3,8 +3,6 @@
  * REST API Reports categories controller
  *
  * Handles requests to the /reports/categories endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Categories;
@@ -17,7 +15,6 @@ use \Automattic\WooCommerce\Admin\API\Reports\ExportableInterface;
 /**
  * REST API Reports categories controller class.
  *
- * @package WooCommerce/API
  * @extends \Automattic\WooCommerce\Admin\API\Reports\Controller
  */
 class Controller extends ReportsController implements ExportableInterface {
@@ -43,18 +40,18 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array
 	 */
 	protected function prepare_reports_query( $request ) {
-		$args                  = array();
-		$args['before']        = $request['before'];
-		$args['after']         = $request['after'];
-		$args['interval']      = $request['interval'];
-		$args['page']          = $request['page'];
-		$args['per_page']      = $request['per_page'];
-		$args['orderby']       = $request['orderby'];
-		$args['order']         = $request['order'];
-		$args['extended_info'] = $request['extended_info'];
-		$args['categories']    = (array) $request['categories'];
-		$args['status_is']     = (array) $request['status_is'];
-		$args['status_is_not'] = (array) $request['status_is_not'];
+		$args                      = array();
+		$args['before']            = $request['before'];
+		$args['after']             = $request['after'];
+		$args['interval']          = $request['interval'];
+		$args['page']              = $request['page'];
+		$args['per_page']          = $request['per_page'];
+		$args['orderby']           = $request['orderby'];
+		$args['order']             = $request['order'];
+		$args['extended_info']     = $request['extended_info'];
+		$args['category_includes'] = (array) $request['categories'];
+		$args['status_is']         = (array) $request['status_is'];
+		$args['status_is_not']     = (array) $request['status_is_not'];
 
 		return $args;
 	}
@@ -288,7 +285,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
-				'enum' => $this->get_order_statuses(),
+				'enum' => self::get_order_statuses(),
 				'type' => 'string',
 			),
 		);
@@ -298,7 +295,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
-				'enum' => $this->get_order_statuses(),
+				'enum' => self::get_order_statuses(),
 				'type' => 'string',
 			),
 		);
@@ -328,12 +325,23 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array Key value pair of Column ID => Label.
 	 */
 	public function get_export_columns() {
-		return array(
+		$export_columns = array(
 			'category'       => __( 'Category', 'woocommerce-admin' ),
 			'items_sold'     => __( 'Items Sold', 'woocommerce-admin' ),
 			'net_revenue'    => __( 'Net Revenue', 'woocommerce-admin' ),
 			'products_count' => __( 'Products', 'woocommerce-admin' ),
 			'orders_count'   => __( 'Orders', 'woocommerce-admin' ),
+		);
+
+		/**
+		 * Filter to add or remove column names from the categories report for
+		 * export.
+		 *
+		 * @since 1.6.0
+		 */
+		return apply_filters(
+			'woocommerce_report_categories_export_columns',
+			$export_columns
 		);
 	}
 
@@ -344,12 +352,24 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array Key value pair of Column ID => Row Value.
 	 */
 	public function prepare_item_for_export( $item ) {
-		return array(
+		$export_item = array(
 			'category'       => $item['extended_info']['name'],
 			'items_sold'     => $item['items_sold'],
 			'net_revenue'    => $item['net_revenue'],
 			'products_count' => $item['products_count'],
 			'orders_count'   => $item['orders_count'],
+		);
+
+		/**
+		 * Filter to prepare extra columns in the export item for the
+		 * categories export.
+		 *
+		 * @since 1.6.0
+		 */
+		return apply_filters(
+			'woocommerce_report_categories_prepare_export_item',
+			$export_item,
+			$item
 		);
 	}
 }

@@ -2,57 +2,53 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
-import Gridicon from 'gridicons';
+import { Button, Card, CardBody } from '@wordpress/components';
+import CrossIcon from 'gridicons/dist/cross';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
-import { Card } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
 import WelcomeImage from './images/welcome.svg';
 
-const WelcomeCard = ( {
-	isHidden,
-	updateOptions,
-} ) => {
-
+const WelcomeCard = ( { isHidden, updateOptions } ) => {
 	const hide = () => {
 		updateOptions( {
 			woocommerce_marketing_overview_welcome_hidden: 'yes',
 		} );
 		recordEvent( 'marketing_intro_close', {} );
-	}
+	};
 
 	if ( isHidden ) {
 		return null;
 	}
 
 	return (
-		<Card
-			className="woocommerce-marketing-overview-welcome-card"
-		>
-			<Button
-				label={ __( 'Hide', 'woocommerce-admin' ) }
-				onClick={ hide }
-				className="woocommerce-marketing-overview-welcome-card__hide-button"
-			>
-				<Gridicon icon="cross" />
-			</Button>
-			<img src={ WelcomeImage } alt="" />
-			<h3>{ __( 'Grow your customer base and increase your sales with marketing tools built for WooCommerce', 'woocommerce-admin' ) }</h3>
+		<Card className="woocommerce-marketing-overview-welcome-card">
+			<CardBody>
+				<Button
+					label={ __( 'Hide', 'woocommerce-admin' ) }
+					onClick={ hide }
+					className="woocommerce-marketing-overview-welcome-card__hide-button"
+				>
+					<CrossIcon />
+				</Button>
+				<img src={ WelcomeImage } alt="" />
+				<h3>
+					{ __(
+						'Grow your customer base and increase your sales with marketing tools built for WooCommerce',
+						'woocommerce-admin'
+					) }
+				</h3>
+			</CardBody>
 		</Card>
-	)
-}
+	);
+};
 
 WelcomeCard.propTypes = {
 	/**
@@ -66,7 +62,7 @@ WelcomeCard.propTypes = {
 };
 
 // named export
-export { WelcomeCard }
+export { WelcomeCard };
 
 // default export
 export default compose(

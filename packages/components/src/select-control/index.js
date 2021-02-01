@@ -16,23 +16,17 @@ import List from './list';
 import Tags from './tags';
 import Control from './control';
 
+const initialState = { isExpanded: false, isFocused: false, query: '' };
+
 /**
  * A search box which filters options while typing,
  * allowing a user to select from an option from a filtered list.
  */
 export class SelectControl extends Component {
-	static getInitialState() {
-		return {
-			isExpanded: false,
-			isFocused: false,
-			query: '',
-		};
-	}
-
 	constructor( props ) {
 		super( props );
 		this.state = {
-			...this.constructor.getInitialState(),
+			...initialState,
 			filteredOptions: [],
 			selectedIndex: 0,
 		};
@@ -55,15 +49,14 @@ export class SelectControl extends Component {
 	}
 
 	reset( selected = this.getSelected() ) {
-		const { multiple } = this.props;
-		const initialState = this.constructor.getInitialState();
-
+		const { inlineTags } = this.props;
+		const newState = { ...initialState };
 		// Reset to the option label if not using tags.
-		if ( ! multiple && selected.length && selected[ 0 ].label ) {
-			initialState.query = selected[ 0 ].label;
+		if ( ! inlineTags && selected.length && selected[ 0 ].label ) {
+			newState.query = selected[ 0 ].label;
 		}
 
-		this.setState( initialState );
+		this.setState( newState );
 	}
 
 	handleFocusOutside() {
@@ -71,13 +64,17 @@ export class SelectControl extends Component {
 	}
 
 	hasTags() {
-		const { multiple, selected } = this.props;
+		const { inlineTags, selected } = this.props;
 
-		if ( ! multiple ) {
+		if ( ! inlineTags ) {
 			return false;
 		}
 
-		return selected.some( ( item ) => Boolean( item.label ) );
+		if ( Array.isArray( selected ) ) {
+			return selected.some( ( item ) => Boolean( item.label ) );
+		}
+
+		return Boolean( selected );
 	}
 
 	getSelected() {
@@ -220,7 +217,20 @@ export class SelectControl extends Component {
 	}
 
 	search( query ) {
-		this.setState( { query, isFocused: true } );
+		const searchOptions = this.searchOptions || [];
+		const filteredOptions =
+			query !== null && ! query.length && ! this.props.hideBeforeSearch
+				? searchOptions
+				: this.getFilteredOptions( searchOptions, query );
+
+		this.setState( {
+			query,
+			isFocused: true,
+			selectedIndex: 0,
+			filteredOptions,
+			isExpanded: Boolean( filteredOptions.length ),
+		} );
+
 		this.updateFilteredOptions( query );
 	}
 
@@ -235,6 +245,8 @@ export class SelectControl extends Component {
 				// or else we might end triggering a race condition updating the state.
 				return;
 			}
+
+			this.searchOptions = searchOptions;
 
 			// Get all options if `hideBeforeSearch` is enabled and query is not null.
 			const filteredOptions =

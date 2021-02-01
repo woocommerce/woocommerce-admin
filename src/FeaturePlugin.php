@@ -1,26 +1,27 @@
 <?php
 /**
  * WooCommerce Admin: Feature plugin main class.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Historical_Data;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Order_Milestones;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Woo_Subscriptions_Notes;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Tracking_Opt_In;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_WooCommerce_Payments;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Install_JP_And_WCS_Plugins;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Draw_Attention;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_First_Order;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Coupon_Page_Moved;
+use \Automattic\WooCommerce\Admin\Notes\LearnMoreAboutVariableProducts;
+use \Automattic\WooCommerce\Admin\Notes\Notes;
+use \Automattic\WooCommerce\Admin\Notes\OrderMilestones;
+use \Automattic\WooCommerce\Admin\Notes\WooSubscriptionsNotes;
+use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
+use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
+use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
+use \Automattic\WooCommerce\Admin\Notes\DrawAttention;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes_Home_Screen_Feedback;
+use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
+use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
+use \Automattic\WooCommerce\Admin\Notes\SellingOnlineCourses;
+use \Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications\MerchantEmailNotifications;
+use \Automattic\WooCommerce\Admin\Notes\WelcomeToWooCommerceForStoreUsers;
+use \Automattic\WooCommerce\Admin\Notes\ManageStoreActivityFromHomeScreen;
 
 /**
  * Feature plugin main class.
@@ -70,6 +71,7 @@ class FeaturePlugin {
 
 		$this->define_constants();
 
+		require_once WC_ADMIN_ABSPATH . '/src/Notes/DeprecatedNotes.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/core-functions.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/feature-config.php';
 		require_once WC_ADMIN_ABSPATH . '/includes/page-controller-functions.php';
@@ -118,7 +120,7 @@ class FeaturePlugin {
 
 		$this->includes();
 		ReportsSync::clear_queued_actions();
-		WC_Admin_Notes::clear_queued_actions();
+		Notes::clear_queued_actions();
 		wp_clear_scheduled_hook( 'wc_admin_daily' );
 		wp_clear_scheduled_hook( 'generate_category_lookup_table' );
 	}
@@ -137,10 +139,6 @@ class FeaturePlugin {
 			return;
 		}
 
-		if ( ! $this->check_build() ) {
-			add_action( 'admin_notices', array( $this, 'render_build_notice' ) );
-		}
-
 		$this->includes();
 		$this->hooks();
 	}
@@ -156,7 +154,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '1.3.0-beta.1' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '2.0.0-dev' );
 	}
 
 	/**
@@ -174,29 +172,35 @@ class FeaturePlugin {
 		ReportsSync::init();
 		Install::init();
 		Events::instance()->init();
-		new API\Init();
+		API\Init::instance();
 		ReportExporter::init();
 
 		// CRUD classes.
-		WC_Admin_Notes::init();
+		Notes::init();
 
 		// Initialize category lookup.
 		CategoryLookup::instance()->init();
 
 		// Admin note providers.
 		// @todo These should be bundled in the features/ folder, but loading them from there currently has a load order issue.
-		new WC_Admin_Notes_Woo_Subscriptions_Notes();
-		new WC_Admin_Notes_Historical_Data();
-		new WC_Admin_Notes_Order_Milestones();
-		new WC_Admin_Notes_Tracking_Opt_In();
-		new WC_Admin_Notes_WooCommerce_Payments();
-		new WC_Admin_Notes_Install_JP_And_WCS_Plugins();
-		new WC_Admin_Notes_Draw_Attention();
-		new WC_Admin_Notes_First_Order();
-		new WC_Admin_Notes_Home_Screen_Feedback();
+		new WooSubscriptionsNotes();
+		new OrderMilestones();
+		new TrackingOptIn();
+		new WooCommercePayments();
+		new InstallJPAndWCSPlugins();
+		new DrawAttention();
+		new SetUpAdditionalPaymentTypes();
+		new TestCheckout();
+		new SellingOnlineCourses();
+		new LearnMoreAboutVariableProducts();
+		new WelcomeToWooCommerceForStoreUsers();
+		new ManageStoreActivityFromHomeScreen();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();
+
+		// Initialize MerchantEmailNotifications.
+		MerchantEmailNotifications::init();
 	}
 
 	/**
@@ -204,9 +208,8 @@ class FeaturePlugin {
 	 */
 	protected function hooks() {
 		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ), 0 );
-		add_action( 'admin_menu', array( $this, 'register_devdocs_page' ) );
 
-		new Loader();
+		Loader::get_instance();
 	}
 
 	/**
@@ -254,15 +257,6 @@ class FeaturePlugin {
 	}
 
 	/**
-	 * Returns true if build file exists.
-	 *
-	 * @return bool
-	 */
-	protected function check_build() {
-		return file_exists( plugin_dir_path( __DIR__ ) . '/dist/app/index.js' );
-	}
-
-	/**
 	 * Deactivates this plugin.
 	 */
 	public function deactivate_self() {
@@ -279,19 +273,6 @@ class FeaturePlugin {
 	}
 
 	/**
-	 * Notify users that the plugin needs to be built.
-	 */
-	public function render_build_notice() {
-		$message_one = __( 'You have installed a development version of WooCommerce Admin which requires files to be built. From the plugin directory, run <code>npm install</code> to install dependencies, <code>npm run build</code> to build the files.', 'woocommerce-admin' );
-		$message_two = sprintf(
-			/* translators: 1: URL of GitHub Repository build page */
-			__( 'Or you can download a pre-built version of the plugin by visiting <a href="%1$s">the releases page in the repository</a>.', 'woocommerce-admin' ),
-			'https://github.com/woocommerce/woocommerce-admin/releases'
-		);
-		printf( '<div class="error"><p>%s %s</p></div>', $message_one, $message_two ); /* phpcs:ignore xss ok. */
-	}
-
-	/**
 	 * Overwrites the allowed features array using a local `feature-config.php` file.
 	 *
 	 * @param array $features Array of feature slugs.
@@ -300,21 +281,6 @@ class FeaturePlugin {
 		$feature_config = apply_filters( 'woocommerce_admin_get_feature_config', wc_admin_get_feature_config() );
 		$features       = array_keys( array_filter( $feature_config ) );
 		return $features;
-	}
-
-	/**
-	 * Adds a menu item for the wc-admin devdocs.
-	 */
-	public function register_devdocs_page() {
-		if ( Loader::is_dev() ) {
-			wc_admin_register_page(
-				array(
-					'title'  => 'DevDocs',
-					'parent' => 'woocommerce',
-					'path'   => '/devdocs',
-				)
-			);
-		}
 	}
 
 	/**
@@ -337,5 +303,7 @@ class FeaturePlugin {
 	/**
 	 * Prevent unserializing.
 	 */
-	private function __wakeup() {}
+	public function __wakeup() {
+		die();
+	}
 }

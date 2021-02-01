@@ -4,6 +4,26 @@
 import { debounce, isArray, uniqueId } from 'lodash';
 import { Component } from '@wordpress/element';
 import { addAction, removeAction } from '@wordpress/hooks';
+import deprecated from '@wordpress/deprecated';
+
+/**
+ * Deprecated version of useFilters.
+ *
+ * @deprecated
+ *
+ * @param {string} hookName Hook name exposed to be used by filters.
+ *
+ * @return {Function} Higher-order component factory.
+ */
+export default function useFilters( hookName ) {
+	deprecated( 'useFilters', {
+		version: '5.0.0',
+		alternative: 'withFilters',
+		plugin: 'WooCommerce',
+		hint: 'Use `import { withFilters } from "@wordpress/components"`',
+	} );
+	return originalUseFilters( hookName );
+}
 
 const ANIMATION_FRAME_PERIOD = 16;
 
@@ -17,10 +37,10 @@ const ANIMATION_FRAME_PERIOD = 16;
  *
  * @return {Function} Higher-order component factory.
  */
-export default function useFilters( hookName ) {
+function originalUseFilters( hookName ) {
 	const hookNames = isArray( hookName ) ? hookName : [ hookName ];
 
-	return function( OriginalComponent ) {
+	return function ( OriginalComponent ) {
 		return class FilteredComponent extends Component {
 			constructor( props ) {
 				super( props );

@@ -2,24 +2,19 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Spinner } from '@wordpress/components';
 import classnames from 'classnames';
 import { withDispatch, withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 
 /**
- * WooCommerce dependencies
- */
-import { Card } from '@woocommerce/components';
-
-/**
  * Internal dependencies
  */
-import './style.scss'
+import './style.scss';
 import RecommendedExtensionsItem from './item';
+import RecommendedExtensionsPlaceholder from './placeholder';
 import { STORE_KEY } from '../../data/constants';
+import Card from '../card';
 
 const RecommendedExtensions = ( {
 	extensions,
@@ -28,12 +23,14 @@ const RecommendedExtensions = ( {
 	description,
 	category,
 } ) => {
-
 	if ( extensions.length === 0 && ! isLoading ) {
 		return null;
 	}
 
-	const categoryClass = ( category ) ? `woocommerce-marketing-recommended-extensions-card__category-${category}` : '';
+	const categoryClass = category
+		? `woocommerce-marketing-recommended-extensions-card__category-${ category }`
+		: '';
+	const placholdersCount = 5;
 
 	return (
 		<Card
@@ -41,27 +38,39 @@ const RecommendedExtensions = ( {
 			description={ description }
 			className={ classnames(
 				'woocommerce-marketing-recommended-extensions-card',
-				categoryClass,
+				categoryClass
 			) }
 		>
-			<Fragment>
-				{ isLoading ? <Spinner /> : (
-					<div className={ classnames(
+			{ isLoading ? (
+				<div
+					className={ classnames(
 						'woocommerce-marketing-recommended-extensions-card__items',
-						`woocommerce-marketing-recommended-extensions-card__items--count-${extensions.length}`,
-					) }>
-						{ extensions.map( ( extension ) => (
-							<RecommendedExtensionsItem
-								key={ extension.product }
-								{ ...extension }
-							/>
-						) ) }
-					</div>
-				) }
-			</Fragment>
+						`woocommerce-marketing-recommended-extensions-card__items--count-${ placholdersCount }`
+					) }
+				>
+					{ [ ...Array( placholdersCount ).keys() ].map( ( key ) => (
+						<RecommendedExtensionsPlaceholder key={ key } />
+					) ) }
+				</div>
+			) : (
+				<div
+					className={ classnames(
+						'woocommerce-marketing-recommended-extensions-card__items',
+						`woocommerce-marketing-recommended-extensions-card__items--count-${ extensions.length }`
+					) }
+				>
+					{ extensions.map( ( extension ) => (
+						<RecommendedExtensionsItem
+							key={ extension.product }
+							category={ category }
+							{ ...extension }
+						/>
+					) ) }
+				</div>
+			) }
 		</Card>
-	)
-}
+	);
+};
 
 RecommendedExtensions.propTypes = {
 	/**
@@ -88,10 +97,14 @@ RecommendedExtensions.propTypes = {
 
 RecommendedExtensions.defaultProps = {
 	title: __( 'Recommended extensions', 'woocommerce-admin' ),
-	description: __( 'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.', 'woocommerce-admin' ),
+	description: __(
+		'Great marketing requires the right tools. Take your marketing to the next level with our recommended marketing extensions.',
+		'woocommerce-admin'
+	),
 };
 
-export { RecommendedExtensions }
+export { RecommendedExtensions };
+export { default as RecommendedExtensionsPlaceholder } from './placeholder';
 
 export default compose(
 	withSelect( ( select, props ) => {
@@ -99,7 +112,9 @@ export default compose(
 
 		return {
 			extensions: getRecommendedPlugins( props.category ),
-			isLoading: isResolving( 'getRecommendedPlugins', [ props.category ] ),
+			isLoading: isResolving( 'getRecommendedPlugins', [
+				props.category,
+			] ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

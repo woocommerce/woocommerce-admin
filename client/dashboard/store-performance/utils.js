@@ -3,12 +3,12 @@
  */
 import moment from 'moment';
 import { find } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { getCurrentDates, appendTimestamp } from '@woocommerce/date';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import {
+	getFilterQuery,
+	SETTINGS_STORE_NAME,
+	REPORTS_STORE_NAME,
+} from '@woocommerce/data';
 import { getNewPath } from '@woocommerce/navigation';
 import { calculateDelta, formatValue } from '@woocommerce/number';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
@@ -32,7 +32,7 @@ export const getIndicatorValues = ( {
 	primaryData,
 	secondaryData,
 	currency,
-	formatCurrency,
+	formatAmount,
 	persistedQuery,
 } ) => {
 	const primaryItem = find(
@@ -59,10 +59,10 @@ export const getIndicatorValues = ( {
 
 	const delta = calculateDelta( primaryItem.value, secondaryItem.value );
 	const primaryValue = isCurrency
-		? formatCurrency( primaryItem.value )
+		? formatAmount( primaryItem.value )
 		: formatValue( currency, primaryItem.format, primaryItem.value );
 	const secondaryValue = isCurrency
-		? formatCurrency( secondaryItem.value )
+		? formatAmount( secondaryItem.value )
 		: formatValue( currency, secondaryItem.format, secondaryItem.value );
 	return {
 		primaryValue,
@@ -73,12 +73,10 @@ export const getIndicatorValues = ( {
 	};
 };
 
-export const getIndicatorData = ( select, indicators, query ) => {
-	const {
-		getReportItems,
-		getReportItemsError,
-		isReportItemsRequesting,
-	} = select( 'wc-api' );
+export const getIndicatorData = ( select, indicators, query, filters ) => {
+	const { getReportItems, getReportItemsError, isResolving } = select(
+		REPORTS_STORE_NAME
+	);
 	const { woocommerce_default_date_range: defaultDateRange } = select(
 		SETTINGS_STORE_NAME
 	).getSetting( 'wc_admin', 'wcAdminSettings' );
@@ -88,7 +86,9 @@ export const getIndicatorData = ( select, indicators, query ) => {
 	const statKeys = indicators
 		.map( ( indicator ) => indicator.stat )
 		.join( ',' );
+	const filterQuery = getFilterQuery( { filters, query } );
 	const primaryQuery = {
+		...filterQuery,
 		after: appendTimestamp( datesFromQuery.primary.after, 'start' ),
 		before: appendTimestamp(
 			endPrimary,
@@ -98,6 +98,7 @@ export const getIndicatorData = ( select, indicators, query ) => {
 	};
 
 	const secondaryQuery = {
+		...filterQuery,
 		after: appendTimestamp( datesFromQuery.secondary.after, 'start' ),
 		before: appendTimestamp(
 			endSecondary,
@@ -112,10 +113,10 @@ export const getIndicatorData = ( select, indicators, query ) => {
 	);
 	const primaryError =
 		getReportItemsError( 'performance-indicators', primaryQuery ) || null;
-	const primaryRequesting = isReportItemsRequesting(
+	const primaryRequesting = isResolving( 'getReportItems', [
 		'performance-indicators',
-		primaryQuery
-	);
+		primaryQuery,
+	] );
 
 	const secondaryData = getReportItems(
 		'performance-indicators',
@@ -123,10 +124,10 @@ export const getIndicatorData = ( select, indicators, query ) => {
 	);
 	const secondaryError =
 		getReportItemsError( 'performance-indicators', secondaryQuery ) || null;
-	const secondaryRequesting = isReportItemsRequesting(
+	const secondaryRequesting = isResolving( 'getReportItems', [
 		'performance-indicators',
-		secondaryQuery
-	);
+		secondaryQuery,
+	] );
 
 	return {
 		primaryData,

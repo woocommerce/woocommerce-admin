@@ -6,11 +6,17 @@ import { parse, stringify } from 'qs';
 import PropTypes from 'prop-types';
 import url from 'url';
 import { isString } from 'lodash';
-import crypto from 'crypto';
+import md5 from 'md5';
 
 /**
  * Display a users Gravatar.
  *
+ * @param {Object} props
+ * @param {string} props.alt
+ * @param {string} props.title
+ * @param {string} props.size
+ * @param {string|Object} props.user
+ * @param {string} props.className
  * @return {Object} -
  */
 const Gravatar = ( { alt, title, size, user, className } ) => {
@@ -30,13 +36,7 @@ const Gravatar = ( { alt, title, size, user, className } ) => {
 	};
 
 	const getAvatarURLFromEmail = ( email ) => {
-		return (
-			'https://www.gravatar.com/avatar/' +
-			crypto
-				.createHash( 'md5' )
-				.update( email )
-				.digest( 'hex' )
-		);
+		return 'https://www.gravatar.com/avatar/' + md5( email );
 	};
 
 	const altText = alt || ( user && ( user.display_name || user.name ) ) || '';

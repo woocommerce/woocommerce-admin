@@ -24,7 +24,6 @@ export const WC_ASSET_URL = SOURCE.wcAssetUrl;
 /**
  * Retrieves a setting value from the setting state.
  *
- * @export
  * @param {string}   name                         The identifier for the setting.
  * @param {*}    [fallback=false]             The value to use as a fallback
  *                                                if the setting is not in the
@@ -38,9 +37,11 @@ export const WC_ASSET_URL = SOURCE.wcAssetUrl;
  * @return {*}  The value present in the settings state for the given
  *                   name.
  */
-export function getSetting( name, fallback = false, filter = val => val ) {
+export function getSetting( name, fallback = false, filter = ( val ) => val ) {
 	if ( mutableSources.includes( name ) ) {
-		throw new Error( __( 'Mutable settings should be accessed via data store.' ) );
+		throw new Error(
+			__( 'Mutable settings should be accessed via data store.' )
+		);
 	}
 	const value = SOURCE.hasOwnProperty( name ) ? SOURCE[ name ] : fallback;
 	return filter( value, fallback );
@@ -54,7 +55,6 @@ export function getSetting( name, fallback = false, filter = val => val ) {
  *
  * @deprecated
  *
- * @export
  * @param {string}   name                        The setting property key for the
  *                                               setting being mutated.
  * @param {*}    value                       The value to set.
@@ -62,9 +62,11 @@ export function getSetting( name, fallback = false, filter = val => val ) {
  *                                               to sanitize the setting (eg.
  *                                               ensure it's a number)
  */
-export function setSetting( name, value, filter = val => val ) {
+export function setSetting( name, value, filter = ( val ) => val ) {
 	if ( mutableSources.includes( name ) ) {
-		throw new Error( __( 'Mutable settings should be mutated via data store.' ) );
+		throw new Error(
+			__( 'Mutable settings should be mutated via data store.' )
+		);
 	}
 	SOURCE[ name ] = filter( value );
 }

@@ -4,29 +4,27 @@
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Component } from '@wordpress/element';
+import { Card, CardBody } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { Card, Link, Stepper, Plugins } from '@woocommerce/components';
+import { Link, Stepper, Plugins } from '@woocommerce/components';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import Connect from 'dashboard/components/connect';
-import { getCountryCode } from 'dashboard/utils';
+import Connect from '../../../dashboard/components/connect';
+import { getCountryCode } from '../../../dashboard/utils';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
-import { recordEvent } from 'lib/tracks';
+import { createNoticesFromResponse } from '../../../lib/notices';
 
-class Shipping extends Component {
+export class Shipping extends Component {
 	constructor( props ) {
 		super( props );
 
@@ -55,7 +53,7 @@ class Shipping extends Component {
 		const { countryCode, countryName } = this.props;
 
 		// @todo The following fetches for shipping information should be moved into
-		// the wc-api to make these methods and states more readily available.
+		// @woocommerce/data to make these methods and states more readily available.
 		const shippingZones = [];
 		const zones = await apiFetch( { path: '/wc/v3/shipping/zones' } );
 		let hasCountryZone = false;
@@ -171,7 +169,7 @@ class Shipping extends Component {
 	}
 
 	getSteps() {
-		const { countryCode, isJetpackConnected } = this.props;
+		const { countryCode, isJetpackConnected, settings } = this.props;
 		const pluginsToActivate = this.getPluginsToActivate();
 		const requiresJetpackConnection =
 			! isJetpackConnected && countryCode === 'US';
@@ -220,7 +218,10 @@ class Shipping extends Component {
 						{ ...this.props }
 					/>
 				),
-				visible: true,
+				visible:
+					settings.woocommerce_ship_to_countries === 'disabled'
+						? false
+						: true,
 			},
 			{
 				key: 'label_printing',
@@ -248,23 +249,27 @@ class Shipping extends Component {
 							},
 					  } )
 					: __(
-							'With WooCommerce Services and Jetpack you can save time at the ' +
+							'With WooCommerce Shipping and Jetpack you can save time at the ' +
 								'Post Office by printing your shipping labels at home',
 							'woocommerce-admin'
 					  ),
 				content: (
 					<Plugins
-						onComplete={ () => {
+						onComplete={ ( plugins, response ) => {
+							createNoticesFromResponse( response );
 							recordEvent( 'tasklist_shipping_label_printing', {
 								install: true,
-								pluginsToActivate,
+								plugins_to_activate: pluginsToActivate,
 							} );
 							this.completeStep();
 						} }
+						onError={ ( errors, response ) =>
+							createNoticesFromResponse( response )
+						}
 						onSkip={ () => {
 							recordEvent( 'tasklist_shipping_label_printing', {
 								install: false,
-								pluginsToActivate,
+								plugins_to_activate: pluginsToActivate,
 							} );
 							getHistory().push( getNewPath( {}, '/', {} ) );
 						} }
@@ -302,17 +307,21 @@ class Shipping extends Component {
 
 	render() {
 		const { isPending, step } = this.state;
-		const { isSettingsRequesting } = this.props;
+		const { isUpdateSettingsRequesting } = this.props;
 
 		return (
 			<div className="woocommerce-task-shipping">
-				<Card className="is-narrow">
-					<Stepper
-						isPending={ isPending || isSettingsRequesting }
-						isVertical
-						currentStep={ step }
-						steps={ this.getSteps() }
-					/>
+				<Card className="woocommerce-task-card">
+					<CardBody>
+						<Stepper
+							isPending={
+								isPending || isUpdateSettingsRequesting
+							}
+							isVertical
+							currentStep={ step }
+							steps={ this.getSteps() }
+						/>
+					</CardBody>
 				</Card>
 			</div>
 		);
@@ -321,19 +330,14 @@ class Shipping extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getSettings,
-			getSettingsError,
-			isGetSettingsRequesting,
-		} = select( SETTINGS_STORE_NAME );
+		const { getSettings, isUpdateSettingsRequesting } = select(
+			SETTINGS_STORE_NAME
+		);
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
 
 		const { general: settings = {} } = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
-		const isSettingsRequesting = isGetSettingsRequesting( 'general' );
-
 		const countryCode = getCountryCode(
 			settings.woocommerce_default_country
 		);
@@ -348,8 +352,7 @@ export default compose(
 		return {
 			countryCode,
 			countryName,
-			isSettingsError,
-			isSettingsRequesting,
+			isUpdateSettingsRequesting: isUpdateSettingsRequesting( 'general' ),
 			settings,
 			activePlugins,
 			isJetpackConnected: isJetpackConnected(),

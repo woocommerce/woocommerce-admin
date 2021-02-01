@@ -6,26 +6,29 @@ import apiFetch from '@wordpress/api-fetch';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { decodeEntities } from '@wordpress/html-entities';
-import Gridicon from 'gridicons';
-import { Button, TabPanel, Tooltip } from '@wordpress/components';
-import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { Card, H } from '@woocommerce/components';
+import InfoIcon from 'gridicons/dist/info';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	TabPanel,
+	Tooltip,
+} from '@wordpress/components';
+import { withDispatch, withSelect } from '@wordpress/data';
+import { H } from '@woocommerce/components';
 import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
 import './style.scss';
-import { recordEvent } from 'lib/tracks';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
-import { getPriceValue } from 'dashboard/utils';
+import { getPriceValue } from '../../../dashboard/utils';
 
 class Theme extends Component {
 	constructor() {
@@ -192,15 +195,17 @@ class Theme extends Component {
 
 		return (
 			<Card className="woocommerce-profile-wizard__theme" key={ slug }>
-				{ image && (
-					<div
-						className="woocommerce-profile-wizard__theme-image"
-						style={ { backgroundImage: `url(${ image })` } }
-						role="img"
-						aria-label={ title }
-					/>
-				) }
-				<div className="woocommerce-profile-wizard__theme-details">
+				<CardBody size={ null }>
+					{ image && (
+						<div
+							className="woocommerce-profile-wizard__theme-image"
+							style={ { backgroundImage: `url(${ image })` } }
+							role="img"
+							aria-label={ title }
+						/>
+					) }
+				</CardBody>
+				<CardBody className="woocommerce-profile-wizard__theme-details">
 					<H className="woocommerce-profile-wizard__theme-name">
 						{ title }
 						{ ! hasSupport && (
@@ -211,8 +216,7 @@ class Theme extends Component {
 								) }
 							>
 								<span>
-									<Gridicon
-										icon="info"
+									<InfoIcon
 										role="img"
 										aria-hidden="true"
 										focusable="false"
@@ -224,37 +228,39 @@ class Theme extends Component {
 					<p className="woocommerce-profile-wizard__theme-status">
 						{ this.getThemeStatus( theme ) }
 					</p>
-					<div className="woocommerce-profile-wizard__theme-actions">
-						{ slug === activeTheme ? (
-							<Button
-								isPrimary
-								onClick={ () => this.onChoose( theme, 'card' ) }
-								isBusy={ chosen === slug }
-							>
-								{ __(
-									'Continue with my active theme',
-									'woocommerce-admin'
-								) }
-							</Button>
-						) : (
-							<Button
-								isSecondary
-								onClick={ () => this.onChoose( theme, 'card' ) }
-								isBusy={ chosen === slug }
-							>
-								{ __( 'Choose', 'woocommerce-admin' ) }
-							</Button>
-						) }
-						{ demoUrl && (
-							<Button
-								isTertiary
-								onClick={ () => this.openDemo( theme ) }
-							>
-								{ __( 'Live demo', 'woocommerce-admin' ) }
-							</Button>
-						) }
-					</div>
-				</div>
+				</CardBody>
+				<CardFooter>
+					{ slug === activeTheme ? (
+						<Button
+							isPrimary
+							onClick={ () => this.onChoose( theme, 'card' ) }
+							isBusy={ chosen === slug }
+							disabled={ chosen === slug }
+						>
+							{ __(
+								'Continue with my active theme',
+								'woocommerce-admin'
+							) }
+						</Button>
+					) : (
+						<Button
+							isSecondary
+							onClick={ () => this.onChoose( theme, 'card' ) }
+							isBusy={ chosen === slug }
+							disabled={ chosen === slug }
+						>
+							{ __( 'Choose', 'woocommerce-admin' ) }
+						</Button>
+					) }
+					{ demoUrl && (
+						<Button
+							isTertiary
+							onClick={ () => this.openDemo( theme ) }
+						>
+							{ __( 'Live demo', 'woocommerce-admin' ) }
+						</Button>
+					) }
+				</CardFooter>
 			</Card>
 		);
 	}
@@ -351,15 +357,17 @@ class Theme extends Component {
 
 		return (
 			<Fragment>
-				<H className="woocommerce-profile-wizard__header-title">
-					{ __( 'Choose a theme', 'woocommerce-admin' ) }
-				</H>
-				<H className="woocommerce-profile-wizard__header-subtitle">
-					{ __(
-						"Choose how your store appears to customers. And don't worry, you can always switch themes and edit them later.",
-						'woocommerce-admin'
-					) }
-				</H>
+				<div className="woocommerce-profile-wizard__step-header">
+					<Text variant="title.small" as="h2">
+						{ __( 'Choose a theme', 'woocommerce-admin' ) }
+					</Text>
+					<Text variant="body">
+						{ __(
+							"Choose how your store appears to customers. And don't worry, you can always switch themes and edit them later.",
+							'woocommerce-admin'
+						) }
+					</Text>
+				</div>
 				<TabPanel
 					className="woocommerce-profile-wizard__themes-tab-panel"
 					activeClass="is-active"
@@ -400,7 +408,7 @@ class Theme extends Component {
 					/>
 				) }
 				{ activeThemeSupportsWooCommerce && (
-					<p>
+					<p className="woocommerce-profile-wizard__themes-skip-this-step">
 						<Button
 							isLink
 							className="woocommerce-profile-wizard__skip"

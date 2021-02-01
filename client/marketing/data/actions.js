@@ -3,44 +3,45 @@
  */
 import { apiFetch } from '@wordpress/data-controls';
 import { dispatch } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import TYPES from './action-types';
 import { API_NAMESPACE } from './constants';
-import { __ } from '@wordpress/i18n';
 
 export function receiveInstalledPlugins( plugins ) {
 	return {
-		type: 'SET_INSTALLED_PLUGINS',
+		type: TYPES.SET_INSTALLED_PLUGINS,
 		plugins,
 	};
 }
 
 export function receiveActivatingPlugin( pluginSlug ) {
 	return {
-		type: 'SET_ACTIVATING_PLUGIN',
+		type: TYPES.SET_ACTIVATING_PLUGIN,
 		pluginSlug,
 	};
 }
 
 export function removeActivatingPlugin( pluginSlug ) {
 	return {
-		type: 'REMOVE_ACTIVATING_PLUGIN',
+		type: TYPES.REMOVE_ACTIVATING_PLUGIN,
 		pluginSlug,
 	};
 }
 
 export function receiveRecommendedPlugins( plugins, category ) {
 	return {
-		type: 'SET_RECOMMENDED_PLUGINS',
+		type: TYPES.SET_RECOMMENDED_PLUGINS,
 		data: { plugins, category },
 	};
 }
 
 export function receiveBlogPosts( posts, category ) {
 	return {
-		type: 'SET_BLOG_POSTS',
+		type: TYPES.SET_BLOG_POSTS,
 		data: { posts, category },
 	};
 }
@@ -51,6 +52,14 @@ export function handleFetchError( error, message ) {
 
 	// eslint-disable-next-line no-console
 	console.log( error );
+}
+
+export function setError( category, error ) {
+	return {
+		type: TYPES.SET_ERROR,
+		category,
+		error,
+	};
 }
 
 export function* activateInstalledPlugin( pluginSlug ) {
@@ -67,8 +76,12 @@ export function* activateInstalledPlugin( pluginSlug ) {
 		} );
 
 		if ( response ) {
-			yield createNotice( 'success',
-				__( 'The extension has been successfully activated.', 'woocommerce-admin' )
+			yield createNotice(
+				'success',
+				__(
+					'The extension has been successfully activated.',
+					'woocommerce-admin'
+				)
 			);
 			// Deliberately load the new plugin data in a new request.
 			yield loadInstalledPluginsAfterActivation( pluginSlug );
@@ -76,7 +89,13 @@ export function* activateInstalledPlugin( pluginSlug ) {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error trying to activate the extension.', 'woocommerce-admin' ) );
+		yield handleFetchError(
+			error,
+			__(
+				'There was an error trying to activate the extension.',
+				'woocommerce-admin'
+			)
+		);
 		yield removeActivatingPlugin( pluginSlug );
 	}
 
@@ -86,7 +105,7 @@ export function* activateInstalledPlugin( pluginSlug ) {
 export function* loadInstalledPluginsAfterActivation( activatedPluginSlug ) {
 	try {
 		const response = yield apiFetch( {
-			path: `${ API_NAMESPACE }/overview/installed-plugins`
+			path: `${ API_NAMESPACE }/overview/installed-plugins`,
 		} );
 
 		if ( response ) {
@@ -96,6 +115,12 @@ export function* loadInstalledPluginsAfterActivation( activatedPluginSlug ) {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error loading installed extensions.', 'woocommerce-admin' ) );
+		yield handleFetchError(
+			error,
+			__(
+				'There was an error loading installed extensions.',
+				'woocommerce-admin'
+			)
+		);
 	}
 }

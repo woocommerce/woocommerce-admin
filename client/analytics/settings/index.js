@@ -6,12 +6,9 @@ import { Button } from '@wordpress/components';
 import { Fragment, useEffect, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { SectionHeader, useFilters, ScrollTo } from '@woocommerce/components';
+import { SectionHeader, ScrollTo } from '@woocommerce/components';
 import { useSettings } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -20,9 +17,6 @@ import './index.scss';
 import { config } from './config';
 import Setting from './setting';
 import HistoricalData from './historical-data';
-import { recordEvent } from 'lib/tracks';
-
-const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 
 const Settings = ( { createNotice, query } ) => {
 	const {
@@ -69,7 +63,7 @@ const Settings = ( { createNotice, query } ) => {
 				createNotice(
 					'error',
 					__(
-						'There was an error saving your settings.  Please try again.',
+						'There was an error saving your settings. Please try again.',
 						'woocommerce-admin'
 					)
 				);
@@ -180,4 +174,4 @@ export default compose(
 			createNotice,
 		};
 	} )
-)( useFilters( SETTINGS_FILTER )( Settings ) );
+)( Settings );

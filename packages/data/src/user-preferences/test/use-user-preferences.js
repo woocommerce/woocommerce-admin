@@ -2,10 +2,6 @@
  * External dependencies
  */
 import { act, renderHook } from '@testing-library/react-hooks';
-
-/**
- * WordPress dependencies
- */
 import { registerStore } from '@wordpress/data';
 
 /**
@@ -18,6 +14,7 @@ describe( 'useUserPreferences() hook', () => {
 		registerStore( 'core', {
 			reducer: () => ( {} ),
 			selectors: {
+				getEntity: jest.fn().mockReturnValue( undefined ),
 				getCurrentUser: jest.fn().mockReturnValue( {} ),
 				getLastEntitySaveError: jest.fn().mockReturnValue( {} ),
 				hasStartedResolution: jest.fn().mockReturnValue( false ),
@@ -38,6 +35,7 @@ describe( 'useUserPreferences() hook', () => {
 		registerStore( 'core', {
 			reducer: () => ( {} ),
 			selectors: {
+				getEntity: jest.fn().mockReturnValue( undefined ),
 				getCurrentUser: jest.fn().mockReturnValue( {} ),
 				getLastEntitySaveError: jest.fn().mockReturnValue( {} ),
 				hasStartedResolution: jest.fn().mockReturnValue( true ),
@@ -58,6 +56,7 @@ describe( 'useUserPreferences() hook', () => {
 		registerStore( 'core', {
 			reducer: () => ( {} ),
 			selectors: {
+				getEntity: jest.fn().mockReturnValue( undefined ),
 				getCurrentUser: jest.fn().mockReturnValue( {} ),
 				getLastEntitySaveError: jest.fn().mockReturnValue( {} ),
 				hasStartedResolution: jest.fn().mockReturnValue( true ),
@@ -78,6 +77,7 @@ describe( 'useUserPreferences() hook', () => {
 		registerStore( 'core', {
 			reducer: () => ( {} ),
 			selectors: {
+				getEntity: jest.fn().mockReturnValue( undefined ),
 				getCurrentUser: jest.fn().mockReturnValue( {
 					woocommerce_meta: {
 						dashboard_chart_type: '"line"',
@@ -120,6 +120,7 @@ describe( 'useUserPreferences() hook', () => {
 		registerStore( 'core', {
 			reducer: () => ( {} ),
 			selectors: {
+				getEntity: jest.fn().mockReturnValue( undefined ),
 				getCurrentUser: jest.fn().mockReturnValue( {
 					id: 1,
 				} ),
@@ -178,6 +179,7 @@ describe( 'useUserPreferences() hook', () => {
 		registerStore( 'core', {
 			reducer: () => ( {} ),
 			selectors: {
+				getEntity: jest.fn().mockReturnValue( undefined ),
 				getCurrentUser: jest.fn().mockReturnValue( {
 					id: 1,
 				} ),
@@ -213,6 +215,97 @@ describe( 'useUserPreferences() hook', () => {
 					woocommerce_meta: {
 						revenue_report_columns: [ 'shipping' ],
 					},
+				},
+			} );
+		} );
+	} );
+
+	it( 'Polyfills saveUser() on older versions of WordPress', async () => {
+		const receiveCurrentUser = jest.fn().mockReturnValue( {
+			type: 'RECEIVE_CURRENT_USER',
+			currentUser: {
+				id: 1,
+				woocommerce_meta: {
+					revenue_report_columns: '["shipping"]',
+				},
+			},
+		} );
+		const addEntities = jest.fn().mockReturnValue( {
+			type: 'BOGUG_ADD_ENTITIES',
+		} );
+		const saveEntityRecord = jest.fn().mockReturnValue( {
+			type: 'BOGUG_SAVE_ENTITY_RECORD',
+		} );
+		registerStore( 'core', {
+			reducer: () => ( {} ),
+			selectors: {
+				getCurrentUser: jest.fn().mockReturnValue( {
+					id: 1,
+				} ),
+				getEntity: jest
+					.fn()
+					.mockReturnValueOnce( undefined )
+					.mockReturnValueOnce( { name: 'user', kind: 'root' } ),
+				getEntityRecord: jest.fn().mockReturnValue( {
+					id: 1,
+					woocommerce_meta: {
+						revenue_report_columns: '["shipping"]',
+					},
+				} ),
+				getLastEntitySaveError: jest.fn().mockReturnValue( {} ),
+				hasStartedResolution: jest.fn().mockReturnValue( true ),
+				hasFinishedResolution: jest.fn().mockReturnValue( true ),
+			},
+			actions: {
+				addEntities,
+				receiveCurrentUser,
+				saveEntityRecord,
+				// saveUser() left undefined to simulate WP 5.3.x.
+			},
+		} );
+
+		const { result } = renderHook( () => useUserPreferences() );
+
+		await act( async () => {
+			const firstResult = await result.current.updateUserPreferences( {
+				revenue_report_columns: [ 'shipping' ],
+			} );
+
+			// First calls should register the User entity.
+			expect( addEntities ).toHaveBeenCalledWith( [
+				{
+					name: 'user',
+					kind: 'root',
+					baseURL: '/wp/v2/users',
+					plural: 'users',
+				},
+			] );
+
+			expect( saveEntityRecord ).toHaveBeenCalledWith( 'root', 'user', {
+				id: 1,
+				woocommerce_meta: { revenue_report_columns: '["shipping"]' },
+			} );
+			expect( receiveCurrentUser ).toHaveBeenCalled();
+			expect( firstResult ).toMatchObject( {
+				updatedUser: {
+					id: 1,
+					woocommerce_meta: {
+						revenue_report_columns: [ 'shipping' ],
+					},
+				},
+			} );
+
+			await result.current.updateUserPreferences( {
+				revenue_report_columns: [ 'shipping', 'taxes' ],
+			} );
+
+			// Subsequent calls should NOT register the User entity.
+			expect( addEntities ).toHaveBeenCalledTimes( 1 );
+
+			expect( saveEntityRecord ).toHaveBeenCalledWith( 'root', 'user', {
+				id: 1,
+				woocommerce_meta: {
+					revenue_report_columns: '["shipping","taxes"]',
 				},
 			} );
 		} );

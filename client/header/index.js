@@ -2,154 +2,93 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Component, createRef } from '@wordpress/element';
+import { useEffect, useRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
-import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
-import { getNewPath } from '@woocommerce/navigation';
-import { Link } from '@woocommerce/components';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { useUserPreferences } from '@woocommerce/data';
+import { getSetting } from '@woocommerce/wc-admin-settings';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 import ActivityPanel from './activity-panel';
-import { recordEvent } from 'lib/tracks';
+import { MobileAppBanner } from '../mobile-banner';
+import useIsScrolled from '../hooks/useIsScrolled';
 
-class Header extends Component {
-	constructor() {
-		super();
-		this.state = {
-			isScrolled: false,
-		};
+export const Header = ( { sections, isEmbedded = false, query } ) => {
+	const headerElement = useRef( null );
+	const siteTitle = getSetting( 'siteTitle', '' );
+	const pageTitle = sections.slice( -1 )[ 0 ];
+	const isScrolled = useIsScrolled();
+	const { updateUserPreferences, ...userData } = useUserPreferences();
 
-		this.headerRef = createRef();
+	const isModalDismissed = userData.android_app_banner_dismissed === 'yes';
 
-		this.onWindowScroll = this.onWindowScroll.bind( this );
-		this.updateIsScrolled = this.updateIsScrolled.bind( this );
-		this.trackLinkClick = this.trackLinkClick.bind( this );
-		this.updateDocumentTitle = this.updateDocumentTitle.bind( this );
-	}
+	const className = classnames( 'woocommerce-layout__header', {
+		'is-scrolled': isScrolled,
+	} );
 
-	componentDidMount() {
-		this.threshold = this.headerRef.current.offsetTop;
-		window.addEventListener( 'scroll', this.onWindowScroll );
-		this.updateIsScrolled();
-	}
+	useEffect( () => {
+		if ( ! isEmbedded ) {
+			const documentTitle = sections
+				.map( ( section ) => {
+					return Array.isArray( section ) ? section[ 1 ] : section;
+				} )
+				.reverse()
+				.join( ' &lsaquo; ' );
 
-	componentWillUnmount() {
-		window.removeEventListener( 'scroll', this.onWindowScroll );
-		window.cancelAnimationFrame( this.handle );
-	}
+			const decodedTitle = decodeEntities(
+				sprintf(
+					/* translators: 1: document title. 2: page title */
+					__(
+						'%1$s &lsaquo; %2$s &#8212; WooCommerce',
+						'woocommerce-admin'
+					),
+					documentTitle,
+					siteTitle
+				)
+			);
 
-	onWindowScroll() {
-		this.handle = window.requestAnimationFrame( this.updateIsScrolled );
-	}
-
-	updateIsScrolled() {
-		const isScrolled = window.pageYOffset > this.threshold - 20;
-		if ( isScrolled !== this.state.isScrolled ) {
-			this.setState( {
-				isScrolled,
-			} );
+			if ( document.title !== decodedTitle ) {
+				document.title = decodedTitle;
+			}
 		}
-	}
+	}, [ isEmbedded, sections, siteTitle ] );
 
-	trackLinkClick( event ) {
-		const href = event.target.closest( 'a' ).getAttribute( 'href' );
-
-		recordEvent( 'navbar_breadcrumb_click', {
-			href,
-			text: event.target.innerText,
+	const dismissHandler = () => {
+		updateUserPreferences( {
+			android_app_banner_dismissed: 'yes',
 		} );
-	}
+	};
 
-	updateDocumentTitle() {
-		const { sections, isEmbedded } = this.props;
+	return (
+		<div className={ className } ref={ headerElement }>
+			{ ! isModalDismissed && (
+				<MobileAppBanner
+					onDismiss={ dismissHandler }
+					onInstall={ dismissHandler }
+				/>
+			) }
 
-		// Don't modify the document title on existing WooCommerce pages.
-		if ( isEmbedded ) {
-			return;
-		}
-
-		const _sections = Array.isArray( sections ) ? sections : [ sections ];
-
-		const documentTitle = _sections
-			.map( ( section ) => {
-				return Array.isArray( section ) ? section[ 1 ] : section;
-			} )
-			.reverse()
-			.join( ' &lsaquo; ' );
-
-		document.title = decodeEntities(
-			sprintf(
-				__(
-					'%1$s &lsaquo; %2$s &#8212; WooCommerce',
-					'woocommerce-admin'
-				),
-				documentTitle,
-				getSetting( 'siteTitle', '' )
-			)
-		);
-	}
-
-	render() {
-		const { sections, isEmbedded } = this.props;
-		const { isScrolled } = this.state;
-		const _sections = Array.isArray( sections ) ? sections : [ sections ];
-
-		this.updateDocumentTitle();
-
-		const className = classnames( 'woocommerce-layout__header', {
-			'is-scrolled': isScrolled,
-		} );
-
-		return (
-			<div className={ className } ref={ this.headerRef }>
-				<h1 className="woocommerce-layout__header-breadcrumbs">
-					{ _sections.map( ( section, i ) => {
-						const sectionPiece = Array.isArray( section ) ? (
-							<Link
-								href={
-									isEmbedded
-										? getAdminLink( section[ 0 ] )
-										: getNewPath( {}, section[ 0 ], {} )
-								}
-								type={ isEmbedded ? 'wp-admin' : 'wc-admin' }
-								onClick={ this.trackLinkClick }
-							>
-								{ section[ 1 ] }
-							</Link>
-						) : (
-							section
-						);
-						return (
-							<span key={ i }>
-								{ decodeEntities( sectionPiece ) }
-							</span>
-						);
-					} ) }
-				</h1>
-				{ window.wcAdminFeatures[ 'activity-panels' ] && (
-					<ActivityPanel />
-				) }
-			</div>
-		);
-	}
-}
-
-Header.propTypes = {
-	sections: PropTypes.node.isRequired,
-	isEmbedded: PropTypes.bool,
+			<Text
+				className="woocommerce-layout__header-heading"
+				as="h1"
+				variant="subtitle.small"
+			>
+				{ decodeEntities( pageTitle ) }
+			</Text>
+			{ window.wcAdminFeatures[ 'activity-panels' ] && (
+				<ActivityPanel
+					isEmbedded={ isEmbedded }
+					query={ query }
+					userPreferencesData={ {
+						...userData,
+						updateUserPreferences,
+					} }
+				/>
+			) }
+		</div>
+	);
 };
-
-Header.defaultProps = {
-	isEmbedded: false,
-};
-
-export default Header;

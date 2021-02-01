@@ -1,18 +1,15 @@
 /**
  * External dependencies
  */
-import 'core-js/fn/object/assign';
-import 'core-js/fn/array/from';
+import 'core-js/features/object/assign';
+import 'core-js/features/array/from';
 import { __, sprintf } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { Dropdown, DatePicker as WpDatePicker } from '@wordpress/components';
 import { partial } from 'lodash';
 import { TAB } from '@wordpress/keycodes';
 import moment from 'moment';
-
-/**
- * WooCommerce dependencies
- */
+import PropTypes from 'prop-types';
 import { dateValidationMessages, toMoment } from '@woocommerce/date';
 
 /**
@@ -20,7 +17,6 @@ import { dateValidationMessages, toMoment } from '@woocommerce/date';
  */
 import DateInput from './input';
 import { H, Section } from '../section';
-import PropTypes from 'prop-types';
 
 class DatePicker extends Component {
 	constructor( props ) {

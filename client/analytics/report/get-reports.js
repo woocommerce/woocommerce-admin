@@ -6,10 +6,12 @@ import { applyFilters } from '@wordpress/hooks';
 import { lazy } from '@wordpress/element';
 
 /**
- * WooCommerce dependencies
+ * Internal dependencies
  */
 import { getSetting } from '../../settings';
+
 const manageStock = getSetting( 'manageStock', 'no' );
+const REPORTS_FILTER = 'woocommerce_admin_reports_list';
 
 /**
  * Internal dependencies
@@ -19,6 +21,11 @@ const RevenueReport = lazy( () =>
 );
 const ProductsReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report-products" */ './products' )
+);
+const VariationsReport = lazy( () =>
+	import(
+		/* webpackChunkName: "analytics-report-variations" */ './variations'
+	)
 );
 const OrdersReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report-orders" */ './orders' )
@@ -44,50 +51,72 @@ const CustomersReport = lazy( () =>
 	import( /* webpackChunkName: "analytics-report-customers" */ './customers' )
 );
 
-import { REPORTS_FILTER } from './index';
-
 export default () => {
 	const reports = [
 		{
 			report: 'revenue',
 			title: __( 'Revenue', 'woocommerce-admin' ),
 			component: RevenueReport,
+			navArgs: {
+				id: 'woocommerce-analytics-revenue',
+			},
 		},
 		{
 			report: 'products',
 			title: __( 'Products', 'woocommerce-admin' ),
 			component: ProductsReport,
+			navArgs: {
+				id: 'woocommerce-analytics-products',
+			},
+		},
+		{
+			report: 'variations',
+			title: __( 'Variations', 'woocommerce-admin' ),
+			component: VariationsReport,
+			navArgs: {
+				id: 'woocommerce-analytics-variations',
+			},
 		},
 		{
 			report: 'orders',
 			title: __( 'Orders', 'woocommerce-admin' ),
 			component: OrdersReport,
+			navArgs: {
+				id: 'woocommerce-analytics-orders',
+			},
 		},
 		{
 			report: 'categories',
 			title: __( 'Categories', 'woocommerce-admin' ),
 			component: CategoriesReport,
+			navArgs: {
+				id: 'woocommerce-analytics-categories',
+			},
 		},
 		{
 			report: 'coupons',
 			title: __( 'Coupons', 'woocommerce-admin' ),
 			component: CouponsReport,
+			navArgs: {
+				id: 'woocommerce-analytics-coupons',
+			},
 		},
 		{
 			report: 'taxes',
 			title: __( 'Taxes', 'woocommerce-admin' ),
 			component: TaxesReport,
-		},
-		{
-			report: 'downloads',
-			title: __( 'Downloads', 'woocommerce-admin' ),
-			component: DownloadsReport,
+			navArgs: {
+				id: 'woocommerce-analytics-taxes',
+			},
 		},
 		manageStock === 'yes'
 			? {
 					report: 'stock',
 					title: __( 'Stock', 'woocommerce-admin' ),
 					component: StockReport,
+					navArgs: {
+						id: 'woocommerce-analytics-stock',
+					},
 			  }
 			: null,
 		{
@@ -99,6 +128,9 @@ export default () => {
 			report: 'downloads',
 			title: __( 'Downloads', 'woocommerce-admin' ),
 			component: DownloadsReport,
+			navArgs: {
+				id: 'woocommerce-analytics-downloads',
+			},
 		},
 	].filter( Boolean );
 

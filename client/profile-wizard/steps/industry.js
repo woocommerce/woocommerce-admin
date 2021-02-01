@@ -3,24 +3,26 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { Button, CheckboxControl } from '@wordpress/components';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CheckboxControl,
+} from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { filter, find, findIndex, get } from 'lodash';
-import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce Dependencies
- */
+import { withDispatch, withSelect } from '@wordpress/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { TextControl } from '@woocommerce/components';
+import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
-import { H, Card, TextControl } from '@woocommerce/components';
-import { getCurrencyRegion } from 'dashboard/utils';
-import withSelect from 'wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
+import { getCurrencyRegion } from '../../dashboard/utils';
 
 const onboarding = getSetting( 'onboarding', {} );
 
@@ -156,10 +158,35 @@ class Industry extends Component {
 		} );
 	}
 
+	renderIndustryLabel( slug, industry, selectedIndustry ) {
+		const { textInputListContent } = this.state;
+
+		return (
+			<>
+				{ industry.label }
+				{ industry.use_description && selectedIndustry && (
+					<TextControl
+						key={ `text-control-${ slug }` }
+						label={ industry.description_label }
+						value={
+							selectedIndustry.detail ||
+							textInputListContent[ slug ] ||
+							''
+						}
+						onChange={ ( value ) =>
+							this.onDetailChange( value, slug )
+						}
+						className="woocommerce-profile-wizard__text"
+					/>
+				) }
+			</>
+		);
+	}
+
 	render() {
 		const { industries } = onboarding;
-		const { error, selected, textInputListContent } = this.state;
-		const { locationSettings } = this.props;
+		const { error, selected } = this.state;
+		const { locationSettings, isProfileItemsRequesting } = this.props;
 		const region = getCurrencyRegion(
 			locationSettings.woocommerce_default_country
 		);
@@ -174,73 +201,60 @@ class Industry extends Component {
 
 		return (
 			<Fragment>
-				<H className="woocommerce-profile-wizard__header-title">
-					{ __(
-						'In which industry does the store operate?',
-						'woocommerce-admin'
-					) }
-				</H>
-				<p className="woocommerce-profile-wizard__intro-paragraph">
-					{ __( 'Choose any that apply' ) }
-				</p>
+				<div className="woocommerce-profile-wizard__step-header">
+					<Text variant="title.small" as="h2">
+						{ __(
+							'In which industry does the store operate?',
+							'woocommerce-admin'
+						) }
+					</Text>
+					<Text variant="body">
+						{ __( 'Choose any that apply', 'woocommerce-admin' ) }
+					</Text>
+				</div>
 				<Card>
-					<div className="woocommerce-profile-wizard__checkbox-group">
-						{ filteredIndustryKeys.map( ( slug ) => {
-							const selectedIndustry = find( selected, { slug } );
+					<CardBody size={ null }>
+						<div className="woocommerce-profile-wizard__checkbox-group">
+							{ filteredIndustryKeys.map( ( slug ) => {
+								const selectedIndustry = find( selected, {
+									slug,
+								} );
 
-							return (
-								<div key={ `div-${ slug }` }>
+								return (
 									<CheckboxControl
 										key={ `checkbox-control-${ slug }` }
-										label={ industries[ slug ].label }
+										label={ this.renderIndustryLabel(
+											slug,
+											industries[ slug ],
+											selectedIndustry
+										) }
 										onChange={ () =>
 											this.onIndustryChange( slug )
 										}
 										checked={ selectedIndustry || false }
 										className="woocommerce-profile-wizard__checkbox"
 									/>
-									{ industries[ slug ].use_description &&
-										selectedIndustry && (
-											<TextControl
-												key={ `text-control-${ selectedIndustry.slug }` }
-												label={
-													industries[
-														selectedIndustry.slug
-													].description_label
-												}
-												value={
-													selectedIndustry.detail ||
-													textInputListContent[
-														slug
-													] ||
-													''
-												}
-												onChange={ ( value ) =>
-													this.onDetailChange(
-														value,
-														selectedIndustry.slug
-													)
-												}
-												className="woocommerce-profile-wizard__text"
-											/>
-										) }
-								</div>
-							);
-						} ) }
-						{ error && (
-							<span className="woocommerce-profile-wizard__error">
-								{ error }
-							</span>
-						) }
-					</div>
-
-					<Button
-						isPrimary
-						onClick={ this.onContinue }
-						disabled={ ! selected.length }
-					>
-						{ __( 'Continue', 'woocommerce-admin' ) }
-					</Button>
+								);
+							} ) }
+							{ error && (
+								<span className="woocommerce-profile-wizard__error">
+									{ error }
+								</span>
+							) }
+						</div>
+					</CardBody>
+					<CardFooter isBorderless justify="center">
+						<Button
+							isPrimary
+							onClick={ this.onContinue }
+							isBusy={ isProfileItemsRequesting }
+							disabled={
+								! selected.length || isProfileItemsRequesting
+							}
+						>
+							{ __( 'Continue', 'woocommerce-admin' ) }
+						</Button>
+					</CardFooter>
 				</Card>
 			</Fragment>
 		);
@@ -249,7 +263,11 @@ class Industry extends Component {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getProfileItems, getOnboardingError } = select( ONBOARDING_STORE_NAME );
+		const {
+			getProfileItems,
+			getOnboardingError,
+			isOnboardingRequesting,
+		} = select( ONBOARDING_STORE_NAME );
 		const { getSettings } = select( SETTINGS_STORE_NAME );
 		const { general: locationSettings = {} } = getSettings( 'general' );
 
@@ -257,6 +275,9 @@ export default compose(
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
 			profileItems: getProfileItems(),
 			locationSettings,
+			isProfileItemsRequesting: isOnboardingRequesting(
+				'updateProfileItems'
+			),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

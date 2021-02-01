@@ -1,9 +1,16 @@
-
-
 .woocommerce-embed-page {
+	#wpbody .woocommerce-layout,
+	.woocommerce-layout__notice-list-hide + .wrap {
+		padding-top: $header-height + 10;
+	}
+
 	#wpcontent,
 	#wpbody-content {
 		overflow-x: initial !important;
+	}
+
+	#wpbody-content {
+		padding-top: 0;
 	}
 
 	#wpbody-content .notice {
@@ -11,7 +18,7 @@
 	}
 
 	.wrap {
-		padding: 20px 20px 0;
+		padding: 0 20px;
 
 		@include breakpoint( '<782px' ) {
 			p.search-box {
@@ -55,7 +62,7 @@
 			box-shadow: 0 8px 16px 0 rgba(85, 93, 102, 0.3);
 		}
 
-		.woocommerce-layout__header-breadcrumbs {
+		.woocommerce-layout__header-heading {
 			margin-top: 0;
 			margin-bottom: 0;
 		}
@@ -72,7 +79,6 @@
 
 	.woocommerce-layout__primary {
 		margin: 0;
-		padding-top: $header-height + 20;
 
 		@include breakpoint( '<782px' ) {
 			padding-top: 10px;

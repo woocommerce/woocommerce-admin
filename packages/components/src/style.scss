@@ -1,7 +1,6 @@
 /**
  * Internal Dependencies
  */
-@import 'animation-slider/style.scss';
 @import 'calendar/style.scss';
 @import 'card/style.scss';
 @import 'chart/style.scss';
@@ -21,6 +20,7 @@
 @import 'list/style.scss';
 @import 'order-status/style.scss';
 @import 'pagination/style.scss';
+@import 'pill/style.scss';
 @import 'product-image/style.scss';
 @import 'rating/style.scss';
 @import 'search/style.scss';
@@ -38,3 +38,4 @@
 @import 'timeline/style.scss';
 @import 'view-more-list/style.scss';
 @import 'web-preview/style.scss';
+@import 'badge/style.scss';

@@ -11,6 +11,7 @@ import {
 	handleFetchError,
 	receiveRecommendedPlugins,
 	receiveBlogPosts,
+	setError,
 } from './actions';
 import { API_NAMESPACE } from './constants';
 
@@ -27,7 +28,13 @@ export function* getRecommendedPlugins( category ) {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error loading recommended extensions.', 'woocommerce-admin' ) );
+		yield handleFetchError(
+			error,
+			__(
+				'There was an error loading recommended extensions.',
+				'woocommerce-admin'
+			)
+		);
 	}
 }
 
@@ -45,6 +52,6 @@ export function* getBlogPosts( category ) {
 			throw new Error();
 		}
 	} catch ( error ) {
-		yield handleFetchError( error, __( 'There was an error loading knowledge base posts.', 'woocommerce-admin' ) );
+		yield setError( category, error );
 	}
 }

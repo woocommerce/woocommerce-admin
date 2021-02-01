@@ -4,12 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
-import { getDateParamsFromQuery } from 'lib/date';
 import { getNewPath } from '@woocommerce/navigation';
 import {
 	SummaryList,
@@ -17,34 +13,36 @@ import {
 	SummaryNumber,
 } from '@woocommerce/components';
 import { calculateDelta, formatValue } from '@woocommerce/number';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getSummaryNumbers, SETTINGS_STORE_NAME } from '@woocommerce/data';
+import { getDateParamsFromQuery } from '@woocommerce/date';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { getSummaryNumbers } from 'wc-api/reports/utils';
-import ReportError from 'analytics/components/report-error';
-import withSelect from 'wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import ReportError from '../report-error';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 /**
  * Component to render summary numbers in reports.
  */
 export class ReportSummary extends Component {
 	formatVal( val, type ) {
-		const { formatCurrency, getCurrency } = this.context;
+		const { formatAmount, getCurrencyConfig } = this.context;
 		return type === 'currency'
-			? formatCurrency( val )
-			: formatValue( getCurrency(), type, val );
+			? formatAmount( val )
+			: formatValue( getCurrencyConfig(), type, val );
 	}
 
 	getValues( key, type ) {
 		const { emptySearchResults, summaryData } = this.props;
 		const { totals } = summaryData;
 
-		const primaryValue = emptySearchResults ? 0 : totals.primary[ key ];
-		const secondaryValue = emptySearchResults ? 0 : totals.secondary[ key ];
+		const primaryTotal = totals.primary ? totals.primary[ key ] : 0;
+		const secondaryTotal = totals.secondary ? totals.secondary[ key ] : 0;
+
+		const primaryValue = emptySearchResults ? 0 : primaryTotal;
+		const secondaryValue = emptySearchResults ? 0 : secondaryTotal;
 
 		return {
 			delta: calculateDelta( primaryValue, secondaryValue ),
@@ -56,7 +54,6 @@ export class ReportSummary extends Component {
 	render() {
 		const {
 			charts,
-			isRequesting,
 			query,
 			selectedChart,
 			summaryData,
@@ -64,13 +61,13 @@ export class ReportSummary extends Component {
 			report,
 			defaultDateRange,
 		} = this.props;
-		const { isError, isRequesting: isSummaryDataRequesting } = summaryData;
+		const { isError, isRequesting } = summaryData;
 
 		if ( isError ) {
 			return <ReportError isError />;
 		}
 
-		if ( isRequesting || isSummaryDataRequesting ) {
+		if ( isRequesting ) {
 			return <SummaryListPlaceholder numberOfItems={ charts.length } />;
 		}
 
@@ -144,10 +141,6 @@ ReportSummary.propTypes = {
 	 */
 	query: PropTypes.object.isRequired,
 	/**
-	 * Whether there is an API call running.
-	 */
-	isRequesting: PropTypes.bool,
-	/**
 	 * Properties of the selected chart.
 	 */
 	selectedChart: PropTypes.shape( {
@@ -189,7 +182,6 @@ ReportSummary.defaultProps = {
 			secondary: {},
 		},
 		isError: false,
-		isRequesting: false,
 	},
 };
 
@@ -200,17 +192,12 @@ export default compose(
 		const {
 			charts,
 			endpoint,
-			isRequesting,
 			limitProperties,
 			query,
 			filters,
 			advancedFilters,
 		} = props;
 		const limitBy = limitProperties || [ endpoint ];
-
-		if ( isRequesting ) {
-			return {};
-		}
 
 		const hasLimitByParam = limitBy.some(
 			( item ) => query[ item ] && query[ item ].length
@@ -222,7 +209,7 @@ export default compose(
 			};
 		}
 
-		const fields = charts && charts.map( chart => chart.key );
+		const fields = charts && charts.map( ( chart ) => chart.key );
 
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME

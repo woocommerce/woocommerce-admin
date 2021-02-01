@@ -2,53 +2,46 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import classnames from 'classnames';
 import clickOutside from 'react-click-outside';
 import { Component, lazy, Suspense } from '@wordpress/element';
-import { Button, NavigableMenu } from '@wordpress/components';
-import { partial, uniqueId, find } from 'lodash';
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import PagesIcon from 'gridicons/dist/pages';
+import { Button } from '@wordpress/components';
+import { compose } from '@wordpress/compose';
+import { withDispatch, withSelect } from '@wordpress/data';
+import { uniqueId, find } from 'lodash';
 import CrossIcon from 'gridicons/dist/cross-small';
+import classnames from 'classnames';
+import { Icon, help as helpIcon } from '@wordpress/icons';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { H, Section, Spinner } from '@woocommerce/components';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
 import ActivityPanelToggleBubble from './toggle-bubble';
-import { H, Section, Spinner } from '@woocommerce/components';
-import {
-	getUnreadNotes,
-	getUnreadOrders,
-	getUnapprovedReviews,
-	getUnreadStock,
-} from './unread-indicators';
+import { getUnreadNotes } from './unread-indicators';
+import { isWCAdmin } from '../../dashboard/utils';
+import { Tabs } from './tabs';
+import { SetupProgress } from './setup-progress';
+import { DisplayOptions } from './display-options';
+import { HighlightTooltip } from './highlight-tooltip';
+
+const HelpPanel = lazy( () =>
+	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
+);
+
 const InboxPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/inbox' )
-);
-const OrdersPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-orders" */ './panels/orders' )
-);
-const StockPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-stock" */ './panels/stock' )
-);
-const ReviewsPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-inbox" */ './panels/reviews' )
+	import(
+		/* webpackChunkName: "activity-panels-inbox" */ '../../inbox-panel'
+	)
 );
 
-import { recordEvent } from 'lib/tracks';
-import withSelect from 'wc-api/with-select';
-
-const manageStock = getSetting( 'manageStock', 'no' );
-const reviewsEnabled = getSetting( 'reviewsEnabled', 'no' );
-
-class ActivityPanel extends Component {
-	constructor() {
-		super( ...arguments );
-		this.togglePanel = this.togglePanel.bind( this );
-		this.clearPanel = this.clearPanel.bind( this );
-		this.toggleMobile = this.toggleMobile.bind( this );
-		this.renderTab = this.renderTab.bind( this );
+export class ActivityPanel extends Component {
+	constructor( props ) {
+		super( props );
 		this.state = {
 			isPanelOpen: false,
 			mobileOpen: false,
@@ -57,30 +50,34 @@ class ActivityPanel extends Component {
 		};
 	}
 
-	togglePanel( tabName ) {
-		const { isPanelOpen, currentTab } = this.state;
-
-		// If a panel is being opened, or if an existing panel is already open and a different one is being opened, record a track.
-		if ( ! isPanelOpen || tabName !== currentTab ) {
-			recordEvent( 'activity_panel_open', { tab: tabName } );
-		}
-
+	togglePanel( { name: tabName }, isTabOpen ) {
 		this.setState( ( state ) => {
-			if ( tabName === state.currentTab || state.currentTab === '' ) {
-				return {
-					isPanelOpen: ! state.isPanelOpen,
-					currentTab: tabName,
-					mobileOpen: ! state.isPanelOpen,
-				};
-			}
-			return { currentTab: tabName, isPanelSwitching: true };
+			const isPanelSwitching =
+				tabName !== state.currentTab &&
+				state.currentTab !== '' &&
+				isTabOpen &&
+				state.isPanelOpen;
+
+			return {
+				isPanelOpen: isTabOpen,
+				mobileOpen: isTabOpen,
+				currentTab: tabName,
+				isPanelSwitching,
+			};
 		} );
 	}
 
+	closePanel() {
+		this.setState( () => ( {
+			isPanelOpen: false,
+			currentTab: '',
+		} ) );
+	}
+
 	clearPanel() {
-		this.setState( ( { isPanelOpen } ) =>
-			isPanelOpen ? { isPanelSwitching: false } : { currentTab: '' }
-		);
+		this.setState( () => ( {
+			isPanelSwitching: false,
+		} ) );
 	}
 
 	// On smaller screen, the panel buttons are hidden behind a toggle.
@@ -94,92 +91,155 @@ class ActivityPanel extends Component {
 	}
 
 	handleClickOutside( event ) {
-		const { isPanelOpen, currentTab } = this.state;
+		const { isPanelOpen } = this.state;
 		const isClickOnModalOrSnackbar =
 			event.target.closest(
 				'.woocommerce-inbox-dismiss-confirmation_modal'
 			) || event.target.closest( '.components-snackbar__action' );
 
 		if ( isPanelOpen && ! isClickOnModalOrSnackbar ) {
-			this.togglePanel( currentTab );
+			this.closePanel();
 		}
+	}
+
+	isHomescreen() {
+		const { location } = this.props.getHistory();
+
+		return location.pathname === '/';
+	}
+
+	isPerformingSetupTask() {
+		const {
+			requestingTaskListOptions,
+			setupTaskListComplete,
+			setupTaskListHidden,
+			query,
+		} = this.props;
+
+		const isPerformingSetupTask =
+			query.task &&
+			! query.path &&
+			( requestingTaskListOptions === true ||
+				( setupTaskListHidden === false &&
+					setupTaskListComplete === false ) );
+
+		return isPerformingSetupTask;
 	}
 
 	// @todo Pull in dynamic unread status/count
 	getTabs() {
 		const {
 			hasUnreadNotes,
-			hasUnreadOrders,
-			hasUnapprovedReviews,
-			hasUnreadStock,
+			isEmbedded,
+			setupTaskListComplete,
+			setupTaskListHidden,
 		} = this.props;
-		return [
-			{
-				name: 'inbox',
-				title: __( 'Inbox', 'woocommerce-admin' ),
-				icon: <i className="material-icons-outlined">inbox</i>,
-				unread: hasUnreadNotes,
-			},
-			{
-				name: 'orders',
-				title: __( 'Orders', 'woocommerce-admin' ),
-				icon: <PagesIcon />,
-				unread: hasUnreadOrders,
-			},
-			manageStock === 'yes'
-				? {
-						name: 'stock',
-						title: __( 'Stock', 'woocommerce-admin' ),
-						icon: (
-							<i className="material-icons-outlined">widgets</i>
-						),
-						unread: hasUnreadStock,
-				  }
-				: null,
-			reviewsEnabled === 'yes'
-				? {
-						name: 'reviews',
-						title: __( 'Reviews', 'woocommerce-admin' ),
-						icon: (
-							<i className="material-icons-outlined">
-								star_border
-							</i>
-						),
-						unread: hasUnapprovedReviews,
-				  }
-				: null,
-		].filter( Boolean );
+
+		const isPerformingSetupTask = this.isPerformingSetupTask();
+
+		// Don't show the inbox on the Home screen.
+		const showInbox =
+			( isEmbedded || ! this.isHomescreen() ) && ! isPerformingSetupTask;
+
+		const showHelp =
+			( this.isHomescreen() && ! isEmbedded ) || isPerformingSetupTask;
+
+		const showDisplayOptions =
+			! isEmbedded && this.isHomescreen() && ! isPerformingSetupTask;
+
+		const showStoreSetup =
+			! setupTaskListComplete &&
+			! setupTaskListHidden &&
+			! isPerformingSetupTask &&
+			( ! this.isHomescreen() || isEmbedded );
+
+		const inbox = showInbox
+			? {
+					name: 'inbox',
+					title: __( 'Inbox', 'woocommerce-admin' ),
+					icon: <i className="material-icons-outlined">inbox</i>,
+					unread: hasUnreadNotes,
+			  }
+			: null;
+
+		const setup = showStoreSetup
+			? {
+					name: 'setup',
+					title: __( 'Store Setup', 'woocommerce-admin' ),
+					icon: <SetupProgress />,
+			  }
+			: null;
+
+		const help = showHelp
+			? {
+					name: 'help',
+					title: __( 'Help', 'woocommerce-admin' ),
+					icon: <Icon icon={ helpIcon } />,
+			  }
+			: null;
+
+		const displayOptions = showDisplayOptions
+			? {
+					component: DisplayOptions,
+			  }
+			: null;
+
+		return [ inbox, setup, displayOptions, help ].filter( Boolean );
 	}
 
 	getPanelContent( tab ) {
+		const { query } = this.props;
+		const { task } = query;
+
 		switch ( tab ) {
 			case 'inbox':
 				return <InboxPanel />;
-			case 'orders':
-				const { hasUnreadOrders } = this.props;
-				return <OrdersPanel hasActionableOrders={ hasUnreadOrders } />;
-			case 'stock':
-				return <StockPanel />;
-			case 'reviews':
-				const { hasUnapprovedReviews } = this.props;
-				return (
-					<ReviewsPanel
-						hasUnapprovedReviews={ hasUnapprovedReviews }
-					/>
-				);
+			case 'help':
+				return <HelpPanel taskName={ task } />;
 			default:
 				return null;
 		}
 	}
 
 	renderPanel() {
+		const { updateOptions, setupTaskListHidden } = this.props;
 		const { isPanelOpen, currentTab, isPanelSwitching } = this.state;
-
 		const tab = find( this.getTabs(), { name: currentTab } );
+
 		if ( ! tab ) {
 			return (
 				<div className="woocommerce-layout__activity-panel-wrapper" />
 			);
+		}
+
+		const clearPanel = () => {
+			this.clearPanel();
+		};
+
+		if ( currentTab === 'display-options' ) {
+			return null;
+		}
+
+		if ( currentTab === 'setup' ) {
+			const currentLocation = window.location.href;
+			const homescreenLocation = getAdminLink(
+				'admin.php?page=wc-admin'
+			);
+
+			// Don't navigate if we're already on the homescreen, this will cause an infinite loop
+			if ( currentLocation !== homescreenLocation ) {
+				// Ensure that if the user is trying to get to the task list they can see it even if
+				// it was dismissed.
+				if ( setupTaskListHidden === 'no' ) {
+					this.redirectToHomeScreen();
+				} else {
+					updateOptions( {
+						woocommerce_task_list_hidden: 'no',
+					} ).then( this.redirectToHomeScreen );
+				}
+			}
+
+			return null;
 		}
 
 		const classNames = classnames(
@@ -196,8 +256,8 @@ class ActivityPanel extends Component {
 				tabIndex={ 0 }
 				role="tabpanel"
 				aria-label={ tab.title }
-				onTransitionEnd={ this.clearPanel }
-				onAnimationEnd={ this.clearPanel }
+				onTransitionEnd={ clearPanel }
+				onAnimationEnd={ clearPanel }
 			>
 				<div
 					className="woocommerce-layout__activity-panel-content"
@@ -212,54 +272,60 @@ class ActivityPanel extends Component {
 		);
 	}
 
-	renderTab( tab, i ) {
-		const { currentTab, isPanelOpen } = this.state;
-		const className = classnames(
-			'woocommerce-layout__activity-panel-tab',
-			{
-				'is-active': isPanelOpen && tab.name === currentTab,
-				'has-unread': tab.unread,
-			}
-		);
-
-		const selected = tab.name === currentTab;
-		let tabIndex = -1;
-
-		// Only make this item tabbable if it is the currently selected item, or the panel is closed and the item is the first item.
-		if ( selected || ( ! isPanelOpen && i === 0 ) ) {
-			tabIndex = null;
+	redirectToHomeScreen() {
+		if ( isWCAdmin( window.location.href ) ) {
+			getHistory().push( getNewPath( {}, '/', {} ) );
+		} else {
+			window.location.href = getAdminLink( 'admin.php?page=wc-admin' );
 		}
+	}
 
-		return (
-			<Button
-				role="tab"
-				className={ className }
-				tabIndex={ tabIndex }
-				aria-selected={ selected }
-				aria-controls={ 'activity-panel-' + tab.name }
-				key={ 'activity-panel-tab-' + tab.name }
-				id={ 'activity-panel-tab-' + tab.name }
-				onClick={ partial( this.togglePanel, tab.name ) }
-			>
-				{ tab.icon }
-				{ tab.title }{ ' ' }
-				{ tab.unread && (
-					<span className="screen-reader-text">
-						{ __( 'unread activity', 'woocommerce-admin' ) }
-					</span>
-				) }
-			</Button>
-		);
+	closedHelpPanelHighlight() {
+		const { userPreferencesData } = this.props;
+		recordEvent( 'help_tooltip_click' );
+		if (
+			userPreferencesData &&
+			userPreferencesData.updateUserPreferences
+		) {
+			userPreferencesData.updateUserPreferences( {
+				help_panel_highlight_shown: 'yes',
+			} );
+		}
+	}
+
+	shouldShowHelpTooltip() {
+		const {
+			userPreferencesData,
+			trackedCompletedTasks,
+			query,
+		} = this.props;
+		const { task } = query;
+		const startedTasks =
+			userPreferencesData &&
+			userPreferencesData.task_list_tracked_started_tasks;
+		const highlightShown =
+			userPreferencesData &&
+			userPreferencesData.help_panel_highlight_shown;
+		if (
+			task &&
+			highlightShown !== 'yes' &&
+			( startedTasks || {} )[ task ] > 1 &&
+			! trackedCompletedTasks.includes( task )
+		) {
+			return true;
+		}
+		return false;
 	}
 
 	render() {
 		const tabs = this.getTabs();
-		const { mobileOpen } = this.state;
+		const { mobileOpen, currentTab, isPanelOpen } = this.state;
 		const headerId = uniqueId( 'activity-panel-header_' );
 		const panelClasses = classnames( 'woocommerce-layout__activity-panel', {
 			'is-mobile-open': this.state.mobileOpen,
 		} );
 
+		const showHelpHighlightTooltip = this.shouldShowHelpTooltip();
 		const hasUnread = tabs.some( ( tab ) => tab.unread );
 		const viewLabel = hasUnread
 			? __(
@@ -279,7 +345,9 @@ class ActivityPanel extends Component {
 					aria-labelledby={ headerId }
 				>
 					<Button
-						onClick={ this.toggleMobile }
+						onClick={ () => {
+							this.toggleMobile();
+						} }
 						label={
 							mobileOpen
 								? __(
@@ -300,31 +368,68 @@ class ActivityPanel extends Component {
 						) }
 					</Button>
 					<div className={ panelClasses }>
-						<NavigableMenu
-							role="tablist"
-							orientation="horizontal"
-							className="woocommerce-layout__activity-panel-tabs"
-						>
-							{ tabs && tabs.map( this.renderTab ) }
-						</NavigableMenu>
+						<Tabs
+							tabs={ tabs }
+							tabOpen={ isPanelOpen }
+							selectedTab={ currentTab }
+							onTabClick={ ( tab, tabOpen ) => {
+								this.togglePanel( tab, tabOpen );
+							} }
+						/>
 						{ this.renderPanel() }
 					</div>
 				</Section>
+				{ showHelpHighlightTooltip ? (
+					<HighlightTooltip
+						delay={ 1000 }
+						title={ __(
+							"We're here for help",
+							'woocommerce-admin'
+						) }
+						content={ __(
+							'If you have any questions, feel free to explore the WooCommerce docs listed here.',
+							'woocommerce-admin'
+						) }
+						closeButtonText={ __( 'Got it', 'woocommerce-admin' ) }
+						id="activity-panel-tab-help"
+						onClose={ () => this.closedHelpPanelHighlight() }
+						onShow={ () => recordEvent( 'help_tooltip_view' ) }
+					/>
+				) : null }
 			</div>
 		);
 	}
 }
 
-export default withSelect( ( select ) => {
-	const hasUnreadNotes = getUnreadNotes( select );
-	const hasUnreadOrders = getUnreadOrders( select );
-	const hasUnreadStock = getUnreadStock();
-	const hasUnapprovedReviews = getUnapprovedReviews( select );
+ActivityPanel.defaultProps = {
+	getHistory,
+};
 
-	return {
-		hasUnreadNotes,
-		hasUnreadOrders,
-		hasUnreadStock,
-		hasUnapprovedReviews,
-	};
-} )( clickOutside( ActivityPanel ) );
+export default compose(
+	withSelect( ( select ) => {
+		const hasUnreadNotes = getUnreadNotes( select );
+		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+
+		const setupTaskListComplete =
+			getOption( 'woocommerce_task_list_complete' ) === 'yes';
+		const setupTaskListHidden =
+			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
+		const requestingTaskListOptions =
+			isResolving( 'getOption', [ 'woocommerce_task_list_complete' ] ) ||
+			isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] );
+		const trackedCompletedTasks =
+			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
+
+		return {
+			hasUnreadNotes,
+			requestingTaskListOptions,
+			setupTaskListComplete,
+			setupTaskListHidden,
+			trackedCompletedTasks,
+		};
+	} ),
+	withDispatch( ( dispatch ) => ( {
+		updateOptions: dispatch( OPTIONS_STORE_NAME ).updateOptions,
+	} ) ),
+	clickOutside
+)( ActivityPanel );

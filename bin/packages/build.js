@@ -16,13 +16,14 @@ const chalk = require( 'chalk' );
 const mkdirp = require( 'mkdirp' );
 const sass = require( 'node-sass' );
 const postcss = require( 'postcss' );
-const deasync = require( 'deasync' );
+const rimraf = require( 'rimraf' );
 
 /**
  * Internal dependencies
  */
 const getPackages = require( './get-packages' );
 const getBabelConfig = require( './get-babel-config' );
+const { exit } = require( 'process' );
 
 /**
  * Module Constants
@@ -110,15 +111,15 @@ function buildJsFile( file, silent ) {
  *
  * @param {string} packagePath The path to the package.
  */
-function buildPackageScss( packagePath ) {
+async function buildPackageScss( packagePath ) {
 	const srcDir = path.resolve( packagePath, SRC_DIR );
 	const scssFiles = glob.sync( `${ srcDir }/*.scss` );
 
 	// Build scss files individually.
-	scssFiles.forEach( buildScssFile );
+	return Promise.all( scssFiles.map( ( file ) => buildScssFile( file ) ) );
 }
 
-function buildScssFile( styleFile ) {
+async function buildScssFile( styleFile ) {
 	const outputFile = getBuildPath(
 		styleFile.replace( '.scss', '.css' ),
 		BUILD_DIR.style
@@ -127,8 +128,9 @@ function buildScssFile( styleFile ) {
 		styleFile.replace( '.scss', '-rtl.css' ),
 		BUILD_DIR.style
 	);
-	mkdirp.sync( path.dirname( outputFile ) );
-	const builtSass = sass.renderSync( {
+
+	await mkdirp.sync( path.dirname( outputFile ) );
+	const builtSass = await sass.renderSync( {
 		file: styleFile,
 		includePaths: [
 			path.resolve( __dirname, '../../client/stylesheets/abstracts' ),
@@ -140,25 +142,17 @@ function buildScssFile( styleFile ) {
 	} );
 
 	const postCSSConfig = require( '@wordpress/postcss-plugins-preset' );
-	const postCSSSync = ( callback ) => {
-		postcss( postCSSConfig )
-			.process( builtSass.css, {
-				from: 'src/app.css',
-				to: 'dest/app.css',
-			} )
-			.then( ( result ) => callback( null, result ) );
-	};
+	const ltrCSS = await postcss( postCSSConfig ).process( builtSass.css, {
+		from: 'src/app.css',
+		to: 'dest/app.css',
+	} );
+	fs.writeFileSync( outputFile, ltrCSS.css );
 
-	const postCSSRTLSync = ( ltrCSS, callback ) => {
-		postcss( [ require( 'rtlcss' )() ] )
-			.process( ltrCSS, { from: 'src/app.css', to: 'dest/app.css' } )
-			.then( ( result ) => callback( null, result ) );
-	};
-
-	const result = deasync( postCSSSync )();
-	fs.writeFileSync( outputFile, result.css );
-	const resultRTL = deasync( postCSSRTLSync )( result );
-	fs.writeFileSync( outputFileRTL, resultRTL.css );
+	const rtlCSS = await postcss( [ require( 'rtlcss' )() ] ).process( ltrCSS, {
+		from: 'src/app.css',
+		to: 'dest/app.css',
+	} );
+	fs.writeFileSync( outputFileRTL, rtlCSS.css );
 }
 
 /**
@@ -202,7 +196,7 @@ function buildJsFileFor( file, silent, environment ) {
  *
  * @param {string} packagePath absolute package path
  */
-function buildPackage( packagePath ) {
+async function buildPackage( packagePath ) {
 	const srcDir = path.resolve( packagePath, SRC_DIR );
 	const jsFiles = glob.sync( `${ srcDir }/**/*.js`, {
 		ignore: [
@@ -212,15 +206,46 @@ function buildPackage( packagePath ) {
 		nodir: true,
 	} );
 
+	// Build package CSS files
+	await buildPackageScss( packagePath );
+
 	process.stdout.write( `${ path.basename( packagePath ) }\n` );
 
 	// Build js files individually.
 	jsFiles.forEach( ( file ) => buildJsFile( file, true ) );
 
-	// Build package CSS files
-	buildPackageScss( packagePath );
-
 	process.stdout.write( `${ DONE }\n` );
+}
+
+/**
+ * Build array of packages for consumption for Dependency Extraction
+ */
+function buildDependencyExtractionAssets() {
+	const packages = getPackages();
+	const packageNames = packages.map( ( packagePath ) => {
+		return `\n\t'@woocommerce/${ path.basename( packagePath ) }'`;
+	} );
+	const contents = `module.exports = [${ packageNames },\n];\n`;
+	const DEPENDENCY_EXTRACTION_ASSETS = path.join(
+		path.resolve(
+			__dirname,
+			'../../packages/dependency-extraction-webpack-plugin'
+		),
+		'assets'
+	);
+
+	try {
+		rimraf( DEPENDENCY_EXTRACTION_ASSETS, () => {
+			mkdirp.sync( DEPENDENCY_EXTRACTION_ASSETS );
+			fs.writeFileSync(
+				path.join( DEPENDENCY_EXTRACTION_ASSETS, 'packages.js' ),
+				contents
+			);
+		} );
+	} catch ( err ) {
+		console.log( err );
+		exit( 1 );
+	}
 }
 
 const files = process.argv.slice( 2 );
@@ -229,6 +254,12 @@ if ( files.length ) {
 	buildFiles( files );
 } else {
 	process.stdout.write( chalk.inverse( '>> Building packages \n' ) );
-	getPackages().forEach( buildPackage );
+	buildDependencyExtractionAssets();
+	getPackages()
+		.filter(
+			( package ) =>
+				! /dependency-extraction-webpack-plugin/.test( package )
+		)
+		.forEach( buildPackage );
 	process.stdout.write( '\n' );
 }

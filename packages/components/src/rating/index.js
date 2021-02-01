@@ -4,7 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import Gridicon from 'gridicons';
+import StarIcon from 'gridicons/dist/star';
 import PropTypes from 'prop-types';
 
 /**
@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
  * rating in a scale between 0 and the prop `totalStars` (default 5).
  */
 class Rating extends Component {
-	stars() {
+	stars( icon ) {
 		const { size, totalStars } = this.props;
 
 		const starStyles = {
@@ -22,19 +22,14 @@ class Rating extends Component {
 
 		const stars = [];
 		for ( let i = 0; i < totalStars; i++ ) {
-			stars.push(
-				<Gridicon
-					key={ 'star-' + i }
-					icon="star"
-					style={ starStyles }
-				/>
-			);
+			const Icon = icon || StarIcon;
+			stars.push( <Icon key={ 'star-' + i } style={ starStyles } /> );
 		}
 		return stars;
 	}
 
 	render() {
-		const { rating, totalStars, className } = this.props;
+		const { rating, totalStars, className, icon, outlineIcon } = this.props;
 
 		const classes = classnames( 'woocommerce-rating', className );
 		const perStar = 100 / totalStars;
@@ -49,12 +44,12 @@ class Rating extends Component {
 		);
 		return (
 			<div className={ classes } aria-label={ label }>
-				{ this.stars() }
+				{ this.stars( icon ) }
 				<div
 					className="woocommerce-rating__star-outline"
 					style={ outlineStyles }
 				>
-					{ this.stars() }
+					{ this.stars( outlineIcon || icon ) }
 				</div>
 			</div>
 		);
@@ -78,6 +73,14 @@ Rating.propTypes = {
 	 * Additional CSS classes.
 	 */
 	className: PropTypes.string,
+	/**
+	 * Icon used, defaults to StarIcon
+	 */
+	icon: PropTypes.elementType,
+	/**
+	 * Outline icon used, the not selected rating. Defaults to props.icon or StarIcon
+	 */
+	outlineIcon: PropTypes.elementType,
 };
 
 Rating.defaultProps = {

@@ -26,6 +26,10 @@ export const pluginNames = {
 		'Mailchimp for WooCommerce',
 		'woocommerce-admin'
 	),
+	'creative-mail-by-constant-contact': __(
+		'Creative Mail for WooCommerce',
+		'woocommerce-admin'
+	),
 	'woocommerce-gateway-paypal-express-checkout': __(
 		'WooCommerce PayPal',
 		'woocommerce-admin'
@@ -39,10 +43,14 @@ export const pluginNames = {
 		'woocommerce-admin'
 	),
 	'woocommerce-payments': __( 'WooCommerce Payments', 'woocommerce-admin' ),
-	'woocommerce-services': __( 'WooCommerce Services', 'woocommerce-admin' ),
+	'woocommerce-services': __(
+		'WooCommerce Shipping & Tax',
+		'woocommerce-admin'
+	),
 	'woocommerce-shipstation-integration': __(
 		'WooCommerce ShipStation Gateway',
 		'woocommerce-admin'
 	),
 	'kliken-marketing-for-google': __( 'Google Ads', 'woocommerce-admin' ),
+	'woo-razorpay': __( 'Razorpay', 'woocommerce-admin' ),
 };

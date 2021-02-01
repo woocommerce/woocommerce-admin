@@ -3,21 +3,19 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
+import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 import { Component, Fragment } from '@wordpress/element';
 import { Button, FormToggle } from '@wordpress/components';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { Flag, Form, TextControlWithAffixes } from '@woocommerce/components';
-import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class ShippingRates extends Component {
 	constructor() {
@@ -58,7 +56,11 @@ class ShippingRates extends Component {
 	}
 
 	async updateShippingZones( values ) {
-		const { createNotice, shippingZones } = this.props;
+		const {
+			clearTaskStatusCache,
+			createNotice,
+			shippingZones,
+		} = this.props;
 
 		let restOfTheWorld = false;
 		let shippingCost = false;
@@ -115,12 +117,7 @@ class ShippingRates extends Component {
 			rest_world: restOfTheWorld,
 		} );
 
-		// @todo This is a workaround to force the task to mark as complete.
-		// This should probably be updated to use wc-api so we can fetch shipping methods.
-		setSetting( 'onboarding', {
-			...getSetting( 'onboarding', {} ),
-			shippingZonesCount: 1,
-		} );
+		clearTaskStatusCache();
 
 		createNotice(
 			'success',
@@ -131,7 +128,7 @@ class ShippingRates extends Component {
 	}
 
 	renderInputPrefix() {
-		const { symbolPosition, symbol } = this.context.getCurrency();
+		const { symbolPosition, symbol } = this.context.getCurrencyConfig();
 		if ( symbolPosition.indexOf( 'right' ) === 0 ) {
 			return null;
 		}
@@ -143,7 +140,7 @@ class ShippingRates extends Component {
 	}
 
 	renderInputSuffix( rate ) {
-		const { symbolPosition, symbol } = this.context.getCurrency();
+		const { symbolPosition, symbol } = this.context.getCurrencyConfig();
 		if ( symbolPosition.indexOf( 'right' ) === 0 ) {
 			return (
 				<span className="woocommerce-shipping-rate__control-suffix">
@@ -359,4 +356,15 @@ ShippingRates.defaultProps = {
 
 ShippingRates.contextType = CurrencyContext;
 
-export default ShippingRates;
+export default compose(
+	withDispatch( ( dispatch ) => {
+		const { invalidateResolutionForStoreSelector } = dispatch(
+			ONBOARDING_STORE_NAME
+		);
+
+		return {
+			clearTaskStatusCache: () =>
+				invalidateResolutionForStoreSelector( 'getTasksStatus' ),
+		};
+	} )
+)( ShippingRates );

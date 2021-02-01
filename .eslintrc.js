@@ -1,22 +1,18 @@
 module.exports = {
-	extends: [
-		'plugin:@wordpress/eslint-plugin/recommended',
-		'prettier',
-		'plugin:testing-library/recommended',
-		'plugin:testing-library/react',
-		'plugin:jest-dom/recommended',
-	],
-	env: {
-		'jest/globals': true,
-	},
-	globals: {
-		wcSettings: true,
-	},
-	plugins: [ 'jest', 'jest-dom', 'testing-library' ],
+	extends: [ 'plugin:@woocommerce/eslint-plugin/recommended' ],
 	rules: {
-		'@wordpress/dependency-group': 'off',
-		'valid-jsdoc': 'off',
-		radix: 'error',
-		yoda: [ 'error', 'never' ],
+		// temporary conversion to warnings until the below are all handled.
+		'@wordpress/i18n-translator-comments': 'warn',
+		'@wordpress/valid-sprintf': 'warn',
+		'jsdoc/check-tag-names': [
+			'error',
+			{ definedTags: [ 'jest-environment' ] },
+		],
+		'import/no-extraneous-dependencies': 'warn',
+		'import/no-unresolved': 'warn',
+		'jest/no-deprecated-functions': 'warn',
+		'@wordpress/no-unsafe-wp-apis': 'warn',
+		'jest/valid-title': 'warn',
+		'@wordpress/no-global-active-element': 'warn',
 	},
 };

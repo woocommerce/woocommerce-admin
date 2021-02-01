@@ -3,20 +3,18 @@
  * REST API Admin Note Action controller
  *
  * Handles requests to the admin note action endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
+use Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\Notes as NotesFactory;
 
 /**
  * REST API Admin Note Action controller class.
  *
- * @package WooCommerce/API
  * @extends WC_REST_CRUD_Controller
  */
 class NoteActions extends Notes {
@@ -57,7 +55,7 @@ class NoteActions extends Notes {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function trigger_note_action( $request ) {
-		$note = WC_Admin_Notes::get_note( $request->get_param( 'note_id' ) );
+		$note = NotesFactory::get_note( $request->get_param( 'note_id' ) );
 
 		if ( ! $note ) {
 			return new \WP_Error(
@@ -67,16 +65,7 @@ class NoteActions extends Notes {
 			);
 		}
 
-		// Find note action by ID.
-		$action_id        = $request->get_param( 'action_id' );
-		$actions          = $note->get_actions( 'edit' );
-		$triggered_action = false;
-
-		foreach ( $actions as $action ) {
-			if ( $action->id === $action_id ) {
-				$triggered_action = $action;
-			}
-		}
+		$triggered_action = NotesFactory::get_action_by_id( $note, $request->get_param( 'action_id' ) );
 
 		if ( ! $triggered_action ) {
 			return new \WP_Error(
@@ -86,48 +75,9 @@ class NoteActions extends Notes {
 			);
 		}
 
-		/**
-		 * Fires when an admin note action is taken.
-		 *
-		 * @param string        $name The triggered action name.
-		 * @param WC_Admin_Note $note The corresponding Note.
-		 */
-		do_action( 'woocommerce_note_action', $triggered_action->name, $note );
+		$triggered_note = NotesFactory::trigger_note_action( $note, $triggered_action );
 
-		/**
-		 * Fires when an admin note action is taken.
-		 * For more specific targeting of note actions.
-		 *
-		 * @param WC_Admin_Note $note The corresponding Note.
-		 */
-		do_action( 'woocommerce_note_action_' . $triggered_action->name, $note );
-
-		// Update the note with the status for this action.
-		if ( ! empty( $triggered_action->status ) ) {
-			$note->set_status( $triggered_action->status );
-		}
-
-		$note->save();
-
-		if ( in_array( $note->get_type(), array( 'error', 'update' ) ) ) {
-			$tracks_event = 'wcadmin_store_alert_action';
-		} else {
-			$tracks_event = 'wcadmin_inbox_action_click';
-		}
-
-		wc_admin_record_tracks_event(
-			$tracks_event,
-			array(
-				'note_name'    => $note->get_name(),
-				'note_type'    => $note->get_type(),
-				'note_title'   => $note->get_title(),
-				'note_content' => $note->get_content(),
-				'action_name'  => $triggered_action->name,
-				'action_label' => $triggered_action->label,
-			)
-		);
-
-		$data = $note->get_data();
+		$data = $triggered_note->get_data();
 		$data = $this->prepare_item_for_response( $data, $request );
 		$data = $this->prepare_response_for_collection( $data );
 

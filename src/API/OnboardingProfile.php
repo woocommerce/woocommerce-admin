@@ -3,8 +3,6 @@
  * REST API Onboarding Profile Controller
  *
  * Handles requests to /onboarding/profile
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -16,7 +14,6 @@ use Automattic\WooCommerce\Admin\Features\Onboarding;
 /**
  * Onboarding Profile controller.
  *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class OnboardingProfile extends \WC_REST_Data_Controller {
@@ -102,10 +99,10 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	public function get_items( $request ) {
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
 
-		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
-		$item_schema     = $this->get_item_schema();
-
-		$items = array();
+		$onboarding_data             = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$onboarding_data['industry'] = isset( $onboarding_data['industry'] ) ? $this->filter_industries( $onboarding_data['industry'] ) : null;
+		$item_schema                 = $this->get_item_schema();
+		$items                       = array();
 		foreach ( $item_schema['properties'] as $key => $property_schema ) {
 			$items[ $key ] = isset( $onboarding_data[ $key ] ) ? $onboarding_data[ $key ] : null;
 		}
@@ -120,6 +117,19 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	}
 
 	/**
+	 * Filter the industries.
+	 *
+	 * @param  array $industries list of industries.
+	 * @return array
+	 */
+	public function filter_industries( $industries ) {
+		return apply_filters(
+			'woocommerce_admin_onboarding_industries',
+			$industries
+		);
+	}
+
+	/**
 	 * Update onboarding profile data.
 	 *
 	 * @param  WP_REST_Request $request Request data.
@@ -128,7 +138,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	public function update_items( $request ) {
 		$params          = $request->get_json_params();
 		$query_args      = $this->prepare_objects_query( $params );
-		$onboarding_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$onboarding_data = (array) get_option( Onboarding::PROFILE_DATA_OPTION, array() );
 		update_option( Onboarding::PROFILE_DATA_OPTION, array_merge( $onboarding_data, $query_args ) );
 
 		$result = array(
@@ -209,9 +219,16 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
 			),
+			'skipped'             => array(
+				'type'              => 'boolean',
+				'description'       => __( 'Whether or not the profile was skipped.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+			),
 			'plugins'             => array(
 				'type'              => 'string',
-				'description'       => __( 'How the Jetpack/WooCommerce Services step was handled.', 'woocommerce-admin' ),
+				'description'       => __( 'How the Jetpack/WooCommerce Shipping & Tax step was handled.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
@@ -242,7 +259,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
 				'items'             => array(
-					'type' => 'json',
+					'type' => 'object',
 				),
 			),
 			'product_types'       => array(
@@ -334,7 +351,11 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'validate_callback' => 'rest_validate_request_arg',
 				'items'             => array(
 					'enum' => array(
+						'jetpack',
+						'woocommerce-services',
+						'woocommerce-payments',
 						'mailchimp-for-woocommerce',
+						'creative-mail-by-constant-contact',
 						'facebook-for-woocommerce',
 						'kliken-marketing-for-google',
 					),

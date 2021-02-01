@@ -5,13 +5,9 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { find } from 'lodash';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { updateQueryString } from '@woocommerce/navigation';
 import { getDateParamsFromQuery, getCurrentDates } from '@woocommerce/date';
-import Currency from '@woocommerce/currency';
+import CurrencyFactory from '@woocommerce/currency';
 
 /**
  * Internal dependencies
@@ -231,7 +227,7 @@ ReportFilters.defaultProps = {
 	query: {},
 	showDatePicker: true,
 	onDateSelect: () => {},
-	currency: Currency().getCurrency(),
+	currency: CurrencyFactory().getCurrencyConfig(),
 };
 
 export default ReportFilters;

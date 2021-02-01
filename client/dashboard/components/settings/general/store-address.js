@@ -4,13 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { escapeRegExp } from 'lodash';
-import { Fragment } from '@wordpress/element';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from '@wordpress/element';
 import { getSetting } from '@woocommerce/wc-admin-settings';
-
-/**
- * Internal dependencies
- */
 import { SelectControl, TextControl } from '@woocommerce/components';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
@@ -23,22 +18,22 @@ const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 export function validateStoreAddress( values ) {
 	const errors = {};
 
-	if ( ! values.addressLine1.length ) {
+	if ( ! values.addressLine1.trim().length ) {
 		errors.addressLine1 = __(
 			'Please add an address',
 			'woocommerce-admin'
 		);
 	}
-	if ( ! values.countryState.length ) {
+	if ( ! values.countryState.trim().length ) {
 		errors.countryState = __(
 			'Please select a country / region',
 			'woocommerce-admin'
 		);
 	}
-	if ( ! values.city.length ) {
+	if ( ! values.city.trim().length ) {
 		errors.city = __( 'Please add a city', 'woocommerce-admin' );
 	}
-	if ( ! values.postCode.length ) {
+	if ( ! values.postCode.trim().length ) {
 		errors.postCode = __( 'Please add a post code', 'woocommerce-admin' );
 	}
 
@@ -142,7 +137,7 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
 		) {
 			setValue( 'countryState', filteredOptions[ 0 ].key );
 		}
-	}, [ autofillCountry, autofillState ] );
+	}, [ autofillCountry, autofillState, countryState, options, setValue ] );
 
 	return (
 		<Fragment>

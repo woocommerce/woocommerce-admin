@@ -7,11 +7,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { withSelect, withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { createNoticesFromResponse } from 'lib/notices';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
 export class Plugins extends Component {
@@ -54,25 +49,23 @@ export class Plugins extends Component {
 
 		installAndActivatePlugins( pluginSlugs )
 			.then( ( response ) => {
-				createNoticesFromResponse( response );
-				this.handleSuccess( response.data.activated );
+				this.handleSuccess( response.data.activated, response );
 			} )
-			.catch( ( error ) => {
-				createNoticesFromResponse( error );
-				this.handleErrors( error.errors );
+			.catch( ( response ) => {
+				this.handleErrors( response.errors, response );
 			} );
 	}
 
-	handleErrors( errors ) {
+	handleErrors( errors, response ) {
 		const { onError } = this.props;
 
 		this.setState( { hasErrors: true } );
-		onError( errors );
+		onError( errors, response );
 	}
 
-	handleSuccess( activePlugins ) {
+	handleSuccess( activePlugins, response ) {
 		const { onComplete } = this.props;
-		onComplete( activePlugins );
+		onComplete( activePlugins, response );
 	}
 
 	skipInstaller() {
@@ -80,7 +73,14 @@ export class Plugins extends Component {
 	}
 
 	render() {
-		const { isRequesting, skipText, autoInstall, pluginSlugs } = this.props;
+		const {
+			isRequesting,
+			skipText,
+			autoInstall,
+			pluginSlugs,
+			onAbort,
+			abortText,
+		} = this.props;
 		const { hasErrors } = this.state;
 
 		if ( hasErrors ) {
@@ -130,9 +130,14 @@ export class Plugins extends Component {
 				>
 					{ __( 'Install & enable', 'woocommerce-admin' ) }
 				</Button>
-				<Button onClick={ this.skipInstaller }>
+				<Button isTertiary onClick={ this.skipInstaller }>
 					{ skipText || __( 'No thanks', 'woocommerce-admin' ) }
 				</Button>
+				{ onAbort && (
+					<Button isTertiary onClick={ onAbort }>
+						{ abortText || __( 'Abort', 'woocommerce-admin' ) }
+					</Button>
+				) }
 			</Fragment>
 		);
 	}
@@ -140,9 +145,13 @@ export class Plugins extends Component {
 
 Plugins.propTypes = {
 	/**
-	 * Called when the plugin installer is completed.
+	 * Called when the plugin installer is successfully completed.
 	 */
 	onComplete: PropTypes.func.isRequired,
+	/**
+	 * Called when the plugin installer completes with an error.
+	 */
+	onError: PropTypes.func,
 	/**
 	 * Called when the plugin installer is skipped.
 	 */
@@ -159,6 +168,14 @@ Plugins.propTypes = {
 	 * An array of plugin slugs to install.
 	 */
 	pluginSlugs: PropTypes.arrayOf( PropTypes.string ),
+	/**
+	 * Called when the plugin connection is aborted.
+	 */
+	onAbort: PropTypes.func,
+	/**
+	 * Text used for the abort connection button.
+	 */
+	abortText: PropTypes.string,
 };
 
 Plugins.defaultProps = {

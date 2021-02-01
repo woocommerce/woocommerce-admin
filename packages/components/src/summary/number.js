@@ -1,16 +1,14 @@
 /**
  * External dependencies
  */
-import {
-	Button,
-	Tooltip,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, Tooltip } from '@wordpress/components';
 import { sprintf, __ } from '@wordpress/i18n';
 import classnames from 'classnames';
-import Gridicon from 'gridicons';
+import ChevronDownIcon from 'gridicons/dist/chevron-down';
 import { isNil, noop } from 'lodash';
 import PropTypes from 'prop-types';
+import { Text } from '@woocommerce/experimental';
+
 /**
  * Internal dependencies
  */
@@ -19,6 +17,19 @@ import Link from '../link';
 /**
  * A component to show a value, label, and an optional change percentage. Can also act as a link to a specific report focus.
  *
+ * @param {Object} props
+ * @param {number} props.delta Change percentage. Float precision is rendered as given.
+ * @param {string} props.href
+ * @param {string} props.hrefType
+ * @param {boolean} props.isOpen
+ * @param {string} props.label
+ * @param {Function} props.onToggle
+ * @param {string} props.prevLabel
+ * @param {number|string} props.prevValue
+ * @param {boolean} props.reverseTrend
+ * @param {boolean} props.selected
+ * @param {number|string} props.value
+ * @param {Function} props.onLinkClickCallback
  * @return {Object} -
  */
 const SummaryNumber = ( {
@@ -34,10 +45,8 @@ const SummaryNumber = ( {
 	selected,
 	value,
 	onLinkClickCallback,
-	isHomescreen,
 } ) => {
 	const liClasses = classnames( 'woocommerce-summary__item-container', {
-		'is-homescreen': isHomescreen,
 		'is-dropdown-button': onToggle,
 		'is-dropdown-expanded': isOpen,
 	} );
@@ -50,12 +59,12 @@ const SummaryNumber = ( {
 	let screenReaderLabel =
 		delta > 0
 			? sprintf(
-					__( 'Up %d%% from %s', 'woocommerce-admin' ),
+					__( 'Up %f%% from %s', 'woocommerce-admin' ),
 					delta,
 					prevLabel
 			  )
 			: sprintf(
-					__( 'Down %d%% from %s', 'woocommerce-admin' ),
+					__( 'Down %f%% from %s', 'woocommerce-admin' ),
 					Math.abs( delta ),
 					prevLabel
 			  );
@@ -120,7 +129,7 @@ const SummaryNumber = ( {
 							<Text variant="caption">
 								{ ! isNil( delta )
 									? sprintf(
-											__( '%d%%', 'woocommerce-admin' ),
+											__( '%f%%', 'woocommerce-admin' ),
 											delta
 									  )
 									: __( 'N/A', 'woocommerce-admin' ) }
@@ -129,9 +138,8 @@ const SummaryNumber = ( {
 					</Tooltip>
 				</div>
 				{ onToggle ? (
-					<Gridicon
+					<ChevronDownIcon
 						className="woocommerce-summary__toggle"
-						icon="chevron-down"
 						size={ 24 }
 					/>
 				) : null }

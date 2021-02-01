@@ -1,16 +1,16 @@
-
+@import '../../navigation/stylesheets/variables';
 
 .woocommerce-transient-notices {
 	position: fixed;
 	bottom: $gap-small;
-	left: 176px;
+	left: $admin-menu-width + $gap;
 	z-index: 99999;
 
-	@media (max-width: 960px) {
+	@media ( max-width: 960px ) {
 		left: 50px;
 	}
 
-	@media (max-width: 782px) {
+	@media ( max-width: 782px ) {
 		left: $gap;
 	}
 
@@ -21,5 +21,26 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
+	}
+}
+
+.components-snackbar {
+	&.components-snackbar-explicit-dismiss {
+		cursor: default;
+	}
+
+	.components-snackbar__content-with-icon {
+		margin-left: 32px;
+	}
+
+	.components-snackbar__icon {
+		position: absolute;
+		top: 24px;
+		left: 26px;
+	}
+
+	.components-snackbar__dismiss-button {
+		margin-left: 32px;
+		cursor: pointer;
 	}
 }

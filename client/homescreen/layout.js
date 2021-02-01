@@ -2,98 +2,107 @@
  * External dependencies
  */
 import {
-	Fragment,
 	Suspense,
 	lazy,
-	useState,
+	useCallback,
+	useLayoutEffect,
 	useRef,
-	useEffect,
+	useState,
 } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withDispatch, withSelect } from '@wordpress/data';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import {
+	useUserPreferences,
+	NOTES_STORE_NAME,
+	OPTIONS_STORE_NAME,
+} from '@woocommerce/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import QuickLinks from '../quick-links';
 import StatsOverview from './stats-overview';
-import './style.scss';
-import { isOnboardingEnabled } from 'dashboard/utils';
 import TaskListPlaceholder from '../task-list/placeholder';
-import InboxPanel from '../header/activity-panel/panels/inbox';
-import withWCApiSelect from 'wc-api/with-select';
+import InboxPanel from '../inbox-panel';
+import { WelcomeModal } from './welcome-modal';
+import { WelcomeFromCalypsoModal } from './welcome-from-calypso-modal';
+import ActivityHeader from '../header/activity-panel/activity-header';
+import { ActivityPanel } from './activity-panel';
+
+import './style.scss';
+import '../dashboard/style.scss';
+import { StoreManagementLinks } from '../store-management-links';
+import { Column } from './column';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
 );
 
-export const Layout = ( props ) => {
+const WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME =
+	'woocommerce_welcome_from_calypso_modal_dismissed';
+
+export const Layout = ( {
+	defaultHomescreenLayout,
+	isBatchUpdating,
+	query,
+	requestingTaskList,
+	bothTaskListsHidden,
+	shouldShowWelcomeModal,
+	shouldShowWelcomeFromCalypsoModal,
+	updateOptions,
+} ) => {
+	const userPrefs = useUserPreferences();
+	const twoColumns =
+		( userPrefs.homepage_layout || defaultHomescreenLayout ) ===
+		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
-	const [ isContentSticky, setIsContentSticky ] = useState( false );
-	const content = useRef( null );
-	const maybeStickContent = () => {
-		if ( ! content.current ) {
-			return;
-		}
-		const { bottom } = content.current.getBoundingClientRect();
-		const shouldBeSticky = showInbox && bottom < window.innerHeight;
 
-		setIsContentSticky( shouldBeSticky );
-	};
+	const isTaskListEnabled = bothTaskListsHidden === false;
+	const isDashboardShown = ! query.task;
 
-	useEffect( () => {
-		maybeStickContent();
-		window.addEventListener( 'resize', maybeStickContent );
-
-		return () => {
-			window.removeEventListener( 'resize', maybeStickContent );
-		};
-	}, [] );
-
-	const {
-		isUndoRequesting,
-		query,
-		requestingTaskList,
-		taskListComplete,
-		taskListHidden,
-	} = props;
-	const isTaskListEnabled = taskListHidden === false && ! taskListComplete;
-	const isDashboardShown = ! isTaskListEnabled || ! query.task;
-
-	const isInboxPanelEmpty = ( isEmpty ) => {
-		setShowInbox( ! isEmpty );
-	};
-
-	if ( isUndoRequesting && ! showInbox ) {
+	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
 	}
 
+	const isWideViewport = useRef( true );
+	const maybeToggleColumns = useCallback( () => {
+		isWideViewport.current = window.innerWidth >= 782;
+	}, [] );
+
+	useLayoutEffect( () => {
+		maybeToggleColumns();
+		window.addEventListener( 'resize', maybeToggleColumns );
+
+		return () => {
+			window.removeEventListener( 'resize', maybeToggleColumns );
+		};
+	}, [ maybeToggleColumns ] );
+
+	const shouldStickColumns = isWideViewport.current && twoColumns;
+
 	const renderColumns = () => {
 		return (
-			<Fragment>
-				{ showInbox && (
-					<div className="woocommerce-homescreen-column is-inbox">
-						<InboxPanel isPanelEmpty={ isInboxPanelEmpty } />
-					</div>
-				) }
-				<div
-					className="woocommerce-homescreen-column"
-					ref={ content }
-					style={ {
-						position: isContentSticky ? 'sticky' : 'static',
-					} }
-				>
+			<>
+				<Column shouldStick={ shouldStickColumns }>
+					<ActivityHeader
+						className="your-store-today"
+						title={ __( 'Your store today', 'woocommerce-admin' ) }
+						subtitle={ __(
+							"To do's, tips, and insights for your business",
+							'woocommerce-admin'
+						) }
+					/>
+					<ActivityPanel />
 					{ isTaskListEnabled && renderTaskList() }
+					<InboxPanel />
+				</Column>
+				<Column shouldStick={ shouldStickColumns }>
 					<StatsOverview />
-					{ ! isTaskListEnabled && <QuickLinks /> }
-				</div>
-			</Fragment>
+					{ ! isTaskListEnabled && <StoreManagementLinks /> }
+				</Column>
+			</>
 		);
 	};
 
@@ -104,7 +113,7 @@ export const Layout = ( props ) => {
 
 		return (
 			<Suspense fallback={ <TaskListPlaceholder /> }>
-				<TaskList query={ query } />
+				<TaskList query={ query } userPreferences={ userPrefs } />
 			</Suspense>
 		);
 	};
@@ -112,12 +121,30 @@ export const Layout = ( props ) => {
 	return (
 		<div
 			className={ classnames( 'woocommerce-homescreen', {
-				hasInbox: showInbox,
+				'two-columns': twoColumns,
 			} ) }
 		>
-			{ isDashboardShown
-				? renderColumns()
-				: isTaskListEnabled && renderTaskList() }
+			{ isDashboardShown ? renderColumns() : renderTaskList() }
+			{ shouldShowWelcomeModal && (
+				<WelcomeModal
+					onClose={ () => {
+						updateOptions( {
+							woocommerce_task_list_welcome_modal_dismissed:
+								'yes',
+						} );
+					} }
+				/>
+			) }
+			{ shouldShowWelcomeFromCalypsoModal && (
+				<WelcomeFromCalypsoModal
+					onClose={ () => {
+						updateOptions( {
+							[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]:
+								'yes',
+						} );
+					} }
+				/>
+			) }
 		</div>
 	);
 };
@@ -134,40 +161,88 @@ Layout.propTypes = {
 	/**
 	 * If the task list is hidden.
 	 */
-	taskListHidden: PropTypes.bool,
+	bothTaskListsHidden: PropTypes.bool,
 	/**
 	 * Page query, used to determine the current task if any.
 	 */
 	query: PropTypes.object.isRequired,
+	/**
+	 * If the welcome modal should display
+	 */
+	shouldShowWelcomeModal: PropTypes.bool,
+	/**
+	 * If the welcome from Calypso modal should display.
+	 */
+	shouldShowWelcomeFromCalypsoModal: PropTypes.bool,
+	/**
+	 * Dispatch an action to update an option
+	 */
+	updateOptions: PropTypes.func.isRequired,
 };
 
 export default compose(
-	withWCApiSelect( ( select ) => {
-		const {
-			getUndoDismissRequesting,
-		} = select( 'wc-api' );
-		const { isUndoRequesting } = getUndoDismissRequesting();
-		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+	withSelect( ( select ) => {
+		const { isNotesRequesting } = select( NOTES_STORE_NAME );
+		const { getOption, isResolving, hasFinishedResolution } = select(
+			OPTIONS_STORE_NAME
+		);
 
-		if ( isOnboardingEnabled() ) {
-			return {
-				isUndoRequesting,
-				taskListComplete:
-					getOption( 'woocommerce_task_list_complete' ) === 'yes',
-				taskListHidden:
-					getOption( 'woocommerce_task_list_hidden' ) === 'yes',
-				requestingTaskList:
-					isResolving( 'getOption', [
-						'woocommerce_task_list_complete',
-					] ) ||
-					isResolving( 'getOption', [
-						'woocommerce_task_list_hidden',
-					] ),
-			};
-		}
+		const welcomeFromCalypsoModalDismissed =
+			getOption( WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ) ===
+			'yes';
+		const welcomeFromCalypsoModalDismissedResolved = hasFinishedResolution(
+			'getOption',
+			[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]
+		);
+		const fromCalypsoUrlArgIsPresent = !! window.location.search.match(
+			'from-calypso'
+		);
+
+		const shouldShowWelcomeFromCalypsoModal =
+			welcomeFromCalypsoModalDismissedResolved &&
+			! welcomeFromCalypsoModalDismissed &&
+			fromCalypsoUrlArgIsPresent;
+
+		const welcomeModalDismissed =
+			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
+			'yes';
+
+		const welcomeModalDismissedHasResolved = hasFinishedResolution(
+			'getOption',
+			[ 'woocommerce_task_list_welcome_modal_dismissed' ]
+		);
+
+		const shouldShowWelcomeModal =
+			welcomeModalDismissedHasResolved &&
+			! welcomeModalDismissed &&
+			welcomeFromCalypsoModalDismissedResolved &&
+			! welcomeFromCalypsoModalDismissed;
+
+		const defaultHomescreenLayout =
+			getOption( 'woocommerce_default_homepage_layout' ) ||
+			'single_column';
 
 		return {
-			requestingTaskList: false,
+			defaultHomescreenLayout,
+			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
+			shouldShowWelcomeModal,
+			shouldShowWelcomeFromCalypsoModal,
+			bothTaskListsHidden:
+				getOption( 'woocommerce_task_list_hidden' ) === 'yes' &&
+				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
+			requestingTaskList:
+				isResolving( 'getOption', [
+					'woocommerce_task_list_complete',
+				] ) ||
+				isResolving( 'getOption', [
+					'woocommerce_task_list_hidden',
+				] ) ||
+				isResolving( 'getOption', [
+					'woocommerce_extended_task_list_hidden',
+				] ),
 		};
-	} )
+	} ),
+	withDispatch( ( dispatch ) => ( {
+		updateOptions: dispatch( OPTIONS_STORE_NAME ).updateOptions,
+	} ) )
 )( Layout );

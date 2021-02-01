@@ -1,8 +1,6 @@
 <?php
 /**
  * Admin\API\Reports\Customers\DataStore class file.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Customers;
@@ -87,6 +85,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	public static function init() {
 		add_action( 'edit_user_profile_update', array( __CLASS__, 'update_registered_customer' ) );
 		add_action( 'updated_user_meta', array( __CLASS__, 'update_registered_customer_via_last_active' ), 10, 3 );
+		add_action( 'woocommerce_analytics_delete_order_stats', array( __CLASS__, 'sync_on_order_delete' ), 15, 2 );
 	}
 
 	/**
@@ -101,6 +100,70 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( 'wc_last_active' === $meta_key ) {
 			self::update_registered_customer( $user_id );
 		}
+	}
+
+	/**
+	 * Sync customers data after an order was deleted.
+	 *
+	 * When an order is deleted, the customer record is deleted from the
+	 * table if the customer has no other orders.
+	 *
+	 * @param int $order_id Order ID.
+	 * @param int $customer_id Customer ID.
+	 */
+	public static function sync_on_order_delete( $order_id, $customer_id ) {
+		$customer_id = absint( $customer_id );
+
+		if ( 0 === $customer_id ) {
+			return;
+		}
+
+		// Calculate the amount of orders remaining for this customer.
+		$order_count = self::get_order_count( $customer_id );
+
+		if ( 0 === $order_count ) {
+			self::delete_customer( $customer_id );
+		}
+	}
+
+	/**
+	 * Sync customers data after an order was updated.
+	 *
+	 * Only updates customer if it is the customers last order.
+	 *
+	 * @param int $post_id of order.
+	 * @return true|-1
+	 */
+	public static function sync_order_customer( $post_id ) {
+		global $wpdb;
+
+		if ( 'shop_order' !== get_post_type( $post_id ) && 'shop_order_refund' !== get_post_type( $post_id ) ) {
+			return -1;
+		}
+
+		$order       = wc_get_order( $post_id );
+		$customer_id = self::get_existing_customer_id_from_order( $order );
+		if ( false === $customer_id ) {
+			return -1;
+		}
+		$last_order = self::get_last_order( $customer_id );
+
+		if ( ! $last_order || $order->get_id() !== $last_order->get_id() ) {
+			return -1;
+		}
+
+		list($data, $format) = self::get_customer_order_data_and_format( $order );
+
+		$result = $wpdb->update( self::get_db_table_name(), $data, array( 'customer_id' => $customer_id ), $format );
+
+		/**
+		 * Fires when a customer is updated.
+		 *
+		 * @param int $customer_id Customer ID.
+		 */
+		do_action( 'woocommerce_analytics_update_customer', $customer_id );
+
+		return 1 === $result;
 	}
 
 	/**
@@ -461,6 +524,29 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return $returning_customer_id;
 		}
 
+		list($data, $format) = self::get_customer_order_data_and_format( $order );
+
+		$result      = $wpdb->insert( self::get_db_table_name(), $data, $format );
+		$customer_id = $wpdb->insert_id;
+
+		/**
+		 * Fires when a new report customer is created.
+		 *
+		 * @param int $customer_id Customer ID.
+		 */
+		do_action( 'woocommerce_analytics_new_customer', $customer_id );
+
+		return $result ? $customer_id : false;
+	}
+
+	/**
+	 * Returns a data object and format object of the customers data coming from the order.
+	 *
+	 * @param object      $order         WC_Order where we get customer info from.
+	 * @param object|null $customer_user WC_Customer registered customer WP user.
+	 * @return array ($data, $format)
+	 */
+	public static function get_customer_order_data_and_format( $order, $customer_user = null ) {
 		$data   = array(
 			'first_name'       => $order->get_customer_first_name(),
 			'last_name'        => $order->get_customer_last_name(),
@@ -484,27 +570,18 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		// Add registered customer data.
 		if ( 0 !== $order->get_user_id() ) {
-			$user_id                 = $order->get_user_id();
-			$customer                = new \WC_Customer( $user_id );
+			$user_id = $order->get_user_id();
+			if ( is_null( $customer_user ) ) {
+				$customer_user = new \WC_Customer( $user_id );
+			}
 			$data['user_id']         = $user_id;
-			$data['username']        = $customer->get_username( 'edit' );
-			$data['date_registered'] = $customer->get_date_created( 'edit' ) ? $customer->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ) : null;
+			$data['username']        = $customer_user->get_username( 'edit' );
+			$data['date_registered'] = $customer_user->get_date_created( 'edit' ) ? $customer_user->get_date_created( 'edit' )->date( TimeInterval::$sql_datetime_format ) : null;
 			$format[]                = '%d';
 			$format[]                = '%s';
 			$format[]                = '%s';
 		}
-
-		$result      = $wpdb->insert( self::get_db_table_name(), $data, $format );
-		$customer_id = $wpdb->insert_id;
-
-		/**
-		 * Fires when a new report customer is created.
-		 *
-		 * @param int $customer_id Customer ID.
-		 */
-		do_action( 'woocommerce_analytics_new_customer', $customer_id );
-
-		return $result ? $customer_id : false;
+		return array( $data, $format );
 	}
 
 	/**
@@ -550,6 +627,32 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
+	 * Retrieve the last order made by a customer.
+	 *
+	 * @param int $customer_id Customer ID.
+	 * @return object WC_Order|false.
+	 */
+	public static function get_last_order( $customer_id ) {
+		global $wpdb;
+		$orders_table = $wpdb->prefix . 'wc_order_stats';
+
+		$last_order = $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT order_id, date_created_gmt FROM {$orders_table}
+				WHERE customer_id = %d
+				ORDER BY date_created_gmt DESC, order_id DESC LIMIT 1",
+				// phpcs:enable
+				$customer_id
+			)
+		);
+		if ( ! $last_order ) {
+			return false;
+		}
+		return wc_get_order( absint( $last_order ) );
+	}
+
+	/**
 	 * Retrieve the oldest orders made by a customer.
 	 *
 	 * @param int $customer_id Customer ID.
@@ -572,6 +675,34 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$customer_id
 			)
 		);
+	}
+
+	/**
+	 * Retrieve the amount of orders made by a customer.
+	 *
+	 * @param int $customer_id Customer ID.
+	 * @return int|null Amount of orders for customer or null on failure.
+	 */
+	public static function get_order_count( $customer_id ) {
+		global $wpdb;
+		$customer_id = absint( $customer_id );
+
+		if ( 0 === $customer_id ) {
+			return null;
+		}
+
+		$result = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT( order_id ) FROM {$wpdb->prefix}wc_order_stats WHERE customer_id = %d",
+				$customer_id
+			)
+		);
+
+		if ( is_null( $result ) ) {
+			return null;
+		}
+
+		return (int) $result;
 	}
 
 	/**
@@ -677,16 +808,36 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	public static function delete_customer( $customer_id ) {
 		global $wpdb;
+
 		$customer_id = (int) $customer_id;
+		$num_deleted = $wpdb->delete( self::get_db_table_name(), array( 'customer_id' => $customer_id ) );
 
-		$wpdb->delete( self::get_db_table_name(), array( 'customer_id' => $customer_id ) );
+		if ( $num_deleted ) {
+			/**
+			 * Fires when a customer is deleted.
+			 *
+			 * @param int $order_id Order ID.
+			 */
+			do_action( 'woocommerce_analytics_delete_customer', $customer_id );
 
-		/**
-		 * Fires when a customer is deleted.
-		 *
-		 * @param int $order_id Order ID.
-		 */
-		do_action( 'woocommerce_analytics_delete_customer', $customer_id );
+			ReportsCache::invalidate();
+		}
+	}
+
+	/**
+	 * Delete a customer lookup row by WordPress User ID.
+	 *
+	 * @param int $user_id WordPress User ID.
+	 */
+	public static function delete_customer_by_user_id( $user_id ) {
+		global $wpdb;
+
+		$user_id     = (int) $user_id;
+		$num_deleted = $wpdb->delete( self::get_db_table_name(), array( 'user_id' => $user_id ) );
+
+		if ( $num_deleted ) {
+			ReportsCache::invalidate();
+		}
 	}
 
 	/**

@@ -6,17 +6,11 @@ import { applyFilters } from '@wordpress/hooks';
 import { Fragment, useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { focus } from '@wordpress/dom';
-import { withDispatch } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { get, noop, partial, uniq } from 'lodash';
-import { __ } from '@wordpress/i18n';
-import classnames from 'classnames';
+import { __, sprintf } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
-
-/**
- * WooCommerce dependencies
- */
 import { CompareButton, Search, TableCard } from '@woocommerce/components';
-import DownloadIcon from './download-icon';
 import {
 	getIdsFromQuery,
 	getSearchWords,
@@ -28,17 +22,22 @@ import {
 	generateCSVDataFromTable,
 	generateCSVFileName,
 } from '@woocommerce/csv-export';
-import { SETTINGS_STORE_NAME, useUserPreferences } from '@woocommerce/data';
+import {
+	getReportChartData,
+	getReportTableData,
+	EXPORT_STORE_NAME,
+	SETTINGS_STORE_NAME,
+	useUserPreferences,
+	QUERY_DEFAULTS,
+} from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import ReportError from 'analytics/components/report-error';
-import { getReportChartData, getReportTableData } from 'wc-api/reports/utils';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import withSelect from 'wc-api/with-select';
+import DownloadIcon from './download-icon';
+import ReportError from '../report-error';
 import { extendTableData } from './utils';
-import { recordEvent } from 'lib/tracks';
 import './style.scss';
 
 const TABLE_FILTER = 'woocommerce_admin_report_table';
@@ -59,6 +58,7 @@ const ReportTable = ( props ) => {
 		// eslint-disable-next-line no-unused-vars
 		tableQuery,
 		compareBy,
+		compareParam,
 		searchBy,
 		labels = {},
 		...tableProps
@@ -69,7 +69,7 @@ const ReportTable = ( props ) => {
 
 	const { items, query: reportQuery } = tableData;
 
-	const initialSelectedRows = query.filter
+	const initialSelectedRows = query[ compareParam ]
 		? getIdsFromQuery( query[ compareBy ] )
 		: [];
 	const [ selectedRows, setSelectedRows ] = useState( initialSelectedRows );
@@ -90,30 +90,6 @@ const ReportTable = ( props ) => {
 			userData && userData[ columnPrefsKey ]
 				? userData[ columnPrefsKey ]
 				: userPrefColumns;
-	}
-
-	const onColumnsChange = ( shownColumns, toggledColumn ) => {
-		const columns = getHeadersContent().map( ( header ) => header.key );
-		const hiddenColumns = columns.filter(
-			( column ) => ! shownColumns.includes( column )
-		);
-
-		if ( columnPrefsKey ) {
-			const userDataFields = {
-				[ columnPrefsKey ]: hiddenColumns,
-			};
-			updateUserPreferences( userDataFields );
-		}
-
-		if ( toggledColumn ) {
-			const eventProps = {
-				report: endpoint,
-				column: toggledColumn,
-				status: shownColumns.includes( toggledColumn ) ? 'on' : 'off',
-			};
-
-			recordEvent( 'analytics_table_header_toggle', eventProps );
-		}
 	}
 
 	const onPageChange = ( newPage, source ) => {
@@ -140,12 +116,12 @@ const ReportTable = ( props ) => {
 				} );
 			}
 		}
-	}
+	};
 
 	const trackTableSearch = () => {
 		// @todo: decide if this should only fire for new tokens (not any/all changes).
 		recordEvent( 'analytics_table_filter', { report: endpoint } );
-	}
+	};
 
 	const onSort = ( key, direction ) => {
 		onQueryChange( 'sort' )( key, direction );
@@ -157,7 +133,7 @@ const ReportTable = ( props ) => {
 		};
 
 		recordEvent( 'analytics_table_sort', eventProps );
-	}
+	};
 
 	const filterShownHeaders = ( headers, hiddenKeys ) => {
 		// If no user preferences, set visibilty based on column default.
@@ -173,13 +149,36 @@ const ReportTable = ( props ) => {
 			...header,
 			visible: header.required || ! hiddenKeys.includes( header.key ),
 		} ) );
-	}
+	};
+
+	const applyTableFilters = ( data, totals, totalResults ) => {
+		const summary = getSummary ? getSummary( totals, totalResults ) : null;
+
+		/**
+		 * Filter report table for the CSV download.
+		 *
+		 * Enables manipulation of data used to create the report CSV.
+		 *
+		 * @param {Object} reportTableData - data used to create the table.
+		 * @param {string} reportTableData.endpoint - table api endpoint.
+		 * @param {Array} reportTableData.headers - table headers data.
+		 * @param {Array} reportTableData.rows - table rows data.
+		 * @param {Object} reportTableData.totals - total aggregates for request.
+		 * @param {Array} reportTableData.summary - summary numbers data.
+		 * @param {Object} reportTableData.items - response from api requerst.
+		 */
+		return applyFilters( TABLE_FILTER, {
+			endpoint,
+			headers: getHeadersContent(),
+			rows: getRowsContent( data ),
+			totals,
+			summary,
+			items,
+		} );
+	};
 
 	const onClickDownload = () => {
-		const {
-			initiateReportExport,
-			title,
-		} = props;
+		const { createNotice, startExport, title } = props;
 		const params = Object.assign( {}, query );
 		const { data, totalResults } = items;
 		let downloadType = 'browser';
@@ -191,16 +190,42 @@ const ReportTable = ( props ) => {
 		}
 
 		if ( data && data.length === totalResults ) {
+			const { headers, rows } = applyTableFilters( data, totalResults );
+
 			downloadCSVFile(
 				generateCSVFileName( title, params ),
-				generateCSVDataFromTable(
-					getHeadersContent(),
-					getRowsContent( data )
-				)
+				generateCSVDataFromTable( headers, rows )
 			);
 		} else {
 			downloadType = 'email';
-			initiateReportExport( endpoint, title, reportQuery );
+			startExport( endpoint, reportQuery )
+				.then( () =>
+					createNotice(
+						'success',
+						sprintf(
+							/* translators: %s = type of report */
+							__(
+								'Your %s Report will be emailed to you.',
+								'woocommerce-admin'
+							),
+							title
+						)
+					)
+				)
+				.catch( ( error ) =>
+					createNotice(
+						'error',
+						error.message ||
+							sprintf(
+								/* translators: %s = type of report */
+								__(
+									'There was a problem exporting your %s Report. Please try again.',
+									'woocommerce-admin'
+								),
+								title
+							)
+					)
+				);
 		}
 
 		recordEvent( 'analytics_table_download', {
@@ -208,10 +233,9 @@ const ReportTable = ( props ) => {
 			rows: totalResults,
 			downloadType,
 		} );
-	}
+	};
 
 	const onCompare = () => {
-		const { compareParam } = props;
 		if ( compareBy ) {
 			onQueryChange( 'compare' )(
 				compareBy,
@@ -219,13 +243,15 @@ const ReportTable = ( props ) => {
 				selectedRows.join( ',' )
 			);
 		}
-	}
+	};
 
 	const onSearchChange = ( values ) => {
-		const { baseSearchQuery, compareParam } = props;
+		const { baseSearchQuery } = props;
 		// A comma is used as a separator between search terms, so we want to escape
 		// any comma they contain.
-		const searchTerms = values.map( ( v ) => v.label.replace( ',', '%2C' ) );
+		const searchTerms = values.map( ( v ) =>
+			v.label.replace( ',', '%2C' )
+		);
 		if ( searchTerms.length ) {
 			updateQueryString( {
 				filter: undefined,
@@ -241,12 +267,12 @@ const ReportTable = ( props ) => {
 		}
 
 		trackTableSearch();
-	}
+	};
 
 	const selectAllRows = ( checked ) => {
 		const { ids } = props;
 		setSelectedRows( checked ? ids : [] );
-	}
+	};
 
 	const selectRow = ( i, checked ) => {
 		const { ids } = props;
@@ -259,7 +285,7 @@ const ReportTable = ( props ) => {
 				...selectedRows.slice( index + 1 ),
 			] );
 		}
-	}
+	};
 
 	const getCheckbox = ( i ) => {
 		const { ids = [] } = props;
@@ -273,7 +299,7 @@ const ReportTable = ( props ) => {
 			),
 			value: false,
 		};
-	}
+	};
 
 	const getAllCheckbox = () => {
 		const { ids = [] } = props;
@@ -292,7 +318,7 @@ const ReportTable = ( props ) => {
 			),
 			required: true,
 		};
-	}
+	};
 
 	const isLoading =
 		isRequesting || tableData.isRequesting || primaryData.isRequesting;
@@ -306,29 +332,37 @@ const ReportTable = ( props ) => {
 		label: v,
 	} ) );
 
-	/**
-	 * Filter report table.
-	 *
-	 * Enables manipulation of data used to create a report table.
-	 *
-	 * @param {Object} reportTableData - data used to create the table.
-	 * @param {string} reportTableData.endpoint - table api endpoint.
-	 * @param {Array} reportTableData.headers - table headers data.
-	 * @param {Array} reportTableData.rows - table rows data.
-	 * @param {Object} reportTableData.totals - total aggregates for request.
-	 * @param {Array} reportTableData.summary - summary numbers data.
-	 * @param {Object} reportTableData.items - response from api requerst.
-	 */
-	const filteredTableProps = applyFilters( TABLE_FILTER, {
-		endpoint,
-		headers: getHeadersContent(),
-		rows: getRowsContent( items.data ),
+	const { data } = items;
+	const applyTableFiltersResult = applyTableFilters(
+		data,
 		totals,
-		summary: getSummary ? getSummary( totals, totalResults ) : null,
-		items,
-	} );
-	let { headers, rows } = filteredTableProps;
-	const { summary } = filteredTableProps;
+		totalResults
+	);
+	let { headers, rows } = applyTableFiltersResult;
+	const { summary } = applyTableFiltersResult;
+
+	const onColumnsChange = ( shownColumns, toggledColumn ) => {
+		const columns = headers.map( ( header ) => header.key );
+		const hiddenColumns = columns.filter(
+			( column ) => ! shownColumns.includes( column )
+		);
+		if ( columnPrefsKey ) {
+			const userDataFields = {
+				[ columnPrefsKey ]: hiddenColumns,
+			};
+			updateUserPreferences( userDataFields );
+		}
+
+		if ( toggledColumn ) {
+			const eventProps = {
+				report: endpoint,
+				column: toggledColumn,
+				status: shownColumns.includes( toggledColumn ) ? 'on' : 'off',
+			};
+
+			recordEvent( 'analytics_table_header_toggle', eventProps );
+		}
+	};
 
 	// Add in selection for comparisons.
 	if ( compareBy ) {
@@ -340,10 +374,6 @@ const ReportTable = ( props ) => {
 
 	// Hide any headers based on user prefs, if loaded.
 	const filteredHeaders = filterShownHeaders( headers, userPrefColumns );
-	const className = classnames( 'woocommerce-report-table', {
-		'has-compare': !! compareBy,
-		'has-search': !! searchBy,
-	} );
 
 	return (
 		<Fragment>
@@ -353,7 +383,8 @@ const ReportTable = ( props ) => {
 				aria-hidden
 			/>
 			<TableCard
-				className={ className }
+				className={ 'woocommerce-report-table' }
+				hasSearch={ !! searchBy }
 				actions={ [
 					compareBy && (
 						<CompareButton
@@ -382,10 +413,7 @@ const ReportTable = ( props ) => {
 							onChange={ onSearchChange }
 							placeholder={
 								labels.placeholder ||
-								__(
-									'Search by item name',
-									'woocommerce-admin'
-								)
+								__( 'Search by item name', 'woocommerce-admin' )
 							}
 							selected={ searchedLabels }
 							showClearButton={ true }
@@ -416,7 +444,8 @@ const ReportTable = ( props ) => {
 				onPageChange={ onPageChange }
 				rows={ rows }
 				rowsPerPage={
-					parseInt( reportQuery.per_page, 10 ) || QUERY_DEFAULTS.pageSize
+					parseInt( reportQuery.per_page, 10 ) ||
+					QUERY_DEFAULTS.pageSize
 				}
 				summary={ summary }
 				totalRows={ totalResults }
@@ -452,7 +481,7 @@ ReportTable.propTypes = {
 	 */
 	endpoint: PropTypes.string,
 	/**
-	 * Name of the methods available via `select( 'wc-api' )` that will be used to
+	 * Name of the methods available via `select` that will be used to
 	 * load more data for table items. If omitted, no call will be made and only
 	 * the data returned by the reports endpoint will be used.
 	 */
@@ -461,6 +490,10 @@ ReportTable.propTypes = {
 		isRequesting: PropTypes.string,
 		load: PropTypes.string,
 	} ),
+	/**
+	 * Name of store on which extendItemsMethodNames can be found.
+	 */
+	extendedItemsStoreName: PropTypes.string,
 	/**
 	 * A function that returns the headers object to build the table.
 	 */
@@ -530,6 +563,9 @@ ReportTable.defaultProps = {
 	baseSearchQuery: {},
 };
 
+const EMPTY_ARRAY = [];
+const EMPTY_OBJECT = {};
+
 export default compose(
 	withSelect( ( select, props ) => {
 		const {
@@ -550,18 +586,14 @@ export default compose(
 			( query.search &&
 				! ( query[ endpoint ] && query[ endpoint ].length ) )
 		) {
-			return {};
+			return EMPTY_OBJECT;
 		}
 		const { woocommerce_default_date_range: defaultDateRange } = select(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		// Variations and Category charts are powered by the /reports/products/stats endpoint.
-		const chartEndpoint = [ 'variations', 'categories' ].includes(
-			endpoint
-		)
-			? 'products'
-			: endpoint;
+		// Category charts are powered by the /reports/products/stats endpoint.
+		const chartEndpoint = endpoint === 'categories' ? 'products' : endpoint;
 		const primaryData = getSummary
 			? getReportChartData( {
 					endpoint: chartEndpoint,
@@ -570,11 +602,10 @@ export default compose(
 					select,
 					filters,
 					advancedFilters,
-					tableQuery,
 					defaultDateRange,
 					fields: summaryFields,
 			  } )
-			: {};
+			: EMPTY_OBJECT;
 		const queriedTableData =
 			tableData ||
 			getReportTableData( {
@@ -594,22 +625,23 @@ export default compose(
 
 		return {
 			primaryData,
-			ids: itemIdField
-				? extendedTableData.items.data.map(
-						( item ) => item[ itemIdField ]
-				  )
-				: [],
+			ids:
+				itemIdField && extendedTableData.items.data
+					? extendedTableData.items.data.map(
+							( item ) => item[ itemIdField ]
+					  )
+					: EMPTY_ARRAY,
 			tableData: extendedTableData,
-			query: { ...tableQuery, ...query },
+			query,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { initiateReportExport } = dispatch(
-			'wc-api'
-		);
+		const { startExport } = dispatch( EXPORT_STORE_NAME );
+		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
-			initiateReportExport,
+			createNotice,
+			startExport,
 		};
 	} )
 )( ReportTable );

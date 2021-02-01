@@ -5,13 +5,16 @@ import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { Button, FormToggle } from '@wordpress/components';
-import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { Card, H, Plugins } from '@woocommerce/components';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardMedia,
+	CardFooter,
+	FormToggle,
+} from '@wordpress/components';
+import { withDispatch, withSelect } from '@wordpress/data';
+import { H, Plugins } from '@woocommerce/components';
 import {
 	getHistory,
 	getNewPath,
@@ -22,14 +25,15 @@ import {
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
 	pluginNames,
+	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import { recordEvent } from 'lib/tracks';
-import { getCountryCode } from 'dashboard/utils';
-import withSelect from 'wc-api/with-select';
+import { createNoticesFromResponse } from '../../../lib/notices';
+import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
 
 class Payments extends Component {
@@ -47,9 +51,7 @@ class Payments extends Component {
 			recommendedMethod: this.getRecommendedMethod(),
 		};
 
-		this.completeTask = this.completeTask.bind( this );
 		this.markConfigured = this.markConfigured.bind( this );
-		this.skipTask = this.skipTask.bind( this );
 	}
 
 	componentDidUpdate() {
@@ -70,61 +72,8 @@ class Payments extends Component {
 			: 'stripe';
 	}
 
-	async completeTask() {
-		const { createNotice, methods, updateOptions } = this.props;
-
-		const update = await updateOptions( {
-			woocommerce_task_list_payments: {
-				completed: 1,
-				timestamp: Math.floor( Date.now() / 1000 ),
-			},
-		} );
-
-		recordEvent( 'tasklist_payment_done', {
-			configured: methods
-				.filter( ( method ) => method.isConfigured )
-				.map( ( method ) => method.key ),
-		} );
-
-		if ( update.success ) {
-			createNotice(
-				'success',
-				__(
-					'💰 Ka-ching! Your store can now accept payments 💳',
-					'woocommerce-admin'
-				)
-			);
-
-			getHistory().push( getNewPath( {}, '/', {} ) );
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating settings',
-					'woocommerce-admin'
-				)
-			);
-		}
-	}
-
-	skipTask() {
-		const { methods, updateOptions } = this.props;
-
-		updateOptions( {
-			woocommerce_task_list_payments: {
-				skipped: 1,
-				timestamp: Math.floor( Date.now() / 1000 ),
-			},
-		} );
-
-		recordEvent( 'tasklist_payment_skip_task', {
-			options: methods.map( ( method ) => method.key ),
-		} );
-
-		getHistory().push( getNewPath( {}, '/', {} ) );
-	}
-
-	markConfigured( method ) {
+	markConfigured( method, queryParams = {} ) {
+		const { clearTaskStatusCache } = this.props;
 		const { enabledMethods } = this.state;
 
 		this.setState( {
@@ -134,11 +83,15 @@ class Payments extends Component {
 			},
 		} );
 
-		getHistory().push( getNewPath( { task: 'payments' }, '/', {} ) );
+		clearTaskStatusCache();
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: method,
 		} );
+
+		getHistory().push(
+			getNewPath( { ...queryParams, task: 'payments' }, '/', {} )
+		);
 	}
 
 	getCurrentMethod() {
@@ -174,11 +127,15 @@ class Payments extends Component {
 			),
 			content: (
 				<Plugins
-					onComplete={ () => {
+					onComplete={ ( plugins, response ) => {
+						createNoticesFromResponse( response );
 						recordEvent( 'tasklist_payment_install_method', {
 							plugins: currentMethod.plugins,
 						} );
 					} }
+					onError={ ( errors, response ) =>
+						createNoticesFromResponse( response )
+					}
 					autoInstall
 					pluginSlugs={ currentMethod.plugins }
 				/>
@@ -187,8 +144,13 @@ class Payments extends Component {
 		};
 	}
 
-	toggleMethod( key ) {
-		const { methods, options, updateOptions } = this.props;
+	async toggleMethod( key ) {
+		const {
+			clearTaskStatusCache,
+			methods,
+			options,
+			updateOptions,
+		} = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
 
@@ -200,12 +162,14 @@ class Payments extends Component {
 			payment_method: key,
 		} );
 
-		updateOptions( {
+		await updateOptions( {
 			[ method.optionName ]: {
 				...options[ method.optionName ],
 				enabled: method.isEnabled ? 'no' : 'yes',
 			},
 		} );
+
+		clearTaskStatusCache();
 	}
 
 	async handleClick( method ) {
@@ -238,20 +202,19 @@ class Payments extends Component {
 	render() {
 		const currentMethod = this.getCurrentMethod();
 		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
-		const { methods, query, requesting } = this.props;
-		const hasEnabledMethods = Object.keys( enabledMethods ).filter(
-			( method ) => enabledMethods[ method ]
-		).length;
+		const { methods, query } = this.props;
 
 		if ( currentMethod ) {
 			return (
-				<Card className="woocommerce-task-payment-method is-narrow">
-					{ cloneElement( currentMethod.container, {
-						query,
-						installStep: this.getInstallStep(),
-						markConfigured: this.markConfigured,
-						hasCbdIndustry: currentMethod.hasCbdIndustry,
-					} ) }
+				<Card className="woocommerce-task-payment-method woocommerce-task-card">
+					<CardBody>
+						{ cloneElement( currentMethod.container, {
+							query,
+							installStep: this.getInstallStep(),
+							markConfigured: this.markConfigured,
+							hasCbdIndustry: currentMethod.hasCbdIndustry,
+						} ) }
+					</CardBody>
 				</Card>
 			);
 		}
@@ -275,7 +238,7 @@ class Payments extends Component {
 
 					const classes = classnames(
 						'woocommerce-task-payment',
-						'is-narrow',
+						'woocommerce-task-card',
 						! isConfigured &&
 							'woocommerce-task-payment-not-configured',
 						'woocommerce-task-payment-' + key
@@ -290,7 +253,7 @@ class Payments extends Component {
 
 					return (
 						<Card key={ key } className={ classes }>
-							<div className="woocommerce-task-payment__before">
+							<CardMedia isBorderless>
 								{ showRecommendedRibbon && (
 									<div className="woocommerce-task-payment__recommended-ribbon">
 										<span>
@@ -302,8 +265,8 @@ class Payments extends Component {
 									</div>
 								) }
 								{ before }
-							</div>
-							<div className="woocommerce-task-payment__text">
+							</CardMedia>
+							<CardBody>
 								<H className="woocommerce-task-payment__title">
 									{ title }
 									{ showRecommendedPill && (
@@ -318,8 +281,8 @@ class Payments extends Component {
 								<div className="woocommerce-task-payment__content">
 									{ content }
 								</div>
-							</div>
-							<div className="woocommerce-task-payment__after">
+							</CardBody>
+							<CardFooter isBorderless>
 								{ container && ! isConfigured ? (
 									<Button
 										isPrimary={ key === recommendedMethod }
@@ -343,28 +306,10 @@ class Payments extends Component {
 										onClick={ ( e ) => e.stopPropagation() }
 									/>
 								) }
-							</div>
+							</CardFooter>
 						</Card>
 					);
 				} ) }
-				<div className="woocommerce-task-payments__actions">
-					{ ! hasEnabledMethods ? (
-						<Button isLink onClick={ this.skipTask }>
-							{ __(
-								'My store doesn’t take payments',
-								'woocommerce-admin'
-							) }
-						</Button>
-					) : (
-						<Button
-							isPrimary
-							isBusy={ requesting }
-							onClick={ this.completeTask }
-						>
-							{ __( 'Done', 'woocommerce-admin' ) }
-						</Button>
-					) }
-				</div>
 			</div>
 		);
 	}
@@ -375,7 +320,15 @@ export default compose(
 		const { createNotice } = dispatch( 'core/notices' );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
+		const {
+			invalidateResolution,
+			invalidateResolutionForStoreSelector,
+		} = dispatch( ONBOARDING_STORE_NAME );
+		invalidateResolution( 'getProfileItems', [] );
+		invalidateResolution( 'getTasksStatus', [] );
 		return {
+			clearTaskStatusCache: () =>
+				invalidateResolutionForStoreSelector( 'getTasksStatus' ),
 			createNotice,
 			installAndActivatePlugins,
 			updateOptions,
@@ -384,16 +337,19 @@ export default compose(
 	withSelect( ( select, props ) => {
 		const { createNotice, installAndActivatePlugins } = props;
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
-		const { getOption, isOptionsUpdating } = select( OPTIONS_STORE_NAME );
+		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
+		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { general: generalSettings = {} } = getSettings( 'general' );
+		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
 
 		const activePlugins = getActivePlugins();
+		const onboardingStatus = getTasksStatus();
 		const profileItems = getProfileItems();
 
 		const optionNames = [
-			'woocommerce_default_country',
 			'woocommerce_woocommerce_payments_settings',
 			'woocommerce_stripe_settings',
 			'woocommerce_ppec_paypal_settings',
@@ -405,6 +361,8 @@ export default compose(
 			'woocommerce_cod_settings',
 			'woocommerce_bacs_settings',
 			'woocommerce_bacs_accounts',
+			'woocommerce_eway_settings',
+			'woocommerce_razorpay_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {
@@ -412,7 +370,7 @@ export default compose(
 			return result;
 		}, {} );
 		const countryCode = getCountryCode(
-			options.woocommerce_default_country
+			generalSettings.woocommerce_default_country
 		);
 
 		const methods = getPaymentMethods( {
@@ -421,11 +379,10 @@ export default compose(
 			createNotice,
 			installAndActivatePlugins,
 			isJetpackConnected: isJetpackConnected(),
+			onboardingStatus,
 			options,
 			profileItems,
 		} );
-
-		const requesting = isOptionsUpdating();
 
 		return {
 			countryCode,
@@ -433,7 +390,6 @@ export default compose(
 			activePlugins,
 			options,
 			methods,
-			requesting,
 		};
 	} )
 )( Payments );

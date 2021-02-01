@@ -5,14 +5,17 @@ import { __, _x } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { applyFilters } from '@wordpress/hooks';
 import { getSetting } from '@woocommerce/wc-admin-settings';
+import { NAMESPACE } from '@woocommerce/data';
 
 const { countries } = getSetting( 'dataEndpoints', { countries: {} } );
 
 /**
  * Internal dependencies
  */
-import { getCustomerLabels, getRequestByIdString } from 'lib/async-requests';
-import { NAMESPACE } from 'wc-api/constants';
+import {
+	getCustomerLabels,
+	getRequestByIdString,
+} from '../../../lib/async-requests';
 
 const CUSTOMERS_REPORT_FILTERS_FILTER =
 	'woocommerce_admin_customers_report_filters';

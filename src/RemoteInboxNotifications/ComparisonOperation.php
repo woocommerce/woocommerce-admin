@@ -1,8 +1,6 @@
 <?php
 /**
  * Compare two operands using the specified operation.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
@@ -34,6 +32,10 @@ class ComparisonOperation {
 				return $left_operand >= $right_operand;
 			case '!=':
 				return $left_operand !== $right_operand;
+			case 'contains':
+				return in_array( $right_operand, $left_operand, true );
+			case '!contains':
+				return ! in_array( $right_operand, $left_operand, true );
 		}
 
 		return false;

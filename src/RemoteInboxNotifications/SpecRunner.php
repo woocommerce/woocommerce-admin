@@ -1,15 +1,14 @@
 <?php
 /**
  * Runs a single spec.
- *
- * @package WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
+use \Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\Notes;
 
 /**
  * Runs a single spec.
@@ -27,10 +26,13 @@ class SpecRunner {
 		// Create or update the note.
 		$existing_note_ids = $data_store->get_notes_with_name( $spec->slug );
 		if ( 0 === count( $existing_note_ids ) ) {
-			$note = new WC_Admin_Note();
-			$note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_PENDING );
+			$note = new Note();
+			$note->set_status( Note::E_WC_ADMIN_NOTE_PENDING );
 		} else {
-			$note = new WC_Admin_Note( $existing_note_ids[0] );
+			$note = Notes::get_note( $existing_note_ids[0] );
+			if ( false === $note ) {
+				return;
+			}
 		}
 
 		// Evaluate the spec and get the new note status.

@@ -1,16 +1,14 @@
 <?php
 /**
  * A Trait to help with managing the legacy coupon menu.
- *
- * @package WooCommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin\Features;
 
+use Automattic\WooCommerce\Admin\Loader;
+
 /**
  * CouponsMovedTrait trait.
- *
- * @package Automattic\WooCommerce\Admin\Features
  */
 trait CouponsMovedTrait {
 
@@ -92,7 +90,7 @@ trait CouponsMovedTrait {
 	 * @return bool
 	 */
 	protected static function should_display_legacy_menu() {
-		return (bool) get_option( self::$option_key, 1 );
+		return ( get_option( self::$option_key, 1 ) && ! Loader::is_feature_enabled( 'navigation' ) );
 	}
 
 	/**

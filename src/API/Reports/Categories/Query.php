@@ -10,10 +10,8 @@
  *          'order'        => 'desc',
  *          'orderby'      => 'items_sold',
  *         );
- * $report = new \Automattic\WooCommerce\Admin\API\Reports\Query( $args );
+ * $report = new \Automattic\WooCommerce\Admin\API\Reports\Categories\Query( $args );
  * $mydata = $report->get_data();
- *
- * @package  WooCommerce Admin/Classes
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Categories;

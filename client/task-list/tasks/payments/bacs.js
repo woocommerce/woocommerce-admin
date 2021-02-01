@@ -6,14 +6,10 @@ import { Component, Fragment } from '@wordpress/element';
 import { Button } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { Form, H, TextControl } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
-class PayFast extends Component {
+class Bacs extends Component {
 	getInitialConfigValues = () => {
 		return {
 			account_name: '',
@@ -61,7 +57,7 @@ class PayFast extends Component {
 			createNotice(
 				'error',
 				__(
-					'There was a problem saving your payment setings',
+					'There was a problem saving your payment settings',
 					'woocommerce-admin'
 				)
 			);
@@ -172,4 +168,4 @@ export default compose(
 			updateOptions,
 		};
 	} )
-)( PayFast );
+)( Bacs );

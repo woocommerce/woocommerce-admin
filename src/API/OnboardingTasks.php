@@ -3,20 +3,18 @@
  * REST API Onboarding Tasks Controller
  *
  * Handles requests to complete various onboarding tasks.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks as OnboardingTasksFeature;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Onboarding Tasks Controller.
  *
- * @package WooCommerce Admin/API
  * @extends WC_REST_Data_Controller
  */
 class OnboardingTasks extends \WC_REST_Data_Controller {
@@ -45,20 +43,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'import_sample_products' ),
-					'permission_callback' => array( $this, 'import_products_permission_check' ),
-				),
-				'schema' => array( $this, 'get_public_item_schema' ),
-			)
-		);
-
-		register_rest_route(
-			$this->namespace,
-			'/' . $this->rest_base . '/create_store_pages',
-			array(
-				array(
-					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'create_store_pages' ),
-					'permission_callback' => array( $this, 'create_pages_permission_check' ),
+					'permission_callback' => array( $this, 'create_products_permission_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -76,6 +61,42 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/status',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_status' ),
+					'permission_callback' => array( $this, 'get_status_permission_check' ),
+				),
+				'schema' => array( $this, 'get_status_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/create_product_from_template',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'create_product_from_template' ),
+					'permission_callback' => array( $this, 'create_products_permission_check' ),
+					'args'                => array_merge(
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::CREATABLE ),
+						array(
+							'template_name' => array(
+								'required'    => true,
+								'type'        => 'string',
+								'description' => __( 'Product template name.', 'woocommerce-admin' ),
+							),
+						)
+					),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -84,7 +105,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return WP_Error|boolean
 	 */
-	public function import_products_permission_check( $request ) {
+	public function create_products_permission_check( $request ) {
 		if ( ! wc_rest_check_post_permissions( 'product', 'create' ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to create resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
@@ -107,31 +128,91 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Import sample products from WooCommerce sample CSV.
+	 * Check if a given request has access to get onboarding tasks status.
 	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function get_status_permission_check( $request ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to retrieve onboarding status.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Import sample products from given CSV path.
+	 *
+	 * @param  string $csv_file CSV file path.
 	 * @return WP_Error|WP_REST_Response
 	 */
-	public static function import_sample_products() {
+	public static function import_sample_products_from_csv( $csv_file ) {
 		include_once WC_ABSPATH . 'includes/import/class-wc-product-csv-importer.php';
-		$file = WC_ABSPATH . 'sample-data/sample_products.csv';
 
-		if ( file_exists( $file ) && class_exists( 'WC_Product_CSV_Importer' ) ) {
+		if ( file_exists( $csv_file ) && class_exists( 'WC_Product_CSV_Importer' ) ) {
 			// Override locale so we can return mappings from WooCommerce in English language stores.
 			add_filter( 'locale', '__return_false', 9999 );
 			$importer_class = apply_filters( 'woocommerce_product_csv_importer_class', 'WC_Product_CSV_Importer' );
 			$args           = array(
 				'parse'   => true,
-				'mapping' => self::get_header_mappings( $file ),
+				'mapping' => self::get_header_mappings( $csv_file ),
 			);
 			$args           = apply_filters( 'woocommerce_product_csv_importer_args', $args, $importer_class );
 
-			$importer = new $importer_class( $file, $args );
+			$importer = new $importer_class( $csv_file, $args );
 			$import   = $importer->import();
-			return rest_ensure_response( $import );
+			return $import;
 		} else {
 			return new \WP_Error( 'woocommerce_rest_import_error', __( 'Sorry, the sample products data file was not found.', 'woocommerce-admin' ) );
 		}
 	}
+
+	/**
+	 * Import sample products from WooCommerce sample CSV.
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public static function import_sample_products() {
+		$sample_csv_file = WC_ABSPATH . 'sample-data/sample_products.csv';
+
+		$import = self::import_sample_products_from_csv( $sample_csv_file );
+		return rest_ensure_response( $import );
+	}
+
+
+	/**
+	 * Creates a product from a template name passed in through the template_name param.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public static function create_product_from_template( $request ) {
+		$template_name = $request->get_param( 'template_name' );
+		$template_path = __DIR__ . '/Templates/' . $template_name . '_product.csv';
+		$template_path = apply_filters( 'woocommerce_product_template_csv_file_path', $template_path, $template_name );
+
+		$import = self::import_sample_products_from_csv( $template_path );
+
+		if ( is_wp_error( $import ) || 0 === count( $import['imported'] ) ) {
+			return new \WP_Error(
+				'woocommerce_rest_product_creation_error',
+				/* translators: %s is template name */
+				__( 'Sorry, creating the product with template failed.', 'woocommerce-admin' ),
+				array( 'status' => 500 )
+			);
+		}
+		$product = wc_get_product( $import['imported'][0] );
+		$product->set_status( 'auto-draft' );
+		$product->save();
+
+		return rest_ensure_response(
+			array(
+				'id' => $product->get_id(),
+			)
+		);
+	}
+
 
 	/**
 	 * Get header mappings from CSV columns.
@@ -259,32 +340,24 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				<h2 style="text-align:center">' . __( 'Shop by Category', 'woocommerce-admin' ) . '</h2>
 				<!-- /wp:heading -->
 				<!-- wp:shortcode -->
-				[product_categories limit="3" columns="3" orderby="menu_order"]
+				[product_categories number="0" parent="0"]
 				<!-- /wp:shortcode -->
 				<!-- wp:heading {"align":"center"} -->
 				<h2 style="text-align:center">' . __( 'New In', 'woocommerce-admin' ) . '</h2>
 				<!-- /wp:heading -->
-				<!-- wp:woocommerce/product-new {"columns":4} -->
-				<div class="wp-block-woocommerce-product-new">[products limit="4" columns="4" orderby="date" order="DESC"]</div>
-				<!-- /wp:woocommerce/product-new -->
+				<!-- wp:woocommerce/product-new {"columns":4} /-->
 				<!-- wp:heading {"align":"center"} -->
 				<h2 style="text-align:center">' . __( 'Fan Favorites', 'woocommerce-admin' ) . '</h2>
 				<!-- /wp:heading -->
-				<!-- wp:woocommerce/product-top-rated {"columns":4} -->
-				<div class="wp-block-woocommerce-product-top-rated">[products limit="4" columns="4" orderby="rating"]</div>
-				<!-- /wp:woocommerce/product-top-rated -->
+				<!-- wp:woocommerce/product-top-rated {"columns":4} /-->
 				<!-- wp:heading {"align":"center"} -->
 				<h2 style="text-align:center">' . __( 'On Sale', 'woocommerce-admin' ) . '</h2>
 				<!-- /wp:heading -->
-				<!-- wp:woocommerce/product-on-sale {"columns":4} -->
-				<div class="wp-block-woocommerce-product-on-sale">[products limit="4" columns="4" orderby="date" order="DESC" on_sale="1"]</div>
-				<!-- /wp:woocommerce/product-on-sale -->
+				<!-- wp:woocommerce/product-on-sale {"columns":4} /-->
 				<!-- wp:heading {"align":"center"} -->
 				<h2 style="text-align:center">' . __( 'Best Sellers', 'woocommerce-admin' ) . '</h2>
 				<!-- /wp:heading -->
-				<!-- wp:woocommerce/product-best-sellers {"columns":4} -->
-				<div class="wp-block-woocommerce-product-best-sellers">[products limit="4" columns="4" best_selling="1"]</div>
-				<!-- /wp:woocommerce/product-best-sellers -->
+				<!-- wp:woocommerce/product-best-sellers {"columns":4} /-->
 			';
 
 			/**
@@ -394,17 +467,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Creates base store starter pages like my account and checkout.
-	 * Note that WC_Install::create_pages already checks if pages exist before creating them again.
-	 *
-	 * @return bool
-	 */
-	public static function create_store_pages() {
-		\WC_Install::create_pages();
-		return true;
-	}
-
-	/**
 	 * Create a homepage from a template.
 	 *
 	 * @return WP_Error|array
@@ -447,5 +509,105 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		} else {
 			return $post_id;
 		}
+	}
+
+	/**
+	 * Get the status endpoint schema, conforming to JSON Schema.
+	 *
+	 * @return array
+	 */
+	public function get_status_item_schema() {
+		$schema = array(
+			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'title'      => 'Onboarding Task Status',
+			'type'       => 'object',
+			'properties' => array(
+				'automatedTaxSupportedCountries' => array(
+					'type'        => 'array',
+					'description' => __( 'Country codes that support Automated Taxes.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+					'items'       => array(
+						'type' => 'string',
+					),
+				),
+				'hasHomepage'                    => array(
+					'type'        => 'boolean',
+					'description' => __( 'If the store has a homepage created.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'hasPaymentGateway'              => array(
+					'type'        => 'boolean',
+					'description' => __( 'If the store has an enabled payment gateway.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'hasPhysicalProducts'            => array(
+					'type'        => 'boolean',
+					'description' => __( 'If the store has any physical (non-virtual) products.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'hasProducts'                    => array(
+					'type'        => 'boolean',
+					'description' => __( 'If the store has any products.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'isTaxComplete'                  => array(
+					'type'        => 'boolean',
+					'description' => __( 'If the tax step has been completed.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'shippingZonesCount'             => array(
+					'type'        => 'number',
+					'description' => __( 'The number of shipping zones configured for the store.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'stripeSupportedCountries'       => array(
+					'type'        => 'array',
+					'description' => __( 'Country codes that are supported by Stripe.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+					'items'       => array(
+						'type' => 'string',
+					),
+				),
+				'taxJarActivated'                => array(
+					'type'        => 'boolean',
+					'description' => __( 'If the store has the TaxJar extension active.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'themeMods'                      => array(
+					'type'        => 'object',
+					'description' => __( 'Active theme modifications.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+				'wcPayIsConnected'               => array(
+					'type'        => 'boolean',
+					'description' => __( 'If the store is using WooCommerce Payments.', 'woocommerce-admin' ),
+					'context'     => array( 'view' ),
+					'readonly'    => true,
+				),
+			),
+		);
+
+		return $this->add_additional_fields_schema( $schema );
+	}
+
+	/**
+	 * Get various onboarding task statuses.
+	 *
+	 * @return WP_Error|array
+	 */
+	public function get_status() {
+		$status = OnboardingTasksFeature::get_settings();
+
+		return rest_ensure_response( $status );
 	}
 }

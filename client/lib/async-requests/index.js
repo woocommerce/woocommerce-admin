@@ -4,17 +4,14 @@
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 import { identity } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { getIdsFromQuery } from '@woocommerce/navigation';
+import { NAMESPACE } from '@woocommerce/data';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import { getTaxCode } from 'analytics/report/taxes/utils';
-import { NAMESPACE } from 'wc-api/constants';
+import { getTaxCode } from '../../analytics/report/taxes/utils';
 
 /**
  * Get a function that accepts ids as they are found in url parameter and
@@ -25,7 +22,7 @@ import { NAMESPACE } from 'wc-api/constants';
  * @return {Function} - a function of ids returning a promise
  */
 export function getRequestByIdString( path, handleData = identity ) {
-	return function( queryString = '', query ) {
+	return function ( queryString = '', query ) {
 		const pathString = typeof path === 'function' ? path( query ) : path;
 		const idList = getIdsFromQuery( queryString );
 		if ( idList.length < 1 ) {
@@ -40,6 +37,14 @@ export function getRequestByIdString( path, handleData = identity ) {
 		} ).then( ( data ) => data.map( handleData ) );
 	};
 }
+
+export const getAttributeLabels = getRequestByIdString(
+	NAMESPACE + '/products/attributes',
+	( attribute ) => ( {
+		key: attribute.id,
+		label: attribute.name,
+	} )
+);
 
 export const getCategoryLabels = getRequestByIdString(
 	NAMESPACE + '/products/categories',
@@ -75,25 +80,48 @@ export const getProductLabels = getRequestByIdString(
 
 export const getTaxRateLabels = getRequestByIdString(
 	NAMESPACE + '/taxes',
-	taxRate => ( {
+	( taxRate ) => ( {
 		key: taxRate.id,
 		label: getTaxCode( taxRate ),
 	} )
 );
 
+/**
+ * Create a variation name by concatenating each of the variation's
+ * attribute option strings.
+ *
+ * @param {Object} variation - variation returned by the api
+ * @param {Array} variation.attributes - attribute objects, with option property.
+ * @param {string} variation.name - name of variation.
+ * @return {string} - formatted variation name
+ */
+export function getVariationName( { attributes, name } ) {
+	const separator = getSetting( 'variationTitleAttributesSeparator', ' - ' );
+
+	if ( name.indexOf( separator ) > -1 ) {
+		return name;
+	}
+
+	const attributeList = attributes
+		.map( ( { option } ) => option )
+		.join( ', ' );
+
+	return attributeList ? name + separator + attributeList : name;
+}
+
 export const getVariationLabels = getRequestByIdString(
-	( query ) => NAMESPACE + `/products/${ query.products }/variations`,
+	( { products } ) => {
+		// If a product was specified, get just its variations.
+		if ( products ) {
+			return NAMESPACE + `/products/${ products }/variations`;
+		}
+
+		return NAMESPACE + '/variations';
+	},
 	( variation ) => {
 		return {
 			key: variation.id,
-			label: variation.attributes.reduce(
-				( desc, attribute, index, arr ) =>
-					desc +
-					`${ attribute.option }${
-						arr.length === index + 1 ? '' : ', '
-					}`,
-				''
-			),
+			label: getVariationName( variation ),
 		};
 	}
 );

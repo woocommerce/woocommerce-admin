@@ -2,27 +2,51 @@
  * External dependencies
  */
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { useUserPreferences } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import { StatsOverview } from '../index';
 import StatsList from '../stats-list';
-import { recordEvent } from 'lib/tracks';
 
-jest.mock( 'lib/tracks' );
+jest.mock( '@woocommerce/tracks' );
 // Mock the stats list so that it can be tested separately.
 jest.mock( '../stats-list', () =>
 	jest.fn().mockImplementation( () => <div>mocked stats list</div> )
 );
 // Mock the Install Jetpack CTA
 jest.mock( '../install-jetpack-cta', () => {
-	return jest
-		.fn()
-		.mockImplementation( () => <div>mocked install jetpack cta</div> );
+	return {
+		InstallJetpackCTA: jest
+			.fn()
+			.mockImplementation( () => <div>mocked install jetpack cta</div> ),
+	};
 } );
 
-import { useUserPreferences } from '@woocommerce/data';
+jest.mock( '@woocommerce/data', () => {
+	// Require the original module to not be mocked...
+	const originalModule = jest.requireActual( '@woocommerce/data' );
+
+	return {
+		__esModule: true, // Use it when dealing with esModules
+		...originalModule,
+		useUserPreferences: jest.fn(),
+	};
+} );
+
+jest.mock( '@wordpress/data', () => {
+	// Require the original module to not be mocked...
+	const originalModule = jest.requireActual( '@wordpress/data' );
+
+	return {
+		__esModule: true, // Use it when dealing with esModules
+		...originalModule,
+		useSelect: jest.fn().mockReturnValue( {} ),
+	};
+} );
+
 jest.mock( '@woocommerce/data' );
 
 describe( 'StatsOverview tracking', () => {
@@ -31,9 +55,7 @@ describe( 'StatsOverview tracking', () => {
 			updateUserPreferences: () => {},
 			hiddenStats: null,
 		} );
-		render(
-			<StatsOverview />
-		);
+		render( <StatsOverview /> );
 
 		const ellipsisBtn = screen.getByRole( 'button', {
 			name: 'Choose which values to display',
@@ -58,9 +80,7 @@ describe( 'StatsOverview tracking', () => {
 			updateUserPreferences: () => {},
 			hiddenStats: null,
 		} );
-		render(
-			<StatsOverview />
-		);
+		render( <StatsOverview /> );
 
 		const monthBtn = screen.getByRole( 'tab', {
 			name: 'Month to date',
@@ -84,9 +104,7 @@ describe( 'StatsOverview toggle and persist stat preference', () => {
 			hiddenStats: null,
 		} );
 
-		render(
-			<StatsOverview />
-		);
+		render( <StatsOverview /> );
 
 		const ellipsisBtn = screen.getByRole( 'button', {
 			name: 'Choose which values to display',
@@ -117,9 +135,7 @@ describe( 'StatsOverview rendering correct elements', () => {
 			updateUserPreferences: () => {},
 			hiddenStats: null,
 		} );
-		render(
-			<StatsOverview />
-		);
+		render( <StatsOverview /> );
 
 		const viewDetailedStatsLink = screen.getByText( 'View detailed stats' );
 		expect( viewDetailedStatsLink ).toBeDefined();
@@ -135,9 +151,7 @@ describe( 'StatsOverview period selection', () => {
 			updateUserPreferences: () => {},
 			hiddenStats: null,
 		} );
-		render(
-			<StatsOverview />
-		);
+		render( <StatsOverview /> );
 
 		const todayBtn = screen.getByRole( 'tab', { name: 'Today' } );
 		expect( todayBtn.classList ).toContain( 'is-active' );
@@ -148,9 +162,7 @@ describe( 'StatsOverview period selection', () => {
 			updateUserPreferences: () => {},
 			hiddenStats: null,
 		} );
-		render(
-			<StatsOverview />
-		);
+		render( <StatsOverview /> );
 
 		fireEvent.click( screen.getByRole( 'tab', { name: 'Month to date' } ) );
 

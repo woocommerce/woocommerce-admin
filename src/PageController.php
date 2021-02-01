@@ -1,11 +1,11 @@
 <?php
 /**
  * PageController
- *
- * @package Woocommerce Admin
  */
 
 namespace Automattic\WooCommerce\Admin;
+
+use Automattic\WooCommerce\Admin\Loader;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -131,7 +131,6 @@ class PageController {
 				}
 			}
 		}
-
 		$this->current_page = false;
 	}
 
@@ -410,6 +409,7 @@ class PageController {
 	 *   @type string      capability   Capability needed to access the page.
 	 *   @type string      icon         Icon. Dashicons helper class, base64-encoded SVG, or 'none'.
 	 *   @type int         position     Menu item position.
+	 *   @type int         order        Navigation item order.
 	 * }
 	 */
 	public function register_page( $options ) {
@@ -454,6 +454,15 @@ class PageController {
 		}
 
 		$this->connect_page( $options );
+	}
+
+	/**
+	 * Get registered pages.
+	 *
+	 * @return array
+	 */
+	public function get_pages() {
+		return $this->pages;
 	}
 
 	/**

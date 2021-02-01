@@ -1,10 +1,10 @@
 /**
- * External Dependencies
+ * External dependencies
  */
-import { apiFetch, dispatch } from '@wordpress/data-controls';
+import { apiFetch, dispatch, select } from '@wordpress/data-controls';
 
 /**
- * Internal Dependencies
+ * Internal dependencies
  */
 import { pluginNames, STORE_NAME } from './constants';
 import TYPES from './action-types';
@@ -80,7 +80,7 @@ export function* installPlugins( plugins ) {
 		return results;
 	} catch ( error ) {
 		yield setError( 'installPlugins', error );
-		throw formatErrors( error );
+		throw new Error( formatErrors( error ) );
 	}
 }
 
@@ -107,32 +107,93 @@ export function* activatePlugins( plugins ) {
 		return results;
 	} catch ( error ) {
 		yield setError( 'activatePlugins', error );
-		throw formatErrors( error );
+		throw new Error( formatErrors( error ) );
 	}
 }
 
 export function* installAndActivatePlugins( plugins ) {
 	try {
 		yield dispatch( STORE_NAME, 'installPlugins', plugins );
-		const activations = yield dispatch( STORE_NAME, 'activatePlugins', plugins );
+		const activations = yield dispatch(
+			STORE_NAME,
+			'activatePlugins',
+			plugins
+		);
 		return activations;
 	} catch ( error ) {
 		throw error;
 	}
 }
 
+export const createErrorNotice = ( errorMessage ) => {
+	return dispatch( 'core/notices', 'createNotice', errorMessage );
+};
+
+export function* connectToJetpack( getAdminLink ) {
+	const url = yield select( STORE_NAME, 'getJetpackConnectUrl', {
+		redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
+	} );
+	const error = yield select(
+		STORE_NAME,
+		'getPluginsError',
+		'getJetpackConnectUrl'
+	);
+
+	if ( error ) {
+		throw new Error( error );
+	} else {
+		return url;
+	}
+}
+
+export function* installJetpackAndConnect( errorAction, getAdminLink ) {
+	try {
+		yield dispatch( STORE_NAME, 'installPlugins', [ 'jetpack' ] );
+		yield dispatch( STORE_NAME, 'activatePlugins', [ 'jetpack' ] );
+
+		const url = yield dispatch(
+			STORE_NAME,
+			'connectToJetpack',
+			getAdminLink
+		);
+		window.location = url;
+	} catch ( error ) {
+		yield errorAction( error.message );
+	}
+}
+
+export function* connectToJetpackWithFailureRedirect(
+	failureRedirect,
+	errorAction,
+	getAdminLink
+) {
+	try {
+		const url = yield dispatch(
+			STORE_NAME,
+			'connectToJetpack',
+			getAdminLink
+		);
+		window.location = url;
+	} catch ( error ) {
+		yield errorAction( error.message );
+		window.location = failureRedirect;
+	}
+}
+
 export function formatErrors( response ) {
 	if ( response.errors ) {
 		// Replace the slug with a plugin name if a constant exists.
-		Object.keys( response.errors ).forEach( plugin => {
-			response.errors[ plugin ] = response.errors[ plugin ].map( pluginError => {
-				return pluginNames[ plugin ]
-					? pluginError.replace(
-						`\`${ plugin }\``,
-						pluginNames[ plugin ]
-					)
-					: pluginError;
-			} );
+		Object.keys( response.errors ).forEach( ( plugin ) => {
+			response.errors[ plugin ] = response.errors[ plugin ].map(
+				( pluginError ) => {
+					return pluginNames[ plugin ]
+						? pluginError.replace(
+								`\`${ plugin }\``,
+								pluginNames[ plugin ]
+						  )
+						: pluginError;
+				}
+			);
 		} );
 	}
 

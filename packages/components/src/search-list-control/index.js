@@ -12,8 +12,9 @@ import {
 import { Component, Fragment } from '@wordpress/element';
 import { compose, withInstanceId, withState } from '@wordpress/compose';
 import { escapeRegExp, findIndex } from 'lodash';
-import Gridicon from 'gridicons';
+import NoticeOutlineIcon from 'gridicons/dist/notice-outline';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -158,8 +159,7 @@ export class SearchListControl extends Component {
 			return (
 				<div className="woocommerce-search-list__list is-not-found">
 					<span className="woocommerce-search-list__not-found-icon">
-						<Gridicon
-							icon="notice-outline"
+						<NoticeOutlineIcon
 							role="img"
 							aria-hidden="true"
 							focusable="false"
@@ -209,24 +209,33 @@ export class SearchListControl extends Component {
 						</Button>
 					) : null }
 				</div>
-				{ selected.map( ( item, i ) => (
-					<Tag
-						key={ i }
-						label={ item.name }
-						id={ item.id }
-						remove={ this.onRemove }
-					/>
-				) ) }
+				{ selectedCount > 0 ? (
+					<ul>
+						{ selected.map( ( item, i ) => (
+							<li key={ i }>
+								<Tag
+									label={ item.name }
+									id={ item.id }
+									remove={ this.onRemove }
+								/>
+							</li>
+						) ) }
+					</ul>
+				) : null }
 			</div>
 		);
 	}
 
 	render() {
-		const { className = '', search, setState } = this.props;
+		const { className = '', isCompact, search, setState } = this.props;
 		const messages = { ...defaultMessages, ...this.props.messages };
 
 		return (
-			<div className={ `woocommerce-search-list ${ className }` }>
+			<div
+				className={ classnames( 'woocommerce-search-list', className, {
+					'is-compact': isCompact,
+				} ) }
+			>
 				{ this.renderSelectedSection() }
 
 				<div className="woocommerce-search-list__search">
@@ -249,6 +258,10 @@ SearchListControl.propTypes = {
 	 * Additional CSS classes.
 	 */
 	className: PropTypes.string,
+	/**
+	 * Whether it should be displayed in a compact way, so it occupies less space.
+	 */
+	isCompact: PropTypes.bool,
 	/**
 	 * Whether the list of items is hierarchical or not. If true, each list item is expected to
 	 * have a parent property.

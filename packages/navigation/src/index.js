@@ -5,11 +5,14 @@ import { addQueryArgs } from '@wordpress/url';
 import { parse } from 'qs';
 import { pick, uniq } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
+import { Slot, Fill } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import { getHistory } from './history';
+import * as navUtils from './index';
+// For the above, import the module into itself. Functions consumed from this import can be mocked in tests.
 
 // Expose history so all uses get the same history object.
 export { getHistory };
@@ -17,11 +20,7 @@ export { getHistory };
 // Export all filter utilities
 export * from './filters';
 
-/**
- * Internal dependencies
- */
-// Import the module into itself. Functions consumed from this import can be mocked in tests.
-import * as navUtils from './index';
+const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
 
 /**
  * Get the current path from history.
@@ -47,6 +46,31 @@ export const getPersistedQuery = ( query = navUtils.getQuery() ) => {
 		'type',
 	] );
 	return pick( query, params );
+};
+
+/**
+ * Get array of screens that should ignore persisted queries
+ *
+ * @return {Array} Array containing list of screens
+ */
+export const getQueryExcludedScreens = () =>
+	applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
+		'stock',
+		'settings',
+		'customers',
+		'homescreen',
+	] );
+
+/**
+ * Retrieve a string 'name' representing the current screen
+ *
+ * @param {Object} path Path to resolve, default to current
+ * @return {string} Screen name
+ */
+export const getScreenFromPath = ( path = getPath() ) => {
+	return path === '/'
+		? 'homescreen'
+		: path.replace( '/analytics', '' ).replace( '/', '' );
 };
 
 /**
@@ -96,14 +120,16 @@ export function getSearchWords( query = navUtils.getQuery() ) {
  * @param {Object} query object of params to be updated.
  * @param {string} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
+ * @param {string} page Page key (defaults to "wc-admin")
  * @return {string}  Updated URL merging query params into existing params.
  */
 export function getNewPath(
 	query,
 	path = getPath(),
-	currentQuery = getQuery()
+	currentQuery = getQuery(),
+	page = 'wc-admin'
 ) {
-	const args = { page: 'wc-admin', ...currentQuery, ...query };
+	const args = { page, ...currentQuery, ...query };
 	if ( path !== '/' ) {
 		args.path = path;
 	}
@@ -159,12 +185,47 @@ export function onQueryChange( param, path = getPath(), query = getQuery() ) {
  * @param {Object} query object of params to be updated.
  * @param {string} path Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
+ * @param {string} page Page key (defaults to "wc-admin")
  */
 export function updateQueryString(
 	query,
 	path = getPath(),
-	currentQuery = getQuery()
+	currentQuery = getQuery(),
+	page = 'wc-admin'
 ) {
-	const newPath = getNewPath( query, path, currentQuery );
+	const newPath = getNewPath( query, path, currentQuery, page );
 	getHistory().push( newPath );
 }
+
+/**
+ * Create a Fill for extensions to add client facing custom Navigation Items.
+ *
+ * @param {Object} param0
+ * @param {Array} param0.children - Node children.
+ * @param {string} param0.item - Navigation item slug.
+ */
+export const WooNavigationItem = ( { children, item } ) => {
+	return <Fill name={ 'woocommerce_navigation_' + item }>{ children }</Fill>;
+};
+WooNavigationItem.Slot = ( { name } ) => (
+	<Slot name={ 'woocommerce_navigation_' + name } />
+);
+
+/**
+ * Export @wordpress/components SlotFillProvider so that Slots, Fills, and useSlot
+ * have access to the same context.
+ *
+ * This is a workaround because components exported from this package do not have
+ * the same `context` as those created in the /client folder. This problem is due
+ * to WC Admin bundling @wordpress/components instead of enqueuing and using
+ * wp.components from the window.
+ */
+export { SlotFillProvider as NavSlotFillProvider } from '@wordpress/components';
+
+/**
+ * Similar to NavSlotFillProvider above, this is a workaround because components
+ * exported from this package do not have the same `context` as those created
+ * in the /client folder. This problem is due to WC Admin bundling @wordpress/components
+ * instead of enqueuing and using wp.components from the window.
+ */
+export { useSlot as useNavSlot } from '@woocommerce/experimental';

@@ -2,7 +2,7 @@
 /**
  * Reports Orders REST API Test
  *
- * @package WooCommerce\Tests\API
+ * @package WooCommerce\Admin\Tests\API
  * @since 3.5.0
  */
 
@@ -11,7 +11,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDa
 /**
  * Reports Orders REST API Test Class
  *
- * @package WooCommerce\Tests\API
+ * @package WooCommerce\Admin\Tests\API
  * @since 3.5.0
  */
 class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
@@ -83,7 +83,7 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( $order->get_id(), $order_report['order_id'] );
 		$this->assertEquals( $order->get_order_number(), $order_report['order_number'] );
-		$this->assertEquals( date( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ), $order_report['date_created'] );
+		$this->assertEquals( gmdate( 'Y-m-d H:i:s', $order->get_date_created()->getTimestamp() ), $order_report['date_created'] );
 		$this->assertEquals( $expected_customer_id, $order_report['customer_id'] );
 		$this->assertEquals( 4, $order_report['num_items_sold'] );
 		$this->assertEquals( 90.0, $order_report['net_total'] ); // 25 x 4 - 10 (shipping)
@@ -127,5 +127,283 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'num_items_sold', $properties );
 		$this->assertArrayHasKey( 'customer_type', $properties );
 		$this->assertArrayHasKey( 'extended_info', $properties );
+	}
+
+	/**
+	 * Test filtering by taxonomy-backed product attribute(s).
+	 */
+	public function test_product_attributes_filter() {
+		global $wp_version;
+		if ( version_compare( $wp_version, '5.5', '<' ) ) {
+			$this->markTestSkipped( 'Skipped in older versions of WordPress due to a bug in WP when validating arrays.' );
+		}
+
+		wp_set_current_user( $this->user );
+		WC_Helper_Reports::reset_stats_dbs();
+
+		// Create a variable product.
+		$variable_product   = WC_Helper_Product::create_variation_product( new WC_Product_Variable() );
+		$product_variations = $variable_product->get_children();
+
+		$order_variation_1 = wc_get_product( $product_variations[0] ); // Variation: size = small.
+		$order_variation_2 = wc_get_product( $product_variations[2] ); // Variation: size = huge, colour = red, number = 0.
+
+		// Create orders for variations.
+		$variation_order_1 = WC_Helper_Order::create_order( $this->user, $order_variation_1 );
+		$variation_order_1->set_status( 'completed' );
+		$variation_order_1->save();
+
+		$variation_order_2 = WC_Helper_Order::create_order( $this->user, $order_variation_2 );
+		$variation_order_2->set_status( 'completed' );
+		$variation_order_2->save();
+
+		// Create more orders for simple products.
+		for ( $i = 0; $i < 10; $i++ ) {
+			$order = WC_Helper_Order::create_order( $this->user );
+			$order->set_status( 'completed' );
+			$order->save();
+		}
+
+		WC_Helper_Queue::run_all_pending();
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params( array( 'per_page' => 15 ) );
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		// Sanity check before filtering by attribute.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 12, count( $response_orders ) );
+
+		// To filter by later.
+		$size_attr_id = wc_attribute_taxonomy_id_by_name( 'pa_size' );
+		$small_term   = get_term_by( 'slug', 'small', 'pa_size' );
+
+		// Test bad values to filter parameter.
+		$bad_args = array(
+			'not an array!',                   // Not an array.
+			array( 1, 2, 3 ),                  // Not a tuple.
+			array( -1, $small_term->term_id ), // Invaid attribute ID.
+			array( $size_attr_id, -1 ),        // Invaid term ID.
+		);
+
+		foreach ( $bad_args as $bad_arg ) {
+			$request = new WP_REST_Request( 'GET', $this->endpoint );
+			$request->set_query_params(
+				array(
+					'per_page'     => 15,
+					'attribute_is' => $bad_arg,
+				)
+			);
+			$response        = $this->server->dispatch( $request );
+			$response_orders = $response->get_data();
+
+			$this->assertEquals( 200, $response->get_status() );
+			// We expect all results since the attribute param is malformed.
+			$this->assertEquals( 12, count( $response_orders ) );
+		}
+
+		// Filter by the "size" attribute, with value "small".
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'attribute_is' => array(
+					array( $size_attr_id, $small_term->term_id ),
+				),
+			)
+		);
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $response_orders ) );
+		$this->assertEquals( $response_orders[0]['order_id'], $variation_order_1->get_id() );
+
+		// Verify the opposite result set.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'attribute_is_not' => array(
+					array( $size_attr_id, $small_term->term_id ),
+				),
+				'per_page'         => 15,
+			)
+		);
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $response_orders ) );
+		$this->assertEquals( $response_orders[0]['order_id'], $variation_order_2->get_id() );
+	}
+
+	/**
+	 * Test filtering by custom product attribute(s).
+	 */
+	public function test_custom_product_attributes_filter() {
+		global $wp_version;
+		if ( version_compare( $wp_version, '5.5', '<' ) ) {
+			$this->markTestSkipped( 'Skipped in older versions of WordPress due to a bug in WP when validating arrays.' );
+		}
+
+		wp_set_current_user( $this->user );
+		WC_Helper_Reports::reset_stats_dbs();
+
+		// Create a variable product.
+		$variable_product = WC_Helper_Product::create_variation_product( new WC_Product_Variable() );
+
+		// Add a custom attribute.
+		$attributes  = $variable_product->get_attributes();
+		$custom_attr = new WC_Product_Attribute();
+		$custom_attr->set_name( 'Numeric Size' );
+		$custom_attr->set_options( array( '1', '2', '3', '4', '5' ) );
+		$custom_attr->set_visible( true );
+		$custom_attr->set_variation( true );
+		$attributes[] = $custom_attr;
+		$variable_product->set_attributes( $attributes );
+		$variable_product->save();
+
+		// Custom attribute terms can only be found once assigned to variations.
+		$data_store = $variable_product->get_data_store();
+		$data_store->create_all_product_variations( $variable_product );
+
+		// Fetch the product to get new variations.
+		$variable_product   = wc_get_product( $variable_product->get_id() );
+		$product_variations = $variable_product->get_children();
+
+		$order_variation_1 = wc_get_product( $product_variations[0] ); // Variation: size = small.
+		$order_variation_2 = wc_get_product( end( $product_variations ) ); // Variation: size = huge, colour = blue, number = 1, numeric-size = 5.
+
+		// Create orders for variations.
+		$variation_order_1 = WC_Helper_Order::create_order( $this->user, $order_variation_1 );
+		$variation_order_1->set_status( 'completed' );
+		$variation_order_1->save();
+
+		$variation_order_2 = WC_Helper_Order::create_order( $this->user, $order_variation_2 );
+		$variation_order_2->set_status( 'completed' );
+		$variation_order_2->save();
+
+		// Create more orders for simple products.
+		for ( $i = 0; $i < 10; $i++ ) {
+			$order = WC_Helper_Order::create_order( $this->user );
+			$order->set_status( 'completed' );
+			$order->save();
+		}
+
+		WC_Helper_Queue::run_all_pending();
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params( array( 'per_page' => 15 ) );
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		// Sanity check before filtering by attribute.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 12, count( $response_orders ) );
+
+		// Filter by the "Numeric Size" custom attribute, with value "1".
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'attribute_is' => array(
+					array( 'numeric-size', '5' ),
+				),
+			)
+		);
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $response_orders ) );
+		$this->assertEquals( $response_orders[0]['order_id'], $variation_order_2->get_id() );
+	}
+
+	/**
+	 * Test filtering by product/variation exclusion.
+	 *
+	 * See: https://github.com/woocommerce/woocommerce-admin/issues/5803#issuecomment-738403405.
+	 */
+	public function test_product_variation_exclusion_filter() {
+		wp_set_current_user( $this->user );
+		WC_Helper_Reports::reset_stats_dbs();
+
+		// Create a variable product.
+		$variable_product     = WC_Helper_Product::create_variation_product();
+		$product_variations   = $variable_product->get_children();
+		$variation_to_exclude = wc_get_product( $product_variations[2] ); // Variation: size = huge, colour = red, number = 0.
+
+		// Create a simple product.
+		$simple_product = WC_Helper_Product::create_simple_product();
+
+		// Create a simple product to exclude.
+		$simple_product_to_exclude = WC_Helper_Product::create_simple_product();
+
+		// Create an order with several products, including the ones we'd like to exclude.
+		$order_to_be_excluded  = WC_Helper_Order::create_order( $this->user, $variation_to_exclude );
+		$excluded_product_item = new WC_Order_Item_Product();
+		$excluded_product_item->set_props(
+			array(
+				'product'  => $simple_product_to_exclude,
+				'quantity' => 1,
+				'subtotal' => wc_get_price_excluding_tax( $simple_product_to_exclude, array( 'qty' => 1 ) ),
+				'total'    => wc_get_price_excluding_tax( $simple_product_to_exclude, array( 'qty' => 1 ) ),
+			)
+		);
+		$excluded_product_item->save();
+		$order_to_be_excluded->add_item( $excluded_product_item );
+		$order_to_be_excluded->set_status( 'completed' );
+		$order_to_be_excluded->save();
+
+		// Create an order that doesn't have the excluded products.
+		$order_to_be_included = WC_Helper_Order::create_order( $this->user, $simple_product );
+		$order_to_be_included->set_status( 'completed' );
+		$order_to_be_included->save();
+
+		WC_Helper_Queue::run_all_pending();
+
+		// Test product exclusion.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'product_excludes' => array( $simple_product_to_exclude->get_id() ),
+			)
+		);
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		// Verify only the second order is in the response.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $response_orders ) );
+		$this->assertEquals( $response_orders[0]['order_id'], $order_to_be_included->get_id() );
+
+		// Test variation exclusion.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'variation_excludes' => array( $variation_to_exclude->get_id() ),
+			)
+		);
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		// Verify only the second order is in the response.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $response_orders ) );
+		$this->assertEquals( $response_orders[0]['order_id'], $order_to_be_included->get_id() );
+
+		// Sanity check - test the opposite.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'product_excludes' => array( $simple_product->get_id() ),
+			)
+		);
+		$response        = $this->server->dispatch( $request );
+		$response_orders = $response->get_data();
+
+		// Verify only the first order is in the response.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $response_orders ) );
+		$this->assertEquals( $response_orders[0]['order_id'], $order_to_be_excluded->get_id() );
 	}
 }

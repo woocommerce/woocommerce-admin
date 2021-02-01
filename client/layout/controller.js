@@ -6,43 +6,44 @@ import { parse, stringify } from 'qs';
 import { find, isEqual, last, omit } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-
-/**
- * WooCommerce dependencies
- */
 import {
 	getNewPath,
 	getPersistedQuery,
 	getHistory,
+	getQueryExcludedScreens,
+	getScreenFromPath,
 } from '@woocommerce/navigation';
 import { Spinner } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
-import { getUrlParams } from 'utils';
+import getReports from '../analytics/report/get-reports';
+import { isWCAdmin } from '../dashboard/utils';
 
 const AnalyticsReport = lazy( () =>
-	import( /* webpackChunkName: "analytics-report" */ 'analytics/report' )
+	import( /* webpackChunkName: "analytics-report" */ '../analytics/report' )
 );
 const AnalyticsSettings = lazy( () =>
-	import( /* webpackChunkName: "analytics-settings" */ 'analytics/settings' )
+	import(
+		/* webpackChunkName: "analytics-settings" */ '../analytics/settings'
+	)
 );
 const Dashboard = lazy( () =>
-	import( /* webpackChunkName: "dashboard" */ 'dashboard' )
+	import( /* webpackChunkName: "dashboard" */ '../dashboard' )
 );
-const DevDocs = lazy( () =>
-	import( /* webpackChunkName: "devdocs" */ 'devdocs' )
-);
+
 const Homescreen = lazy( () =>
-	import( /* webpackChunkName: "homescreen" */ 'homescreen' )
+	import( /* webpackChunkName: "homescreen" */ '../homescreen' )
 );
 const MarketingOverview = lazy( () =>
-	import( /* webpackChunkName: "marketing-overview" */ 'marketing/overview' )
+	import(
+		/* webpackChunkName: "marketing-overview" */ '../marketing/overview'
+	)
 );
-import getReports from 'analytics/report/get-reports';
-
-const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
+const ProfileWizard = lazy( () =>
+	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
+);
 
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
@@ -50,74 +51,36 @@ export const getPages = () => {
 	const pages = [];
 	const initialBreadcrumbs = [ [ '', wcSettings.woocommerceTranslation ] ];
 
-	if ( window.wcAdminFeatures.devdocs ) {
-		pages.push( {
-			container: DevDocs,
-			path: '/devdocs',
-			breadcrumbs: ( { location } ) => {
-				const { component } = getUrlParams( location.search );
-
-				if ( component ) {
-					return [
-						...initialBreadcrumbs,
-						[ '/devdocs', 'Documentation' ],
-						component,
-					];
-				}
-
-				return [ ...initialBreadcrumbs, 'Documentation' ];
-			},
-			wpOpenMenu: 'toplevel_page_woocommerce',
-		} );
-	}
-
-	if (
-		window.wcAdminFeatures[ 'analytics-dashboard' ] &&
-		! window.wcAdminFeatures.homescreen
-	) {
-		pages.push( {
-			container: Dashboard,
-			path: '/',
-			breadcrumbs: [
-				...initialBreadcrumbs,
-				__( 'Dashboard', 'woocommerce-admin' ),
-			],
-			wpOpenMenu: 'toplevel_page_woocommerce',
-		} );
-	}
-
-	if ( window.wcAdminFeatures.homescreen ) {
-		pages.push( {
-			container: Homescreen,
-			path: '/',
-			breadcrumbs: [
-				...initialBreadcrumbs,
-				__( 'Home', 'woocommerce-admin' ),
-			],
-			wpOpenMenu: 'toplevel_page_woocommerce',
-		} );
-	}
+	pages.push( {
+		container: Homescreen,
+		path: '/',
+		breadcrumbs: [
+			...initialBreadcrumbs,
+			__( 'Home', 'woocommerce-admin' ),
+		],
+		wpOpenMenu: 'toplevel_page_woocommerce',
+		navArgs: {
+			id: 'woocommerce-home',
+		},
+	} );
 
 	if ( window.wcAdminFeatures.analytics ) {
-		if ( window.wcAdminFeatures.homescreen ) {
-			pages.push( {
-				container: Dashboard,
-				path: '/analytics/overview',
-				breadcrumbs: [
-					...initialBreadcrumbs,
-					[
-						'/analytics/overview',
-						__( 'Analytics', 'woocommerce-admin' ),
-					],
-					__( 'Overview', 'woocommerce-admin' ),
+		pages.push( {
+			container: Dashboard,
+			path: '/analytics/overview',
+			breadcrumbs: [
+				...initialBreadcrumbs,
+				[
+					'/analytics/overview',
+					__( 'Analytics', 'woocommerce-admin' ),
 				],
-				wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
-			} );
-		}
-		const ReportWpOpenMenu = `toplevel_page_wc-admin-path--analytics-${
-			window.wcAdminFeatures.homescreen ? 'overview' : 'revenue'
-		}`;
-
+				__( 'Overview', 'woocommerce-admin' ),
+			],
+			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
+			navArgs: {
+				id: 'woocommerce-analytics-overview',
+			},
+		} );
 		pages.push( {
 			container: AnalyticsSettings,
 			path: '/analytics/settings',
@@ -129,7 +92,10 @@ export const getPages = () => {
 				],
 				__( 'Settings', 'woocommerce-admin' ),
 			],
-			wpOpenMenu: ReportWpOpenMenu,
+			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
+			navArgs: {
+				id: 'woocommerce-analytics-settings',
+			},
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -139,6 +105,9 @@ export const getPages = () => {
 				__( 'Customers', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce',
+			navArgs: {
+				id: 'woocommerce-analytics-customers',
+			},
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -159,7 +128,7 @@ export const getPages = () => {
 					report.title,
 				];
 			},
-			wpOpenMenu: ReportWpOpenMenu,
+			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
 		} );
 	}
 
@@ -169,13 +138,24 @@ export const getPages = () => {
 			path: '/marketing',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				[
-					'/marketing',
-					__( 'Marketing', 'woocommerce-admin' ),
-				],
+				[ '/marketing', __( 'Marketing', 'woocommerce-admin' ) ],
 				__( 'Overview', 'woocommerce-admin' ),
 			],
 			wpOpenMenu: 'toplevel_page_woocommerce-marketing',
+			navArgs: {
+				id: 'woocommerce-marketing-overview',
+			},
+		} );
+	}
+
+	if ( window.wcAdminFeatures.onboarding ) {
+		pages.push( {
+			container: ProfileWizard,
+			path: '/setup-wizard',
+			breadcrumbs: [
+				...initialBreadcrumbs,
+				[ '/setup-wizard', __( 'Setup Wizard', 'woocommerce-admin' ) ],
+			],
 		} );
 	}
 
@@ -185,24 +165,27 @@ export const getPages = () => {
 export class Controller extends Component {
 	componentDidMount() {
 		window.document.documentElement.scrollTop = 0;
+		window.document.body.classList.remove( 'woocommerce-admin-is-loading' );
 	}
 
 	componentDidUpdate( prevProps ) {
-		const prevQuery = this.getQuery( prevProps.location.search );
 		const prevBaseQuery = omit(
-			this.getQuery( prevProps.location.search ),
+			prevProps.query,
 			'chartType',
 			'filter',
 			'paged'
 		);
 		const baseQuery = omit(
-			this.getQuery( this.props.location.search ),
+			this.props.query,
 			'chartType',
 			'filter',
 			'paged'
 		);
 
-		if ( prevQuery.paged > 1 && ! isEqual( prevBaseQuery, baseQuery ) ) {
+		if (
+			prevProps.query.paged > 1 &&
+			! isEqual( prevBaseQuery, baseQuery )
+		) {
 			getHistory().replace( getNewPath( { paged: 1 } ) );
 		}
 
@@ -211,19 +194,9 @@ export class Controller extends Component {
 		}
 	}
 
-	getQuery( searchString ) {
-		if ( ! searchString ) {
-			return {};
-		}
-
-		const search = searchString.substring( 1 );
-		return parse( search );
-	}
-
 	render() {
-		const { page, match, location } = this.props;
+		const { page, match, query } = this.props;
 		const { url, params } = match;
-		const query = this.getQuery( location.search );
 
 		window.wpNavMenuUrlUpdate( query );
 		window.wpNavMenuClassChange( page, url );
@@ -249,17 +222,11 @@ export class Controller extends Component {
  * @param {Array} excludedScreens - wc-admin screens to avoid updating.
  */
 export function updateLinkHref( item, nextQuery, excludedScreens ) {
-	const isWCAdmin = /admin.php\?page=wc-admin/.test( item.href );
-
-	if ( isWCAdmin ) {
+	if ( isWCAdmin( item.href ) ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
-		const defaultPath =
-			window.wcAdminFeatures.homescreen
-				? 'homescreen'
-				: 'dashboard';
-		const path = query.path || defaultPath;
-		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
+		const path = query.path || 'homescreen';
+		const screen = getScreenFromPath( path );
 
 		const isExcludedScreen = excludedScreens.includes( screen );
 
@@ -280,15 +247,9 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 }
 
 // Update's wc-admin links in wp-admin menu
-window.wpNavMenuUrlUpdate = function( query ) {
-	const excludedScreens = applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
-		'devdocs',
-		'stock',
-		'settings',
-		'customers',
-		'homescreen',
-	] );
+window.wpNavMenuUrlUpdate = function ( query ) {
 	const nextQuery = getPersistedQuery( query );
+	const excludedScreens = getQueryExcludedScreens();
 
 	Array.from(
 		document.querySelectorAll( '#adminmenu a' )
@@ -296,9 +257,9 @@ window.wpNavMenuUrlUpdate = function( query ) {
 };
 
 // When the route changes, we need to update wp-admin's menu with the correct section & current link
-window.wpNavMenuClassChange = function( page, url ) {
+window.wpNavMenuClassChange = function ( page, url ) {
 	Array.from( document.getElementsByClassName( 'current' ) ).forEach(
-		function( item ) {
+		function ( item ) {
 			item.classList.remove( 'current' );
 		}
 	);
@@ -306,7 +267,7 @@ window.wpNavMenuClassChange = function( page, url ) {
 	const submenu = Array.from(
 		document.querySelectorAll( '.wp-has-current-submenu' )
 	);
-	submenu.forEach( function( element ) {
+	submenu.forEach( function ( element ) {
 		element.classList.remove( 'wp-has-current-submenu' );
 		element.classList.remove( 'wp-menu-open' );
 		element.classList.remove( 'selected' );
@@ -324,7 +285,7 @@ window.wpNavMenuClassChange = function( page, url ) {
 			: `li > a[href*="${ pageUrl }"]`;
 	const currentItems = document.querySelectorAll( currentItemsSelector );
 
-	Array.from( currentItems ).forEach( function( item ) {
+	Array.from( currentItems ).forEach( function ( item ) {
 		item.parentElement.classList.add( 'current' );
 	} );
 

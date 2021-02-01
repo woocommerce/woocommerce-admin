@@ -8,15 +8,14 @@ import apiFetch from '@wordpress/api-fetch';
 import { withDispatch, withSelect } from '@wordpress/data';
 import interpolateComponents from 'interpolate-components';
 import { Button } from '@wordpress/components';
-
-/**
- * WooCommerce dependencies
- */
 import { Form, Link, Stepper, TextControl } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { getQuery } from '@woocommerce/navigation';
-import { WCS_NAMESPACE } from 'wc-api/constants';
-import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
+import {
+	PLUGINS_STORE_NAME,
+	OPTIONS_STORE_NAME,
+	WCS_NAMESPACE,
+} from '@woocommerce/data';
 
 class Stripe extends Component {
 	constructor( props ) {
@@ -32,6 +31,7 @@ class Stripe extends Component {
 	}
 
 	componentDidMount() {
+		const { oAuthConnectFailed } = this.state;
 		const { stripeSettings } = this.props;
 		const query = getQuery();
 
@@ -46,7 +46,7 @@ class Stripe extends Component {
 			}
 		}
 
-		if ( ! this.requiresManualConfig() ) {
+		if ( ! oAuthConnectFailed ) {
 			this.fetchOAuthConnectURL();
 		}
 	}
@@ -62,17 +62,6 @@ class Stripe extends Component {
 		) {
 			this.fetchOAuthConnectURL();
 		}
-	}
-
-	requiresManualConfig() {
-		const { activePlugins, isJetpackConnected } = this.props;
-		const { oAuthConnectFailed } = this.state;
-
-		return (
-			! isJetpackConnected ||
-			! activePlugins.includes( 'woocommerce-services' ) ||
-			oAuthConnectFailed
-		);
 	}
 
 	completeMethod() {
@@ -136,11 +125,15 @@ class Stripe extends Component {
 	async updateSettings( values ) {
 		const { updateOptions, stripeSettings, createNotice } = this.props;
 
+		const prefix = values.publishable_key.match( /^pk_live_/ )
+			? ''
+			: 'test_';
 		const update = await updateOptions( {
 			woocommerce_stripe_settings: {
 				...stripeSettings,
-				publishable_key: values.publishable_key,
-				secret_key: values.secret_key,
+				[ prefix + 'publishable_key' ]: values.publishable_key,
+				[ prefix + 'secret_key' ]: values.secret_key,
+				testmode: prefix === 'test_' ? 'yes' : 'no',
 				enabled: 'yes',
 			},
 		} );
@@ -151,7 +144,7 @@ class Stripe extends Component {
 			createNotice(
 				'error',
 				__(
-					'There was a problem saving your payment setings',
+					'There was a problem saving your payment settings',
 					'woocommerce-admin'
 				)
 			);
@@ -168,15 +161,29 @@ class Stripe extends Component {
 	validateManualConfig( values ) {
 		const errors = {};
 
-		if ( values.publishable_key.match( /^pk_live_/ ) === null ) {
+		if (
+			values.publishable_key.match( /^pk_(live|test)_[a-zA-Z0-9_]+/ ) ===
+			null
+		) {
 			errors.publishable_key = __(
-				'Please enter a valid publishable key. Valid keys start with "pk_live".',
+				'Please enter a valid publishable key (starting with "pk_").',
 				'woocommerce-admin'
 			);
 		}
-		if ( values.secret_key.match( /^[rs]k_live_/ ) === null ) {
+		if (
+			values.secret_key.match( /^[rs]k_(live|test)_[a-zA-Z0-9_]+/ ) ===
+			null
+		) {
 			errors.secret_key = __(
-				'Please enter a valid secret key. Valid keys start with "sk_live" or "rk_live".',
+				'Please enter a valid secret key (starting with "sk_" or "rk_").',
+				'woocommerce-admin'
+			);
+		} else if (
+			values.secret_key.slice( 3, 7 ) !==
+			values.publishable_key.slice( 3, 7 )
+		) {
+			errors.secret_key = __(
+				'Please enter a secret key in the same mode as the publishable key.',
 				'woocommerce-admin'
 			);
 		}
@@ -188,7 +195,7 @@ class Stripe extends Component {
 		const { isOptionsUpdating } = this.props;
 		const stripeHelp = interpolateComponents( {
 			mixedString: __(
-				'Your API details can be obtained from your {{docsLink}}Stripe account{{/docsLink}}.  Don’t have a Stripe account? {{registerLink}}Create one.{{/registerLink}}',
+				'Your API details can be obtained from your {{docsLink}}Stripe account{{/docsLink}}. Don’t have a Stripe account? {{registerLink}}Create one.{{/registerLink}}',
 				'woocommerce-admin'
 			),
 			components: {
@@ -220,7 +227,7 @@ class Stripe extends Component {
 						<Fragment>
 							<TextControl
 								label={ __(
-									'Live Publishable Key',
+									'Publishable Key',
 									'woocommerce-admin'
 								) }
 								required
@@ -228,7 +235,7 @@ class Stripe extends Component {
 							/>
 							<TextControl
 								label={ __(
-									'Live Secret Key',
+									'Secret Key',
 									'woocommerce-admin'
 								) }
 								required
@@ -251,6 +258,40 @@ class Stripe extends Component {
 		);
 	}
 
+	renderOauthConfig() {
+		const tosPrompt = interpolateComponents( {
+			mixedString: __(
+				'By clicking "Connect," you agree to the {{tosLink}}Terms of Service{{/tosLink}}. Or {{manualConfigLink}}manually enter your Stripe API details{{/manualConfigLink}} instead.',
+				'woocommerce-admin'
+			),
+			components: {
+				tosLink: (
+					<Link
+						href="https://wordpress.com/tos"
+						target="_blank"
+						type="external"
+					/>
+				),
+				manualConfigLink: (
+					<Button
+						isLink
+						onClick={ () => {
+							this.setState( {
+								connectURL: null,
+							} );
+						} }
+					/>
+				),
+			},
+		} );
+
+		return (
+			<Fragment>
+				<p>{ this.renderConnectButton() }</p>
+				{ tosPrompt }
+			</Fragment>
+		);
+	}
 	getConnectStep() {
 		const { connectURL, isPending, oAuthConnectFailed } = this.state;
 
@@ -270,16 +311,12 @@ class Stripe extends Component {
 					'A Stripe account is required to process payments.',
 					'woocommerce-admin'
 				),
-				content: this.renderConnectButton(),
+				content: this.renderOauthConfig(),
 			};
 		}
 
 		return {
 			...connectStep,
-			description: __(
-				'Connect your store to your Stripe account. Don’t have a Stripe account? Create one.',
-				'woocommerce-admin'
-			),
 			content: this.renderManualConfig(),
 		};
 	}
@@ -304,13 +341,10 @@ class Stripe extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const { getOption, isOptionsUpdating } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins, isJetpackConnected } = select(
-			PLUGINS_STORE_NAME
-		);
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
 		return {
 			activePlugins: getActivePlugins(),
-			isJetpackConnected: isJetpackConnected(),
 			isOptionsUpdating: isOptionsUpdating(),
 			stripeSettings: getOption( 'woocommerce_stripe_settings' ) || [],
 		};

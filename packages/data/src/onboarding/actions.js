@@ -1,11 +1,10 @@
 /**
- * External Dependencies
+ * External dependencies
  */
-
 import { apiFetch } from '@wordpress/data-controls';
 
 /**
- * Internal Dependencies
+ * Internal dependencies
  */
 import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
@@ -34,6 +33,13 @@ export function setProfileItems( profileItems, replace = false ) {
 	};
 }
 
+export function setTasksStatus( tasksStatus ) {
+	return {
+		type: TYPES.SET_TASKS_STATUS,
+		tasksStatus,
+	};
+}
+
 export function* updateProfileItems( items ) {
 	yield setIsRequesting( 'updateProfileItems', true );
 
@@ -54,5 +60,6 @@ export function* updateProfileItems( items ) {
 	} catch ( error ) {
 		yield setError( 'updateProfileItems', error );
 		yield setIsRequesting( 'updateProfileItems', false );
+		throw new Error();
 	}
 }

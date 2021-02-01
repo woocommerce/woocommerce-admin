@@ -3,8 +3,6 @@
  * REST API Reports products stats controller
  *
  * Handles requests to the /reports/products/stats endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Products\Stats;
@@ -16,7 +14,6 @@ use \Automattic\WooCommerce\Admin\API\Reports\ParameterException;
 /**
  * REST API Reports products stats controller class.
  *
- * @package WooCommerce/API
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends \WC_REST_Reports_Controller {
@@ -41,7 +38,9 @@ class Controller extends \WC_REST_Reports_Controller {
 	 * @var array
 	 */
 	protected $param_mapping = array(
-		'products' => 'product_includes',
+		'categories' => 'category_includes',
+		'products'   => 'product_includes',
+		'variations' => 'variation_includes',
 	);
 
 	/**

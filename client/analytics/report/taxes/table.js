@@ -4,20 +4,16 @@
 import { __, _n } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { map } from 'lodash';
-
-/**
- * WooCommerce dependencies
- */
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
-import { getTaxCode } from './utils';
 import { formatValue } from '@woocommerce/number';
 
 /**
  * Internal dependencies
  */
-import ReportTable from 'analytics/components/report-table';
-import { CurrencyContext } from 'lib/currency-context';
+import { getTaxCode } from './utils';
+import ReportTable from '../../components/report-table';
+import { CurrencyContext } from '../../../lib/currency-context';
 
 class TaxesReportTable extends Component {
 	constructor() {
@@ -73,7 +69,7 @@ class TaxesReportTable extends Component {
 		const {
 			render: renderCurrency,
 			formatDecimal: getCurrencyFormatDecimal,
-			getCurrency,
+			getCurrencyConfig,
 		} = this.context;
 
 		return map( taxes, ( tax ) => {
@@ -126,7 +122,7 @@ class TaxesReportTable extends Component {
 				},
 				{
 					display: formatValue(
-						getCurrency(),
+						getCurrencyConfig(),
 						'number',
 						ordersCount
 					),
@@ -144,8 +140,8 @@ class TaxesReportTable extends Component {
 			shipping_tax: shippingTax = 0,
 			orders_count: ordersCount = 0,
 		} = totals;
-		const { formatCurrency, getCurrency } = this.context;
-		const currency = getCurrency();
+		const { formatAmount, getCurrencyConfig } = this.context;
+		const currency = getCurrencyConfig();
 		return [
 			{
 				label: _n(
@@ -158,15 +154,15 @@ class TaxesReportTable extends Component {
 			},
 			{
 				label: __( 'total tax', 'woocommerce-admin' ),
-				value: formatCurrency( totalTax ),
+				value: formatAmount( totalTax ),
 			},
 			{
 				label: __( 'order tax', 'woocommerce-admin' ),
-				value: formatCurrency( orderTax ),
+				value: formatAmount( orderTax ),
 			},
 			{
 				label: __( 'shipping tax', 'woocommerce-admin' ),
-				value: formatCurrency( shippingTax ),
+				value: formatAmount( shippingTax ),
 			},
 			{
 				label: _n(

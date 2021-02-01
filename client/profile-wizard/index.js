@@ -5,42 +5,41 @@ import { __ } from '@wordpress/i18n';
 import { Component, createElement, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
-import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { updateQueryString } from '@woocommerce/navigation';
+import { withDispatch, withSelect } from '@wordpress/data';
 import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
+import {
+	NOTES_STORE_NAME,
 	ONBOARDING_STORE_NAME,
+	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
-	withSettingsHydration,
 	withPluginsHydration,
+	QUERY_DEFAULTS,
+	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
 import Benefits from './steps/benefits';
-import BusinessDetails from './steps/business-details';
+import { BusinessDetailsStep } from './steps/business-details';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
-import { QUERY_DEFAULTS } from 'wc-api/constants';
-import { recordEvent } from 'lib/tracks';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
-import withSelect from 'wc-api/with-select';
 import './style.scss';
+import { isSelectiveBundleInstallSegmentation } from './steps/business-details/data/segmentation';
 
 class ProfileWizard extends Component {
 	constructor( props ) {
 		super( props );
-		this.state = {
-			cartRedirectUrl: null,
-		};
-
-		this.activePlugins = props.activePlugins;
+		this.cachedActivePlugins = props.activePlugins;
 		this.goToNextStep = this.goToNextStep.bind( this );
 	}
 
@@ -75,10 +74,9 @@ class ProfileWizard extends Component {
 	}
 
 	componentDidMount() {
-		const { profileItems, updateProfileItems } = this.props;
+		const { activePlugins, profileItems, updateProfileItems } = this.props;
 
 		document.body.classList.remove( 'woocommerce-admin-is-loading' );
-		document.documentElement.classList.remove( 'wp-toolbar' );
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
@@ -89,8 +87,8 @@ class ProfileWizard extends Component {
 
 		// Track plugins if already installed.
 		if (
-			this.activePlugins.includes( 'woocommerce-services' ) &&
-			this.activePlugins.includes( 'jetpack' ) &&
+			activePlugins.includes( 'woocommerce-services' ) &&
+			activePlugins.includes( 'jetpack' ) &&
 			profileItems.plugins !== 'already-installed'
 		) {
 			recordEvent(
@@ -103,21 +101,18 @@ class ProfileWizard extends Component {
 	}
 
 	componentWillUnmount() {
-		const { cartRedirectUrl } = this.state;
-
-		if ( cartRedirectUrl ) {
-			document.body.classList.add( 'woocommerce-admin-is-loading' );
-			window.location = cartRedirectUrl;
-		}
-
-		document.documentElement.classList.add( 'wp-toolbar' );
 		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 		document.body.classList.remove( 'woocommerce-admin-full-screen' );
 	}
 
 	getSteps() {
-		const { profileItems } = this.props;
+		const {
+			profileItems,
+			query,
+			selectiveBundleInstallSegmentation,
+		} = this.props;
+		const { step } = query;
 		const steps = [];
 
 		steps.push( {
@@ -145,8 +140,10 @@ class ProfileWizard extends Component {
 				profileItems.product_types !== null,
 		} );
 		steps.push( {
-			key: 'business-details',
-			container: BusinessDetails,
+			key: selectiveBundleInstallSegmentation
+				? 'business-features'
+				: 'business-details',
+			container: BusinessDetailsStep,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'product_count' ) &&
@@ -162,8 +159,10 @@ class ProfileWizard extends Component {
 		} );
 
 		if (
-			! this.activePlugins.includes( 'woocommerce-services' ) ||
-			! this.activePlugins.includes( 'jetpack' )
+			! selectiveBundleInstallSegmentation &&
+			( ! this.cachedActivePlugins.includes( 'woocommerce-services' ) ||
+				! this.cachedActivePlugins.includes( 'jetpack' ) ||
+				step === 'benefits' )
 		) {
 			steps.push( {
 				key: 'benefits',
@@ -185,6 +184,7 @@ class ProfileWizard extends Component {
 	}
 
 	async goToNextStep() {
+		const { activePlugins, dismissedTasks, updateOptions } = this.props;
 		const currentStep = this.getCurrentStep();
 		const currentStepIndex = this.getSteps().findIndex(
 			( s ) => s.key === currentStep.key
@@ -194,7 +194,18 @@ class ProfileWizard extends Component {
 			step: currentStep.key,
 		} );
 
+		if ( dismissedTasks.length ) {
+			updateOptions( {
+				woocommerce_task_list_dismissed_tasks: [],
+			} );
+		}
+
+		// Update the activePlugins cache in case plugins were installed
+		// in the current step that affect the visibility of the next step.
+		this.cachedActivePlugins = activePlugins;
+
 		const nextStep = this.getSteps()[ currentStepIndex + 1 ];
+
 		if ( typeof nextStep === 'undefined' ) {
 			this.completeProfiler();
 			return;
@@ -204,9 +215,22 @@ class ProfileWizard extends Component {
 	}
 
 	completeProfiler() {
-		const { notes, updateNote, updateProfileItems } = this.props;
-		updateProfileItems( { completed: true } );
+		const {
+			activePlugins,
+			isJetpackConnected,
+			notes,
+			profileItems,
+			updateNote,
+			updateProfileItems,
+			connectToJetpack,
+		} = this.props;
 		recordEvent( 'storeprofiler_complete' );
+
+		const { plugins } = profileItems;
+		const shouldConnectJetpack =
+			( plugins === 'installed' || plugins === 'installed-wcs' ) &&
+			activePlugins.includes( 'jetpack' ) &&
+			! isJetpackConnected;
 
 		const profilerNote = notes.find(
 			( note ) => note.name === 'wc-admin-onboarding-profiler-reminder'
@@ -214,43 +238,99 @@ class ProfileWizard extends Component {
 		if ( profilerNote ) {
 			updateNote( profilerNote.id, { status: 'actioned' } );
 		}
+
+		updateProfileItems( { completed: true } ).then( () => {
+			const homescreenUrl = new URL(
+				getNewPath( {}, '/', {} ),
+				window.location.href
+			).href;
+
+			if ( shouldConnectJetpack ) {
+				document.body.classList.add( 'woocommerce-admin-is-loading' );
+
+				connectToJetpack( () => {
+					return homescreenUrl;
+				} );
+			} else {
+				window.location.href = homescreenUrl;
+			}
+		} );
+	}
+
+	skipProfiler() {
+		const { createNotice, updateProfileItems } = this.props;
+
+		updateProfileItems( { skipped: true } )
+			.then( () => {
+				recordEvent( 'storeprofiler_store_details_skip' );
+				getHistory().push( getNewPath( {}, '/', {} ) );
+			} )
+			.catch( () => {
+				createNotice(
+					'error',
+					__(
+						'There was a problem skipping the setup wizard.',
+						'woocommerce-admin'
+					)
+				);
+			} );
 	}
 
 	render() {
 		const { query } = this.props;
 		const step = this.getCurrentStep();
+		const stepKey = step.key;
 
 		const container = createElement( step.container, {
 			query,
 			step,
 			goToNextStep: this.goToNextStep,
+			skipProfiler: () => {
+				this.skipProfiler();
+			},
 		} );
 		const steps = this.getSteps().map( ( _step ) =>
 			pick( _step, [ 'key', 'label', 'isComplete' ] )
 		);
+		const classNames = `woocommerce-profile-wizard__container ${ stepKey }`;
 
 		return (
 			<Fragment>
-				<ProfileWizardHeader currentStep={ step.key } steps={ steps } />
-				<div className="woocommerce-profile-wizard__container">
-					{ container }
-				</div>
+				<ProfileWizardHeader currentStep={ stepKey } steps={ steps } />
+				<div className={ classNames }>{ container }</div>
 			</Fragment>
 		);
 	}
 }
 
-const hydrateSettings =
-	window.wcSettings.preloadSettings &&
-	window.wcSettings.preloadSettings.general;
-
 export default compose(
 	withSelect( ( select ) => {
-		const { getNotes } = select( 'wc-api' );
+		const { getNotes } = select( NOTES_STORE_NAME );
+		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getProfileItems, getOnboardingError } = select(
 			ONBOARDING_STORE_NAME
 		);
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
+		const {
+			getActivePlugins,
+			getPluginsError,
+			isJetpackConnected,
+		} = select( PLUGINS_STORE_NAME );
+
+		const { general: generalSettings } = select(
+			SETTINGS_STORE_NAME
+		).getSettings( 'general' );
+
+		const profileItems = getProfileItems();
+
+		const country = generalSettings.woocommerce_default_country || null;
+		const industrySlugs = ( profileItems.industry || [] ).map(
+			( industry ) => industry.slug
+		);
+
+		const selectiveBundleInstallSegmentation = isSelectiveBundleInstallSegmentation(
+			country,
+			industrySlugs
+		);
 
 		const notesQuery = {
 			page: 1,
@@ -260,30 +340,46 @@ export default compose(
 		};
 		const notes = getNotes( notesQuery );
 		const activePlugins = getActivePlugins();
+		const dismissedTasks =
+			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
 
 		return {
+			dismissedTasks,
+			getPluginsError,
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
+			isJetpackConnected: isJetpackConnected(),
 			notes,
 			profileItems: getProfileItems(),
 			activePlugins,
+			selectiveBundleInstallSegmentation,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
-		const { updateNote } = dispatch( 'wc-api' );
+		const {
+			connectToJetpackWithFailureRedirect,
+			createErrorNotice,
+		} = dispatch( PLUGINS_STORE_NAME );
+		const { updateNote } = dispatch( NOTES_STORE_NAME );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
+		const connectToJetpack = ( failureRedirect ) => {
+			connectToJetpackWithFailureRedirect(
+				failureRedirect,
+				createErrorNotice,
+				getAdminLink
+			);
+		};
+
 		return {
+			connectToJetpack,
 			createNotice,
 			updateNote,
+			updateOptions,
 			updateProfileItems,
 		};
 	} ),
-	hydrateSettings
-		? withSettingsHydration( 'general', {
-				general: window.wcSettings.preloadSettings.general,
-		  } )
-		: identity,
 	window.wcSettings.plugins
 		? withPluginsHydration( {
 				...window.wcSettings.plugins,

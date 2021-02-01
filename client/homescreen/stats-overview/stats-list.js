@@ -3,27 +3,23 @@
  */
 import { useContext } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { withSelect } from '@wordpress/data';
 import classnames from 'classnames';
-
-/**
- * WooCommerce dependencies
- */
 import {
 	SummaryNumber,
 	SummaryNumberPlaceholder,
 } from '@woocommerce/components';
 import { getPersistedQuery } from '@woocommerce/navigation';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import withSelect from 'wc-api/with-select';
-import { recordEvent } from 'lib/tracks';
-import { CurrencyContext } from 'lib/currency-context';
+import { CurrencyContext } from '../../lib/currency-context';
 import {
 	getIndicatorData,
 	getIndicatorValues,
-} from 'dashboard/store-performance/utils';
+} from '../../dashboard/store-performance/utils';
 
 export const StatsList = ( {
 	stats,
@@ -35,12 +31,12 @@ export const StatsList = ( {
 	secondaryError,
 	query,
 } ) => {
-	const { formatCurrency, getCurrency } = useContext( CurrencyContext );
+	const { formatAmount, getCurrencyConfig } = useContext( CurrencyContext );
 	if ( primaryError || secondaryError ) {
 		return null;
 	}
 	const persistedQuery = getPersistedQuery( query );
-	const currency = getCurrency();
+	const currency = getCurrencyConfig();
 
 	return (
 		<ul
@@ -50,13 +46,9 @@ export const StatsList = ( {
 		>
 			{ stats.map( ( item ) => {
 				if ( primaryRequesting || secondaryRequesting ) {
-					return (
-						<SummaryNumberPlaceholder
-							className="is-homescreen"
-							key={ item.stat }
-						/>
-					);
+					return <SummaryNumberPlaceholder key={ item.stat } />;
 				}
+
 				const {
 					primaryValue,
 					secondaryValue,
@@ -68,7 +60,7 @@ export const StatsList = ( {
 					primaryData,
 					secondaryData,
 					currency,
-					formatCurrency,
+					formatAmount,
 					persistedQuery,
 				} );
 

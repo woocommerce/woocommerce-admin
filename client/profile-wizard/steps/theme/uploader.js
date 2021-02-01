@@ -7,19 +7,16 @@ import classnames from 'classnames';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
+	Card,
 	DropZoneProvider,
 	DropZone,
 	FormFileUpload,
 } from '@wordpress/components';
-import Gridicon from 'gridicons';
+import CloudUploadIcon from 'gridicons/dist/cloud-upload';
 import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
-import { Card, H, Spinner } from '@woocommerce/components';
+import { H, Spinner } from '@woocommerce/components';
 
 class ThemeUploader extends Component {
 	constructor() {
@@ -81,7 +78,7 @@ class ThemeUploader extends Component {
 								accept=".zip"
 								onChange={ this.handleFilesUpload }
 							>
-								<Gridicon icon="cloud-upload" />
+								<CloudUploadIcon />
 								<H className="woocommerce-theme-uploader__title">
 									{ __(
 										'Upload a theme',

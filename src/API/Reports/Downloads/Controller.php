@@ -3,8 +3,6 @@
  * REST API Reports downloads controller
  *
  * Handles requests to the /reports/downloads endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API\Reports\Downloads;
@@ -17,7 +15,6 @@ use \Automattic\WooCommerce\Admin\API\Reports\ExportableInterface;
 /**
  * REST API Reports downloads controller class.
  *
- * @package WooCommerce/API
  * @extends Automattic\WooCommerce\Admin\API\Reports\Controller
  */
 class Controller extends ReportsController implements ExportableInterface {
@@ -207,12 +204,6 @@ class Controller extends ReportsController implements ExportableInterface {
 					'context'     => array( 'view', 'edit' ),
 					'description' => __( 'File URL.', 'woocommerce-admin' ),
 				),
-				'product_id'   => array(
-					'type'        => 'integer',
-					'readonly'    => true,
-					'context'     => array( 'view', 'edit' ),
-					'description' => __( 'Product ID.', 'woocommerce-admin' ),
-				),
 				'order_id'     => array(
 					'type'        => 'integer',
 					'readonly'    => true,
@@ -396,13 +387,24 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array Key value pair of Column ID => Label.
 	 */
 	public function get_export_columns() {
-		return array(
+		$export_columns = array(
 			'date'         => __( 'Date', 'woocommerce-admin' ),
 			'product'      => __( 'Product Title', 'woocommerce-admin' ),
 			'file_name'    => __( 'File Name', 'woocommerce-admin' ),
 			'order_number' => __( 'Order #', 'woocommerce-admin' ),
 			'user_id'      => __( 'User Name', 'woocommerce-admin' ),
 			'ip_address'   => __( 'IP', 'woocommerce-admin' ),
+		);
+
+		/**
+		 * Filter to add or remove column names from the downloads report for
+		 * export.
+		 *
+		 * @since 1.6.0
+		 */
+		return apply_filters(
+			'woocommerce_filter_downloads_export_columns',
+			$export_columns
 		);
 	}
 
@@ -413,13 +415,25 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array Key value pair of Column ID => Row Value.
 	 */
 	public function prepare_item_for_export( $item ) {
-		return array(
+		$export_item = array(
 			'date'         => $item['date'],
 			'product'      => $item['_embedded']['product'][0]['name'],
 			'file_name'    => $item['file_name'],
 			'order_number' => $item['order_number'],
 			'user_id'      => $item['username'],
 			'ip_address'   => $item['ip_address'],
+		);
+
+		/**
+		 * Filter to prepare extra columns in the export item for the downloads
+		 * report.
+		 *
+		 * @since 1.6.0
+		 */
+		return apply_filters(
+			'woocommerce_report_downloads_prepare_export_item',
+			$export_item,
+			$item
 		);
 	}
 }

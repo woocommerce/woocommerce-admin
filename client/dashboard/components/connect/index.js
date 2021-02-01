@@ -7,13 +7,9 @@ import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import PropTypes from 'prop-types';
 import { withDispatch, withSelect } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 
-class Connect extends Component {
+export class Connect extends Component {
 	constructor( props ) {
 		super( props );
 		this.state = {
@@ -24,21 +20,11 @@ class Connect extends Component {
 		props.setIsPending( true );
 	}
 
-	componentDidMount() {
-		const { autoConnect, jetpackConnectUrl } = this.props;
-
-		if ( autoConnect && jetpackConnectUrl ) {
-			this.connectJetpack();
-		}
-	}
-
 	componentDidUpdate( prevProps ) {
 		const {
-			autoConnect,
 			createNotice,
 			error,
 			isRequesting,
-			jetpackConnectUrl,
 			onError,
 			setIsPending,
 		} = this.props;
@@ -53,37 +39,33 @@ class Connect extends Component {
 			}
 			createNotice( 'error', error );
 		}
-
-		if ( autoConnect && jetpackConnectUrl ) {
-			this.connectJetpack();
-		}
 	}
 
 	async connectJetpack() {
 		const { jetpackConnectUrl, onConnect } = this.props;
 
-		this.setState( {
-			isConnecting: true,
-		}, () => {
-			if ( onConnect ) {
-				onConnect();
+		this.setState(
+			{
+				isConnecting: true,
+			},
+			() => {
+				if ( onConnect ) {
+					onConnect();
+				}
+				window.location = jetpackConnectUrl;
 			}
-			window.location = jetpackConnectUrl;
-		} );
+		);
 	}
 
 	render() {
 		const {
-			autoConnect,
 			hasErrors,
 			isRequesting,
 			onSkip,
 			skipText,
+			onAbort,
+			abortText,
 		} = this.props;
-
-		if ( autoConnect ) {
-			return null;
-		}
 
 		return (
 			<Fragment>
@@ -109,16 +91,17 @@ class Connect extends Component {
 						{ skipText || __( 'No thanks', 'woocommerce-admin' ) }
 					</Button>
 				) }
+				{ onAbort && (
+					<Button onClick={ onAbort }>
+						{ abortText || __( 'Abort', 'woocommerce-admin' ) }
+					</Button>
+				) }
 			</Fragment>
 		);
 	}
 }
 
 Connect.propTypes = {
-	/**
-	 * If connection should happen automatically, or requires user confirmation.
-	 */
-	autoConnect: PropTypes.bool,
 	/**
 	 * Method to create a displayed notice.
 	 */
@@ -163,10 +146,17 @@ Connect.propTypes = {
 	 * Control the `isPending` logic of the parent containing the Stepper.
 	 */
 	setIsPending: PropTypes.func,
+	/**
+	 * Called when the plugin connection is aborted.
+	 */
+	onAbort: PropTypes.func,
+	/**
+	 * Text used for the abort connection button.
+	 */
+	abortText: PropTypes.string,
 };
 
 Connect.defaultProps = {
-	autoConnect: false,
 	setIsPending: () => {},
 };
 

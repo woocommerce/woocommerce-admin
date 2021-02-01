@@ -3,21 +3,18 @@
  * REST API Admin Notes controller
  *
  * Handles requests to the admin notes endpoint.
- *
- * @package WooCommerce Admin/API
  */
 
 namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Notes\WC_Admin_Note;
-use Automattic\WooCommerce\Admin\Notes\WC_Admin_Notes;
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\Notes as NotesRepository;
 
 /**
  * REST API Admin Notes controller class.
  *
- * @package WooCommerce/API
  * @extends WC_REST_CRUD_Controller
  */
 class Notes extends \WC_REST_CRUD_Controller {
@@ -106,11 +103,24 @@ class Notes extends \WC_REST_CRUD_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/undoremove',
+			'/' . $this->rest_base . '/tracker/(?P<note_id>[\d-]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'track_opened_email' ),
+					'permission_callback' => '__return_true',
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/update',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'undoremove_items' ),
+					'callback'            => array( $this, 'batch_update_items' ),
 					'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
@@ -125,7 +135,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_item( $request ) {
-		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
+		$note = NotesRepository::get_note( $request->get_param( 'id' ) );
 
 		if ( ! $note ) {
 			return new \WP_Error(
@@ -153,7 +163,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 	public function get_items( $request ) {
 		$query_args = $this->prepare_objects_query( $request );
 
-		$notes = WC_Admin_Notes::get_notes( 'edit', $query_args );
+		$notes = NotesRepository::get_notes( 'edit', $query_args );
 
 		$data = array();
 		foreach ( (array) $notes as $note_obj ) {
@@ -163,7 +173,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 		}
 
 		$response = rest_ensure_response( $data );
-		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( $query_args['type'], $query_args['status'] ) );
+		$response->header( 'X-WP-Total', NotesRepository::get_notes_count( $query_args['type'], $query_args['status'] ) );
 
 		return $response;
 	}
@@ -237,7 +247,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function update_item( $request ) {
-		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
+		$note = NotesRepository::get_note( $request->get_param( 'id' ) );
 
 		if ( ! $note ) {
 			return new \WP_Error(
@@ -247,7 +257,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			);
 		}
 
-		WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
+		NotesRepository::update_note( $note, $this->get_requested_updates( $request ) );
 		return $this->get_item( $request );
 	}
 
@@ -258,7 +268,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function delete_item( $request ) {
-		$note = WC_Admin_Notes::get_note( $request->get_param( 'id' ) );
+		$note = NotesRepository::get_note( $request->get_param( 'id' ) );
 
 		if ( ! $note ) {
 			return new \WP_Error(
@@ -268,7 +278,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			);
 		}
 
-		WC_Admin_Notes::delete_note( $note );
+		NotesRepository::delete_note( $note );
 		$data = $this->prepare_note_data_for_response( $note, $request );
 		return rest_ensure_response( $data );
 	}
@@ -280,22 +290,23 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function delete_all_items( $request ) {
-		$notes = WC_Admin_Notes::delete_all_notes();
+		$notes = NotesRepository::delete_all_notes();
 		$data  = array();
 		foreach ( (array) $notes as $note_obj ) {
 			$data[] = $this->prepare_note_data_for_response( $note_obj, $request );
 		}
 
 		$response = rest_ensure_response( $data );
-		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		$response->header( 'X-WP-Total', NotesRepository::get_notes_count( array( 'info', 'warning' ), array() ) );
 		return $response;
 	}
 
 	/**
 	 * Prepare note data.
 	 *
-	 * @param WC_Admin_Note   $note     Note data.
+	 * @param Note            $note     Note data.
 	 * @param WP_REST_Request $request  Request object.
+	 *
 	 * @return WP_REST_Response $response Response data.
 	 */
 	public function prepare_note_data_for_response( $note, $request ) {
@@ -327,24 +338,44 @@ class Notes extends \WC_REST_CRUD_Controller {
 	}
 
 	/**
-	 * Undo delete all notes.
+	 * Batch update a set of notes.
 	 *
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function undoremove_items( $request ) {
-		$data      = array();
-		$notes_ids = $request->get_param( 'notesIds' );
-		foreach ( (array) $notes_ids as $note_id ) {
-			$note = WC_Admin_Notes::get_note( (int) $note_id );
+		wc_deprecated_function( 'undoremove_items', '4.4', '\Automattic\WooCommerce\Admin\API\Notes()->undoremove_items' );
+		return self::batch_update_items( $request );
+	}
+
+	/**
+	 * Batch update a set of notes.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function batch_update_items( $request ) {
+		$data     = array();
+		$note_ids = $request->get_param( 'noteIds' );
+
+		if ( ! isset( $note_ids ) || ! is_array( $note_ids ) ) {
+			return new \WP_Error(
+				'woocommerce_note_invalid_ids',
+				__( 'Please provide an array of IDs through the noteIds param.', 'woocommerce-admin' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		foreach ( (array) $note_ids as $note_id ) {
+			$note = NotesRepository::get_note( (int) $note_id );
 			if ( $note ) {
-				WC_Admin_Notes::update_note( $note, $this->get_requested_updates( $request ) );
+				NotesRepository::update_note( $note, $this->get_requested_updates( $request ) );
 				$data[] = $this->prepare_note_data_for_response( $note, $request );
 			}
 		}
 
 		$response = rest_ensure_response( $data );
-		$response->header( 'X-WP-Total', WC_Admin_Notes::get_notes_count( array( 'info', 'warning' ), array() ) );
+		$response->header( 'X-WP-Total', NotesRepository::get_notes_count( array( 'info', 'warning' ), array() ) );
 		return $response;
 	}
 
@@ -433,6 +464,20 @@ class Notes extends \WC_REST_CRUD_Controller {
 		return apply_filters( 'woocommerce_rest_prepare_note', $response, $data, $request );
 	}
 
+
+	/**
+	 * Track opened emails.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 */
+	public function track_opened_email( $request ) {
+		$note = NotesRepository::get_note( $request->get_param( 'note_id' ) );
+		if ( ! $note ) {
+			return;
+		}
+		wc_admin_record_tracks_event( 'wcadmin_email_note_opened', array( 'note_name' => $note->get_name() ) );
+	}
+
 	/**
 	 * Get the query params for collections.
 	 *
@@ -484,7 +529,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
-				'enum' => WC_Admin_Note::get_allowed_types(),
+				'enum' => Note::get_allowed_types(),
 				'type' => 'string',
 			),
 		);
@@ -494,7 +539,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
 			'items'             => array(
-				'enum' => WC_Admin_Note::get_allowed_statuses(),
+				'enum' => Note::get_allowed_statuses(),
 				'type' => 'string',
 			),
 		);

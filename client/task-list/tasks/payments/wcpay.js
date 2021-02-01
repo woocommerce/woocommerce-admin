@@ -4,10 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { withDispatch } from '@wordpress/data';
-
-/**
- * WooCommerce dependencies
- */
 import { getQuery } from '@woocommerce/navigation';
 
 class WCPay extends Component {
@@ -23,7 +19,7 @@ class WCPay extends Component {
 					'woocommerce-admin'
 				)
 			);
-			markConfigured( 'wcpay' );
+			markConfigured( 'wcpay', { 'wcpay-connection-success': '1' } );
 		}
 	}
 
