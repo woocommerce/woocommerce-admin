@@ -18,8 +18,14 @@
 	max-width: 100%;
 }
 
-.woocommerce-page .update-nag {
-	display: none;
+.woocommerce-page {
+	.update-nag {
+		display: none;
+	}
+
+	#wpbody {
+		padding-top: 0;
+	}
 }
 
 .woocommerce-admin-is-loading {
