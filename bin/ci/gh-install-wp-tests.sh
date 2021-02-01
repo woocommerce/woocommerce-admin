@@ -27,7 +27,7 @@ download() {
 set -ex
 
 install_wp() {
-	::group::{install_wp}
+	echo "::group::{install_wp}"
 	mkdir -p $WP_CORE_DIR
 	download https://api.wordpress.org/core/version-check/1.7/ $TMPDIR/wp-latest.json
 	if [[ $WP_VERSION =~ [0-9]+\.[0-9]+\.[0] ]]; then
@@ -48,11 +48,11 @@ install_wp() {
 	download https://wordpress.org/${ARCHIVE_NAME}.tar.gz  $TMPDIR/wordpress.tar.gz
 	tar --strip-components=1 -zxmf $TMPDIR/wordpress.tar.gz -C $WP_CORE_DIR
 	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
-	::endgroup::
+	echo "::endgroup::"
 }
 
 install_test_suite() {
-	::group::{install_test_suite}
+	echo "::group::{install_test_suite}"
 	# portable in-place argument for both GNU sed and Mac OSX sed
 	if [[ $(uname -s) == 'Darwin' ]]; then
 		local ioption='-i .bak'
@@ -80,21 +80,21 @@ install_test_suite() {
 		sed $ioption "s/yourpasswordhere/$DB_PASS/" "$WP_TESTS_DIR"/wp-tests-config.php
 		sed $ioption "s|localhost|${DB_HOST}|" "$WP_TESTS_DIR"/wp-tests-config.php
 	fi
-	::endgroup::
+	echo "::endgroup::"
 }
 
 install_db() {
-	::group::{install_db}
+	echo "::group::{install_db}"
 	# drop existing database
 	echo "DROP DATABASE IF EXISTS $DB_NAME" | mysql --user="root" --password="$DB_PASS"
 
 	# create database
   echo "CREATE DATABASE IF NOT EXISTS $DB_NAME" | mysql --user="root" --password="$DB_PASS"
-	::endgroup::
+	echo "::endgroup::"
 }
 
 install_deps() {
-	::group::{install_deps}
+	echo "::group::{install_deps}"
 	# Script Variables
 	WP_SITE_URL="http://local.wordpress.test"
 	WORKING_DIR="$PWD"
@@ -144,7 +144,7 @@ install_deps() {
 	# Back to original dir
 	cd "$WORKING_DIR"
 
-	::endgroup::
+	echo "::endgroup::"
 }
 
 install_wp
