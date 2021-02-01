@@ -29,8 +29,8 @@ class AddFirstProduct {
 	 * @return Note
 	 */
 	public static function get_note() {
-		// We want to show the note after three days.
-		if ( ! self::wc_admin_active_for( 3 * DAY_IN_SECONDS ) ) {
+		// We want to show the note after 3 days and before 30.
+		if ( ! self::wc_admin_active_for( 3 * DAY_IN_SECONDS ) || self::wc_admin_active_for( 30 * DAY_IN_SECONDS ) ) {
 			return;
 		}
 
@@ -44,6 +44,16 @@ class AddFirstProduct {
 		);
 		$products = $query->get_products();
 		if ( 0 !== count( $products ) ) {
+			return;
+		}
+
+		// Don't show if there is an orders.
+		$args   = array(
+			'limit'  => 1,
+			'return' => 'ids',
+		);
+		$orders = wc_get_orders( $args );
+		if ( 0 !== count( $orders ) ) {
 			return;
 		}
 
