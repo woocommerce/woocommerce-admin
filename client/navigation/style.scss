@@ -25,6 +25,14 @@
 
 	#wpcontent,
 	#wpfooter {
+		margin-left: 0;
+
+		@media ( max-width: 960px ) {
+			margin-left: 0;
+		}
+	}
+
+	#wpbody {
 		margin-left: $navigation-width;
 
 		@media ( max-width: 960px ) {
@@ -32,10 +40,8 @@
 		}
 	}
 
-	#woocommerce-embedded-navigation {
-		position: fixed;
-		top: 0;
-		left: 0;
+	.woocommerce-navigation {
+		position: relative;
 		width: $navigation-width;
 		height: 100%;
 		box-sizing: border-box;
@@ -49,8 +55,11 @@
 	}
 
 	.woocommerce-navigation__wrapper {
-		overflow-y: auto;
+		background-color: $gray-900;
+		position: absolute;
+		width: 100%;
 		height: calc(100vh - #{$header-height});
+		overflow-y: auto;
 	}
 
 	.components-navigation {
@@ -58,31 +67,19 @@
 	}
 
 	&.is-wc-nav-expanded {
-		#woocommerce-embedded-navigation {
+		.woocommerce-navigation {
 			width: $navigation-width;
 			height: 100%;
 		}
 	}
 
 	&.is-wc-nav-folded {
-		#wpcontent,
-		#wpfooter {
-			margin-left: 0;
-		}
-
-		.woocommerce-layout__header {
-			margin-left: $header-height;
-		}
-
-		#woocommerce-embedded-navigation {
+		.woocommerce-navigation {
 			width: $header-height;
 			height: $header-height;
+			overflow: hidden;
 
 			.woocommerce-navigation-header {
-				&.is-scrolled {
-					box-shadow: $header-scroll-shadow;
-				}
-
 				> * {
 					display: none;
 				}
