@@ -13,7 +13,7 @@ jobs:
               uses: actions/checkout@v2
             - name: Determine changed files
               id: changed-files
-              uses: wyrihaximus/github-action-files-in-commit
+              uses: wyrihaximus/github-action-files-in-commit@1.0
             - name: Setup PHP
               uses: shivammathur/setup-php@2.9.0
               with:
