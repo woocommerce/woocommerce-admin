@@ -16,6 +16,7 @@ import './style.scss';
 import ActivityPanel from './activity-panel';
 import { MobileAppBanner } from '../mobile-banner';
 import useIsScrolled from '../hooks/useIsScrolled';
+import Navigation from '../navigation';
 
 export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );
@@ -72,23 +73,28 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 				/>
 			) }
 
-			<Text
-				className="woocommerce-layout__header-heading"
-				as="h1"
-				variant="subtitle.small"
-			>
-				{ decodeEntities( pageTitle ) }
-			</Text>
-			{ window.wcAdminFeatures[ 'activity-panels' ] && (
-				<ActivityPanel
-					isEmbedded={ isEmbedded }
-					query={ query }
-					userPreferencesData={ {
-						...userData,
-						updateUserPreferences,
-					} }
-				/>
-			) }
+			<div className="woocommerce-layout__header-wrapper">
+				{ window.wcAdminFeatures.navigation && <Navigation /> }
+
+				<Text
+					className="woocommerce-layout__header-heading"
+					as="h1"
+					variant="subtitle.small"
+				>
+					{ decodeEntities( pageTitle ) }
+				</Text>
+
+				{ window.wcAdminFeatures[ 'activity-panels' ] && (
+					<ActivityPanel
+						isEmbedded={ isEmbedded }
+						query={ query }
+						userPreferencesData={ {
+							...userData,
+							updateUserPreferences,
+						} }
+					/>
+				) }
+			</div>
 		</div>
 	);
 };

@@ -12,6 +12,10 @@
 		box-shadow: $header-scroll-shadow;
 	}
 
+	.woocommerce-layout__header-wrapper {
+		display: flex;
+	}
+
 	@include breakpoint( '<782px' ) {
 		flex-flow: row wrap;
 		top: $adminbar-height-mobile;
@@ -40,6 +44,7 @@
 
 .has-woocommerce-navigation .woocommerce-layout__header {
 	top: 0;
+	left: 0;
 }
 
 .woocommerce-page {
