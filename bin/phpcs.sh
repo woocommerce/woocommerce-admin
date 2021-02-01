@@ -10,7 +10,7 @@ do
 	fi	
 done
 
-if [ "$CHANGED_FILES" != "" ]; then
+if [ "$PHP_FILES_CHANGED" != "" ]; then
 	echo "Running Code Sniffer."
 	./vendor/bin/phpcs --encoding=utf-8 -n -p $PHP_FILES_CHANGED
 else
