@@ -5,14 +5,15 @@ jobs:
     lint-php:
         runs-on: ubuntu-latest
         steps:
-            - id: changed-files
-              uses: wyrihaximus/github-action-files-in-commit
             - name: Cancel Previous Runs
               uses: styfle/cancel-workflow-action@0.7.0
               with:
                   access_token: ${{ github.token }}
             - name: Check out repository code
               uses: actions/checkout@v2
+            - name: Determine changed files
+              id: changed-files
+              uses: wyrihaximus/github-action-files-in-commit
             - name: Setup PHP
               uses: shivammathur/setup-php@2.9.0
               with:
