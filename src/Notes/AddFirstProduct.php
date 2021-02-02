@@ -73,7 +73,7 @@ class AddFirstProduct {
 		$note->set_content_data( (object) $additional_data );
 		$note->set_image(
 			plugins_url(
-				'/images/admin_notes/img-product-light.png',
+				'/images/admin_notes/openbox+purple.png',
 				WC_ADMIN_PLUGIN_FILE
 			)
 		);
