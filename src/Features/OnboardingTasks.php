@@ -64,6 +64,10 @@ class OnboardingTasks {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_import_notice_admin_script' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_paypal_payments_script' ) );
+		// add_action( 'admin_enqueue_scripts', array( $this, 'add_enable_tracking_function' ) );
+		add_filter( 'woocommerce_paypal_payments_onboarding_redirect_url', array( $this, 'ppcp_ob_after_onboarding_redirect_url' ) );
+		// add_filter( 'woocommerce_paypal_payments_partner_config_override_return_url', array( $this, 'ppcp_ob_return_url' ) );
 	}
 
 	/**
@@ -225,6 +229,101 @@ class OnboardingTasks {
 					false !== get_option( 'woocommerce_no_sales_tax' );
 		}
 		return false;
+	}
+
+	/**
+	 * Adds a function to load tracking scripts and enable them client-side on the fly.
+	 * Note that this function does not update `woocommerce_allow_tracking` in the database
+	 * and will not persist enabled tracking across page loads.
+	 */
+	public static function add_enable_tracking_function() {
+		global $wp_scripts;
+
+		if ( ! Loader::is_admin_or_embed_page() ) {
+			return;
+		}
+		if ( ! isset( $wp_scripts->registered['ppcp-onboarding'] ) ) {
+			return;
+		}
+
+		$woo_tracks_script = $wp_scripts->registered['ppcp-onboarding']->src;
+
+		?>
+		<script type="text/javascript">
+			window.enablePpcpOnboarding = function( callback = null ) {
+				window.ppcpOnboardingEnabled = true;
+
+				var scriptUrl = '<?php echo esc_url( $woo_tracks_script ); ?>';
+				var existingScript = document.querySelector( `script[src="${ scriptUrl }"]` );
+				if ( existingScript ) {
+					return;
+				}
+
+				var script = document.createElement('script');
+				script.src = scriptUrl;
+				document.body.append(script);
+
+				// Callback after scripts have loaded.
+				script.onload = function() {
+					if ( 'function' === typeof callback ) {
+						callback( true );
+					}
+				}
+
+				// Callback triggered if the script fails to load.
+				script.onerror = function() {
+					if ( 'function' === typeof callback ) {
+						callback( false );
+					}
+				}
+			}
+			<?php
+				if ( isset( $wp_scripts->registered['ppcp-onboarding']->extra['data'] ) ) {
+					echo $wp_scripts->registered['ppcp-onboarding']->extra['data'];
+				}
+			?>
+		</script>
+		<?php
+	}
+
+	public static function add_onboarding_paypal_payments_script( $hook ) {
+		if ( ! Loader::is_admin_or_embed_page() ) {
+			return;
+		}
+		if ( ! class_exists( '\WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper' ) ) {
+			return;
+		}
+
+		// add_action( 'admin_enqueue_scripts', array( __CLASS__, 'add_enable_tracking_function' ) );
+		\WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper::enqueue_scripts();
+	}
+
+	/**
+	 * Sets the URL users are redirected to after PayPal Payments has received onboarding information from PayPal.
+	 */
+	public static function ppcp_ob_after_onboarding_redirect_url( $url ) {
+		if ( isset( $_GET['ppcpob'] ) && 1 === absint( $_GET['ppcpob'] ) ) {
+			$url = wc_admin_url( '&task-payments&method=paypal&onboarding=complete' );
+		}
+
+		return $url;
+	}
+
+
+	/**
+	 * Configures the onboarding button on the admin page so that the final button users click use this URL.
+	 */
+	public static function ppcp_ob_return_url( $return_url ) {
+		if ( ! Loader::is_admin_or_embed_page() ) {
+			return $return_url;
+		}
+		// if ( isset( $_GET['page'] ) && 'ppcpob' === $_GET['page'] ) {
+			$return_url = wc_admin_url( '&task-payments&method=paypal' );
+			// Adds a "ppcpob=1" to the querystring to differentiate this onboarding flow.
+			$return_url = add_query_arg( 'ppcpob', '1', $return_url );
+		// }
+
+		return $return_url;
 	}
 
 	/**

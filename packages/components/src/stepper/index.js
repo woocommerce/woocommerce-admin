@@ -10,6 +10,8 @@ import PropTypes from 'prop-types';
  */
 import Spinner from '../spinner';
 import CheckIcon from './check-icon';
+import { useEffect } from '@storybook/addons';
+
 
 /**
  * A stepper component to indicate progress in a set number of steps.

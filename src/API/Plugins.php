@@ -590,35 +590,42 @@ class Plugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
+	 * Configures the onboarding button on the admin page so that the final button users click use this URL.
+	 */
+	public function ppcp_ob_return_url( $return_url ) {
+		// if ( isset( $_GET['page'] ) && 'ppcpob' === $_GET['page'] ) {
+		$return_url = wc_admin_url( '&task-payments&method=paypal' );
+		// Adds a "ppcpob=1" to the querystring to differentiate this onboarding flow.
+		$return_url = add_query_arg( 'ppcpob', '1', $return_url );
+		// }
+
+		return $return_url;
+	}
+
+	/**
 	 * Returns a URL that can be used to connect to PayPal.
 	 *
 	 * @return WP_Error|array Connect URL.
 	 */
 	public function connect_paypal() {
-		if ( ! function_exists( 'wc_gateway_ppec' ) ) {
+		if ( ! class_exists( '\WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper' ) ) {
 			return new \WP_Error( 'woocommerce_rest_helper_connect', __( 'There was an error connecting to PayPal.', 'woocommerce-admin' ), 500 );
 		}
 
-		$redirect_url = add_query_arg(
-			array(
-				'env'                     => 'live',
-				'wc_ppec_ips_admin_nonce' => wp_create_nonce( 'wc_ppec_ips' ),
-			),
-			wc_admin_url( '&task=payments&method=paypal&paypal-connect-finish=1' )
+		$args        = array(
+			'displayMode' => 'minibrowser',
 		);
-
-		// https://github.com/woocommerce/woocommerce-gateway-paypal-express-checkout/blob/b6df13ba035038aac5024d501e8099a37e13d6cf/includes/class-wc-gateway-ppec-ips-handler.php#L79-L93.
-		$query_args  = array(
-			'redirect'    => rawurlencode( $redirect_url ),
-			'countryCode' => WC()->countries->get_base_country(),
-			'merchantId'  => md5( site_url( '/' ) . time() ),
-		);
-		$connect_url = add_query_arg( $query_args, wc_gateway_ppec()->ips->get_middleware_login_url( 'live' ) );
+		add_filter( 'woocommerce_paypal_payments_partner_config_override_return_url', array( $this, 'ppcp_ob_return_url' ) );
+		$signup_link = \WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper::get_signup_link( 'production' );
+		$connect_url = add_query_arg( $args, $signup_link );
+		remove_filter( 'woocommerce_paypal_payments_partner_config_override_return_url', array( $this, 'ppcp_ob_return_url' ) );
 
 		return( array(
 			'connectUrl' => $connect_url,
 		) );
 	}
+
+
 
 	/**
 	 * Returns a URL that can be used to connect to Square.

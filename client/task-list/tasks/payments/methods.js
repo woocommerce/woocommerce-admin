@@ -144,7 +144,7 @@ export function getPaymentMethods( {
 			isEnabled:
 				options['woocommerce-ppcp-settings'] &&
 				options['woocommerce-ppcp-settings'].enabled === 'yes',
-			optionName: 'woocommerce-ppcp-settings',
+			optionName: 'woocommerce_ppcp-gateway_settings',
 		},
 		{
 			key: 'klarna_checkout',

@@ -1,10 +1,11 @@
+/*global ppcp_onboarding */
 /**
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Button, CheckboxControl } from '@wordpress/components';
-import { Component, Fragment } from '@wordpress/element';
+import { Button } from '@wordpress/components';
+import { Component, Fragment, useEffect } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -18,6 +19,34 @@ import {
 } from '@woocommerce/data';
 
 export const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
+
+function PaypalConnectBtn({ connectUrl, onSuccess }) {
+
+	useEffect(() => {
+		function onOnboardingCallback(data, error) {
+			if (data && !error && onSuccess && data.success) {
+				onSuccess(data);
+			}
+		}
+		if (ppcp_onboarding) {
+			ppcp_onboarding.reload();
+			ppcp_onboarding.registerCallback(onOnboardingCallback);
+		}
+		return () => {
+			if (ppcp_onboarding) {
+				ppcp_onboarding.unregisterCallback(onOnboardingCallback);
+			}
+		}
+	}, []);
+
+
+	return (<a className="button-primary" target="_blank" href={ connectUrl } data-paypal-onboard-button="true" data-paypal-button="true" data-paypal-onboard-complete="ppcp_onboarding_productionCallback">
+	{ __(
+		'Connect',
+		'woocommerce-admin'
+	) }
+</a>);
+}
 
 export class PayPal extends Component {
 	constructor( props ) {
@@ -53,6 +82,56 @@ export class PayPal extends Component {
 			} );
 			/* eslint-enable react/no-did-mount-set-state */
 			return;
+		}
+		this.fetchOAuthConnectURL();
+	}
+
+	componentDidUpdate( prevProps ) {
+		const { activePlugins } = this.props;
+
+		if (
+			! prevProps.activePlugins.includes(PAYPAL_PLUGIN
+			) &&
+			activePlugins.includes(PAYPAL_PLUGIN
+			)
+		) {
+			this.fetchOAuthConnectURL();
+		}
+	}
+
+	async fetchOAuthConnectURL() {
+		const { activePlugins } = this.props;
+
+		if (
+			! activePlugins.includes(
+				PAYPAL_PLUGIN
+			)
+		) {
+			return;
+		}
+
+		this.setState( { isPending: true } );
+		try {
+			const result = await apiFetch( {
+				path: WC_ADMIN_NAMESPACE + '/plugins/connect-paypal',
+				method: 'POST',
+			} );
+			if ( ! result || ! result.connectUrl ) {
+				this.setState( {
+					autoConnectFailed: true,
+					isPending: false,
+				} );
+				return;
+			}
+			this.setState( {
+				connectURL: result.connectUrl,
+				isPending: false,
+			} );
+		} catch ( error ) {
+			this.setState( {
+				autoConnectFailed: true,
+				isPending: false,
+			} );
 		}
 	}
 
@@ -141,6 +220,39 @@ export class PayPal extends Component {
 		return errors;
 	}
 
+	renderAutomaticConfig() {
+		const { isOptionsUpdating } = this.props;
+		const { autoConnectFailed, connectURL, isPending } = this.state;
+
+		// const canAutoCreate = this.isWooCommerceServicesConnected();
+		const initialValues = this.getInitialConfigValues();
+
+		return (
+			<Form
+				initialValues={ initialValues }
+				onSubmitCallback={ this.updateSettings }
+				validate={ this.validate }
+			>
+				{ ( { values } ) => {
+					return (
+						<Fragment>
+							{ ! autoConnectFailed &&
+								connectURL &&
+										<><PaypalConnectBtn connectUrl={ connectURL } onSuccess={() => console.log('success')} />
+										<p>
+											{ __(
+												'You will be redirected to the PayPal website to create the connection.',
+												'woocommerce-admin'
+											) }
+										</p></>
+				}
+						</Fragment>
+					);
+				} }
+			</Form>
+		);
+	}
+
 	renderManualConfig() {
 		const { isOptionsUpdating } = this.props;
 		const stripeHelp = interpolateComponents( {
@@ -207,6 +319,39 @@ export class PayPal extends Component {
 								required
 								{ ...getInputProps( 'client_secret_production' ) }
 							/>
+
+							{ values.create_account && (
+								<Button
+									onClick={ handleSubmit }
+									isPrimary
+									isBusy={ isOptionsUpdating }
+								>
+									{ __(
+										'Create account',
+										'woocommerce-admin'
+									) }
+								</Button>
+							) }
+
+							{ ! autoConnectFailed &&
+								connectURL &&
+								( 
+									! values.create_account ) && (
+									<Fragment>
+										<a className="button-primary" target="_blank" href={ connectURL } data-paypal-onboard-button="true" data-paypal-button="true" data-paypal-onboard-complete="ppcp_onboarding_productionCallback">
+											{ __(
+												'Connect',
+												'woocommerce-admin'
+											) }
+										</a>
+										<p>
+											{ __(
+												'You will be redirected to the PayPal website to create the connection.',
+												'woocommerce-admin'
+											) }
+										</p>
+									</Fragment>
+									) }
 							<Button
 								isPrimary
 								isBusy={ isOptionsUpdating }
@@ -232,17 +377,17 @@ export class PayPal extends Component {
 				'A PayPal account is required to process payments. Connect your store to your PayPal account.',
 				'woocommerce-admin'
 			),
-			content: isRequestingOptions ? null : this.renderManualConfig(),
+			content: isRequestingOptions ? null : this.renderAutomaticConfig(), //this.renderManualConfig(),
 		};
 	}
 
 	render() {
-		const { installStep, isRequestingOptions } = this.props;
+		const { installStep, isRequestingOptions, isPending } = this.props;
 
 		return (
 			<Stepper
 				isVertical
-				isPending={ ! installStep.isComplete || isRequestingOptions }
+				isPending={ ! installStep.isComplete || isPending || isRequestingOptions }
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
 				steps={ [ installStep, this.getConnectStep() ] }
 			/>
