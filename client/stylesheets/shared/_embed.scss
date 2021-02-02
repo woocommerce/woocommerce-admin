@@ -39,14 +39,6 @@
 		}
 	}
 
-	#woocommerce-embedded-root.is-embed-loading + #wpbody .wrap {
-		padding-top: $header-height + 40;
-
-		@include breakpoint( '<782px' ) {
-			padding-top: 30px;
-		}
-	}
-
 	#screen-meta {
 		border-right: 0;
 		margin: 0;
