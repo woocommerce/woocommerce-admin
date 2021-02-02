@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import user from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 import apiFetch from '@wordpress/api-fetch';
@@ -175,6 +175,5 @@ describe( 'TaskList > Payments', () => {
 			expect( oauthButton ).toBeDefined();
 			expect( oauthButton.href ).toEqual( mockConnectUrl );
 		} );
-
 	} );
 } );

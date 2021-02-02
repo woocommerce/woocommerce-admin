@@ -227,14 +227,16 @@ export function getPaymentMethods( {
 			plugins: [ PAYPAL_PLUGIN ],
 			container: <PayPal />,
 			isConfigured:
-				options['woocommerce-ppcp-settings'] &&
-				options['woocommerce-ppcp-settings'].merchant_email_production &&
-				options['woocommerce-ppcp-settings'].merchant_id_production &&
-				options['woocommerce-ppcp-settings'].client_id_production &&
-				options['woocommerce-ppcp-settings'].client_secret_production,
+				options[ 'woocommerce-ppcp-settings' ] &&
+				options[ 'woocommerce-ppcp-settings' ]
+					.merchant_email_production &&
+				options[ 'woocommerce-ppcp-settings' ].merchant_id_production &&
+				options[ 'woocommerce-ppcp-settings' ].client_id_production &&
+				options[ 'woocommerce-ppcp-settings' ].client_secret_production,
 			isEnabled:
-				options['woocommerce_ppcp-gateway_settings'] &&
-				options['woocommerce_ppcp-gateway_settings'].enabled === 'yes',
+				options[ 'woocommerce_ppcp-gateway_settings' ] &&
+				options[ 'woocommerce_ppcp-gateway_settings' ].enabled ===
+					'yes',
 			optionName: 'woocommerce_ppcp-gateway_settings',
 		},
 		{

@@ -9,10 +9,7 @@ import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { ADMIN_URL as adminUrl } from '@woocommerce/wc-admin-settings';
 import { Link, Stepper } from '@woocommerce/components';
-import {
-	PLUGINS_STORE_NAME,
-	OPTIONS_STORE_NAME,
-} from '@woocommerce/data';
+import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 export const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
 
@@ -43,26 +40,29 @@ export class PayPal extends Component {
 			markConfigured,
 		} = this.props;
 
-		const productionValues = Object.keys(values).reduce((vals, key) => {
-			const prodKey = key + '_production';
-			return {
-				...vals,
-				[prodKey]: values[key]
-			}
-		}, {});
+		const productionValues = Object.keys( values ).reduce(
+			( vals, key ) => {
+				const prodKey = key + '_production';
+				return {
+					...vals,
+					[ prodKey ]: values[ key ],
+				};
+			},
+			{}
+		);
 
 		const optionValues = {
 			...options,
 			enabled: true,
 			...values,
-			...productionValues
+			...productionValues,
 		};
 
 		const update = await updateOptions( {
 			'woocommerce-ppcp-settings': optionValues,
 			'woocommerce_ppcp-gateway_settings': {
-				enabled: 'yes'
-			}
+				enabled: 'yes',
+			},
 		} );
 
 		if ( update.success ) {
@@ -84,15 +84,17 @@ export class PayPal extends Component {
 
 	getInitialConfigValues() {
 		const { options } = this.props;
-		return [ 'merchant_email', 'merchant_id',
+		return [
+			'merchant_email',
+			'merchant_id',
 			'client_id',
 			'client_secret',
-			].reduce((initialVals, key) => {
-		return {
-			...initialVals,
-			[key]: options && options[key] ? options[key] : ''
-		}
-	}, {});
+		].reduce( ( initialVals, key ) => {
+			return {
+				...initialVals,
+				[ key ]: options && options[ key ] ? options[ key ] : '',
+			};
+		}, {} );
 	}
 
 	renderConnectConfig() {
@@ -161,9 +163,7 @@ PayPal.defaultProps = {
 export default compose(
 	withSelect( ( select ) => {
 		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins } = select(
-			PLUGINS_STORE_NAME
-		);
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const activePlugins = getActivePlugins();
 
 		return {
