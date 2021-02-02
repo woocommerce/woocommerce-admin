@@ -13,6 +13,23 @@
 		margin-top: 24px;
 	}
 
+	.woocommerce-navigation__menu {
+		padding-bottom: 100px;
+	}
+
+	.components-navigation__group {
+		&.woocommerce-navigation__footer {
+			position: absolute;
+			border-top: 1px solid grey;
+			padding-top: 6px;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			// background-color: ${ G2.darkGray.primary };
+			background: rgb( 30, 30, 30 );
+		}
+	}
+
 	.components-navigation__item {
 		margin-bottom: 0;
 	}

@@ -147,6 +147,7 @@ const Container = ( { menuItems } ) => {
 						} = categorizedItems[ category.id ] || {};
 						return (
 							<NavigationMenu
+								className="woocommerce-navigation__menu"
 								key={ category.id }
 								title={ category.title }
 								menu={ category.id }
@@ -191,6 +192,7 @@ const Container = ( { menuItems } ) => {
 								) }
 								{ !! secondaryItems && (
 									<NavigationGroup
+										className="woocommerce-navigation__footer"
 										onBackButtonClick={ () =>
 											trackBackClick( category.id )
 										}
