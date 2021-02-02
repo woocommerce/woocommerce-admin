@@ -1,6 +1,6 @@
 .woocommerce-navigation {
 	display: grid;
-	grid-template-rows: min-content 2fr;
+	grid-template-rows: min-content 1fr;
 	height: 100%;
 
 	h2 {
@@ -8,8 +8,6 @@
 	}
 
 	.components-navigation__menu {
-		display: grid;
-		grid-template-rows: min-content 2fr;
 		overflow-y: auto;
 		margin-bottom: 0;
 		padding-bottom: $gap-large;
@@ -23,10 +21,6 @@
 		margin-bottom: 0;
 	}
 
-	.woocommerce-navigation__back-to-dashboard {
-		margin-top: 24px;
-	}
-
 	.components-navigation {
 		height: 100%;
 	}
@@ -34,7 +28,7 @@
 	.components-navigation > div {
 		height: 100%;
 		display: grid;
-		grid-template-rows: min-content 2fr;
+		grid-template-rows: 1fr min-content;
 	}
 
 	&.is-root {

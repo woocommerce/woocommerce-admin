@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import { compose } from '@wordpress/compose';
 import {
 	Navigation,
-	NavigationBackButton,
 	NavigationMenu,
 	NavigationGroup,
 } from '@woocommerce/experimental';
@@ -137,14 +136,6 @@ const Container = ( { menuItems } ) => {
 						setActiveLevel( ...args );
 					} }
 				>
-					{ isRootBackVisible && (
-						<NavigationBackButton
-							className="woocommerce-navigation__back-to-dashboard"
-							href={ rootBackUrl }
-							backButtonLabel={ rootBackLabel }
-							onClick={ () => trackBackClick( 'woocommerce' ) }
-						></NavigationBackButton>
-					) }
 					{ categories.map( ( category ) => {
 						const {
 							primary: primaryItems,
@@ -160,11 +151,19 @@ const Container = ( { menuItems } ) => {
 										menu={ category.id }
 										parentMenu={ category.parent }
 										backButtonLabel={
-											category.backButtonLabel || null
+											isRootBackVisible
+												? rootBackLabel
+												: category.backButtonLabel ||
+												  null
 										}
 										onBackButtonClick={
 											isRootBackVisible
-												? null
+												? () => {
+														trackBackClick(
+															'woocommerce'
+														);
+														window.location = rootBackUrl;
+												  }
 												: () =>
 														trackBackClick(
 															category.id
