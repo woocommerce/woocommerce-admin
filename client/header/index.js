@@ -43,7 +43,11 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	useLayoutEffect( () => {
 		updateBodyMargin();
 		window.addEventListener( 'resize', updateBodyMargin );
-		return () => window.removeEventListener( 'resize', updateBodyMargin );
+		return () => {
+			window.removeEventListener( 'resize', updateBodyMargin );
+			const wpBody = document.querySelector( '#wpbody' );
+			wpBody.style.marginTop = null;
+		};
 	}, [ isModalDismissed ] );
 
 	useEffect( () => {
