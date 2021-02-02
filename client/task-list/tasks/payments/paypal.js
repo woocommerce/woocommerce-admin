@@ -64,10 +64,19 @@ export class PayPal extends Component {
 			markConfigured,
 		} = this.props;
 
+		const productionValues = Object.keys(values).reduce((vals, key) => {
+			const prodKey = key + '_production';
+			return {
+				...vals,
+				[prodKey]: values[key]
+			}
+		}, {});
+
 		const optionValues = {
 			...options,
 			enabled: true,
-			...values
+			...values,
+			...productionValues
 		};
 
 		const update = await updateOptions( {
@@ -96,9 +105,9 @@ export class PayPal extends Component {
 
 	getInitialConfigValues() {
 		const { options } = this.props;
-		return [ 'merchant_email_production', 'merchant_id_production',
-			'client_id_production',
-			'client_secret_production',
+		return [ 'merchant_email', 'merchant_id',
+			'client_id',
+			'client_secret',
 			].reduce((initialVals, key) => {
 		return {
 			...initialVals,
@@ -110,32 +119,32 @@ export class PayPal extends Component {
 	validate( values ) {
 		const errors = {};
 
-		if ( ! values.merchant_email_production ) {
-			errors.merchant_email_production = __(
+		if ( ! values.merchant_email ) {
+			errors.merchant_email = __(
 				'Please enter your Merchant email',
 				'woocommerce-admin'
 			);
 		}
-		if (! isEmail( values.merchant_email_production )) {
-			errors.merchant_email_production = __(
+		if (! isEmail( values.merchant_email )) {
+			errors.merchant_email = __(
 				'Please enter a valid email address',
 				'woocommerce-admin'
 			);
 		}
-		if ( ! values.merchant_id_production ) {
-			errors.merchant_id_production = __(
+		if ( ! values.merchant_id ) {
+			errors.merchant_id = __(
 				'Please enter your Merchand Id',
 				'woocommerce-admin'
 			);
 		}
-		if ( ! values.client_id_production ) {
-			errors.client_id_production = __(
+		if ( ! values.client_id ) {
+			errors.client_id = __(
 				'Please enter your Client Id',
 				'woocommerce-admin'
 			);
 		}
-		if ( ! values.client_secret_production ) {
-			errors.client_secret_production = __(
+		if ( ! values.client_secret ) {
+			errors.client_secret = __(
 				'Please enter your Client Secret',
 				'woocommerce-admin'
 			);
@@ -191,7 +200,7 @@ export class PayPal extends Component {
 									'woocommerce-admin'
 								) }
 								required
-								{ ...getInputProps( 'merchant_email_production' ) }
+								{ ...getInputProps( 'merchant_email' ) }
 							/>
 							<TextControl
 								label={ __(
@@ -199,7 +208,7 @@ export class PayPal extends Component {
 									'woocommerce-admin'
 								) }
 								required
-								{ ...getInputProps( 'merchant_id_production' ) }
+								{ ...getInputProps( 'merchant_id' ) }
 							/>
 							<TextControl
 								label={ __(
@@ -207,7 +216,7 @@ export class PayPal extends Component {
 									'woocommerce-admin'
 								) }
 								required
-								{ ...getInputProps( 'client_id_production' ) }
+								{ ...getInputProps( 'client_id' ) }
 							/>
 							<TextControl
 								label={ __(
@@ -215,7 +224,7 @@ export class PayPal extends Component {
 									'woocommerce-admin'
 								) }
 								required
-								{ ...getInputProps( 'client_secret_production' ) }
+								{ ...getInputProps( 'client_secret' ) }
 							/>
 							<Button
 								isPrimary
