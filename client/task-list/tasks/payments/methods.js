@@ -142,8 +142,8 @@ export function getPaymentMethods( {
 				options['woocommerce-ppcp-settings'].client_id_production &&
 				options['woocommerce-ppcp-settings'].client_secret_production,
 			isEnabled:
-				options['woocommerce-ppcp-settings'] &&
-				options['woocommerce-ppcp-settings'].enabled === 'yes',
+				options['woocommerce_ppcp-gateway_settings'] &&
+				options['woocommerce_ppcp-gateway_settings'].enabled === 'yes',
 			optionName: 'woocommerce_ppcp-gateway_settings',
 		},
 		{

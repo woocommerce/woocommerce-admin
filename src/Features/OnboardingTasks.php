@@ -253,8 +253,8 @@ class OnboardingTasks {
 	 * Sets the URL users are redirected to after PayPal Payments has received onboarding information from PayPal.
 	 */
 	public static function ppcp_ob_after_onboarding_redirect_url( $url ) {
-		if ( isset( $_GET['ppcpob'] ) && 1 === absint( $_GET['ppcpob'] ) ) {
-			$url = wc_admin_url( '&task-payments&method=paypal&onboarding=complete' );
+		if ( isset( $_GET['obw'] ) && 1 === absint( $_GET['obw'] ) ) {
+			$url = wc_admin_url( '&task=payments&method=paypal&onboarding=complete' );
 		}
 
 		return $url;

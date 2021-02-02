@@ -594,9 +594,9 @@ class Plugins extends \WC_REST_Data_Controller {
 	 */
 	public function ppcp_ob_return_url( $return_url ) {
 		// if ( isset( $_GET['page'] ) && 'ppcpob' === $_GET['page'] ) {
-		$return_url = wc_admin_url( '&task-payments&method=paypal' );
 		// Adds a "ppcpob=1" to the querystring to differentiate this onboarding flow.
-		$return_url = add_query_arg( 'ppcpob', '1', $return_url );
+		// $return_url = wc_admin_url( '&task=payments&method=paypal&ppcpob=1' );
+		$return_url = add_query_arg( 'obw', '1', $return_url );
 		// }
 
 		return $return_url;
