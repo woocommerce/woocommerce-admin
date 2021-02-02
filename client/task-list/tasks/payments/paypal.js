@@ -72,6 +72,9 @@ export class PayPal extends Component {
 
 		const update = await updateOptions( {
 			'woocommerce-ppcp-settings': optionValues,
+			'woocommerce_ppcp-gateway_settings': {
+				enabled: 'yes'
+			}
 		} );
 
 		if ( update.success ) {
@@ -93,7 +96,7 @@ export class PayPal extends Component {
 
 	getInitialConfigValues() {
 		const { options } = this.props;
-		return [ 'merchant_email', 'merchant_id_production',
+		return [ 'merchant_email_production', 'merchant_id_production',
 			'client_id_production',
 			'client_secret_production',
 			].reduce((initialVals, key) => {
@@ -107,14 +110,14 @@ export class PayPal extends Component {
 	validate( values ) {
 		const errors = {};
 
-		if ( ! values.merchant_email ) {
-			errors.merchant_email = __(
+		if ( ! values.merchant_email_production ) {
+			errors.merchant_email_production = __(
 				'Please enter your Merchant email',
 				'woocommerce-admin'
 			);
 		}
-		if (! isEmail( values.merchant_email )) {
-			errors.merchant_email = __(
+		if (! isEmail( values.merchant_email_production )) {
+			errors.merchant_email_production = __(
 				'Please enter a valid email address',
 				'woocommerce-admin'
 			);
@@ -145,13 +148,20 @@ export class PayPal extends Component {
 		const { isOptionsUpdating } = this.props;
 		const stripeHelp = interpolateComponents( {
 			mixedString: __(
-				'Your API details can be obtained from your {{docsLink}}Paypal developer account{{/docsLink}}. Don’t have a Paypal account? {{registerLink}}Create one.{{/registerLink}}',
+				'Your API details can be obtained from your {{docsLink}}Paypal developer account{{/docsLink}}, and your Merchant Id from your {{merchantLink}}Paypal Business account{{/merchantLink}}. Don’t have a Paypal account? {{registerLink}}Create one.{{/registerLink}}',
 				'woocommerce-admin'
 			),
 			components: {
 				docsLink: (
 					<Link
 						href="https://developer.paypal.com/docs/api-basics/manage-apps/#create-or-edit-sandbox-and-live-apps"
+						target="_blank"
+						type="external"
+					/>
+				),
+				merchantLink: (
+					<Link
+						href="https://www.paypal.com/ca/smarthelp/article/FAQ3850"
 						target="_blank"
 						type="external"
 					/>
@@ -181,7 +191,7 @@ export class PayPal extends Component {
 									'woocommerce-admin'
 								) }
 								required
-								{ ...getInputProps( 'merchant_email' ) }
+								{ ...getInputProps( 'merchant_email_production' ) }
 							/>
 							<TextControl
 								label={ __(

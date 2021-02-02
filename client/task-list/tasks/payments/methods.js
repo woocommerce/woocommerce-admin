@@ -228,14 +228,14 @@ export function getPaymentMethods( {
 			container: <PayPal />,
 			isConfigured:
 				options['woocommerce-ppcp-settings'] &&
-				options['woocommerce-ppcp-settings'].merchant_email &&
+				options['woocommerce-ppcp-settings'].merchant_email_production &&
 				options['woocommerce-ppcp-settings'].merchant_id_production &&
 				options['woocommerce-ppcp-settings'].client_id_production &&
 				options['woocommerce-ppcp-settings'].client_secret_production,
 			isEnabled:
-				options['woocommerce-ppcp-settings'] &&
-				options['woocommerce-ppcp-settings'].enabled === 'yes',
-			optionName: 'woocommerce-ppcp-settings',
+				options['woocommerce_ppcp-gateway_settings'] &&
+				options['woocommerce_ppcp-gateway_settings'].enabled === 'yes',
+			optionName: 'woocommerce_ppcp-gateway_settings',
 		},
 		{
 			key: 'klarna_checkout',
