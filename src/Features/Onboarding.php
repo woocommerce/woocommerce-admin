@@ -725,6 +725,7 @@ class Onboarding {
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
 		$options[] = 'woocommerce-ppcp-settings';
+		$options[] = 'woocommerce_ppcp-gateway_settings';
 		$options[] = 'wc_square_refresh_tokens';
 		$options[] = 'woocommerce_square_credit_card_settings';
 		$options[] = 'woocommerce_payfast_settings';
