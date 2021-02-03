@@ -43,3 +43,14 @@ Testing instructions
   - Wait until redirected
   - Without saving go to the **Products > all products** page, the new product should not be displayed.
 
+### Update: Homescreen layout, moving Inbox panel for better interaction. #6122
+
+- Create a new woo store, and finish the onboarding wizard.
+- Go to the home screen, and make sure the panels follow this order:
+- Two column:
+  - Left column: store setup and/or management tasks + inbox panel
+  - Right column: stats overview + store management shortcuts (only shows when setup tasks is hidden)
+- Single column:
+  - store setup tasks, inbox panel, stats overview, store management links (only visible when setup tasks is hidden).
+- Hide the setup tasks list, and see if the store management links show up in the right place.
+
