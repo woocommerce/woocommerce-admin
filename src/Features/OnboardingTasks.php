@@ -47,7 +47,6 @@ class OnboardingTasks {
 		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
-		add_filter( 'woocommerce_admin_plugins_whitelist', array( $this, 'get_onboarding_tasks_allowed_plugins' ), 10, 2 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -72,23 +71,6 @@ class OnboardingTasks {
 	 */
 	public function add_media_scripts() {
 		wp_enqueue_media();
-	}
-
-	/**
-	 * Gets an array of plugins that can be installed & activated via the onboarding task list.
-	 *
-	 * @param array $plugins Array of plugin slugs to be allowed.
-	 *
-	 * @return array
-	 */
-	public function get_onboarding_tasks_allowed_plugins( $plugins ) {
-		$onboarding_task_plugins = apply_filters(
-			'woocommerce_admin_onboarding_plugins_whitelist',
-			array(
-				'mollie-payments-for-woocommerce' => 'mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php',
-			)
-		);
-		return array_merge( $plugins, $onboarding_task_plugins );
 	}
 
 	/**
