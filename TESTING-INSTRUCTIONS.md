@@ -24,3 +24,9 @@ Testing instructions
     - Copy: We want to make eCommerce and this process of getting started as easy as possible for you. Watch this webinar to get tips on how to have our store up and running in a breeze.
     - CTA leads to: https://youtu.be/V_2XtCOyZ7o
     - CTA label: Watch the webinar
+
+### Update: store deprecation welcome modal support doc link #6094
+
+- Starting with a fresh store (or by deleting the woocommerce_task_list_welcome_modal_dismissed option), visit /wp-admin/admin.php?page=wc-admin. You should see the standard welcome modal.
+- Add &from-calypso to the URL. You should see the Calypso welcome modal.
+- Notice "Learn more" links to https://wordpress.com/support/new-woocommerce-experience-on-wordpress-dot-com/
