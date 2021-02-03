@@ -9,7 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
-import { PayPal } from '../tasks/payments/paypal';
+import PayPal from '../tasks/payments/paypal';
 import { getPaymentMethods } from '../tasks/payments/methods';
 
 jest.mock( '@wordpress/api-fetch' );

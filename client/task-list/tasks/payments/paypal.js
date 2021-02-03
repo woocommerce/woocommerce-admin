@@ -16,7 +16,7 @@ import {
 	WC_ADMIN_NAMESPACE,
 } from '@woocommerce/data';
 
-export const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
+const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
 
 function loadOnboardingScript( url, data, onLoad ) {
 	try {
@@ -60,7 +60,7 @@ function PaypalConnectBtn( { connectUrl } ) {
 	);
 }
 
-export class PayPal extends Component {
+class PayPal extends Component {
 	constructor( props ) {
 		super( props );
 
@@ -306,3 +306,5 @@ export default compose(
 		};
 	} )
 )( PayPal );
+
+export { PayPal, PAYPAL_PLUGIN };
