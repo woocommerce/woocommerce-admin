@@ -180,10 +180,6 @@ class Options extends \WC_REST_Data_Controller {
 			$updated[ $key ] = update_option( $key, $value );
 		}
 
-		if ( 'woocommerce-ppcp-settings' === $key ) {
-			delete_transient( 'ppcp-paypal-bearerppcp-bearer' );
-		}
-
 		return $updated;
 	}
 

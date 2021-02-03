@@ -150,7 +150,6 @@ class Payments extends Component {
 			methods,
 			options,
 			updateOptions,
-			enablePaypalPayments
 		} = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
@@ -163,21 +162,12 @@ class Payments extends Component {
 			payment_method: key,
 		} );
 
-		if (key === 'paypal') {
-			await updateOptions( {
-				[ method.optionName ]: {
-					...options[ method.optionName ],
-					enabled: method.isEnabled ? false : true,
-				},
-			} );
-		} else {
 		await updateOptions( {
 			[ method.optionName ]: {
 				...options[ method.optionName ],
 				enabled: method.isEnabled ? 'no' : 'yes',
 			},
 		} );
-	}
 
 		clearTaskStatusCache();
 	}
@@ -335,7 +325,7 @@ class Payments extends Component {
 export default compose(
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { installAndActivatePlugins, enablePaypalPayments } = dispatch( PLUGINS_STORE_NAME );
+		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const {
 			invalidateResolution,
@@ -349,7 +339,6 @@ export default compose(
 			createNotice,
 			installAndActivatePlugins,
 			updateOptions,
-			enablePaypalPayments
 		};
 	} ),
 	withSelect( ( select, props ) => {

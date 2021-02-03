@@ -1,4 +1,3 @@
-/*global ajaxurl */
 /**
  * External dependencies
  */
@@ -109,20 +108,6 @@ export function* activatePlugins( plugins ) {
 		return results;
 	} catch ( error ) {
 		yield setError( 'activatePlugins', error );
-		throw new Error( formatErrors( error ) );
-	}
-}
-
-export function* enablePaypalPayments() {
-	try {
-		const results = yield apiFetch( {
-			path: ajaxurl,
-			method: 'POST',
-			data: { action: 'woocommerce_toggle_gateway_enabled', gateway_id: 'ppcp-gateway' },
-		} );
-
-		return results;
-	} catch ( error ) {
 		throw new Error( formatErrors( error ) );
 	}
 }
