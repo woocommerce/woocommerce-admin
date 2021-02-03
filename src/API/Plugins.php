@@ -130,19 +130,6 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/connect-paypal',
-			array(
-				array(
-					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'connect_paypal' ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				),
-				'schema' => array( $this, 'get_connect_schema' ),
-			)
-		);
-
-		register_rest_route(
-			$this->namespace,
 			'/' . $this->rest_base . '/connect-wcpay',
 			array(
 				array(
@@ -588,46 +575,6 @@ class Plugins extends \WC_REST_Data_Controller {
 			'success' => true,
 		);
 	}
-
-	/**
-	 * Configures the onboarding button on the admin page so that the final button users click use this URL.
-	 *
-	 * @param string $return_url The return url.
-	 * @return string Return URL.
-	 */
-	public function ppcp_ob_return_url( $return_url ) {
-		// Adds a "ppcpob=1" to the querystring to differentiate this onboarding flow.
-		$return_url = add_query_arg( 'ppcpobw', '1', $return_url );
-
-		return $return_url;
-	}
-
-	/**
-	 * Returns a URL that can be used to connect to PayPal.
-	 *
-	 * @return WP_Error|array Connect URL.
-	 */
-	public function connect_paypal() {
-		if ( ! class_exists( '\WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper' ) ) {
-			return new \WP_Error( 'woocommerce_rest_helper_connect', __( 'There was an error connecting to PayPal.', 'woocommerce-admin' ), 500 );
-		}
-
-		$args = array(
-			'displayMode' => 'minibrowser',
-		);
-		add_filter( 'woocommerce_paypal_payments_partner_config_override_return_url', array( $this, 'ppcp_ob_return_url' ) );
-		$signup_link = \WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper::get_signup_link( 'production' );
-		$connect_url = add_query_arg( $args, $signup_link );
-		remove_filter( 'woocommerce_paypal_payments_partner_config_override_return_url', array( $this, 'ppcp_ob_return_url' ) );
-
-		$js_params = \WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper::get_js_params();
-
-		return( array_merge(
-			array( 'connectUrl' => $connect_url ),
-			$js_params
-		) );
-	}
-
 
 
 	/**

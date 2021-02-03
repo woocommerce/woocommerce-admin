@@ -251,7 +251,7 @@ describe( 'TaskList > Payments', () => {
 			};
 			const mockConnectUrl = 'https://connect.woocommerce.test/paypal';
 			apiFetch.mockResolvedValue( {
-				connectUrl: mockConnectUrl,
+				signupLink: mockConnectUrl,
 			} );
 
 			render(

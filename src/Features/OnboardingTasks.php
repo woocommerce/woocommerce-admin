@@ -64,7 +64,6 @@ class OnboardingTasks {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_import_notice_admin_script' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_paypal_payments_script' ) );
 		add_filter( 'woocommerce_paypal_payments_onboarding_redirect_url', array( $this, 'ppcp_ob_after_onboarding_redirect_url' ) );
 	}
 
@@ -229,25 +228,6 @@ class OnboardingTasks {
 		return false;
 	}
 
-
-	/**
-	 * Enqueue's necessary Paypal onboarding scripts.
-	 */
-	public static function add_onboarding_paypal_payments_script() {
-		if ( ! Loader::is_admin_or_embed_page() ) {
-			return;
-		}
-		if ( ! class_exists( '\WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper' ) ) {
-			return;
-		}
-
-		// Don't need onboarding scripts if already onboarded.
-		if ( \WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper::is_onboarded() ) {
-			return;
-		}
-
-		\WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper::enqueue_scripts();
-	}
 
 	/**
 	 * Sets the URL users are redirected to after PayPal Payments has received onboarding information from PayPal.

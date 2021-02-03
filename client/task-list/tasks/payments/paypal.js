@@ -12,13 +12,10 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { isEmail } from '@wordpress/url';
 import { Form, Link, TextControl, Stepper } from '@woocommerce/components';
 import { getQuery } from '@woocommerce/navigation';
-import {
-	PLUGINS_STORE_NAME,
-	OPTIONS_STORE_NAME,
-	WC_ADMIN_NAMESPACE,
-} from '@woocommerce/data';
+import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
+const WC_PAYPAL_NAMESPACE = '/wc-paypal/v1';
 
 function loadOnboardingScript( url, data, onLoad ) {
 	try {
@@ -128,10 +125,16 @@ class PayPal extends Component {
 		this.setState( { isPending: true } );
 		try {
 			const result = await apiFetch( {
-				path: WC_ADMIN_NAMESPACE + '/plugins/connect-paypal',
+				path: WC_PAYPAL_NAMESPACE + '/onboarding/get-params',
 				method: 'POST',
+				data: {
+					environment: 'production',
+					returnUrlArgs: {
+						ppcpobw: '1',
+					},
+				},
 			} );
-			if ( ! result || ! result.connectUrl ) {
+			if ( ! result || ! result.signupLink ) {
 				this.setState( {
 					autoConnectFailed: true,
 					isPending: false,
@@ -140,7 +143,7 @@ class PayPal extends Component {
 			}
 			loadOnboardingScript( result.scriptURL, result.scriptData, () => {
 				this.setState( {
-					connectURL: result.connectUrl,
+					connectURL: result.signupLink,
 					isPending: false,
 				} );
 			} );
