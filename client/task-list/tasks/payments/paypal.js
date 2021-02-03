@@ -17,6 +17,13 @@ import { PLUGINS_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
 const WC_PAYPAL_NAMESPACE = '/wc-paypal/v1';
 
+/**
+ * Loads the onboarding script file into the dom on the fly.
+ *
+ * @param {string} url of the onboarding js file.
+ * @param {Object} data required for the onboarding script, labeled as PayPalCommerceGatewayOnboarding
+ * @param {Function} onLoad callback for when the script is loaded.
+ */
 function loadOnboardingScript( url, data, onLoad ) {
 	try {
 		// eslint-disable-next-line camelcase
@@ -40,6 +47,7 @@ function PaypalConnectBtn( { connectUrl } ) {
 	useEffect( () => {
 		// eslint-disable-next-line camelcase
 		if ( ppcp_onboarding ) {
+			// Makes sure the onboarding is hooked up to the Connect button rendered.
 			ppcp_onboarding.reload();
 		}
 	}, [] );
@@ -200,6 +208,10 @@ class PayPal extends Component {
 			{}
 		);
 
+		/**
+		 * merchant data can be the same across sandbox and production, that's why we set it as
+		 * standalone as well.
+		 */
 		const optionValues = {
 			...options,
 			enabled: true,
