@@ -48,7 +48,7 @@ describe( 'TaskList > Payments', () => {
 				'PL',
 				'FR',
 				'IT',
-				'UK',
+				'GB',
 			];
 			supportedCountryCodes.forEach( ( countryCode ) => {
 				params.countryCode = countryCode;
@@ -58,6 +58,8 @@ describe( 'TaskList > Payments', () => {
 				).toBe( true );
 			} );
 		} );
+
+		it( 'includes Mollie Payment for the right countries.', () => {} );
 	} );
 
 	describe( 'PayPal', () => {

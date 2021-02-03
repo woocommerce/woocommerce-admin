@@ -133,9 +133,9 @@ class Payments extends Component {
 							plugins: currentMethod.plugins,
 						} );
 					} }
-					onError={ ( errors, response ) =>
-						createNoticesFromResponse( response )
-					}
+					onError={ ( errors, response ) => {
+						createNoticesFromResponse( response );
+					} }
 					autoInstall
 					pluginSlugs={ currentMethod.plugins }
 				/>
@@ -284,19 +284,26 @@ class Payments extends Component {
 							</CardBody>
 							<CardFooter isBorderless>
 								{ container && ! isConfigured ? (
-									<Button
-										isPrimary={ key === recommendedMethod }
-										isSecondary={
-											key !== recommendedMethod
-										}
-										isBusy={ busyMethod === key }
-										disabled={ busyMethod }
-										onClick={ () =>
-											this.handleClick( method )
-										}
-									>
-										{ __( 'Set up', 'woocommerce-admin' ) }
-									</Button>
+									<div>
+										<Button
+											isPrimary={
+												key === recommendedMethod
+											}
+											isSecondary={
+												key !== recommendedMethod
+											}
+											isBusy={ busyMethod === key }
+											disabled={ busyMethod }
+											onClick={ () =>
+												this.handleClick( method )
+											}
+										>
+											{ __(
+												'Set up',
+												'woocommerce-admin'
+											) }
+										</Button>
+									</div>
 								) : (
 									<FormToggle
 										checked={ enabledMethods[ key ] }
@@ -363,6 +370,7 @@ export default compose(
 			'woocommerce_bacs_accounts',
 			'woocommerce_eway_settings',
 			'woocommerce_razorpay_settings',
+			'woocommerce_mollie_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {
