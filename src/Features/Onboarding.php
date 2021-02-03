@@ -736,6 +736,7 @@ class Onboarding {
 		$options[] = 'woocommerce_woocommerce_payments_settings';
 		$options[] = 'woocommerce_eway_settings';
 		$options[] = 'woocommerce_razorpay_settings';
+		$options[] = 'woocommerce_mollie_settings';
 
 		return $options;
 	}

@@ -391,6 +391,9 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
+		// the mollie-payments-for-woocommerce plugin calls `WP_Filesystem()` during it's activation hook, which crashes without this include.
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
 		foreach ( $plugins as $plugin ) {
 			$slug = $plugin;
 			$path = isset( $allowed_plugins[ $slug ] ) ? $allowed_plugins[ $slug ] : false;
@@ -413,14 +416,24 @@ class Plugins extends \WC_REST_Data_Controller {
 				continue;
 			}
 
-			$result = activate_plugin( $path );
+			/* translators: %s: plugin slug (example: woocommerce-services) */
+			$plugin_activation_fail_error = sprintf( __( 'The requested plugin `%s` could not be activated.', 'woocommerce-admin' ), $slug );
+
+			try {
+				$result = activate_plugin( $path );
+			} catch ( Exception $e ) {
+				$errors->add(
+					$plugin,
+					$plugin_activation_fail_error
+				);
+			}
+
 			if ( ! is_null( $result ) ) {
 				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
 
 				$errors->add(
 					$plugin,
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					sprintf( __( 'The requested plugin `%s` could not be activated.', 'woocommerce-admin' ), $slug )
+					$plugin_activation_fail_error
 				);
 				continue;
 			}
