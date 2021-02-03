@@ -19,8 +19,12 @@ import {
 export const PAYPAL_PLUGIN = 'woocommerce-paypal-payments';
 
 function loadOnboardingScript( url, data, onLoad ) {
-	// eslint-disable-next-line camelcase
-	if ( ! ppcp_onboarding ) {
+	try {
+		// eslint-disable-next-line camelcase
+		if ( ppcp_onboarding ) {
+			onLoad();
+		}
+	} catch ( e ) {
 		const script = document.createElement( 'script' );
 		script.src = url;
 		document.body.append( script );
@@ -87,7 +91,7 @@ export class PayPal extends Component {
 			/* eslint-enable react/no-did-mount-set-state */
 			return;
 		}
-		this.fetchOAuthConnectURL();
+		this.fetchOAuthConnectURLAndOnboardingSetup();
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -97,7 +101,7 @@ export class PayPal extends Component {
 			! prevProps.activePlugins.includes( PAYPAL_PLUGIN ) &&
 			activePlugins.includes( PAYPAL_PLUGIN )
 		) {
-			this.fetchOAuthConnectURL();
+			this.fetchOAuthConnectURLAndOnboardingSetup();
 		}
 	}
 
@@ -121,43 +125,11 @@ export class PayPal extends Component {
 				} );
 				return;
 			}
-			loadOnboardingScript(result.onboardingUrl, result, () => {
+			loadOnboardingScript( result.scriptURL, result.scriptData, () => {
 				this.setState( {
 					connectURL: result.connectUrl,
 					isPending: false,
 				} );
-			});
-		} catch ( error ) {
-			this.setState( {
-				autoConnectFailed: true,
-				isPending: false,
-			} );
-		}
-	}
-
-	async fetchOAuthConnectURL() {
-		const { activePlugins } = this.props;
-
-		if ( ! activePlugins.includes( PAYPAL_PLUGIN ) ) {
-			return;
-		}
-
-		this.setState( { isPending: true } );
-		try {
-			const result = await apiFetch( {
-				path: WC_ADMIN_NAMESPACE + '/plugins/connect-paypal',
-				method: 'POST',
-			} );
-			if ( ! result || ! result.connectUrl ) {
-				this.setState( {
-					autoConnectFailed: true,
-					isPending: false,
-				} );
-				return;
-			}
-			this.setState( {
-				connectURL: result.connectUrl,
-				isPending: false,
 			} );
 		} catch ( error ) {
 			this.setState( {
@@ -279,14 +251,21 @@ export class PayPal extends Component {
 	}
 
 	render() {
-		const { installStep, isRequestingOptions, isOptionsUpdating } = this.props;
+		const {
+			installStep,
+			isRequestingOptions,
+			isOptionsUpdating,
+		} = this.props;
 		const { isPending } = this.state;
 
 		return (
 			<Stepper
 				isVertical
 				isPending={
-					! installStep.isComplete || isPending || isRequestingOptions || isOptionsUpdating
+					! installStep.isComplete ||
+					isPending ||
+					isRequestingOptions ||
+					isOptionsUpdating
 				}
 				currentStep={ installStep.isComplete ? 'connect' : 'install' }
 				steps={ [ installStep, this.getConnectStep() ] }
@@ -301,11 +280,9 @@ PayPal.defaultProps = {
 
 export default compose(
 	withSelect( ( select ) => {
-		const {
-			getOption,
-			isOptionsUpdating,
-			hasFinishedResolution,
-		} = select( OPTIONS_STORE_NAME );
+		const { getOption, isOptionsUpdating, hasFinishedResolution } = select(
+			OPTIONS_STORE_NAME
+		);
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const paypalOptions = getOption( 'woocommerce-ppcp-settings' );
 		const isRequestingOptions = ! hasFinishedResolution( 'getOption', [

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import user from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 import apiFetch from '@wordpress/api-fetch';
@@ -209,87 +209,7 @@ describe( 'TaskList > Payments', () => {
 			expect( oauthButton.href ).toEqual( mockConnectUrl );
 		} );
 
-		it( 'validates "create account" form and persists PayPal options', async () => {
-			const mockConnectUrl = 'https://connect.woocommerce.test/paypal';
-			apiFetch.mockResolvedValue( {
-				connectUrl: mockConnectUrl,
-			} );
-
-			const mockUpdateOptions = jest
-				.fn()
-				.mockResolvedValue( { success: true } );
-			const mockCreateNotice = jest.fn();
-			const mockMarkConfigured = jest.fn();
-			const mockOptions = {
-				woocommerce_ppec_paypal_settings: {
-					test: 'yes',
-				},
-			};
-
-			render(
-				<PayPal
-					activePlugins={ [
-						'jetpack',
-						'woocommerce-gateway-paypal-payments',
-						'woocommerce-services',
-					] }
-					installStep={ mockInstallStep }
-					isJetpackConnected
-					wcsTosAccepted
-					options={ mockOptions }
-					createNotice={ mockCreateNotice }
-					markConfigured={ mockMarkConfigured }
-					updateOptions={ mockUpdateOptions }
-				/>
-			);
-
-			const createButton = screen.getByText( 'Create account', {
-				selector: 'button',
-			} );
-			const emailInput = screen.getByLabelText( 'Email address', {
-				selector: 'input',
-			} );
-
-			// Verify empty emails are invalid.
-			user.click( createButton );
-			expect(
-				await screen.findByText( 'Please enter a valid email address' )
-			).toBeDefined();
-			expect( mockUpdateOptions ).not.toHaveBeenCalled();
-
-			// Verify non-empty email validation.
-			await user.type( emailInput, 'not an email' );
-			user.click( createButton );
-			expect(
-				await screen.findByText( 'Please enter a valid email address' )
-			).toBeDefined();
-			expect( mockUpdateOptions ).not.toHaveBeenCalled();
-
-			// Submit a good email.
-			user.clear( emailInput );
-			await user.type( emailInput, 'owner@store.com' );
-			user.click( createButton );
-			expect(
-				screen.queryByText( 'Please enter a valid email address' )
-			).toBeNull();
-
-			// Trick to wait for the async code to call updateOption().
-			await waitFor( () =>
-				expect( mockUpdateOptions ).toHaveBeenCalledTimes( 1 )
-			);
-
-			// Verify the persisted options.
-			expect( mockUpdateOptions ).toHaveBeenCalledWith( {
-				woocommerce_ppec_paypal_settings: {
-					email: 'owner@store.com',
-					enabled: 'yes',
-					reroute_requests: 'yes',
-					test: 'yes', // Makes sure we're extending the retrieved settings.
-				},
-			} );
-		} );
-
-		it( 'shows API credential inputs when "create account" opted out and OAuth fetch fails', async () => {
+		it.skip( 'shows API credential inputs when "create account" opted out and OAuth fetch fails', async () => {
 			apiFetch.mockResolvedValue( false );
 
 			render(
@@ -357,7 +277,7 @@ describe( 'TaskList > Payments', () => {
 			expect( oauthButton.href ).toEqual( mockConnectUrl );
 		} );
 
-		it( 'shows API credential inputs when OAuth fetch fails', async () => {
+		it.skip( 'shows API credential inputs when OAuth fetch fails', async () => {
 			apiFetch.mockResolvedValue( false );
 
 			render(

@@ -591,13 +591,13 @@ class Plugins extends \WC_REST_Data_Controller {
 
 	/**
 	 * Configures the onboarding button on the admin page so that the final button users click use this URL.
+	 *
+	 * @param string $return_url The return url.
+	 * @return string Return URL.
 	 */
 	public function ppcp_ob_return_url( $return_url ) {
-		// if ( isset( $_GET['page'] ) && 'ppcpob' === $_GET['page'] ) {
 		// Adds a "ppcpob=1" to the querystring to differentiate this onboarding flow.
-		// $return_url = wc_admin_url( '&task=payments&method=paypal&ppcpob=1' );
-		$return_url = add_query_arg( 'obw', '1', $return_url );
-		// }
+		$return_url = add_query_arg( 'ppcpobw', '1', $return_url );
 
 		return $return_url;
 	}
@@ -612,7 +612,7 @@ class Plugins extends \WC_REST_Data_Controller {
 			return new \WP_Error( 'woocommerce_rest_helper_connect', __( 'There was an error connecting to PayPal.', 'woocommerce-admin' ), 500 );
 		}
 
-		$args        = array(
+		$args = array(
 			'displayMode' => 'minibrowser',
 		);
 		add_filter( 'woocommerce_paypal_payments_partner_config_override_return_url', array( $this, 'ppcp_ob_return_url' ) );
@@ -620,8 +620,11 @@ class Plugins extends \WC_REST_Data_Controller {
 		$connect_url = add_query_arg( $args, $signup_link );
 		remove_filter( 'woocommerce_paypal_payments_partner_config_override_return_url', array( $this, 'ppcp_ob_return_url' ) );
 
-		return( array(
-			'connectUrl' => $connect_url,
+		$js_params = \WooCommerce\PayPalCommerce\Onboarding\OnboardingHelper::get_js_params();
+
+		return( array_merge(
+			array( 'connectUrl' => $connect_url ),
+			$js_params
 		) );
 	}
 
