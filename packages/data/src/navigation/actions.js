@@ -23,3 +23,24 @@ export function addMenuItems( menuItems ) {
 		menuItems,
 	};
 }
+
+export function setFavorites( favorites ) {
+	return {
+		type: TYPES.SET_FAVORITES,
+		favorites,
+	};
+}
+
+export function addFavorite( favorite ) {
+	return {
+		type: TYPES.ADD_FAVORITE,
+		favorite,
+	};
+}
+
+export function removeFavorite( favorite ) {
+	return {
+		type: TYPES.REMOVE_FAVORITE,
+		favorite,
+	};
+}

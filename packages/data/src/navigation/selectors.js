@@ -12,3 +12,7 @@ export const getMenuItems = ( state ) => {
 export const getActiveItem = ( state ) => {
 	return state.activeItem || null;
 };
+
+export const getFavorites = ( state ) => {
+	return state.favorites || [];
+};
