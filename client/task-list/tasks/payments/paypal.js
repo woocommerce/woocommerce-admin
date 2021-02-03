@@ -200,7 +200,9 @@ class PayPal extends Component {
 		const optionValues = {
 			...options,
 			enabled: true,
-			...values,
+			sandbox_on: false,
+			merchant_email: values.merchant_email,
+			merchant_id: values.merchant_id,
 			...productionValues,
 		};
 
@@ -238,7 +240,10 @@ class PayPal extends Component {
 		].reduce( ( initialVals, key ) => {
 			return {
 				...initialVals,
-				[ key ]: options && options[ key ] ? options[ key ] : '',
+				[ key ]:
+					options && options[ key + '_production' ]
+						? options[ key + '_production' ]
+						: '',
 			};
 		}, {} );
 	}

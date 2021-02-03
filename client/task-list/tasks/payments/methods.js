@@ -138,7 +138,8 @@ export function getPaymentMethods( {
 			isConfigured:
 				activePlugins.includes( PAYPAL_PLUGIN ) &&
 				options[ 'woocommerce-ppcp-settings' ] &&
-				options[ 'woocommerce-ppcp-settings' ].merchant_email &&
+				options[ 'woocommerce-ppcp-settings' ]
+					.merchant_email_production &&
 				options[ 'woocommerce-ppcp-settings' ].merchant_id_production &&
 				options[ 'woocommerce-ppcp-settings' ].client_id_production &&
 				options[ 'woocommerce-ppcp-settings' ].client_secret_production,

@@ -9,7 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
-import PayPal from '../tasks/payments/paypal';
+import { PayPal, PAYPAL_PLUGIN } from '../tasks/payments/paypal';
 import { getPaymentMethods } from '../tasks/payments/methods';
 
 jest.mock( '@wordpress/api-fetch' );
@@ -209,47 +209,46 @@ describe( 'TaskList > Payments', () => {
 			expect( oauthButton.href ).toEqual( mockConnectUrl );
 		} );
 
-		it.skip( 'shows API credential inputs when "create account" opted out and OAuth fetch fails', async () => {
+		it( 'shows API credential inputs when "create account" opted out and OAuth fetch fails', async () => {
 			apiFetch.mockResolvedValue( false );
 
 			render(
 				<PayPal
 					activePlugins={ [
 						'jetpack',
-						'woocommerce-gateway-paypal-payments',
+						PAYPAL_PLUGIN,
 						'woocommerce-services',
 					] }
+					isRequestingOptions={ false }
+					options={ {} }
 					installStep={ mockInstallStep }
-					isJetpackConnected
-					wcsTosAccepted
 				/>
 			);
-
-			// The email input should disappear when "create account" is unchecked.
-			user.click(
-				screen.getByLabelText( 'Create a PayPal account for me', {
-					selector: 'input',
-				} )
-			);
-			expect(
-				screen.queryByLabelText( 'Email address', {
-					selector: 'input',
-				} )
-			).toBeNull();
 
 			// Since the oauth response failed, we should have the API credentials form.
 			expect(
 				await screen.findByText( 'Proceed', { selector: 'button' } )
 			).toBeDefined();
 			expect(
-				screen.getByLabelText( 'API Username', { selector: 'input' } )
+				screen.queryByLabelText( 'Email address', {
+					selector: 'input',
+				} )
 			).toBeDefined();
 			expect(
-				screen.getByLabelText( 'API Password', { selector: 'input' } )
+				screen.getByLabelText( 'Merchant Id', { selector: 'input' } )
+			).toBeDefined();
+			expect(
+				screen.getByLabelText( 'Client Id', { selector: 'input' } )
+			).toBeDefined();
+			expect(
+				screen.getByLabelText( 'Secret Key', { selector: 'input' } )
 			).toBeDefined();
 		} );
 
-		it.skip( 'shows OAuth connect button', async () => {
+		it( 'shows OAuth connect button', async () => {
+			global.ppcp_onboarding = {
+				reload: () => {},
+			};
 			const mockConnectUrl = 'https://connect.woocommerce.test/paypal';
 			apiFetch.mockResolvedValue( {
 				connectUrl: mockConnectUrl,
@@ -257,17 +256,12 @@ describe( 'TaskList > Payments', () => {
 
 			render(
 				<PayPal
-					activePlugins={ [ 'woocommerce-gateway-paypal-payments' ] }
+					activePlugins={ [ PAYPAL_PLUGIN ] }
 					installStep={ mockInstallStep }
+					isRequestingOptions={ false }
+					options={ {} }
 				/>
 			);
-
-			// Verify the "create account" option is absent.
-			expect(
-				screen.queryByLabelText( 'Create a PayPal account for me', {
-					selector: 'input',
-				} )
-			).toBeNull();
 
 			// Since the oauth response was mocked, we should have a "connect" button.
 			const oauthButton = await screen.findByText( 'Connect', {
@@ -275,6 +269,8 @@ describe( 'TaskList > Payments', () => {
 			} );
 			expect( oauthButton ).toBeDefined();
 			expect( oauthButton.href ).toEqual( mockConnectUrl );
+			expect( oauthButton.dataset.paypalButton ).toEqual( 'true' );
+			expect( oauthButton.dataset.paypalOnboardButton ).toEqual( 'true' );
 		} );
 
 		it.skip( 'shows API credential inputs when OAuth fetch fails', async () => {
