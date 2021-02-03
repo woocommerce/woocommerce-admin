@@ -416,24 +416,14 @@ class Plugins extends \WC_REST_Data_Controller {
 				continue;
 			}
 
-			/* translators: %s: plugin slug (example: woocommerce-services) */
-			$plugin_activation_fail_error = sprintf( __( 'The requested plugin `%s` could not be activated.', 'woocommerce-admin' ), $slug );
-
-			try {
-				$result = activate_plugin( $path );
-			} catch ( Exception $e ) {
-				$errors->add(
-					$plugin,
-					$plugin_activation_fail_error
-				);
-			}
-
+			$result = activate_plugin( $path );
 			if ( ! is_null( $result ) ) {
 				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
 
 				$errors->add(
 					$plugin,
-					$plugin_activation_fail_error
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					sprintf( __( 'The requested plugin `%s` could not be activated.', 'woocommerce-admin' ), $slug )
 				);
 				continue;
 			}
