@@ -38,7 +38,7 @@ if [ ! -f /tmp/.INSTALLED_WP_VERSION ]; then
 	install
 else
 	# Run the install script if the WordPress version has changed.
-	INSTALLED_WC_VERSION=`cat /tmp/.INSTALLED_WP_VERSION`
+	INSTALLED_WP_VERSION=`cat /tmp/.INSTALLED_WP_VERSION`
 	if [ "$WP_VERSION" != "$INSTALLED_WP_VERSION" ]; then
 		install
 	fi
