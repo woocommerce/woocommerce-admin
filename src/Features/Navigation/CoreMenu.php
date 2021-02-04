@@ -295,7 +295,7 @@ class CoreMenu {
 
 		foreach( $top_level_items as $item ) {
 			// Skip extensions.
-			if ( $item['menuId'] === 'plugins' ) {
+			if ( ! isset( $item['menuId'] ) || $item['menuId'] === 'plugins' ) {
 				continue;
 			}
 
