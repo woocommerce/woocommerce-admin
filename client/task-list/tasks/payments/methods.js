@@ -144,7 +144,9 @@ export function getPaymentMethods( {
 				paypalOnboardingStatus.production.onboarded,
 			isEnabled: enabledPaymentGateways.includes( 'ppcp-gateway' ),
 			optionName: 'woocommerce_ppcp-gateway_settings',
-			loading: loadingPaypalStatus,
+			loading: activePlugins.includes( PAYPAL_PLUGIN )
+				? loadingPaypalStatus
+				: false,
 		},
 		{
 			key: 'klarna_checkout',

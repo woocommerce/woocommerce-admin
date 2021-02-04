@@ -173,13 +173,19 @@ class PayPal extends Component {
 	}
 
 	async enablePaypalPlugin() {
-		const { createNotice, updateOptions, markConfigured } = this.props;
+		const {
+			createNotice,
+			updateOptions,
+			markConfigured,
+			options,
+		} = this.props;
 
 		const update = await updateOptions( {
 			'woocommerce_ppcp-gateway_settings': {
 				enabled: 'yes',
 			},
 			'woocommerce-ppcp-settings': {
+				...options,
 				enabled: true,
 			},
 		} );
