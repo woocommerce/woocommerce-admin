@@ -75,7 +75,8 @@
 		"storybook": "./bin/import-wp-css-storybook.sh && start-storybook  -c ./storybook -p 6007 --ci",
 		"build-storybook": "build-storybook  -c ./storybook",
 		"changelog": "node ./bin/changelog --changelogSrcType='ZENHUB_RELEASE'",
-		"bump-version": "npm run -s install-if-deps-outdated && php ./bin/update-version.php"
+		"bump-version": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
+		"docker-dev": "./docker/wc-admin-docker-dev/bin/docker-dev"
 	},
 	"changelog": {
 		"labelPrefix": "[Type]",
@@ -222,7 +223,8 @@
 		"webpack-cli": "3.3.11",
 		"webpack-fix-style-only-entries": "0.6.0",
 		"zenhub-api": "0.2.0",
-		"webpack-rtl-plugin": "2.0.0"
+		"webpack-rtl-plugin": "2.0.0",
+		"yargs": "^16.2.0"
 	},
 	"engines": {
 		"node": ">=8.0.0",
