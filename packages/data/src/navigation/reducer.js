@@ -37,8 +37,8 @@ const reducer = (
 			};
 			break;
 		case TYPES.ADD_FAVORITE:
-			const newFavorites = ! favorites.includes( favorite )
-				? { ...state.favorites, favorite }
+			const newFavorites = ! state.favorites.includes( favorite )
+				? [ ...state.favorites, favorite ]
 				: state.favorites;
 
 			state = {

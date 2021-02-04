@@ -7,6 +7,7 @@ import TYPES from '../action-types';
 const defaultState = {
 	activeItem: null,
 	menuItems: [],
+	favorites: [],
 };
 
 describe( 'navigation reducer', () => {
@@ -79,5 +80,47 @@ describe( 'navigation reducer', () => {
 		} );
 
 		expect( state.activeItem ).toBe( 'test-active-item' );
+	} );
+
+	it( 'should set the favorites', () => {
+		const favorites = [ 'favorite1', 'favorite2' ];
+		const state = reducer( defaultState, {
+			type: TYPES.SET_FAVORITES,
+			favorites,
+		} );
+
+		expect( state.favorites ).toEqual( favorites );
+	} );
+
+	it( 'should add a favorite', () => {
+		const state = reducer(
+			{
+				favorites: [ 'favorite1', 'favorite2' ],
+			},
+			{
+				type: TYPES.ADD_FAVORITE,
+				favorite: 'favorite3',
+			}
+		);
+
+		expect( state.favorites ).toEqual( [
+			'favorite1',
+			'favorite2',
+			'favorite3',
+		] );
+	} );
+
+	it( 'should remove a favorite', () => {
+		const state = reducer(
+			{
+				favorites: [ 'favorite1', 'favorite2' ],
+			},
+			{
+				type: TYPES.REMOVE_FAVORITE,
+				favorite: 'favorite2',
+			}
+		);
+
+		expect( state.favorites ).toEqual( [ 'favorite1' ] );
 	} );
 } );
