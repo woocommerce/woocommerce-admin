@@ -84,6 +84,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add wait script for mysql to be ready for phpunit tests in docker. #6185
 - Update: Homescreen layout, moving Inbox panel for better interaction. #6122
 - Dev: Remove old debug code for connecting to Calypso / Wordpress.com. #6097
+- Add: Task list payments - include Mollie as an option. #6257
 
 
 == Changelog ==
