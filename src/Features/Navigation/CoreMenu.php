@@ -294,6 +294,11 @@ class CoreMenu {
 		}
 
 		foreach( $top_level_items as $item ) {
+			// Skip extensions.
+			if ( $item['menuId'] === 'plugins' ) {
+				continue;
+			}
+
 			// Skip specific categories.
 			if (
 				in_array(
