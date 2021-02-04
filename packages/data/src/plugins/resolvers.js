@@ -8,6 +8,7 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { WC_ADMIN_NAMESPACE, JETPACK_NAMESPACE } from '../constants';
+import { PAYPAL_NAMESPACE } from './constants';
 import {
 	setIsRequesting,
 	updateActivePlugins,
@@ -15,6 +16,7 @@ import {
 	updateInstalledPlugins,
 	updateIsJetpackConnected,
 	updateJetpackConnectUrl,
+	setPaypalOnboardingStatus,
 } from './actions';
 
 export function* getActivePlugins() {
@@ -88,4 +90,22 @@ export function* getJetpackConnectUrl( query ) {
 	}
 
 	yield setIsRequesting( 'getJetpackConnectUrl', false );
+}
+
+export function* getPaypalOnboardingStatus() {
+	yield setIsRequesting( 'getPaypalOnboardingStatus', true );
+
+	try {
+		const url = PAYPAL_NAMESPACE + '/onboarding/get-status';
+		const results = yield apiFetch( {
+			path: url,
+			method: 'GET',
+		} );
+
+		yield setPaypalOnboardingStatus( results );
+	} catch ( error ) {
+		yield setError( 'getPaypalOnboardingStatus', error );
+	}
+
+	yield setIsRequesting( 'getPaypalOnboardingStatus', false );
 }

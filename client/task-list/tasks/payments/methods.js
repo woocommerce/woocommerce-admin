@@ -73,6 +73,8 @@ export function getPaymentMethods( {
 	onboardingStatus,
 	options,
 	profileItems,
+	paypalOnboardingStatus,
+	loadingPaypalStatus,
 } ) {
 	const {
 		stripeSupportedCountries = [],
@@ -137,15 +139,12 @@ export function getPaymentMethods( {
 			plugins: [ PAYPAL_PLUGIN ],
 			container: <PayPal />,
 			isConfigured:
-				activePlugins.includes( PAYPAL_PLUGIN ) &&
-				options[ 'woocommerce-ppcp-settings' ] &&
-				options[ 'woocommerce-ppcp-settings' ]
-					.merchant_email_production &&
-				options[ 'woocommerce-ppcp-settings' ].merchant_id_production &&
-				options[ 'woocommerce-ppcp-settings' ].client_id_production &&
-				options[ 'woocommerce-ppcp-settings' ].client_secret_production,
+				paypalOnboardingStatus &&
+				paypalOnboardingStatus.production &&
+				paypalOnboardingStatus.production.onboarded,
 			isEnabled: enabledPaymentGateways.includes( 'ppcp-gateway' ),
 			optionName: 'woocommerce_ppcp-gateway_settings',
+			loading: loadingPaypalStatus,
 		},
 		{
 			key: 'klarna_checkout',

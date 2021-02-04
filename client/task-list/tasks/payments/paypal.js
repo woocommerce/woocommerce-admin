@@ -77,7 +77,7 @@ class PayPal extends Component {
 		};
 
 		this.enablePaypalPlugin = this.enablePaypalPlugin.bind( this );
-		this.updateManualSettings = this.updateManualSettings.bind( this );
+		this.setCredentials = this.setCredentials.bind( this );
 		this.validate = this.validate.bind( this );
 	}
 
@@ -195,6 +195,35 @@ class PayPal extends Component {
 					'woocommerce-admin'
 				)
 			);
+		}
+	}
+
+	async setCredentials( values ) {
+		const { createNotice } = this.props;
+		try {
+			const result = await apiFetch( {
+				path: WC_PAYPAL_NAMESPACE + '/onboarding/set-credentials',
+				method: 'POST',
+				data: {
+					environment: 'production',
+					...values,
+				},
+			} );
+			if ( result && result.data ) {
+				createNotice(
+					'error',
+					__(
+						'There was a problem updating the credentials.',
+						'woocommerce-admin'
+					)
+				);
+			} else {
+				await this.enablePaypalPlugin();
+			}
+		} catch ( error ) {
+			if ( error && error.data && error.data.status === 404 ) {
+				await this.updateManualSettings( values );
+			}
 		}
 	}
 
@@ -344,7 +373,7 @@ class PayPal extends Component {
 		return (
 			<Form
 				initialValues={ this.getInitialConfigValues() }
-				onSubmitCallback={ this.updateManualSettings }
+				onSubmitCallback={ this.setCredentials }
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit } ) => {
