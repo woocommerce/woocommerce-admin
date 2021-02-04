@@ -43,7 +43,7 @@ function loadOnboardingScript( url, data, onLoad ) {
 	}
 }
 
-function PaypalConnectBtn( { connectUrl } ) {
+function PaypalConnectButton( { connectUrl } ) {
 	useEffect( () => {
 		// eslint-disable-next-line camelcase
 		if ( ppcp_onboarding ) {
@@ -280,7 +280,7 @@ class PayPal extends Component {
 		}
 		if ( ! values.merchant_id ) {
 			errors.merchant_id = __(
-				'Please enter your Merchand Id',
+				'Please enter your Merchant Id',
 				'woocommerce-admin'
 			);
 		}
@@ -392,7 +392,7 @@ class PayPal extends Component {
 		if ( ! autoConnectFailed && connectURL ) {
 			return (
 				<>
-					<PaypalConnectBtn connectUrl={ connectURL } />
+					<PaypalConnectButton connectUrl={ connectURL } />
 					<p>
 						{ __(
 							'You will be redirected to the PayPal website to create the connection.',
