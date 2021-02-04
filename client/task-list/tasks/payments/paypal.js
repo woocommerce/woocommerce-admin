@@ -179,6 +179,9 @@ class PayPal extends Component {
 			'woocommerce_ppcp-gateway_settings': {
 				enabled: 'yes',
 			},
+			'woocommerce-ppcp-settings': {
+				enabled: true,
+			},
 		} );
 
 		if ( update.success ) {
