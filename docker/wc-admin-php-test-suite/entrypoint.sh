@@ -14,6 +14,9 @@ function install {
 	rm -f /tmp/.INSTALLED_WC_VERSION
 	rm -f /tmp/.INSTALLED_WP_VERSION
 
+	# Delete any previous installations.
+	rm -rf /tmp/*
+
 	# Run the install script.
 	bin/install-wp-tests.sh $DB_NAME $DB_USER $DB_PASS $DB_HOST $WP_VERSION true
 
