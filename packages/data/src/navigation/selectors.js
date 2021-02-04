@@ -16,3 +16,7 @@ export const getActiveItem = ( state ) => {
 export const getFavorites = ( state ) => {
 	return state.favorites || [];
 };
+
+export const isNavigationRequesting = ( state, selector ) => {
+	return state.requesting[ selector ] || false;
+};

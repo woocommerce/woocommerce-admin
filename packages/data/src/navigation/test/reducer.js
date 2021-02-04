@@ -6,8 +6,10 @@ import TYPES from '../action-types';
 
 const defaultState = {
 	activeItem: null,
+	error: null,
 	menuItems: [],
 	favorites: [],
+	requesting: {},
 };
 
 describe( 'navigation reducer', () => {
@@ -85,7 +87,7 @@ describe( 'navigation reducer', () => {
 	it( 'should set the favorites', () => {
 		const favorites = [ 'favorite1', 'favorite2' ];
 		const state = reducer( defaultState, {
-			type: TYPES.SET_FAVORITES,
+			type: TYPES.GET_FAVORITES_SUCCESS,
 			favorites,
 		} );
 
@@ -98,7 +100,7 @@ describe( 'navigation reducer', () => {
 				favorites: [ 'favorite1', 'favorite2' ],
 			},
 			{
-				type: TYPES.ADD_FAVORITE,
+				type: TYPES.ADD_FAVORITE_SUCCESS,
 				favorite: 'favorite3',
 			}
 		);
@@ -116,7 +118,7 @@ describe( 'navigation reducer', () => {
 				favorites: [ 'favorite1', 'favorite2' ],
 			},
 			{
-				type: TYPES.REMOVE_FAVORITE,
+				type: TYPES.REMOVE_FAVORITE_SUCCESS,
 				favorite: 'favorite2',
 			}
 		);
