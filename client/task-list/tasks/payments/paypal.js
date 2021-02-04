@@ -102,7 +102,7 @@ class PayPal extends Component {
 				createNotice(
 					'error',
 					__(
-						'There was a problem saving your payment settings through the onboarding, please fill them in manually.',
+						'There was a problem saving your payment settings through the onboarding, please fill the fields in manually.',
 						'woocommerce-admin'
 					)
 				);
@@ -124,7 +124,7 @@ class PayPal extends Component {
 	}
 
 	async fetchOAuthConnectURLAndOnboardingSetup() {
-		const { activePlugins } = this.props;
+		const { activePlugins, createNotice } = this.props;
 
 		if ( ! activePlugins.includes( PAYPAL_PLUGIN ) ) {
 			return;
@@ -156,6 +156,15 @@ class PayPal extends Component {
 				} );
 			} );
 		} catch ( error ) {
+			if ( error && error.data && error.data.status === 500 ) {
+				createNotice(
+					'error',
+					__(
+						'There was a problem with the Paypal onboarding setup, please fill the fields in manually.',
+						'woocommerce-admin'
+					)
+				);
+			}
 			this.setState( {
 				autoConnectFailed: true,
 				isPending: false,

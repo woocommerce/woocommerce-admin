@@ -77,6 +77,7 @@ export function getPaymentMethods( {
 	const {
 		stripeSupportedCountries = [],
 		wcPayIsConnected = false,
+		enabledPaymentGateways = [],
 	} = onboardingStatus;
 
 	const hasCbdIndustry = profileItems.industry.some( ( { slug } ) => {
@@ -143,11 +144,7 @@ export function getPaymentMethods( {
 				options[ 'woocommerce-ppcp-settings' ].merchant_id_production &&
 				options[ 'woocommerce-ppcp-settings' ].client_id_production &&
 				options[ 'woocommerce-ppcp-settings' ].client_secret_production,
-			isEnabled:
-				activePlugins.includes( PAYPAL_PLUGIN ) &&
-				options[ 'woocommerce_ppcp-gateway_settings' ] &&
-				options[ 'woocommerce_ppcp-gateway_settings' ].enabled ===
-					'yes',
+			isEnabled: enabledPaymentGateways.includes( 'ppcp-gateway' ),
 			optionName: 'woocommerce_ppcp-gateway_settings',
 		},
 		{

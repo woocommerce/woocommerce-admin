@@ -74,6 +74,8 @@ class OnboardingTasks {
 		wp_enqueue_media();
 	}
 
+
+
 	/**
 	 * Get task item data for settings filter.
 	 *
@@ -102,6 +104,7 @@ class OnboardingTasks {
 		$settings['automatedTaxSupportedCountries'] = self::get_automated_tax_supported_countries();
 		$settings['hasHomepage']                    = self::check_task_completion( 'homepage' ) || 'classic' === get_option( 'classic-editor-replace' );
 		$settings['hasPaymentGateway']              = ! empty( $enabled_gateways );
+		$settings['enabledPaymentGateways']         = array_keys( $enabled_gateways );
 		$settings['hasPhysicalProducts']            = count(
 			wc_get_products(
 				array(
