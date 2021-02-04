@@ -59,7 +59,59 @@ describe( 'TaskList > Payments', () => {
 			} );
 		} );
 
-		it( 'includes Mollie Payment for the right countries.', () => {} );
+		describe( 'Mollie', () => {
+			it( 'Detects the plugin is enabled based on the options passed', () => {
+				const mollieParams = {
+					...params,
+					options: {
+						woocommerce_mollie_payments_settings: {
+							enabled: 'yes',
+						},
+					},
+				};
+
+				const mollieMethod = getPaymentMethods( mollieParams ).find(
+					( method ) => method.key === 'mollie'
+				);
+
+				expect( mollieMethod.isEnabled ).toBe( true );
+			} );
+
+			it( 'is enabled for supported countries', () => {
+				[
+					'FR',
+					'DE',
+					'GB',
+					'AT',
+					'CH',
+					'ES',
+					'IT',
+					'PL',
+					'FI',
+					'NL',
+					'BE',
+				].forEach( ( countryCode ) => {
+					const methods = getPaymentMethods( {
+						...params,
+						countryCode,
+					} );
+
+					expect(
+						methods.filter( ( method ) => method.key === 'mollie' )
+							.length
+					).toBe( 1 );
+				} );
+			} );
+		} );
+
+		it( 'is marked as `isConfigured` if the plugin is active', () => {
+			expect(
+				getPaymentMethods( {
+					...params,
+					activePlugins: [ 'mollie-payments-for-woocommerce' ],
+				} ).find( ( method ) => method.key === 'mollie' ).isConfigured
+			).toBe( true );
+		} );
 	} );
 
 	describe( 'PayPal', () => {
