@@ -40,8 +40,7 @@ class Favorite {
 	/**
 	 * Init.
 	 */
-	public function init() {
-	}
+	public function init() {}
 
 	/**
 	 * Set given favorites string to the user meta data.
