@@ -207,7 +207,7 @@ const Container = ( { menuItems } ) => {
 								{ !! secondaryItems && (
 									<NavigationMenu
 										className="components-navigation__menu-secondary"
-										key={ category.id }
+										key={ `secondary/${ category.id }` }
 										title={
 											! isRoot ? category.title : null
 										}
