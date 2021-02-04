@@ -133,9 +133,9 @@ class Payments extends Component {
 							plugins: currentMethod.plugins,
 						} );
 					} }
-					onError={ ( errors, response ) => {
-						createNoticesFromResponse( response );
-					} }
+					onError={ ( errors, response ) =>
+						createNoticesFromResponse( response )
+					}
 					autoInstall
 					pluginSlugs={ currentMethod.plugins }
 				/>
