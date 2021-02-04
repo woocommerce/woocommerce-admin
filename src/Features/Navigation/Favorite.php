@@ -27,7 +27,6 @@ class Favorite {
 	 */
 	const META_NAME = 'navigation_favorites';
 
-
 	/**
 	 * Get class instance.
 	 */
@@ -54,7 +53,6 @@ class Favorite {
 		Loader::update_user_data_field( $current_user_id, self::META_NAME, wp_json_encode( (array) $favorites ) );
 	}
 
-
 	/**
 	 * Add plugin to favorites
 	 *
@@ -76,7 +74,6 @@ class Favorite {
 		$all_favorites[] = $plugin;
 
 		self::set_meta_value( $current_user_id, $all_favorites );
-
 	}
 
 	/**
