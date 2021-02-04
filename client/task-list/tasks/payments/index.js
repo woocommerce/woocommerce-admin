@@ -392,6 +392,7 @@ export default compose(
 		const countryCode = getCountryCode(
 			generalSettings.woocommerce_default_country
 		);
+		const paypalOnboardingStatus = getPaypalOnboardingStatus();
 
 		const methods = getPaymentMethods( {
 			activePlugins,
@@ -402,10 +403,10 @@ export default compose(
 			onboardingStatus,
 			options,
 			profileItems,
-			paypalOnboardingStatus: getPaypalOnboardingStatus(),
-			loadingPaypalStatus: ! hasFinishedResolution(
-				'getPaypalOnboardingStatus'
-			),
+			paypalOnboardingStatus,
+			loadingPaypalStatus:
+				! hasFinishedResolution( 'getPaypalOnboardingStatus' ) &&
+				! paypalOnboardingStatus,
 		} );
 
 		return {
