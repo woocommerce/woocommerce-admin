@@ -172,23 +172,26 @@ class PayPal extends Component {
 		}
 	}
 
-	async enablePaypalPlugin() {
+	async enablePaypalPlugin( skipPpcpSettingsUpdate ) {
 		const {
 			createNotice,
 			updateOptions,
 			markConfigured,
 			options,
 		} = this.props;
-
-		const update = await updateOptions( {
+		const updatedOptions = {
 			'woocommerce_ppcp-gateway_settings': {
 				enabled: 'yes',
 			},
-			'woocommerce-ppcp-settings': {
+		};
+		if ( ! skipPpcpSettingsUpdate ) {
+			updatedOptions[ 'woocommerce-ppcp-settings' ] = {
 				...options,
 				enabled: true,
-			},
-		} );
+			};
+		}
+
+		const update = await updateOptions( updatedOptions );
 
 		if ( update.success ) {
 			createNotice(
@@ -227,7 +230,7 @@ class PayPal extends Component {
 					)
 				);
 			} else {
-				await this.enablePaypalPlugin();
+				await this.enablePaypalPlugin( true );
 			}
 		} catch ( error ) {
 			if ( error && error.data && error.data.status === 404 ) {
