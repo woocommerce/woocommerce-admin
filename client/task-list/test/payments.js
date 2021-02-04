@@ -21,7 +21,7 @@ describe( 'TaskList > Payments', () => {
 			countryCode: 'SE',
 			onboardingStatus: {},
 			options: [],
-			profileItems: {},
+			profileItems: { industry: [] },
 		};
 
 		it( 'includes Klarna Checkout for SE, NO, and FI', () => {
