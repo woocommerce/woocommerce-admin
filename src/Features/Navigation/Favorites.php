@@ -34,8 +34,8 @@ class Favorites {
 	/**
 	 * Set given favorites string to the user meta data.
 	 *
-	 * @param string $user_id Current user id.
-	 * @param array  $favorites Array of favorite values to set.
+	 * @param string|number $user_id User id.
+	 * @param array         $favorites Array of favorite values to set.
 	 */
 	private static function set_meta_value( $user_id, $favorites ) {
 		Loader::update_user_data_field( $user_id, self::META_NAME, wp_json_encode( (array) $favorites ) );
@@ -44,8 +44,8 @@ class Favorites {
 	/**
 	 * Add item to favorites
 	 *
-	 * @param string $item_id Identifier of item to add.
-	 * @param string $user_id Identifier of user to add to.
+	 * @param string        $item_id Identifier of item to add.
+	 * @param string|number $user_id Identifier of user to add to.
 	 */
 	public static function add_item( $item_id, $user_id = null ) {
 		$user = $user_id ? $user_id : get_current_user_id();
@@ -68,8 +68,8 @@ class Favorites {
 	/**
 	 * Remove item from favorites
 	 *
-	 * @param string $item_id Identifier of item to remove.
-	 * @param string $user_id Identifier of user to remove from.
+	 * @param string        $item_id Identifier of item to remove.
+	 * @param string|number $user_id Identifier of user to remove from.
 	 */
 	public static function remove_item( $item_id, $user_id = null ) {
 		$user = $user_id ? $user_id : get_current_user_id();
@@ -92,7 +92,7 @@ class Favorites {
 	/**
 	 * Get all registered favorites.
 	 *
-	 * @param string $user_id Identifier of user to query.
+	 * @param string|number $user_id Identifier of user to query.
 	 */
 	public static function get_all( $user_id = null ) {
 		$user = $user_id ? $user_id : get_current_user_id();
