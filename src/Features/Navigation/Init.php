@@ -39,7 +39,6 @@ class Init {
 			Menu::instance()->init();
 			CoreMenu::instance()->init();
 			Screen::instance()->init();
-			Favorite::instance()->init();
 		}
 	}
 
