@@ -79,9 +79,11 @@ export function getPaymentMethods( {
 		wcPayIsConnected = false,
 	} = onboardingStatus;
 
-	const hasCbdIndustry = profileItems.industry.some( ( { slug } ) => {
-		return slug === 'cbd-other-hemp-derived-products';
-	} );
+	const hasCbdIndustry = ( profileItems.industry || [] ).some(
+		( { slug } ) => {
+			return slug === 'cbd-other-hemp-derived-products';
+		}
+	);
 
 	// Whether publishable and secret keys are filled for given mode.
 	const isStripeConfigured =
