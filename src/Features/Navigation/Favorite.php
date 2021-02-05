@@ -13,12 +13,6 @@ use Automattic\WooCommerce\Admin\Loader;
  * Contains logic for the WooCommerce Navigation menu.
  */
 class Favorite {
-	/**
-	 * Class instance.
-	 *
-	 * @var Menu instance
-	 */
-	protected static $instance = null;
 
 	/**
 	 * Array index of menu capability.
@@ -57,7 +51,7 @@ class Favorite {
 	 *
 	 * @param string $plugin Identifier of plugin to add.
 	 */
-	public static function add_plugin( $plugin ) {
+	public static function add_item( $plugin ) {
 		$current_user_id = get_current_user_id();
 
 		if ( ! $current_user_id || ! $plugin ) {
@@ -80,7 +74,7 @@ class Favorite {
 	 *
 	 * @param string $plugin Identifier of plugin to remove.
 	 */
-	public static function remove_plugin( $plugin ) {
+	public static function remove_item( $plugin ) {
 		$current_user_id = get_current_user_id();
 
 		if ( ! $current_user_id || ! $plugin ) {
@@ -93,9 +87,9 @@ class Favorite {
 			return;
 		}
 
-		$removed = array_diff( $all_favorites, [ $plugin ] );
+		$remaining = array_diff( $all_favorites, [ $plugin ] );
 
-		self::set_meta_value( $current_user_id, array_values( $removed ) );
+		self::set_meta_value( $current_user_id, array_values( $remaining ) );
 	}
 
 	/**
