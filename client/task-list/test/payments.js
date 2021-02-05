@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { render, screen } from '@testing-library/react';
-import user from '@testing-library/user-event';
 import '@testing-library/jest-dom/extend-expect';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -123,92 +122,6 @@ describe( 'TaskList > Payments', () => {
 			label: 'Install',
 		};
 
-		it.skip( 'shows "create account" when Jetpack and WCS are connected', async () => {
-			const mockConnectUrl = 'https://connect.woocommerce.test/paypal';
-			apiFetch.mockResolvedValue( {
-				connectUrl: mockConnectUrl,
-			} );
-
-			render(
-				<PayPal
-					activePlugins={ [
-						'jetpack',
-						'woocommerce-gateway-paypal-payments',
-						'woocommerce-services',
-					] }
-					installStep={ mockInstallStep }
-					isJetpackConnected
-					wcsTosAccepted
-				/>
-			);
-
-			// By default, the "create account" is checked.
-			expect(
-				screen.getByLabelText( 'Create a PayPal account for me', {
-					selector: 'input',
-				} )
-			).toBeChecked();
-			expect(
-				screen.getByLabelText( 'Email address', { selector: 'input' } )
-			).toBeDefined();
-			expect(
-				screen.getByText( 'Create account', { selector: 'button' } )
-			).toBeDefined();
-
-			// The email input should disappear when "create account" is unchecked.
-			user.click(
-				screen.getByLabelText( 'Create a PayPal account for me', {
-					selector: 'input',
-				} )
-			);
-			expect(
-				screen.queryByLabelText( 'Email address', {
-					selector: 'input',
-				} )
-			).toBeNull();
-
-			// Since the oauth response was mocked, we should have a "connect" button.
-			const oauthButton = await screen.findByText( 'Connect', {
-				selector: 'a',
-			} );
-			expect( oauthButton ).toBeDefined();
-			expect( oauthButton.href ).toEqual( mockConnectUrl );
-		} );
-
-		it.skip( 'requires WCS to have TOS accepted to show "create account"', async () => {
-			const mockConnectUrl = 'https://connect.woocommerce.test/paypal';
-			apiFetch.mockResolvedValue( {
-				connectUrl: mockConnectUrl,
-			} );
-
-			render(
-				<PayPal
-					activePlugins={ [
-						'jetpack',
-						'woocommerce-gateway-paypal-payments',
-						'woocommerce-services',
-					] }
-					installStep={ mockInstallStep }
-					isJetpackConnected
-					wcsTosAccepted={ false }
-				/>
-			);
-
-			// Verify "create account" isn't shown.
-			expect(
-				screen.queryByLabelText( 'Create a PayPal account for me', {
-					selector: 'input',
-				} )
-			).toBeNull();
-
-			// Since the oauth response was mocked, we should have a "connect" button.
-			const oauthButton = await screen.findByText( 'Connect', {
-				selector: 'a',
-			} );
-			expect( oauthButton ).toBeDefined();
-			expect( oauthButton.href ).toEqual( mockConnectUrl );
-		} );
-
 		it( 'shows API credential inputs when "create account" opted out and OAuth fetch fails', async () => {
 			apiFetch.mockResolvedValue( false );
 
@@ -271,35 +184,6 @@ describe( 'TaskList > Payments', () => {
 			expect( oauthButton.href ).toEqual( mockConnectUrl );
 			expect( oauthButton.dataset.paypalButton ).toEqual( 'true' );
 			expect( oauthButton.dataset.paypalOnboardButton ).toEqual( 'true' );
-		} );
-
-		it.skip( 'shows API credential inputs when OAuth fetch fails', async () => {
-			apiFetch.mockResolvedValue( false );
-
-			render(
-				<PayPal
-					activePlugins={ [ 'woocommerce-gateway-paypal-payments' ] }
-					installStep={ mockInstallStep }
-				/>
-			);
-
-			// Verify the "create account" option is absent.
-			expect(
-				screen.queryByLabelText( 'Create a PayPal account for me', {
-					selector: 'input',
-				} )
-			).toBeNull();
-
-			// Since the oauth response failed, we should have the API credentials form.
-			expect(
-				await screen.findByText( 'Proceed', { selector: 'button' } )
-			).toBeDefined();
-			expect(
-				screen.getByLabelText( 'API Username', { selector: 'input' } )
-			).toBeDefined();
-			expect(
-				screen.getByLabelText( 'API Password', { selector: 'input' } )
-			).toBeDefined();
 		} );
 	} );
 } );
