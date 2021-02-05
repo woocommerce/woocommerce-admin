@@ -174,19 +174,6 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		return rest_ensure_response( array_map( 'stripslashes', $altered_favorites ) );
 	}
 
-	/**
-	 * Check whether a given request has permission to read favorites.
-	 *
-	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return WP_Error|boolean
-	 */
-	public function get_items_permissions_check( $request ) {
-		if ( ! wc_rest_check_manager_permissions( 'system_status', 'read' ) ) {
-			return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot list resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-
-		return true;
-	}
 
 	/**
 	 * Check whether a given request has permission to create favorites.
@@ -195,7 +182,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_Error|boolean
 	 */
 	public function add_item_permissions_check( $request ) {
-		if ( ! wc_rest_check_manager_permissions( 'system_status', 'edit' ) ) {
+		if ( ! wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot edit resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
@@ -209,7 +196,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_Error|boolean
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if ( ! wc_rest_check_manager_permissions( 'system_status', 'edit' ) ) {
+		if ( ! wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot delete resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
