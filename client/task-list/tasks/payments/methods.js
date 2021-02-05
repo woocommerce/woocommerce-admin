@@ -239,7 +239,7 @@ export function getPaymentMethods( {
 			isEnabled:
 				options.woocommerce_mollie_payments_settings &&
 				options.woocommerce_mollie_payments_settings.enabled === 'yes',
-			optionName: 'woocommerce_klarna_payments_settings',
+			optionName: 'woocommerce_mollie_payments_settings',
 		},
 		{
 			key: 'square',
