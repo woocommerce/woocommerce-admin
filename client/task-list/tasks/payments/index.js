@@ -3,8 +3,6 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { cloneElement, Component } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import {
 	Button,
 	Card,
@@ -13,8 +11,9 @@ import {
 	CardFooter,
 	FormToggle,
 } from '@wordpress/components';
-import { withDispatch, withSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { H, Plugins } from '@woocommerce/components';
+import { cloneElement, useEffect, useState } from '@wordpress/element';
 import {
 	getHistory,
 	getNewPath,
@@ -36,51 +35,74 @@ import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
 
-class Payments extends Component {
-	constructor( props ) {
-		super( ...arguments );
-		const { methods } = props;
+function Payments( { query } ) {
+	const { createNotice } = useDispatch( 'core/notices' );
+	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const {
+		// invalidateResolution,
+		invalidateResolutionForStoreSelector,
+	} = useDispatch( ONBOARDING_STORE_NAME );
 
-		const enabledMethods = {};
-		methods.forEach(
-			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
+	const {
+		countryCode,
+		profileItems,
+		activePlugins,
+		jetpackConnected,
+		onboardingStatus,
+		...options
+	} = useSelect( getPaymentStoreData );
+
+	const [ methods, setMethods ] = useState( [] );
+	const [ enabledMethods, setEnabledMethods ] = useState( {} );
+	const [ recommendedMethod, setRecommendedMethod ] = useState();
+	const [ busyMethod, setBusyMethod ] = useState( null );
+
+	useEffect( () => {
+		const paymentMethods = getPaymentMethods( {
+			activePlugins,
+			countryCode,
+			createNotice,
+			installAndActivatePlugins,
+			isJetpackConnected: jetpackConnected,
+			onboardingStatus,
+			options,
+			profileItems,
+		} );
+		setMethods( paymentMethods );
+		setRecommendedMethod(
+			paymentMethods.find( ( m ) => m.key === 'wcpay' && m.visible )
+				? 'wcpay'
+				: 'stripe'
 		);
-		this.state = {
-			busyMethod: null,
-			enabledMethods,
-			recommendedMethod: this.getRecommendedMethod(),
-		};
+		setEnabledMethods(
+			paymentMethods.reduce( ( data, method ) => {
+				return {
+					...data,
+					[ method.key ]: method.isEnabled,
+				};
+			}, {} )
+		);
+	}, [
+		countryCode,
+		profileItems,
+		activePlugins,
+		jetpackConnected,
+		onboardingStatus,
+	] );
 
-		this.markConfigured = this.markConfigured.bind( this );
-	}
+	useEffect( () => {
+		// invalidateResolution( 'getProfileItems', [] );
+		// invalidateResolution( 'getTasksStatus', [] );
+	}, [] );
 
-	componentDidUpdate() {
-		const { recommendedMethod } = this.state;
+	const clearTaskStatusCache = () =>
+		invalidateResolutionForStoreSelector( 'getTasksStatus' );
 
-		const method = this.getRecommendedMethod();
-		if ( recommendedMethod !== method ) {
-			this.setState( {
-				recommendedMethod: method,
-			} );
-		}
-	}
-
-	getRecommendedMethod() {
-		const { methods } = this.props;
-		return methods.find( ( m ) => m.key === 'wcpay' && m.visible )
-			? 'wcpay'
-			: 'stripe';
-	}
-
-	markConfigured( method, queryParams = {} ) {
-		const { clearTaskStatusCache } = this.props;
-		const { enabledMethods } = this.state;
-
-		this.setState( {
-			enabledMethods: {
-				...enabledMethods,
-				[ method ]: true,
-			},
+	const markConfigured = ( method, queryParams = {} ) => {
+		setEnabledMethods( {
+			...enabledMethods,
+			[ method ]: true,
 		} );
 
 		clearTaskStatusCache();
@@ -92,26 +114,23 @@ class Payments extends Component {
 		getHistory().push(
 			getNewPath( { ...queryParams, task: 'payments' }, '/', {} )
 		);
-	}
+	};
 
-	getCurrentMethod() {
-		const { methods, query } = this.props;
-
+	const getCurrentMethod = () => {
 		if ( ! query.method ) {
 			return;
 		}
 
 		return methods.find( ( method ) => method.key === query.method );
-	}
+	};
 
-	getInstallStep() {
-		const currentMethod = this.getCurrentMethod();
+	const getInstallStep = () => {
+		const currentMethod = getCurrentMethod();
 
 		if ( ! currentMethod.plugins || ! currentMethod.plugins.length ) {
 			return;
 		}
 
-		const { activePlugins } = this.props;
 		const pluginsToInstall = currentMethod.plugins.filter(
 			( method ) => ! activePlugins.includes( method )
 		);
@@ -142,20 +161,15 @@ class Payments extends Component {
 			),
 			isComplete: ! pluginsToInstall.length,
 		};
-	}
+	};
 
-	async toggleMethod( key ) {
-		const {
-			clearTaskStatusCache,
-			methods,
-			options,
-			updateOptions,
-		} = this.props;
-		const { enabledMethods } = this.state;
+	const toggleMethod = async ( key ) => {
 		const method = methods.find( ( option ) => option.key === key );
 
-		enabledMethods[ key ] = ! enabledMethods[ key ];
-		this.setState( { enabledMethods } );
+		setEnabledMethods( {
+			...enabledMethods,
+			[ key ]: ! enabledMethods[ key ],
+		} );
 
 		recordEvent( 'tasklist_payment_toggle', {
 			enabled: ! method.isEnabled,
@@ -170,10 +184,9 @@ class Payments extends Component {
 		} );
 
 		clearTaskStatusCache();
-	}
+	};
 
-	async handleClick( method ) {
-		const { methods } = this.props;
+	const handleClick = async ( method ) => {
 		const { key, onClick } = method;
 
 		recordEvent( 'tasklist_payment_setup', {
@@ -182,13 +195,13 @@ class Payments extends Component {
 		} );
 
 		if ( onClick ) {
-			this.setState( { busyMethod: key } );
+			setBusyMethod( key );
 			await new Promise( onClick )
 				.then( () => {
-					this.setState( { busyMethod: null } );
+					setBusyMethod( null );
 				} )
 				.catch( () => {
-					this.setState( { busyMethod: null } );
+					setBusyMethod( null );
 				} );
 
 			return;
@@ -197,207 +210,157 @@ class Payments extends Component {
 		updateQueryString( {
 			method: key,
 		} );
-	}
+	};
 
-	render() {
-		const currentMethod = this.getCurrentMethod();
-		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
-		const { methods, query } = this.props;
+	const currentMethod = getCurrentMethod();
 
-		if ( currentMethod ) {
-			return (
-				<Card className="woocommerce-task-payment-method woocommerce-task-card">
-					<CardBody>
-						{ cloneElement( currentMethod.container, {
-							query,
-							installStep: this.getInstallStep(),
-							markConfigured: this.markConfigured,
-							hasCbdIndustry: currentMethod.hasCbdIndustry,
-						} ) }
-					</CardBody>
-				</Card>
-			);
-		}
-
+	if ( currentMethod ) {
 		return (
-			<div className="woocommerce-task-payments">
-				{ methods.map( ( method ) => {
-					const {
-						before,
-						container,
-						content,
-						isConfigured,
-						key,
-						title,
-						visible,
-					} = method;
-
-					if ( ! visible ) {
-						return null;
-					}
-
-					const classes = classnames(
-						'woocommerce-task-payment',
-						'woocommerce-task-card',
-						! isConfigured &&
-							'woocommerce-task-payment-not-configured',
-						'woocommerce-task-payment-' + key
-					);
-
-					const isRecommended =
-						key === recommendedMethod && ! isConfigured;
-					const showRecommendedRibbon =
-						isRecommended && key !== 'wcpay';
-					const showRecommendedPill =
-						isRecommended && key === 'wcpay';
-
-					return (
-						<Card key={ key } className={ classes }>
-							<CardMedia isBorderless>
-								{ showRecommendedRibbon && (
-									<div className="woocommerce-task-payment__recommended-ribbon">
-										<span>
-											{ __(
-												'Recommended',
-												'woocommerce-admin'
-											) }
-										</span>
-									</div>
-								) }
-								{ before }
-							</CardMedia>
-							<CardBody>
-								<H className="woocommerce-task-payment__title">
-									{ title }
-									{ showRecommendedPill && (
-										<span className="woocommerce-task-payment__recommended-pill">
-											{ __(
-												'Recommended',
-												'woocommerce-admin'
-											) }
-										</span>
-									) }
-								</H>
-								<div className="woocommerce-task-payment__content">
-									{ content }
-								</div>
-							</CardBody>
-							<CardFooter isBorderless>
-								{ container && ! isConfigured ? (
-									<div>
-										<Button
-											isPrimary={
-												key === recommendedMethod
-											}
-											isSecondary={
-												key !== recommendedMethod
-											}
-											isBusy={ busyMethod === key }
-											disabled={ busyMethod }
-											onClick={ () =>
-												this.handleClick( method )
-											}
-										>
-											{ __(
-												'Set up',
-												'woocommerce-admin'
-											) }
-										</Button>
-									</div>
-								) : (
-									<FormToggle
-										checked={ enabledMethods[ key ] }
-										onChange={ () =>
-											this.toggleMethod( key )
-										}
-										onClick={ ( e ) => e.stopPropagation() }
-									/>
-								) }
-							</CardFooter>
-						</Card>
-					);
-				} ) }
-			</div>
+			<Card className="woocommerce-task-payment-method woocommerce-task-card">
+				<CardBody>
+					{ cloneElement( currentMethod.container, {
+						query,
+						installStep: getInstallStep(),
+						markConfigured,
+						hasCbdIndustry: currentMethod.hasCbdIndustry,
+					} ) }
+				</CardBody>
+			</Card>
 		);
 	}
+
+	return (
+		<div className="woocommerce-task-payments">
+			{ methods.map( ( method ) => {
+				const {
+					before,
+					container,
+					content,
+					isConfigured,
+					key,
+					title,
+					visible,
+				} = method;
+
+				if ( ! visible ) {
+					return null;
+				}
+
+				const classes = classnames(
+					'woocommerce-task-payment',
+					'woocommerce-task-card',
+					! isConfigured && 'woocommerce-task-payment-not-configured',
+					'woocommerce-task-payment-' + key
+				);
+
+				const isRecommended =
+					key === recommendedMethod && ! isConfigured;
+				const showRecommendedRibbon = isRecommended && key !== 'wcpay';
+				const showRecommendedPill = isRecommended && key === 'wcpay';
+
+				return (
+					<Card key={ key } className={ classes }>
+						<CardMedia isBorderless>
+							{ showRecommendedRibbon && (
+								<div className="woocommerce-task-payment__recommended-ribbon">
+									<span>
+										{ __(
+											'Recommended',
+											'woocommerce-admin'
+										) }
+									</span>
+								</div>
+							) }
+							{ before }
+						</CardMedia>
+						<CardBody>
+							<H className="woocommerce-task-payment__title">
+								{ title }
+								{ showRecommendedPill && (
+									<span className="woocommerce-task-payment__recommended-pill">
+										{ __(
+											'Recommended',
+											'woocommerce-admin'
+										) }
+									</span>
+								) }
+							</H>
+							<div className="woocommerce-task-payment__content">
+								{ content }
+							</div>
+						</CardBody>
+						<CardFooter isBorderless>
+							{ container && ! isConfigured ? (
+								<div>
+									<Button
+										isPrimary={ key === recommendedMethod }
+										isSecondary={
+											key !== recommendedMethod
+										}
+										isBusy={ busyMethod === key }
+										disabled={ busyMethod }
+										onClick={ () => handleClick( method ) }
+									>
+										{ __( 'Set up', 'woocommerce-admin' ) }
+									</Button>
+								</div>
+							) : (
+								<FormToggle
+									checked={ enabledMethods[ key ] }
+									onChange={ () => toggleMethod( key ) }
+									onClick={ ( e ) => e.stopPropagation() }
+								/>
+							) }
+						</CardFooter>
+					</Card>
+				);
+			} ) }
+		</div>
+	);
 }
 
-export default compose(
-	withDispatch( ( dispatch ) => {
-		const { createNotice } = dispatch( 'core/notices' );
-		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
-		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
-		const {
-			invalidateResolution,
-			invalidateResolutionForStoreSelector,
-		} = dispatch( ONBOARDING_STORE_NAME );
-		invalidateResolution( 'getProfileItems', [] );
-		invalidateResolution( 'getTasksStatus', [] );
-		return {
-			clearTaskStatusCache: () =>
-				invalidateResolutionForStoreSelector( 'getTasksStatus' ),
-			createNotice,
-			installAndActivatePlugins,
-			updateOptions,
-		};
-	} ),
-	withSelect( ( select, props ) => {
-		const { createNotice, installAndActivatePlugins } = props;
-		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
-		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins, isJetpackConnected } = select(
-			PLUGINS_STORE_NAME
-		);
-		const { getSettings } = select( SETTINGS_STORE_NAME );
-		const { general: generalSettings = {} } = getSettings( 'general' );
-		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
+function getPaymentStoreData( select ) {
+	const { getProfileItems } = select( ONBOARDING_STORE_NAME );
+	const { getOption } = select( OPTIONS_STORE_NAME );
+	const { getActivePlugins, isJetpackConnected } = select(
+		PLUGINS_STORE_NAME
+	);
+	const { getSettings } = select( SETTINGS_STORE_NAME );
+	const { general: generalSettings = {} } = getSettings( 'general' );
+	const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
 
-		const activePlugins = getActivePlugins();
-		const onboardingStatus = getTasksStatus();
-		const profileItems = getProfileItems();
+	const optionNames = [
+		'woocommerce_woocommerce_payments_settings',
+		'woocommerce_stripe_settings',
+		'woocommerce_ppec_paypal_settings',
+		'woocommerce_payfast_settings',
+		'woocommerce_square_credit_card_settings',
+		'woocommerce_klarna_payments_settings',
+		'woocommerce_kco_settings',
+		'wc_square_refresh_tokens',
+		'woocommerce_cod_settings',
+		'woocommerce_bacs_settings',
+		'woocommerce_bacs_accounts',
+		'woocommerce_eway_settings',
+		'woocommerce_razorpay_settings',
+		'woocommerce_mollie_payments_settings',
+	];
 
-		const optionNames = [
-			'woocommerce_woocommerce_payments_settings',
-			'woocommerce_stripe_settings',
-			'woocommerce_ppec_paypal_settings',
-			'woocommerce_payfast_settings',
-			'woocommerce_square_credit_card_settings',
-			'woocommerce_klarna_payments_settings',
-			'woocommerce_kco_settings',
-			'wc_square_refresh_tokens',
-			'woocommerce_cod_settings',
-			'woocommerce_bacs_settings',
-			'woocommerce_bacs_accounts',
-			'woocommerce_eway_settings',
-			'woocommerce_razorpay_settings',
-			'woocommerce_mollie_payments_settings',
-		];
+	const allOptions = optionNames.reduce( ( result, name ) => {
+		result[ name ] = getOption( name );
+		return result;
+	}, {} );
 
-		const options = optionNames.reduce( ( result, name ) => {
-			result[ name ] = getOption( name );
-			return result;
-		}, {} );
-		const countryCode = getCountryCode(
+	return {
+		activePlugins: getActivePlugins(),
+		onboardingStatus: getTasksStatus(),
+		profileItems: getProfileItems(),
+		countryCode: getCountryCode(
 			generalSettings.woocommerce_default_country
-		);
+		),
+		jetpackConnected: isJetpackConnected(),
+		...allOptions,
+	};
+}
 
-		const methods = getPaymentMethods( {
-			activePlugins,
-			countryCode,
-			createNotice,
-			installAndActivatePlugins,
-			isJetpackConnected: isJetpackConnected(),
-			onboardingStatus,
-			options,
-			profileItems,
-		} );
-
-		return {
-			countryCode,
-			profileItems,
-			activePlugins,
-			options,
-			methods,
-		};
-	} )
-)( Payments );
+export default Payments;
