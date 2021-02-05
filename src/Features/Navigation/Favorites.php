@@ -46,23 +46,26 @@ class Favorites {
 	 *
 	 * @param string        $item_id Identifier of item to add.
 	 * @param string|number $user_id Identifier of user to add to.
+	 * @throws \Exception   Throws exception if item already exists.
 	 */
 	public static function add_item( $item_id, $user_id = null ) {
 		$user = $user_id ? $user_id : get_current_user_id();
 
 		if ( ! $user || ! $item_id ) {
-			return;
+			throw new \Exception( 'invalid_input' );
 		}
 
 		$all_favorites = self::get_all( $user );
 
 		if ( in_array( $item_id, $all_favorites, true ) ) {
-			return;
+			throw new \Exception( 'already_exists' );
 		}
 
 		$all_favorites[] = $item_id;
 
 		self::set_meta_value( $user, $all_favorites );
+
+		return $all_favorites;
 	}
 
 	/**
@@ -70,23 +73,26 @@ class Favorites {
 	 *
 	 * @param string        $item_id Identifier of item to remove.
 	 * @param string|number $user_id Identifier of user to remove from.
+	 * @throws \Exception   Throws exception if item does not exist.
 	 */
 	public static function remove_item( $item_id, $user_id = null ) {
 		$user = $user_id ? $user_id : get_current_user_id();
 
 		if ( ! $user || ! $item_id ) {
-			return;
+			throw new \Exception( 'invalid_input' );
 		}
 
 		$all_favorites = self::get_all( $user );
 
 		if ( ! in_array( $item_id, $all_favorites, true ) ) {
-			return;
+			throw new \Exception( 'does_not_exist' );
 		}
 
 		$remaining = array_diff( $all_favorites, [ $item_id ] );
 
 		self::set_meta_value( $user, array_values( $remaining ) );
+
+		return $remaining;
 	}
 
 	/**

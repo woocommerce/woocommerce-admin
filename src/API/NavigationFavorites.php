@@ -9,14 +9,14 @@ namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Features\Navigation\Favorite;
+use Automattic\WooCommerce\Admin\Features\Navigation\Favorites;
 
 /**
  * REST API Favorites controller class.
  *
  * @extends WC_REST_CRUD_Controller
  */
-class Favorites extends \WC_REST_Data_Controller {
+class NavigationFavorites extends \WC_REST_Data_Controller {
 
 	/**
 	 * Endpoint namespace.
@@ -44,17 +44,46 @@ class Favorites extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
-					'args'                => $this->get_collection_params(),
+					'args'                => array(
+						'user_id' => array(
+							'required'          => false,
+							'validate_callback' => function( $param, $request, $key ) {
+								return is_numeric( $param );
+							},
+						),
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'add_item' ),
 					'permission_callback' => array( $this, 'add_item_permissions_check' ),
+					'args'                => array(
+						'item_id' => array(
+							'required' => true,
+						),
+						'user_id' => array(
+							'required'          => false,
+							'validate_callback' => function( $param, $request, $key ) {
+								return is_numeric( $param );
+							},
+						),
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'delete_item' ),
 					'permission_callback' => array( $this, 'delete_item_permissions_check' ),
+					'args'                => array(
+						'item_id' => array(
+							'required' => true,
+						),
+						'user_id' => array(
+							'required'          => false,
+							'validate_callback' => function( $param, $request, $key ) {
+								return is_numeric( $param );
+							},
+						),
+					),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -69,7 +98,8 @@ class Favorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$all_favorites = Favorite::get_all();
+		$user_id       = $request->get_param( 'user_id' );
+		$all_favorites = Favorites::get_all( $user_id );
 
 		return rest_ensure_response( array_map( 'stripslashes', $all_favorites ) );
 	}
@@ -81,10 +111,11 @@ class Favorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function add_item( $request ) {
-		$fav_id = $request->get_param( 'id' );
+		$fav_id  = $request->get_param( 'item_id' );
+		$user_id = $request->get_param( 'user_id' );
 
 		try {
-			$altered_favorites = Favorite::add_plugin( $fav_id );
+			$altered_favorites = Favorites::add_item( $fav_id, $user_id );
 		} catch ( \Exception $e ) {
 			$error_msg = $e->getMessage();
 
@@ -115,10 +146,11 @@ class Favorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		$fav_id = $request->get_param( 'id' );
+		$fav_id  = $request->get_param( 'item_id' );
+		$user_id = $request->get_param( 'user_id' );
 
 		try {
-			$altered_favorites = Favorite::remove_plugin( $fav_id );
+			$altered_favorites = Favorites::remove_item( $fav_id, $user_id );
 		} catch ( \Exception $e ) {
 			$error_msg = $e->getMessage();
 
