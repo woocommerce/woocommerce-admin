@@ -85,6 +85,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Homescreen layout, moving Inbox panel for better interaction. #6122
 - Dev: Remove old debug code for connecting to Calypso / Wordpress.com. #6097
 - Add: Task list payments - include Mollie as an option. #6257
+- Tweak: Refactored extended task list. #6081
+- Fix: Fixed the Add First Product email note checks. #6260
+- Fix: Onboarding - Fixed "Business Details" error. #6271
 
 
 == Changelog ==
