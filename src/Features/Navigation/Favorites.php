@@ -71,7 +71,7 @@ class Favorites {
 
 		self::set_meta_value( $user, $all_favorites );
 
-		return $all_favorites;
+		return true;
 	}
 
 	/**
@@ -104,7 +104,7 @@ class Favorites {
 
 		self::set_meta_value( $user, $remaining );
 
-		return $remaining;
+		return true;
 	}
 
 	/**

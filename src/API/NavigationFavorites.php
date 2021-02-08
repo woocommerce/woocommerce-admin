@@ -129,13 +129,11 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 
 		$response = Favorites::add_item( $fav_id, $user_id );
 
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || ! $response ) {
 			return rest_ensure_response( $this->prepare_error( $response ) );
 		}
 
-		return rest_ensure_response(
-			array_map( 'stripslashes', $response )
-		);
+		return rest_ensure_response( Favorites::get_all() );
 
 	}
 
@@ -151,13 +149,11 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 
 		$response = Favorites::remove_item( $fav_id, $user_id );
 
-		if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) || ! $response ) {
 			return rest_ensure_response( $this->prepare_error( $response ) );
 		}
 
-		return rest_ensure_response(
-			array_map( 'stripslashes', $response )
-		);
+		return rest_ensure_response( Favorites::get_all() );
 	}
 
 
