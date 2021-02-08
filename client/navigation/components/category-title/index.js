@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -45,7 +46,17 @@ export const CategoryTitle = ( { category } ) => {
 					isTertiary
 					onClick={ toggleFavorite }
 					icon={ isFavorited ? 'star-filled' : 'star-empty' }
-					aria-label={ 'Add this extension to your favorites.' }
+					aria-label={
+						isFavorited
+							? __(
+									'Add this item to your favorites.',
+									'woocommerce-admin'
+							  )
+							: __(
+									'Remove this item from your favorites.',
+									'woocommerce-admin'
+							  )
+					}
 				/>
 			</span>
 		);
