@@ -142,105 +142,97 @@ const Container = ( { menuItems } ) => {
 							secondary: secondaryItems,
 							plugins: pluginItems,
 						} = categorizedItems[ category.id ] || {};
-						return (
-							<>
-								{ ( !! primaryItems || !! pluginItems ) && (
-									<NavigationMenu
-										key={ category.id }
-										title={ category.title }
-										menu={ category.id }
-										parentMenu={ category.parent }
-										backButtonLabel={
-											isRootBackVisible
-												? rootBackLabel
-												: category.backButtonLabel ||
-												  null
-										}
-										onBackButtonClick={
-											isRootBackVisible
-												? () => {
-														trackBackClick(
-															'woocommerce'
-														);
-														window.location = rootBackUrl;
-												  }
-												: () =>
-														trackBackClick(
-															category.id
-														)
-										}
-									>
-										{ !! primaryItems && (
-											<NavigationGroup>
-												{ primaryItems.map(
-													( item ) => (
-														<Item
-															key={ item.id }
-															item={ item }
-														/>
+						return [
+							( !! primaryItems || !! pluginItems ) && (
+								<NavigationMenu
+									key={ category.id }
+									title={ category.title }
+									menu={ category.id }
+									parentMenu={ category.parent }
+									backButtonLabel={
+										isRootBackVisible
+											? rootBackLabel
+											: category.backButtonLabel || null
+									}
+									onBackButtonClick={
+										isRootBackVisible
+											? () => {
+													trackBackClick(
+														'woocommerce'
+													);
+													window.location = rootBackUrl;
+											  }
+											: () =>
+													trackBackClick(
+														category.id
 													)
-												) }
-											</NavigationGroup>
-										) }
-										{ !! pluginItems && (
-											<NavigationGroup
-												title={
-													category.id ===
-													'woocommerce'
-														? __(
-																'Extensions',
-																'woocommerce-admin'
-														  )
-														: null
-												}
-											>
-												{ pluginItems.map( ( item ) => (
-													<Item
-														key={ item.id }
-														item={ item }
-													/>
-												) ) }
-											</NavigationGroup>
-										) }
-									</NavigationMenu>
-								) }
-								{ !! secondaryItems && (
-									<NavigationMenu
-										className="components-navigation__menu-secondary"
-										key={ `secondary/${ category.id }` }
-										title={
-											! isRoot ? category.title : null
-										}
-										menu={ category.id }
-										parentMenu={ category.parent }
-										backButtonLabel={
-											category.backButtonLabel || null
-										}
-										onBackButtonClick={
-											isRootBackVisible
-												? null
-												: () =>
-														trackBackClick(
-															category.id
-														)
-										}
-									>
-										<NavigationGroup
-											onBackButtonClick={ () =>
-												trackBackClick( category.id )
-											}
-										>
-											{ secondaryItems.map( ( item ) => (
+									}
+								>
+									{ !! primaryItems && (
+										<NavigationGroup>
+											{ primaryItems.map( ( item ) => (
 												<Item
 													key={ item.id }
 													item={ item }
 												/>
 											) ) }
 										</NavigationGroup>
-									</NavigationMenu>
-								) }
-							</>
-						);
+									) }
+									{ !! pluginItems && (
+										<NavigationGroup
+											title={
+												category.id === 'woocommerce'
+													? __(
+															'Extensions',
+															'woocommerce-admin'
+													  )
+													: null
+											}
+										>
+											{ pluginItems.map( ( item ) => (
+												<Item
+													key={ item.id }
+													item={ item }
+												/>
+											) ) }
+										</NavigationGroup>
+									) }
+								</NavigationMenu>
+							),
+							!! secondaryItems && (
+								<NavigationMenu
+									className="components-navigation__menu-secondary"
+									key={ `secondary/${ category.id }` }
+									title={ ! isRoot ? category.title : null }
+									menu={ category.id }
+									parentMenu={ category.parent }
+									backButtonLabel={
+										category.backButtonLabel || null
+									}
+									onBackButtonClick={
+										isRootBackVisible
+											? null
+											: () =>
+													trackBackClick(
+														category.id
+													)
+									}
+								>
+									<NavigationGroup
+										onBackButtonClick={ () =>
+											trackBackClick( category.id )
+										}
+									>
+										{ secondaryItems.map( ( item ) => (
+											<Item
+												key={ item.id }
+												item={ item }
+											/>
+										) ) }
+									</NavigationGroup>
+								</NavigationMenu>
+							),
+						];
 					} ) }
 				</Navigation>
 			</div>
