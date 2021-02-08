@@ -66,24 +66,23 @@ export function addFavoriteFailure( favorite, error ) {
 	};
 }
 
-export function addFavoriteSuccess( favorite, error ) {
+export function addFavoriteSuccess( favorite ) {
 	return {
 		type: TYPES.ADD_FAVORITE_SUCCESS,
 		favorite,
-		error,
 	};
 }
 
 export function removeFavoriteRequest( favorite ) {
 	return {
-		type: TYPES.ADD_FAVORITE_REQUEST,
+		type: TYPES.REMOVE_FAVORITE_REQUEST,
 		favorite,
 	};
 }
 
 export function removeFavoriteFailure( favorite, error ) {
 	return {
-		type: TYPES.ADD_FAVORITE_FAILURE,
+		type: TYPES.REMOVE_FAVORITE_FAILURE,
 		favorite,
 		error,
 	};
@@ -91,7 +90,7 @@ export function removeFavoriteFailure( favorite, error ) {
 
 export function removeFavoriteSuccess( favorite, error ) {
 	return {
-		type: TYPES.ADD_FAVORITE_SUCCESS,
+		type: TYPES.REMOVE_FAVORITE_SUCCESS,
 		favorite,
 		error,
 	};
@@ -99,6 +98,7 @@ export function removeFavoriteSuccess( favorite, error ) {
 
 export function* addFavorite( favorite ) {
 	yield addFavoriteRequest( favorite );
+	yield addFavoriteSuccess( favorite );
 
 	try {
 		const results = yield apiFetch( {
@@ -110,13 +110,13 @@ export function* addFavorite( favorite ) {
 		} );
 
 		if ( results ) {
-			addFavoriteSuccess( favorite );
+			yield addFavoriteSuccess( favorite );
 			return results;
 		}
 
 		throw new Error();
 	} catch ( error ) {
-		addFavoriteFailure( favorite, error );
+		yield addFavoriteFailure( favorite, error );
 		throw new Error();
 	}
 }
@@ -134,13 +134,13 @@ export function* removeFavorite( favorite ) {
 		} );
 
 		if ( results ) {
-			removeFavoriteSuccess( favorite );
+			yield removeFavoriteSuccess( favorite );
 			return results;
 		}
 
 		throw new Error();
 	} catch ( error ) {
-		removeFavoriteFailure( favorite, error );
+		yield removeFavoriteFailure( favorite, error );
 		throw new Error();
 	}
 }
