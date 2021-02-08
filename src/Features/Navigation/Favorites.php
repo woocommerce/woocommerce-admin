@@ -49,7 +49,7 @@ class Favorites {
 	 * @throws \Exception   Throws exception if item already exists.
 	 */
 	public static function add_item( $item_id, $user_id = null ) {
-		$user = $user_id ? $user_id : get_current_user_id();
+		$user = $user_id ?? get_current_user_id();
 
 		if ( ! $user || ! $item_id ) {
 			return new \WP_Error(
@@ -82,7 +82,7 @@ class Favorites {
 	 * @throws \Exception   Throws exception if item does not exist.
 	 */
 	public static function remove_item( $item_id, $user_id = null ) {
-		$user = $user_id ? $user_id : get_current_user_id();
+		$user = $user_id ?? get_current_user_id();
 
 		if ( ! $user || ! $item_id ) {
 			return new \WP_Error(
@@ -113,7 +113,7 @@ class Favorites {
 	 * @param string|number $user_id Identifier of user to query.
 	 */
 	public static function get_all( $user_id = null ) {
-		$user = $user_id ? $user_id : get_current_user_id();
+		$user = $user_id ?? get_current_user_id();
 
 		if ( ! $user ) {
 			return;
