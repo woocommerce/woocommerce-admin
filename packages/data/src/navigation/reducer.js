@@ -66,7 +66,7 @@ const reducer = (
 				error,
 				requesting: {
 					...state.requesting,
-					addTodo: false,
+					addFavorite: false,
 				},
 			};
 			break;
@@ -75,7 +75,7 @@ const reducer = (
 				...state,
 				requesting: {
 					...state.requesting,
-					addTodo: true,
+					addFavorite: true,
 				},
 			};
 			break;
@@ -89,7 +89,7 @@ const reducer = (
 				favorites: newFavorites,
 				requesting: {
 					...state.requesting,
-					addTodo: false,
+					addFavorite: false,
 				},
 			};
 			break;
