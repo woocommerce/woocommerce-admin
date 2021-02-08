@@ -37,7 +37,7 @@ export const CategoryTitle = ( { category } ) => {
 		} );
 	};
 
-	if ( category.menuId === 'plugins' ) {
+	if ( [ 'plugins', 'favorites' ].includes( category.menuId ) ) {
 		return (
 			<span className={ className }>
 				<span className={ `${ className }__text` }>{ title }</span>
