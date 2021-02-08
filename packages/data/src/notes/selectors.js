@@ -8,7 +8,10 @@ export const getNotes = createSelector(
 		const noteIds = state.noteQueries[ JSON.stringify( query ) ] || [];
 		return noteIds.map( ( id ) => state.notes[ id ] );
 	},
-	( state, query ) => [ state.noteQueries[ JSON.stringify( query ) ] ]
+	( state, query ) => [
+		state.noteQueries[ JSON.stringify( query ) ],
+		state.notes,
+	]
 );
 
 export const getNotesError = ( state, selector ) => {
