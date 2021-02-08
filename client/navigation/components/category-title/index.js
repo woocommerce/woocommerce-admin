@@ -8,6 +8,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
+import './style.scss';
 
 export const CategoryTitle = ( { category } ) => {
 	const { id, title } = category;
