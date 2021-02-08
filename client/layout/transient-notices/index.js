@@ -15,7 +15,13 @@ import './style.scss';
 
 class TransientNotices extends Component {
 	render() {
-		const { className, notices, onRemove, onRemove2 } = this.props;
+		const {
+			className,
+			notices,
+			notices2 = [],
+			onRemove,
+			onRemove2,
+		} = this.props;
 		const classes = classnames(
 			'woocommerce-transient-notices',
 			'components-notices__snackbar',
@@ -24,7 +30,7 @@ class TransientNotices extends Component {
 
 		return (
 			<SnackbarList
-				notices={ notices }
+				notices={ notices.concat( notices2 ) }
 				className={ classes }
 				onRemove={ onRemove }
 				onRemove2={ onRemove2 }
@@ -51,7 +57,7 @@ export default compose(
 		const notices = select( 'core/notices' ).getNotices();
 		const notices2 = select( 'core/notices2' ).getNotices();
 
-		return { notices: notices.concat( notices2 ) };
+		return { notices, notices2 };
 	} ),
 	withDispatch( ( dispatch ) => ( {
 		// NOTE: This uses core/notices2, if this file is copied back upstream
