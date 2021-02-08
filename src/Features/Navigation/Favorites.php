@@ -52,13 +52,21 @@ class Favorites {
 		$user = $user_id ? $user_id : get_current_user_id();
 
 		if ( ! $user || ! $item_id ) {
-			throw new \Exception( 'invalid_input' );
+			return new \WP_Error(
+				'woocommerce_favorites_invalid_request',
+				__( 'Sorry, invalid request', 'woocommerce-admin' ),
+				array( 'status' => 400 )
+			);
 		}
 
 		$all_favorites = self::get_all( $user );
 
 		if ( in_array( $item_id, $all_favorites, true ) ) {
-			throw new \Exception( 'already_exists' );
+			return new \WP_Error(
+				'woocommerce_favorites_already_exists',
+				__( 'Favorite already exists', 'woocommerce-admin' ),
+				array( 'status' => 409 )
+			);
 		}
 
 		$all_favorites[] = $item_id;
@@ -79,13 +87,21 @@ class Favorites {
 		$user = $user_id ? $user_id : get_current_user_id();
 
 		if ( ! $user || ! $item_id ) {
-			throw new \Exception( 'invalid_input' );
+			return new \WP_Error(
+				'woocommerce_favorites_invalid_request',
+				__( 'Sorry, invalid request', 'woocommerce-admin' ),
+				array( 'status' => 400 )
+			);
 		}
 
 		$all_favorites = self::get_all( $user );
 
 		if ( ! in_array( $item_id, $all_favorites, true ) ) {
-			throw new \Exception( 'does_not_exist' );
+			return new \WP_Error(
+				'woocommerce_favorites_does_not_exist',
+				__( 'Favorite item not found', 'woocommerce-admin' ),
+				array( 'status' => 404 )
+			);
 		}
 
 		$remaining = array_diff( $all_favorites, [ $item_id ] );

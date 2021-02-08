@@ -114,29 +114,12 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		$fav_id  = $request->get_param( 'item_id' );
 		$user_id = $request->get_param( 'user_id' );
 
-		try {
-			$altered_favorites = Favorites::add_item( $fav_id, $user_id );
-		} catch ( \Exception $e ) {
-			$error_msg = $e->getMessage();
+		$altered_favorites = Favorites::add_item( $fav_id, $user_id );
 
-			if ( 'invalid_input' === $error_msg ) {
-				return new \WP_Error(
-					'woocommerce_favorites_invalid_request',
-					__( 'Sorry, invalid request', 'woocommerce-admin' ),
-					array( 'status' => 400 )
-				);
-			}
+		return rest_ensure_response(
+			is_wp_error( $altered_favorites ) ? $altered_favorites : array_map( 'stripslashes', $altered_favorites )
+		);
 
-			if ( 'already_exists' === $error_msg ) {
-				return new \WP_Error(
-					'woocommerce_favorites_already_exists',
-					__( 'Favorite already exists', 'woocommerce-admin' ),
-					array( 'status' => 409 )
-				);
-			}
-		}
-
-		return rest_ensure_response( array_map( 'stripslashes', $altered_favorites ) );
 	}
 
 	/**
@@ -149,29 +132,11 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		$fav_id  = $request->get_param( 'item_id' );
 		$user_id = $request->get_param( 'user_id' );
 
-		try {
-			$altered_favorites = Favorites::remove_item( $fav_id, $user_id );
-		} catch ( \Exception $e ) {
-			$error_msg = $e->getMessage();
+		$altered_favorites = Favorites::remove_item( $fav_id, $user_id );
 
-			if ( 'invalid_input' === $error_msg ) {
-				return new \WP_Error(
-					'woocommerce_favorites_invalid_request',
-					__( 'Sorry, invalid request', 'woocommerce-admin' ),
-					array( 'status' => 400 )
-				);
-			}
-
-			if ( 'does_not_exist' === $error_msg ) {
-				return new \WP_Error(
-					'woocommerce_favorites_does_not_exist',
-					__( 'Favorite item not found', 'woocommerce-admin' ),
-					array( 'status' => 404 )
-				);
-			}
-		}
-
-		return rest_ensure_response( array_map( 'stripslashes', $altered_favorites ) );
+		return rest_ensure_response(
+			is_wp_error( $altered_favorites ) ? $altered_favorites : array_map( 'stripslashes', $altered_favorites )
+		);
 	}
 
 
