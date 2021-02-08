@@ -182,11 +182,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_Error|boolean
 	 */
 	public function add_item_permissions_check( $request ) {
-		if ( ! wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
-			return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot edit resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-
-		return true;
+		return current_user_can( 'edit_users' );
 	}
 
 	/**
@@ -196,11 +192,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_Error|boolean
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if ( ! wc_rest_check_manager_permissions( 'settings', 'edit' ) ) {
-			return new \WP_Error( 'woocommerce_rest_cannot_view', __( 'Sorry, you cannot delete resources.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-
-		return true;
+		return current_user_can( 'edit_users' );
 	}
 
 }
