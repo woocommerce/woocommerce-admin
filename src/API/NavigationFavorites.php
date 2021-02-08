@@ -139,11 +139,18 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$user_id       = $request->get_param( 'user_id' );
-		$all_favorites = Favorites::get_all( $user_id );
+		// Do not allow use of 'user_id` parameter for /me route.
+		$is_me_route = '/me' === substr( $request->get_route(), -3 );
+		$user_id     = $is_me_route ? null : $request->get_param( 'user_id' );
+
+		$response = Favorites::get_all( $user_id );
+
+		if ( is_wp_error( $response ) || ! $response ) {
+			return rest_ensure_response( $this->prepare_error( $response ) );
+		}
 
 		return rest_ensure_response(
-			array_map( 'stripslashes', $all_favorites )
+			array_map( 'stripslashes', $response )
 		);
 	}
 
@@ -154,8 +161,11 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function add_item( $request ) {
-		$fav_id  = $request->get_param( 'item_id' );
-		$user_id = $request->get_param( 'user_id' );
+		// Do not allow use of 'user_id` parameter for /me route.
+		$is_me_route = '/me' === substr( $request->get_route(), -3 );
+		$user_id     = $is_me_route ? null : $request->get_param( 'user_id' );
+
+		$fav_id = $request->get_param( 'item_id' );
 
 		$response = Favorites::add_item( $fav_id, $user_id );
 
@@ -174,8 +184,11 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		$fav_id  = $request->get_param( 'item_id' );
-		$user_id = $request->get_param( 'user_id' );
+		// Do not allow use of 'user_id` parameter for /me route.
+		$is_me_route = '/me' === substr( $request->get_route(), -3 );
+		$user_id     = $is_me_route ? null : $request->get_param( 'user_id' );
+
+		$fav_id = $request->get_param( 'item_id' );
 
 		$response = Favorites::remove_item( $fav_id, $user_id );
 

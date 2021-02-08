@@ -46,7 +46,7 @@ class Favorites {
 	 *
 	 * @param string        $item_id Identifier of item to add.
 	 * @param string|number $user_id Identifier of user to add to.
-	 * @throws \Exception   Throws exception if item already exists.
+	 * @return WP_Error|Boolean   Throws exception if item already exists.
 	 */
 	public static function add_item( $item_id, $user_id = null ) {
 		$user = $user_id ?? get_current_user_id();
@@ -79,7 +79,7 @@ class Favorites {
 	 *
 	 * @param string        $item_id Identifier of item to remove.
 	 * @param string|number $user_id Identifier of user to remove from.
-	 * @throws \Exception   Throws exception if item does not exist.
+	 * @return \WP_Error|Boolean   Throws exception if item does not exist.
 	 */
 	public static function remove_item( $item_id, $user_id = null ) {
 		$user = $user_id ?? get_current_user_id();
@@ -111,12 +111,16 @@ class Favorites {
 	 * Get all registered favorites.
 	 *
 	 * @param string|number $user_id Identifier of user to query.
+	 * @return WP_Error|Array
 	 */
 	public static function get_all( $user_id = null ) {
 		$user = $user_id ?? get_current_user_id();
 
 		if ( ! $user ) {
-			return;
+			return new \WP_Error(
+				'woocommerce_favorites_invalid_request',
+				__( 'Sorry, invalid request', 'woocommerce-admin' )
+			);
 		}
 
 		$response = Loader::get_user_data_field( $user, self::META_NAME );
