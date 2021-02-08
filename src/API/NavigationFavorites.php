@@ -57,7 +57,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => array(
 						'user_id' => array(
-							'required'          => false,
+							'required'          => true,
 							'validate_callback' => function( $param, $request, $key ) {
 								return is_numeric( $param );
 							},
@@ -73,7 +73,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 							'required' => true,
 						),
 						'user_id' => array(
-							'required'          => false,
+							'required'          => true,
 							'validate_callback' => function( $param, $request, $key ) {
 								return is_numeric( $param );
 							},
@@ -89,10 +89,40 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 							'required' => true,
 						),
 						'user_id' => array(
-							'required'          => false,
+							'required'          => true,
 							'validate_callback' => function( $param, $request, $key ) {
 								return is_numeric( $param );
 							},
+						),
+					),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/me',
+			array(
+				array(
+					'methods'  => \WP_REST_Server::READABLE,
+					'callback' => array( $this, 'get_items' ),
+				),
+				array(
+					'methods'  => \WP_REST_Server::CREATABLE,
+					'callback' => array( $this, 'add_item' ),
+					'args'     => array(
+						'item_id' => array(
+							'required' => true,
+						),
+					),
+				),
+				array(
+					'methods'  => \WP_REST_Server::DELETABLE,
+					'callback' => array( $this, 'delete_item' ),
+					'args'     => array(
+						'item_id' => array(
+							'required' => true,
 						),
 					),
 				),
