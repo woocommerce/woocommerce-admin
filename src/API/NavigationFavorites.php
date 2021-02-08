@@ -33,6 +33,17 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	protected $rest_base = 'navigation/favorites';
 
 	/**
+	 * Error code to status code mapping.
+	 *
+	 * @var array
+	 */
+	protected $error_to_status_map = array(
+		'woocommerce_favorites_invalid_request' => 400,
+		'woocommerce_favorites_already_exists'  => 409,
+		'woocommerce_favorites_does_not_exist'  => 404,
+	);
+
+	/**
 	 * Register the routes
 	 */
 	public function register_routes() {
@@ -101,7 +112,9 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		$user_id       = $request->get_param( 'user_id' );
 		$all_favorites = Favorites::get_all( $user_id );
 
-		return rest_ensure_response( array_map( 'stripslashes', $all_favorites ) );
+		return rest_ensure_response(
+			array_map( 'stripslashes', $all_favorites )
+		);
 	}
 
 	/**
@@ -114,10 +127,14 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		$fav_id  = $request->get_param( 'item_id' );
 		$user_id = $request->get_param( 'user_id' );
 
-		$altered_favorites = Favorites::add_item( $fav_id, $user_id );
+		$response = Favorites::add_item( $fav_id, $user_id );
+
+		if ( is_wp_error( $response ) ) {
+			return rest_ensure_response( $this->prepare_error( $response ) );
+		}
 
 		return rest_ensure_response(
-			is_wp_error( $altered_favorites ) ? $altered_favorites : array_map( 'stripslashes', $altered_favorites )
+			array_map( 'stripslashes', $response )
 		);
 
 	}
@@ -132,10 +149,14 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		$fav_id  = $request->get_param( 'item_id' );
 		$user_id = $request->get_param( 'user_id' );
 
-		$altered_favorites = Favorites::remove_item( $fav_id, $user_id );
+		$response = Favorites::remove_item( $fav_id, $user_id );
+
+		if ( is_wp_error( $response ) ) {
+			return rest_ensure_response( $this->prepare_error( $response ) );
+		}
 
 		return rest_ensure_response(
-			is_wp_error( $altered_favorites ) ? $altered_favorites : array_map( 'stripslashes', $altered_favorites )
+			array_map( 'stripslashes', $response )
 		);
 	}
 
@@ -158,6 +179,22 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		return current_user_can( 'edit_users' );
+	}
+
+	/**
+	 * Accept an instance of WP_Error and add the appropriate data for REST transit.
+	 *
+	 * @param  WP_Error $error Error to prepare.
+	 * @return WP_Error
+	 */
+	protected function prepare_error( $error ) {
+		$error->add_data(
+			array(
+				'status' => $this->error_to_status_map[ $error->get_error_code() ] ?? 500,
+			)
+		);
+
+		return $error;
 	}
 
 }

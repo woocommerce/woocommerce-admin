@@ -54,8 +54,7 @@ class Favorites {
 		if ( ! $user || ! $item_id ) {
 			return new \WP_Error(
 				'woocommerce_favorites_invalid_request',
-				__( 'Sorry, invalid request', 'woocommerce-admin' ),
-				array( 'status' => 400 )
+				__( 'Sorry, invalid request', 'woocommerce-admin' )
 			);
 		}
 
@@ -64,8 +63,7 @@ class Favorites {
 		if ( in_array( $item_id, $all_favorites, true ) ) {
 			return new \WP_Error(
 				'woocommerce_favorites_already_exists',
-				__( 'Favorite already exists', 'woocommerce-admin' ),
-				array( 'status' => 409 )
+				__( 'Favorite already exists', 'woocommerce-admin' )
 			);
 		}
 
@@ -89,8 +87,7 @@ class Favorites {
 		if ( ! $user || ! $item_id ) {
 			return new \WP_Error(
 				'woocommerce_favorites_invalid_request',
-				__( 'Sorry, invalid request', 'woocommerce-admin' ),
-				array( 'status' => 400 )
+				__( 'Sorry, invalid request', 'woocommerce-admin' )
 			);
 		}
 
@@ -99,14 +96,13 @@ class Favorites {
 		if ( ! in_array( $item_id, $all_favorites, true ) ) {
 			return new \WP_Error(
 				'woocommerce_favorites_does_not_exist',
-				__( 'Favorite item not found', 'woocommerce-admin' ),
-				array( 'status' => 404 )
+				__( 'Favorite item not found', 'woocommerce-admin' )
 			);
 		}
 
-		$remaining = array_diff( $all_favorites, [ $item_id ] );
+		$remaining = array_values( array_diff( $all_favorites, [ $item_id ] ) );
 
-		self::set_meta_value( $user, array_values( $remaining ) );
+		self::set_meta_value( $user, $remaining );
 
 		return $remaining;
 	}
