@@ -3,6 +3,7 @@
  */
 import { Button } from '@wordpress/components';
 import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
@@ -23,8 +24,17 @@ export const CategoryTitle = ( { category } ) => {
 		NAVIGATION_STORE_NAME
 	);
 
-	const isFavorite = favorites.includes( id );
+	const isFavorited = favorites.includes( id );
 	const className = 'woocommerce-navigation-category-title';
+
+	const toggleFavorite = () => {
+		const toggle = isFavorited ? removeFavorite : addFavorite;
+		toggle( id );
+		recordEvent( 'navigation_favorite', {
+			id,
+			action: isFavorited ? 'unfavorite' : 'favorite',
+		} );
+	};
 
 	if ( category.menuId === 'plugins' ) {
 		return (
@@ -33,10 +43,8 @@ export const CategoryTitle = ( { category } ) => {
 				<Button
 					className={ `${ className }__favorite-button` }
 					isTertiary
-					onClick={ () =>
-						isFavorite ? removeFavorite( id ) : addFavorite( id )
-					}
-					icon={ isFavorite ? 'star-filled' : 'star-empty' }
+					onClick={ toggleFavorite }
+					icon={ isFavorited ? 'star-filled' : 'star-empty' }
 					aria-label={ 'Add this extension to your favorites.' }
 				/>
 			</span>
