@@ -66,7 +66,7 @@ const Container = ( { menuItems } ) => {
 
 	useEffect( () => {
 		const initialMatchedItem = getMatchingItem( menuItems );
-		if ( initialMatchedItem ) {
+		if ( initialMatchedItem && activeItem !== initialMatchedItem ) {
 			setActiveItem( initialMatchedItem );
 			setActiveLevel( initialMatchedItem.parent );
 		}
