@@ -8,7 +8,8 @@
 	height: $header-height;
 
 	@include breakpoint( '<782px' ) {
-		position: relative;
+		position: absolute;
+		top: 60px;
 		background: $studio-white;
 		margin: 0;
 		padding: 0;
