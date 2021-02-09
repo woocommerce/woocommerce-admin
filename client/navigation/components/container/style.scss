@@ -36,13 +36,13 @@
 		&:not(:hover) {
 			a.components-button {
 				// ${ G2.lightGray.ui };
-				color: rgb(148, 148, 148);
+				color: #949494;
 			}
 		}
 		&.is-active {
 			a.components-button {
 				// ${ UI.textDark };
-				color: rgb(240, 240, 240);
+				color: #fff;
 			}
 		}
 		/*
