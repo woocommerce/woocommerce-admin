@@ -45,7 +45,7 @@ class WC_Tests_Marketing_Note extends WC_Unit_Test_Case {
 	 * Then it should not return null
 	 */
 	public function test_it_does_add_note_when_5_days_old() {
-		$five_days_ago = gmdate( 'Y-m-d', time() - 5 * 86400 );
+		$five_days_ago = time() - 5 * 86400;
 		update_option( 'woocommerce_admin_install_timestamp', $five_days_ago );
 
 		$note = $this->instance->get_note();
