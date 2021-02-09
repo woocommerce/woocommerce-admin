@@ -38,13 +38,7 @@ export function getUnreadNotes( select ) {
 		return null;
 	}
 
-	// @todo This method would be more performant if we ask only for 1 item per page with status "unactioned".
-	// This change should be applied after having pagination implemented.
-
-	// Disable eslint rule requiring `latestNotes` to be defined below because the next two statements
-	// depend on `getNotes` to have been called.
-	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
-	const latestNotes = getNotes( UNREAD_NOTES_QUERY );
+	getNotes( UNREAD_NOTES_QUERY );
 	const isError = Boolean(
 		getNotesError( 'getNotes', [ UNREAD_NOTES_QUERY ] )
 	);
@@ -54,6 +48,7 @@ export function getUnreadNotes( select ) {
 		return null;
 	}
 
+	const latestNotes = getNotes( UNREAD_NOTES_QUERY );
 	const unreadNotesCount = getUnreadNotesCount( latestNotes, lastRead );
 
 	return unreadNotesCount > 0;
