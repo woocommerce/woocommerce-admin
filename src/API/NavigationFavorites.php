@@ -106,11 +106,11 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 			array(
 				array(
 					'methods'  => \WP_REST_Server::READABLE,
-					'callback' => array( $this, 'get_items' ),
+					'callback' => array( $this, 'get_items_by_current_user' ),
 				),
 				array(
 					'methods'  => \WP_REST_Server::CREATABLE,
-					'callback' => array( $this, 'add_item' ),
+					'callback' => array( $this, 'add_item_by_current_user' ),
 					'args'     => array(
 						'item_id' => array(
 							'required' => true,
@@ -119,7 +119,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 				),
 				array(
 					'methods'  => \WP_REST_Server::DELETABLE,
-					'callback' => array( $this, 'delete_item' ),
+					'callback' => array( $this, 'delete_item_by_current_user' ),
 					'args'     => array(
 						'item_id' => array(
 							'required' => true,
@@ -139,9 +139,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		// Do not allow use of 'user_id` parameter for /me route.
-		$is_me_route = '/me' === substr( $request->get_route(), -3 );
-		$user_id     = $is_me_route ? null : $request->get_param( 'user_id' );
+		$user_id = $request->get_param( 'user_id' );
 
 		$response = Favorites::get_all( $user_id );
 
@@ -155,17 +153,36 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	}
 
 	/**
+	 * Get all favorites of current user.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 * @return WP_REST_Response
+	 */
+	public function get_items_by_current_user( $request ) {
+		$current_user = get_current_user_id();
+
+		if ( ! $current_user ) {
+			return new \WP_Error(
+				'woocommerce_favorites_invalid_user',
+				__( 'You must be authenticated to use this endpoint', 'woocommerce-admin' ),
+				array( 'status' => 401 )
+			);
+		}
+
+		$request->set_param( 'user_id', $current_user );
+
+		return $this->get_items( $request );
+	}
+
+	/**
 	 * Add a favorite.
 	 *
 	 * @param WP_REST_Request $request Request data.
 	 * @return WP_REST_Response
 	 */
 	public function add_item( $request ) {
-		// Do not allow use of 'user_id` parameter for /me route.
-		$is_me_route = '/me' === substr( $request->get_route(), -3 );
-		$user_id     = $is_me_route ? null : $request->get_param( 'user_id' );
-
-		$fav_id = $request->get_param( 'item_id' );
+		$user_id = $request->get_param( 'user_id' );
+		$fav_id  = $request->get_param( 'item_id' );
 
 		$response = Favorites::add_item( $fav_id, $user_id );
 
@@ -173,8 +190,28 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 			return rest_ensure_response( $this->prepare_error( $response ) );
 		}
 
-		return rest_ensure_response( Favorites::get_all() );
+		return rest_ensure_response( Favorites::get_all( $user_id ) );
+	}
 
+	/**
+	 * Add a favorite for current user.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 * @return WP_REST_Response
+	 */
+	public function add_item_by_current_user( $request ) {
+		$current_user = get_current_user_id();
+
+		if ( ! $current_user ) {
+			return new \WP_Error(
+				'woocommerce_favorites_invalid_user',
+				__( 'You must be authenticated to use this endpoint', 'woocommerce-admin' ),
+				array( 'status' => 401 )
+			);
+		}
+
+		$request->set_param( 'user_id', get_current_user_id() );
+		return $this->add_item( $request );
 	}
 
 	/**
@@ -184,11 +221,8 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		// Do not allow use of 'user_id` parameter for /me route.
-		$is_me_route = '/me' === substr( $request->get_route(), -3 );
-		$user_id     = $is_me_route ? null : $request->get_param( 'user_id' );
-
-		$fav_id = $request->get_param( 'item_id' );
+		$user_id = $request->get_param( 'user_id' );
+		$fav_id  = $request->get_param( 'item_id' );
 
 		$response = Favorites::remove_item( $fav_id, $user_id );
 
@@ -196,7 +230,29 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 			return rest_ensure_response( $this->prepare_error( $response ) );
 		}
 
-		return rest_ensure_response( Favorites::get_all() );
+		return rest_ensure_response( Favorites::get_all( $user_id ) );
+	}
+
+	/**
+	 * Delete a favorite for current user.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 * @return WP_REST_Response
+	 */
+	public function delete_item_by_current_user( $request ) {
+		$current_user = get_current_user_id();
+
+		if ( ! $current_user ) {
+			return new \WP_Error(
+				'woocommerce_favorites_invalid_user',
+				__( 'You must be authenticated to use this endpoint', 'woocommerce-admin' ),
+				array( 'status' => 401 )
+			);
+		}
+
+		$request->set_param( 'user_id', $current_user );
+
+		return $this->delete_item( $request );
 	}
 
 
@@ -227,6 +283,10 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 * @return WP_Error
 	 */
 	protected function prepare_error( $error ) {
+		if ( ! is_wp_error( $error ) ) {
+			return $error;
+		}
+
 		$error->add_data(
 			array(
 				'status' => $this->error_to_status_map[ $error->get_error_code() ] ?? 500,
