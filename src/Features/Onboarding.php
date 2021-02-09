@@ -724,7 +724,8 @@ class Onboarding {
 		$options[] = 'woocommerce_task_list_dismissed_tasks';
 		$options[] = 'woocommerce_allow_tracking';
 		$options[] = 'woocommerce_stripe_settings';
-		$options[] = 'woocommerce_ppec_paypal_settings';
+		$options[] = 'woocommerce-ppcp-settings';
+		$options[] = 'woocommerce_ppcp-gateway_settings';
 		$options[] = 'wc_square_refresh_tokens';
 		$options[] = 'woocommerce_square_credit_card_settings';
 		$options[] = 'woocommerce_payfast_settings';
@@ -736,6 +737,7 @@ class Onboarding {
 		$options[] = 'woocommerce_woocommerce_payments_settings';
 		$options[] = 'woocommerce_eway_settings';
 		$options[] = 'woocommerce_razorpay_settings';
+		$options[] = 'woocommerce_mollie_payments_settings';
 
 		return $options;
 	}
@@ -771,7 +773,7 @@ class Onboarding {
 				'jetpack'                             => 'jetpack/jetpack.php',
 				'woocommerce-services'                => 'woocommerce-services/woocommerce-services.php',
 				'woocommerce-gateway-stripe'          => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
-				'woocommerce-gateway-paypal-express-checkout' => 'woocommerce-gateway-paypal-express-checkout/woocommerce-gateway-paypal-express-checkout.php',
+				'woocommerce-paypal-payments'         => 'woocommerce-paypal-payments/woocommerce-paypal-payments.php',
 				'klarna-checkout-for-woocommerce'     => 'klarna-checkout-for-woocommerce/klarna-checkout-for-woocommerce.php',
 				'klarna-payments-for-woocommerce'     => 'klarna-payments-for-woocommerce/klarna-payments-for-woocommerce.php',
 				'woocommerce-square'                  => 'woocommerce-square/woocommerce-square.php',
@@ -780,6 +782,7 @@ class Onboarding {
 				'woocommerce-payments'                => 'woocommerce-payments/woocommerce-payments.php',
 				'woocommerce-gateway-eway'            => 'woocommerce-gateway-eway/woocommerce-gateway-eway.php',
 				'woo-razorpay'                        => 'woo-razorpay/woo-razorpay.php',
+				'mollie-payments-for-woocommerce'     => 'mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php',
 			)
 		);
 		return array_merge( $plugins, $onboarding_plugins );
