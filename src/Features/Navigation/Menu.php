@@ -57,6 +57,15 @@ class Menu {
 	protected static $menu_items = array();
 
 	/**
+	 * Store categories with menu item IDs.
+	 *
+	 * @var array
+	 */
+	protected static $categories = array(
+		'woocommerce' => array(),
+	);
+
+	/**
 	 * Registered callbacks or URLs with migration boolean as key value pairs.
 	 *
 	 * @var array
@@ -172,7 +181,9 @@ class Menu {
 			);
 		}
 
-		self::$menu_items[ $menu_item['id'] ] = $menu_item;
+		self::$menu_items[ $menu_item['id'] ]       = $menu_item;
+		self::$categories[ $menu_item['id'] ]       = array();
+		self::$categories[ $menu_item['parent'] ][] = $menu_item['id'];
 
 		if ( isset( $args['url'] ) ) {
 			self::$callbacks[ $args['url'] ] = $menu_item['migrate'];
@@ -230,7 +241,8 @@ class Menu {
 
 		$menu_item['menuId'] = self::get_item_menu_id( $menu_item );
 
-		self::$menu_items[ $menu_item['id'] ] = $menu_item;
+		self::$menu_items[ $menu_item['id'] ]       = $menu_item;
+		self::$categories[ $menu_item['parent'] ][] = $menu_item['id'];
 
 		if ( isset( $args['url'] ) ) {
 			self::$callbacks[ $args['url'] ] = $menu_item['migrate'];
@@ -490,14 +502,28 @@ class Menu {
 	public function migrate_core_child_items( $menu ) {
 		global $submenu;
 
-		if ( ! isset( $submenu['woocommerce'] ) ) {
+		if ( ! isset( $submenu['woocommerce'] ) && ! isset( $submenu['edit.php?post_type=product'] ) ) {
 			return;
 		}
 
-		foreach ( $submenu['woocommerce'] as $menu_item ) {
+		$submenu_items = array_merge(
+			isset( $submenu['woocommerce'] ) ? $submenu['woocommerce'] : array(),
+			isset( $submenu['edit.php?post_type=product'] ) ? $submenu['edit.php?post_type=product'] : array()
+		);
+
+		foreach ( $submenu_items as $key => $menu_item ) {
 			if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
+				// phpcs:disable
+				if ( ! isset( $menu_item[ self::CSS_CLASSES ] ) ) {
+					$submenu['woocommerce'][ $key ][] .= ' hide-if-js';
+				} else {
+					$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+				}
+				// phpcs:enable
 				continue;
 			}
+
+			$menu_item[2] = htmlspecialchars_decode( $menu_item[2] );
 
 			// Don't add already added items.
 			$callbacks = self::get_callbacks();
@@ -505,15 +531,34 @@ class Menu {
 				continue;
 			}
 
-			self::add_item(
+			// Don't add these Product submenus because they are added elsewhere.
+			if ( in_array( $menu_item[2], array( 'product_importer', 'product_exporter', 'product_attributes' ), true ) ) {
+				continue;
+			}
+
+			self::add_plugin_item(
 				array(
-					'parent'     => 'woocommerce-settings',
 					'title'      => $menu_item[0],
 					'capability' => $menu_item[1],
 					'id'         => sanitize_title( $menu_item[0] ),
 					'url'        => $menu_item[2],
 				)
 			);
+
+			// Determine if migrated items are a taxonomy or post_type. If they are, register them.
+			$parsed_url   = wp_parse_url( $menu_item[2] );
+			$query_string = isset( $parsed_url['query'] ) ? $parsed_url['query'] : false;
+
+			if ( $query_string ) {
+				$query = array();
+				parse_str( $query_string, $query );
+
+				if ( isset( $query['taxonomy'] ) ) {
+					Screen::register_taxonomy( $query['taxonomy'] );
+				} elseif ( isset( $query['post_type'] ) ) {
+					Screen::register_post_type( $query['post_type'] );
+				}
+			}
 		}
 
 		return $menu;
@@ -611,7 +656,32 @@ class Menu {
 	 * @return array
 	 */
 	public static function get_items() {
-		return apply_filters( 'woocommerce_navigation_menu_items', self::$menu_items );
+		$menu_items = self::get_prepared_menu_item_data( self::$menu_items );
+		return apply_filters( 'woocommerce_navigation_menu_items', $menu_items );
+	}
+
+	/**
+	 * Get registered menu items.
+	 *
+	 * @return array
+	 */
+	public static function get_category_items( $category ) {
+		if ( ! isset( self::$categories[ $category ] ) ) {
+			return array();
+		}
+
+		$menu_item_ids = self::$categories[ $category ];
+
+		
+		$category_menu_items = array();
+		foreach ( $menu_item_ids as $id ) {
+			if ( isset( self::$menu_items[ $id ] ) ) {
+				$category_menu_items[] = self::$menu_items[ $id ];
+			}
+		}
+
+		$category_menu_items = self::get_prepared_menu_item_data( $category_menu_items );
+		return apply_filters( 'woocommerce_navigation_menu_category_items', $category_menu_items );
 	}
 
 	/**
@@ -626,10 +696,10 @@ class Menu {
 	/**
 	 * Gets the menu item data for use in the client.
 	 *
+	 * @param array $menu_items Menu items to prepare.
 	 * @return array
 	 */
-	public static function get_prepared_menu_item_data() {
-		$menu_items = self::get_items();
+	public static function get_prepared_menu_item_data( $menu_items ) {
 		foreach ( $menu_items as $index => $menu_item ) {
 			if ( $menu_item[ 'capability' ] && ! current_user_can( $menu_item[ 'capability' ] ) ) {
 				unset( $menu_items[ $index ] );
@@ -637,11 +707,17 @@ class Menu {
 		}
 
 		// Sort the menu items.
-		$order = array_column( $menu_items, 'order' );
-		$title = array_column( $menu_items, 'title' );
-		array_multisort( $order, SORT_ASC, $title, SORT_ASC, $menu_items );
+		$menuOrder = array(
+			'primary'   => 0,
+			'secondary' => 1,
+			'plugins'   => 2,
+		);
+		$menu      = array_map( function( $item ) use( $menuOrder ) { return $menuOrder[ $item['menuId'] ]; }, $menu_items );
+		$order     = array_column( $menu_items, 'order' );
+		$title     = array_column( $menu_items, 'title' );
+		array_multisort( $menu, SORT_ASC, $order, SORT_ASC, $title, SORT_ASC, $menu_items );
 
-		return array_values( $menu_items );
+		return $menu_items;
 	}
 
 	/**
@@ -652,7 +728,7 @@ class Menu {
 	 */
 	public function enqueue_data( $menu ) {
 		$data = array(
-			'menuItems'     => self::get_prepared_menu_item_data(),
+			'menuItems'     => array_values( self::get_items() ),
 			'rootBackUrl'   => apply_filters( 'woocommerce_navigation_root_back_url', get_dashboard_url() ),
 			'rootBackLabel' => apply_filters( 'woocommerce_navigation_root_back_label', __( 'WordPress Dashboard', 'woocommerce-admin' ) ),
 		);

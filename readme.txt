@@ -3,7 +3,7 @@ Contributors: woocommerce, automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.4.0
 Tested up to: 5.6.0
-Requires PHP: 5.6.20
+Requires PHP: 7.0
 Stable tag: 2.0.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
@@ -38,7 +38,7 @@ WooCommerce Admin also allows store owners to customize a new dashboard screen w
 
 * WordPress 5.3
 * WooCommerce 4.5 or greater
-* PHP version 5.6.20 or greater. PHP 7.2 or greater is recommended
+* PHP version 7.0 or greater. PHP 7.2 or greater is recommended
 * MySQL version 5.0 or greater. MySQL 5.6 or greater is recommended
 
 Visit the [WooCommerce server requirements documentation](https://docs.woocommerce.com/document/server-requirements/) for a detailed list of server requirements.
@@ -70,6 +70,26 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 1. WooCommerce Admin Dashboard
 2. Activity Panels
 3. Analytics
+
+== Unreleased ==
+
+- Tweak: Bump minimum supported version of PHP to 7.0. #6046
+- Fix: allow for more terms to be shown for product attributes in the Analytics orders report. #5868
+- Tweak: update the content and timing of the NeedSomeInspiration note. #6076
+- Fix: Add support for a floating-point number as a SummaryNumber's delta. #5926
+- Add: new inbox message - Getting started in Ecommerce - watch this webinar. #6086
+- Add: Remote inbox notifications contains comparison and fix product rule. #6073
+- Update: store deprecation welcome modal support doc link #6094
+- Enhancement: Allowing users to create products by selecting a template. #5892
+- Dev: Add wait script for mysql to be ready for phpunit tests in docker. #6185
+- Update: Homescreen layout, moving Inbox panel for better interaction. #6122
+- Dev: Remove old debug code for connecting to Calypso / Wordpress.com. #6097
+- Add: Task list payments - include Mollie as an option. #6257
+- Tweak: Refactored extended task list. #6081
+- Fix: Fixed the Add First Product email note checks. #6260
+- Fix: Onboarding - Fixed "Business Details" error. #6271
+- Enhancement: Use the new Paypal payments plugin for onboarding. #6261
+
 
 == Changelog ==
 

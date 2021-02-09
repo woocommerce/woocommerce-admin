@@ -3,8 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Fragment } from '@wordpress/element';
-import { filter, some } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import {
 	getAdminLink,
@@ -17,20 +15,22 @@ import { WC_ADMIN_NAMESPACE } from '@woocommerce/data';
  * Internal dependencies
  */
 import Bacs from './bacs';
-import BacsIcon from './images/bacs';
-import CodIcon from './images/cod';
-import { createNoticesFromResponse } from '../../../lib/notices';
+import BacsLogo from './images/bacs';
+import CodLogo from './images/cod';
+import WCPayLogo from './images/wcpay';
+import RazorpayLogo from './images/razorpay';
+import { MollieLogo } from './images/mollie';
 import Stripe from './stripe';
 import Square from './square';
 import WCPay from './wcpay';
-import WCPayIcon from './images/wcpay';
-import PayPal from './paypal';
+import PayPal, { PAYPAL_PLUGIN } from './paypal';
 import Klarna from './klarna';
 import PayFast from './payfast';
 import EWay from './eway';
-import WCPayUsageModal from './wcpay-usage-modal';
 import Razorpay from './razorpay';
-import RazorpayIcon from './images/razorpay';
+import { Mollie } from './mollie';
+import WCPayUsageModal from './wcpay-usage-modal';
+import { createNoticesFromResponse } from '../../../lib/notices';
 
 export function installActivateAndConnectWcpay(
 	resolve,
@@ -73,18 +73,338 @@ export function getPaymentMethods( {
 	onboardingStatus,
 	options,
 	profileItems,
+	paypalOnboardingStatus,
+	loadingPaypalStatus,
 } ) {
 	const {
 		stripeSupportedCountries = [],
 		wcPayIsConnected = false,
+		enabledPaymentGateways = [],
 	} = onboardingStatus;
 
-	const hasCbdIndustry =
-		some( profileItems.industry, {
-			slug: 'cbd-other-hemp-derived-products',
-		} ) || false;
+	const hasCbdIndustry = profileItems.industry.some( ( { slug } ) => {
+		return slug === 'cbd-other-hemp-derived-products';
+	} );
 
-	const methods = [];
+	// Whether publishable and secret keys are filled for given mode.
+	const isStripeConfigured =
+		options.woocommerce_stripe_settings &&
+		( options.woocommerce_stripe_settings.testmode === 'no'
+			? options.woocommerce_stripe_settings.publishable_key &&
+			  options.woocommerce_stripe_settings.secret_key
+			: options.woocommerce_stripe_settings.test_publishable_key &&
+			  options.woocommerce_stripe_settings.test_secret_key );
+
+	const methods = [
+		{
+			key: 'stripe',
+			title: __(
+				'Credit cards - powered by Stripe',
+				'woocommerce-admin'
+			),
+			content: (
+				<>
+					{ __(
+						'Accept debit and credit cards in 135+ currencies, methods such as Alipay, ' +
+							'and one-touch checkout with Apple Pay.',
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
+			visible:
+				stripeSupportedCountries.includes( countryCode ) &&
+				! hasCbdIndustry,
+			plugins: [ 'woocommerce-gateway-stripe' ],
+			container: <Stripe />,
+			isConfigured: isStripeConfigured,
+			isEnabled:
+				options.woocommerce_stripe_settings &&
+				options.woocommerce_stripe_settings.enabled === 'yes',
+			optionName: 'woocommerce_stripe_settings',
+		},
+		{
+			key: 'paypal',
+			title: __( 'PayPal Payments', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						"Safe and secure payments using credit cards or your customer's PayPal account.",
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
+			visible: ! hasCbdIndustry,
+			plugins: [ PAYPAL_PLUGIN ],
+			container: <PayPal />,
+			isConfigured:
+				paypalOnboardingStatus &&
+				paypalOnboardingStatus.production &&
+				paypalOnboardingStatus.production.onboarded,
+			isEnabled: enabledPaymentGateways.includes( 'ppcp-gateway' ),
+			optionName: 'woocommerce_ppcp-gateway_settings',
+			loading: activePlugins.includes( PAYPAL_PLUGIN )
+				? loadingPaypalStatus
+				: false,
+		},
+		{
+			key: 'klarna_checkout',
+			title: __( 'Klarna Checkout', 'woocommerce-admin' ),
+			content: __(
+				'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
+				'woocommerce-admin'
+			),
+			before: (
+				<img src={ wcAssetUrl + 'images/klarna-black.png' } alt="" />
+			),
+			visible:
+				[ 'SE', 'FI', 'NO' ].includes( countryCode ) &&
+				! hasCbdIndustry,
+			plugins: [ 'klarna-checkout-for-woocommerce' ],
+			container: <Klarna plugin={ 'checkout' } />,
+			// @todo This should check actual Klarna connection information.
+			isConfigured: activePlugins.includes(
+				'klarna-checkout-for-woocommerce'
+			),
+			isEnabled:
+				options.woocommerce_kco_settings &&
+				options.woocommerce_kco_settings.enabled === 'yes',
+			optionName: 'woocommerce_kco_settings',
+		},
+		{
+			key: 'klarna_payments',
+			title: __( 'Klarna Payments', 'woocommerce-admin' ),
+			content: __(
+				'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
+				'woocommerce-admin'
+			),
+			before: (
+				<img src={ wcAssetUrl + 'images/klarna-black.png' } alt="" />
+			),
+			visible:
+				[
+					'DK',
+					'DE',
+					'AT',
+					'NL',
+					'CH',
+					'BE',
+					'SP',
+					'PL',
+					'FR',
+					'IT',
+					'GB',
+				].includes( countryCode ) && ! hasCbdIndustry,
+			plugins: [ 'klarna-payments-for-woocommerce' ],
+			container: <Klarna plugin={ 'payments' } />,
+			// @todo This should check actual Klarna connection information.
+			isConfigured: activePlugins.includes(
+				'klarna-payments-for-woocommerce'
+			),
+			isEnabled:
+				options.woocommerce_klarna_payments_settings &&
+				options.woocommerce_klarna_payments_settings.enabled === 'yes',
+			optionName: 'woocommerce_klarna_payments_settings',
+		},
+		{
+			key: 'mollie',
+			title: __( 'Mollie Payments for WooCommerce', 'woocommerce-admin' ),
+			before: <MollieLogo />,
+			plugins: [ 'mollie-payments-for-woocommerce' ],
+			isConfigured: activePlugins.includes(
+				'mollie-payments-for-woocommerce'
+			),
+			content: (
+				<>
+					{ __(
+						'Effortless payments by Mollie: Offer global and local payment methods, get onboarded in minutes, and supported in your language.',
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			visible: [
+				'FR',
+				'DE',
+				'GB',
+				'AT',
+				'CH',
+				'ES',
+				'IT',
+				'PL',
+				'FI',
+				'NL',
+				'BE',
+			].includes( countryCode ),
+			container: <Mollie />,
+			isEnabled:
+				options.woocommerce_mollie_payments_settings &&
+				options.woocommerce_mollie_payments_settings.enabled === 'yes',
+			optionName: 'woocommerce_mollie_payments_settings',
+		},
+		{
+			key: 'square',
+			title: __( 'Square', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). ' +
+							'Sell online and in store and track sales and inventory in one place.',
+						'woocommerce-admin'
+					) }
+					{ hasCbdIndustry && (
+						<span className="text-style-strong">
+							{ __(
+								' Selling CBD products is only supported by Square.',
+								'woocommerce-admin'
+							) }
+						</span>
+					) }
+				</>
+			),
+			before: (
+				<img src={ `${ wcAssetUrl }images/square-black.png` } alt="" />
+			),
+			visible:
+				( hasCbdIndustry && [ 'US' ].includes( countryCode ) ) ||
+				( [ 'brick-mortar', 'brick-mortar-other' ].includes(
+					profileItems.selling_venues
+				) &&
+					[ 'US', 'CA', 'JP', 'GB', 'AU' ].includes( countryCode ) ),
+			plugins: [ 'woocommerce-square' ],
+			container: <Square />,
+			isConfigured:
+				options.wc_square_refresh_tokens &&
+				options.wc_square_refresh_tokens.length,
+			isEnabled:
+				options.woocommerce_square_credit_card_settings &&
+				options.woocommerce_square_credit_card_settings.enabled ===
+					'yes',
+			optionName: 'woocommerce_square_credit_card_settings',
+			hasCbdIndustry,
+		},
+		{
+			key: 'payfast',
+			title: __( 'PayFast', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
+						'woocommerce-admin'
+					) }
+					<p>
+						{ __(
+							'Selecting this extension will configure your store to use South African rands as the selected currency.',
+							'woocommerce-admin'
+						) }
+					</p>
+				</>
+			),
+			before: (
+				<img
+					src={ wcAssetUrl + 'images/payfast.png' }
+					alt="PayFast logo"
+				/>
+			),
+			visible: [ 'ZA' ].includes( countryCode ) && ! hasCbdIndustry,
+			plugins: [ 'woocommerce-payfast-gateway' ],
+			container: <PayFast />,
+			isConfigured:
+				options.woocommerce_payfast_settings &&
+				options.woocommerce_payfast_settings.merchant_id &&
+				options.woocommerce_payfast_settings.merchant_key &&
+				options.woocommerce_payfast_settings.pass_phrase,
+			isEnabled:
+				options.woocommerce_payfast_settings &&
+				options.woocommerce_payfast_settings.enabled === 'yes',
+			optionName: 'woocommerce_payfast_settings',
+		},
+		{
+			key: 'eway',
+			title: __( 'eWAY', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						'The eWAY extension for WooCommerce allows you to take credit card payments directly on your store without redirecting your customers to a third party site to make payment.',
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			before: (
+				<img
+					src={ wcAssetUrl + 'images/eway-logo.jpg' }
+					alt="eWAY logo"
+				/>
+			),
+			visible: [ 'AU', 'NZ' ].includes( countryCode ) && ! hasCbdIndustry,
+			plugins: [ 'woocommerce-gateway-eway' ],
+			container: <EWay />,
+			isConfigured:
+				options.woocommerce_eway_settings &&
+				options.woocommerce_eway_settings.customer_api &&
+				options.woocommerce_eway_settings.customer_password,
+			isEnabled:
+				options.woocommerce_eway_settings &&
+				options.woocommerce_eway_settings.enabled === 'yes',
+			optionName: 'woocommerce_eway_settings',
+		},
+		{
+			key: 'razorpay',
+			title: __( 'Razorpay', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						'The official Razorpay extension for WooCommerce allows you to accept credit cards, debit cards, netbanking, wallet, and UPI payments.',
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			before: <RazorpayLogo />,
+			visible: countryCode === 'IN' && ! hasCbdIndustry,
+			plugins: [ 'woo-razorpay' ],
+			container: <Razorpay />,
+			isConfigured:
+				options.woocommerce_razorpay_settings &&
+				options.woocommerce_razorpay_settings.key_id &&
+				options.woocommerce_razorpay_settings.key_secret,
+			isEnabled:
+				options.woocommerce_razorpay_settings &&
+				options.woocommerce_razorpay_settings.enabled === 'yes',
+			optionName: 'woocommerce_razorpay_settings',
+		},
+		{
+			key: 'cod',
+			title: __( 'Cash on delivery', 'woocommerce-admin' ),
+			content: __(
+				'Take payments in cash upon delivery.',
+				'woocommerce-admin'
+			),
+			before: <CodLogo />,
+			visible: ! hasCbdIndustry,
+			isEnabled:
+				options.woocommerce_cod_settings &&
+				options.woocommerce_cod_settings.enabled === 'yes',
+			optionName: 'woocommerce_cod_settings',
+		},
+		{
+			key: 'bacs',
+			title: __( 'Direct bank transfer', 'woocommerce-admin' ),
+			content: __(
+				'Take payments via bank transfer.',
+				'woocommerce-admin'
+			),
+			before: <BacsLogo />,
+			visible: ! hasCbdIndustry,
+			container: <Bacs />,
+			isConfigured:
+				options.woocommerce_bacs_accounts &&
+				options.woocommerce_bacs_accounts.length,
+			isEnabled:
+				options.woocommerce_bacs_settings &&
+				options.woocommerce_bacs_settings.enabled === 'yes',
+			optionName: 'woocommerce_bacs_settings',
+		},
+	];
 
 	if ( window.wcAdminFeatures.wcpay ) {
 		const tosLink = (
@@ -136,11 +456,11 @@ export function getPaymentMethods( {
 			</Link>
 		);
 
-		methods.push( {
+		methods.unshift( {
 			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
-				<Fragment>
+				<>
 					{ __(
 						'Accept credit card payments the easy way! No setup fees. No ' +
 							'monthly fees. Just 2.9% + $0.30 per transaction ' +
@@ -151,9 +471,9 @@ export function getPaymentMethods( {
 					{ ! wcPayIsConnected && <p>{ tosPrompt }</p> }
 					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
 					<WCPayUsageModal />
-				</Fragment>
+				</>
 			),
-			before: <WCPayIcon />,
+			before: <WCPayLogo />,
 			onClick: ( resolve, reject ) => {
 				return installActivateAndConnectWcpay(
 					resolve,
@@ -174,292 +494,5 @@ export function getPaymentMethods( {
 		} );
 	}
 
-	// Whether publishable and secret keys are filled for given mode.
-	const isStripeConfigured =
-		options.woocommerce_stripe_settings &&
-		( options.woocommerce_stripe_settings.testmode === 'no'
-			? options.woocommerce_stripe_settings.publishable_key &&
-			  options.woocommerce_stripe_settings.secret_key
-			: options.woocommerce_stripe_settings.test_publishable_key &&
-			  options.woocommerce_stripe_settings.test_secret_key );
-
-	methods.push(
-		{
-			key: 'stripe',
-			title: __(
-				'Credit cards - powered by Stripe',
-				'woocommerce-admin'
-			),
-			content: (
-				<Fragment>
-					{ __(
-						'Accept debit and credit cards in 135+ currencies, methods such as Alipay, ' +
-							'and one-touch checkout with Apple Pay.',
-						'woocommerce-admin'
-					) }
-				</Fragment>
-			),
-			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
-			visible:
-				stripeSupportedCountries.includes( countryCode ) &&
-				! hasCbdIndustry,
-			plugins: [ 'woocommerce-gateway-stripe' ],
-			container: <Stripe />,
-			isConfigured: isStripeConfigured,
-			isEnabled:
-				options.woocommerce_stripe_settings &&
-				options.woocommerce_stripe_settings.enabled === 'yes',
-			optionName: 'woocommerce_stripe_settings',
-		},
-		{
-			key: 'paypal',
-			title: __( 'PayPal Checkout', 'woocommerce-admin' ),
-			content: (
-				<Fragment>
-					{ __(
-						"Safe and secure payments using credit cards or your customer's PayPal account.",
-						'woocommerce-admin'
-					) }
-				</Fragment>
-			),
-			before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
-			visible: ! hasCbdIndustry,
-			plugins: [ 'woocommerce-gateway-paypal-express-checkout' ],
-			container: <PayPal />,
-			isConfigured:
-				options.woocommerce_ppec_paypal_settings &&
-				( ( options.woocommerce_ppec_paypal_settings.reroute_requests &&
-					options.woocommerce_ppec_paypal_settings.email ) ||
-					( options.woocommerce_ppec_paypal_settings.api_username &&
-						options.woocommerce_ppec_paypal_settings
-							.api_password ) ),
-			isEnabled:
-				options.woocommerce_ppec_paypal_settings &&
-				options.woocommerce_ppec_paypal_settings.enabled === 'yes',
-			optionName: 'woocommerce_ppec_paypal_settings',
-		},
-		{
-			key: 'klarna_checkout',
-			title: __( 'Klarna Checkout', 'woocommerce-admin' ),
-			content: __(
-				'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
-				'woocommerce-admin'
-			),
-			before: (
-				<img src={ wcAssetUrl + 'images/klarna-black.png' } alt="" />
-			),
-			visible:
-				[ 'SE', 'FI', 'NO' ].includes( countryCode ) &&
-				! hasCbdIndustry,
-			plugins: [ 'klarna-checkout-for-woocommerce' ],
-			container: <Klarna plugin={ 'checkout' } />,
-			// @todo This should check actual Klarna connection information.
-			isConfigured: activePlugins.includes(
-				'klarna-checkout-for-woocommerce'
-			),
-			isEnabled:
-				options.woocommerce_kco_settings &&
-				options.woocommerce_kco_settings.enabled === 'yes',
-			optionName: 'woocommerce_kco_settings',
-		},
-		{
-			key: 'klarna_payments',
-			title: __( 'Klarna Payments', 'woocommerce-admin' ),
-			content: __(
-				'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
-				'woocommerce-admin'
-			),
-			before: (
-				<img src={ wcAssetUrl + 'images/klarna-black.png' } alt="" />
-			),
-			visible:
-				[
-					'DK',
-					'DE',
-					'AT',
-					'NL',
-					'CH',
-					'BE',
-					'SP',
-					'PL',
-					'FR',
-					'IT',
-					'UK',
-				].includes( countryCode ) && ! hasCbdIndustry,
-			plugins: [ 'klarna-payments-for-woocommerce' ],
-			container: <Klarna plugin={ 'payments' } />,
-			// @todo This should check actual Klarna connection information.
-			isConfigured: activePlugins.includes(
-				'klarna-payments-for-woocommerce'
-			),
-			isEnabled:
-				options.woocommerce_klarna_payments_settings &&
-				options.woocommerce_klarna_payments_settings.enabled === 'yes',
-			optionName: 'woocommerce_klarna_payments_settings',
-		},
-		{
-			key: 'square',
-			title: __( 'Square', 'woocommerce-admin' ),
-			content: (
-				<Fragment>
-					{ __(
-						'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). ' +
-							'Sell online and in store and track sales and inventory in one place.',
-						'woocommerce-admin'
-					) }
-					{ hasCbdIndustry && (
-						<span className="text-style-strong">
-							{ __(
-								' Selling CBD products is only supported by Square.',
-								'woocommerce-admin'
-							) }
-						</span>
-					) }
-				</Fragment>
-			),
-			before: (
-				<img src={ wcAssetUrl + 'images/square-black.png' } alt="" />
-			),
-			visible:
-				( hasCbdIndustry && [ 'US' ].includes( countryCode ) ) ||
-				( [ 'brick-mortar', 'brick-mortar-other' ].includes(
-					profileItems.selling_venues
-				) &&
-					[ 'US', 'CA', 'JP', 'GB', 'AU' ].includes( countryCode ) ),
-			plugins: [ 'woocommerce-square' ],
-			container: <Square />,
-			isConfigured:
-				options.wc_square_refresh_tokens &&
-				options.wc_square_refresh_tokens.length,
-			isEnabled:
-				options.woocommerce_square_credit_card_settings &&
-				options.woocommerce_square_credit_card_settings.enabled ===
-					'yes',
-			optionName: 'woocommerce_square_credit_card_settings',
-			hasCbdIndustry,
-		},
-		{
-			key: 'payfast',
-			title: __( 'PayFast', 'woocommerce-admin' ),
-			content: (
-				<Fragment>
-					{ __(
-						'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
-						'woocommerce-admin'
-					) }
-					<p>
-						{ __(
-							'Selecting this extension will configure your store to use South African rands as the selected currency.',
-							'woocommerce-admin'
-						) }
-					</p>
-				</Fragment>
-			),
-			before: (
-				<img
-					src={ wcAssetUrl + 'images/payfast.png' }
-					alt="PayFast logo"
-				/>
-			),
-			visible: [ 'ZA' ].includes( countryCode ) && ! hasCbdIndustry,
-			plugins: [ 'woocommerce-payfast-gateway' ],
-			container: <PayFast />,
-			isConfigured:
-				options.woocommerce_payfast_settings &&
-				options.woocommerce_payfast_settings.merchant_id &&
-				options.woocommerce_payfast_settings.merchant_key &&
-				options.woocommerce_payfast_settings.pass_phrase,
-			isEnabled:
-				options.woocommerce_payfast_settings &&
-				options.woocommerce_payfast_settings.enabled === 'yes',
-			optionName: 'woocommerce_payfast_settings',
-		},
-		{
-			key: 'eway',
-			title: __( 'eWAY', 'woocommerce-admin' ),
-			content: (
-				<Fragment>
-					{ __(
-						'The eWAY extension for WooCommerce allows you to take credit card payments directly on your store without redirecting your customers to a third party site to make payment.',
-						'woocommerce-admin'
-					) }
-				</Fragment>
-			),
-			before: (
-				<img
-					src={ wcAssetUrl + 'images/eway-logo.jpg' }
-					alt="eWAY logo"
-				/>
-			),
-			visible: [ 'AU', 'NZ' ].includes( countryCode ) && ! hasCbdIndustry,
-			plugins: [ 'woocommerce-gateway-eway' ],
-			container: <EWay />,
-			isConfigured:
-				options.woocommerce_eway_settings &&
-				options.woocommerce_eway_settings.customer_api &&
-				options.woocommerce_eway_settings.customer_password,
-			isEnabled:
-				options.woocommerce_eway_settings &&
-				options.woocommerce_eway_settings.enabled === 'yes',
-			optionName: 'woocommerce_eway_settings',
-		},
-		{
-			key: 'razorpay',
-			title: __( 'Razorpay', 'woocommerce-admin' ),
-			content: (
-				<Fragment>
-					{ __(
-						'The official Razorpay extension for WooCommerce allows you to accept credit cards, debit cards, netbanking, wallet, and UPI payments.',
-						'woocommerce-admin'
-					) }
-				</Fragment>
-			),
-			before: <RazorpayIcon />,
-			visible: countryCode === 'IN' && ! hasCbdIndustry,
-			plugins: [ 'woo-razorpay' ],
-			container: <Razorpay />,
-			isConfigured:
-				options.woocommerce_razorpay_settings &&
-				options.woocommerce_razorpay_settings.key_id &&
-				options.woocommerce_razorpay_settings.key_secret,
-			isEnabled:
-				options.woocommerce_razorpay_settings &&
-				options.woocommerce_razorpay_settings.enabled === 'yes',
-			optionName: 'woocommerce_razorpay_settings',
-		},
-		{
-			key: 'cod',
-			title: __( 'Cash on delivery', 'woocommerce-admin' ),
-			content: __(
-				'Take payments in cash upon delivery.',
-				'woocommerce-admin'
-			),
-			before: <CodIcon />,
-			visible: ! hasCbdIndustry,
-			isEnabled:
-				options.woocommerce_cod_settings &&
-				options.woocommerce_cod_settings.enabled === 'yes',
-			optionName: 'woocommerce_cod_settings',
-		},
-		{
-			key: 'bacs',
-			title: __( 'Direct bank transfer', 'woocommerce-admin' ),
-			content: __(
-				'Take payments via bank transfer.',
-				'woocommerce-admin'
-			),
-			before: <BacsIcon />,
-			visible: ! hasCbdIndustry,
-			container: <Bacs />,
-			isConfigured:
-				options.woocommerce_bacs_accounts &&
-				options.woocommerce_bacs_accounts.length,
-			isEnabled:
-				options.woocommerce_bacs_settings &&
-				options.woocommerce_bacs_settings.enabled === 'yes',
-			optionName: 'woocommerce_bacs_settings',
-		}
-	);
-
-	return filter( methods, ( method ) => method.visible );
+	return methods.filter( ( method ) => method.visible );
 }

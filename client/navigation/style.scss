@@ -5,6 +5,10 @@
 .has-woocommerce-navigation {
 	margin-top: -$admin-bar-height;
 
+	.screen-reader-shortcut:focus {
+		top: 7px;
+	}
+
 	#wpadminbar,
 	#adminmenuwrap,
 	#adminmenuback {
@@ -50,7 +54,6 @@
 
 	.woocommerce-navigation__wrapper {
 		overflow-y: auto;
-		height: calc(100vh - #{$header-height});
 	}
 
 	.components-navigation {

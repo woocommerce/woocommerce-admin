@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -131,22 +132,21 @@ export class TaskDashboard extends Component {
 				{ setupTasks && ( ! isSetupTaskListHidden || task ) && (
 					<TaskList
 						dismissedTasks={ dismissedTasks || [] }
-						isTaskListComplete={ isTaskListComplete }
-						isExtended={ false }
+						isComplete={ isTaskListComplete }
 						query={ query }
-						tasks={ allTasks }
+						tasks={ setupTasks }
+						title={ __( 'Finish setup', 'woocommerce-admin' ) }
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
 					/>
 				) }
 				{ extensionTasks && ! isExtendedTaskListHidden && (
 					<TaskList
 						dismissedTasks={ dismissedTasks || [] }
-						isExtendedTaskListComplete={
-							isExtendedTaskListComplete
-						}
-						isExtended={ true }
+						isComplete={ isExtendedTaskListComplete }
+						name={ 'extended_task_list' }
 						query={ query }
-						tasks={ allTasks }
+						tasks={ extensionTasks }
+						title={ __( 'Extensions setup', 'woocommerce-admin' ) }
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
 					/>
 				) }
@@ -175,9 +175,8 @@ export default compose(
 		} = select( PLUGINS_STORE_NAME );
 		const profileItems = getProfileItems();
 
-		const trackedCompletedTasks = getOption(
-			'woocommerce_task_list_tracked_completed_tasks'
-		);
+		const trackedCompletedTasks =
+			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
 
 		const { general: generalSettings = {} } = getSettings( 'general' );
 		const countryCode = getCountryCode(
