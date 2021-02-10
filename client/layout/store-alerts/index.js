@@ -37,7 +37,7 @@ export class StoreAlerts extends Component {
 		const alerts = this.getAlerts();
 
 		this.state = {
-			currentIndex: alerts.length > 0 ? 0 : null,
+			currentIndex: alerts instanceof Array ? 0 : null,
 		};
 
 		this.previousAlert = this.previousAlert.bind( this );
