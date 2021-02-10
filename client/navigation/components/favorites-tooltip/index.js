@@ -10,7 +10,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
  */
 import { HighlightTooltip } from '../../../header/activity-panel/highlight-tooltip';
 
-const tooltipHiddenOption = 'woocommerce_navigation_favorite_tooltip_hidden';
+const tooltipHiddenOption = 'woocommerce_navigation_favorites_tooltip_hidden';
 
 export const FavoritesTooltip = () => {
 	const { isOptionResolving, isTooltipHidden } = useSelect( ( select ) => {
