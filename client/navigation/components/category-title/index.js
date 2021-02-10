@@ -79,6 +79,7 @@ export const CategoryTitle = ( { category } ) => {
 								'woocommerce-admin'
 							) }
 							id="woocommerce-navigation-category-title__favorite-button"
+							useAnchor
 						/>
 					</>
 				) }
