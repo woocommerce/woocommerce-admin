@@ -70,6 +70,9 @@ function HighlightTooltip( {
 			if ( container ) {
 				const parent = container.parentElement;
 				parent.removeChild( container );
+				if ( useAnchor ) {
+					parent.remove();
+				}
 			}
 			if ( timeoutId ) {
 				clearTimeout( timeoutId );
