@@ -80,10 +80,7 @@ class InboxNoteAction extends Component {
 					.then( ( notes ) => {
 						createNotice(
 							'success',
-							__(
-								'All messages dismissed',
-								'woocommerce-admin'
-							),
+							__( 'All messages dismissed', 'woocommerce-admin' ),
 							{
 								actions: [
 									{
