@@ -3,10 +3,6 @@
 @import './components/header/style';
 
 .has-woocommerce-navigation {
-	.screen-reader-shortcut:focus {
-		top: 7px;
-	}
-
 	#wpadminbar,
 	#adminmenuwrap,
 	#adminmenuback {
