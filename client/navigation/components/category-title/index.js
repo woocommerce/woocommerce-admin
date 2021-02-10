@@ -11,6 +11,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import './style.scss';
+import { HighlightTooltip } from '../../../header/activity-panel/highlight-tooltip';
 
 export const CategoryTitle = ( { category } ) => {
 	const { id, title } = category;
@@ -45,23 +46,41 @@ export const CategoryTitle = ( { category } ) => {
 			<span className={ className }>
 				<span className={ `${ className }__text` }>{ title }</span>
 				{ ! isResolving && (
-					<Button
-						className={ `${ className }__favorite-button` }
-						isTertiary
-						onClick={ toggleFavorite }
-						icon={ isFavorited ? 'star-filled' : 'star-empty' }
-						aria-label={
-							isFavorited
-								? __(
-										'Add this item to your favorites.',
-										'woocommerce-admin'
-								  )
-								: __(
-										'Remove this item from your favorites.',
-										'woocommerce-admin'
-								  )
-						}
-					/>
+					<>
+						<Button
+							className={ `${ className }__favorite-button` }
+							isTertiary
+							onClick={ toggleFavorite }
+							icon={ isFavorited ? 'star-filled' : 'star-empty' }
+							aria-label={
+								isFavorited
+									? __(
+											'Add this item to your favorites.',
+											'woocommerce-admin'
+									  )
+									: __(
+											'Remove this item from your favorites.',
+											'woocommerce-admin'
+									  )
+							}
+						/>
+						<HighlightTooltip
+							delay={ 1000 }
+							title={ __(
+								'Introducing favorites',
+								'woocommerce-admin'
+							) }
+							content={ __(
+								'You can now favorite your extensions to pin them in the top level of the navigation.',
+								'woocommerce-admin'
+							) }
+							closeButtonText={ __(
+								'Got it',
+								'woocommerce-admin'
+							) }
+							id="woocommerce-navigation-category-title__favorite-button"
+						/>
+					</>
 				) }
 			</span>
 		);
