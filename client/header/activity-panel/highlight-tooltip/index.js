@@ -46,32 +46,28 @@ function HighlightTooltip( {
 
 	useEffect( () => {
 		const element = document.getElementById( id );
-		let container;
+		let container, parent;
 		if ( element && ! node ) {
 			// Add tooltip container
 			if ( ! useAnchor ) {
-				const parent = element.parentElement;
-				container = document.createElement( 'div' );
-				container.classList.add( 'highlight-tooltip__container' );
-				parent.appendChild( container );
-				setNode( container );
+				parent = element.parentElement;
 			} else {
-				const parentElement = document.createElement( 'div' );
-				document.body.appendChild( parentElement );
-				container = document.createElement( 'div' );
-				parentElement.appendChild( container );
-				setNode( container );
-				setAnchorRect( element.getBoundingClientRect() );
+				parent = document.createElement( 'div' );
+				document.body.appendChild( parent );
 			}
+			container = document.createElement( 'div' );
+			container.classList.add( 'highlight-tooltip__container' );
+			parent.appendChild( container );
+			setNode( container );
 		}
-		const timeoutId = showTooltip( container );
+		const timeoutId = triggerShowTooltip( container );
 
 		return () => {
 			if ( container ) {
-				const parent = container.parentElement;
-				parent.removeChild( container );
+				const parentElement = container.parentElement;
+				parentElement.removeChild( container );
 				if ( useAnchor ) {
-					parent.remove();
+					parentElement.remove();
 				}
 			}
 			if ( timeoutId ) {
@@ -92,7 +88,7 @@ function HighlightTooltip( {
 			if ( ! show ) {
 				node.classList.remove( SHOW_CLASS );
 			} else if ( node ) {
-				showTooltip( node );
+				triggerShowTooltip( node );
 			}
 		}
 	}, [ show ] );
@@ -109,25 +105,29 @@ function HighlightTooltip( {
 		}
 	}
 
-	const showTooltip = ( container ) => {
+	const triggerShowTooltip = ( container ) => {
 		let timeoutId = null;
 		if ( delay > 0 ) {
 			timeoutId = setTimeout( () => {
 				timeoutId = null;
-				if ( container ) {
-					container.classList.add( SHOW_CLASS );
-				}
-				setShowHighlight( show );
-				onShow();
+				showTooltip( container );
 			}, delay );
 		} else if ( ! showHighlight ) {
-			if ( container ) {
-				container.classList.add( SHOW_CLASS );
-			}
-			setShowHighlight( true );
-			onShow();
+			showTooltip( container );
 		}
 		return timeoutId;
+	};
+
+	const showTooltip = ( container ) => {
+		const element = document.getElementById( id );
+		if ( element && useAnchor ) {
+			setAnchorRect( element.getBoundingClientRect() );
+		}
+		if ( container ) {
+			container.classList.add( SHOW_CLASS );
+		}
+		setShowHighlight( true );
+		onShow();
 	};
 
 	const triggerClose = () => {
