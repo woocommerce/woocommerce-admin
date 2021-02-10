@@ -41,7 +41,8 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		'woocommerce_favorites_invalid_request' => 400,
 		'woocommerce_favorites_already_exists'  => 409,
 		'woocommerce_favorites_does_not_exist'  => 404,
-		'woocommerce_favorites_invalid_user'    => 401,
+		'woocommerce_favorites_invalid_user'    => 400,
+		'woocommerce_favorites_unauthenticated' => 401,
 	);
 
 	/**
@@ -168,7 +169,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		if ( ! $current_user ) {
 			return $this->prepare_error(
 				new \WP_Error(
-					'woocommerce_favorites_invalid_user',
+					'woocommerce_favorites_unauthenticated',
 					__( 'You must be authenticated to use this endpoint', 'woocommerce-admin' )
 				)
 			);
@@ -188,6 +189,16 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	public function add_item( $request ) {
 		$user_id = $request->get_param( 'user_id' );
 		$fav_id  = $request->get_param( 'item_id' );
+		$user    = get_userdata( $user_id );
+
+		if ( false === $user ) {
+			return $this->prepare_error(
+				new \WP_Error(
+					'woocommerce_favorites_invalid_user',
+					__( 'Invalid user_id provided', 'woocommerce-admin' )
+				)
+			);
+		}
 
 		$response = Favorites::add_item( $fav_id, $user_id );
 
@@ -210,7 +221,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		if ( ! $current_user ) {
 			return $this->prepare_error(
 				new \WP_Error(
-					'woocommerce_favorites_invalid_user',
+					'woocommerce_favorites_unauthenticated',
 					__( 'You must be authenticated to use this endpoint', 'woocommerce-admin' )
 				)
 			);
@@ -251,7 +262,7 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 		if ( ! $current_user ) {
 			return $this->prepare_error(
 				new \WP_Error(
-					'woocommerce_favorites_invalid_user',
+					'woocommerce_favorites_unauthenticated',
 					__( 'You must be authenticated to use this endpoint', 'woocommerce-admin' )
 				)
 			);
