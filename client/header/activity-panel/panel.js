@@ -4,10 +4,12 @@
 import { Suspense } from '@wordpress/element';
 import classnames from 'classnames';
 import { Spinner } from '@woocommerce/components';
-import {
-	__experimentalUseFocusOutside as useFocusOutside,
-	useFocusOnMount,
-} from '@wordpress/compose';
+
+/**
+ * Internal dependencies
+ */
+import useFocusOnMount from '../../hooks/useFocusOnMount';
+import useFocusOutside from '../../hooks/useFocusOutside';
 
 export const Panel = ( {
 	content,
