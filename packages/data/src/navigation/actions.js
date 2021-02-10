@@ -98,7 +98,6 @@ export function removeFavoriteSuccess( favorite, error ) {
 
 export function* addFavorite( favorite ) {
 	yield addFavoriteRequest( favorite );
-	yield addFavoriteSuccess( favorite );
 
 	try {
 		const results = yield apiFetch( {
