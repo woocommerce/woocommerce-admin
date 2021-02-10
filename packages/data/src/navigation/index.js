@@ -11,7 +11,7 @@ import { STORE_NAME } from './constants';
 import * as selectors from './selectors';
 import * as actions from './actions';
 import reducer from './reducer';
-import resolvers from './resolvers';
+import * as resolvers from './resolvers';
 
 registerStore( STORE_NAME, {
 	reducer,

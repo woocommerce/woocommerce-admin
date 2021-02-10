@@ -14,11 +14,11 @@ import {
 import { WC_ADMIN_NAMESPACE } from '../constants';
 
 export function* getFavorites() {
-	getFavoritesRequest();
+	yield getFavoritesRequest();
 
 	try {
 		const results = yield apiFetch( {
-			path: `${ WC_ADMIN_NAMESPACE }/navigation/favorites`,
+			path: `${ WC_ADMIN_NAMESPACE }/navigation/favorites/me`,
 		} );
 
 		if ( results ) {

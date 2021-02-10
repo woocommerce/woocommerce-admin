@@ -102,10 +102,10 @@ export function* addFavorite( favorite ) {
 
 	try {
 		const results = yield apiFetch( {
-			path: `${ WC_ADMIN_NAMESPACE }/navigation/favorites`,
+			path: `${ WC_ADMIN_NAMESPACE }/navigation/favorites/me`,
 			method: 'POST',
 			data: {
-				favorite,
+				item_id: favorite,
 			},
 		} );
 
@@ -126,10 +126,10 @@ export function* removeFavorite( favorite ) {
 
 	try {
 		const results = yield apiFetch( {
-			path: `${ WC_ADMIN_NAMESPACE }/navigation/favorites`,
+			path: `${ WC_ADMIN_NAMESPACE }/navigation/favorites/me`,
 			method: 'DELETE',
 			data: {
-				favorite,
+				item_id: favorite,
 			},
 		} );
 
