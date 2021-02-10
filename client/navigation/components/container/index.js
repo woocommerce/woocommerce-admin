@@ -206,7 +206,13 @@ const Container = ( { menuItems } ) => {
 								<NavigationMenu
 									className="components-navigation__menu-secondary"
 									key={ `secondary/${ category.id }` }
-									title={ ! isRoot ? category.title : null }
+									title={
+										! isRoot && (
+											<CategoryTitle
+												category={ category }
+											/>
+										)
+									}
 									menu={ category.id }
 									parentMenu={ category.parent }
 									backButtonLabel={
