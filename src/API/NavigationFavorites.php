@@ -105,22 +105,25 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 			'/' . $this->rest_base . '/me',
 			array(
 				array(
-					'methods'  => \WP_REST_Server::READABLE,
-					'callback' => array( $this, 'get_items_by_current_user' ),
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_items_by_current_user' ),
+					'permission_callback' => array( $this, 'current_user_permissions_check' ),
 				),
 				array(
-					'methods'  => \WP_REST_Server::CREATABLE,
-					'callback' => array( $this, 'add_item_by_current_user' ),
-					'args'     => array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'add_item_by_current_user' ),
+					'permission_callback' => array( $this, 'current_user_permissions_check' ),
+					'args'                => array(
 						'item_id' => array(
 							'required' => true,
 						),
 					),
 				),
 				array(
-					'methods'  => \WP_REST_Server::DELETABLE,
-					'callback' => array( $this, 'delete_item_by_current_user' ),
-					'args'     => array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_item_by_current_user' ),
+					'permission_callback' => array( $this, 'current_user_permissions_check' ),
+					'args'                => array(
 						'item_id' => array(
 							'required' => true,
 						),
@@ -274,6 +277,16 @@ class NavigationFavorites extends \WC_REST_Data_Controller {
 	 */
 	public function delete_item_permissions_check( $request ) {
 		return current_user_can( 'edit_users' );
+	}
+
+	/**
+	 * Always allow for operations that only impact current user
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function current_user_permissions_check( $request ) {
+		return true;
 	}
 
 	/**
