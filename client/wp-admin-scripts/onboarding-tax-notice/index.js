@@ -33,10 +33,10 @@ const showTaxCompletionNotice = () => {
 
 	saveCompleted().then( () => {
 		// Check if a row was added successfully after WooCommerce removes invalid rows.
-		setTimeout( () => {
-			if ( ! document.querySelector( '.tips' ) ) {
-				return;
-			}
+		if ( ! document.querySelector( '.tips' ) ) {
+			return;
+		}
+		if ( saveButton.disabled ) {
 			saveButton.classList.add( 'has-tax' );
 			dispatch( 'core/notices' ).createSuccessNotice(
 				__( "You've added your first tax rate!", 'woocommerce-admin' ),
@@ -50,13 +50,13 @@ const showTaxCompletionNotice = () => {
 					],
 				}
 			);
-		}, 500 );
+		}
 	} );
 };
 
 window.onload = () => {
 	const saveButton = document.querySelector( '.woocommerce-save-button' );
-	if ( ! document.querySelector( '.tips' ) && saveButton ) {
+	if ( ! document.querySelector( '.wc_tax_rates .tips' ) && saveButton ) {
 		saveButton.addEventListener( 'click', showTaxCompletionNotice );
 	}
 };
