@@ -523,13 +523,6 @@ class Menu {
 
 		foreach ( $submenu_items as $key => $menu_item ) {
 			if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
-				// phpcs:disable
-				if ( ! isset( $menu_item[ self::CSS_CLASSES ] ) ) {
-					$submenu['woocommerce'][ $key ][] .= ' hide-if-js';
-				} else {
-					$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
-				}
-				// phpcs:enable
 				continue;
 			}
 
@@ -612,7 +605,11 @@ class Menu {
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( self::has_callback( $menu_item ) ) {
+				// Disable phpcs since we need to override submenu classes.
+				// Note that `phpcs:ignore WordPress.Variables.GlobalVariables.OverrideProhibited` does not work to disable this check.
+				// phpcs:disable
 				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+				// phps:enable
 				continue;
 			}
 
@@ -620,8 +617,21 @@ class Menu {
 			$has_children = isset( $submenu[ $menu_item[ self::CALLBACK ] ] ) && isset( $submenu[ $menu_item[ self::CALLBACK ] ][0] );
 			$first_child  = $has_children ? $submenu[ $menu_item[ self::CALLBACK ] ][0] : null;
 			if ( 'woocommerce' !== $menu_item[2] && self::has_callback( $first_child ) ) {
+				// Disable phpcs since we need to override submenu classes.
+				// Note that `phpcs:ignore WordPress.Variables.GlobalVariables.OverrideProhibited` does not work to disable this check.
+				// phpcs:disable
 				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+				// phps:enable
 			}
+		}
+
+		if ( isset( $submenu['woocommerce'] ) ) {
+			$submenu['woocommerce'] = array_filter(
+				$submenu['woocommerce'],
+				function ( $submenu_item ) {
+					return ! in_array( $submenu_item[2], CoreMenu::get_excluded_items(), true );
+				}
+			);
 		}
 
 		foreach ( $submenu as $parent_key => $parent ) {
