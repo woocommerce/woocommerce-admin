@@ -32,6 +32,11 @@ cd ..
 echo "Checking in the new version"
 svn ci -m "Release v${VERSION}"
 
+# Tag the release
+echo "Tagging the release"
+svn cp trunk tags/$VERSION
+svn ci -m "Tagging v${VERSION}"
+
 # Clean up.
 cd ..
 rm -rf svn-woocommerce-admin
