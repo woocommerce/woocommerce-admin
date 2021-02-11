@@ -90,16 +90,7 @@ class Menu {
 		add_filter( 'admin_enqueue_scripts', array( $this, 'enqueue_data' ), 20 );
 
 		add_filter( 'admin_menu', array( $this, 'migrate_core_child_items' ) );
-		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), 700 );
-
-		// // In WC Core 5.1 $submenu manipulation occurs in admin_menu, not admin_head. See https://github.com/woocommerce/woocommerce/pull/29088.
-		// if ( version_compare( WC_VERSION, '5.1', '>=' ) ) {
-		// add_filter( 'add_menu_classes', array( $this, 'migrate_core_child_items' ) );
-		// add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ), 30 );
-		// } else {
-		// add_filter( 'add_menu_classes', array( $this, 'migrate_core_child_items' ) );
-		// add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ), 30 );
-		// }
+		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), PHP_INT_MAX - 1 );
 	}
 
 	/**
