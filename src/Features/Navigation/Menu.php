@@ -163,7 +163,6 @@ class Menu {
 		$defaults           = array(
 			'id'         => '',
 			'title'      => '',
-			'capability' => 'manage_woocommerce',
 			'order'      => 100,
 			'migrate'    => true,
 			'menuId'     => 'primary',
