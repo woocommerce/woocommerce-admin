@@ -24,21 +24,12 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const pageTitle = sections.slice( -1 )[ 0 ];
 	const isScrolled = useIsScrolled();
 	const { updateUserPreferences, ...userData } = useUserPreferences();
-
 	const isModalDismissed = userData.android_app_banner_dismissed === 'yes';
+	let debounceTimer = null;
 
 	const className = classnames( 'woocommerce-layout__header', {
 		'is-scrolled': isScrolled,
 	} );
-
-	const updateBodyMargin = () => {
-		const wpBody = document.querySelector( '#wpbody' );
-		if ( ! wpBody ) {
-			return;
-		}
-
-		wpBody.style.marginTop = `${ headerElement.current.offsetHeight }px`;
-	};
 
 	useLayoutEffect( () => {
 		updateBodyMargin();
@@ -46,9 +37,27 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		return () => {
 			window.removeEventListener( 'resize', updateBodyMargin );
 			const wpBody = document.querySelector( '#wpbody' );
+
+			if ( ! wpBody ) {
+				return;
+			}
+
 			wpBody.style.marginTop = null;
 		};
 	}, [ isModalDismissed ] );
+
+	const updateBodyMargin = () => {
+		clearTimeout( debounceTimer );
+		debounceTimer = setTimeout( function () {
+			const wpBody = document.querySelector( '#wpbody' );
+
+			if ( ! wpBody ) {
+				return;
+			}
+
+			wpBody.style.marginTop = `${ headerElement.current.offsetHeight }px`;
+		}, 200 );
+	};
 
 	useEffect( () => {
 		if ( ! isEmbedded ) {
