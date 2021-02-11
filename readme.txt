@@ -92,6 +92,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Use the new Paypal payments plugin for onboarding. #6261
 - Fix: Show management links when only main task list is hidden. #6291
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
+- Fix: Email notes now are turned off by default #6324
 
 == Changelog ==
 
