@@ -88,8 +88,18 @@ class Menu {
 	public function init() {
 		add_action( 'admin_menu', array( $this, 'add_core_items' ) );
 		add_filter( 'admin_enqueue_scripts', array( $this, 'enqueue_data' ), 20 );
-		add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ), 30 );
-		add_filter( 'add_menu_classes', array( $this, 'migrate_core_child_items' ) );
+
+		add_filter( 'admin_menu', array( $this, 'migrate_core_child_items' ) );
+		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), 700 );
+
+		// // In WC Core 5.1 $submenu manipulation occurs in admin_menu, not admin_head. See https://github.com/woocommerce/woocommerce/pull/29088.
+		// if ( version_compare( WC_VERSION, '5.1', '>=' ) ) {
+		// add_filter( 'add_menu_classes', array( $this, 'migrate_core_child_items' ) );
+		// add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ), 30 );
+		// } else {
+		// add_filter( 'add_menu_classes', array( $this, 'migrate_core_child_items' ) );
+		// add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ), 30 );
+		// }
 	}
 
 	/**
@@ -596,12 +606,9 @@ class Menu {
 
 	/**
 	 * Hides all WP admin menus items and adds screen IDs to check for new items.
-	 *
-	 * @param array $menu Menu items.
-	 * @return array
 	 */
-	public static function migrate_menu_items( $menu ) {
-		global $submenu;
+	public static function migrate_menu_items() {
+		global $menu, $submenu;
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( self::has_callback( $menu_item ) ) {
@@ -612,7 +619,7 @@ class Menu {
 			// WordPress core menus make the parent item the same URL as the first child.
 			$has_children = isset( $submenu[ $menu_item[ self::CALLBACK ] ] ) && isset( $submenu[ $menu_item[ self::CALLBACK ] ][0] );
 			$first_child  = $has_children ? $submenu[ $menu_item[ self::CALLBACK ] ][0] : null;
-			if ( self::has_callback( $first_child ) ) {
+			if ( 'woocommerce' !== $menu_item[2] && self::has_callback( $first_child ) ) {
 				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
 			}
 		}
@@ -639,8 +646,6 @@ class Menu {
 		foreach ( array_keys( self::$callbacks ) as $callback ) {
 			Screen::add_screen( $callback );
 		}
-
-		return $menu;
 	}
 
 	/**
