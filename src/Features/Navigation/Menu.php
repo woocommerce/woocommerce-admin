@@ -618,12 +618,15 @@ class Menu {
 
 		// Remove excluded submenu items
 		if ( isset( $submenu['woocommerce'] ) ) {
-			$submenu['woocommerce'] = array_filter(
-				$submenu['woocommerce'],
-				function ( $submenu_item ) {
-					return ! in_array( $submenu_item[2], CoreMenu::get_excluded_items(), true );
+			foreach ( $submenu['woocommerce'] as $key => $submenu_item ) {
+				if ( in_array( $submenu_item[ self::CALLBACK ], CoreMenu::get_excluded_items(), true ) ) {
+					if ( isset( $submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] ) ) {
+						$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+					} else {
+						$submenu['woocommerce'][ $key ][] = 'hide-if-js';
+					}
 				}
-			);
+			}
 		}
 
 		foreach ( $submenu as $parent_key => $parent ) {
