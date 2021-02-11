@@ -311,14 +311,16 @@ class CoreMenu {
 			// Use the link from the first item if it's a category.
 			if ( ! isset( $item['url'] ) ) {
 				$category_items = Menu::get_category_items( $item['id'] );
-				$first_item     = $category_items[0];
+				if ( ! empty( $category_items ) ) {
+					$first_item     = $category_items[0];
 
-				$submenu['woocommerce'][] = array(
-					$item['title'],
-					$first_item['capability'],
-					isset( $first_item['url'] ) ? $first_item['url'] : null,
-					$item['title'],
-				);
+					$submenu['woocommerce'][] = array(
+						$item['title'],
+						$first_item['capability'],
+						isset( $first_item['url'] ) ? $first_item['url'] : null,
+						$item['title'],
+					);
+				}
 
 				continue;
 			}
