@@ -89,8 +89,8 @@ class Menu {
 		add_action( 'admin_menu', array( $this, 'add_core_items' ) );
 		add_filter( 'admin_enqueue_scripts', array( $this, 'enqueue_data' ), 20 );
 
-		add_filter( 'admin_menu', array( $this, 'migrate_core_child_items' ) );
-		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), PHP_INT_MAX - 1 );
+		add_filter( 'admin_menu', array( $this, 'migrate_core_child_items' ), PHP_INT_MAX - 1 );
+		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), PHP_INT_MAX - 2 );
 	}
 
 	/**
