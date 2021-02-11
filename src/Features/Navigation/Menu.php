@@ -616,6 +616,7 @@ class Menu {
 			}
 		}
 
+		// Remove excluded submenu items
 		if ( isset( $submenu['woocommerce'] ) ) {
 			$submenu['woocommerce'] = array_filter(
 				$submenu['woocommerce'],
