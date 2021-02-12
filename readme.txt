@@ -92,6 +92,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Use the new Paypal payments plugin for onboarding. #6261
 - Fix: Show management links when only main task list is hidden. #6291
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
+- Add: Allow users to install the PayU plugin in the payments setup task. #6332
+- Fix: Persist the enabling of plugins in the payments setup task. #6332
 
 == Changelog ==
 
