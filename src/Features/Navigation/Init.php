@@ -33,9 +33,6 @@ class Init {
 		add_action( 'admin_enqueue_scripts', array( $this, 'maybe_enqueue_opt_out_scripts' ) );
 
 		if ( Loader::is_feature_enabled( 'navigation' ) ) {
-			add_action( 'in_admin_header', array( __CLASS__, 'embed_navigation' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'maybe_enqueue_scripts' ) );
-
 			Menu::instance()->init();
 			CoreMenu::instance()->init();
 			Screen::instance()->init();
@@ -130,38 +127,6 @@ class Init {
 		$options[] = self::TOGGLE_OPTION_NAME;
 
 		return $options;
-	}
-
-	/**
-	 * Set up a div for the navigation.
-	 * The initial contents here are meant as a place loader for when the PHP page initialy loads.
-	 */
-	public static function embed_navigation() {
-		if ( ! Screen::is_woocommerce_page() ) {
-			return;
-		}
-
-		?>
-		<div id="woocommerce-embedded-navigation"></div>
-		<?php
-	}
-
-	/**
-	 * Enqueue scripts on non-WooCommerce pages.
-	 */
-	public function maybe_enqueue_scripts() {
-		if ( Screen::is_woocommerce_page() ) {
-			return;
-		}
-
-		$rtl = is_rtl() ? '-rtl' : '';
-
-		wp_enqueue_style(
-			'wc-admin-navigation',
-			Loader::get_url( "navigation/style{$rtl}", 'css' ),
-			array(),
-			Loader::get_file_version( 'css' )
-		);
 	}
 
 	/**

@@ -37,6 +37,8 @@ class CoreMenu {
 	 */
 	public function init() {
 		add_action( 'admin_menu', array( $this, 'register_post_types' ) );
+		// Add this after we've finished migrating menu items to avoid hiding these items.
+		add_action( 'admin_menu', array( $this, 'add_dashboard_menu_items' ), PHP_INT_MAX );
 	}
 
 	/**
@@ -48,6 +50,8 @@ class CoreMenu {
 			return array();
 		}
 
+		// Calling this method adds pages to the below tabs filter on non-settings pages.
+		\WC_Admin_Settings::get_settings_pages();
 		$tabs = apply_filters( 'woocommerce_settings_tabs_array', array() );
 
 		$menu_items = array();
@@ -277,6 +281,63 @@ class CoreMenu {
 		Screen::register_post_type( 'shop_order' );
 		Screen::register_post_type( 'product' );
 		Screen::register_post_type( 'shop_coupon' );
+	}
+
+	/**
+	 * Add the dashboard items to the WP menu to create a quick-access flyout menu.
+	 */
+	public function add_dashboard_menu_items() {
+		global $submenu, $menu;
+		$top_level_items = Menu::get_category_items( 'woocommerce' );
+
+		// phpcs:disable
+		if ( ! isset( $submenu['woocommerce'] ) ) {
+			return;
+		}
+
+		foreach( $top_level_items as $item ) {
+			// Skip extensions.
+			if ( ! isset( $item['menuId'] ) || $item['menuId'] === 'plugins' ) {
+				continue;
+			}
+
+			// Skip specific categories.
+			if (
+				in_array(
+					$item['id'],
+					array(
+						'woocommerce-tools',
+					),
+					true
+				)
+			) {
+				continue;
+			}
+
+			// Use the link from the first item if it's a category.
+			if ( ! isset( $item['url'] ) ) {
+				$category_items = Menu::get_category_items( $item['id'] );
+				$first_item     = $category_items[0];
+
+				$submenu['woocommerce'][] = array(
+					$item['title'],
+					$first_item['capability'],
+					isset( $first_item['url'] ) ? $first_item['url'] : null,
+					$item['title'],
+				);
+
+				continue;
+			}
+
+			// Show top-level items.
+			$submenu['woocommerce'][] = array(
+				$item['title'],
+				$item['capability'],
+				isset( $item['url'] ) ? $item['url'] : null,
+				$item['title'],
+			);
+		}
+		// phpcs:enable
 	}
 
 	/**

@@ -148,7 +148,7 @@ class BusinessDetails extends Component {
 				createNotice(
 					'error',
 					__(
-						'There was a problem updating your business details.',
+						'There was a problem updating your business details',
 						'woocommerce-admin'
 					)
 				);
@@ -410,6 +410,8 @@ class BusinessDetails extends Component {
 	}
 
 	render() {
+		const { initialValues } = this.props;
+
 		// There is a hack here to help us manage the selected tab programatically.
 		// We set the tab name "current-tab". when its the one we want selected. This tricks
 		// the logic in the TabPanel and allows us to switch which tab has the name "current-tab"
@@ -420,7 +422,10 @@ class BusinessDetails extends Component {
 				initialTabName="current-tab"
 				onSelect={ ( tabName ) => {
 					if ( this.state.currentTab !== tabName ) {
-						this.setState( { currentTab: tabName } );
+						this.setState( {
+							currentTab: tabName,
+							savedValues: initialValues,
+						} );
 					}
 				} }
 				tabs={ [
