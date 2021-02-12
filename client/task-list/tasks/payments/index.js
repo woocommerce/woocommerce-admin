@@ -73,21 +73,35 @@ class Payments extends Component {
 			: 'stripe';
 	}
 
-	markConfigured( method, queryParams = {} ) {
-		const { clearTaskStatusCache } = this.props;
-		const { enabledMethods } = this.state;
-
-		this.setState( {
-			enabledMethods: {
-				...enabledMethods,
-				[ method ]: true,
+	async setMethodEnabledOption( method, value ) {
+		const { clearTaskStatusCache, updateOptions, options } = this.props;
+		await updateOptions( {
+			[ method.optionName ]: {
+				...options[ method.optionName ],
+				enabled: value,
 			},
 		} );
 
 		clearTaskStatusCache();
+	}
+
+	async markConfigured( methodName, queryParams = {} ) {
+		const { enabledMethods } = this.state;
+		const { methods } = this.props;
+
+		const method = methods.find( ( option ) => option.key === methodName );
+
+		this.setState( {
+			enabledMethods: {
+				...enabledMethods,
+				[ methodName ]: true,
+			},
+		} );
+
+		await this.setMethodEnabledOption( method, 'yes' );
 
 		recordEvent( 'tasklist_payment_connect_method', {
-			payment_method: method,
+			payment_method: methodName,
 		} );
 
 		getHistory().push(
@@ -146,12 +160,7 @@ class Payments extends Component {
 	}
 
 	async toggleMethod( key ) {
-		const {
-			clearTaskStatusCache,
-			methods,
-			options,
-			updateOptions,
-		} = this.props;
+		const { methods } = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
 
@@ -163,14 +172,10 @@ class Payments extends Component {
 			payment_method: key,
 		} );
 
-		await updateOptions( {
-			[ method.optionName ]: {
-				...options[ method.optionName ],
-				enabled: method.isEnabled ? 'no' : 'yes',
-			},
-		} );
-
-		clearTaskStatusCache();
+		await this.setMethodEnabledOption(
+			method,
+			method.isEnabled ? 'no' : 'yes'
+		);
 	}
 
 	async handleClick( method ) {
@@ -383,6 +388,7 @@ export default compose(
 			'woocommerce_eway_settings',
 			'woocommerce_razorpay_settings',
 			'woocommerce_mollie_payments_settings',
+			'woocommerce_payubiz_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {
