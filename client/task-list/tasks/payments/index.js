@@ -75,14 +75,19 @@ class Payments extends Component {
 
 	async setMethodEnabledOption( method, value ) {
 		const { clearTaskStatusCache, updateOptions, options } = this.props;
-		await updateOptions( {
-			[ method.optionName ]: {
-				...options[ method.optionName ],
-				enabled: value,
-			},
-		} );
+		const methodOptions = options[ method.optionName ];
 
-		clearTaskStatusCache();
+		// Don't update the option if it already has the same value.
+		if ( methodOptions.enabled !== value ) {
+			await updateOptions( {
+				[ method.optionName ]: {
+					...methodOptions,
+					enabled: value,
+				},
+			} );
+
+			clearTaskStatusCache();
+		}
 	}
 
 	async markConfigured( methodName, queryParams = {} ) {
