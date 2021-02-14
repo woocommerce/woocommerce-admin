@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.6.0
 Requires PHP: 7.0
-Stable tag: 2.0.0-dev
+Stable tag: 2.1.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -71,7 +71,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 2. Activity Panels
 3. Analytics
 
+== Changelog ==
+
 == Unreleased ==
+
+- Dev: Allow highlight tooltip to use body tag as parent. #6309
+
+== 2.0.0 02/05/2021 ==
 
 - Tweak: Bump minimum supported version of PHP to 7.0. #6046
 - Fix: allow for more terms to be shown for product attributes in the Analytics orders report. #5868

@@ -86,10 +86,11 @@ class Menu {
 	 * Init.
 	 */
 	public function init() {
-		add_action( 'admin_menu', array( $this, 'add_core_items' ) );
+		add_action( 'admin_menu', array( $this, 'add_core_items' ), 100 );
 		add_filter( 'admin_enqueue_scripts', array( $this, 'enqueue_data' ), 20 );
-		add_filter( 'add_menu_classes', array( $this, 'migrate_menu_items' ), 30 );
-		add_filter( 'add_menu_classes', array( $this, 'migrate_core_child_items' ) );
+
+		add_filter( 'admin_menu', array( $this, 'migrate_core_child_items' ), PHP_INT_MAX - 1 );
+		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), PHP_INT_MAX - 2 );
 	}
 
 	/**
@@ -513,13 +514,6 @@ class Menu {
 
 		foreach ( $submenu_items as $key => $menu_item ) {
 			if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
-				// phpcs:disable
-				if ( ! isset( $menu_item[ self::CSS_CLASSES ] ) ) {
-					$submenu['woocommerce'][ $key ][] .= ' hide-if-js';
-				} else {
-					$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
-				}
-				// phpcs:enable
 				continue;
 			}
 
@@ -596,24 +590,42 @@ class Menu {
 
 	/**
 	 * Hides all WP admin menus items and adds screen IDs to check for new items.
-	 *
-	 * @param array $menu Menu items.
-	 * @return array
 	 */
-	public static function migrate_menu_items( $menu ) {
-		global $submenu;
+	public static function migrate_menu_items() {
+		global $menu, $submenu;
 
 		foreach ( $menu as $key => $menu_item ) {
 			if ( self::has_callback( $menu_item ) ) {
+				// Disable phpcs since we need to override submenu classes.
+				// Note that `phpcs:ignore WordPress.Variables.GlobalVariables.OverrideProhibited` does not work to disable this check.
+				// phpcs:disable
 				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+				// phps:enable
 				continue;
 			}
 
 			// WordPress core menus make the parent item the same URL as the first child.
 			$has_children = isset( $submenu[ $menu_item[ self::CALLBACK ] ] ) && isset( $submenu[ $menu_item[ self::CALLBACK ] ][0] );
 			$first_child  = $has_children ? $submenu[ $menu_item[ self::CALLBACK ] ][0] : null;
-			if ( self::has_callback( $first_child ) ) {
+			if ( 'woocommerce' !== $menu_item[2] && self::has_callback( $first_child ) ) {
+				// Disable phpcs since we need to override submenu classes.
+				// Note that `phpcs:ignore WordPress.Variables.GlobalVariables.OverrideProhibited` does not work to disable this check.
+				// phpcs:disable
 				$menu[ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+				// phps:enable
+			}
+		}
+
+		// Remove excluded submenu items
+		if ( isset( $submenu['woocommerce'] ) ) {
+			foreach ( $submenu['woocommerce'] as $key => $submenu_item ) {
+				if ( in_array( $submenu_item[ self::CALLBACK ], CoreMenu::get_excluded_items(), true ) ) {
+					if ( isset( $submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] ) ) {
+						$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+					} else {
+						$submenu['woocommerce'][ $key ][] = 'hide-if-js';
+					}
+				}
 			}
 		}
 
@@ -639,8 +651,6 @@ class Menu {
 		foreach ( array_keys( self::$callbacks ) as $callback ) {
 			Screen::add_screen( $callback );
 		}
-
-		return $menu;
 	}
 
 	/**
