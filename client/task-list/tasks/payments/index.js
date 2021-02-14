@@ -37,6 +37,26 @@ import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
 
+export const setMethodEnabledOption = async (
+	optionName,
+	value,
+	{ clearTaskStatusCache, updateOptions, options }
+) => {
+	const methodOptions = options[ optionName ];
+
+	// Don't update the option if it already has the same value.
+	if ( methodOptions.enabled !== value ) {
+		await updateOptions( {
+			[ optionName ]: {
+				...methodOptions,
+				enabled: value,
+			},
+		} );
+
+		clearTaskStatusCache();
+	}
+};
+
 class Payments extends Component {
 	constructor( props ) {
 		super( ...arguments );
@@ -73,23 +93,6 @@ class Payments extends Component {
 			: 'stripe';
 	}
 
-	async setMethodEnabledOption( method, value ) {
-		const { clearTaskStatusCache, updateOptions, options } = this.props;
-		const methodOptions = options[ method.optionName ];
-
-		// Don't update the option if it already has the same value.
-		if ( methodOptions.enabled !== value ) {
-			await updateOptions( {
-				[ method.optionName ]: {
-					...methodOptions,
-					enabled: value,
-				},
-			} );
-
-			clearTaskStatusCache();
-		}
-	}
-
 	async markConfigured( methodName, queryParams = {} ) {
 		const { enabledMethods } = this.state;
 		const { methods } = this.props;
@@ -103,7 +106,7 @@ class Payments extends Component {
 			},
 		} );
 
-		await this.setMethodEnabledOption( method, 'yes' );
+		await setMethodEnabledOption( method.optionName, 'yes', this.props );
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: methodName,
@@ -177,9 +180,10 @@ class Payments extends Component {
 			payment_method: key,
 		} );
 
-		await this.setMethodEnabledOption(
-			method,
-			method.isEnabled ? 'no' : 'yes'
+		await setMethodEnabledOption(
+			method.optionName,
+			method.isEnabled ? 'no' : 'yes',
+			this.props
 		);
 	}
 

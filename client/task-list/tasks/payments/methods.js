@@ -393,6 +393,7 @@ export function getPaymentMethods( {
 			container: <PayUIndia />,
 			isConfigured: activePlugins.includes( 'payu-india' ),
 			isEnabled:
+				options.woocommerce_payubiz_settings &&
 				options.woocommerce_payubiz_settings.enabled &&
 				options.woocommerce_payubiz_settings.enabled === 'yes',
 			optionName: 'woocommerce_payubiz_settings',
