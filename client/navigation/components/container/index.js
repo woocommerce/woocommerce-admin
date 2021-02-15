@@ -18,13 +18,21 @@ import { withSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { addHistoryListener, getMatchingItem } from '../../utils';
+import CategoryTitle from '../category-title';
 import Header from '../header';
 import Item from '../../components/Item';
 
 const Container = ( { menuItems } ) => {
 	useEffect( () => {
 		// Collapse the original WP Menu.
+		document.documentElement.classList.remove( 'wp-toolbar' );
+		document.body.classList.add( 'has-woocommerce-navigation' );
 		const adminMenu = document.getElementById( 'adminmenumain' );
+
+		if ( ! adminMenu ) {
+			return;
+		}
+
 		adminMenu.classList.add( 'folded' );
 	}, [] );
 
@@ -146,7 +154,9 @@ const Container = ( { menuItems } ) => {
 							( !! primaryItems || !! pluginItems ) && (
 								<NavigationMenu
 									key={ category.id }
-									title={ category.title }
+									title={
+										<CategoryTitle category={ category } />
+									}
 									menu={ category.id }
 									parentMenu={ category.parent }
 									backButtonLabel={
@@ -203,7 +213,13 @@ const Container = ( { menuItems } ) => {
 								<NavigationMenu
 									className="components-navigation__menu-secondary"
 									key={ `secondary/${ category.id }` }
-									title={ ! isRoot ? category.title : null }
+									title={
+										! isRoot && (
+											<CategoryTitle
+												category={ category }
+											/>
+										)
+									}
 									menu={ category.id }
 									parentMenu={ category.parent }
 									backButtonLabel={
