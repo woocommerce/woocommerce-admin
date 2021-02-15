@@ -10,8 +10,7 @@ import apiFetch from '@wordpress/api-fetch';
  */
 import { PayPal, PAYPAL_PLUGIN } from '../tasks/payments/paypal';
 import { getPaymentMethods } from '../tasks/payments/methods';
-import { updateOptions } from '../../../packages/data/src/options/actions';
-import { setMethodEnabledOption } from 'task-list/tasks/payments';
+import { setMethodEnabledOption } from '../../task-list/tasks/payments';
 
 jest.mock( '@wordpress/api-fetch' );
 
