@@ -8,10 +8,10 @@ import {
 	Icon,
 	templatePartSidebar,
 	chevronRight,
-	plusCircleFilled,
+	plusCircle,
 	archive,
+	download,
 } from '@wordpress/icons';
-import CloudDownload from 'gridicons/dist/cloud-download';
 import { List, Pill } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
@@ -48,7 +48,7 @@ const subTasks = [
 			'For small stores we recommend adding products manually',
 			'woocommerce-admin'
 		),
-		before: <Icon icon={ plusCircleFilled } />,
+		before: <Icon icon={ plusCircle } />,
 		after: <Icon icon={ chevronRight } />,
 		onClick: () =>
 			recordEvent( 'tasklist_add_product', { method: 'manually' } ),
@@ -78,7 +78,7 @@ const subTasks = [
 			'For stores currently selling elsewhere we suggest using a product migration service',
 			'woocommerce-admin'
 		),
-		before: <CloudDownload />,
+		before: <Icon icon={ download } />,
 		after: <Icon icon={ chevronRight } />,
 		onClick: () =>
 			recordEvent( 'tasklist_add_product', { method: 'migrate' } ),
