@@ -22,6 +22,34 @@ import CategoryTitle from '../category-title';
 import Header from '../header';
 import Item from '../../components/Item';
 
+/**
+ * Get a map of all categories, including the topmost WooCommerce parentCategory
+ *
+ * @param {Array} menuItems Array of menuItems
+ */
+export const getCategoriesMap = ( menuItems ) => {
+	return menuItems.reduce(
+		( acc, item ) => {
+			if ( item.isCategory ) {
+				return { ...acc, [ item.id ]: item };
+			}
+			return acc;
+		},
+		{
+			woocommerce: {
+				capability: 'manage_woocommerce',
+				id: 'woocommerce',
+				isCategory: true,
+				menuId: 'primary',
+				migrate: true,
+				order: 10,
+				parent: '',
+				title: 'WooCommerce',
+			},
+		}
+	);
+};
+
 const Container = ( { menuItems } ) => {
 	useEffect( () => {
 		// Collapse the original WP Menu.
@@ -38,27 +66,7 @@ const Container = ( { menuItems } ) => {
 
 	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
 
-	const parentCategory = {
-		capability: 'manage_woocommerce',
-		id: 'woocommerce',
-		isCategory: true,
-		menuId: 'primary',
-		migrate: true,
-		order: 10,
-		parent: '',
-		title: 'WooCommerce',
-	};
-	const categoriesMap = menuItems.reduce(
-		( acc, item ) => {
-			if ( item.isCategory ) {
-				return { ...acc, [ item.id ]: item };
-			}
-			return acc;
-		},
-		{
-			woocommerce: parentCategory,
-		}
-	);
+	const categoriesMap = getCategoriesMap( menuItems );
 	const categories = Object.values( categoriesMap );
 
 	const [ activeItem, setActiveItem ] = useState( 'woocommerce-home' );
