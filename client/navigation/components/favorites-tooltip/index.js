@@ -36,6 +36,10 @@ export const FavoritesTooltip = () => {
 		return null;
 	}
 
+	if ( document.body.classList.contains( 'is-wc-nav-folded' ) ) {
+		return null;
+	}
+
 	return (
 		<HighlightTooltip
 			delay={ 1000 }
