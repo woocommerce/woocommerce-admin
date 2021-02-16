@@ -33,51 +33,28 @@ describe( 'Activity Panel', () => {
 
 	it( 'should render inbox tab if not on home screen', () => {
 		render(
-			<ActivityPanel
-				getHistory={ () => ( {
-					location: {
-						pathname: '/customers',
-					},
-				} ) }
-				query={ {} }
-			/>
+			<ActivityPanel query={ { page: 'wc-admin', path: '/customers' } } />
 		);
 
 		expect( screen.getByText( 'Inbox' ) ).toBeDefined();
 	} );
 
 	it( 'should not render inbox tab on home screen', () => {
-		render( <ActivityPanel query={ {} } /> );
+		render( <ActivityPanel query={ { page: 'wc-admin' } } /> );
 
 		expect( screen.queryByText( 'Inbox' ) ).toBeNull();
 	} );
 
 	it( 'should not render help tab if not on home screen', () => {
 		render(
-			<ActivityPanel
-				getHistory={ () => ( {
-					location: {
-						pathname: '/customers',
-					},
-				} ) }
-				query={ {} }
-			/>
+			<ActivityPanel query={ { page: 'wc-admin', path: '/customers' } } />
 		);
 
 		expect( screen.queryByText( 'Help' ) ).toBeNull();
 	} );
 
 	it( 'should render help tab if on home screen', () => {
-		render(
-			<ActivityPanel
-				getHistory={ () => ( {
-					location: {
-						pathname: '/',
-					},
-				} ) }
-				query={ {} }
-			/>
-		);
+		render( <ActivityPanel query={ { page: 'wc-admin' } } /> );
 
 		expect( screen.getByText( 'Help' ) ).toBeDefined();
 	} );
@@ -105,12 +82,8 @@ describe( 'Activity Panel', () => {
 				requestingTaskListOptions={ false }
 				setupTaskListComplete={ false }
 				setupTaskListHidden={ false }
-				getHistory={ () => ( {
-					location: {
-						pathname: '/customers',
-					},
-				} ) }
 				query={ {
+					page: 'wc-admin',
 					task: 'products',
 					path: '/customers',
 				} }
@@ -124,12 +97,9 @@ describe( 'Activity Panel', () => {
 	it( 'should render display options if on home screen', () => {
 		render(
 			<ActivityPanel
-				getHistory={ () => ( {
-					location: {
-						pathname: '/',
-					},
-				} ) }
-				query={ {} }
+				query={ {
+					page: 'wc-admin',
+				} }
 			/>
 		);
 
@@ -170,12 +140,8 @@ describe( 'Activity Panel', () => {
 				requestingTaskListOptions={ false }
 				setupTaskListComplete={ false }
 				setupTaskListHidden={ false }
-				getHistory={ () => ( {
-					location: {
-						pathname: '/',
-					},
-				} ) }
 				query={ {
+					page: 'wc-admin',
 					task: '',
 				} }
 			/>
