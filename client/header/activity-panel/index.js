@@ -4,8 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { lazy, useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { compose } from '@wordpress/compose';
-import { withDispatch, withSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { uniqueId, find } from 'lodash';
 import CrossIcon from 'gridicons/dist/cross-small';
 import classnames from 'classnames';
@@ -39,21 +38,38 @@ const InboxPanel = lazy( () =>
 	)
 );
 
-export const ActivityPanel = ( {
-	hasUnreadNotes,
-	isEmbedded,
-	query,
-	requestingTaskListOptions,
-	setupTaskListComplete,
-	setupTaskListHidden,
-	trackedCompletedTasks,
-	updateOptions,
-	userPreferencesData,
-} ) => {
+export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	const [ currentTab, setCurrentTab ] = useState( '' );
 	const [ isPanelOpen, setIsPanelOpen ] = useState( false );
 	const [ isPanelSwitching, setIsPanelSwitching ] = useState( false );
 	const [ mobileOpen, setMobileOpen ] = useState( false );
+
+	const {
+		hasUnreadNotes,
+		requestingTaskListOptions,
+		setupTaskListComplete,
+		setupTaskListHidden,
+		trackedCompletedTasks,
+	} = useSelect( ( select ) => {
+		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+
+		return {
+			hasUnreadNotes: getUnreadNotes( select ),
+			requestingTaskListOptions:
+				isResolving( 'getOption', [
+					'woocommerce_task_list_complete',
+				] ) ||
+				isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] ),
+			setupTaskListComplete:
+				getOption( 'woocommerce_task_list_complete' ) === 'yes',
+			setupTaskListHidden:
+				getOption( 'woocommerce_task_list_hidden' ) === 'yes',
+			trackedCompletedTasks:
+				getOption( 'woocommerce_task_list_tracked_completed_tasks' ) ||
+				[],
+		};
+	} );
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 
 	const togglePanel = ( { name: tabName }, isTabOpen ) => {
 		const panelSwitching =
@@ -303,30 +319,4 @@ ActivityPanel.defaultProps = {
 	getHistory,
 };
 
-export default compose(
-	withSelect( ( select ) => {
-		const hasUnreadNotes = getUnreadNotes( select );
-		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
-
-		const setupTaskListComplete =
-			getOption( 'woocommerce_task_list_complete' ) === 'yes';
-		const setupTaskListHidden =
-			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
-		const requestingTaskListOptions =
-			isResolving( 'getOption', [ 'woocommerce_task_list_complete' ] ) ||
-			isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] );
-		const trackedCompletedTasks =
-			getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
-
-		return {
-			hasUnreadNotes,
-			requestingTaskListOptions,
-			setupTaskListComplete,
-			setupTaskListHidden,
-			trackedCompletedTasks,
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		updateOptions: dispatch( OPTIONS_STORE_NAME ).updateOptions,
-	} ) )
-)( ActivityPanel );
+export default ActivityPanel;
