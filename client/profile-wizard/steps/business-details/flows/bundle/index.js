@@ -34,6 +34,7 @@ import {
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
+import { Icon, info, check } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -515,12 +516,7 @@ class BusinessDetails extends Component {
 							this.setState( { isPopoverVisible: true } );
 						} }
 					>
-						<i
-							className="material-icons-outlined"
-							aria-hidden="true"
-						>
-							info
-						</i>
+						<Icon icon={ info } />
 					</Button>
 					{ isPopoverVisible && (
 						<Popover
@@ -533,96 +529,56 @@ class BusinessDetails extends Component {
 						>
 							<div className="woocommerce-business-extensions__benefits">
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Manage your store on the go with the WooCommerce mobile app',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Accept credit cards with WooCommerce Payments',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Speed & security enhancements',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Automatic sales taxes',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Market on Facebook',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Contact customers with Mailchimp',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Drive sales with Google Ads',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<i
-										className="material-icons-outlined"
-										aria-hidden="true"
-									>
-										check
-									</i>
+									<Icon icon={ check } />
 									{ __(
 										'Print shipping labels at home',
 										'woocommerce-admin'

@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { BACKSPACE, DOWN, UP } from '@wordpress/keycodes';
 import { Component, createRef } from '@wordpress/element';
+import { Icon, search } from '@wordpress/icons';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -215,9 +216,7 @@ class Control extends Component {
 					this.input.current.focus();
 				} }
 			>
-				{ isSearchable && (
-					<i className="material-icons-outlined">search</i>
-				) }
+				{ isSearchable && <Icon icon={ search } /> }
 				{ inlineTags && <Tags { ...this.props } /> }
 
 				<div className="components-base-control__field">
