@@ -10,7 +10,7 @@ export const CategoryTitle = ( { category } ) => {
 
 	const className = 'woocommerce-navigation-category-title';
 
-	if ( category.menuId === 'plugins' ) {
+	if ( [ 'plugins', 'favorites' ].includes( category.menuId ) ) {
 		return (
 			<span className={ className }>
 				<span className={ `${ className }__text` }>{ title }</span>
