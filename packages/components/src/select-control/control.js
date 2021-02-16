@@ -216,7 +216,12 @@ class Control extends Component {
 					this.input.current.focus();
 				} }
 			>
-				{ isSearchable && <Icon icon={ search } /> }
+				{ isSearchable && (
+					<Icon
+						className="woocommerce-select-control__control-icon"
+						icon={ search }
+					/>
+				) }
 				{ inlineTags && <Tags { ...this.props } /> }
 
 				<div className="components-base-control__field">
