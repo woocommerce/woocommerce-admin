@@ -302,14 +302,14 @@
 		box-shadow: $shadow-popover;
 
 		&.is-active {
-			border-color: var( --wp-admin-theme-color );
+			border-color: var(--wp-admin-theme-color);
 		}
 
 		.components-base-control__label {
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			max-width: calc( 100% - #{$gap * 2} - 24px );
+			max-width: calc(100% - #{$gap * 2} - 24px);
 		}
 
 		&::after {
@@ -442,7 +442,7 @@
 			display: inline-flex;
 
 			.woocommerce-business-extensions__benefit__check-icon {
-				fill: var( --wp-admin-theme-color );
+				fill: var(--wp-admin-theme-color);
 				margin-right: $gap;
 				min-width: 24px;
 			}
