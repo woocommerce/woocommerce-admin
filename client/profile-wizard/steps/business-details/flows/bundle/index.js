@@ -624,14 +624,15 @@ class BusinessDetails extends Component {
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
-					const businessExtensions = this.renderBusinessExtensionsBundle(
-						values,
-						getInputProps
-					);
-					// : this.renderBusinessExtensions(
-					// 		values,
-					// 		getInputProps
-					//   );
+					const businessExtensions = this.bundleInstall
+						? this.renderBusinessExtensionsBundle(
+								values,
+								getInputProps
+						  )
+						: this.renderBusinessExtensions(
+								values,
+								getInputProps
+						  );
 
 					return (
 						<Fragment>
