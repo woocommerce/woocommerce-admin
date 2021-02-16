@@ -479,6 +479,13 @@ class BusinessDetails extends Component {
 	renderBusinessExtensionsBundle( values, getInputProps ) {
 		const { isPopoverVisible } = this.state;
 
+		const checkMarkIcon = (
+			<Icon
+				className="woocommerce-business-extensions__benefit__check-icon"
+				icon={ check }
+			/>
+		);
+
 		return (
 			<div className="woocommerce-business-extensions">
 				<label htmlFor="woocommerce-business-extensions__checkbox">
@@ -529,56 +536,56 @@ class BusinessDetails extends Component {
 						>
 							<div className="woocommerce-business-extensions__benefits">
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Manage your store on the go with the WooCommerce mobile app',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Accept credit cards with WooCommerce Payments',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Speed & security enhancements',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Automatic sales taxes',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Market on Facebook',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Contact customers with Mailchimp',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Drive sales with Google Ads',
 										'woocommerce-admin'
 									) }
 								</div>
 								<div className="woocommerce-business-extensions__benefit">
-									<Icon icon={ check } />
+									{ checkMarkIcon }
 									{ __(
 										'Print shipping labels at home',
 										'woocommerce-admin'
@@ -617,15 +624,14 @@ class BusinessDetails extends Component {
 				validate={ this.validate }
 			>
 				{ ( { getInputProps, handleSubmit, values, isValidForm } ) => {
-					const businessExtensions = this.bundleInstall
-						? this.renderBusinessExtensionsBundle(
-								values,
-								getInputProps
-						  )
-						: this.renderBusinessExtensions(
-								values,
-								getInputProps
-						  );
+					const businessExtensions = this.renderBusinessExtensionsBundle(
+						values,
+						getInputProps
+					);
+					// : this.renderBusinessExtensions(
+					// 		values,
+					// 		getInputProps
+					//   );
 
 					return (
 						<Fragment>
