@@ -13,9 +13,12 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import './style.scss';
 
 export const FavoriteButton = ( { id } ) => {
-	const { favorites } = useSelect( ( select ) => {
+	const { favorites, isResolving } = useSelect( ( select ) => {
 		return {
 			favorites: select( NAVIGATION_STORE_NAME ).getFavorites(),
+			isResolving: select( NAVIGATION_STORE_NAME ).isResolving(
+				'getFavorites'
+			),
 		};
 	} );
 
@@ -33,6 +36,10 @@ export const FavoriteButton = ( { id } ) => {
 			action: isFavorited ? 'unfavorite' : 'favorite',
 		} );
 	};
+
+	if ( isResolving ) {
+		return null;
+	}
 
 	return (
 		<Button
