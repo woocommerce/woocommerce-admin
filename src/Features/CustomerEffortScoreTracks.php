@@ -35,11 +35,6 @@ class CustomerEffortScoreTracks {
 	const PRODUCT_ADD_PUBLISH_ACTION_NAME = 'product_add_publish';
 
 	/**
-	 * Action name for product update.
-	 */
-	const PRODUCT_UPDATE_ACTION_NAME = 'product_update';
-
-	/**
 	 * Action name for shop order update.
 	 */
 	const SHOP_ORDER_UPDATE_ACTION_NAME = 'shop_order_update';
@@ -156,8 +151,6 @@ class CustomerEffortScoreTracks {
 
 		if ( 'publish' !== $old_status ) {
 			$this->enqueue_ces_survey_for_new_product();
-		} else {
-			$this->enqueue_ces_survey_for_edited_product();
 		}
 	}
 
@@ -256,31 +249,6 @@ class CustomerEffortScoreTracks {
 				'action'         => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
 				'label'          => __(
 					'How easy was it to add a product?',
-					'woocommerce-admin'
-				),
-				'onsubmit_label' => $this->onsubmit_label,
-				'pagenow'        => 'product',
-				'adminpage'      => 'post-php',
-				'props'          => array(
-					'product_count' => $this->get_product_count(),
-				),
-			)
-		);
-	}
-
-	/**
-	 * Enqueue the CES survey trigger for an existing product.
-	 */
-	private function enqueue_ces_survey_for_edited_product() {
-		if ( $this->has_been_shown( self::PRODUCT_UPDATE_ACTION_NAME ) ) {
-			return;
-		}
-
-		$this->enqueue_to_ces_tracks(
-			array(
-				'action'         => self::PRODUCT_UPDATE_ACTION_NAME,
-				'label'          => __(
-					'How easy was it to edit your product?',
 					'woocommerce-admin'
 				),
 				'onsubmit_label' => $this->onsubmit_label,
