@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import { Icon, help as helpIcon, inbox as inboxIcon } from '@wordpress/icons';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section } from '@woocommerce/components';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { OPTIONS_STORE_NAME, useUser } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -70,6 +70,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		};
 	} );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { currentUserCan } = useUser();
 
 	const togglePanel = ( { name: tabName }, isTabOpen ) => {
 		const panelSwitching =
@@ -152,6 +153,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 				return null;
 			},
 			visible:
+				currentUserCan( 'manage_woocommerce' ) &&
 				! setupTaskListComplete &&
 				! setupTaskListHidden &&
 				! isPerformingSetupTask() &&

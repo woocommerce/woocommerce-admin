@@ -3,6 +3,7 @@
  */
 import { render, screen } from '@testing-library/react';
 import { useSelect } from '@wordpress/data';
+import { useUser } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -11,9 +12,7 @@ import { ActivityPanel } from '../';
 
 jest.mock( '@woocommerce/data', () => ( {
 	...jest.requireActual( '@woocommerce/data' ),
-	useUserPreferences: () => ( {
-		updateUserPreferences: () => {},
-	} ),
+	useUser: jest.fn().mockReturnValue( { currentUserCan: () => true } ),
 } ) );
 
 // We aren't testing the <DisplayOptions /> component here.
@@ -174,6 +173,22 @@ describe( 'Activity Panel', () => {
 		);
 
 		expect( getByText( 'Store Setup' ) ).toBeInTheDocument();
+	} );
+
+	it( 'should not render the store setup link when a user does not have capabilties', () => {
+		useUser.mockImplementation( () => ( {
+			currentUserCan: () => false,
+		} ) );
+
+		const { queryByText } = render(
+			<ActivityPanel
+				query={ {
+					task: 'products',
+				} }
+			/>
+		);
+
+		expect( queryByText( 'Store Setup' ) ).toBeDefined();
 	} );
 
 	describe( 'help panel tooltip', () => {
