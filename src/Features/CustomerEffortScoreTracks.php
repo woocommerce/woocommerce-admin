@@ -30,11 +30,6 @@ class CustomerEffortScoreTracks {
 	const SHOWN_FOR_ACTIONS_OPTION_NAME = 'woocommerce_ces_shown_for_actions';
 
 	/**
-	 * Action name for product add/publish.
-	 */
-	const PRODUCT_ADD_PUBLISH_ACTION_NAME = 'product_add_publish';
-
-	/**
 	 * Action name for shop order update.
 	 */
 	const SHOP_ORDER_UPDATE_ACTION_NAME = 'shop_order_update';
@@ -128,29 +123,8 @@ class CustomerEffortScoreTracks {
 		$old_status,
 		$post
 	) {
-		if ( 'product' === $post->post_type ) {
-			$this->maybe_enqueue_ces_survey_for_product( $new_status, $old_status );
-		} elseif ( 'shop_order' === $post->post_type ) {
+		if ( 'shop_order' === $post->post_type ) {
 			$this->enqueue_ces_survey_for_edited_shop_order();
-		}
-	}
-
-	/**
-	 * Maybe enqueue the CES survey, if product is being added or edited.
-	 *
-	 * @param string $new_status The new status.
-	 * @param string $old_status The old status.
-	 */
-	private function maybe_enqueue_ces_survey_for_product(
-		$new_status,
-		$old_status
-	) {
-		if ( 'publish' !== $new_status ) {
-			return;
-		}
-
-		if ( 'publish' !== $old_status ) {
-			$this->enqueue_ces_survey_for_new_product();
 		}
 	}
 
@@ -233,31 +207,6 @@ class CustomerEffortScoreTracks {
 		update_option(
 			self::CES_TRACKS_QUEUE_OPTION_NAME,
 			$queue
-		);
-	}
-
-	/**
-	 * Enqueue the CES survey trigger for a new product.
-	 */
-	private function enqueue_ces_survey_for_new_product() {
-		if ( $this->has_been_shown( self::PRODUCT_ADD_PUBLISH_ACTION_NAME ) ) {
-			return;
-		}
-
-		$this->enqueue_to_ces_tracks(
-			array(
-				'action'         => self::PRODUCT_ADD_PUBLISH_ACTION_NAME,
-				'label'          => __(
-					'How easy was it to add a product?',
-					'woocommerce-admin'
-				),
-				'onsubmit_label' => $this->onsubmit_label,
-				'pagenow'        => 'product',
-				'adminpage'      => 'post-php',
-				'props'          => array(
-					'product_count' => $this->get_product_count(),
-				),
-			)
 		);
 	}
 
