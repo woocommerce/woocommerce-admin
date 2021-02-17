@@ -77,6 +77,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
+- Add: Remove CES actions for adding and editing a product and editing an order #6355
 
 == 2.0.0 02/05/2021 ==
 
@@ -98,6 +99,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Onboarding - Fixed "Business Details" error. #6271
 - Enhancement: Use the new Paypal payments plugin for onboarding. #6261
 - Fix: Show management links when only main task list is hidden. #6291
+- Dev: Allow highlight tooltip to use body tag as parent. #6309
+- Add: Allow users to install the PayU plugin in the payments setup task. #6332
+- Fix: Persist the enabling of plugins in the payments setup task. #6332
+
+== Changelog ==
 
 == 1.9.0 1/15/2021 ==
 
