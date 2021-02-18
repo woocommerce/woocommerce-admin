@@ -26,6 +26,7 @@ import { __ } from '@wordpress/i18n';
 import StatsOverview from './stats-overview';
 import TaskListPlaceholder from '../task-list/placeholder';
 import InboxPanel from '../inbox-panel';
+import { IntroModal as NavigationIntroModal } from '../navigation/components/intro-modal';
 import { WelcomeModal } from './welcome-modal';
 import { WelcomeFromCalypsoModal } from './welcome-from-calypso-modal';
 import ActivityHeader from '../header/activity-panel/activity-header';
@@ -146,6 +147,7 @@ export const Layout = ( {
 					} }
 				/>
 			) }
+			{ window.wcAdminFeatures.navigation && <NavigationIntroModal /> }
 		</div>
 	);
 };
