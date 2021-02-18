@@ -93,6 +93,15 @@ export const getMenuItemsByCategory = ( menuIds, menuItems ) => {
 		return acc;
 	}, {} );
 
+	// Sort added menu items.
+	Object.keys( items ).forEach( ( categoryId ) => {
+		menuIds.forEach( ( menuId ) => {
+			items[ categoryId ][ menuId ] = items[ categoryId ][ menuId ].sort(
+				( a, b ) => a.order - b.order
+			);
+		} );
+	} );
+
 	return {
 		items,
 		categories,
