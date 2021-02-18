@@ -246,6 +246,7 @@
 
 	.components-card__media {
 		margin: $gap-large $gap-larger;
+		overflow: visible;
 
 		img {
 			max-width: 100px;
