@@ -17,6 +17,8 @@ import Header from '../header';
 import { PrimaryMenu } from './primary-menu';
 import { SecondaryMenu } from './secondary-menu';
 
+const woocommerceMenuIds = [ 'primary', 'favorites', 'plugins', 'secondary' ];
+
 /**
  * Get a map of all categories, including the topmost WooCommerce parentCategory
  *
@@ -49,31 +51,23 @@ export const getCategoriesMap = ( menuItems ) => {
 /**
  * Get a flat tree structure of all Categories and thier children grouped by menuId
  *
- * @param {Object} categoriesMap Map of categories by id
- * @param {Array} menuItems Array of menuItems
- * @return {Object} a;dslkfj
+ * @param {Array} menuIds Array of menu IDs.
+ * @param {Array} menuItems Array of menu items.
+ * @return {Object} Mapped menu items by category.
  */
-export const getMenuItemsByCategory = ( categoriesMap, menuItems ) => {
+export const getMenuItemsByCategory = ( menuIds, menuItems ) => {
 	return menuItems.reduce( ( acc, item ) => {
 		// Set up the category if it doesn't yet exist.
 		if ( ! acc[ item.parent ] ) {
 			acc[ item.parent ] = {};
+			menuIds.forEach( ( menuId ) => {
+				acc[ item.parent ][ menuId ] = [];
+			} );
 		}
 
-		// Check if parent category is in the same menu.
-		if (
-			item.parent !== 'woocommerce' &&
-			categoriesMap[ item.parent ] &&
-			categoriesMap[ item.parent ].menuId !== item.menuId &&
-			// Allow favorites to exist under any menu.
-			categoriesMap[ item.parent ].menuId !== 'favorites'
-		) {
-			return acc;
-		}
-
-		// Create the menu object if it doesn't exist in this category.
+		// Undefined menu item.
 		if ( ! acc[ item.parent ][ item.menuId ] ) {
-			acc[ item.parent ][ item.menuId ] = [];
+			return acc;
 		}
 
 		acc[ item.parent ][ item.menuId ].push( item );
@@ -121,7 +115,7 @@ const Container = ( { menuItems } ) => {
 	}, [ menuItems ] );
 
 	const categorizedItems = useMemo(
-		() => getMenuItemsByCategory( categoriesMap, menuItems ),
+		() => getMenuItemsByCategory( woocommerceMenuIds, menuItems ),
 		[ categoriesMap, menuItems ]
 	);
 

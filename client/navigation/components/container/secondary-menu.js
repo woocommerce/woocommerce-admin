@@ -10,7 +10,7 @@ import CategoryTitle from '../category-title';
 import Item from '../../components/Item';
 
 export const SecondaryMenu = ( { category, items, onBackClick } ) => {
-	if ( ! items ) {
+	if ( ! items.length ) {
 		return null;
 	}
 

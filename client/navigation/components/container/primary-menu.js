@@ -16,7 +16,7 @@ export const PrimaryMenu = ( {
 	pluginItems,
 	primaryItems,
 } ) => {
-	if ( ! primaryItems.length && ! pluginItems ) {
+	if ( ! primaryItems.length && ! pluginItems.length ) {
 		return null;
 	}
 
@@ -49,7 +49,7 @@ export const PrimaryMenu = ( {
 					) ) }
 				</NavigationGroup>
 			) }
-			{ !! pluginItems && (
+			{ !! pluginItems.length && (
 				<NavigationGroup
 					title={
 						category.id === 'woocommerce'
