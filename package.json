@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/admin-library",
-	"version": "2.0.0-dev",
+	"version": "2.1.0-dev",
 	"homepage": "https://woocommerce.github.io/woocommerce-admin/",
 	"repository": {
 		"type": "git",
@@ -64,7 +64,8 @@
 		"test": "./node_modules/jest-24.9.0/bin/jest.js --config tests/js/jest.config.json",
 		"test-staged": "./node_modules/jest-24.9.0/bin/jest.js --bail --config tests/js/jest.config.json --findRelatedTests",
 		"test:help": "wp-scripts test-unit-js --help",
-		"test:php": "docker-compose -f docker/wc-admin-php-test-suite/docker-compose.yml run --rm phpunit ; docker-compose -f docker/wc-admin-php-test-suite/docker-compose.yml down",
+		"test:php": "docker-compose -f docker/wc-admin-php-test-suite/docker-compose.yml run --rm phpunit",
+		"posttest:php": "docker-compose -f docker/wc-admin-php-test-suite/docker-compose.yml down",
 		"test:update-snapshots": "jest --updateSnapshot --config tests/js/jest.config.json",
 		"test:watch": "npm run test -- --watch",
 		"test:zip": "npm run clean && composer i && ./bin/build-test-zip.sh",
@@ -114,9 +115,9 @@
 		"github-label-sync": "2.0.0",
 		"gridicons": "3.3.1",
 		"interpolate-components": "1.1.1",
+		"memize": "^1.1.0",
 		"memoize-one": "5.1.1",
 		"qs": "6.9.6",
-		"react-click-outside": "3.0.1",
 		"react-dates": "17.2.0",
 		"react-router-dom": "5.2.0",
 		"react-transition-group": "4.4.1",

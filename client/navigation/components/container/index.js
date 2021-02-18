@@ -18,29 +18,18 @@ import { withSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { addHistoryListener, getMatchingItem } from '../../utils';
+import CategoryTitle from '../category-title';
 import Header from '../header';
 import Item from '../../components/Item';
 
-const Container = ( { menuItems } ) => {
-	useEffect( () => {
-		// Collapse the original WP Menu.
-		const adminMenu = document.getElementById( 'adminmenumain' );
-		adminMenu.classList.add( 'folded' );
-	}, [] );
-
-	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
-
-	const parentCategory = {
-		capability: 'manage_woocommerce',
-		id: 'woocommerce',
-		isCategory: true,
-		menuId: 'primary',
-		migrate: true,
-		order: 10,
-		parent: '',
-		title: 'WooCommerce',
-	};
-	const categoriesMap = menuItems.reduce(
+/**
+ * Get a map of all categories, including the topmost WooCommerce parentCategory
+ *
+ * @param {Array} menuItems Array of menuItems
+ * @return {Object} Map of categories by id
+ */
+export const getCategoriesMap = ( menuItems ) => {
+	return menuItems.reduce(
 		( acc, item ) => {
 			if ( item.isCategory ) {
 				return { ...acc, [ item.id ]: item };
@@ -48,9 +37,72 @@ const Container = ( { menuItems } ) => {
 			return acc;
 		},
 		{
-			woocommerce: parentCategory,
+			woocommerce: {
+				capability: 'manage_woocommerce',
+				id: 'woocommerce',
+				isCategory: true,
+				menuId: 'primary',
+				migrate: true,
+				order: 10,
+				parent: '',
+				title: 'WooCommerce',
+			},
 		}
 	);
+};
+
+/**
+ * Get a flat tree structure of all Categories and thier children grouped by menuId
+ *
+ * @param {Object} categoriesMap Map of categories by id
+ * @param {Array} menuItems Array of menuItems
+ * @return {Object} a;dslkfj
+ */
+export const getMenuItemsByCategory = ( categoriesMap, menuItems ) => {
+	return menuItems.reduce( ( acc, item ) => {
+		// Set up the category if it doesn't yet exist.
+		if ( ! acc[ item.parent ] ) {
+			acc[ item.parent ] = {};
+		}
+
+		// Check if parent category is in the same menu.
+		if (
+			item.parent !== 'woocommerce' &&
+			categoriesMap[ item.parent ] &&
+			categoriesMap[ item.parent ].menuId !== item.menuId &&
+			// Allow favorites to exist under any menu.
+			categoriesMap[ item.parent ].menuId !== 'favorites'
+		) {
+			return acc;
+		}
+
+		// Create the menu object if it doesn't exist in this category.
+		if ( ! acc[ item.parent ][ item.menuId ] ) {
+			acc[ item.parent ][ item.menuId ] = [];
+		}
+
+		acc[ item.parent ][ item.menuId ].push( item );
+		return acc;
+	}, {} );
+};
+
+const Container = ( { menuItems } ) => {
+	useEffect( () => {
+		// Collapse the original WP Menu.
+		document.documentElement.classList.remove( 'wp-toolbar' );
+		document.body.classList.add( 'has-woocommerce-navigation' );
+		const adminMenu = document.getElementById( 'adminmenumain' );
+
+		if ( ! adminMenu ) {
+			return;
+		}
+
+		adminMenu.classList.add( 'folded' );
+	}, [] );
+
+	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
+
+	const categoriesMap = getCategoriesMap( menuItems );
 	const categories = Object.values( categoriesMap );
 
 	const [ activeItem, setActiveItem ] = useState( 'woocommerce-home' );
@@ -58,7 +110,7 @@ const Container = ( { menuItems } ) => {
 
 	useEffect( () => {
 		const initialMatchedItem = getMatchingItem( menuItems );
-		if ( initialMatchedItem ) {
+		if ( initialMatchedItem && activeItem !== initialMatchedItem ) {
 			setActiveItem( initialMatchedItem );
 			setActiveLevel( initialMatchedItem.parent );
 		}
@@ -75,35 +127,9 @@ const Container = ( { menuItems } ) => {
 		return removeListener;
 	}, [ menuItems ] );
 
-	const getMenuItemsByCategory = ( items ) => {
-		return items.reduce( ( acc, item ) => {
-			// Set up the category if it doesn't yet exist.
-			if ( ! acc[ item.parent ] ) {
-				acc[ item.parent ] = {};
-			}
-
-			// Check if parent category is in the same menu.
-			if (
-				item.parent !== 'woocommerce' &&
-				categoriesMap[ item.parent ] &&
-				categoriesMap[ item.parent ].menuId !== item.menuId
-			) {
-				return acc;
-			}
-
-			// Create the menu object if it doesn't exist in this category.
-			if ( ! acc[ item.parent ][ item.menuId ] ) {
-				acc[ item.parent ][ item.menuId ] = [];
-			}
-
-			acc[ item.parent ][ item.menuId ].push( item );
-			return acc;
-		}, {} );
-	};
-
 	const categorizedItems = useMemo(
-		() => getMenuItemsByCategory( menuItems ),
-		[ menuItems ]
+		() => getMenuItemsByCategory( categoriesMap, menuItems ),
+		[ categoriesMap, menuItems ]
 	);
 
 	const navDomRef = useRef( null );
@@ -139,14 +165,24 @@ const Container = ( { menuItems } ) => {
 					{ categories.map( ( category ) => {
 						const {
 							primary: primaryItems,
+							favorites: favoriteItems,
 							secondary: secondaryItems,
 							plugins: pluginItems,
 						} = categorizedItems[ category.id ] || {};
+
+						const primaryAndFavoriteItems = [
+							...( primaryItems || [] ),
+							...( favoriteItems || [] ),
+						];
+
 						return [
-							( !! primaryItems || !! pluginItems ) && (
+							( !! primaryAndFavoriteItems.length ||
+								!! pluginItems ) && (
 								<NavigationMenu
 									key={ category.id }
-									title={ category.title }
+									title={
+										<CategoryTitle category={ category } />
+									}
 									menu={ category.id }
 									parentMenu={ category.parent }
 									backButtonLabel={
@@ -168,14 +204,16 @@ const Container = ( { menuItems } ) => {
 													)
 									}
 								>
-									{ !! primaryItems && (
+									{ !! primaryAndFavoriteItems.length && (
 										<NavigationGroup>
-											{ primaryItems.map( ( item ) => (
-												<Item
-													key={ item.id }
-													item={ item }
-												/>
-											) ) }
+											{ primaryAndFavoriteItems.map(
+												( item ) => (
+													<Item
+														key={ item.id }
+														item={ item }
+													/>
+												)
+											) }
 										</NavigationGroup>
 									) }
 									{ !! pluginItems && (
@@ -203,7 +241,13 @@ const Container = ( { menuItems } ) => {
 								<NavigationMenu
 									className="components-navigation__menu-secondary"
 									key={ `secondary/${ category.id }` }
-									title={ ! isRoot ? category.title : null }
+									title={
+										! isRoot && (
+											<CategoryTitle
+												category={ category }
+											/>
+										)
+									}
 									menu={ category.id }
 									parentMenu={ category.parent }
 									backButtonLabel={

@@ -43,6 +43,14 @@
 	box-sizing: border-box;
 }
 
+#wpbody {
+	display: inline-block;
+	width: 100%;
+	box-sizing: border-box;
+	padding-top: 0;
+	margin-top: $header-height;
+}
+
 #wpfooter {
 	display: none;
 }
@@ -62,6 +70,10 @@
 @include breakpoint( '<600px' ) {
 	#wpadminbar {
 		position: fixed;
+	}
+
+	html.wp-toolbar {
+		padding-top: $adminbar-height-mobile;
 	}
 }
 

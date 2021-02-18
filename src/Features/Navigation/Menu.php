@@ -7,6 +7,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\Navigation;
 
+use Automattic\WooCommerce\Admin\Features\Navigation\Favorites;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 use Automattic\WooCommerce\Admin\Features\Navigation\CoreMenu;
 
@@ -86,11 +87,11 @@ class Menu {
 	 * Init.
 	 */
 	public function init() {
-		add_action( 'admin_menu', array( $this, 'add_core_items' ) );
+		add_action( 'admin_menu', array( $this, 'add_core_items' ), 100 );
 		add_filter( 'admin_enqueue_scripts', array( $this, 'enqueue_data' ), 20 );
 
-		add_filter( 'admin_menu', array( $this, 'migrate_core_child_items' ) );
-		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), PHP_INT_MAX - 1 );
+		add_filter( 'admin_menu', array( $this, 'migrate_core_child_items' ), PHP_INT_MAX - 1 );
+		add_filter( 'admin_menu', array( $this, 'migrate_menu_items' ), PHP_INT_MAX - 2 );
 	}
 
 	/**
@@ -147,13 +148,12 @@ class Menu {
 	 *
 	 * @param array $args Array containing the necessary arguments.
 	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'order'      => (int) Menu item order.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'menuId'     => (string) The ID of the menu to add the category to.
+	 *      'id'      => (string) The unique ID of the menu item. Required.
+	 *      'title'   => (string) Title of the menu item. Required.
+	 *      'url'     => (string) URL or callback to be used. Required.
+	 *      'order'   => (int) Menu item order.
+	 *      'migrate' => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'menuId'  => (string) The ID of the menu to add the category to.
 	 *    ).
 	 */
 	private static function add_category( $args ) {
@@ -164,7 +164,6 @@ class Menu {
 		$defaults           = array(
 			'id'         => '',
 			'title'      => '',
-			'capability' => 'manage_woocommerce',
 			'order'      => 100,
 			'migrate'    => true,
 			'menuId'     => 'primary',
@@ -173,6 +172,7 @@ class Menu {
 		$menu_item          = wp_parse_args( $args, $defaults );
 		$menu_item['title'] = wp_strip_all_tags( wp_specialchars_decode( $menu_item['title'] ) );
 		unset( $menu_item['url'] );
+		unset( $menu_item['capability'] );
 
 		if ( ! isset( $menu_item['parent'] ) ) {
 			$menu_item['parent']          = 'woocommerce';
@@ -257,8 +257,16 @@ class Menu {
 	 * @return string
 	 */
 	public static function get_item_menu_id( $item ) {
+		$favorites = Favorites::get_all();
+		if ( ! empty( $favorites ) && in_array( $item['id'], $favorites, true ) ) {
+			return 'favorites';
+		}
+
 		if ( isset( $item['parent'] ) && isset( self::$menu_items[ $item['parent'] ] ) ) {
-			return self::$menu_items[ $item['parent'] ]['menuId'];
+			$menu_id = self::$menu_items[ $item['parent'] ]['menuId'];
+			return 'favorites' === $menu_id
+				? 'plugins'
+				: $menu_id;
 		}
 
 		return $item['menuId'];
@@ -269,19 +277,14 @@ class Menu {
 	 *
 	 * @param array $args Array containing the necessary arguments.
 	 *    $args = array(
-	 *      'id'         => (string) The unique ID of the menu item. Required.
-	 *      'title'      => (string) Title of the menu item. Required.
-	 *      'capability' => (string) Capability to view this menu item.
-	 *      'url'        => (string) URL or callback to be used. Required.
-	 *      'migrate'    => (bool) Whether or not to hide the item in the wp admin menu.
-	 *      'order'      => (int) Menu item order.
+	 *      'id'      => (string) The unique ID of the menu item. Required.
+	 *      'title'   => (string) Title of the menu item. Required.
+	 *      'url'     => (string) URL or callback to be used. Required.
+	 *      'migrate' => (bool) Whether or not to hide the item in the wp admin menu.
+	 *      'order'   => (int) Menu item order.
 	 *    ).
 	 */
 	public static function add_plugin_category( $args ) {
-		if ( ! isset( $args['parent'] ) ) {
-			unset( $args['order'] );
-		}
-
 		$category_args = array_merge(
 			$args,
 			array(
@@ -289,10 +292,16 @@ class Menu {
 			)
 		);
 
+		if ( ! isset( $category_args['parent'] ) ) {
+			unset( $category_args['order'] );
+		}
+
 		$menu_id = self::get_item_menu_id( $category_args );
-		if ( 'plugins' !== $menu_id ) {
+		if ( ! in_array( $menu_id, array( 'plugins', 'favorites' ), true ) ) {
 			return;
 		}
+
+		$category_args['menuId'] = $menu_id;
 
 		self::add_category( $category_args );
 	}
@@ -618,12 +627,15 @@ class Menu {
 
 		// Remove excluded submenu items
 		if ( isset( $submenu['woocommerce'] ) ) {
-			$submenu['woocommerce'] = array_filter(
-				$submenu['woocommerce'],
-				function ( $submenu_item ) {
-					return ! in_array( $submenu_item[2], CoreMenu::get_excluded_items(), true );
+			foreach ( $submenu['woocommerce'] as $key => $submenu_item ) {
+				if ( in_array( $submenu_item[ self::CALLBACK ], CoreMenu::get_excluded_items(), true ) ) {
+					if ( isset( $submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] ) ) {
+						$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
+					} else {
+						$submenu['woocommerce'][ $key ][] = 'hide-if-js';
+					}
 				}
-			);
+			}
 		}
 
 		foreach ( $submenu as $parent_key => $parent ) {
@@ -708,7 +720,7 @@ class Menu {
 	 */
 	public static function get_prepared_menu_item_data( $menu_items ) {
 		foreach ( $menu_items as $index => $menu_item ) {
-			if ( $menu_item[ 'capability' ] && ! current_user_can( $menu_item[ 'capability' ] ) ) {
+			if ( isset( $menu_item[ 'capability' ] ) && ! current_user_can( $menu_item[ 'capability' ] ) ) {
 				unset( $menu_items[ $index ] );
 			}
 		}
@@ -718,6 +730,7 @@ class Menu {
 			'primary'   => 0,
 			'secondary' => 1,
 			'plugins'   => 2,
+			'favorites' => 3,
 		);
 		$menu      = array_map( function( $item ) use( $menuOrder ) { return $menuOrder[ $item['menuId'] ]; }, $menu_items );
 		$order     = array_column( $menu_items, 'order' );
