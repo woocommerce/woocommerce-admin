@@ -19,6 +19,19 @@ import { SecondaryMenu } from './secondary-menu';
 
 const woocommerceMenuIds = [ 'primary', 'favorites', 'plugins', 'secondary' ];
 
+const defaultCategories = {
+	woocommerce: {
+		capability: 'manage_woocommerce',
+		id: 'woocommerce',
+		isCategory: true,
+		menuId: 'primary',
+		migrate: true,
+		order: 10,
+		parent: '',
+		title: 'WooCommerce',
+	},
+};
+
 /**
  * Get a map of all categories, including the topmost WooCommerce parentCategory
  *
@@ -56,7 +69,8 @@ export const getCategoriesMap = ( menuItems ) => {
  * @return {Object} Mapped menu items by category.
  */
 export const getMenuItemsByCategory = ( menuIds, menuItems ) => {
-	return menuItems.reduce( ( acc, item ) => {
+	const categories = defaultCategories;
+	const items = menuItems.reduce( ( acc, item ) => {
 		// Set up the category if it doesn't yet exist.
 		if ( ! acc[ item.parent ] ) {
 			acc[ item.parent ] = {};
@@ -65,14 +79,24 @@ export const getMenuItemsByCategory = ( menuIds, menuItems ) => {
 			} );
 		}
 
-		// Undefined menu item.
+		// Incorrect menu ID.
 		if ( ! acc[ item.parent ][ item.menuId ] ) {
 			return acc;
+		}
+
+		// Add categories.
+		if ( item.isCategory ) {
+			categories[ item.id ] = item;
 		}
 
 		acc[ item.parent ][ item.menuId ].push( item );
 		return acc;
 	}, {} );
+
+	return {
+		items,
+		categories,
+	};
 };
 
 const Container = ( { menuItems } ) => {
@@ -88,9 +112,6 @@ const Container = ( { menuItems } ) => {
 
 		adminMenu.classList.add( 'folded' );
 	}, [] );
-
-	const categoriesMap = getCategoriesMap( menuItems );
-	const categories = Object.values( categoriesMap );
 
 	const [ activeItem, setActiveItem ] = useState( 'woocommerce-home' );
 	const [ activeLevel, setActiveLevel ] = useState( 'woocommerce' );
@@ -114,9 +135,9 @@ const Container = ( { menuItems } ) => {
 		return removeListener;
 	}, [ menuItems ] );
 
-	const categorizedItems = useMemo(
+	const { categories, items } = useMemo(
 		() => getMenuItemsByCategory( woocommerceMenuIds, menuItems ),
-		[ categoriesMap, menuItems ]
+		[ menuItems ]
 	);
 
 	const navDomRef = useRef( null );
@@ -148,32 +169,25 @@ const Container = ( { menuItems } ) => {
 						setActiveLevel( ...args );
 					} }
 				>
-					{ categories.map( ( category ) => {
-						const {
-							primary: primaryItems,
-							favorites: favoriteItems,
-							secondary: secondaryItems,
-							plugins: pluginItems,
-						} = categorizedItems[ category.id ] || {};
-
-						const primaryAndFavoriteItems = [
-							...( primaryItems || [] ),
-							...( favoriteItems || [] ),
-						];
+					{ Object.values( categories ).map( ( category ) => {
+						const categoryItems = items[ category.id ];
 
 						return [
 							<PrimaryMenu
 								key={ category.id }
 								category={ category }
 								onBackClick={ onBackClick }
-								primaryItems={ primaryAndFavoriteItems }
-								pluginItems={ pluginItems }
+								primaryItems={ [
+									...categoryItems.primary,
+									...categoryItems.favorites,
+								] }
+								pluginItems={ categoryItems.plugins }
 							/>,
 							<SecondaryMenu
 								key={ `secondary/${ category.id }` }
 								category={ category }
 								onBackClick={ onBackClick }
-								items={ secondaryItems }
+								items={ categoryItems.secondary }
 							/>,
 						];
 					} ) }
