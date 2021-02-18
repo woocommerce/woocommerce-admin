@@ -211,7 +211,7 @@ class CustomerEffortScoreTracks {
 	 * Enqueue the CES survey trigger for setting changes.
 	 */
 	public function run_on_update_options() {
-		// $current_tab is set when WC_Admin_Settings::save is called.
+		// $current_tab is set when WC_Admin_Settings::save_settings is called.
 		global $current_tab;
 
 		if ( $this->has_been_shown( self::SETTINGS_CHANGE_ACTION_NAME ) ) {
