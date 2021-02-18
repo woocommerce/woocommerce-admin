@@ -1,9 +1,11 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Guide } from '@wordpress/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 import { useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 
@@ -12,7 +14,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
  */
 import './style.scss';
 
-const introModalOption = 'navigation_intro_modal_dismissed';
+const introModalOption = 'woocommerce_navigation_intro_modal_dismissed';
 
 export const IntroModal = () => {
 	const [ isOpen, setOpen ] = useState( true );
@@ -45,24 +47,62 @@ export const IntroModal = () => {
 		return null;
 	}
 
+	const getPage = ( title, description, videoId ) => {
+		return {
+			content: (
+				<div className="woocommerce-navigation-intro-modal__page-wrapper">
+					<div className="woocommerce-navigation-intro-modal__page-text">
+						<Text variant="title.large" as="h2">
+							{ title }
+						</Text>
+						<Text variant="body.large">{ description }</Text>
+					</div>
+					<iframe
+						title={ title }
+						width="420"
+						height="315"
+						src={ `https://www.youtube.com/embed/${ videoId }` }
+					></iframe>
+				</div>
+			),
+		};
+	};
+
 	return (
 		<Guide
 			className="woocommerce-navigation-intro-modal"
 			onFinish={ dismissModal }
 			pages={ [
-				{
-					content: (
-						<iframe
-							title="Rick Roll"
-							width="420"
-							height="315"
-							src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-						></iframe>
+				getPage(
+					__(
+						'A new navigation for WooCommerce',
+						'woocommerce-admin'
 					),
-				},
-				{
-					content: 'Number 2',
-				},
+					__(
+						'All of your store management features in one place',
+						'woocommerce-admin'
+					),
+					'dQw4w9WgXcQ'
+				),
+				getPage(
+					__( 'Focus on managing your store', 'woocommerce-admin' ),
+					__(
+						'Give your attention to key areas of WooCommerce with little distraction',
+						'woocommerce-admin'
+					),
+					'dQw4w9WgXcQ'
+				),
+				getPage(
+					__(
+						'Easily find and favorite your extensions',
+						'woocommerce-admin'
+					),
+					__(
+						"They'll appear in the top level of the navigation for quick access",
+						'woocommerce-admin'
+					),
+					'dQw4w9WgXcQ'
+				),
 			] }
 		/>
 	);
