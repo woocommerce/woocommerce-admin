@@ -48,11 +48,6 @@
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
 		Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
-	margin-top: -$adminbar-height;
-	@include breakpoint( '<600px' ) {
-		margin-top: -$adminbar-height-mobile;
-	}
-
 	#wpwrap {
 		top: 0;
 	}
@@ -87,12 +82,13 @@
 		#wpbody {
 			padding-left: 0;
 		}
+	}
+}
 
-		#wpcontent {
-			> #wpbody {
-				margin-top: 32px !important;
-			}
-		}
+.wp-toolbar .woocommerce-admin-full-screen {
+	margin-top: -$adminbar-height;
+	@include breakpoint( '<600px' ) {
+		margin-top: -$adminbar-height-mobile;
 	}
 }
 
