@@ -1,15 +1,10 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { compose } from '@wordpress/compose';
-import {
-	Navigation,
-	NavigationMenu,
-	NavigationGroup,
-} from '@woocommerce/experimental';
+import { Navigation } from '@woocommerce/experimental';
 import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { withSelect } from '@wordpress/data';
@@ -18,9 +13,9 @@ import { withSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { addHistoryListener, getMatchingItem } from '../../utils';
-import CategoryTitle from '../category-title';
 import Header from '../header';
-import Item from '../../components/Item';
+import { PrimaryMenu } from './primary-menu';
+import { SecondaryMenu } from './secondary-menu';
 
 /**
  * Get a map of all categories, including the topmost WooCommerce parentCategory
@@ -100,8 +95,6 @@ const Container = ( { menuItems } ) => {
 		adminMenu.classList.add( 'folded' );
 	}, [] );
 
-	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
-
 	const categoriesMap = getCategoriesMap( menuItems );
 	const categories = Object.values( categoriesMap );
 
@@ -134,14 +127,13 @@ const Container = ( { menuItems } ) => {
 
 	const navDomRef = useRef( null );
 
-	const trackBackClick = ( id ) => {
+	const onBackClick = ( id ) => {
 		recordEvent( 'navigation_back_click', {
 			category: id,
 		} );
 	};
 
 	const isRoot = activeLevel === 'woocommerce';
-	const isRootBackVisible = isRoot && rootBackUrl;
 
 	const classes = classnames( 'woocommerce-navigation', {
 		'is-root': isRoot,
@@ -176,106 +168,19 @@ const Container = ( { menuItems } ) => {
 						];
 
 						return [
-							( !! primaryAndFavoriteItems.length ||
-								!! pluginItems ) && (
-								<NavigationMenu
-									key={ category.id }
-									title={
-										<CategoryTitle category={ category } />
-									}
-									menu={ category.id }
-									parentMenu={ category.parent }
-									backButtonLabel={
-										isRootBackVisible
-											? rootBackLabel
-											: category.backButtonLabel || null
-									}
-									onBackButtonClick={
-										isRootBackVisible
-											? () => {
-													trackBackClick(
-														'woocommerce'
-													);
-													window.location = rootBackUrl;
-											  }
-											: () =>
-													trackBackClick(
-														category.id
-													)
-									}
-								>
-									{ !! primaryAndFavoriteItems.length && (
-										<NavigationGroup>
-											{ primaryAndFavoriteItems.map(
-												( item ) => (
-													<Item
-														key={ item.id }
-														item={ item }
-													/>
-												)
-											) }
-										</NavigationGroup>
-									) }
-									{ !! pluginItems && (
-										<NavigationGroup
-											title={
-												category.id === 'woocommerce'
-													? __(
-															'Extensions',
-															'woocommerce-admin'
-													  )
-													: null
-											}
-										>
-											{ pluginItems.map( ( item ) => (
-												<Item
-													key={ item.id }
-													item={ item }
-												/>
-											) ) }
-										</NavigationGroup>
-									) }
-								</NavigationMenu>
-							),
-							!! secondaryItems && (
-								<NavigationMenu
-									className="components-navigation__menu-secondary"
-									key={ `secondary/${ category.id }` }
-									title={
-										! isRoot && (
-											<CategoryTitle
-												category={ category }
-											/>
-										)
-									}
-									menu={ category.id }
-									parentMenu={ category.parent }
-									backButtonLabel={
-										category.backButtonLabel || null
-									}
-									onBackButtonClick={
-										isRootBackVisible
-											? null
-											: () =>
-													trackBackClick(
-														category.id
-													)
-									}
-								>
-									<NavigationGroup
-										onBackButtonClick={ () =>
-											trackBackClick( category.id )
-										}
-									>
-										{ secondaryItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
-								</NavigationMenu>
-							),
+							<PrimaryMenu
+								key={ category.id }
+								category={ category }
+								onBackClick={ onBackClick }
+								primaryItems={ primaryAndFavoriteItems }
+								pluginItems={ pluginItems }
+							/>,
+							<SecondaryMenu
+								key={ `secondary/${ category.id }` }
+								category={ category }
+								onBackClick={ onBackClick }
+								items={ secondaryItems }
+							/>,
 						];
 					} ) }
 				</Navigation>
