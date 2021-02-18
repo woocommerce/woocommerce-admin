@@ -216,7 +216,7 @@ class CoreMenu {
 					'id'         => 'woocommerce-marketplace',
 					'url'        => 'wc-addons',
 					'menuId'     => 'secondary',
-					'order'      => 20,
+					'order'      => 10,
 				),
 				// Tools category.
 				array(
