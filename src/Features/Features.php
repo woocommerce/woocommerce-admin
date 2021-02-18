@@ -236,7 +236,9 @@ class Features {
 	 */
 	public static function maybe_load_beta_features_modal( $hook ) {
 		if (
-			'woocommerce_page_wc-settings' !== $hook
+			'woocommerce_page_wc-settings' !== $hook ||
+			! isset( $_GET['tab'] ) || 'advanced' !== $_GET['tab'] || // phpcs:ignore CSRF ok.
+			! isset( $_GET['section'] ) || 'features' !== $_GET['section'] // phpcs:ignore CSRF ok.
 		) {
 			return;
 		}
