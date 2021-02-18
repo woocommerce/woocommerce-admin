@@ -33,32 +33,19 @@ const defaultCategories = {
 };
 
 /**
- * Get a map of all categories, including the topmost WooCommerce parentCategory
+ * Sort an array of menu items by their order property.
  *
- * @param {Array} menuItems Array of menuItems
- * @return {Object} Map of categories by id
+ * @param {Array} menuItems Array of menu items.
+ * @return {Array} Sorted menu items.
  */
-export const getCategoriesMap = ( menuItems ) => {
-	return menuItems.reduce(
-		( acc, item ) => {
-			if ( item.isCategory ) {
-				return { ...acc, [ item.id ]: item };
-			}
-			return acc;
-		},
-		{
-			woocommerce: {
-				capability: 'manage_woocommerce',
-				id: 'woocommerce',
-				isCategory: true,
-				menuId: 'primary',
-				migrate: true,
-				order: 10,
-				parent: '',
-				title: 'WooCommerce',
-			},
+export const sortMenuItems = ( menuItems ) => {
+	return menuItems.sort( ( a, b ) => {
+		if ( a.order === b.order ) {
+			return a.title - b.title;
 		}
-	);
+
+		return a.order - b.order;
+	} );
 };
 
 /**
@@ -66,11 +53,12 @@ export const getCategoriesMap = ( menuItems ) => {
  *
  * @param {Array} menuIds Array of menu IDs.
  * @param {Array} menuItems Array of menu items.
- * @return {Object} Mapped menu items by category.
+ * @return {Object} Mapped menu items and categories.
  */
-export const getMenuItemsByCategory = ( menuIds, menuItems ) => {
+export const getMappedItemsCategories = ( menuIds, menuItems ) => {
 	const categories = defaultCategories;
-	const items = menuItems.reduce( ( acc, item ) => {
+
+	const items = sortMenuItems( menuItems ).reduce( ( acc, item ) => {
 		// Set up the category if it doesn't yet exist.
 		if ( ! acc[ item.parent ] ) {
 			acc[ item.parent ] = {};
@@ -92,15 +80,6 @@ export const getMenuItemsByCategory = ( menuIds, menuItems ) => {
 		acc[ item.parent ][ item.menuId ].push( item );
 		return acc;
 	}, {} );
-
-	// Sort added menu items.
-	Object.keys( items ).forEach( ( categoryId ) => {
-		menuIds.forEach( ( menuId ) => {
-			items[ categoryId ][ menuId ] = items[ categoryId ][ menuId ].sort(
-				( a, b ) => a.order - b.order
-			);
-		} );
-	} );
 
 	return {
 		items,
@@ -145,7 +124,7 @@ const Container = ( { menuItems } ) => {
 	}, [ menuItems ] );
 
 	const { categories, items } = useMemo(
-		() => getMenuItemsByCategory( woocommerceMenuIds, menuItems ),
+		() => getMappedItemsCategories( woocommerceMenuIds, menuItems ),
 		[ menuItems ]
 	);
 
