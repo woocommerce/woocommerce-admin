@@ -1,0 +1,31 @@
+.woocommerce-navigation-intro-modal {
+	.components-guide__page-control {
+		order: 3;
+		margin: $gap-small 0;
+
+		li {
+			margin: 0;
+		}
+	}
+
+	iframe {
+		width: 100%;
+	}
+
+	.components-guide__footer {
+		box-sizing: border-box;
+		margin: 0;
+		height: 0;
+		overflow: visible;
+
+		.components-button {
+			position: absolute;
+			bottom: 100%;
+			margin-bottom: $gap-small;
+		}
+	}
+
+	&.components-modal__frame.components-guide {
+		height: auto;
+	}
+}
