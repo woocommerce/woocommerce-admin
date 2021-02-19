@@ -47,7 +47,7 @@ export const IntroModal = () => {
 		return null;
 	}
 
-	const getPage = ( title, description, videoId ) => {
+	const getPage = ( title, description, imageUrl ) => {
 		return {
 			content: (
 				<div className="woocommerce-navigation-intro-modal__page-wrapper">
@@ -57,12 +57,7 @@ export const IntroModal = () => {
 						</Text>
 						<Text variant="body.large">{ description }</Text>
 					</div>
-					<iframe
-						title={ title }
-						width="420"
-						height="315"
-						src={ `https://www.youtube.com/embed/${ videoId }` }
-					></iframe>
+					<img alt={ title } src={ imageUrl } />
 				</div>
 			),
 		};
@@ -82,7 +77,7 @@ export const IntroModal = () => {
 						'All of your store management features in one place',
 						'woocommerce-admin'
 					),
-					'dQw4w9WgXcQ'
+					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-1.gif'
 				),
 				getPage(
 					__( 'Focus on managing your store', 'woocommerce-admin' ),
@@ -90,7 +85,7 @@ export const IntroModal = () => {
 						'Give your attention to key areas of WooCommerce with little distraction',
 						'woocommerce-admin'
 					),
-					'dQw4w9WgXcQ'
+					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-2.gif'
 				),
 				getPage(
 					__(
@@ -101,7 +96,7 @@ export const IntroModal = () => {
 						"They'll appear in the top level of the navigation for quick access",
 						'woocommerce-admin'
 					),
-					'dQw4w9WgXcQ'
+					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-3.gif'
 				),
 			] }
 		/>
