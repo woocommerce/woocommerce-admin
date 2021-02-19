@@ -289,6 +289,9 @@ class CoreMenu {
 			return;
 		}
 
+		// Reset the submenu in case anything has been addeed elsewhere.
+		$submenu['woocommerce'] = array();
+
 		foreach( $top_level_items as $item ) {
 			// Skip extensions.
 			if ( ! isset( $item['menuId'] ) || $item['menuId'] === 'plugins' ) {
