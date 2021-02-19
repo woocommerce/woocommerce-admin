@@ -15,25 +15,30 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import './style.scss';
 
 const introModalOption = 'woocommerce_navigation_intro_modal_dismissed';
+const trackingOption = 'woocommerce_allow_tracking';
 
 export const IntroModal = () => {
 	const [ isOpen, setOpen ] = useState( true );
 
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 
-	const { isDismissed, isResolving } = useSelect( ( select ) => {
-		const dismissedOption = select( OPTIONS_STORE_NAME ).getOption(
-			introModalOption
-		);
-		return {
-			isDismissed: dismissedOption === 'yes',
-			isResolving:
-				typeof dismissedOption === 'undefined' ||
-				select( OPTIONS_STORE_NAME ).isResolving( 'getOption', [
-					introModalOption,
-				] ),
-		};
-	} );
+	const { allowTracking, isDismissed, isResolving } = useSelect(
+		( select ) => {
+			const { getOption, isResolving: isOptionResolving } = select(
+				OPTIONS_STORE_NAME
+			);
+			const dismissedOption = getOption( introModalOption );
+
+			return {
+				allowTracking: getOption( trackingOption ) === 'yes',
+				isDismissed: dismissedOption === 'yes',
+				isResolving:
+					typeof dismissedOption === 'undefined' ||
+					isOptionResolving( 'getOption', [ introModalOption ] ) ||
+					isOptionResolving( 'getOption', [ trackingOption ] ),
+			};
+		}
+	);
 
 	const dismissModal = () => {
 		updateOptions( {
@@ -43,7 +48,7 @@ export const IntroModal = () => {
 		setOpen( false );
 	};
 
-	if ( ! isOpen || isDismissed || isResolving ) {
+	if ( ! isOpen || isDismissed || isResolving || ! allowTracking ) {
 		return null;
 	}
 
