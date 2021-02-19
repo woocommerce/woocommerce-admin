@@ -36,8 +36,8 @@ WooCommerce Admin also allows store owners to customize a new dashboard screen w
 
 = Minimum Requirements =
 
-* WordPress 5.3
-* WooCommerce 4.5 or greater
+* WordPress 5.4
+* WooCommerce 4.8 or greater
 * PHP version 7.0 or greater. PHP 7.2 or greater is recommended
 * MySQL version 5.0 or greater. MySQL 5.6 or greater is recommended
 
@@ -78,6 +78,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
 - Add: Remove CES actions for adding and editing a product and editing an order #6355
+- Dev: Add filter to allow enabling the WP toolbar within the new navigation. #6371
+- Dev: Add unit tests to Navigation's Container component. #6344
+- Fix: Enqueue scripts called incorrectly in php unit tests #6358
 - Fix: Removed @woocommerce/components/card from OBW #6374
 
 == 2.0.0 02/05/2021 ==
