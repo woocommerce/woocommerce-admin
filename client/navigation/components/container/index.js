@@ -12,78 +12,14 @@ import { withSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { addHistoryListener, getMatchingItem } from '../../utils';
+import {
+	addHistoryListener,
+	getMappedItemsCategories,
+	getMatchingItem,
+} from '../../utils';
 import Header from '../header';
 import { PrimaryMenu } from './primary-menu';
 import { SecondaryMenu } from './secondary-menu';
-
-export const menuIds = [ 'primary', 'favorites', 'plugins', 'secondary' ];
-
-export const defaultCategories = {
-	woocommerce: {
-		id: 'woocommerce',
-		isCategory: true,
-		menuId: 'primary',
-		migrate: true,
-		order: 10,
-		parent: '',
-		title: 'WooCommerce',
-	},
-};
-
-/**
- * Sort an array of menu items by their order property.
- *
- * @param {Array} menuItems Array of menu items.
- * @return {Array} Sorted menu items.
- */
-export const sortMenuItems = ( menuItems ) => {
-	return menuItems.sort( ( a, b ) => {
-		if ( a.order === b.order ) {
-			return a.title.localeCompare( b.title );
-		}
-
-		return a.order - b.order;
-	} );
-};
-
-/**
- * Get a flat tree structure of all Categories and thier children grouped by menuId
- *
- * @param {Array} menuItems Array of menu items.
- * @return {Object} Mapped menu items and categories.
- */
-export const getMappedItemsCategories = ( menuItems ) => {
-	const categories = { ...defaultCategories };
-
-	const items = sortMenuItems( menuItems ).reduce( ( acc, item ) => {
-		// Set up the category if it doesn't yet exist.
-		if ( ! acc[ item.parent ] ) {
-			acc[ item.parent ] = {};
-			menuIds.forEach( ( menuId ) => {
-				acc[ item.parent ][ menuId ] = [];
-			} );
-		}
-
-		// Incorrect menu ID.
-		if ( ! acc[ item.parent ][ item.menuId ] ) {
-			return acc;
-		}
-
-		// Add categories.
-		if ( item.isCategory ) {
-			categories[ item.id ] = item;
-		}
-
-		acc[ item.parent ][ item.menuId ].push( item );
-		return acc;
-	}, {} );
-
-	return {
-		items,
-		categories,
-	};
-};
 
 const Container = ( { menuItems } ) => {
 	useEffect( () => {
@@ -158,24 +94,26 @@ const Container = ( { menuItems } ) => {
 					{ Object.values( categories ).map( ( category ) => {
 						const categoryItems = items[ category.id ];
 
-						return [
-							<PrimaryMenu
-								key={ category.id }
-								category={ category }
-								onBackClick={ onBackClick }
-								primaryItems={ [
-									...categoryItems.primary,
-									...categoryItems.favorites,
-								] }
-								pluginItems={ categoryItems.plugins }
-							/>,
-							<SecondaryMenu
-								key={ `secondary/${ category.id }` }
-								category={ category }
-								onBackClick={ onBackClick }
-								items={ categoryItems.secondary }
-							/>,
-						];
+						return (
+							!! categoryItems && [
+								<PrimaryMenu
+									key={ category.id }
+									category={ category }
+									onBackClick={ onBackClick }
+									primaryItems={ [
+										...categoryItems.primary,
+										...categoryItems.favorites,
+									] }
+									pluginItems={ categoryItems.plugins }
+								/>,
+								<SecondaryMenu
+									key={ `secondary/${ category.id }` }
+									category={ category }
+									onBackClick={ onBackClick }
+									items={ categoryItems.secondary }
+								/>,
+							]
+						);
 					} ) }
 				</Navigation>
 			</div>
