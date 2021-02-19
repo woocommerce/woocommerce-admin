@@ -292,8 +292,8 @@ class CoreMenu {
 
 		$menuIds = array(
 			'primary',
-			'favorites',
 			'secondary',
+			'favorites',
 		);
 
 		foreach ( $menuIds as $menuId ) {
@@ -313,9 +313,12 @@ class CoreMenu {
 	
 				// Use the link from the first item if it's a category.
 				if ( ! isset( $item['url'] ) ) {
-					$category_items = $mapped_items[ $item['id'] ][ $menuId ];
+					$categoryMenuId = $menuId === 'favorites' ? 'plugins' : $menuId;
+					$category_items = $mapped_items[ $item['id'] ][ $categoryMenuId ];
+
 					if ( ! empty( $category_items ) ) {
-						$first_item     = $category_items[0];
+						$first_item = $category_items[0];
+
 	
 						$submenu['woocommerce'][] = array(
 							$item['title'],

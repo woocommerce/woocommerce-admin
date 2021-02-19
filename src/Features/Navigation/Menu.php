@@ -733,13 +733,13 @@ class Menu {
 		$title     = array_column( $menu_items, 'title' );
 		array_multisort( $order, SORT_ASC, $title, SORT_ASC, $menu_items );
 
-		foreach ( $menu_items as $index => $menu_item ) {
+		foreach ( $menu_items as $id => $menu_item ) {
 			$category_id = $menu_item[ 'parent' ];
 			$menu_id     = $menu_item[ 'menuId' ];
 			if ( ! isset( $mapped_items[ $category_id ] ) ) {
 				$mapped_items[ $category_id ] = array();
-				foreach ( self::MENU_IDS as $menu_id ) {
-					$mapped_items[ $category_id ][ $menu_id ] = array();
+				foreach ( self::MENU_IDS as $available_menu_id ) {
+					$mapped_items[ $category_id ][ $available_menu_id ] = array();
 				}
 			}
 
