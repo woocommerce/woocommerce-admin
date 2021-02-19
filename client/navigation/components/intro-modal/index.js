@@ -62,7 +62,9 @@ export const IntroModal = () => {
 						</Text>
 						<Text variant="body.large">{ description }</Text>
 					</div>
-					<img alt={ title } src={ imageUrl } />
+					<div className="woocommerce-navigation-intro-modal__image-wrapper">
+						<img alt={ title } src={ imageUrl } />
+					</div>
 				</div>
 			),
 		};
@@ -82,7 +84,7 @@ export const IntroModal = () => {
 						'All of your store management features in one place',
 						'woocommerce-admin'
 					),
-					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-1.gif'
+					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-1-32.gif'
 				),
 				getPage(
 					__( 'Focus on managing your store', 'woocommerce-admin' ),
@@ -90,7 +92,7 @@ export const IntroModal = () => {
 						'Give your attention to key areas of WooCommerce with little distraction',
 						'woocommerce-admin'
 					),
-					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-2.gif'
+					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-2-32.gif'
 				),
 				getPage(
 					__(
@@ -101,7 +103,7 @@ export const IntroModal = () => {
 						"They'll appear in the top level of the navigation for quick access",
 						'woocommerce-admin'
 					),
-					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-3.gif'
+					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-3-32.gif'
 				),
 			] }
 		/>

@@ -1,6 +1,10 @@
 .woocommerce-navigation-intro-modal {
 	width: 670px;
 
+	@include breakpoint( '<782px' ) {
+		width: 350px;
+	}
+
 	.components-guide__page-control {
 		order: 3;
 		margin: $gap 0;
@@ -42,10 +46,24 @@
 	.woocommerce-navigation-intro-modal__page-wrapper {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
+
+		img {
+			max-width: 100%;
+		}
+
+		@include breakpoint( '<782px' ) {
+			grid-template-columns: 1fr;
+
+			.woocommerce-navigation-intro-modal__image-wrapper {
+				grid-row: 1;
+				max-height: 328px;
+				overflow: hidden;
+			}
+		}
 	}
 
 	.woocommerce-navigation-intro-modal__page-text {
-		padding: $gap-largest;
+		padding: $gap-large;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -53,7 +71,6 @@
 		h2 {
 			font-weight: bold;
 			margin-bottom: $gap-smaller;
-			max-width: 85%;
 		}
 	}
 }
