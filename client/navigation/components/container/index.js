@@ -17,11 +17,10 @@ import Header from '../header';
 import { PrimaryMenu } from './primary-menu';
 import { SecondaryMenu } from './secondary-menu';
 
-const woocommerceMenuIds = [ 'primary', 'favorites', 'plugins', 'secondary' ];
+export const menuIds = [ 'primary', 'favorites', 'plugins', 'secondary' ];
 
-const defaultCategories = {
+export const defaultCategories = {
 	woocommerce: {
-		capability: 'manage_woocommerce',
 		id: 'woocommerce',
 		isCategory: true,
 		menuId: 'primary',
@@ -41,7 +40,7 @@ const defaultCategories = {
 export const sortMenuItems = ( menuItems ) => {
 	return menuItems.sort( ( a, b ) => {
 		if ( a.order === b.order ) {
-			return a.title - b.title;
+			return a.title.localeCompare( b.title );
 		}
 
 		return a.order - b.order;
@@ -51,12 +50,11 @@ export const sortMenuItems = ( menuItems ) => {
 /**
  * Get a flat tree structure of all Categories and thier children grouped by menuId
  *
- * @param {Array} menuIds Array of menu IDs.
  * @param {Array} menuItems Array of menu items.
  * @return {Object} Mapped menu items and categories.
  */
-export const getMappedItemsCategories = ( menuIds, menuItems ) => {
-	const categories = defaultCategories;
+export const getMappedItemsCategories = ( menuItems ) => {
+	const categories = { ...defaultCategories };
 
 	const items = sortMenuItems( menuItems ).reduce( ( acc, item ) => {
 		// Set up the category if it doesn't yet exist.
@@ -124,7 +122,7 @@ const Container = ( { menuItems } ) => {
 	}, [ menuItems ] );
 
 	const { categories, items } = useMemo(
-		() => getMappedItemsCategories( woocommerceMenuIds, menuItems ),
+		() => getMappedItemsCategories( menuItems ),
 		[ menuItems ]
 	);
 

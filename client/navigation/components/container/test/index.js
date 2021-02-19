@@ -1,42 +1,60 @@
 /**
  * Internal dependencies
  */
-import { getCategoriesMap, getMenuItemsByCategory } from '../';
+import { getMappedItemsCategories, sortMenuItems } from '../';
 
-describe( 'getCategoriesMap', () => {
-	const menuItems = [
-		{ id: 'zero', title: 'zero', isCategory: true },
-		{ id: 'one', title: 'one', isCategory: true },
-		{ id: 'two', title: 'two', isCategory: true },
-		{ id: 'three', title: 'three', isCategory: false },
-		{ id: 'four', title: 'four', isCategory: false },
-	];
-
+describe( 'sortMenuItems', () => {
 	it( 'should get a map of all categories', () => {
-		const categoriesMap = getCategoriesMap( menuItems );
+		const menuItems = [
+			{ id: 'second', title: 'second', order: 2 },
+			{ id: 'first', title: 'three', order: 1 },
+			{ id: 'third', title: 'four', order: 3 },
+		];
 
-		expect( categoriesMap.zero ).toMatchObject( menuItems[ 0 ] );
-		expect( categoriesMap.one ).toMatchObject( menuItems[ 1 ] );
-		expect( categoriesMap.two ).toMatchObject( menuItems[ 2 ] );
-		expect( categoriesMap.three ).toBeUndefined();
-		expect( categoriesMap.four ).toBeUndefined();
+		const sortedItems = sortMenuItems( menuItems );
+
+		expect( sortedItems[ 0 ].id ).toBe( 'first' );
+		expect( sortedItems[ 1 ].id ).toBe( 'second' );
+		expect( sortedItems[ 2 ].id ).toBe( 'third' );
 	} );
 
-	it( 'should include the topmost WooCommerce parent category', () => {
-		const categoriesMap = getCategoriesMap( menuItems );
+	it( 'should sort alphabetically if order is the same', () => {
+		const menuItems = [
+			{ id: 'third', title: 'z', order: 2 },
+			{ id: 'first', title: 'first', order: 1 },
+			{ id: 'second', title: 'a', order: 2 },
+		];
 
-		expect( categoriesMap.woocommerce ).toBeDefined();
-	} );
+		const sortedItems = sortMenuItems( menuItems );
 
-	it( 'should have the correct number of values', () => {
-		const categoriesMap = getCategoriesMap( menuItems );
-
-		expect( Object.keys( categoriesMap ).length ).toBe( 4 );
+		expect( sortedItems[ 0 ].id ).toBe( 'first' );
+		expect( sortedItems[ 1 ].id ).toBe( 'second' );
+		expect( sortedItems[ 2 ].id ).toBe( 'third' );
 	} );
 } );
 
-describe( 'getMenuItemsByCategory', () => {
-	it( 'should get a map of all categories and child elements', () => {
+describe( 'getMappedItemsCategories', () => {
+	it( 'should get the default category when none are provided', () => {
+		const menuItems = [
+			{
+				id: 'child-one',
+				title: 'child-one',
+				isCategory: false,
+				parent: 'woocommerce',
+				menuId: 'plugins',
+			},
+		];
+		const { categories, items } = getMappedItemsCategories( menuItems );
+
+		expect( items.woocommerce ).toBeDefined();
+		expect( items.woocommerce.plugins ).toBeDefined();
+		expect( items.woocommerce.plugins.length ).toBe( 1 );
+
+		expect( Object.keys( categories ).length ).toBe( 1 );
+		expect( categories.woocommerce ).toBeDefined();
+	} );
+
+	it( 'should get a map of all items and categories', () => {
 		const menuItems = [
 			{
 				id: 'child-one',
@@ -60,19 +78,19 @@ describe( 'getMenuItemsByCategory', () => {
 				menuId: 'plugins',
 			},
 		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
-		);
+		const { categories, items } = getMappedItemsCategories( menuItems );
 
-		expect( categorizedItems.woocommerce ).toBeDefined();
-		expect( categorizedItems.woocommerce.plugins ).toBeDefined();
-		expect( categorizedItems.woocommerce.plugins.length ).toBe( 1 );
+		expect( items.woocommerce ).toBeDefined();
+		expect( items.woocommerce.plugins ).toBeDefined();
+		expect( items.woocommerce.plugins.length ).toBe( 1 );
 
-		expect( categorizedItems.parent ).toBeDefined();
-		expect( categorizedItems.parent.plugins ).toBeDefined();
-		expect( categorizedItems.parent.plugins.length ).toBe( 2 );
+		expect( items.parent ).toBeDefined();
+		expect( items.parent.plugins ).toBeDefined();
+		expect( items.parent.plugins.length ).toBe( 2 );
+
+		expect( Object.keys( categories ).length ).toBe( 2 );
+		expect( categories.parent ).toBeDefined();
+		expect( categories.woocommerce ).toBeDefined();
 	} );
 
 	it( 'should handle multiple depths', () => {
@@ -99,21 +117,19 @@ describe( 'getMenuItemsByCategory', () => {
 				menuId: 'plugins',
 			},
 		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
-		);
+		const { categories, items } = getMappedItemsCategories( menuItems );
 
-		expect( categorizedItems[ 'grand-parent' ] ).toBeDefined();
-		expect( categorizedItems[ 'grand-parent' ] ).toBeDefined();
-		expect( categorizedItems[ 'grand-parent' ].plugins.length ).toBe( 1 );
+		expect( items[ 'grand-parent' ] ).toBeDefined();
+		expect( items[ 'grand-parent' ] ).toBeDefined();
+		expect( items[ 'grand-parent' ].plugins.length ).toBe( 1 );
 
-		expect( categorizedItems.child ).toBeDefined();
-		expect( categorizedItems.child ).toBeDefined();
-		expect( categorizedItems.child.plugins.length ).toBe( 1 );
+		expect( items.child ).toBeDefined();
+		expect( items.child ).toBeDefined();
+		expect( items.child.plugins.length ).toBe( 1 );
 
-		expect( categorizedItems[ 'grand-child' ] ).not.toBeDefined();
+		expect( items[ 'grand-child' ] ).not.toBeDefined();
+
+		expect( Object.keys( categories ).length ).toBe( 3 );
 	} );
 
 	it( 'should group by menuId', () => {
@@ -140,15 +156,11 @@ describe( 'getMenuItemsByCategory', () => {
 				menuId: 'primary',
 			},
 		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
-		);
+		const { items } = getMappedItemsCategories( menuItems );
 
-		expect( categorizedItems.parent ).toBeDefined();
-		expect( categorizedItems.parent.primary ).toBeDefined();
-		expect( categorizedItems.parent.primary.length ).toBe( 2 );
+		expect( items.parent ).toBeDefined();
+		expect( items.parent.primary ).toBeDefined();
+		expect( items.parent.primary.length ).toBe( 2 );
 	} );
 
 	it( 'should group children only if their menuId matches parent', () => {
@@ -189,16 +201,48 @@ describe( 'getMenuItemsByCategory', () => {
 				menuId: 'primary',
 			},
 		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
-		);
+		const { items } = getMappedItemsCategories( menuItems );
 
-		expect( categorizedItems.parent ).toBeDefined();
-		expect( categorizedItems.parent.plugins ).toBeDefined();
-		expect( categorizedItems.parent.plugins.length ).toBe( 2 );
+		expect( items.parent ).toBeDefined();
+		expect( items.parent.plugins ).toBeDefined();
+		expect( items.parent.plugins.length ).toBe( 2 );
 
-		expect( categorizedItems.primary ).not.toBeDefined();
+		expect( items.primary ).not.toBeDefined();
+	} );
+
+	it( 'should ignore bad menu IDs', () => {
+		const menuItems = [
+			{
+				id: 'parent',
+				title: 'parent',
+				isCategory: false,
+				parent: 'woocommerce',
+				menuId: 'badId',
+			},
+			{
+				id: 'primary-one',
+				title: 'primary-one',
+				isCategory: false,
+				parent: 'woocommerce',
+				menuId: 'primary',
+			},
+			{
+				id: 'primary-two',
+				title: 'primary-two',
+				isCategory: false,
+				parent: 'woocommerce',
+				menuId: 'primary',
+			},
+		];
+		const { categories, items } = getMappedItemsCategories( menuItems );
+
+		expect( items.woocommerce ).toBeDefined();
+		expect( items.woocommerce.primary ).toBeDefined();
+		expect( items.woocommerce.primary.length ).toBe( 2 );
+
+		expect( items.woocommerce ).toBeDefined();
+		expect( items.woocommerce.badId ).not.toBeDefined();
+
+		expect( Object.keys( categories ).length ).toBe( 1 );
 	} );
 } );
