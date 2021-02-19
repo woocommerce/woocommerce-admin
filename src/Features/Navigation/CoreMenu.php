@@ -104,7 +104,7 @@ class CoreMenu {
 				'title'  => __( 'Settings', 'woocommerce-admin' ),
 				'id'     => 'woocommerce-settings',
 				'menuId' => 'secondary',
-				'order'  => 10,
+				'order'  => 20,
 				'url'    => 'admin.php?page=wc-settings',
 			),
 			array(
