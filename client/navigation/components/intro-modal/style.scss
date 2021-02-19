@@ -29,6 +29,10 @@
 			bottom: 100%;
 			margin-bottom: $gap;
 		}
+
+		.components-guide__back-button {
+			display: none;
+		}
 	}
 
 	&.components-modal__frame.components-guide {
@@ -41,7 +45,10 @@
 	}
 
 	.woocommerce-navigation-intro-modal__page-text {
-		padding: #{$gap * 4} $gap-large #{$gap * 4} $gap-largest;
+		padding: $gap-largest;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 
 		h2 {
 			font-weight: bold;
