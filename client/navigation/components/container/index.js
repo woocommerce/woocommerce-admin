@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { compose } from '@wordpress/compose';
 import { Navigation } from '@woocommerce/experimental';
-import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
+import { NAVIGATION_STORE_NAME, useUser } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { withSelect } from '@wordpress/data';
 
@@ -57,9 +57,11 @@ const Container = ( { menuItems } ) => {
 		return removeListener;
 	}, [ menuItems ] );
 
+	const { currentUserCan } = useUser();
+
 	const { categories, items } = useMemo(
-		() => getMappedItemsCategories( menuItems ),
-		[ menuItems ]
+		() => getMappedItemsCategories( menuItems, currentUserCan ),
+		[ menuItems, currentUserCan ]
 	);
 
 	const navDomRef = useRef( null );

@@ -173,9 +173,13 @@ export const sortMenuItems = ( menuItems ) => {
  * Get a flat tree structure of all Categories and thier children grouped by menuId
  *
  * @param {Array} menuItems Array of menu items.
+ * @param {Function} currentUserCan Callback method passed the capability to determine if a menu item is visible.
  * @return {Object} Mapped menu items and categories.
  */
-export const getMappedItemsCategories = ( menuItems ) => {
+export const getMappedItemsCategories = (
+	menuItems,
+	currentUserCan = null
+) => {
 	const categories = { ...defaultCategories };
 
 	const items = sortMenuItems( menuItems ).reduce( ( acc, item ) => {
@@ -189,6 +193,15 @@ export const getMappedItemsCategories = ( menuItems ) => {
 
 		// Incorrect menu ID.
 		if ( ! acc[ item.parent ][ item.menuId ] ) {
+			return acc;
+		}
+
+		// User does not have permission to view this item.
+		if (
+			currentUserCan &&
+			item.capability &&
+			! currentUserCan( item.capability )
+		) {
 			return acc;
 		}
 
