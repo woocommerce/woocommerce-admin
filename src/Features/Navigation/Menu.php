@@ -750,7 +750,7 @@ class Menu {
 
 			// Remove the item if the user cannot access it.
 			if ( isset( $menu_item[ 'capability' ] ) && ! current_user_can( $menu_item[ 'capability' ] ) ) {
-				unset( $menu_items[ $index ] );
+				continue;
 			}
 
 			$mapped_items[ $category_id ][ $menu_id ][] = $menu_item;
