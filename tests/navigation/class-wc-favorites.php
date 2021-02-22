@@ -14,7 +14,7 @@ use Automattic\WooCommerce\Admin\Features\Navigation\Favorites;
 class WC_Tests_Navigation_Favorites extends WC_Unit_Test_Case {
 
 	/**
-	 * @var Marketing
+	 * @var Favorites
 	 */
 	private $instance;
 
