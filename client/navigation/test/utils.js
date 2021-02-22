@@ -313,7 +313,7 @@ describe( 'addHistoryListener', () => {
 } );
 
 describe( 'sortMenuItems', () => {
-	it( 'should get a map of all categories', () => {
+	it( 'should return an array of items sorted by the order property', () => {
 		const menuItems = [
 			{ id: 'second', title: 'second', order: 2 },
 			{ id: 'first', title: 'three', order: 1 },
@@ -327,7 +327,7 @@ describe( 'sortMenuItems', () => {
 		expect( sortedItems[ 2 ].id ).toBe( 'third' );
 	} );
 
-	it( 'should sort alphabetically if order is the same', () => {
+	it( 'should sort items alphabetically if order is the same', () => {
 		const menuItems = [
 			{ id: 'third', title: 'z', order: 2 },
 			{ id: 'first', title: 'first', order: 1 },
@@ -432,7 +432,6 @@ describe( 'getMappedItemsCategories', () => {
 		expect( items[ 'grand-parent' ] ).toBeDefined();
 		expect( items[ 'grand-parent' ].plugins.length ).toBe( 1 );
 
-		expect( items.child ).toBeDefined();
 		expect( items.child ).toBeDefined();
 		expect( items.child.plugins.length ).toBe( 1 );
 
