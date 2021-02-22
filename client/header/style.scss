@@ -3,7 +3,7 @@
 	box-sizing: border-box;
 	padding: 0;
 	position: fixed;
-	width: calc(100% - 160px);
+	width: calc( 100% - 160px );
 	top: $adminbar-height;
 	z-index: 1001; /* on top of #wp-content-editor-tools */
 
@@ -17,6 +17,16 @@
 		min-height: $header-height;
 	}
 
+	.woocommerce-layout__header-back-button {
+		cursor: pointer;
+		margin-left: $gutter-large;
+		display: flex;
+
+		&:focus {
+			box-shadow: inset -1px -1px 0 #757575, inset 1px 1px 0 #757575;
+		}
+	}
+
 	@include breakpoint( '<782px' ) {
 		flex-flow: row wrap;
 		top: $adminbar-height-mobile;
@@ -24,7 +34,7 @@
 	}
 
 	@include breakpoint( '782px-960px' ) {
-		width: calc(100% - 36px);
+		width: calc( 100% - 36px );
 	}
 
 	.woocommerce-layout__header-breadcrumbs-wrapper {
@@ -44,6 +54,10 @@
 		font-weight: 600;
 		font-size: 14px;
 		text-transform: capitalize;
+
+		&.with-back-button {
+			padding-left: $fallback-gutter;
+		}
 	}
 }
 
