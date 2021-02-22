@@ -1,3 +1,7 @@
+# Unreleased
+
+-   Update Lodash.
+
 # 2.1.0
 
 -   Update to @wordpress/eslint coding standards.

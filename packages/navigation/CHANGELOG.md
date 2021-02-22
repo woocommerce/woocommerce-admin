@@ -1,3 +1,7 @@
+# Unreleased
+
+-   Update Lodash.
+
 # 5.3.0
 
 -   `getQueryExcludedScreens` Return a list of screens that should be excluded from persisted query logic.
