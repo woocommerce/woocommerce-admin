@@ -264,6 +264,7 @@ class BusinessDetails extends Component {
 							<Card>
 								<>
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'How many products do you plan to display?',
 											'woocommerce-admin'
@@ -274,6 +275,7 @@ class BusinessDetails extends Component {
 									/>
 
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'Currently selling elsewhere?',
 											'woocommerce-admin'
@@ -290,6 +292,7 @@ class BusinessDetails extends Component {
 										'other-woocommerce',
 									].includes( values.selling_venues ) && (
 										<SelectControl
+											excludeSelectedOptions={ false }
 											label={ __(
 												"What's your current annual revenue?",
 												'woocommerce-admin'
@@ -311,6 +314,9 @@ class BusinessDetails extends Component {
 										<>
 											<div className="business-competitors">
 												<SelectControl
+													excludeSelectedOptions={
+														false
+													}
 													label={ __(
 														'Which platform is the store using?',
 														'woocommerce-admin'
