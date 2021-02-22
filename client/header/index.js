@@ -12,6 +12,7 @@ import { Text } from '@woocommerce/experimental';
 import { Icon, chevronLeft } from '@wordpress/icons';
 import { getHistory, updateQueryString } from '@woocommerce/navigation';
 import { ENTER, SPACE } from '@wordpress/keycodes';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -24,11 +25,15 @@ import Navigation from '../navigation';
 
 const renderTaskListBackButton = () => {
 	const currentUrl = new URL( window.location.href );
+	const task = currentUrl.searchParams.get( 'task' );
 
-	if ( currentUrl.searchParams.get( 'task' ) ) {
+	if ( task ) {
 		const homeText = __( 'WooCommerce Home', 'woocommerce-admin' );
 
 		const navigateHome = () => {
+			recordEvent( 'topbar_back_button', {
+				page_name: getPageTitle( window.title ),
+			} );
 			updateQueryString( {}, getHistory().location.pathname, {} );
 		};
 
