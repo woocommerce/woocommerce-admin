@@ -13,10 +13,11 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Internal dependencies
  */
 import './style.scss';
+import { WELCOME_MODAL_DISMISSED_OPTION_NAME } from '../../../homescreen/constants';
 
-const introModalOption = 'woocommerce_navigation_intro_modal_dismissed';
-const welcomeModalOption = 'woocommerce_task_list_welcome_modal_dismissed';
-const trackingOption = 'woocommerce_allow_tracking';
+const INTRO_MODAL_DISMISSED_OPTION_NAME =
+	'woocommerce_navigation_intro_modal_dismissed';
+const TRACKING_OPTION_NAME = 'woocommerce_allow_tracking';
 
 export const IntroModal = () => {
 	const [ isOpen, setOpen ] = useState( true );
@@ -32,23 +33,28 @@ export const IntroModal = () => {
 		const { getOption, isResolving: isOptionResolving } = select(
 			OPTIONS_STORE_NAME
 		);
-		const dismissedOption = getOption( introModalOption );
+		const dismissedOption = getOption( INTRO_MODAL_DISMISSED_OPTION_NAME );
 
 		return {
-			allowTracking: getOption( trackingOption ) === 'yes',
+			allowTracking: getOption( TRACKING_OPTION_NAME ) === 'yes',
 			isDismissed: dismissedOption === 'yes',
-			isWelcomeModalShown: getOption( welcomeModalOption ) !== 'yes',
+			isWelcomeModalShown:
+				getOption( WELCOME_MODAL_DISMISSED_OPTION_NAME ) !== 'yes',
 			isResolving:
 				typeof dismissedOption === 'undefined' ||
-				isOptionResolving( 'getOption', [ introModalOption ] ) ||
-				isOptionResolving( 'getOption', [ welcomeModalOption ] ) ||
-				isOptionResolving( 'getOption', [ trackingOption ] ),
+				isOptionResolving( 'getOption', [
+					INTRO_MODAL_DISMISSED_OPTION_NAME,
+				] ) ||
+				isOptionResolving( 'getOption', [
+					WELCOME_MODAL_DISMISSED_OPTION_NAME,
+				] ) ||
+				isOptionResolving( 'getOption', [ TRACKING_OPTION_NAME ] ),
 		};
 	} );
 
 	const dismissModal = () => {
 		updateOptions( {
-			[ introModalOption ]: 'yes',
+			[ INTRO_MODAL_DISMISSED_OPTION_NAME ]: 'yes',
 		} );
 		recordEvent( 'navigation_intro_modal_close', {} );
 		setOpen( false );
