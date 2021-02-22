@@ -35,6 +35,11 @@ class CustomerEffortScoreTracks {
 	const SETTINGS_CHANGE_ACTION_NAME = 'settings_change';
 
 	/**
+	 * Action name for import products.
+	 */
+	const IMPORT_PRODUCTS_ACTION_NAME = 'import_products';
+
+	/**
 	 * Label for the snackbar that appears when a user submits the survey.
 	 *
 	 * @var string
@@ -86,6 +91,8 @@ class CustomerEffortScoreTracks {
 			10,
 			3
 		);
+
+		add_action( 'product_page_product_importer', array( $this, 'maybe_enqueue_ces_survey_for_product_import' ), 10, 3 );
 
 		$this->onsubmit_label = __( 'Thank you for your feedback!', 'woocommerce-admin' );
 	}
@@ -234,4 +241,35 @@ class CustomerEffortScoreTracks {
 			)
 		);
 	}
+
+	/**
+	 * Maybe enqueue the CES survey on product import, if step is done.
+	 */
+	public function maybe_enqueue_ces_survey_for_product_import() {
+		// We're only interested in when the importer completes.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_REQUEST['step'] ) || 'done' !== $_REQUEST['step'] ) {
+			return;
+		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+		if ( $this->has_been_shown( self::IMPORT_PRODUCTS_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::IMPORT_PRODUCTS_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to import products?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product_page_product_importer',
+				'adminpage'      => 'product_page_product_importer',
+				'props'          => (object) array(),
+			)
+		);
+	}
+
 }
