@@ -83,6 +83,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Enqueue scripts called incorrectly in php unit tests #6358
 - Fix: Removed @woocommerce/components/card from OBW #6374
 - Fix: Email notes now are turned off by default #6324
+- Add: Back button to go to home screen from tasks in the task list. #6397
 
 == 2.0.0 02/05/2021 ==
 
