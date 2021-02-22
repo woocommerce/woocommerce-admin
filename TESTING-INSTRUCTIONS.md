@@ -43,6 +43,16 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 -   Run the cron again.
 -   The note's status should continue being `unactioned`.
 
+### Refactor menu item mapping and sorting #6382
+
+1. Enable the new navigation under WooCommerce -> Settings -> Advanced -> Features.
+2. Navigate to a WooCommerce page.
+3. Make sure all items and categories continue to work as expected.
+4. Activate multiple extensions that register WooCommerce extension categories. (e.g., WooCommerce Bookings and WooCommerce Payments).
+5. Favorite and unfavorite menu items.
+6. Make sure the menu item order is correct after unfavoriting.
+7. Create a user with permissions to see some but not all registered WooCommerce pages.
+8. Check that a user without permission to access a menu item cannot see said menu item.
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
 1. Add a product. The customer effort score survey should not appear.
@@ -121,6 +131,19 @@ localStorage.setItem( 'debug', 'wc-admin:tracks' );
 -   Click on `Save changes`.
 -   Observe in developer console, `wcadmin_ces_snackbar_view` is logged when CES prompt is displayed.
 -   In the event props, it should have a new `settings_area` key followed by the value of the settings tab you have selected.
+### Add navigation intro modal #6367
+
+1. Visit the homescreen and dismiss the original welcome modal if you haven't already.
+2. Enable the new navigation under WooCommerce -> Settings -> Advanced -> Features. (This will also require opting into tracking).
+3. Visit the WooCommerce Admin homescreen.
+4. Note the new modal.
+5. Check that pagination works as expected and modal styling is as expected.
+6. Dismiss the modal.
+7. Refresh the page to verify the modal does not reappear.
+8. On a new site, enable the navigation before visiting the homescreen.
+9. Navigate to the homescreen.
+10. Note the welcome modal is shown and the navigation intro modal is not shown.
+11. Refresh the page and note the nav intro modal was dismissed and never shown.
 
 ## 2.0.0
 

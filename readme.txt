@@ -116,6 +116,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Updates to copy and punctuation to be more conversational and consistent. #6298
 - Dev: Change `siteUrl` to `homeUrl` on navigation site title #6240
 - Dev: Add navigation favorites data store #6275
+- Add: Add navigation intro modal. #6367
 
 == 2.0.0 02/05/2021 ==
 
