@@ -47,7 +47,7 @@ class CustomerEffortScoreTracks {
 	/**
 	 * Action name for add product tags.
 	 */
-	const SEARCH_ACTION_NAME = 'search';
+	const SEARCH_ACTION_NAME = 'ces_search';
 
 	/**
 	 * Action name for add product categories.
