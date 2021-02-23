@@ -25,30 +25,35 @@ const removeLabel = async ( client, label, prNumber ) => {
 };
 
 async function run() {
-	const prNumber = getPRNumber();
+	try {
+		const prNumber = getPRNumber();
 
-	if ( ! prNumber ) {
-		console.log( 'This action only supports pull requests.' );
-		return;
-	}
+		if ( ! prNumber ) {
+			console.log( 'This action only supports pull requests.' );
+			return;
+		}
 
-	const token = core.getInput( 'access_token', { required: true } );
-	const client = new github.GitHub( token );
-	const label = core.getInput( 'label', { required: true } );
-	const action = core.getInput( 'action', { required: true } );
+		const token = core.getInput( 'access_token', { required: true } );
+		const client = new github.GitHub( token );
+		const label = core.getInput( 'label', { required: true } );
+		const action = core.getInput( 'action', { required: true } );
 
-	const { data: pullRequest } = await client.pulls.get( {
-		owner: github.context.repo.owner,
-		repo: github.context.repo.repo,
-		pull_number: prNumber,
-	} );
+		const { data: pullRequest } = await client.pulls.get( {
+			owner: github.context.repo.owner,
+			repo: github.context.repo.repo,
+			pull_number: prNumber,
+		} );
 
-	const prHasLabel = pullRequest.labels.any( ( l ) => l.name === label );
+		const prHasLabel = pullRequest.labels.any( ( l ) => l.name === label );
 
-	if ( action === 'add' && ! prHasLabel ) {
-		await addLabel( client, label, prNumber );
-	} else if ( action === 'remove' && prHasLabel ) {
-		await removeLabel( client, label, prNumber );
+		if ( action === 'add' && ! prHasLabel ) {
+			await addLabel( client, label, prNumber );
+		} else if ( action === 'remove' && prHasLabel ) {
+			await removeLabel( client, label, prNumber );
+		}
+	} catch ( e ) {
+		core.error( e );
+		core.setFailed( e.message );
 	}
 }
 
