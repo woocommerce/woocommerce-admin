@@ -14,8 +14,8 @@ import useFocusOutside from '../../hooks/useFocusOutside';
 export const Panel = ( {
 	content,
 	isPanelOpen,
-	currentTab,
 	isPanelSwitching,
+	currentTab,
 	tab,
 	closePanel,
 	clearPanel,
@@ -28,6 +28,12 @@ export const Panel = ( {
 
 		if ( isPanelOpen && ! isClickOnModalOrSnackbar ) {
 			closePanel();
+		}
+	};
+
+	const finishTransition = ( e ) => {
+		if ( e && e.propertyName === 'transform' ) {
+			clearPanel();
 		}
 	};
 
@@ -56,8 +62,7 @@ export const Panel = ( {
 			tabIndex={ 0 }
 			role="tabpanel"
 			aria-label={ tab.title }
-			onTransitionEnd={ clearPanel }
-			onAnimationEnd={ clearPanel }
+			onTransitionEnd={ finishTransition }
 			{ ...useFocusOutsideProps }
 			ref={ ref }
 		>
