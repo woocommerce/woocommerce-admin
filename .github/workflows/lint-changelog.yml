@@ -16,6 +16,7 @@ jobs:
                   PR_NUMBER: ${{github.event.number}}
               run: bin/ci/lint-changelog.sh
               shell: bash
+              continue-on-error: true
             - name: Add a reminder label to the PR
               uses: ./.github/actions/pr-labeler
               with:
