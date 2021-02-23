@@ -40,6 +40,16 @@ class CustomerEffortScoreTracks {
 	const IMPORT_PRODUCTS_ACTION_NAME = 'import_products';
 
 	/**
+	 * Action name for add product categories.
+	 */
+	const ADD_PRODUCT_CATEGORIES_ACTION_NAME = 'add_product_categories';
+
+	/**
+	 * Action name for add product tags.
+	 */
+	const ADD_PRODUCT_TAGS_ACTION_NAME = 'add_product_tags';
+
+	/**
 	 * Label for the snackbar that appears when a user submits the survey.
 	 *
 	 * @var string
@@ -74,27 +84,106 @@ class CustomerEffortScoreTracks {
 			return;
 		}
 
-		add_action(
-			'admin_init',
-			array(
-				$this,
-				'maybe_clear_ces_tracks_queue',
-			)
-		);
-
-		add_action(
-			'woocommerce_update_options',
-			array(
-				$this,
-				'run_on_update_options',
-			),
-			10,
-			3
-		);
-
-		add_action( 'product_page_product_importer', array( $this, 'maybe_enqueue_ces_survey_for_product_import' ), 10, 3 );
+		add_action( 'admin_init', array( $this, 'maybe_clear_ces_tracks_queue' ) );
+		add_action( 'woocommerce_update_options', array( $this, 'run_on_update_options' ), 10, 3 );
+		add_action( 'product_page_product_importer', array( $this, 'run_on_product_import' ), 10, 3 );
+		add_action( 'product_cat_add_form', array( $this, 'add_script_track_product_categories' ), 10, 3 );
+		add_action( 'product_tag_add_form', array( $this, 'add_script_track_product_tags' ), 10, 3 );
 
 		$this->onsubmit_label = __( 'Thank you for your feedback!', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Appends a script to footer to trigger CES on adding product categories.
+	 */
+	public function add_script_track_product_categories() {
+		if ( $this->has_been_shown( self::ADD_PRODUCT_CATEGORIES_ACTION_NAME ) ) {
+			return;
+		}
+
+		wc_enqueue_js(
+			$this->get_script_track_edit_php(
+				self::ADD_PRODUCT_CATEGORIES_ACTION_NAME,
+				__( 'How easy was it to add product category?', 'woocommerce-admin' ),
+				'edit-product_cat',
+				'edit-tags-php'
+			)
+		);
+	}
+
+	/**
+	 * Appends a script to footer to trigger CES on adding product tags.
+	 */
+	public function add_script_track_product_tags() {
+		if ( $this->has_been_shown( self::ADD_PRODUCT_TAGS_ACTION_NAME ) ) {
+			return;
+		}
+
+		wc_enqueue_js(
+			$this->get_script_track_edit_php(
+				self::ADD_PRODUCT_TAGS_ACTION_NAME,
+				__( 'How easy was it to add a product tag?', 'woocommerce-admin' ),
+				'edit-product_tag',
+				'edit-tags-php'
+			)
+		);
+	}
+
+	/**
+	 * Returns a generated script for tracking tags added on edit-tags.php page.
+	 * CES survey is triggered via direct access to wc/customer-effort-score store
+	 * via wp.data.dispatch method.
+	 *
+	 * Due to lack of options to directly hook ourselves into the ajax post request
+	 * initiated by edit-tags.php page, we infer a successful request by looking
+	 * for a new tag ID generated within tags table.
+	 *
+	 * @param string $action Action name for the survey.
+	 * @param string $label Label for the snackbar.
+	 * @param string $page_now Value of window.pagenow.
+	 * @param string $admin_page Value of window.adminpage.
+	 *
+	 * @return string Generated JavaScript to append to page.
+	 */
+	private function get_script_track_edit_php( $action, $label, $page_now, $admin_page ) {
+		return sprintf(
+			"(function( $ ) {
+				'use strict';
+				// Returns an array of tag IDs based on the table displayed.
+				function getTagIds() {
+					return $('.tags tbody > tr').map( function( idx, tr ) { return tr.getAttribute( 'id' ).split( '-' )[ 1 ]; } ).toArray();
+				}
+
+				// Gets the highest tag ID - assuming it's the latest.
+				function getMaxId() {
+					return Math.max.apply( this, getTagIds() );
+				}
+
+				// Hook on submit button and sets a 500ms interval function
+				// to determine successful add tag or otherwise.
+				$('#addtag #submit').on( 'click', function() {
+					const lastId = getMaxId();
+					const interval = setInterval( function() {
+						let newId = getMaxId();
+						if ( newId > lastId ) {
+							// New tag detected.
+							clearInterval( interval );
+							wp.data.dispatch('wc/customer-effort-score').addCesSurvey( '%s', '%s', '%s', '%s', '%s' );
+						} else {
+							// Form is no longer loading, most likely failed.
+							if ( $( '#addtag .submit .spinner.is-active' ).length < 1 ) {
+								clearInterval( interval );
+							}
+						}
+					}, 500 );
+				});
+			})( jQuery );",
+			addslashes( $action ),
+			addslashes( $label ),
+			addslashes( $page_now ),
+			addslashes( $admin_page ),
+			addslashes( $this->onsubmit_label )
+		);
 	}
 
 	/**
@@ -245,7 +334,7 @@ class CustomerEffortScoreTracks {
 	/**
 	 * Maybe enqueue the CES survey on product import, if step is done.
 	 */
-	public function maybe_enqueue_ces_survey_for_product_import() {
+	public function run_on_product_import() {
 		// We're only interested in when the importer completes.
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		if ( ! isset( $_REQUEST['step'] ) || 'done' !== $_REQUEST['step'] ) {
