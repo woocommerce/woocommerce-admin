@@ -123,6 +123,21 @@ Scenario #2
 8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
 9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
 
+### Add CES survey for adding product categories and tags #6418
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+
+**Testing product categories:**
+- Go to Products > Categories.
+- Add new category.
+- Observe prompt "How easy was it to add product category?" is displayed.
+
+**Testing product tags:**
+- Go to Products > Tags.
+- Add new tag.
+- Observe prompt "How easy was it to add product tag?" is displayed.
+
 ## 2.1.0
 
 ### Correct the Klarna slug #6440
