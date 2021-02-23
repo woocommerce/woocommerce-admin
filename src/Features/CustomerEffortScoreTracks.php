@@ -40,6 +40,11 @@ class CustomerEffortScoreTracks {
 	const IMPORT_PRODUCTS_ACTION_NAME = 'import_products';
 
 	/**
+	 * Action name for add product attributes.
+	 */
+	const ADD_PRODUCT_ATTRIBUTES_ACTION_NAME = 'add_product_attributes';
+
+	/**
 	 * Action name for add product categories.
 	 */
 	const ADD_PRODUCT_CATEGORIES_ACTION_NAME = 'add_product_categories';
@@ -87,6 +92,7 @@ class CustomerEffortScoreTracks {
 		add_action( 'admin_init', array( $this, 'maybe_clear_ces_tracks_queue' ) );
 		add_action( 'woocommerce_update_options', array( $this, 'run_on_update_options' ), 10, 3 );
 		add_action( 'product_page_product_importer', array( $this, 'run_on_product_import' ), 10, 3 );
+		add_action( 'woocommerce_attribute_added', array( $this, 'run_on_add_product_attributes' ), 10, 3 );
 		add_action( 'product_cat_add_form', array( $this, 'add_script_track_product_categories' ), 10, 3 );
 		add_action( 'product_tag_add_form', array( $this, 'add_script_track_product_tags' ), 10, 3 );
 
@@ -356,6 +362,29 @@ class CustomerEffortScoreTracks {
 				'onsubmit_label' => $this->onsubmit_label,
 				'pagenow'        => 'product_page_product_importer',
 				'adminpage'      => 'product_page_product_importer',
+				'props'          => (object) array(),
+			)
+		);
+	}
+
+	/**
+	 * Enqueue the CES survey on adding new product attributes.
+	 */
+	public function run_on_add_product_attributes() {
+		if ( $this->has_been_shown( self::ADD_PRODUCT_ATTRIBUTES_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::ADD_PRODUCT_ATTRIBUTES_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to add a product attribute?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product_page_product_attributes',
+				'adminpage'      => 'product_page_product_attributes',
 				'props'          => (object) array(),
 			)
 		);
