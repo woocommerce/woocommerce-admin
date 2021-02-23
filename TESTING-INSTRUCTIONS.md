@@ -130,13 +130,18 @@ Scenario #2
 
 **Testing product categories:**
 - Go to Products > Categories.
-- Add new category.
-- Observe prompt "How easy was it to add product category?" is displayed.
+- Add a new category.
+- Observe CES prompt "How easy was it to add product category?" is displayed.
 
 **Testing product tags:**
 - Go to Products > Tags.
-- Add new tag.
-- Observe prompt "How easy was it to add product tag?" is displayed.
+- Add a new tag.
+- Observe CES prompt "How easy was it to add product tag?" is displayed.
+
+**Testing product attributes:**
+- Go to Products > Attributes.
+- Add a new attribute.
+- Observe CES prompt "How easy was it to add product attribute?" is displayed.
 
 ## 2.1.0
 

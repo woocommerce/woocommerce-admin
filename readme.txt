@@ -153,7 +153,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add a changelog lint check to PRs. #6414
 - Fix: Move the shipping input and text 1px lower. #6408
 - Add: WC Admin Docker setup with WP-ENV
-- Add: CES survey for adding product categories and tags #6418
+- Add: CES survey for adding product categories, tags, and attributes #6418
 
 == 2.0.0 02/05/2021 ==
 
