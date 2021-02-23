@@ -32,8 +32,8 @@ async function run() {
 		return;
 	}
 
-	const client = new github.GitHub( token );
 	const token = core.getInput( 'access_token', { required: true } );
+	const client = new github.GitHub( token );
 	const label = core.getInput( 'label', { required: true } );
 	const action = core.getInput( 'action', { required: true } );
 
