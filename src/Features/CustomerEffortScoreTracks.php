@@ -44,6 +44,11 @@ class CustomerEffortScoreTracks {
 	 */
 	const ADD_PRODUCT_TAGS_ACTION_NAME = 'add_product_tags';
 
+	/*
+	 * Action name for add product attributes.
+	 */
+	const ADD_PRODUCT_ATTRIBUTES_ACTION_NAME = 'add_product_attributes';
+
 	/**
 	 * Label for the snackbar that appears when a user submits the survey.
 	 *
@@ -83,6 +88,7 @@ class CustomerEffortScoreTracks {
 		add_action( 'woocommerce_update_options', array( $this, 'run_on_update_options' ), 10, 3 );
 		add_action( 'product_cat_add_form', array( $this, 'add_script_track_product_categories' ), 10, 3 );
 		add_action( 'product_tag_add_form', array( $this, 'add_script_track_product_tags' ), 10, 3 );
+		add_action( 'woocommerce_attribute_added', array( $this, 'run_on_add_product_attributes' ), 10, 3 );
 
 		$this->onsubmit_label = __( 'Thank you for your feedback!', 'woocommerce-admin' );
 	}
@@ -319,6 +325,29 @@ class CustomerEffortScoreTracks {
 				'props'          => (object) array(
 					'settings_area' => $current_tab,
 				),
+			)
+		);
+	}
+
+	/**
+	 * Enqueue the CES survey on adding new product attributes.
+	 */
+	public function run_on_add_product_attributes() {
+		if ( $this->has_been_shown( self::ADD_PRODUCT_ATTRIBUTES_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::ADD_PRODUCT_ATTRIBUTES_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to add a product attribute?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product_page_product_attributes',
+				'adminpage'      => 'product_page_product_attributes',
+				'props'          => (object) array(),
 			)
 		);
 	}
