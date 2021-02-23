@@ -325,6 +325,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function include_extended_info( &$orders_data, $query_args ) {
 		$mapped_orders    = $this->map_array_by_key( $orders_data, 'order_id' );
+		$related_orders   = $this->get_orders_with_parent_id( $mapped_orders );
 		$products         = $this->get_products_by_order_ids( array_keys( $mapped_orders ) );
 		$coupons          = $this->get_coupons_by_order_ids( array_keys( $mapped_orders ) );
 		$customers        = $this->get_customers_by_orders( $orders_data );
@@ -354,6 +355,11 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 
 			$mapped_data[ $product['order_id'] ]['products'][] = $product_data;
+
+			// If this product's order has another related order, it will be added to our mapped_data.
+			if ( isset( $related_orders [ $product['order_id'] ] ) ) {
+				$mapped_data[ $related_orders[ $product['order_id'] ]['order_id'] ] ['products'] [] = $product_data;
+			}
 		}
 
 		foreach ( $coupons as $coupon ) {
@@ -378,6 +384,22 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$orders_data[ $key ]['extended_info']['customer'] = $mapped_customers[ $order_data['customer_id'] ];
 			}
 		}
+	}
+
+	/**
+	 * Returns oreders that have a parent id
+	 *
+	 * @param array $orders Orders array.
+	 * @return array
+	 */
+	protected function get_orders_with_parent_id( $orders ) {
+		$related_orders = array();
+		foreach ( $orders as $order ) {
+			if ( '0' !== $order['parent_id'] ) {
+				$related_orders[ $order['parent_id'] ] = $order;
+			}
+		}
+		return $related_orders;
 	}
 
 	/**
