@@ -115,7 +115,7 @@ async function run() {
 			pull_number: prNumber,
 		} );
 
-		const prHasLabel = pullRequest.labels.any( ( l ) => l.name === label );
+		const prHasLabel = pullRequest.labels.some( ( l ) => l.name === label );
 
 		if ( action === 'add' && ! prHasLabel ) {
 			await addLabel( client, label, prNumber );
