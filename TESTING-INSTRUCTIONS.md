@@ -179,6 +179,26 @@ Scenario #2
 8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
 9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
 
+### Add CES survey for search product, order, customer #6420
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+
+**Testing search on products:**
+- Go to Products > All Products.
+- Type in anything in search bar, click on "Search products".
+- Observe CES prompt "How easy was it to use search?" is displayed.
+
+**Testing search on orders:**
+- Go to Orders > Orders.
+- Type in anything in search bar, click on "Search orders".
+- Observe CES prompt "How easy was it to use search?" is displayed.
+
+**Testing search on customers:**
+- Go to Customers.
+- Type in anything in search bar, and press enter.
+- Observe CES prompt "How easy was it to use search?" is displayed.
+
 ## 2.1.2
 
 ### Add Guards to "Deactivate Plugin" Note Handlers #6532
@@ -218,7 +238,6 @@ INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `
 
 -   De-activate the Woocommerce Admin plugin.
 -   See that note is **not** in the inbox
-
 
 ## 2.1.0
 
