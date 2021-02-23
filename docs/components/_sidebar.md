@@ -10,7 +10,6 @@
   * [Package components](components/packages/)
     * [AdvancedFilters](components/packages/advanced-filters/README.md)
     * [AnimationSlider](components/packages/animation-slider/README.md)
-    * [Badge](components/packages/badge/README.md)
     * [Calendar](components/packages/calendar/README.md)
     * [Card](components/packages/card/README.md)
     * [Chart](components/packages/chart/README.md)
