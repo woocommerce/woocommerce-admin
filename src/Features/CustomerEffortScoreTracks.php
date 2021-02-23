@@ -45,6 +45,11 @@ class CustomerEffortScoreTracks {
 	const ADD_PRODUCT_ATTRIBUTES_ACTION_NAME = 'add_product_attributes';
 
 	/**
+	 * Action name for add product tags.
+	 */
+	const SEARCH_ACTION_NAME = 'search';
+
+	/**
 	 * Action name for add product categories.
 	 */
 	const ADD_PRODUCT_CATEGORIES_ACTION_NAME = 'add_product_categories';
@@ -93,6 +98,7 @@ class CustomerEffortScoreTracks {
 		add_action( 'woocommerce_update_options', array( $this, 'run_on_update_options' ), 10, 3 );
 		add_action( 'product_page_product_importer', array( $this, 'run_on_product_import' ), 10, 3 );
 		add_action( 'woocommerce_attribute_added', array( $this, 'run_on_add_product_attributes' ), 10, 3 );
+		add_action( 'load-edit.php', array( $this, 'run_on_load_edit_php' ), 10, 3 );
 		add_action( 'product_cat_add_form', array( $this, 'add_script_track_product_categories' ), 10, 3 );
 		add_action( 'product_tag_add_form', array( $this, 'add_script_track_product_tags' ), 10, 3 );
 
@@ -275,6 +281,35 @@ class CustomerEffortScoreTracks {
 	}
 
 	/**
+	 * Enqueue the CES survey on using search dynamically.
+	 *
+	 * @param string $search_area Search area such as "product" or "shop_order".
+	 * @param string $page_now Value of window.pagenow.
+	 * @param string $admin_page Value of window.adminpage.
+	 */
+	public function enqueue_ces_survey_for_search( $search_area, $page_now, $admin_page ) {
+		if ( $this->has_been_shown( self::SEARCH_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::SEARCH_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to use search?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => $page_now,
+				'adminpage'      => $admin_page,
+				'props'          => (object) array(
+					'search_area' => $search_area,
+				),
+			)
+		);
+	}
+
+	/**
 	 * Maybe clear the CES tracks queue, executed on every page load. If the
 	 * clear option is set it clears the queue. In practice, this executes a
 	 * page load after the queued CES tracks are displayed on the client, which
@@ -342,11 +377,9 @@ class CustomerEffortScoreTracks {
 	 */
 	public function run_on_product_import() {
 		// We're only interested in when the importer completes.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		if ( ! isset( $_REQUEST['step'] ) || 'done' !== $_REQUEST['step'] ) {
+		if ( empty( $_GET['step'] ) || 'done' !== $_GET['step'] ) { // phpcs:ignore CSRF ok.
 			return;
 		}
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 		if ( $this->has_been_shown( self::IMPORT_PRODUCTS_ACTION_NAME ) ) {
 			return;
@@ -388,6 +421,29 @@ class CustomerEffortScoreTracks {
 				'props'          => (object) array(),
 			)
 		);
+	}
+
+	/**
+	 * Determine on initiating CES survey on searching for product or orders.
+	 */
+	public function run_on_load_edit_php() {
+		$allowed_types = array( 'product', 'shop_order' );
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended
+		// We're only interested for certain post types.
+		if ( empty( $_GET['post_type'] ) || ! in_array( $_GET['post_type'], $allowed_types, true ) ) {
+			return;
+		}
+
+		// Determine whether request is search by "s" GET parameter.
+		if ( empty( $_GET['s'] ) ) {
+			return;
+		}
+		$post_type = wc_clean( wp_unslash( $_GET['post_type'] ) );
+		// phpcs:enable
+
+		$page_now = 'edit-' . $post_type;
+		$this->enqueue_ces_survey_for_search( $post_type, $page_now, 'edit-php' );
 	}
 
 }
