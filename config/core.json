@@ -10,9 +10,10 @@
 		"marketing": true,
 		"minified-js": false,
 		"mobile-app-banner": true,
-		"navigation": true,
+		"navigation": false,
 		"onboarding": true,
 		"remote-inbox-notifications": true,
+		"settings": false,
 		"shipping-label-banner": true,
 		"store-alerts": true,
 		"wcpay": true

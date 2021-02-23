@@ -15,7 +15,7 @@ This runs the the `phpunit` container with `docker-compose -f run --rm phpunit`.
 
 ## Re-install Test Suite
 
-Re-installation is useful to update WordPress and WooCommerce to the latest versions. To do this, remove the existing `test-suite` volume using Docker. For example:
+Re-installation is useful to update WordPress to the latest version. To do this, remove the existing `test-suite` volume using Docker. For example:
 
 ```shell
 docker volume rm -f wc-admin-php-test-suite_test-suite
@@ -30,3 +30,15 @@ PHPUnit flags can be passed to the npm script. To limit testing to a single test
 ```shell
 npm run test:php -- --filter=<name of test>
 ```
+
+## Selecting the WordPress and WooCommerce Versions
+
+By default, the minimum supported versions of WordPress and WooCommerce are used to build the test suite. This can be overridden with environment variables.
+
+```shell
+WP_VERSION=5.6 WC_VERSION=4.9.0 npm run test:php
+```
+
+## Development
+
+When comitting changes to the `Dockerfile` or `entrypoint.sh` files, bump the `wc-admin-php-test-suite-phpunit` image tag version in `docker-composer.xml`. This will result in an image  rebuild automatically upon next use, enabling the changes to be applied for all users.

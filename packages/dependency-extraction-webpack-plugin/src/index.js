@@ -22,7 +22,13 @@ const wooRequestToExternal = ( request ) => {
 		const handle = request.substring( WOOCOMMERCE_NAMESPACE.length );
 		const irregularExternalMap = {
 			'blocks-registry': [ 'wc', 'wcBlocksRegistry' ],
+			settings: [ 'wc', 'wcSettings' ],
 		};
+
+		const excludedExternals = [ 'experimental' ];
+		if ( excludedExternals.includes( handle ) ) {
+			return;
+		}
 
 		if ( irregularExternalMap[ handle ] ) {
 			return irregularExternalMap[ handle ];
@@ -68,7 +74,7 @@ class DependencyExtractionWebpackPlugin extends WPDependencyExtractionWebpackPlu
 		if ( externalRequest ) {
 			this.externalizedDeps.add( request );
 
-			return callback( null, { this: externalRequest } );
+			return callback( null, externalRequest );
 		}
 
 		// Fall back to the WP method

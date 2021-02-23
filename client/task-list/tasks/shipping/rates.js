@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { Flag, Form, TextControlWithAffixes } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Icon, globe } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -121,7 +122,7 @@ class ShippingRates extends Component {
 
 		createNotice(
 			'success',
-			__( 'Your shipping rates have been updated.', 'woocommerce-admin' )
+			__( 'Your shipping rates have been updated', 'woocommerce-admin' )
 		);
 
 		this.props.onComplete();
@@ -254,9 +255,7 @@ class ShippingRates extends Component {
 												)
 											) : (
 												// Icon used for zones without locations or "Rest of the world".
-												<i className="material-icons-outlined">
-													public
-												</i>
+												<Icon icon={ globe } />
 											) }
 										</div>
 										<div className="woocommerce-shipping-rate__main">

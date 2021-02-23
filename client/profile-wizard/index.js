@@ -18,6 +18,7 @@ import {
 	PLUGINS_STORE_NAME,
 	withPluginsHydration,
 	QUERY_DEFAULTS,
+	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
@@ -26,13 +27,14 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
  * Internal dependencies
  */
 import Benefits from './steps/benefits';
-import BusinessDetails from './steps/business-details';
+import { BusinessDetailsStep } from './steps/business-details';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
 import ProfileWizardHeader from './header';
 import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
 import './style.scss';
+import { isSelectiveBundleInstallSegmentation } from './steps/business-details/data/segmentation';
 
 class ProfileWizard extends Component {
 	constructor( props ) {
@@ -56,7 +58,7 @@ class ProfileWizard extends Component {
 			createNotice(
 				'error',
 				__(
-					'There was a problem finishing the profile wizard.',
+					'There was a problem finishing the setup wizard',
 					'woocommerce-admin'
 				)
 			);
@@ -78,6 +80,7 @@ class ProfileWizard extends Component {
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
+		document.body.classList.add( 'is-wp-toolbar-disabled' );
 
 		recordEvent( 'storeprofiler_step_view', {
 			step: this.getCurrentStep().key,
@@ -102,10 +105,15 @@ class ProfileWizard extends Component {
 		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 		document.body.classList.remove( 'woocommerce-admin-full-screen' );
+		document.body.classList.remove( 'is-wp-toolbar-disabled' );
 	}
 
 	getSteps() {
-		const { profileItems, query } = this.props;
+		const {
+			profileItems,
+			query,
+			selectiveBundleInstallSegmentation,
+		} = this.props;
 		const { step } = query;
 		const steps = [];
 
@@ -134,8 +142,10 @@ class ProfileWizard extends Component {
 				profileItems.product_types !== null,
 		} );
 		steps.push( {
-			key: 'business-details',
-			container: BusinessDetails,
+			key: selectiveBundleInstallSegmentation
+				? 'business-features'
+				: 'business-details',
+			container: BusinessDetailsStep,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
 				profileItems.hasOwnProperty( 'product_count' ) &&
@@ -151,9 +161,10 @@ class ProfileWizard extends Component {
 		} );
 
 		if (
-			! this.cachedActivePlugins.includes( 'woocommerce-services' ) ||
-			! this.cachedActivePlugins.includes( 'jetpack' ) ||
-			step === 'benefits'
+			! selectiveBundleInstallSegmentation &&
+			( ! this.cachedActivePlugins.includes( 'woocommerce-services' ) ||
+				! this.cachedActivePlugins.includes( 'jetpack' ) ||
+				step === 'benefits' )
 		) {
 			steps.push( {
 				key: 'benefits',
@@ -260,7 +271,7 @@ class ProfileWizard extends Component {
 				createNotice(
 					'error',
 					__(
-						'There was a problem skipping the setup wizard.',
+						'There was a problem skipping the setup wizard',
 						'woocommerce-admin'
 					)
 				);
@@ -307,6 +318,22 @@ export default compose(
 			isJetpackConnected,
 		} = select( PLUGINS_STORE_NAME );
 
+		const { general: generalSettings } = select(
+			SETTINGS_STORE_NAME
+		).getSettings( 'general' );
+
+		const profileItems = getProfileItems();
+
+		const country = generalSettings.woocommerce_default_country || null;
+		const industrySlugs = ( profileItems.industry || [] ).map(
+			( industry ) => industry.slug
+		);
+
+		const selectiveBundleInstallSegmentation = isSelectiveBundleInstallSegmentation(
+			country,
+			industrySlugs
+		);
+
 		const notesQuery = {
 			page: 1,
 			per_page: QUERY_DEFAULTS.pageSize,
@@ -326,6 +353,7 @@ export default compose(
 			notes,
 			profileItems: getProfileItems(),
 			activePlugins,
+			selectiveBundleInstallSegmentation,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

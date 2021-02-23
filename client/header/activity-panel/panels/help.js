@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { __experimentalText as Text } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 import { withSelect } from '@wordpress/data';
 import { Fragment, useEffect } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
@@ -147,7 +147,7 @@ function getPaymentsItems( props ) {
 				'woocommerce-admin'
 			),
 			link:
-				'https://docs.woocommerce.com/document/paypal-express-checkout/?utm_source=help_panel',
+				'https://docs.woocommerce.com/document/2-0/woocommerce-paypal-payments/#section-3',
 		},
 		showSquare && {
 			title: __( 'Square - Get started', 'woocommerce-admin' ),

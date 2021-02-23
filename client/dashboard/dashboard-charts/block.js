@@ -4,13 +4,14 @@
 import { Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
 import { __, sprintf } from '@wordpress/i18n';
-import { Card } from '@woocommerce/components';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import {
 	getHistory,
 	getNewPath,
 	getPersistedQuery,
 } from '@woocommerce/navigation';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -53,35 +54,39 @@ class ChartBlock extends Component {
 				className="woocommerce-dashboard__chart-block-wrapper"
 				onClick={ this.handleChartClick }
 			>
-				<Card
-					className="woocommerce-dashboard__chart-block woocommerce-analytics__card"
-					title={ selectedChart.label }
-				>
-					<a
-						className="screen-reader-text"
-						href={ getAdminLink(
-							this.getChartPath( selectedChart )
-						) }
-					>
-						{
-							/* translators: %s is the chart type */
-							sprintf(
-								__( '%s Report', 'woocommerce-admin' ),
-								selectedChart.label
-							)
-						}
-					</a>
-					<ReportChart
-						charts={ charts }
-						endpoint={ endpoint }
-						query={ query }
-						interactiveLegend={ false }
-						legendPosition="bottom"
-						path={ path }
-						selectedChart={ selectedChart }
-						showHeaderControls={ false }
-						filters={ filters }
-					/>
+				<Card className="woocommerce-dashboard__chart-block">
+					<CardHeader>
+						<Text variant="title.small" as="h3">
+							{ selectedChart.label }
+						</Text>
+					</CardHeader>
+					<CardBody size={ null }>
+						<a
+							className="screen-reader-text"
+							href={ getAdminLink(
+								this.getChartPath( selectedChart )
+							) }
+						>
+							{
+								/* translators: %s is the chart type */
+								sprintf(
+									__( '%s Report', 'woocommerce-admin' ),
+									selectedChart.label
+								)
+							}
+						</a>
+						<ReportChart
+							charts={ charts }
+							endpoint={ endpoint }
+							query={ query }
+							interactiveLegend={ false }
+							legendPosition="bottom"
+							path={ path }
+							selectedChart={ selectedChart }
+							showHeaderControls={ false }
+							filters={ filters }
+						/>
+					</CardBody>
 				</Card>
 			</div>
 		);

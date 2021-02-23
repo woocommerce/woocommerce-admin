@@ -3,17 +3,25 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
-import { Button, Dashicon, SelectControl } from '@wordpress/components';
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	CardHeader,
+	Dashicon,
+	SelectControl,
+} from '@wordpress/components';
 import classnames from 'classnames';
 import interpolateComponents from 'interpolate-components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import moment from 'moment';
 import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
-import { Card } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { NOTES_STORE_NAME, QUERY_DEFAULTS } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -23,13 +31,12 @@ import StoreAlertsPlaceholder from './placeholder';
 
 import './style.scss';
 
-class StoreAlerts extends Component {
+export class StoreAlerts extends Component {
 	constructor( props ) {
 		super( props );
-		const { alerts } = this.props;
 
 		this.state = {
-			currentIndex: alerts ? 0 : null,
+			currentIndex: 0,
 		};
 
 		this.previousAlert = this.previousAlert.bind( this );
@@ -49,7 +56,7 @@ class StoreAlerts extends Component {
 
 	nextAlert( event ) {
 		event.stopPropagation();
-		const { alerts } = this.props;
+		const alerts = this.getAlerts();
 		const { currentIndex } = this.state;
 
 		if ( currentIndex < alerts.length - 1 ) {
@@ -168,8 +175,14 @@ class StoreAlerts extends Component {
 		}
 	}
 
+	getAlerts() {
+		return ( this.props.alerts || [] ).filter(
+			( note ) => note.status === 'unactioned'
+		);
+	}
+
 	render() {
-		const alerts = this.props.alerts || [];
+		const alerts = this.getAlerts();
 		const preloadAlertCount = getSetting( 'alertCount', 0, ( count ) =>
 			parseInt( count, 10 )
 		);
@@ -188,24 +201,21 @@ class StoreAlerts extends Component {
 		const numberOfAlerts = alerts.length;
 		const alert = alerts[ currentIndex ];
 		const type = alert.type;
-		const className = classnames(
-			'woocommerce-store-alerts',
-			'woocommerce-analytics__card',
-			{
-				'is-alert-error': type === 'error',
-				'is-alert-update': type === 'update',
-			}
-		);
+		const className = classnames( 'woocommerce-store-alerts', {
+			'is-alert-error': type === 'error',
+			'is-alert-update': type === 'update',
+		} );
 
 		return (
-			<Card
-				title={ [
-					alert.icon && <Dashicon key="icon" icon={ alert.icon } />,
-					<Fragment key="title">{ alert.title }</Fragment>,
-				] }
-				className={ className }
-				action={
-					numberOfAlerts > 1 && (
+			<Card className={ className } size={ null }>
+				<CardHeader isBorderless>
+					<Text variant="title.medium" as="h2">
+						{ alert.icon && (
+							<Dashicon key="icon" icon={ alert.icon } />
+						) }
+						{ alert.title }
+					</Text>
+					{ numberOfAlerts > 1 && (
 						<div className="woocommerce-store-alerts__pagination">
 							<Button
 								onClick={ this.previousAlert }
@@ -252,33 +262,39 @@ class StoreAlerts extends Component {
 								<Icon icon={ chevronRight } />
 							</Button>
 						</div>
-					)
-				}
-			>
-				<div
-					className="woocommerce-store-alerts__message"
-					dangerouslySetInnerHTML={ sanitizeHTML( alert.content ) }
-				/>
-				{ this.renderActions( alert ) }
+					) }
+				</CardHeader>
+				<CardBody>
+					<div
+						className="woocommerce-store-alerts__message"
+						dangerouslySetInnerHTML={ sanitizeHTML(
+							alert.content
+						) }
+					/>
+				</CardBody>
+				<CardFooter isBorderless>
+					{ this.renderActions( alert ) }
+				</CardFooter>
 			</Card>
 		);
 	}
 }
 
+const ALERTS_QUERY = {
+	page: 1,
+	per_page: QUERY_DEFAULTS.pageSize,
+	type: 'error,update',
+	status: 'unactioned',
+};
+
 export default compose(
 	withSelect( ( select ) => {
 		const { getNotes, isResolving } = select( NOTES_STORE_NAME );
-		const alertsQuery = {
-			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			type: 'error,update',
-			status: 'unactioned',
-		};
 
 		// Filter out notes that may have been marked actioned or not delayed after the initial request
-		const filterNotes = ( note ) => note.status === 'unactioned';
-		const alerts = getNotes( alertsQuery ).filter( filterNotes );
-		const isLoading = isResolving( 'getNotes', [ alertsQuery ] );
+
+		const alerts = getNotes( ALERTS_QUERY );
+		const isLoading = isResolving( 'getNotes', [ ALERTS_QUERY ] );
 
 		return {
 			alerts,

@@ -10,7 +10,10 @@ import {
 	getNewPath,
 	getPersistedQuery,
 	getHistory,
+	getQueryExcludedScreens,
+	getScreenFromPath,
 } from '@woocommerce/navigation';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { Spinner } from '@woocommerce/components';
 
 /**
@@ -42,8 +45,9 @@ const MarketingOverview = lazy( () =>
 const ProfileWizard = lazy( () =>
 	import( /* webpackChunkName: "profile-wizard" */ '../profile-wizard' )
 );
-
-const TIME_EXCLUDED_SCREENS_FILTER = 'woocommerce_admin_time_excluded_screens';
+const SettingsGroup = lazy( () =>
+	import( /* webpackChunkName: "profile-wizard" */ '../settings' )
+);
 
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
@@ -62,6 +66,7 @@ export const getPages = () => {
 		navArgs: {
 			id: 'woocommerce-home',
 		},
+		capability: 'manage_woocommerce',
 	} );
 
 	if ( window.wcAdminFeatures.analytics ) {
@@ -80,6 +85,7 @@ export const getPages = () => {
 			navArgs: {
 				id: 'woocommerce-analytics-overview',
 			},
+			capability: 'view_woocommerce_reports',
 		} );
 		pages.push( {
 			container: AnalyticsSettings,
@@ -96,6 +102,7 @@ export const getPages = () => {
 			navArgs: {
 				id: 'woocommerce-analytics-settings',
 			},
+			capability: 'view_woocommerce_reports',
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -108,6 +115,7 @@ export const getPages = () => {
 			navArgs: {
 				id: 'woocommerce-analytics-customers',
 			},
+			capability: 'view_woocommerce_reports',
 		} );
 		pages.push( {
 			container: AnalyticsReport,
@@ -129,6 +137,7 @@ export const getPages = () => {
 				];
 			},
 			wpOpenMenu: 'toplevel_page_wc-admin-path--analytics-overview',
+			capability: 'view_woocommerce_reports',
 		} );
 	}
 
@@ -145,6 +154,7 @@ export const getPages = () => {
 			navArgs: {
 				id: 'woocommerce-marketing-overview',
 			},
+			capability: 'view_woocommerce_reports',
 		} );
 	}
 
@@ -156,6 +166,36 @@ export const getPages = () => {
 				...initialBreadcrumbs,
 				[ '/setup-wizard', __( 'Setup Wizard', 'woocommerce-admin' ) ],
 			],
+			capability: 'manage_woocommerce',
+		} );
+	}
+
+	if ( window.wcAdminFeatures.settings ) {
+		pages.push( {
+			container: SettingsGroup,
+			path: '/settings/:page',
+			breadcrumbs: ( { match } ) => {
+				// @todo This might need to be refactored to retreive groups via data store.
+				const settingsPages = getSetting( 'settingsPages' );
+				const page = settingsPages[ match.params.page ];
+				if ( ! page ) {
+					return [];
+				}
+				return [
+					...initialBreadcrumbs,
+					[
+						settingsPages.general
+							? '/settings/general'
+							: `/settings/${
+									Object.keys( settingsPages )[ 0 ]
+							  }`,
+						__( 'Settings', 'woocommerce-admin' ),
+					],
+					page,
+				];
+			},
+			wpOpenMenu: 'toplevel_page_woocommerce',
+			capability: 'manage_woocommerce',
 		} );
 	}
 
@@ -226,7 +266,7 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 		const search = last( item.href.split( '?' ) );
 		const query = parse( search );
 		const path = query.path || 'homescreen';
-		const screen = path.replace( '/analytics', '' ).replace( '/', '' );
+		const screen = getScreenFromPath( path );
 
 		const isExcludedScreen = excludedScreens.includes( screen );
 
@@ -248,13 +288,8 @@ export function updateLinkHref( item, nextQuery, excludedScreens ) {
 
 // Update's wc-admin links in wp-admin menu
 window.wpNavMenuUrlUpdate = function ( query ) {
-	const excludedScreens = applyFilters( TIME_EXCLUDED_SCREENS_FILTER, [
-		'stock',
-		'settings',
-		'customers',
-		'homescreen',
-	] );
 	const nextQuery = getPersistedQuery( query );
+	const excludedScreens = getQueryExcludedScreens();
 
 	Array.from(
 		document.querySelectorAll( '#adminmenu a' )

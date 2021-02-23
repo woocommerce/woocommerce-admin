@@ -9,6 +9,8 @@ namespace Automattic\WooCommerce\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Admin\Survey;
+
 /**
  * Giving_Feedback_Notes
  */
@@ -37,7 +39,7 @@ class GivingFeedbackNotes {
 
 		// Otherwise, create our new note.
 		$note = new Note();
-		$note->set_title( __( 'Give feedback', 'woocommerce-admin' ) );
+		$note->set_title( __( 'You\'re invited to share your experience', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Now that you’ve chosen us as a partner, our goal is to make sure we\'re providing the right tools to meet your needs. We\'re looking forward to having your feedback on the store setup experience so we can improve it in the future.', 'woocommerce-admin' ) );
 		$note->set_content_data( (object) array() );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
@@ -46,7 +48,7 @@ class GivingFeedbackNotes {
 		$note->add_action(
 			'share-feedback',
 			__( 'Share feedback', 'woocommerce-admin' ),
-			'https://automattic.survey.fm/new-onboarding-survey'
+			Survey::get_url( '/store-setup-survey' )
 		);
 		return $note;
 	}

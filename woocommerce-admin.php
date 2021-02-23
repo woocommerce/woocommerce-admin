@@ -7,12 +7,12 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 1.8.0-dev
- * Requires at least: 5.3
- * Requires PHP: 5.6.20
+ * Version: 2.1.0-dev
+ * Requires at least: 5.4
+ * Requires PHP: 7.0
  *
- * WC requires at least: 4.5.0
- * WC tested up to: 4.7.0
+ * WC requires at least: 4.8.0
+ * WC tested up to: 5.0.0
  *
  * @package WooCommerce\Admin
  */

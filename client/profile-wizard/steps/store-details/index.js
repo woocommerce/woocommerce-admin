@@ -8,17 +8,18 @@ import {
 	CardBody,
 	CardFooter,
 	CheckboxControl,
-	FlexItem,
-	__experimentalText as Text,
+	FlexItem as MaybeFlexItem,
 	Popover,
 } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Form } from '@woocommerce/components';
-import { getCurrencyData } from '@woocommerce/currency';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
+import { Icon, info } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -31,6 +32,17 @@ import {
 import UsageModal from '../usage-modal';
 import { CurrencyContext } from '../../../lib/currency-context';
 import './style.scss';
+
+// FlexItem is not available until WP version 5.5. This code is safe to remove
+// once the minimum WP supported version becomes 5.5.
+const FlextItemSubstitute = ( { children, align } ) => {
+	const style = {
+		display: 'flex',
+		'justify-content': align ? 'center' : 'flex-start',
+	};
+	return <div style={ style }>{ children }</div>;
+};
+const FlexItem = MaybeFlexItem || FlextItemSubstitute;
 
 class StoreDetails extends Component {
 	constructor( props ) {
@@ -69,9 +81,17 @@ class StoreDetails extends Component {
 			return null;
 		}
 
-		const region = getCurrencyRegion( countryState );
-		const currencyData = getCurrencyData();
-		return currencyData[ region ] || currencyData.US;
+		const Currency = this.context;
+		const country = getCountryCode( countryState );
+		const { currencySymbols = {}, localeInfo = {} } = getSetting(
+			'onboarding',
+			{}
+		);
+		return Currency.getDataForCountry(
+			country,
+			localeInfo,
+			currencySymbols
+		);
 	}
 
 	onSubmit() {
@@ -101,7 +121,7 @@ class StoreDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
-			derived_currency: currencySettings.code,
+			derived_currency: currencySettings.currency_code,
 			setup_client: values.isClient,
 		} );
 
@@ -158,7 +178,7 @@ class StoreDetails extends Component {
 			createNotice(
 				'error',
 				__(
-					'There was a problem saving your store details.',
+					'There was a problem saving your store details',
 					'woocommerce-admin'
 				)
 			);
@@ -210,12 +230,7 @@ class StoreDetails extends Component {
 								} )
 							}
 						>
-							<i
-								className="material-icons-outlined"
-								aria-hidden="true"
-							>
-								info
-							</i>
+							<Icon icon={ info } />
 						</Button>
 					</Text>
 					{ isStoreDetailsPopoverVisible && (
@@ -271,7 +286,7 @@ class StoreDetails extends Component {
 							</CardBody>
 
 							<CardFooter>
-								<FlexItem align="center">
+								<FlexItem>
 									<div className="woocommerce-profile-wizard__client">
 										<CheckboxControl
 											label={ __(
@@ -285,23 +300,16 @@ class StoreDetails extends Component {
 							</CardFooter>
 
 							<CardFooter justify="center">
-								<FlexItem>
-									<div className="woocommerce-profile-wizard__submit">
-										<Button
-											isPrimary
-											onClick={ handleSubmit }
-											disabled={
-												! isValidForm ||
-												isUpdatingProfileItems
-											}
-										>
-											{ __(
-												'Continue',
-												'woocommerce-admin'
-											) }
-										</Button>
-									</div>
-								</FlexItem>
+								<Button
+									isPrimary
+									onClick={ handleSubmit }
+									isBusy={ isUpdatingProfileItems }
+									disabled={
+										! isValidForm || isUpdatingProfileItems
+									}
+								>
+									{ __( 'Continue', 'woocommerce-admin' ) }
+								</Button>
 							</CardFooter>
 						</Card>
 					) }
@@ -330,12 +338,7 @@ class StoreDetails extends Component {
 							this.setState( { isSkipSetupPopoverVisible: true } )
 						}
 					>
-						<i
-							className="material-icons-outlined"
-							aria-hidden="true"
-						>
-							info
-						</i>
+						<Icon icon={ info } />
 					</Button>
 					{ isSkipSetupPopoverVisible && (
 						<Popover

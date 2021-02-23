@@ -5,13 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, cloneElement } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
-import {
-	Button,
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
 import { List, EllipsisMenu, Badge } from '@woocommerce/components';
@@ -23,6 +17,7 @@ import {
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -54,40 +49,20 @@ export class TaskList extends Component {
 		this.possiblyTrackCompletedTasks();
 	}
 
-	getUngroupedTasks() {
-		const { tasks: groupedTasks } = this.props;
-		return Object.values( groupedTasks ).flat();
-	}
-
-	getSpecificTasks() {
-		const { isExtended, tasks: groupedTasks } = this.props;
-		const { extension, setup } = groupedTasks;
-		if ( isExtended ) {
-			return extension;
-		}
-		return setup;
-	}
-
 	possiblyCompleteTaskList() {
-		const {
-			isExtended,
-			isTaskListComplete,
-			isExtendedTaskListComplete,
-			updateOptions,
-		} = this.props;
-		const isSetupTaskListIncomplete = ! isExtended && ! isTaskListComplete;
-		const isExtendedTaskListIncomplete =
-			isExtended && ! isExtendedTaskListComplete;
-		const taskListToComplete = isExtended
-			? { woocommerce_extended_task_list_complete: 'yes' }
-			: {
-					woocommerce_task_list_complete: 'yes',
-					woocommerce_default_homepage_layout: 'two_columns',
-			  };
+		const { isComplete, name = 'task_list', updateOptions } = this.props;
+		const taskListVariableName = `woocommerce_${ name }_complete`;
+		const taskListToComplete = isComplete
+			? { [ taskListVariableName ]: 'no' }
+			: { [ taskListVariableName ]: 'yes' };
+		if ( name === 'task_list' ) {
+			taskListToComplete.woocommerce_default_homepage_layout =
+				'two_columns';
+		}
 
 		if (
-			! this.getIncompleteTasks().length &&
-			( isSetupTaskListIncomplete || isExtendedTaskListIncomplete )
+			( ! this.getIncompleteTasks().length && ! isComplete ) ||
+			( this.getIncompleteTasks().length && isComplete )
 		) {
 			updateOptions( {
 				...taskListToComplete,
@@ -96,14 +71,14 @@ export class TaskList extends Component {
 	}
 
 	getCompletedTaskKeys() {
-		return this.getVisibleTasks( 'all' )
+		return this.getVisibleTasks()
 			.filter( ( task ) => task.completed )
 			.map( ( task ) => task.key );
 	}
 
 	getIncompleteTasks() {
-		const { dismissedTasks } = this.props;
-		return this.getSpecificTasks().filter(
+		const { dismissedTasks, tasks } = this.props;
+		return tasks.filter(
 			( task ) =>
 				task.visible &&
 				! task.completed &&
@@ -111,18 +86,51 @@ export class TaskList extends Component {
 		);
 	}
 
-	isTrackingListUpdated( list, subList ) {
-		if ( subList.length === 0 ) {
+	shouldUpdateCompletedTasks( tasks, untrackedTasks, completedTasks ) {
+		if ( untrackedTasks.length > 0 ) {
+			return true;
+		}
+		if ( completedTasks.length === 0 ) {
 			return false;
 		}
-		return subList.every( ( taskName ) => list.indexOf( taskName ) >= 0 );
+		return ! completedTasks.every(
+			( taskName ) => tasks.indexOf( taskName ) >= 0
+		);
 	}
 
-	getIncludedTasks( list, subList ) {
-		if ( ! subList ) {
+	getTrackedCompletedTasks( completedTasks, trackedTasks ) {
+		if ( ! trackedTasks ) {
 			return [];
 		}
-		return list.filter( ( taskName ) => subList.includes( taskName ) );
+		return completedTasks.filter( ( taskName ) =>
+			trackedTasks.includes( taskName )
+		);
+	}
+
+	getTrackedIncompletedTasks( partialCompletedTasks, allTrackedTask ) {
+		return this.getVisibleTasks()
+			.filter(
+				( task ) =>
+					allTrackedTask.includes( task.key ) &&
+					! partialCompletedTasks.includes( task.key )
+			)
+			.map( ( task ) => task.key );
+	}
+
+	getTasksForUpdate(
+		completedTaskKeys,
+		totalTrackedCompletedTasks,
+		trackedIncompleteTasks
+	) {
+		const mergedLists = [
+			...new Set( [
+				...completedTaskKeys,
+				...totalTrackedCompletedTasks,
+			] ),
+		];
+		return mergedLists.filter(
+			( taskName ) => ! trackedIncompleteTasks.includes( taskName )
+		);
 	}
 
 	possiblyTrackCompletedTasks() {
@@ -131,19 +139,29 @@ export class TaskList extends Component {
 			updateOptions,
 		} = this.props;
 		const completedTaskKeys = this.getCompletedTaskKeys();
-		const trackedCompletedTasks = this.getIncludedTasks(
+		const trackedCompletedTasks = this.getTrackedCompletedTasks(
 			completedTaskKeys,
 			totalTrackedCompletedTasks
 		);
 
+		const trackedIncompleteTasks = this.getTrackedIncompletedTasks(
+			trackedCompletedTasks,
+			totalTrackedCompletedTasks
+		);
+
 		if (
-			! this.isTrackingListUpdated(
+			this.shouldUpdateCompletedTasks(
 				trackedCompletedTasks,
+				trackedIncompleteTasks,
 				completedTaskKeys
 			)
 		) {
 			updateOptions( {
-				woocommerce_task_list_tracked_completed_tasks: completedTaskKeys,
+				woocommerce_task_list_tracked_completed_tasks: this.getTasksForUpdate(
+					completedTaskKeys,
+					totalTrackedCompletedTasks,
+					trackedIncompleteTasks
+				),
 			} );
 		}
 	}
@@ -182,11 +200,8 @@ export class TaskList extends Component {
 		} );
 	}
 
-	getVisibleTasks( type ) {
-		const { dismissedTasks } = this.props;
-		const tasks =
-			type === 'all' ? this.getUngroupedTasks() : this.getSpecificTasks();
-
+	getVisibleTasks() {
+		const { dismissedTasks, tasks } = this.props;
 		return tasks.filter(
 			( task ) => task.visible && ! dismissedTasks.includes( task.key )
 		);
@@ -227,34 +242,33 @@ export class TaskList extends Component {
 		} );
 	}
 
-	hideTaskCard( action, isExtended ) {
-		const eventTaskListName = isExtended
-			? 'extended_tasklist_completed'
-			: 'tasklist_completed';
-		const updateOptions = isExtended
-			? { woocommerce_extended_task_list_hidden: 'yes' }
-			: {
-					woocommerce_task_list_hidden: 'yes',
-					woocommerce_task_list_prompt_shown: true,
-					woocommerce_default_homepage_layout: 'two_columns',
-			  };
+	hideTaskCard( action ) {
+		const { name = 'task_list', updateOptions } = this.props;
+		const isCoreTaskList = name === 'task_list';
+		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
+		const updateOptionsParams = {
+			[ `woocommerce_${ name }_hidden` ]: 'yes',
+		};
+		if ( isCoreTaskList ) {
+			updateOptionsParams.woocommerce_task_list_prompt_shown = true;
+			updateOptionsParams.woocommerce_default_homepage_layout =
+				'two_columns';
+		}
 
-		recordEvent( eventTaskListName, {
+		recordEvent( `${ taskListName }_completed`, {
 			action,
 			completed_task_count: this.getCompletedTaskKeys().length,
 			incomplete_task_count: this.getIncompleteTasks().length,
 		} );
-		this.props.updateOptions( {
-			...updateOptions,
+		updateOptions( {
+			...updateOptionsParams,
 		} );
 	}
 
 	getCurrentTask() {
-		const { query } = this.props;
+		const { query, tasks } = this.props;
 		const { task } = query;
-		const currentTask = this.getSpecificTasks().find(
-			( s ) => s.key === task
-		);
+		const currentTask = tasks.find( ( s ) => s.key === task );
 
 		if ( ! currentTask ) {
 			return null;
@@ -263,7 +277,7 @@ export class TaskList extends Component {
 		return currentTask;
 	}
 
-	renderMenu( isExtended ) {
+	renderMenu() {
 		return (
 			<div className="woocommerce-card__menu woocommerce-card__header-item">
 				<EllipsisMenu
@@ -272,10 +286,7 @@ export class TaskList extends Component {
 						<div className="woocommerce-task-card__section-controls">
 							<Button
 								onClick={ () =>
-									this.hideTaskCard(
-										'remove_card',
-										isExtended
-									)
+									this.hideTaskCard( 'remove_card' )
 								}
 							>
 								{ __( 'Hide this', 'woocommerce-admin' ) }
@@ -288,7 +299,7 @@ export class TaskList extends Component {
 	}
 
 	render() {
-		const { isExtended, query } = this.props;
+		const { name, query, title: listTitle } = this.props;
 		const { task: theTask } = query;
 		const currentTask = this.getCurrentTask();
 
@@ -296,9 +307,6 @@ export class TaskList extends Component {
 			return null;
 		}
 
-		const listTitle = isExtended
-			? __( 'Extensions setup', 'woocommerce-admin' )
-			: __( 'Finish setup', 'woocommerce-admin' );
 		const listTasks = this.getVisibleTasks().map( ( task ) => {
 			task.className = classNames(
 				task.completed ? 'is-complete' : null,
@@ -361,7 +369,7 @@ export class TaskList extends Component {
 			return task;
 		} );
 
-		if ( isExtended && ! listTasks.length ) {
+		if ( ! listTasks.length ) {
 			return (
 				<div className="woocommerce-task-dashboard__container"></div>
 			);
@@ -391,7 +399,7 @@ export class TaskList extends Component {
 											}
 										/>
 									</div>
-									{ this.renderMenu( isExtended ) }
+									{ this.renderMenu( ! name ) }
 								</CardHeader>
 								<CardBody>
 									<List items={ listTasks } />

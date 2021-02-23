@@ -34,6 +34,9 @@ const externals = {
 	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
 	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
 	'@wordpress/plugins': { this: [ 'wp', 'plugins' ] },
+	'@wordpress/components': { this: [ 'wp', 'components' ] },
+	'@wordpress/date': { this: [ 'wp', 'date' ] },
+	'@wordpress/compose': { this: [ 'wp', 'compose' ] },
 	tinymce: 'tinymce',
 	moment: 'moment',
 	react: 'React',
@@ -75,6 +78,7 @@ const wpAdminScripts = [
 	'onboarding-product-import-notice',
 	'onboarding-tax-notice',
 	'print-shipping-label-banner',
+	'beta-features-tracking-modal',
 ];
 wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
@@ -113,7 +117,7 @@ const webpackConfig = {
 			},
 			{
 				test: /\.js?$/,
-				exclude: /node_modules/,
+				exclude: /node_modules(\/|\\)(?!(debug))/,
 				use: {
 					loader: 'babel-loader',
 					options: {
@@ -167,7 +171,7 @@ const webpackConfig = {
 			),
 			'@woocommerce/wc-admin-settings': path.resolve(
 				__dirname,
-				'client/settings/index.js'
+				'client/wc-admin-settings/index.js'
 			),
 		},
 	},

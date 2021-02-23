@@ -1,10 +1,11 @@
 .woocommerce-search.woocommerce-select-control {
 	position: relative;
 
-	i.material-icons-outlined {
+	.woocommerce-select-control__control-icon {
 		position: absolute;
-		top: 9px;
+		top: 50%;
 		left: 10px;
+		transform: translateY(-50%);
 		color: $gray-400;
 		font-size: 20px;
 	}

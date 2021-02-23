@@ -7,6 +7,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\Navigation;
 
+use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 
@@ -36,21 +37,26 @@ class CoreMenu {
 	 */
 	public function init() {
 		add_action( 'admin_menu', array( $this, 'register_post_types' ) );
+		// Add this after we've finished migrating menu items to avoid hiding these items.
+		add_action( 'admin_menu', array( $this, 'add_dashboard_menu_items' ), PHP_INT_MAX );
 	}
 
 	/**
 	 * Add registered admin settings as menu items.
 	 */
 	public static function get_setting_items() {
-		$setting_pages = \WC_Admin_Settings::get_settings_pages();
-		$settings      = array();
-		foreach ( $setting_pages as $setting_page ) {
-			$settings = $setting_page->add_settings_page( $settings );
+		// Let the Settings feature add pages to the navigation if enabled.
+		if ( Features::is_enabled( 'settings' ) ) {
+			return array();
 		}
+
+		// Calling this method adds pages to the below tabs filter on non-settings pages.
+		\WC_Admin_Settings::get_settings_pages();
+		$tabs = apply_filters( 'woocommerce_settings_tabs_array', array() );
 
 		$menu_items = array();
 		$order      = 0;
-		foreach ( $settings as $key => $setting ) {
+		foreach ( $tabs as $key => $setting ) {
 			$order       += 10;
 			$menu_items[] = (
 				array(
@@ -75,43 +81,37 @@ class CoreMenu {
 	public static function get_categories() {
 		return array(
 			array(
-				'title'      => __( 'Orders', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-orders',
-				'order'      => 10,
+				'title' => __( 'Orders', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-orders',
+				'order' => 10,
 			),
 			array(
-				'title'      => __( 'Products', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-products',
-				'order'      => 20,
+				'title' => __( 'Products', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-products',
+				'order' => 20,
 			),
 			array(
-				'title'      => __( 'Analytics', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-analytics',
-				'order'      => 30,
+				'title' => __( 'Analytics', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-analytics',
+				'order' => 30,
 			),
 			array(
-				'title'      => __( 'Marketing', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-marketing',
-				'order'      => 40,
+				'title' => __( 'Marketing', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-marketing',
+				'order' => 40,
 			),
 			array(
-				'title'      => __( 'Settings', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-settings',
-				'menuId'     => 'secondary',
-				'order'      => 10,
-				'url'        => 'admin.php?page=wc-settings',
+				'title'  => __( 'Settings', 'woocommerce-admin' ),
+				'id'     => 'woocommerce-settings',
+				'menuId' => 'secondary',
+				'order'  => 20,
+				'url'    => 'admin.php?page=wc-settings',
 			),
 			array(
-				'title'      => __( 'Tools', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-tools',
-				'menuId'     => 'secondary',
-				'order'      => 30,
+				'title'  => __( 'Tools', 'woocommerce-admin' ),
+				'id'     => 'woocommerce-tools',
+				'menuId' => 'secondary',
+				'order'  => 30,
 			),
 		);
 	}
@@ -138,10 +138,11 @@ class CoreMenu {
 				'order'  => 20,
 			)
 		);
-		$coupon_items      = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'woocommerce-marketing' ) );
-		$setting_items     = self::get_setting_items();
-		$wca_items         = array();
-		$wca_pages         = \Automattic\WooCommerce\Admin\PageController::get_instance()->get_pages();
+
+		$coupon_items  = Menu::get_post_type_items( 'shop_coupon', array( 'parent' => 'woocommerce-marketing' ) );
+		$setting_items = self::get_setting_items();
+		$wca_items     = array();
+		$wca_pages     = \Automattic\WooCommerce\Admin\PageController::get_instance()->get_pages();
 
 		foreach ( $wca_pages as $page ) {
 			if ( ! isset( $page['nav_args'] ) ) {
@@ -215,7 +216,7 @@ class CoreMenu {
 					'id'         => 'woocommerce-marketplace',
 					'url'        => 'wc-addons',
 					'menuId'     => 'secondary',
-					'order'      => 20,
+					'order'      => 10,
 				),
 				// Tools category.
 				array(
@@ -274,6 +275,72 @@ class CoreMenu {
 		Screen::register_post_type( 'shop_order' );
 		Screen::register_post_type( 'product' );
 		Screen::register_post_type( 'shop_coupon' );
+	}
+
+	/**
+	 * Add the dashboard items to the WP menu to create a quick-access flyout menu.
+	 */
+	public function add_dashboard_menu_items() {
+		global $submenu, $menu;
+		$mapped_items = Menu::get_mapped_menu_items();
+		$top_level    = $mapped_items['woocommerce'];
+
+		// phpcs:disable
+		if ( ! isset( $submenu['woocommerce'] ) || empty( $top_level ) ) {
+			return;
+		}
+
+		$menuIds = array(
+			'primary',
+			'secondary',
+			'favorites',
+		);
+
+		foreach ( $menuIds as $menuId ) {
+			foreach( $top_level[ $menuId ] as $item ) {
+				// Skip specific categories.
+				if (
+					in_array(
+						$item['id'],
+						array(
+							'woocommerce-tools',
+						),
+						true
+					)
+				) {
+					continue;
+				}
+	
+				// Use the link from the first item if it's a category.
+				if ( ! isset( $item['url'] ) ) {
+					$categoryMenuId = $menuId === 'favorites' ? 'plugins' : $menuId;
+					$category_items = $mapped_items[ $item['id'] ][ $categoryMenuId ];
+
+					if ( ! empty( $category_items ) ) {
+						$first_item = $category_items[0];
+
+	
+						$submenu['woocommerce'][] = array(
+							$item['title'],
+							$first_item['capability'],
+							isset( $first_item['url'] ) ? $first_item['url'] : null,
+							$item['title'],
+						);
+					}
+	
+					continue;
+				}
+	
+				// Show top-level items.
+				$submenu['woocommerce'][] = array(
+					$item['title'],
+					$item['capability'],
+					isset( $item['url'] ) ? $item['url'] : null,
+					$item['title'],
+				);
+			}
+		}
+		// phpcs:enable
 	}
 
 	/**

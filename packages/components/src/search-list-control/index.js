@@ -4,7 +4,6 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import {
 	Button,
-	MenuGroup,
 	Spinner,
 	TextControl,
 	withSpokenMessages,
@@ -14,6 +13,7 @@ import { compose, withInstanceId, withState } from '@wordpress/compose';
 import { escapeRegExp, findIndex } from 'lodash';
 import NoticeOutlineIcon from 'gridicons/dist/notice-outline';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -24,12 +24,12 @@ import Tag from '../tag';
 
 const defaultMessages = {
 	clear: __( 'Clear all selected items', 'woocommerce-admin' ),
-	list: __( 'Results', 'woocommerce-admin' ),
 	noItems: __( 'No items found.', 'woocommerce-admin' ),
 	noResults: __( 'No results for %s', 'woocommerce-admin' ),
 	search: __( 'Search for items', 'woocommerce-admin' ),
 	selected: ( n ) =>
 		sprintf(
+			/* translators: Number of items selected from list. */
 			_n(
 				'%d item selected',
 				'%d items selected',
@@ -126,16 +126,19 @@ export class SearchListControl extends Component {
 		if ( ! list ) {
 			return null;
 		}
+
 		return list.map( ( item ) => (
 			<Fragment key={ item.id }>
-				{ renderItem( {
-					item,
-					isSelected: this.isSelected( item ),
-					onSelect: this.onSelect,
-					isSingle,
-					search,
-					depth,
-				} ) }
+				<li>
+					{ renderItem( {
+						item,
+						isSelected: this.isSelected( item ),
+						onSelect: this.onSelect,
+						isSingle,
+						search,
+						depth,
+					} ) }
+				</li>
 				{ this.renderList( item.children, depth + 1 ) }
 			</Fragment>
 		) );
@@ -175,12 +178,9 @@ export class SearchListControl extends Component {
 		}
 
 		return (
-			<MenuGroup
-				label={ messages.list }
-				className="woocommerce-search-list__list"
-			>
+			<ul className="woocommerce-search-list__list">
 				{ this.renderList( list ) }
-			</MenuGroup>
+			</ul>
 		);
 	}
 
@@ -226,11 +226,15 @@ export class SearchListControl extends Component {
 	}
 
 	render() {
-		const { className = '', search, setState } = this.props;
+		const { className = '', isCompact, search, setState } = this.props;
 		const messages = { ...defaultMessages, ...this.props.messages };
 
 		return (
-			<div className={ `woocommerce-search-list ${ className }` }>
+			<div
+				className={ classnames( 'woocommerce-search-list', className, {
+					'is-compact': isCompact,
+				} ) }
+			>
 				{ this.renderSelectedSection() }
 
 				<div className="woocommerce-search-list__search">
@@ -253,6 +257,10 @@ SearchListControl.propTypes = {
 	 * Additional CSS classes.
 	 */
 	className: PropTypes.string,
+	/**
+	 * Whether it should be displayed in a compact way, so it occupies less space.
+	 */
+	isCompact: PropTypes.bool,
 	/**
 	 * Whether the list of items is hierarchical or not. If true, each list item is expected to
 	 * have a parent property.
@@ -285,10 +293,6 @@ SearchListControl.propTypes = {
 		 * A more detailed label for the "Clear all" button, read to screen reader users.
 		 */
 		clear: PropTypes.string,
-		/**
-		 * Label for the list of selectable items, only read to screen reader users.
-		 */
-		list: PropTypes.string,
 		/**
 		 * Message to display when the list is empty (implies nothing loaded from the server
 		 * or parent component).

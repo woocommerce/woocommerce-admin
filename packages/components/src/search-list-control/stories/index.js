@@ -10,6 +10,9 @@ const SearchListControlExample = withState( {
 	loading: true,
 } )( ( { selected, loading, setState } ) => {
 	const showCount = boolean( 'Show count', false );
+	const isCompact = boolean( 'Compact', false );
+	const isSingle = boolean( 'Single', false );
+
 	let list = [
 		{ id: 1, name: 'Apricots' },
 		{ id: 2, name: 'Clementine' },
@@ -31,9 +34,11 @@ const SearchListControlExample = withState( {
 			</button>
 			<SearchListControl
 				list={ list }
+				isCompact={ isCompact }
 				isLoading={ loading }
 				selected={ selected }
 				onChange={ ( items ) => setState( { selected: items } ) }
+				isSingle={ isSingle }
 			/>
 		</div>
 	);

@@ -5,10 +5,14 @@ jobs:
     e2e-tests:
         runs-on: ubuntu-latest
         steps:
+            - name: Cancel Previous Runs
+              uses: styfle/cancel-workflow-action@0.7.0
+              with:
+                  access_token: ${{ github.token }}
             - name: Check out repository code
               uses: actions/checkout@v2
             - name: Setup PHP
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@2.9.0
               with:
                   php-version: '7.3'
             - name: Install PHP dependencies

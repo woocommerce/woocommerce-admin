@@ -23,17 +23,22 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import StatsOverview from './stats-overview';
-import TaskListPlaceholder from '../task-list/placeholder';
-import InboxPanel from '../inbox-panel';
-import { WelcomeModal } from './welcome-modal';
 import ActivityHeader from '../header/activity-panel/activity-header';
 import { ActivityPanel } from './activity-panel';
-
+import { Column } from './column';
+import InboxPanel from '../inbox-panel';
+import { IntroModal as NavigationIntroModal } from '../navigation/components/intro-modal';
+import StatsOverview from './stats-overview';
+import { StoreManagementLinks } from '../store-management-links';
+import TaskListPlaceholder from '../task-list/placeholder';
+import {
+	WELCOME_MODAL_DISMISSED_OPTION_NAME,
+	WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME,
+} from './constants';
+import { WelcomeFromCalypsoModal } from './welcome-from-calypso-modal';
+import { WelcomeModal } from './welcome-modal';
 import './style.scss';
 import '../dashboard/style.scss';
-import { StoreManagementLinks } from '../store-management-links';
-import { Column } from './column';
 
 const TaskList = lazy( () =>
 	import( /* webpackChunkName: "task-list" */ '../task-list' )
@@ -44,8 +49,10 @@ export const Layout = ( {
 	isBatchUpdating,
 	query,
 	requestingTaskList,
-	taskListHidden,
+	isTaskListHidden,
+	bothTaskListsHidden,
 	shouldShowWelcomeModal,
+	shouldShowWelcomeFromCalypsoModal,
 	updateOptions,
 } ) => {
 	const userPrefs = useUserPreferences();
@@ -54,8 +61,8 @@ export const Layout = ( {
 		'two_columns';
 	const [ showInbox, setShowInbox ] = useState( true );
 
-	const isTaskListEnabled = taskListHidden === false;
-	const isDashboardShown = ! isTaskListEnabled || ! query.task;
+	const isTaskListEnabled = bothTaskListsHidden === false;
+	const isDashboardShown = ! query.task;
 
 	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
@@ -91,16 +98,11 @@ export const Layout = ( {
 					/>
 					<ActivityPanel />
 					{ isTaskListEnabled && renderTaskList() }
-					{ ! isTaskListEnabled && shouldStickColumns && (
-						<StoreManagementLinks />
-					) }
+					<InboxPanel />
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
 					<StatsOverview />
-					<InboxPanel />
-					{ ! isTaskListEnabled && ! shouldStickColumns && (
-						<StoreManagementLinks />
-					) }
+					{ isTaskListHidden && <StoreManagementLinks /> }
 				</Column>
 			</>
 		);
@@ -124,19 +126,27 @@ export const Layout = ( {
 				'two-columns': twoColumns,
 			} ) }
 		>
-			{ isDashboardShown
-				? renderColumns()
-				: isTaskListEnabled && renderTaskList() }
+			{ isDashboardShown ? renderColumns() : renderTaskList() }
 			{ shouldShowWelcomeModal && (
 				<WelcomeModal
 					onClose={ () => {
 						updateOptions( {
-							woocommerce_task_list_welcome_modal_dismissed:
+							[ WELCOME_MODAL_DISMISSED_OPTION_NAME ]: 'yes',
+						} );
+					} }
+				/>
+			) }
+			{ shouldShowWelcomeFromCalypsoModal && (
+				<WelcomeFromCalypsoModal
+					onClose={ () => {
+						updateOptions( {
+							[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]:
 								'yes',
 						} );
 					} }
 				/>
 			) }
+			{ window.wcAdminFeatures.navigation && <NavigationIntroModal /> }
 		</div>
 	);
 };
@@ -153,7 +163,7 @@ Layout.propTypes = {
 	/**
 	 * If the task list is hidden.
 	 */
-	taskListHidden: PropTypes.bool,
+	bothTaskListsHidden: PropTypes.bool,
 	/**
 	 * Page query, used to determine the current task if any.
 	 */
@@ -162,6 +172,10 @@ Layout.propTypes = {
 	 * If the welcome modal should display
 	 */
 	shouldShowWelcomeModal: PropTypes.bool,
+	/**
+	 * If the welcome from Calypso modal should display.
+	 */
+	shouldShowWelcomeFromCalypsoModal: PropTypes.bool,
 	/**
 	 * Dispatch an action to update an option
 	 */
@@ -175,29 +189,51 @@ export default compose(
 			OPTIONS_STORE_NAME
 		);
 
-		const welcomeModalDismissed =
-			getOption( 'woocommerce_task_list_welcome_modal_dismissed' ) ===
+		const welcomeFromCalypsoModalDismissed =
+			getOption( WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ) ===
 			'yes';
+		const welcomeFromCalypsoModalDismissedResolved = hasFinishedResolution(
+			'getOption',
+			[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]
+		);
+		const fromCalypsoUrlArgIsPresent = !! window.location.search.match(
+			'from-calypso'
+		);
+
+		const shouldShowWelcomeFromCalypsoModal =
+			welcomeFromCalypsoModalDismissedResolved &&
+			! welcomeFromCalypsoModalDismissed &&
+			fromCalypsoUrlArgIsPresent;
+
+		const welcomeModalDismissed =
+			getOption( WELCOME_MODAL_DISMISSED_OPTION_NAME ) === 'yes';
 
 		const welcomeModalDismissedHasResolved = hasFinishedResolution(
 			'getOption',
-			[ 'woocommerce_task_list_welcome_modal_dismissed' ]
+			[ WELCOME_MODAL_DISMISSED_OPTION_NAME ]
 		);
 
 		const shouldShowWelcomeModal =
-			welcomeModalDismissedHasResolved && ! welcomeModalDismissed;
+			welcomeModalDismissedHasResolved &&
+			! welcomeModalDismissed &&
+			welcomeFromCalypsoModalDismissedResolved &&
+			! welcomeFromCalypsoModalDismissed;
 
 		const defaultHomescreenLayout =
 			getOption( 'woocommerce_default_homepage_layout' ) ||
 			'single_column';
+		const isTaskListHidden =
+			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
 
 		return {
 			defaultHomescreenLayout,
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
-			taskListHidden:
-				getOption( 'woocommerce_task_list_hidden' ) === 'yes' &&
-				getOption( 'woocommerce_extended_task_list_hidden' ) !== 'no',
+			shouldShowWelcomeFromCalypsoModal,
+			isTaskListHidden,
+			bothTaskListsHidden:
+				isTaskListHidden &&
+				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
 			requestingTaskList:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',

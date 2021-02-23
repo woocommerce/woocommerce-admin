@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, createRef, Fragment } from '@wordpress/element';
+import { Component, createRef } from '@wordpress/element';
 import { Button, Dropdown, Modal } from '@wordpress/components';
 import PropTypes from 'prop-types';
 import VisibilitySensor from 'react-visibility-sensor';
@@ -32,6 +32,7 @@ class InboxNoteCard extends Component {
 		this.openDismissModal = this.openDismissModal.bind( this );
 		this.closeDismissModal = this.closeDismissModal.bind( this );
 		this.bodyNotificationRef = createRef();
+		this.toggleButtonRef = createRef();
 		this.screen = getScreenName();
 	}
 
@@ -116,9 +117,13 @@ class InboxNoteCard extends Component {
 			'components-popover__content',
 		];
 		// This line is for IE compatibility.
-		const relatedTarget = event.relatedTarget
-			? event.relatedTarget
-			: document.activeElement;
+		let relatedTarget;
+		if ( event.relatedTarget ) {
+			relatedTarget = event.relatedTarget;
+		} else if ( this.toggleButtonRef.current ) {
+			const ownerDoc = this.toggleButtonRef.current.ownerDocument;
+			relatedTarget = ownerDoc ? ownerDoc.activeElement : null;
+		}
 		const isClickOutsideDropdown = relatedTarget
 			? dropdownClasses.some( ( className ) =>
 					relatedTarget.className.includes( className )
@@ -146,6 +151,7 @@ class InboxNoteCard extends Component {
 					<Button
 						isTertiary
 						onClick={ onToggle }
+						ref={ this.toggleButtonRef }
 						onBlur={ ( event ) =>
 							this.handleBlur( event, onClose )
 						}
@@ -207,11 +213,7 @@ class InboxNoteCard extends Component {
 	renderDismissConfirmationModal() {
 		return (
 			<Modal
-				title={
-					<Fragment>
-						{ __( 'Are you sure?', 'woocommerce-admin' ) }
-					</Fragment>
-				}
+				title={ <>{ __( 'Are you sure?', 'woocommerce-admin' ) }</> }
 				onRequestClose={ () => this.closeDismissModal() }
 				className="woocommerce-inbox-dismiss-confirmation_modal"
 			>
@@ -249,7 +251,7 @@ class InboxNoteCard extends Component {
 		}
 
 		return (
-			<Fragment>
+			<>
 				{ noteActions.map( ( action, index ) => (
 					<NoteAction
 						key={ index }
@@ -258,7 +260,7 @@ class InboxNoteCard extends Component {
 						onClick={ () => this.onActionClicked( action ) }
 					/>
 				) ) }
-			</Fragment>
+			</>
 		);
 	}
 
@@ -310,6 +312,9 @@ class InboxNoteCard extends Component {
 					) }
 					<div className="woocommerce-inbox-message__wrapper">
 						<div className="woocommerce-inbox-message__content">
+							{ unread && (
+								<div className="woocommerce-inbox-message__unread-indicator" />
+							) }
 							{ date && (
 								<span className="woocommerce-inbox-message__date">
 									{ moment.utc( date ).fromNow() }

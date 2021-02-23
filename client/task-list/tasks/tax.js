@@ -2,13 +2,13 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, __experimentalText as Text } from '@wordpress/components';
+import { Button, Card, CardBody } from '@wordpress/components';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { Card, H, Link, Stepper, Plugins } from '@woocommerce/components';
+import { H, Link, Stepper, Plugins } from '@woocommerce/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
@@ -18,6 +18,7 @@ import {
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent, queueRecordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -154,7 +155,7 @@ class Tax extends Component {
 				createNotice(
 					'error',
 					__(
-						'There was a problem updating your tax settings.',
+						'There was a problem updating your tax settings',
 						'woocommerce-admin'
 					)
 				);
@@ -468,17 +469,19 @@ class Tax extends Component {
 
 		return (
 			<div className="woocommerce-task-tax">
-				<Card className="is-narrow">
-					{ this.shouldShowSuccessScreen() ? (
-						this.renderSuccessScreen()
-					) : (
-						<Stepper
-							isPending={ isPending || isResolving }
-							isVertical={ true }
-							currentStep={ step.key }
-							steps={ this.getSteps() }
-						/>
-					) }
+				<Card className="woocommerce-task-card">
+					<CardBody>
+						{ this.shouldShowSuccessScreen() ? (
+							this.renderSuccessScreen()
+						) : (
+							<Stepper
+								isPending={ isPending || isResolving }
+								isVertical={ true }
+								currentStep={ step.key }
+								steps={ this.getSteps() }
+							/>
+						) }
+					</CardBody>
 				</Card>
 			</div>
 		);

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __experimentalNavigationItem as NavigationItem } from '@wordpress/components';
+import { NavigationItem } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
 import { WooNavigationItem, useNavSlot } from '@woocommerce/navigation';
 
@@ -38,6 +38,7 @@ const Item = ( { item } ) => {
 			href={ item.url }
 			navigateToMenu={ ! item.url && item.id }
 			onClick={ () => trackClick( item.id ) }
+			hideIfTargetMenuEmpty
 		/>
 	);
 	/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */

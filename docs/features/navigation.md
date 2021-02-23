@@ -14,6 +14,10 @@ The fastest way to get started is by creating an example plugin from WooCommerce
 
 This will create a new plugin that covers various features of the navigation and helps to register some intial items and categories within the new navigation menu.  After running the command above, you can make edits directly to the files at `docs/examples/extensions/add-navigation-items` and they will be built and copied to your `wp-content/add-navigation-items` folder on save.
 
+If you need to enable the WP Toolbar for debugging purposes in the new navigation, you can add the following filter to do so:
+
+`add_filter( 'woocommerce_navigation_wp_toolbar_disabled', '__return_false' );`
+
 ### Adding a menu category
 
 Categories in the new navigation are menu items that house child menu items.
@@ -28,9 +32,8 @@ Clicking on a category will not navigate to a new page, but instead open the chi
 ```php
 \Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_category(
     array(
-        'id'         => 'example-category',
-        'title'      => 'Example Category',
-        'capability' => 'view_woocommerce_reports',
+        'id'     => 'example-category',
+        'title'  => 'Example Category',
     )
 );
 ```
@@ -40,10 +43,9 @@ Categories can also contain more categories by specifying the `parent` property 
 ```php
 \Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_category(
     array(
-        'id'         => 'example-nested-category',
-        'parent'     => 'example-category',
-        'title'      => 'Example Nested Category',
-        'capability' => 'view_woocommerce_reports',
+        'id'     => 'example-nested-category',
+        'parent' => 'example-category',
+        'title'  => 'Example Nested Category',
     )
 );
 ```

@@ -31,4 +31,5 @@ Additional module requests on top of Wordpress [Dependency Extraction Webpack Pl
 | `@woocommerce/data`            | `wc['data']`             | `wc-store-data`      |
 | `@woocommerce/csv-export`      | `wc['csvExport']`        | `wc-csv`             |
 | `@woocommerce/blocks-registry` | `wc['wcBlocksRegistry']` | `wc-blocks-registry` |
+| `@woocommerce/settings`        | `wc['wcSettings']`       | `wc-settings`        |
 | `@woocommerce/*`               | `wc['*']`                | `wc-*`               |

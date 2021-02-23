@@ -137,7 +137,25 @@ class Install {
 		 */
 		if ( ! $version_option || $requires_update ) {
 			self::install();
+			/**
+			 * WooCommerce Admin has been installed or updated.
+			 */
 			do_action( 'woocommerce_admin_updated' );
+
+			if ( ! $version_option ) {
+				/**
+				 * WooCommerce Admin has been installed.
+				 */
+				do_action( 'woocommerce_admin_newly_installed' );
+			}
+
+			if ( $requires_update ) {
+				/**
+				 * An existing installation of WooCommerce Admin has been
+				 * updated.
+				 */
+				do_action( 'woocommerce_admin_updated_existing' );
+			}
 		}
 
 		/*
@@ -188,9 +206,7 @@ class Install {
 	protected static function get_schema() {
 		global $wpdb;
 
-		if ( $wpdb->has_cap( 'collation' ) ) {
-			$collate = $wpdb->get_charset_collate();
-		}
+		$collate = $wpdb->has_cap( 'collation' ) ? $wpdb->get_charset_collate() : '';
 
 		// Max DB index length. See wp_get_db_schema().
 		$max_index_length = 191;
@@ -478,6 +494,8 @@ class Install {
 			'wc-admin-learn-more-about-product-settings',
 			'wc-admin-onboarding-profiler-reminder',
 			'wc-admin-historical-data',
+			'wc-admin-review-shipping-settings',
+			'wc-admin-home-screen-feedback',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(

@@ -20,107 +20,110 @@ exports[`ProductTypes should render product types 1`] = `
       </p>
     </div>
     <div
-      class="woocommerce-card"
+      class="components-card is-size-medium css-1xs3c37-CardUI e1q7k77g0"
     >
       <div
-        class="woocommerce-card__body"
+        class="components-card__body css-xmjzce-BodyUI e1q7k77g3"
       >
         <div
-          class="woocommerce-profile-wizard__checkbox-group"
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
         >
           <div
-            class="components-base-control woocommerce-profile-wizard__checkbox"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
-            <div
-              class="components-base-control__field"
+            <span
+              class="components-checkbox-control__input-container"
+            >
+              <input
+                class="components-checkbox-control__input"
+                id="inspector-checkbox-control-0"
+                type="checkbox"
+                value="1"
+              />
+            </span>
+            <label
+              class="components-checkbox-control__label"
+              for="inspector-checkbox-control-0"
             >
               <span
-                class="components-checkbox-control__input-container"
+                class="woocommerce-product-wizard__product-types-label"
               >
-                <input
-                  class="components-checkbox-control__input"
-                  id="inspector-checkbox-control-0"
-                  type="checkbox"
-                  value="1"
-                />
+                Paid product
               </span>
-              <label
-                class="components-checkbox-control__label"
-                for="inspector-checkbox-control-0"
+              <button
+                aria-label="Learn more about recommended free business features"
+                class="components-button is-tertiary"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  height="24"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 3.2c-4.8 0-8.8 3.9-8.8 8.8 0 4.8 3.9 8.8 8.8 8.8 4.8 0 8.8-3.9 8.8-8.8 0-4.8-4-8.8-8.8-8.8zm0 16c-4 0-7.2-3.3-7.2-7.2C4.8 8 8 4.8 12 4.8s7.2 3.3 7.2 7.2c0 4-3.2 7.2-7.2 7.2zM11 17h2v-6h-2v6zm0-8h2V7h-2v2z"
+                  />
+                </svg>
+              </button>
+              
+              <span
+                class="woocommerce-pill css-1qmnemh-Text e15wbhsk0"
               >
                 <span
-                  class="woocommerce-product-wizard__product-types-label"
+                  class="screen-reader-text"
                 >
-                  Paid product
-                </span>
-                <button
-                  aria-label="Learn more about recommended free business features"
-                  class="components-button is-tertiary"
-                  type="button"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="material-icons-outlined"
-                  >
-                    info
-                  </i>
-                </button>
-                
-                <span
-                  class="woocommerce-pill css-1qmnemh-Text e15wbhsk0"
-                >
-                  <span
-                    class="screen-reader-text"
-                  >
-                    This product type requires a paid extension.
+                  This product type requires a paid extension.
 We'll add this to a cart so that
 you can purchase and install it later.
-                  </span>
-                  $10 per month
                 </span>
-              </label>
-            </div>
-          </div>
-          <div
-            class="components-base-control woocommerce-profile-wizard__checkbox"
-          >
-            <div
-              class="components-base-control__field"
-            >
-              <span
-                class="components-checkbox-control__input-container"
-              >
-                <input
-                  class="components-checkbox-control__input"
-                  id="inspector-checkbox-control-1"
-                  type="checkbox"
-                  value="1"
-                />
+                $10 per month
               </span>
-              <label
-                class="components-checkbox-control__label"
-                for="inspector-checkbox-control-1"
-              >
-                Free product
-              </label>
-            </div>
+            </label>
           </div>
+        </div>
+        <div
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
+        >
           <div
-            class="woocommerce-profile-wizard__card-actions"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
-            <button
-              class="components-button is-primary"
-              disabled=""
-              type="button"
+            <span
+              class="components-checkbox-control__input-container"
             >
-              Continue
-            </button>
+              <input
+                class="components-checkbox-control__input"
+                id="inspector-checkbox-control-1"
+                type="checkbox"
+                value="1"
+              />
+            </span>
+            <label
+              class="components-checkbox-control__label"
+              for="inspector-checkbox-control-1"
+            >
+              Free product
+            </label>
           </div>
         </div>
       </div>
+      <div
+        class="components-flex components-card__footer is-borderless is-size-medium e1q7k77g4 css-1fpr7ir-Flex-FooterUI eboqfv50"
+      >
+        <button
+          class="components-button is-primary"
+          disabled=""
+          type="button"
+        >
+          Continue
+        </button>
+      </div>
     </div>
     <div
-      class="woocommerce-profile-wizard__card-help-text"
+      class="woocommerce-profile-wizard__card-help-footnote"
     >
       <div
         class="woocommerce-profile-wizard__product-types-pricing-toggle woocommerce-profile-wizard__checkbox"
@@ -181,107 +184,110 @@ exports[`ProductTypes should show annual prices on toggle 1`] = `
       </p>
     </div>
     <div
-      class="woocommerce-card"
+      class="components-card is-size-medium css-1xs3c37-CardUI e1q7k77g0"
     >
       <div
-        class="woocommerce-card__body"
+        class="components-card__body css-xmjzce-BodyUI e1q7k77g3"
       >
         <div
-          class="woocommerce-profile-wizard__checkbox-group"
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
         >
           <div
-            class="components-base-control woocommerce-profile-wizard__checkbox"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
-            <div
-              class="components-base-control__field"
+            <span
+              class="components-checkbox-control__input-container"
+            >
+              <input
+                class="components-checkbox-control__input"
+                id="inspector-checkbox-control-2"
+                type="checkbox"
+                value="1"
+              />
+            </span>
+            <label
+              class="components-checkbox-control__label"
+              for="inspector-checkbox-control-2"
             >
               <span
-                class="components-checkbox-control__input-container"
+                class="woocommerce-product-wizard__product-types-label"
               >
-                <input
-                  class="components-checkbox-control__input"
-                  id="inspector-checkbox-control-2"
-                  type="checkbox"
-                  value="1"
-                />
+                Paid product
               </span>
-              <label
-                class="components-checkbox-control__label"
-                for="inspector-checkbox-control-2"
+              <button
+                aria-label="Learn more about recommended free business features"
+                class="components-button is-tertiary"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  height="24"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 3.2c-4.8 0-8.8 3.9-8.8 8.8 0 4.8 3.9 8.8 8.8 8.8 4.8 0 8.8-3.9 8.8-8.8 0-4.8-4-8.8-8.8-8.8zm0 16c-4 0-7.2-3.3-7.2-7.2C4.8 8 8 4.8 12 4.8s7.2 3.3 7.2 7.2c0 4-3.2 7.2-7.2 7.2zM11 17h2v-6h-2v6zm0-8h2V7h-2v2z"
+                  />
+                </svg>
+              </button>
+              
+              <span
+                class="woocommerce-pill css-1qmnemh-Text e15wbhsk0"
               >
                 <span
-                  class="woocommerce-product-wizard__product-types-label"
+                  class="screen-reader-text"
                 >
-                  Paid product
-                </span>
-                <button
-                  aria-label="Learn more about recommended free business features"
-                  class="components-button is-tertiary"
-                  type="button"
-                >
-                  <i
-                    aria-hidden="true"
-                    class="material-icons-outlined"
-                  >
-                    info
-                  </i>
-                </button>
-                
-                <span
-                  class="woocommerce-pill css-1qmnemh-Text e15wbhsk0"
-                >
-                  <span
-                    class="screen-reader-text"
-                  >
-                    This product type requires a paid extension.
+                  This product type requires a paid extension.
 We'll add this to a cart so that
 you can purchase and install it later.
-                  </span>
-                  $120 per year
                 </span>
-              </label>
-            </div>
-          </div>
-          <div
-            class="components-base-control woocommerce-profile-wizard__checkbox"
-          >
-            <div
-              class="components-base-control__field"
-            >
-              <span
-                class="components-checkbox-control__input-container"
-              >
-                <input
-                  class="components-checkbox-control__input"
-                  id="inspector-checkbox-control-3"
-                  type="checkbox"
-                  value="1"
-                />
+                $120 per year
               </span>
-              <label
-                class="components-checkbox-control__label"
-                for="inspector-checkbox-control-3"
-              >
-                Free product
-              </label>
-            </div>
+            </label>
           </div>
+        </div>
+        <div
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
+        >
           <div
-            class="woocommerce-profile-wizard__card-actions"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
-            <button
-              class="components-button is-primary"
-              disabled=""
-              type="button"
+            <span
+              class="components-checkbox-control__input-container"
             >
-              Continue
-            </button>
+              <input
+                class="components-checkbox-control__input"
+                id="inspector-checkbox-control-3"
+                type="checkbox"
+                value="1"
+              />
+            </span>
+            <label
+              class="components-checkbox-control__label"
+              for="inspector-checkbox-control-3"
+            >
+              Free product
+            </label>
           </div>
         </div>
       </div>
+      <div
+        class="components-flex components-card__footer is-borderless is-size-medium e1q7k77g4 css-1fpr7ir-Flex-FooterUI eboqfv50"
+      >
+        <button
+          class="components-button is-primary"
+          disabled=""
+          type="button"
+        >
+          Continue
+        </button>
+      </div>
     </div>
     <div
-      class="woocommerce-profile-wizard__card-help-text"
+      class="woocommerce-profile-wizard__card-help-footnote"
     >
       <div
         class="woocommerce-profile-wizard__product-types-pricing-toggle woocommerce-profile-wizard__checkbox"

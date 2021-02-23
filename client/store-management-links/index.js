@@ -3,12 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import {
 	megaphone,
 	box,
@@ -21,6 +16,7 @@ import {
 } from '@wordpress/icons';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -29,7 +25,7 @@ import './style.scss';
 import { QuickLinkCategory } from './quick-link-category';
 import { QuickLink } from './quick-link';
 
-export function getItemsByCategory( siteUrl ) {
+export function getItemsByCategory( shopUrl ) {
 	return [
 		{
 			title: __( 'Marketing & Merchandising', 'woocommerce-admin' ),
@@ -65,7 +61,7 @@ export function getItemsByCategory( siteUrl ) {
 					title: __( 'View my store', 'woocommerce-admin' ),
 					link: getLinkTypeAndHref( {
 						type: 'external',
-						href: siteUrl,
+						href: shopUrl,
 					} ),
 					icon: home,
 					listItemTag: 'view-store',
@@ -160,13 +156,13 @@ export const generateExtensionLinks = ( links ) => {
 };
 
 export const StoreManagementLinks = () => {
-	const siteUrl = getSetting( 'siteUrl' );
+	const shopUrl = getSetting( 'shopUrl' );
 
 	const extensionQuickLinks = generateExtensionLinks(
 		applyFilters( 'woocommerce_admin_homescreen_quicklinks', [] )
 	);
 
-	const itemCategories = getItemsByCategory( siteUrl );
+	const itemCategories = getItemsByCategory( shopUrl );
 
 	const extensionCategory = {
 		title: __( 'Extensions', 'woocommerce-admin' ),
