@@ -75,6 +75,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+== 2.1.0 ==
+
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
 - Add: Remove CES actions for adding and editing a product and editing an order #6355
