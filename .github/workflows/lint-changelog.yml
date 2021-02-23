@@ -1,4 +1,4 @@
-name: Lint the PHP
+name: Lint the changelog
 on: [pull_request]
 
 jobs:
