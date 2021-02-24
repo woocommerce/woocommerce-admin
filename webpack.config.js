@@ -13,6 +13,7 @@ const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' 
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
 const AsyncChunkSrcVersionParameterPlugin = require( './chunk-src-version-param' );
+const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
 
 /**
  * External dependencies
@@ -116,7 +117,7 @@ const webpackConfig = {
 				},
 			},
 			{
-				test: /\.js?$/,
+				test: /\.(t|j)sx?$/,
 				exclude: /node_modules(\/|\\)(?!(debug))/,
 				use: {
 					loader: 'babel-loader',
@@ -130,6 +131,7 @@ const webpackConfig = {
 									useBuiltIns: 'usage',
 								},
 							],
+							[ '@babel/preset-typescript' ],
 						],
 					},
 				},
@@ -172,7 +174,7 @@ const webpackConfig = {
 		],
 	},
 	resolve: {
-		extensions: [ '.json', '.js', '.jsx' ],
+		extensions: [ '.json', '.js', '.jsx', '.ts', '.tsx' ],
 		alias: {
 			'gutenberg-components': path.resolve(
 				__dirname,
@@ -185,6 +187,7 @@ const webpackConfig = {
 		},
 	},
 	plugins: [
+		new ForkTsCheckerWebpackPlugin(),
 		new FixStyleOnlyEntriesPlugin(),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
