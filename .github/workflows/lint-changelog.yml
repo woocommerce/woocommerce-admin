@@ -1,5 +1,7 @@
 name: Lint the changelog
-on: [pull_request]
+on:
+    pull_request:
+        types: [opened, synchronize, reopened, edited]
 
 jobs:
     lint-changelog:
@@ -13,7 +15,7 @@ jobs:
               uses: actions/checkout@v2
               if: github.event.pull_request.user.login != 'renovate'
             - name: skip-workflow
-              id: skip-workflow # id used for referencing step
+              id: skip-workflow
               uses: saulmaldonado/skip-workflow@v1.1.0
               with:
                   phrase: 'no-changelog'
