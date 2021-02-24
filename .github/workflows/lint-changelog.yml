@@ -20,6 +20,8 @@ jobs:
               with:
                   phrase: 'no-changelog'
                   github-token: ${{ secrets.GITHUB_TOKEN }}
+                  pr-message: 'title & body'
+                  search: '["commit_messages", "pull_request"]'
             - name: Check for changelog entry
               if: github.event.pull_request.user.login != 'renovate'
               env:
