@@ -23,14 +23,14 @@ jobs:
                   pr-message: 'title & body'
                   search: '["commit_messages", "pull_request"]'
             - name: Check for changelog entry
-              if: github.event.pull_request.user.login != 'renovate'
+              if: github.event.pull_request.user.login != 'renovate' && !steps.skip-workflow.outputs.skip
               env:
                   PR_NUMBER: ${{github.event.number}}
               run: bin/ci/lint-changelog.sh
               shell: bash
             - name: Add a reminder label to the PR
               uses: ./.github/actions/pr-labeler
-              if: ${{ github.event.pull_request.user.login != 'renovate' || always() }}
+              if: github.event.pull_request.user.login != 'renovate' && !steps.skip-workflow.outputs.skip || always()
               with:
                   access_token: ${{ github.token }}
                   label: ${{ env.label }}
