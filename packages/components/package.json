@@ -59,6 +59,9 @@
 		"react-router-dom": "5.2.0",
 		"react-transition-group": "4.4.1"
 	},
+	"peerDependencies": {
+		"lodash": "4.17.21",
+	},
 	"publishConfig": {
 		"access": "public"
 	}
