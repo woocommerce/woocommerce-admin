@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Suspense } from '@wordpress/element';
+import { Suspense, useRef, useCallback } from '@wordpress/element';
 import classnames from 'classnames';
 import { Spinner } from '@woocommerce/components';
 
@@ -31,14 +31,29 @@ export const Panel = ( {
 		}
 	};
 
+	const possibleFocusPanel = () => {
+		if ( ! containerRef.current || ! isPanelOpen || ! tab ) {
+			return;
+		}
+
+		focusOnMountRef( containerRef.current );
+	};
+
 	const finishTransition = ( e ) => {
 		if ( e && e.propertyName === 'transform' ) {
 			clearPanel();
+			possibleFocusPanel();
 		}
 	};
 
-	const ref = useFocusOnMount();
+	const focusOnMountRef = useFocusOnMount();
 	const useFocusOutsideProps = useFocusOutside( handleFocusOutside );
+	const containerRef = useRef( null );
+
+	const mergedContainerRef = useCallback( ( node ) => {
+		containerRef.current = node;
+		focusOnMountRef( node );
+	}, [] );
 
 	if ( ! tab ) {
 		return <div className="woocommerce-layout__activity-panel-wrapper" />;
@@ -64,7 +79,7 @@ export const Panel = ( {
 			aria-label={ tab.title }
 			onTransitionEnd={ finishTransition }
 			{ ...useFocusOutsideProps }
-			ref={ ref }
+			ref={ mergedContainerRef }
 		>
 			<div
 				className="woocommerce-layout__activity-panel-content"
