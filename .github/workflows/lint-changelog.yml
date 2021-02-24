@@ -11,14 +11,22 @@ jobs:
                   access_token: ${{ github.token }}
             - name: Check out repository code
               uses: actions/checkout@v2
+              if: github.event.pull_request.user.login != 'renovate'
+            - name: skip-workflow
+              id: skip-workflow # id used for referencing step
+              uses: saulmaldonado/skip-workflow@v1
+              with:
+                  phrase: 'no-changelog'
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
             - name: Check for changelog entry
+              if: github.event.pull_request.user.login != 'renovate'
               env:
                   PR_NUMBER: ${{github.event.number}}
               run: bin/ci/lint-changelog.sh
               shell: bash
             - name: Add a reminder label to the PR
               uses: ./.github/actions/pr-labeler
-              if: ${{ always() }}
+              if: ${{ github.event.pull_request.user.login != 'renovate' || always() }}
               with:
                   access_token: ${{ github.token }}
                   label: ${{ env.label }}
