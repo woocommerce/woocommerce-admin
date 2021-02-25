@@ -6,7 +6,7 @@
 
 ### Correct the Klarna slug #6440
 
-1. Set up a new store with Klarna available as a payment processor
+1. Set up a new store with a UK address so that Klarna available as a payment processor
 2. Go to the "Choose payment methods" task item
 3. Set up Klarna. The plugin will install.
 4. Click Continue. It should take you back to the payment methods page - previously it wasn't doing anything but a console error was displayed.
