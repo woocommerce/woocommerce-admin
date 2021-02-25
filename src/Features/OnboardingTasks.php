@@ -28,6 +28,13 @@ class OnboardingTasks {
 	const ACTIVE_TASK_TRANSIENT = 'wc_onboarding_active_task';
 
 	/**
+	 * Name of recommended payment method transient.
+	 *
+	 * @var string
+	 */
+	const RECOMMENDED_PAYMENT_METHODS_TRANSIENT = 'wc_onboarding_recommended_payment_methods';
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -73,8 +80,6 @@ class OnboardingTasks {
 	public function add_media_scripts() {
 		wp_enqueue_media();
 	}
-
-
 
 	/**
 	 * Get task item data for settings filter.
@@ -463,4 +468,51 @@ class OnboardingTasks {
 			update_option( 'woocommerce_extended_task_list_hidden', 'no' );
 		}
 	}
+
+	/**
+	 * Load recommended payment methods from WooCommerce.com
+	 *
+	 * @return array
+	 */
+	public static function get_recommended_payment_methods() {
+		$methods = get_transient( self::RECOMMENDED_PAYMENT_METHODS_TRANSIENT );
+
+		if ( ! $methods ) {
+			$methods       = array();
+			$base_location = wc_get_base_location();
+			$profile       = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+			$filters       = array(
+				'country_code'     => isset( $base_location['country'] ) ? $base_location['country'] : 'US',
+				'has_cbd_industry' => isset( $profile['has_cbd_industry'] ) ? $profile['has_cbd_industry'] : false,
+			);
+
+			$args = array(
+				'sslverify' => false, // Development only!
+				'body'      => array(
+					'filters' => wp_json_encode( $filters ),
+				),
+			);
+
+			$request = wp_remote_post(
+				'https://woocommerce.test/wp-json/wccom/payment-methods/1.0/recommendations', // Development only!
+				$args
+			);
+
+			if ( ! is_wp_error( $request ) && 200 === wp_remote_retrieve_response_code( $request ) ) {
+				$methods = json_decode(
+					wp_remote_retrieve_body( $request ),
+					true
+				);
+			}
+
+			set_transient(
+				self::RECOMMENDED_PAYMENT_METHODS_TRANSIENT,
+				$methods,
+				empty( $methods ) ? 900 : DAY_IN_SECONDS
+			);
+		}
+
+		return $methods;
+	}
+
 }

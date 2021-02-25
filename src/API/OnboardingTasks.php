@@ -9,6 +9,7 @@ namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks as OnboardingTasksFeature;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -97,6 +98,19 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/payment-method-recommendations',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_recommended_payment_methods' ),
+					'permission_callback' => array( $this, 'get_recommended_payment_methods_permission_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -136,6 +150,24 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function get_status_permission_check( $request ) {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to retrieve onboarding status.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a given request has access to get onboarding tasks payment method recommendations.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function get_recommended_payment_methods_permission_check( $request ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new \WP_Error(
+				'woocommerce_rest_cannot_get_payment_methods',
+				__( 'Sorry, you are not allowed to retrieve payment method recommendations.', 'woocommerce-admin' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
 		}
 
 		return true;
@@ -609,5 +641,30 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$status = OnboardingTasksFeature::get_settings();
 
 		return rest_ensure_response( $status );
+	}
+
+	/**
+	 * Return recommeneded payment method data.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_recommended_payment_methods( $request ) {
+		$per_page      = $request->has_param( 'per_page' ) ? $request->get_param( 'per_page' ) : -1;
+		$all_methods   = OnboardingTasksFeature::get_recommended_payment_methods();
+		$valid_methods = array();
+
+		foreach ( $all_methods as $method ) {
+			if ( ! PluginsHelper::is_plugin_installed( $method['slug'] ) ) {
+				$valid_methods[] = $method;
+			}
+		}
+
+		if ( 0 < $per_page ) {
+			$valid_methods = array_slice( $valid_methods, 0, $per_page );
+		}
+
+		return rest_ensure_response( $valid_methods );
 	}
 }
