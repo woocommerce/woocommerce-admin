@@ -1,3 +1,0 @@
-#!/usr/bin/env node
-'use strict';
-require( '../cli' )().parse( process.argv.slice( 2 ) );
