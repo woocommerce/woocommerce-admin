@@ -10,14 +10,14 @@ const config = require( 'config' );
 
 export async function completeStoreDetailsSection( storeDetails = {} ) {
 	// Fill store's address - first line
-	await expect( page ).toFill(
+	await page.type(
 		'#inspector-text-control-0',
 		storeDetails.addressLine1 ||
 			config.get( 'addresses.admin.store.addressfirstline' )
 	);
 
 	// Fill store's address - second line
-	await expect( page ).toFill(
+	await page.type(
 		'#inspector-text-control-1',
 		storeDetails.addressLine2 ||
 			config.get( 'addresses.admin.store.addresssecondline' )
