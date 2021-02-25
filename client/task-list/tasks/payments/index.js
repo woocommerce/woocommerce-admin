@@ -102,7 +102,15 @@ class Payments extends Component {
 			return;
 		}
 
-		return methods.find( ( method ) => method.key === query.method );
+		const currentMethod = methods.find(
+			( method ) => method.key === query.method
+		);
+
+		if ( ! currentMethod ) {
+			throw `Current method ${ query.method } not found in available methods list`;
+		}
+
+		return currentMethod;
 	}
 
 	getInstallStep() {
@@ -154,6 +162,10 @@ class Payments extends Component {
 		} = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
+
+		if ( ! method ) {
+			throw `Method ${ key } not found in available methods list`;
+		}
 
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
