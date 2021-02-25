@@ -73,7 +73,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-== Unreleased ==
+== 2.1.0 ==
 
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
@@ -118,6 +118,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add navigation favorites data store #6275
 - Add: Add navigation intro modal. #6367
 - Fix: Reset Navigation submenu before making Flyout #6396
+
+== 2.0.2 25/05/2021 ==
+
+- Fix: Correct the Klarna slug #6440
 
 == 2.0.0 02/05/2021 ==
 
