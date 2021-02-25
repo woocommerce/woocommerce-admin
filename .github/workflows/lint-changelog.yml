@@ -18,7 +18,7 @@ jobs:
               id: skip-workflow
               uses: saulmaldonado/skip-workflow@v1.1.0
               with:
-                  phrase: /^no changelog/i
+                  phrase: /no changelog/i
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   pr-message: 'body'
                   search: '["pull_request"]'
