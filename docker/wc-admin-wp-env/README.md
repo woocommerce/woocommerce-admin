@@ -95,13 +95,6 @@ This method is simpler, but the plugin does not get activated on startup. You ne
 }
 ```
 
-
-
-
-
-
-
-
 ## Accessing Mysql
 
 The Mysql port can change when you restart your container.
