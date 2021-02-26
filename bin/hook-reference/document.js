@@ -51,4 +51,4 @@ const makeDocObject = async () => {
 	console.log( documentObject );
 };
 
-makeDocObject( fileName );
+module.exports = makeDocObject;
