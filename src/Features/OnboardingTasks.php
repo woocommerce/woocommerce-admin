@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\API\Reports\Taxes\Stats\DataStore;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Contains the logic for completing onboarding tasks.
@@ -503,6 +504,13 @@ class OnboardingTasks {
 					wp_remote_retrieve_body( $request ),
 					true
 				);
+
+				$methods = array_filter(
+					$methods,
+					function( $method ) {
+						return ! PluginsHelper::is_plugin_installed( $method['slug'] );
+					}
+				);
 			}
 
 			set_transient(
@@ -514,5 +522,4 @@ class OnboardingTasks {
 
 		return $methods;
 	}
-
 }

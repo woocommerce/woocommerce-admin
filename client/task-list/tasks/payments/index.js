@@ -1,10 +1,13 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
+import interpolateComponents from 'interpolate-components';
+import apiFetch from '@wordpress/api-fetch';
+import { __, sprintf } from '@wordpress/i18n';
 import { cloneElement, Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
+import { withDispatch, withSelect } from '@wordpress/data';
 import {
 	Button,
 	Card,
@@ -14,28 +17,30 @@ import {
 	FormToggle,
 	Spinner,
 } from '@wordpress/components';
-import { withDispatch, withSelect } from '@wordpress/data';
-import { H, Plugins } from '@woocommerce/components';
+import {
+	ONBOARDING_STORE_NAME,
+	OPTIONS_STORE_NAME,
+	PLUGINS_STORE_NAME,
+	WC_ADMIN_NAMESPACE,
+} from '@woocommerce/data';
 import {
 	getHistory,
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import {
-	ONBOARDING_STORE_NAME,
-	OPTIONS_STORE_NAME,
-	PLUGINS_STORE_NAME,
-	pluginNames,
-	SETTINGS_STORE_NAME,
-} from '@woocommerce/data';
+import { H, Link, Plugins } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
+import { LOCALE } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
+import WCPayLogo from './images/wcpay';
 import { createNoticesFromResponse } from '../../../lib/notices';
-import { getCountryCode } from '../../../dashboard/utils';
-import { getPaymentMethods } from './methods';
+import {
+	getDefaultPaymentMethods,
+	getPaymentMethodsContainerMap,
+} from './methods';
 
 export const setMethodEnabledOption = async (
 	optionName,
@@ -58,46 +63,43 @@ export const setMethodEnabledOption = async (
 };
 
 class Payments extends Component {
-	constructor( props ) {
+	constructor() {
 		super( ...arguments );
-		const { methods } = props;
 
-		const enabledMethods = {};
-		methods.forEach(
-			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
-		);
 		this.state = {
 			busyMethod: null,
-			enabledMethods,
-			recommendedMethod: this.getRecommendedMethod(),
+			enabledMethods: {},
+			isLoading: true,
+			methods: [],
 		};
 
 		this.markConfigured = this.markConfigured.bind( this );
 	}
 
-	componentDidUpdate() {
-		const { recommendedMethod } = this.state;
+	componentDidMount() {
+		this.getRecommendedPaymentMethods();
+	}
 
-		const method = this.getRecommendedMethod();
-		if ( recommendedMethod !== method ) {
-			this.setState( {
-				recommendedMethod: method,
+	async getRecommendedPaymentMethods() {
+		let methods = [];
+		try {
+			methods = await apiFetch( {
+				method: 'GET',
+				path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/payment-method-recommendations?per_page=3`,
 			} );
+		} catch {
+			methods = getDefaultPaymentMethods();
 		}
+
+		this.setState( {
+			methods,
+			isLoading: false,
+		} );
 	}
 
-	getRecommendedMethod() {
-		const { methods } = this.props;
-		return methods.find( ( m ) => m.key === 'wcpay' && m.visible )
-			? 'wcpay'
-			: 'stripe';
-	}
-
-	async markConfigured( methodName, queryParams = {} ) {
-		const { enabledMethods } = this.state;
-		const { methods } = this.props;
-
-		const method = methods.find( ( option ) => option.key === methodName );
+	async markConfigured( key, queryParams = {} ) {
+		const { enabledMethods, methods } = this.state;
+		const method = methods.find( ( m ) => m.key === key );
 
 		if ( ! method ) {
 			throw `Method ${ methodName } not found in available methods list`;
@@ -106,14 +108,14 @@ class Payments extends Component {
 		this.setState( {
 			enabledMethods: {
 				...enabledMethods,
-				[ methodName ]: true,
+				[ key ]: true,
 			},
 		} );
 
-		await setMethodEnabledOption( method.optionName, 'yes', this.props );
+		await setMethodEnabledOption( method.option, 'yes', this.props );
 
 		recordEvent( 'tasklist_payment_connect_method', {
-			payment_method: methodName,
+			payment_method: key,
 		} );
 
 		getHistory().push(
@@ -122,7 +124,8 @@ class Payments extends Component {
 	}
 
 	getCurrentMethod() {
-		const { methods, query } = this.props;
+		const { methods } = this.state;
+		const { query } = this.props;
 
 		if ( ! query.method ) {
 			return;
@@ -146,13 +149,12 @@ class Payments extends Component {
 			return;
 		}
 
-		const { activePlugins } = this.props;
+		const { activePlugins, siteLocale } = this.props;
 		const pluginsToInstall = currentMethod.plugins.filter(
 			( method ) => ! activePlugins.includes( method )
 		);
-		const pluginNamesString = currentMethod.plugins
-			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
-			.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
+		const pluginLocaleData = currentMethod.locales[ siteLocale ];
+		const pluginNamesString = pluginLocaleData.name;
 
 		return {
 			key: 'install',
@@ -180,9 +182,8 @@ class Payments extends Component {
 	}
 
 	async toggleMethod( key ) {
-		const { methods } = this.props;
-		const { enabledMethods } = this.state;
-		const method = methods.find( ( option ) => option.key === key );
+		const { enabledMethods, methods } = this.state;
+		const method = methods.find( ( m ) => m.key === key );
 
 		if ( ! method ) {
 			throw `Method ${ key } not found in available methods list`;
@@ -197,14 +198,14 @@ class Payments extends Component {
 		} );
 
 		await setMethodEnabledOption(
-			method.optionName,
+			method.option,
 			method.isEnabled ? 'no' : 'yes',
 			this.props
 		);
 	}
 
 	async handleClick( method ) {
-		const { methods } = this.props;
+		const { methods } = this.state;
 		const { key, onClick } = method;
 
 		recordEvent( 'tasklist_payment_setup', {
@@ -231,14 +232,17 @@ class Payments extends Component {
 	}
 
 	getSetupButtons( method ) {
-		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
-		const { container, isConfigured, key } = method;
+		const { isConfigured, key, recommended } = method;
+		const { busyMethod, enabledMethods } = this.state;
+		const { paymentMethodsContainerMap } = this.props;
+		const container = paymentMethodsContainerMap[ key ];
+
 		if ( container && ! isConfigured ) {
 			return (
 				<div>
 					<Button
-						isPrimary={ key === recommendedMethod }
-						isSecondary={ key !== recommendedMethod }
+						isPrimary={ recommended === 'yes' }
+						isSecondary={ recommended !== 'yes' }
 						isBusy={ busyMethod === key }
 						disabled={ busyMethod }
 						onClick={ () => this.handleClick( method ) }
@@ -257,16 +261,77 @@ class Payments extends Component {
 		);
 	}
 
+	checkConfiguration( { option, settings, slug } ) {
+		const { activePlugins, onboardingStatus, options } = this.props;
+		const {
+			enabledPaymentGateways,
+			paypalOnboardingStatus,
+		} = onboardingStatus;
+
+		switch ( settings.type ) {
+			case 'include':
+				return (
+					activePlugins.includes( slug ) ||
+					enabledPaymentGateways.includes( slug )
+				);
+			case 'option':
+				return settings.options.every( ( opt ) => {
+					return (
+						( options[ opt ] && options[ opt ].length ) ||
+						( options[ option ] &&
+							options[ option ][ opt ] &&
+							options[ option ][ opt ].length )
+					);
+				} );
+			case 'status':
+				return (
+					paypalOnboardingStatus &&
+					paypalOnboardingStatus.production &&
+					paypalOnboardingStatus.production.onboarded
+				);
+			default:
+				return false;
+		}
+	}
+
+	getTosPrompt() {
+		const tosLink = (
+			<Link
+				href={ 'https://wordpress.com/tos/' }
+				target="_blank"
+				type="external"
+			/>
+		);
+
+		const tosPrompt = interpolateComponents( {
+			mixedString: __(
+				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}',
+				'woocommerce-admin'
+			),
+			components: {
+				link: tosLink,
+			},
+		} );
+
+		return <p>{ tosPrompt }</p>;
+	}
+
 	render() {
+		const { isLoading, methods } = this.state;
+
+		if ( isLoading ) {
+			return <p>Loading...</p>; // Replace with pretty loading component.
+		}
+
+		const { paymentMethodsContainerMap, siteLocale, query } = this.props;
 		const currentMethod = this.getCurrentMethod();
-		const { recommendedMethod } = this.state;
-		const { methods, query } = this.props;
 
 		if ( currentMethod ) {
+			const container = paymentMethodsContainerMap[ currentMethod.key ];
 			return (
 				<Card className="woocommerce-task-payment-method woocommerce-task-card">
 					<CardBody>
-						{ cloneElement( currentMethod.container, {
+						{ cloneElement( container, {
 							query,
 							installStep: this.getInstallStep(),
 							markConfigured: this.markConfigured,
@@ -280,20 +345,8 @@ class Payments extends Component {
 		return (
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
-					const {
-						before,
-						content,
-						isConfigured,
-						key,
-						title,
-						visible,
-						loading,
-					} = method;
-
-					if ( ! visible ) {
-						return null;
-					}
-
+					const { key, loading, locales, recommended } = method;
+					const isConfigured = this.checkConfiguration( method );
 					const classes = classnames(
 						'woocommerce-task-payment',
 						'woocommerce-task-card',
@@ -302,12 +355,14 @@ class Payments extends Component {
 						'woocommerce-task-payment-' + key
 					);
 
-					const isRecommended =
-						key === recommendedMethod && ! isConfigured;
-					const showRecommendedRibbon =
-						isRecommended && key !== 'wcpay';
+					const isRecommended = recommended && ! isConfigured;
 					const showRecommendedPill =
 						isRecommended && key === 'wcpay';
+					const showRecommendedRibbon =
+						isRecommended && key !== 'wcpay';
+
+					const locale = locales[ siteLocale ] || locales.en_US;
+					const { title, content, tos } = locale;
 
 					return (
 						<Card key={ key } className={ classes }>
@@ -321,7 +376,9 @@ class Payments extends Component {
 									</span>
 								</div>
 							) }
-							<CardMedia isBorderless>{ before }</CardMedia>
+							<CardMedia isBorderless>
+								<WCPayLogo />
+							</CardMedia>
 							<CardBody>
 								<H className="woocommerce-task-payment__title">
 									{ title }
@@ -336,6 +393,7 @@ class Payments extends Component {
 								</H>
 								<div className="woocommerce-task-payment__content">
 									{ content }
+									{ tos && this.getTosPrompt() }
 								</div>
 							</CardBody>
 							<CardFooter isBorderless>
@@ -377,20 +435,11 @@ export default compose(
 			updateOptions,
 		};
 	} ),
-	withSelect( ( select, props ) => {
-		const { createNotice, installAndActivatePlugins } = props;
+	withSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const {
-			getActivePlugins,
-			isJetpackConnected,
-			getPaypalOnboardingStatus,
-			hasFinishedResolution,
-		} = select( PLUGINS_STORE_NAME );
-		const { getSettings } = select( SETTINGS_STORE_NAME );
-		const { general: generalSettings = {} } = getSettings( 'general' );
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
-
 		const activePlugins = getActivePlugins();
 		const onboardingStatus = getTasksStatus();
 		const profileItems = getProfileItems();
@@ -418,32 +467,17 @@ export default compose(
 			result[ name ] = getOption( name );
 			return result;
 		}, {} );
-		const countryCode = getCountryCode(
-			generalSettings.woocommerce_default_country
-		);
-		const paypalOnboardingStatus = getPaypalOnboardingStatus();
 
-		const methods = getPaymentMethods( {
-			activePlugins,
-			countryCode,
-			createNotice,
-			installAndActivatePlugins,
-			isJetpackConnected: isJetpackConnected(),
-			onboardingStatus,
-			options,
-			profileItems,
-			paypalOnboardingStatus,
-			loadingPaypalStatus:
-				! hasFinishedResolution( 'getPaypalOnboardingStatus' ) &&
-				! paypalOnboardingStatus,
-		} );
+		const paymentMethodsContainerMap = getPaymentMethodsContainerMap();
+		const siteLocale = LOCALE.siteLocale;
 
 		return {
-			countryCode,
 			profileItems,
 			activePlugins,
 			options,
-			methods,
+			onboardingStatus,
+			paymentMethodsContainerMap,
+			siteLocale,
 		};
 	} )
 )( Payments );

@@ -526,3 +526,20 @@ export function getPaymentMethods( {
 
 	return methods.filter( ( method ) => method.visible );
 }
+
+export function getDefaultPaymentMethods() {
+	return [];
+}
+
+export function getPaymentMethodsContainerMap() {
+	return {
+		bacs: <Bacs />,
+		stripe: <Stripe />,
+		square: <Square />,
+		wcpay: <WCPay />,
+		paypal: <PayPal />,
+		klarna_checkout: <Klarna />,
+		klarna_payment: <Klarna />,
+		mollie: <Mollie />,
+	};
+}

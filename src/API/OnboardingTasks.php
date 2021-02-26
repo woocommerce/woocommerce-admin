@@ -9,7 +9,6 @@ namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks as OnboardingTasksFeature;
-use Automattic\WooCommerce\Admin\PluginsHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -651,20 +650,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_recommended_payment_methods( $request ) {
-		$per_page      = $request->has_param( 'per_page' ) ? $request->get_param( 'per_page' ) : -1;
-		$all_methods   = OnboardingTasksFeature::get_recommended_payment_methods();
-		$valid_methods = array();
-
-		foreach ( $all_methods as $method ) {
-			if ( ! PluginsHelper::is_plugin_installed( $method['slug'] ) ) {
-				$valid_methods[] = $method;
-			}
-		}
+		$per_page = $request->has_param( 'per_page' ) ? $request->get_param( 'per_page' ) : -1;
+		$methods  = OnboardingTasksFeature::get_recommended_payment_methods();
 
 		if ( 0 < $per_page ) {
-			$valid_methods = array_slice( $valid_methods, 0, $per_page );
+			$methods = array_slice( $methods, 0, $per_page );
 		}
 
-		return rest_ensure_response( $valid_methods );
+		return rest_ensure_response( $methods );
 	}
 }
