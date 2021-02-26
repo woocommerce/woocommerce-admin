@@ -85,6 +85,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Email notes now are turned off by default #6324
 - Add: CES track settings tab on updating settings #6368
 - Add: Add navigation intro modal. #6367
+- Fix: Fix double prefixing of full navigation URLs #6460
 
 == 2.0.0 02/05/2021 ==
 
