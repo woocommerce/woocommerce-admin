@@ -48,13 +48,18 @@ const makeDocObject = async ( fileName ) => {
 	} );
 };
 
+const makeJSONFile = async ( docObjects ) => {
+	// Make JSON File here
+	console.log( docObjects );
+};
+
 const makeDocument = async ( fileNames ) => {
-	const document = await Promise.all(
+	const docObjects = await Promise.all(
 		fileNames.map( async ( f ) => {
 			return await makeDocObject( f );
 		} )
 	);
-	console.log( document.flat() );
+	makeJSONFile( docObjects.flat() );
 };
 
 module.exports = makeDocument;

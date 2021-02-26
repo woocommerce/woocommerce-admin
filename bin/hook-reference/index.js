@@ -1,4 +1,4 @@
-const makeDocObject = require( './document' );
+const makeDocument = require( './document' );
 const { promisify } = require( 'util' );
 const { resolve } = require( 'path' );
 const fs = require( 'fs' );
@@ -16,9 +16,6 @@ async function getFiles( dir ) {
 	return files.reduce( ( a, f ) => a.concat( f ), [] );
 }
 
-// getFiles( 'client' )
-// 	.then( ( files ) => console.log( files ) )
-// 	.catch( ( e ) => console.error( e ) );
-
-const fileNames = [ 'client/homescreen/stats-overview/defaults.js' ];
-makeDocObject( fileNames );
+getFiles( 'client' )
+	.then( ( fileNames ) => makeDocument( fileNames ) )
+	.catch( ( e ) => console.error( e ) );
