@@ -75,9 +75,9 @@ Open the default `.wp-env.json` and copy `plugins` array and paste it into the `
 ```json
 {
 	"plugins": [
-        ".", 
-        "https://downloads.wordpress.org/plugin/woocommerce.5.0.0.zip",
-        "../wp-crontrol"
+        ".",
+        "../woocommerce",
+        "https://downloads.wordpress.org/plugin/wp-crontrol.1.10.0.zip"
     ]
 }
 
@@ -90,7 +90,7 @@ This method is simpler, but the plugin does not get activated on startup. You ne
 ```json
 {
 	"mappings": {
-    	"wp-content/plugins/wp-crontrol": "../wp-crontrol"
+    	"wp-content/plugins/wp-crontrol": "../woocommerce"
     }
 }
 ```
@@ -111,3 +111,18 @@ You can get the current Mysql port with `npm run wp-env-mysql-port` command.
 | Username |  |
 | Password |  |
 | Port | Port from the command |
+
+## HOWTOs
+
+##### How do I ssh into the container?
+
+Run the following command to ssh into the container
+`wp-env run wordpress /bin/bash`
+
+You can run a command in the container with the following syntax. You can find more about on the `run` command [here](https://github.com/WordPress/gutenberg/tree/master/packages/env#wp-env-run-container-command)
+
+Syntax:
+`wp-env run :container-type :linux-command`
+
+
+
