@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Update payment card style on mobile #6413
+
+- Using a small size screen, go to your WooCommerce -> Home -> Choose payment methods.
+- See that the text descriptions for payment methods have a margin between them and the edge of the screen.
 ### Deprecate Onboarding::has_woocommerce_support #6401
 
 - Clear existing site transients. For example, by using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and pressing the "Delete all transients" button it provides.
