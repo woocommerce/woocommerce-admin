@@ -1,7 +1,6 @@
 const fsPromises = require( 'fs' ).promises;
 const exec = require( 'await-exec' );
 const { parse } = require( 'comment-parser/lib' );
-const fileName = 'client/homescreen/stats-overview/defaults.js';
 
 const getHooks = ( parsedData ) =>
 	parsedData.filter( ( docBlock ) =>
@@ -15,7 +14,7 @@ const getSourceFile = ( file, commit, { source } ) => {
 	return `https://github.com/woocommerce/woocommerce-admin/blob/${ commit }/${ file }#L${ first }-L${ last }`;
 };
 
-const addSourceFiles = async ( hooks ) => {
+const addSourceFiles = async ( hooks, fileName ) => {
 	const { stdout } = await exec( 'git log --pretty="format:%H" -1' );
 	const commit = stdout.trim();
 
@@ -25,19 +24,19 @@ const addSourceFiles = async ( hooks ) => {
 	} );
 };
 
-const prepareHooks = async ( file ) => {
+const prepareHooks = async ( fileName ) => {
 	const data = await fsPromises
-		.readFile( file, 'utf-8' )
+		.readFile( fileName, 'utf-8' )
 		.catch( ( err ) => console.error( 'Failed to read file', err ) );
 
 	const parsed = parse( data );
 	const rawHooks = getHooks( parsed );
-	return await addSourceFiles( rawHooks );
+	return await addSourceFiles( rawHooks, fileName );
 };
 
-const makeDocObject = async () => {
+const makeDocObject = async ( fileName ) => {
 	const hooks = await prepareHooks( fileName );
-	const documentObject = hooks.map( ( { description, tags, sourceFile } ) => {
+	return hooks.map( ( { description, tags, sourceFile } ) => {
 		const example = tags.find( ( tag ) => tag.tag === 'example' );
 		const hook = tags.find( ( tag ) => tag.tag === 'hook' );
 		return {
@@ -47,8 +46,15 @@ const makeDocObject = async () => {
 			example: example ? example.description : '',
 		};
 	} );
-
-	console.log( documentObject );
 };
 
-module.exports = makeDocObject;
+const makeDocument = async ( fileNames ) => {
+	const document = await Promise.all(
+		fileNames.map( async ( f ) => {
+			return await makeDocObject( f );
+		} )
+	);
+	console.log( document.flat() );
+};
+
+module.exports = makeDocument;
