@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Deprecate Onboarding::has_woocommerce_support #6401
+
+- Clear existing site transients. For example, using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and using the "Delete all transients" button it provides.
+- Add any new theme to WordPress but **DO NOT** activate it.
+- Initialze the Onboarding Wizard.
+- See that the Themes step loads fast 😎 
+- See that the new theme is listed in the Themes step.
+
 ## 2.1.0
 
 ### Correct the Klarna slug #6440
