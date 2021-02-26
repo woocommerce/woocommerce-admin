@@ -6,7 +6,7 @@
 
 - Clear existing site transients. For example, by using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and pressing the "Delete all transients" button it provides.
 - Add any new theme to WordPress but **DO NOT** activate it.
-- Initialze the Onboarding Wizard.
+- Initialize the Onboarding Wizard.
 - See that the Themes step loads fast 😎 
 - See that the new theme is listed in the Themes step.
 
