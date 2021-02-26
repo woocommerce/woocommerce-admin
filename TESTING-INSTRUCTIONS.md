@@ -4,6 +4,13 @@
 
 ## 2.1.0
 
+### Navigation: Correct error thrown when enabling #6462
+
+1. Create a fresh store
+2. Navigate to WooCommerce -> Settings -> Advanced Tab -> Features
+3. Check the box to add the new navigation feature, and hit save
+4. Ensure that the new navigation appears on the left as expected
+
 ### Correct the Klarna slug #6440
 
 1. Set up a new store with a UK address so that Klarna available as a payment processor
