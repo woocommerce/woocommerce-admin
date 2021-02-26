@@ -7,12 +7,12 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 2.1.0-dev
+ * Version: 2.2.0-dev
  * Requires at least: 5.4
- * Requires PHP: 5.6.20
+ * Requires PHP: 7.0
  *
- * WC requires at least: 4.5.0
- * WC tested up to: 4.7.0
+ * WC requires at least: 4.8.0
+ * WC tested up to: 5.0.0
  *
  * @package WooCommerce\Admin
  */
@@ -28,9 +28,8 @@ use \Automattic\WooCommerce\Admin\Loader;
  * We want to fail gracefully if `composer install` has not been executed yet, so we are checking for the autoloader.
  * If the autoloader is not present, let's log the failure and display a nice admin notice.
  */
-$autoloader = __DIR__ . '/vendor/autoload_packages.php';
-if ( is_readable( $autoloader ) ) {
-	require $autoloader;
+if ( is_readable( __DIR__ . '/vendor/autoload_packages.php' ) ) {
+	require __DIR__ . '/vendor/autoload_packages.php';
 } else {
 	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		error_log(  // phpcs:ignore

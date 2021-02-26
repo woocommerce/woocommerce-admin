@@ -43,17 +43,19 @@
 	box-sizing: border-box;
 }
 
+#wpbody {
+	display: inline-block;
+	width: 100%;
+	box-sizing: border-box;
+	padding-top: 0;
+	margin-top: $header-height;
+}
+
 #wpfooter {
 	display: none;
 }
 
 .woocommerce_page_wc-admin {
-	.wp-responsive-open {
-		.woocommerce-layout__header {
-			margin-left: 2px;
-		}
-	}
-
 	.woocommerce-filters-date__content:not(.is-mobile) {
 		z-index: 2; /* below of woocommerce-layout__header */
 	}

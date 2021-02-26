@@ -37,6 +37,26 @@ import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
 
+export const setMethodEnabledOption = async (
+	optionName,
+	value,
+	{ clearTaskStatusCache, updateOptions, options }
+) => {
+	const methodOptions = options[ optionName ];
+
+	// Don't update the option if it already has the same value.
+	if ( methodOptions.enabled !== value ) {
+		await updateOptions( {
+			[ optionName ]: {
+				...methodOptions,
+				enabled: value,
+			},
+		} );
+
+		clearTaskStatusCache();
+	}
+};
+
 class Payments extends Component {
 	constructor( props ) {
 		super( ...arguments );
@@ -73,21 +93,27 @@ class Payments extends Component {
 			: 'stripe';
 	}
 
-	markConfigured( method, queryParams = {} ) {
-		const { clearTaskStatusCache } = this.props;
+	async markConfigured( methodName, queryParams = {} ) {
 		const { enabledMethods } = this.state;
+		const { methods } = this.props;
+
+		const method = methods.find( ( option ) => option.key === methodName );
+
+		if ( ! method ) {
+			throw `Method ${ methodName } not found in available methods list`;
+		}
 
 		this.setState( {
 			enabledMethods: {
 				...enabledMethods,
-				[ method ]: true,
+				[ methodName ]: true,
 			},
 		} );
 
-		clearTaskStatusCache();
+		await setMethodEnabledOption( method.optionName, 'yes', this.props );
 
 		recordEvent( 'tasklist_payment_connect_method', {
-			payment_method: method,
+			payment_method: methodName,
 		} );
 
 		getHistory().push(
@@ -102,7 +128,15 @@ class Payments extends Component {
 			return;
 		}
 
-		return methods.find( ( method ) => method.key === query.method );
+		const currentMethod = methods.find(
+			( method ) => method.key === query.method
+		);
+
+		if ( ! currentMethod ) {
+			throw `Current method ${ query.method } not found in available methods list`;
+		}
+
+		return currentMethod;
 	}
 
 	getInstallStep() {
@@ -146,14 +180,13 @@ class Payments extends Component {
 	}
 
 	async toggleMethod( key ) {
-		const {
-			clearTaskStatusCache,
-			methods,
-			options,
-			updateOptions,
-		} = this.props;
+		const { methods } = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
+
+		if ( ! method ) {
+			throw `Method ${ key } not found in available methods list`;
+		}
 
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
@@ -163,14 +196,11 @@ class Payments extends Component {
 			payment_method: key,
 		} );
 
-		await updateOptions( {
-			[ method.optionName ]: {
-				...options[ method.optionName ],
-				enabled: method.isEnabled ? 'no' : 'yes',
-			},
-		} );
-
-		clearTaskStatusCache();
+		await setMethodEnabledOption(
+			method.optionName,
+			method.isEnabled ? 'no' : 'yes',
+			this.props
+		);
 	}
 
 	async handleClick( method ) {
@@ -281,19 +311,17 @@ class Payments extends Component {
 
 					return (
 						<Card key={ key } className={ classes }>
-							<CardMedia isBorderless>
-								{ showRecommendedRibbon && (
-									<div className="woocommerce-task-payment__recommended-ribbon">
-										<span>
-											{ __(
-												'Recommended',
-												'woocommerce-admin'
-											) }
-										</span>
-									</div>
-								) }
-								{ before }
-							</CardMedia>
+							{ showRecommendedRibbon && (
+								<div className="woocommerce-task-payment__recommended-ribbon">
+									<span>
+										{ __(
+											'Recommended',
+											'woocommerce-admin'
+										) }
+									</span>
+								</div>
+							) }
+							<CardMedia isBorderless>{ before }</CardMedia>
 							<CardBody>
 								<H className="woocommerce-task-payment__title">
 									{ title }
@@ -383,6 +411,7 @@ export default compose(
 			'woocommerce_eway_settings',
 			'woocommerce_razorpay_settings',
 			'woocommerce_mollie_payments_settings',
+			'woocommerce_payubiz_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {

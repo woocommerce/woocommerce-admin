@@ -154,7 +154,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '2.1.0-dev' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '2.2.0-dev' );
 	}
 
 	/**
@@ -220,8 +220,8 @@ class FeaturePlugin {
 	protected function get_dependency_errors() {
 		$errors                      = array();
 		$wordpress_version           = get_bloginfo( 'version' );
-		$minimum_wordpress_version   = '5.3';
-		$minimum_woocommerce_version = '3.6';
+		$minimum_wordpress_version   = '5.4';
+		$minimum_woocommerce_version = '4.8';
 		$wordpress_minimum_met       = version_compare( $wordpress_version, $minimum_wordpress_version, '>=' );
 		$woocommerce_minimum_met     = class_exists( 'WooCommerce' ) && version_compare( WC_VERSION, $minimum_woocommerce_version, '>=' );
 

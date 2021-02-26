@@ -81,43 +81,37 @@ class CoreMenu {
 	public static function get_categories() {
 		return array(
 			array(
-				'title'      => __( 'Orders', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-orders',
-				'order'      => 10,
+				'title' => __( 'Orders', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-orders',
+				'order' => 10,
 			),
 			array(
-				'title'      => __( 'Products', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-products',
-				'order'      => 20,
+				'title' => __( 'Products', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-products',
+				'order' => 20,
 			),
 			array(
-				'title'      => __( 'Analytics', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-analytics',
-				'order'      => 30,
+				'title' => __( 'Analytics', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-analytics',
+				'order' => 30,
 			),
 			array(
-				'title'      => __( 'Marketing', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-marketing',
-				'order'      => 40,
+				'title' => __( 'Marketing', 'woocommerce-admin' ),
+				'id'    => 'woocommerce-marketing',
+				'order' => 40,
 			),
 			array(
-				'title'      => __( 'Settings', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-settings',
-				'menuId'     => 'secondary',
-				'order'      => 10,
-				'url'        => 'admin.php?page=wc-settings',
+				'title'  => __( 'Settings', 'woocommerce-admin' ),
+				'id'     => 'woocommerce-settings',
+				'menuId' => 'secondary',
+				'order'  => 20,
+				'url'    => 'admin.php?page=wc-settings',
 			),
 			array(
-				'title'      => __( 'Tools', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'woocommerce-tools',
-				'menuId'     => 'secondary',
-				'order'      => 30,
+				'title'  => __( 'Tools', 'woocommerce-admin' ),
+				'id'     => 'woocommerce-tools',
+				'menuId' => 'secondary',
+				'order'  => 30,
 			),
 		);
 	}
@@ -222,7 +216,7 @@ class CoreMenu {
 					'id'         => 'woocommerce-marketplace',
 					'url'        => 'wc-addons',
 					'menuId'     => 'secondary',
-					'order'      => 20,
+					'order'      => 10,
 				),
 				// Tools category.
 				array(
@@ -288,54 +282,63 @@ class CoreMenu {
 	 */
 	public function add_dashboard_menu_items() {
 		global $submenu, $menu;
-		$top_level_items = Menu::get_category_items( 'woocommerce' );
+		$mapped_items = Menu::get_mapped_menu_items();
+		$top_level    = $mapped_items['woocommerce'];
 
 		// phpcs:disable
-		if ( ! isset( $submenu['woocommerce'] ) ) {
+		if ( ! isset( $submenu['woocommerce'] ) || empty( $top_level ) ) {
 			return;
 		}
 
-		foreach( $top_level_items as $item ) {
-			// Skip extensions.
-			if ( ! isset( $item['menuId'] ) || $item['menuId'] === 'plugins' ) {
-				continue;
-			}
+		$menuIds = array(
+			'primary',
+			'secondary',
+			'favorites',
+		);
 
-			// Skip specific categories.
-			if (
-				in_array(
-					$item['id'],
-					array(
-						'woocommerce-tools',
-					),
-					true
-				)
-			) {
-				continue;
-			}
+		foreach ( $menuIds as $menuId ) {
+			foreach( $top_level[ $menuId ] as $item ) {
+				// Skip specific categories.
+				if (
+					in_array(
+						$item['id'],
+						array(
+							'woocommerce-tools',
+						),
+						true
+					)
+				) {
+					continue;
+				}
+	
+				// Use the link from the first item if it's a category.
+				if ( ! isset( $item['url'] ) ) {
+					$categoryMenuId = $menuId === 'favorites' ? 'plugins' : $menuId;
+					$category_items = $mapped_items[ $item['id'] ][ $categoryMenuId ];
 
-			// Use the link from the first item if it's a category.
-			if ( ! isset( $item['url'] ) ) {
-				$category_items = Menu::get_category_items( $item['id'] );
-				$first_item     = $category_items[0];
+					if ( ! empty( $category_items ) ) {
+						$first_item = $category_items[0];
 
+	
+						$submenu['woocommerce'][] = array(
+							$item['title'],
+							$first_item['capability'],
+							isset( $first_item['url'] ) ? $first_item['url'] : null,
+							$item['title'],
+						);
+					}
+	
+					continue;
+				}
+	
+				// Show top-level items.
 				$submenu['woocommerce'][] = array(
 					$item['title'],
-					$first_item['capability'],
-					isset( $first_item['url'] ) ? $first_item['url'] : null,
+					$item['capability'],
+					isset( $item['url'] ) ? $item['url'] : null,
 					$item['title'],
 				);
-
-				continue;
 			}
-
-			// Show top-level items.
-			$submenu['woocommerce'][] = array(
-				$item['title'],
-				$item['capability'],
-				isset( $item['url'] ) ? $item['url'] : null,
-				$item['title'],
-			);
 		}
 		// phpcs:enable
 	}

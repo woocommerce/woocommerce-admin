@@ -717,6 +717,7 @@ class Onboarding {
 		$options[] = 'woocommerce_woocommerce_payments_settings';
 		$options[] = 'woocommerce_eway_settings';
 		$options[] = 'woocommerce_razorpay_settings';
+		$options[] = 'woocommerce_payubiz_settings';
 		$options[] = 'woocommerce_mollie_payments_settings';
 
 		return $options;
@@ -763,6 +764,7 @@ class Onboarding {
 				'woocommerce-gateway-eway'            => 'woocommerce-gateway-eway/woocommerce-gateway-eway.php',
 				'woo-razorpay'                        => 'woo-razorpay/woo-razorpay.php',
 				'mollie-payments-for-woocommerce'     => 'mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php',
+				'payu-india'                          => 'payu-india/index.php',
 			)
 		);
 		return array_merge( $plugins, $onboarding_plugins );

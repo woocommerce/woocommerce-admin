@@ -22,11 +22,6 @@
 	.update-nag {
 		display: none;
 	}
-
-	#wpbody {
-		padding-top: 0;
-		display: block;
-	}
 }
 
 .woocommerce-admin-is-loading {
@@ -50,13 +45,8 @@
 .woocommerce-admin-full-screen {
 	background: $studio-gray-0;
 	color: $studio-gray-60;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-		'Helvetica Neue', sans-serif;
-
-	margin-top: -$adminbar-height;
-	@include breakpoint( '<600px' ) {
-		margin-top: -$adminbar-height-mobile;
-	}
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
 	#wpwrap {
 		top: 0;
@@ -86,6 +76,25 @@
 			display: block;
 			margin-top: 0 !important;
 		}
+	}
+
+	&.has-woocommerce-navigation {
+		#wpbody {
+			padding-left: 0;
+		}
+	}
+}
+
+.is-wp-toolbar-disabled {
+	#wpadminbar {
+		display: none !important;
+	}
+}
+
+.wp-toolbar .is-wp-toolbar-disabled {
+	margin-top: -$adminbar-height;
+	@include breakpoint( '<600px' ) {
+		margin-top: -$adminbar-height-mobile;
 	}
 }
 
@@ -147,6 +156,11 @@
 	&:disabled {
 		cursor: not-allowed;
 	}
+}
+
+// @todo Remove this after https://github.com/WordPress/gutenberg/issues/28311 is fixed
+.components-modal__header .components-button svg + span {
+	display: none;
 }
 
 .components-modal__frame.woocommerce-usage-modal {

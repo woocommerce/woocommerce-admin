@@ -47,8 +47,11 @@
 	}
 }
 
-.has-woocommerce-navigation .woocommerce-layout__header {
+.is-wp-toolbar-disabled .woocommerce-layout__header {
 	top: 0;
+}
+
+.has-woocommerce-navigation .woocommerce-layout__header {
 	left: 0;
 	width: 100%;
 }
@@ -57,5 +60,11 @@
 	#contextual-help-link-wrap,
 	#screen-options-link-wrap {
 		margin-top: -1px;
+	}
+}
+
+.wp-responsive-open {
+	.woocommerce-layout__header {
+		margin-left: 2px;
 	}
 }
