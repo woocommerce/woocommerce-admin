@@ -322,6 +322,13 @@ class Loader {
 			'wc-store-data' => 'data',
 		);
 
+		$translated_scripts = array(
+			'wc-currency',
+			'wc-date',
+			'wc-components',
+			WC_ADMIN_APP,
+		);
+
 		foreach ( $scripts as $script ) {
 			$script_path_name = isset( $scripts_map[ $script ] ) ? $scripts_map[ $script ] : str_replace( 'wc-', '', $script );
 			$script_assets    = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . $script_path_name . '/index.min.asset.php';
@@ -333,13 +340,11 @@ class Loader {
 				$js_file_version,
 				true
 			);
+
+			if ( in_array( $script, $translated_scripts, true ) ) {
+				wp_set_script_translations( $script, 'woocommerce-admin' );
+			}
 		}
-
-		wp_set_script_translations( 'wc-currency', 'woocommerce-admin' );
-
-		wp_set_script_translations( 'wc-date', 'woocommerce-admin' );
-
-		wp_set_script_translations( 'wc-components', 'woocommerce-admin' );
 
 		wp_register_style(
 			'wc-components',
@@ -373,8 +378,6 @@ class Loader {
 				'version' => $js_file_version,
 			)
 		);
-
-		wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
 
 		// The "app" RTL files are in a different format than the components.
 		$rtl = is_rtl() ? '.rtl' : '';
