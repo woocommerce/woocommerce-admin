@@ -1,4 +1,4 @@
-const fsPromises = require( 'fs' ).promises;
+const { readFile } = require( 'fs/promises' );
 const exec = require( 'await-exec' );
 const { parse } = require( 'comment-parser/lib' );
 
@@ -25,12 +25,12 @@ const addSourceFiles = async ( hooks, fileName ) => {
 };
 
 const prepareHooks = async ( fileName ) => {
-	const data = await fsPromises
-		.readFile( fileName, 'utf-8' )
-		.catch( ( err ) => console.error( 'Failed to read file', err ) );
+	const data = await readFile( fileName, 'utf-8' ).catch( ( err ) =>
+		console.error( 'Failed to read file', err )
+	);
 
-	const parsed = parse( data );
-	const rawHooks = getHooks( parsed );
+	const parsedData = parse( data );
+	const rawHooks = getHooks( parsedData );
 	return await addSourceFiles( rawHooks, fileName );
 };
 

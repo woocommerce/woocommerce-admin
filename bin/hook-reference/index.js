@@ -1,9 +1,7 @@
-const createData = require( './data' );
-const { promisify } = require( 'util' );
-const { resolve } = require( 'path' );
 const fs = require( 'fs' );
-const readdir = promisify( fs.readdir );
-const stat = promisify( fs.stat );
+const { stat, readdir, writeFile } = require( 'fs/promises' );
+const { resolve } = require( 'path' );
+const createData = require( './data' );
 
 async function getFiles( dir ) {
 	const subdirs = await readdir( dir );
@@ -16,9 +14,10 @@ async function getFiles( dir ) {
 	return files.reduce( ( a, f ) => a.concat( f ), [] );
 }
 
-const writeJSONFile = ( data ) => {
-	// Make JSON File here
-	console.log( data );
+const writeJSONFile = async ( data ) => {
+	const fileName = 'bin/hook-reference/data.json';
+	const stringifiedData = JSON.stringify( data, null, 4 );
+	await writeFile( fileName, stringifiedData );
 };
 
 getFiles( 'client' )
