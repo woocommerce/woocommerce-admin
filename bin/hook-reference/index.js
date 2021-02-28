@@ -19,7 +19,7 @@ async function getFilePaths( dir ) {
 const writeJSONFile = async ( data ) => {
 	const fileName = 'bin/hook-reference/data.json';
 	const stringifiedData = JSON.stringify( data, null, 4 );
-	await writeFile( fileName, stringifiedData + '\r\n' );
+	await writeFile( fileName, stringifiedData + '\n' );
 };
 
 getFilePaths( 'client' )
