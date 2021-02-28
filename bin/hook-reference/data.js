@@ -34,7 +34,7 @@ const prepareHooks = async ( fileName ) => {
 	return await addSourceFiles( rawHooks, fileName );
 };
 
-const makeDocObject = async ( fileName ) => {
+const makeDocObjects = async ( fileName ) => {
 	const hooks = await prepareHooks( fileName );
 	return hooks.map( ( { description, tags, sourceFile } ) => {
 		const example = tags.find( ( tag ) => tag.tag === 'example' );
@@ -48,18 +48,13 @@ const makeDocObject = async ( fileName ) => {
 	} );
 };
 
-const makeJSONFile = async ( docObjects ) => {
-	// Make JSON File here
-	console.log( docObjects );
-};
-
-const makeDocument = async ( fileNames ) => {
-	const docObjects = await Promise.all(
-		fileNames.map( async ( f ) => {
-			return await makeDocObject( f );
+const createData = async ( fileNames ) => {
+	const data = await Promise.all(
+		fileNames.map( async ( fileName ) => {
+			return await makeDocObjects( fileName );
 		} )
 	);
-	makeJSONFile( docObjects.flat() );
+	return data.flat();
 };
 
-module.exports = makeDocument;
+module.exports = createData;

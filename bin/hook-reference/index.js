@@ -1,4 +1,4 @@
-const makeDocument = require( './document' );
+const createData = require( './data' );
 const { promisify } = require( 'util' );
 const { resolve } = require( 'path' );
 const fs = require( 'fs' );
@@ -16,6 +16,12 @@ async function getFiles( dir ) {
 	return files.reduce( ( a, f ) => a.concat( f ), [] );
 }
 
+const writeJSONFile = ( data ) => {
+	// Make JSON File here
+	console.log( data );
+};
+
 getFiles( 'client' )
-	.then( ( fileNames ) => makeDocument( fileNames ) )
+	.then( ( fileNames ) => createData( fileNames ) )
+	.then( ( data ) => writeJSONFile( data ) )
 	.catch( ( e ) => console.error( e ) );
