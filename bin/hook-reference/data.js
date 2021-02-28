@@ -1,6 +1,7 @@
 const { readFile } = require( 'fs/promises' );
 const exec = require( 'await-exec' );
 const { parse } = require( 'comment-parser/lib' );
+const { relative, resolve } = require( 'path' );
 
 const getHooks = ( parsedData ) =>
 	parsedData.filter( ( docBlock ) =>
@@ -24,18 +25,19 @@ const addSourceFiles = async ( hooks, fileName ) => {
 	} );
 };
 
-const prepareHooks = async ( fileName ) => {
-	const data = await readFile( fileName, 'utf-8' ).catch( ( err ) =>
+const prepareHooks = async ( path ) => {
+	const data = await readFile( path, 'utf-8' ).catch( ( err ) =>
 		console.error( 'Failed to read file', err )
 	);
+	const fileName = relative( resolve( __dirname, '../../' ), path );
 
 	const parsedData = parse( data );
 	const rawHooks = getHooks( parsedData );
 	return await addSourceFiles( rawHooks, fileName );
 };
 
-const makeDocObjects = async ( fileName ) => {
-	const hooks = await prepareHooks( fileName );
+const makeDocObjects = async ( path ) => {
+	const hooks = await prepareHooks( path );
 	return hooks.map( ( { description, tags, sourceFile } ) => {
 		const example = tags.find( ( tag ) => tag.tag === 'example' );
 		const hook = tags.find( ( tag ) => tag.tag === 'hook' );
@@ -48,10 +50,10 @@ const makeDocObjects = async ( fileName ) => {
 	} );
 };
 
-const createData = async ( fileNames ) => {
+const createData = async ( paths ) => {
 	const data = await Promise.all(
-		fileNames.map( async ( fileName ) => {
-			return await makeDocObjects( fileName );
+		paths.map( async ( path ) => {
+			return await makeDocObjects( path );
 		} )
 	);
 	return data.flat();

@@ -1,7 +1,7 @@
 [
     {
         "description": "List of homepage stats enabled by default",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/b49e316cda779b925a8de9dbc54c3e293b0a8086//Users/paulsealock/vagrant-local/www/tangaroa/public_html/wp-content/plugins/woocommerce-admin/client/homescreen/stats-overview/defaults.js#L5-L16",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c414d9e20cacc1a40bb83ab1a056cfe09b64fc8a/client/homescreen/stats-overview/defaults.js#L5-L16",
         "name": "woocommerce_admin_homepage_default_stats",
         "example": "addFilter( 'woocommerce_admin_homepage_default_stats', 'plugin-domain', ( defaultStats ) => defaultStats.filter( ( stat ) => stat !== 'jetpack/stats/views' ) );"
     }
