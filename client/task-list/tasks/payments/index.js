@@ -99,6 +99,10 @@ class Payments extends Component {
 
 		const method = methods.find( ( option ) => option.key === methodName );
 
+		if ( ! method ) {
+			throw `Method ${ methodName } not found in available methods list`;
+		}
+
 		this.setState( {
 			enabledMethods: {
 				...enabledMethods,
@@ -124,7 +128,15 @@ class Payments extends Component {
 			return;
 		}
 
-		return methods.find( ( method ) => method.key === query.method );
+		const currentMethod = methods.find(
+			( method ) => method.key === query.method
+		);
+
+		if ( ! currentMethod ) {
+			throw `Current method ${ query.method } not found in available methods list`;
+		}
+
+		return currentMethod;
 	}
 
 	getInstallStep() {
@@ -171,6 +183,10 @@ class Payments extends Component {
 		const { methods } = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
+
+		if ( ! method ) {
+			throw `Method ${ key } not found in available methods list`;
+		}
 
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
@@ -295,19 +311,17 @@ class Payments extends Component {
 
 					return (
 						<Card key={ key } className={ classes }>
-							<CardMedia isBorderless>
-								{ showRecommendedRibbon && (
-									<div className="woocommerce-task-payment__recommended-ribbon">
-										<span>
-											{ __(
-												'Recommended',
-												'woocommerce-admin'
-											) }
-										</span>
-									</div>
-								) }
-								{ before }
-							</CardMedia>
+							{ showRecommendedRibbon && (
+								<div className="woocommerce-task-payment__recommended-ribbon">
+									<span>
+										{ __(
+											'Recommended',
+											'woocommerce-admin'
+										) }
+									</span>
+								</div>
+							) }
+							<CardMedia isBorderless>{ before }</CardMedia>
 							<CardBody>
 								<H className="woocommerce-task-payment__title">
 									{ title }
