@@ -156,7 +156,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Allow users to install the PayU plugin in the payments setup task. #6332
 - Fix: Persist the enabling of plugins in the payments setup task. #6332
 
-
 == Changelog ==
 
 == 1.9.0 1/15/2021 ==
