@@ -527,11 +527,65 @@ export function getPaymentMethods( {
 	return methods.filter( ( method ) => method.visible );
 }
 
-export function getDefaultPaymentMethods() {
-	return [];
+export function getDefaultPaymentMethods( profileItems ) {
+	let methods = [];
+
+	const hasCbdIndustry = ( profileItems.industry || [] ).some(
+		( { slug } ) => {
+			return slug === 'cbd-other-hemp-derived-products';
+		}
+	);
+
+	if ( ! hasCbdIndustry ) {
+		methods = [
+			{
+				key: 'cod',
+				locales: {
+					en_US: {
+						name: __(
+							'Take payments in cash upon delivery.',
+							'woocommerce-admin'
+						),
+						title: __( 'Cash on delivery', 'woocommerce-admin' ),
+						content: __(
+							'Take payments in cash upon delivery.',
+							'woocommerce-admin'
+						),
+					},
+				},
+				options: {
+					settings: 'woocommerce_cod_settings',
+				},
+			},
+			{
+				key: 'bacs',
+				locales: {
+					en_US: {
+						name: __(
+							'Take payments in cash upon delivery.',
+							'woocommerce-admin'
+						),
+						title: __(
+							'Direct bank transfer',
+							'woocommerce-admin'
+						),
+						content: __(
+							'Take payments via bank transfer.',
+							'woocommerce-admin'
+						),
+					},
+				},
+				options: {
+					settings: 'woocommerce_bacs_settings',
+				},
+			},
+		];
+	}
+
+	return methods;
 }
 
-export function getPaymentMethodsContainerMap() {
+export function getMethodContainerMap() {
 	return {
 		bacs: <Bacs />,
 		stripe: <Stripe />,

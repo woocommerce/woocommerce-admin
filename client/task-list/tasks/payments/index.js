@@ -35,19 +35,17 @@ import { LOCALE } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
+import { PAYPAL_PLUGIN } from './paypal';
 import WCPayLogo from './images/wcpay';
 import { createNoticesFromResponse } from '../../../lib/notices';
-import {
-	getDefaultPaymentMethods,
-	getPaymentMethodsContainerMap,
-} from './methods';
+import { getDefaultPaymentMethods, getMethodContainerMap } from './methods';
 
 export const setMethodEnabledOption = async (
 	optionName,
 	value,
-	{ clearTaskStatusCache, updateOptions, options }
+	{ clearTaskStatusCache, updateOptions, gatewayOptions }
 ) => {
-	const methodOptions = options[ optionName ];
+	const methodOptions = gatewayOptions[ optionName ];
 
 	// Don't update the option if it already has the same value.
 	if ( methodOptions.enabled !== value ) {
@@ -77,29 +75,23 @@ class Payments extends Component {
 	}
 
 	componentDidMount() {
-		this.getRecommendedPaymentMethods();
-	}
+		this.getRecommendedPaymentMethods().then( ( methods ) => {
+			const enabledMethods = methods.reduce( ( obj, m ) => {
+				return { ...obj, [ m.key ]: this.isMethodEnabled( m ) };
+			}, {} );
 
-	async getRecommendedPaymentMethods() {
-		let methods = [];
-		try {
-			methods = await apiFetch( {
-				method: 'GET',
-				path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/payment-method-recommendations?per_page=3`,
+			this.setState( {
+				enabledMethods,
+				isLoading: false,
+				methods,
 			} );
-		} catch {
-			methods = getDefaultPaymentMethods();
-		}
-
-		this.setState( {
-			methods,
-			isLoading: false,
 		} );
 	}
 
 	async markConfigured( key, queryParams = {} ) {
 		const { enabledMethods, methods } = this.state;
 		const method = methods.find( ( m ) => m.key === key );
+		const { settings } = method.options;
 
 		if ( ! method ) {
 			throw `Method ${ methodName } not found in available methods list`;
@@ -112,7 +104,7 @@ class Payments extends Component {
 			},
 		} );
 
-		await setMethodEnabledOption( method.option, 'yes', this.props );
+		await setMethodEnabledOption( settings, 'yes', this.props );
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: key,
@@ -184,6 +176,8 @@ class Payments extends Component {
 	async toggleMethod( key ) {
 		const { enabledMethods, methods } = this.state;
 		const method = methods.find( ( m ) => m.key === key );
+		const { settings } = method.options;
+		const isEnabled = this.isMethodEnabled( method );
 
 		if ( ! method ) {
 			throw `Method ${ key } not found in available methods list`;
@@ -193,13 +187,13 @@ class Payments extends Component {
 		this.setState( { enabledMethods } );
 
 		recordEvent( 'tasklist_payment_toggle', {
-			enabled: ! method.isEnabled,
+			enabled: ! isEnabled,
 			payment_method: key,
 		} );
 
 		await setMethodEnabledOption(
-			method.option,
-			method.isEnabled ? 'no' : 'yes',
+			settings,
+			isEnabled ? 'no' : 'yes',
 			this.props
 		);
 	}
@@ -209,7 +203,7 @@ class Payments extends Component {
 		const { key, onClick } = method;
 
 		recordEvent( 'tasklist_payment_setup', {
-			options: methods.map( ( option ) => option.key ),
+			options: methods.map( ( m ) => m.key ),
 			selected: key,
 		} );
 
@@ -232,10 +226,11 @@ class Payments extends Component {
 	}
 
 	getSetupButtons( method ) {
-		const { isConfigured, key, recommended } = method;
+		const { key, recommended } = method;
 		const { busyMethod, enabledMethods } = this.state;
-		const { paymentMethodsContainerMap } = this.props;
-		const container = paymentMethodsContainerMap[ key ];
+		const { methodContainerMap } = this.props;
+		const isConfigured = this.isMethodConfigured( method );
+		const container = methodContainerMap[ key ];
 
 		if ( container && ! isConfigured ) {
 			return (
@@ -261,37 +256,62 @@ class Payments extends Component {
 		);
 	}
 
-	checkConfiguration( { option, settings, slug } ) {
-		const { activePlugins, onboardingStatus, options } = this.props;
-		const {
-			enabledPaymentGateways,
-			paypalOnboardingStatus,
-		} = onboardingStatus;
+	getRecommendedPaymentMethods() {
+		try {
+			return apiFetch( {
+				method: 'GET',
+				path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/payment-method-recommendations?per_page=5`,
+			} );
+		} catch {
+			const { profileItems } = this.props;
 
-		switch ( settings.type ) {
-			case 'include':
-				return (
-					activePlugins.includes( slug ) ||
-					enabledPaymentGateways.includes( slug )
-				);
-			case 'option':
-				return settings.options.every( ( opt ) => {
-					return (
-						( options[ opt ] && options[ opt ].length ) ||
-						( options[ option ] &&
-							options[ option ][ opt ] &&
-							options[ option ][ opt ].length )
-					);
-				} );
-			case 'status':
-				return (
-					paypalOnboardingStatus &&
-					paypalOnboardingStatus.production &&
-					paypalOnboardingStatus.production.onboarded
-				);
-			default:
-				return false;
+			return getDefaultPaymentMethods( profileItems );
 		}
+	}
+
+	isMethodConfigured( method ) {
+		const { activePlugins, gatewayOptions } = this.props;
+		const {
+			options: { config, settings },
+			slug,
+		} = method;
+
+		if ( method.key === 'paypal' ) {
+			const { paypalOnboardingStatus } = this.props;
+
+			return (
+				paypalOnboardingStatus &&
+				paypalOnboardingStatus.production &&
+				paypalOnboardingStatus.production.onboarded
+			);
+		}
+
+		if ( config && settings ) {
+			return config.every( ( o ) => {
+				return (
+					gatewayOptions[ o ] ||
+					( gatewayOptions[ settings ] &&
+						gatewayOptions[ settings ][ o ] )
+				);
+			} );
+		}
+
+		return activePlugins.includes( slug );
+	}
+
+	isMethodEnabled( method ) {
+		const { enabledPaymentGateways, gatewayOptions } = this.props;
+		const {
+			options: { settings },
+			slug,
+		} = method;
+
+		return (
+			( gatewayOptions[ settings ] &&
+				gatewayOptions[ settings ].enabled &&
+				gatewayOptions[ settings ].enabled === 'yes' ) ||
+			enabledPaymentGateways.includes( slug )
+		);
 	}
 
 	getTosPrompt() {
@@ -323,11 +343,18 @@ class Payments extends Component {
 			return <p>Loading...</p>; // Replace with pretty loading component.
 		}
 
-		const { paymentMethodsContainerMap, siteLocale, query } = this.props;
+		const {
+			activePlugins,
+			loadingPaypalStatus,
+			methodContainerMap,
+			siteLocale,
+			query,
+		} = this.props;
+
 		const currentMethod = this.getCurrentMethod();
 
 		if ( currentMethod ) {
-			const container = paymentMethodsContainerMap[ currentMethod.key ];
+			const container = methodContainerMap[ currentMethod.key ];
 			return (
 				<Card className="woocommerce-task-payment-method woocommerce-task-card">
 					<CardBody>
@@ -345,8 +372,11 @@ class Payments extends Component {
 		return (
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
-					const { key, loading, locales, recommended } = method;
-					const isConfigured = this.checkConfiguration( method );
+					const isConfigured = this.isMethodConfigured( method );
+					const { key, locales, recommended } = method;
+					const { content, title, tos } =
+						locales[ siteLocale ] || locales.en_US;
+
 					const classes = classnames(
 						'woocommerce-task-payment',
 						'woocommerce-task-card',
@@ -361,8 +391,10 @@ class Payments extends Component {
 					const showRecommendedRibbon =
 						isRecommended && key !== 'wcpay';
 
-					const locale = locales[ siteLocale ] || locales.en_US;
-					const { title, content, tos } = locale;
+					const loading =
+						key === 'paypal' &&
+						activePlugins.includes( PAYPAL_PLUGIN ) &&
+						loadingPaypalStatus;
 
 					return (
 						<Card key={ key } className={ classes }>
@@ -438,11 +470,20 @@ export default compose(
 	withSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
+		const {
+			getActivePlugins,
+			getPaypalOnboardingStatus,
+			hasFinishedResolution,
+		} = select( PLUGINS_STORE_NAME );
+
+		const { enabledPaymentGateways } = getTasksStatus();
 		const activePlugins = getActivePlugins();
-		const onboardingStatus = getTasksStatus();
 		const profileItems = getProfileItems();
+		const paypalOnboardingStatus = getPaypalOnboardingStatus();
+		const loadingPaypalStatus =
+			! hasFinishedResolution( 'getPaypalOnboardingStatus' ) &&
+			! paypalOnboardingStatus;
 
 		const optionNames = [
 			'woocommerce_woocommerce_payments_settings',
@@ -463,20 +504,22 @@ export default compose(
 			'woocommerce_payubiz_settings',
 		];
 
-		const options = optionNames.reduce( ( result, name ) => {
+		const gatewayOptions = optionNames.reduce( ( result, name ) => {
 			result[ name ] = getOption( name );
 			return result;
 		}, {} );
 
-		const paymentMethodsContainerMap = getPaymentMethodsContainerMap();
+		const methodContainerMap = getMethodContainerMap();
 		const siteLocale = LOCALE.siteLocale;
 
 		return {
-			profileItems,
 			activePlugins,
-			options,
-			onboardingStatus,
-			paymentMethodsContainerMap,
+			enabledPaymentGateways,
+			gatewayOptions,
+			loadingPaypalStatus,
+			methodContainerMap,
+			paypalOnboardingStatus,
+			profileItems,
 			siteLocale,
 		};
 	} )
