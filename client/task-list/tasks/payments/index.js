@@ -38,7 +38,11 @@ import { LOCALE } from '@woocommerce/wc-admin-settings';
 import { PAYPAL_PLUGIN } from './paypal';
 import WCPayLogo from './images/wcpay';
 import { createNoticesFromResponse } from '../../../lib/notices';
-import { getDefaultPaymentMethods, getMethodContainerMap } from './methods';
+import {
+	getDefaultPaymentMethods,
+	getMethodContainerMap,
+	installActivateAndConnectWcpay,
+} from './methods';
 
 export const setMethodEnabledOption = async (
 	optionName,
@@ -200,7 +204,18 @@ class Payments extends Component {
 
 	async handleClick( method ) {
 		const { methods } = this.state;
-		const { key, onClick } = method;
+		const { createNotice, installAndActivatePlugins } = this.props;
+		const { key } = method;
+		const onClick =
+			key === 'wcpay'
+				? ( resolve, reject ) =>
+						installActivateAndConnectWcpay(
+							resolve,
+							reject,
+							createNotice,
+							installAndActivatePlugins
+						)
+				: null;
 
 		recordEvent( 'tasklist_payment_setup', {
 			options: methods.map( ( m ) => m.key ),
@@ -272,11 +287,16 @@ class Payments extends Component {
 	isMethodConfigured( method ) {
 		const { activePlugins, gatewayOptions } = this.props;
 		const {
+			key,
 			options: { config, settings },
 			slug,
 		} = method;
 
-		if ( method.key === 'paypal' ) {
+		if ( key === 'wcpay' ) {
+			return this.props.wcPayIsConnected;
+		}
+
+		if ( key === 'paypal' ) {
 			const { paypalOnboardingStatus } = this.props;
 
 			return (
@@ -477,7 +497,7 @@ export default compose(
 			hasFinishedResolution,
 		} = select( PLUGINS_STORE_NAME );
 
-		const { enabledPaymentGateways } = getTasksStatus();
+		const { enabledPaymentGateways, wcPayIsConnected } = getTasksStatus();
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const paypalOnboardingStatus = getPaypalOnboardingStatus();
@@ -521,6 +541,7 @@ export default compose(
 			paypalOnboardingStatus,
 			profileItems,
 			siteLocale,
+			wcPayIsConnected,
 		};
 	} )
 )( Payments );

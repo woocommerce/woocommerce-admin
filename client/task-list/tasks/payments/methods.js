@@ -592,8 +592,8 @@ export function getMethodContainerMap() {
 		square: <Square />,
 		wcpay: <WCPay />,
 		paypal: <PayPal />,
-		klarna_checkout: <Klarna />,
-		klarna_payment: <Klarna />,
+		klarna_checkout: <Klarna plugin={ 'checkout' } />,
+		klarna_payment: <Klarna plugin={ 'payments' } />,
 		mollie: <Mollie />,
 	};
 }
