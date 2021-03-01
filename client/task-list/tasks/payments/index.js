@@ -79,7 +79,7 @@ class Payments extends Component {
 	}
 
 	componentDidMount() {
-		this.getRecommendedPaymentMethods().then( ( methods ) => {
+		this.getPaymentMethods().then( ( methods ) => {
 			const enabledMethods = methods.reduce( ( obj, m ) => {
 				return { ...obj, [ m.key ]: this.isMethodEnabled( m ) };
 			}, {} );
@@ -271,16 +271,20 @@ class Payments extends Component {
 		);
 	}
 
-	getRecommendedPaymentMethods() {
-		try {
-			return apiFetch( {
-				method: 'GET',
-				path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/payment-method-recommendations?per_page=5`,
-			} );
-		} catch {
-			const { profileItems } = this.props;
+	async getPaymentMethods() {
+		const { profileItems } = this.props;
+		const defaultMethods = getDefaultPaymentMethods( profileItems ) || [];
+		const perPage = 5 - defaultMethods.length;
 
-			return getDefaultPaymentMethods( profileItems );
+		try {
+			const methods = await apiFetch( {
+				method: 'GET',
+				path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/payment-method-recommendations?per_page=${ perPage }`,
+			} );
+
+			return [ ...methods, ...defaultMethods ];
+		} catch {
+			return defaultMethods;
 		}
 	}
 

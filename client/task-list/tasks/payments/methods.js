@@ -528,8 +528,6 @@ export function getPaymentMethods( {
 }
 
 export function getDefaultPaymentMethods( profileItems ) {
-	let methods = [];
-
 	const hasCbdIndustry = ( profileItems.industry || [] ).some(
 		( { slug } ) => {
 			return slug === 'cbd-other-hemp-derived-products';
@@ -537,7 +535,7 @@ export function getDefaultPaymentMethods( profileItems ) {
 	);
 
 	if ( ! hasCbdIndustry ) {
-		methods = [
+		return [
 			{
 				key: 'cod',
 				locales: {
@@ -576,13 +574,14 @@ export function getDefaultPaymentMethods( profileItems ) {
 					},
 				},
 				options: {
+					config: [ 'woocommerce_bacs_accounts' ],
 					settings: 'woocommerce_bacs_settings',
 				},
 			},
 		];
 	}
 
-	return methods;
+	return [];
 }
 
 export function getMethodContainerMap() {
