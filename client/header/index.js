@@ -71,10 +71,6 @@ const getPageTitle = ( defaultTitle ) => {
 			tax: __( 'Add tax rates', 'woocommerce-admin' ),
 			appearance: __( 'Personalize your store', 'woocommerce-admin' ),
 			products: __( 'Add products', 'woocommerce-admin' ),
-			'woocommerce-payments': __(
-				'Set up WooCommerce Payments',
-				'woocommerce-admin'
-			),
 			shipping: __( 'Set up shipping costs', 'woocommerce-admin' ),
 		}[ task ] || defaultTitle
 	);
