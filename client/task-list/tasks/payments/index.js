@@ -37,6 +37,7 @@ import { LOCALE } from '@woocommerce/wc-admin-settings';
  */
 import { PAYPAL_PLUGIN } from './paypal';
 import WCPayLogo from './images/wcpay';
+import TaskListPlaceholder from '../../placeholder';
 import { createNoticesFromResponse } from '../../../lib/notices';
 import {
 	getDefaultPaymentMethods,
@@ -364,7 +365,7 @@ class Payments extends Component {
 		const { isLoading, methods } = this.state;
 
 		if ( isLoading ) {
-			return <p>Loading...</p>; // Replace with pretty loading component.
+			return <TaskListPlaceholder />;
 		}
 
 		const {
@@ -397,7 +398,7 @@ class Payments extends Component {
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
 					const isConfigured = this.isMethodConfigured( method );
-					const { key, locales, recommended } = method;
+					const { imageUrl, key, locales, recommended } = method;
 					const { content, title, tos } =
 						locales[ siteLocale ] || locales.en_US;
 
@@ -420,6 +421,12 @@ class Payments extends Component {
 						activePlugins.includes( PAYPAL_PLUGIN ) &&
 						loadingPaypalStatus;
 
+					const logo = method.imageUrl ? (
+						<img src={ imageUrl } alt={ `${ key } logo.` } />
+					) : (
+						<WCPayLogo />
+					);
+
 					return (
 						<Card key={ key } className={ classes }>
 							{ showRecommendedRibbon && (
@@ -432,9 +439,7 @@ class Payments extends Component {
 									</span>
 								</div>
 							) }
-							<CardMedia isBorderless>
-								<WCPayLogo />
-							</CardMedia>
+							<CardMedia isBorderless>{ logo }</CardMedia>
 							<CardBody>
 								<H className="woocommerce-task-payment__title">
 									{ title }
