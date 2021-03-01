@@ -2,7 +2,29 @@
 
 ## Unreleased
 
+### Navigation: Correct error thrown when enabling #6462
+
+1. Create a fresh store
+2. Navigate to WooCommerce -> Settings -> Advanced Tab -> Features
+3. Check the box to add the new navigation feature, and hit save
+4. Ensure that the new navigation appears on the left as expected
+
+### Deprecate Onboarding::has_woocommerce_support #6401
+
+- Clear existing site transients. For example, by using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and pressing the "Delete all transients" button it provides.
+- Add any new theme to WordPress but **DO NOT** activate it.
+- Initialize the Onboarding Wizard.
+- See that the Themes step loads fast 😎 
+- See that the new theme is listed in the Themes step.
+
 ## 2.1.0
+
+### Correct the Klarna slug #6440
+
+1. Set up a new store with a UK address so that Klarna available as a payment processor
+2. Go to the "Choose payment methods" task item
+3. Set up Klarna. The plugin will install.
+4. Click Continue. It should take you back to the payment methods page - previously it wasn't doing anything but a console error was displayed.
 
 ### Navigation: Reset submenu before making Flyout #6396
 

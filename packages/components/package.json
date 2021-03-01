@@ -21,7 +21,7 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@woocommerce/csv-export": "1.2.0",
+		"@woocommerce/csv-export": "1.3.0",
 		"@woocommerce/currency": "3.0.0",
 		"@woocommerce/data": "1.1.1",
 		"@woocommerce/date": "2.1.0",

@@ -14,6 +14,7 @@ const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
 const AsyncChunkSrcVersionParameterPlugin = require( './chunk-src-version-param' );
 const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
+const WooCommerceDependencyExtractionWebpackPlugin = require( './packages/dependency-extraction-webpack-plugin/src/index' );
 
 /**
  * External dependencies
@@ -22,28 +23,6 @@ const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-web
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const WC_ADMIN_PHASE = process.env.WC_ADMIN_PHASE || 'development';
-
-const externals = {
-	'@wordpress/api-fetch': { this: [ 'wp', 'apiFetch' ] },
-	'@wordpress/blocks': { this: [ 'wp', 'blocks' ] },
-	'@wordpress/data': { this: [ 'wp', 'data' ] },
-	'@wordpress/editor': { this: [ 'wp', 'editor' ] },
-	'@wordpress/element': { this: [ 'wp', 'element' ] },
-	'@wordpress/hooks': { this: [ 'wp', 'hooks' ] },
-	'@wordpress/url': { this: [ 'wp', 'url' ] },
-	'@wordpress/html-entities': { this: [ 'wp', 'htmlEntities' ] },
-	'@wordpress/i18n': { this: [ 'wp', 'i18n' ] },
-	'@wordpress/data-controls': { this: [ 'wp', 'dataControls' ] },
-	'@wordpress/plugins': { this: [ 'wp', 'plugins' ] },
-	'@wordpress/components': { this: [ 'wp', 'components' ] },
-	'@wordpress/date': { this: [ 'wp', 'date' ] },
-	'@wordpress/compose': { this: [ 'wp', 'compose' ] },
-	tinymce: 'tinymce',
-	moment: 'moment',
-	react: 'React',
-	lodash: 'lodash',
-	'react-dom': 'ReactDOM',
-};
 
 const wcAdminPackages = [
 	'components',
@@ -60,14 +39,6 @@ const wcAdminPackages = [
 
 const entryPoints = {};
 wcAdminPackages.forEach( ( name ) => {
-	externals[ `@woocommerce/${ name }` ] = {
-		this: [
-			'wc',
-			name.replace( /-([a-z])/g, ( match, letter ) =>
-				letter.toUpperCase()
-			),
-		],
-	};
 	entryPoints[ name ] = `./packages/${ name }`;
 } );
 
@@ -108,7 +79,6 @@ const webpackConfig = {
 		libraryTarget: 'this',
 		jsonpFunction: '__wcAdmin_webpackJsonp',
 	},
-	externals,
 	module: {
 		rules: [
 			{
@@ -218,6 +188,7 @@ const webpackConfig = {
 				transform: ( content ) => content,
 			} ) )
 		),
+		new WooCommerceDependencyExtractionWebpackPlugin(),
 		new MomentTimezoneDataPlugin( {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
