@@ -77,6 +77,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: update the content and timing of the NeedSomeInspiration note. #6076
 - Add: Remote inbox notifications contains comparison and fix product rule. #6073
 - Update: store deprecation welcome modal support doc link #6094
+- Fix: Console errors in JS tests #6472
 
 
 == Changelog ==
