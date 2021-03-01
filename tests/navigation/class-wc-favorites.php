@@ -79,7 +79,7 @@ class WC_Tests_Navigation_Favorites extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test that favorites can be added.
+	 * Test that existing favorites can not be added again.
 	 */
 	public function test_add_previously_added_favorite() {
 		wp_set_current_user( $this->user );
