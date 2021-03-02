@@ -282,7 +282,6 @@ localStorage.setItem( 'debug', 'wc-admin:tracks' );
         -   The enable/disable button should be correctly reflected in the Woocommerce payment settings screen as well.
 
 Once everything is configured and enabled do a client test
-<<<<<<< HEAD
 
 -   Make sure you have added a product and store homescreen (Finish the **Personalize my store** task)
 -   Navigate to one of the products and add it to the cart
@@ -297,4 +296,3 @@ Once everything is configured and enabled do a client test
 -   Paypal should be one of the options to pay
 -   Filling in your billing/shipping info then click pay with **Paypal**
 -   The paypal pay window should pop up correctly without errors.
-    > > > > > > > origin/main

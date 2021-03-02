@@ -37,7 +37,7 @@ const renderTaskListBackButton = () => {
 			updateQueryString( {}, getHistory().location.pathname, {} );
 		};
 
-		// if its a task list page, render a back button to the homescreen
+		// if it's a task list page, render a back button to the homescreen
 		return (
 			<Tooltip text={ homeText }>
 				<div
@@ -64,7 +64,7 @@ const getPageTitle = ( defaultTitle ) => {
 	const currentUrl = new URL( window.location.href );
 	const task = currentUrl.searchParams.get( 'task' );
 
-	// If its the task list then render a title based on which task the user is on.
+	// If it's the task list then render a title based on which task the user is on.
 	return (
 		{
 			payments: __( 'Choose payment methods', 'woocommerce-admin' ),
