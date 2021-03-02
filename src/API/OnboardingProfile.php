@@ -370,13 +370,6 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'sanitize_callback' => 'sanitize_title_with_dashes',
 				'validate_callback' => 'rest_validate_request_arg',
 			),
-			'items_purchased'     => array(
-				'type'              => 'boolean',
-				'description'       => __( 'Whether or not the user opted to purchase items now or later.', 'woocommerce-admin' ),
-				'context'           => array( 'view' ),
-				'readonly'          => true,
-				'validate_callback' => 'rest_validate_request_arg',
-			),
 			'setup_client'        => array(
 				'type'              => 'boolean',
 				'description'       => __( 'Whether or not this store was setup for a client.', 'woocommerce-admin' ),
