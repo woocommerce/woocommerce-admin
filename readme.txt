@@ -76,7 +76,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Fix: Add check for navigating being enabled. #6462
+- Dev: Add nav favorite button tests #6446
 - Dev: Add a changelog lint check to PRs. #6414
+- Dev: Add navigation favorites tests #6409
 - Fix: Move the shipping input and text 1px lower. #6408
 - Dev: support use of Array.flat in client and packages. #6411
 - Fix: Correct the Klarna slug #6440
@@ -84,7 +86,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Deprecate Onboarding::has_woocommerce_support. #6401
 - Fix: Broken link anchors to online documentation. #6455
 - Dev: Add Dependency Extraction Webpack Plugin #5762
+- Fix: Update payment card style on mobile #6413
+- Fix: Missing i18n in Welcome modal. #6456
+- Fix: Restore visual styles back to Analytics tabs. #5913
 - Add: Add a "rather not say" option to revenue in the profile wizard. #6475
+
 
 == 2.1.0 ==
 
@@ -130,7 +136,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Change `siteUrl` to `homeUrl` on navigation site title #6240
 - Dev: Add navigation favorites data store #6275
 - Add: Add navigation intro modal. #6367
+- Fix: Fix double prefixing of full navigation URLs #6460
 - Fix: Reset Navigation submenu before making Flyout #6396
+- Dev: Add a changelog lint check to PRs. #6414
+- Fix: Move the shipping input and text 1px lower. #6408
+- Add: WC Admin Docker setup with WP-ENV
 
 == 2.0.0 02/05/2021 ==
 
