@@ -32,14 +32,14 @@ export class BusinessSection {
 		await this.sellingElsewhereDropdown.select( currentlySelling );
 	}
 
-	async selectInstallFreeBusinessFeatures( select = true ) {
+	async selectInstallFreeBusinessFeatures( select: boolean ) {
 		const installFeaturesCheckbox = await this.page.$(
 			'#woocommerce-business-extensions__checkbox'
 		);
 		if ( select ) {
-			installFeaturesCheckbox?.check();
+			await installFeaturesCheckbox?.check();
 		} else {
-			installFeaturesCheckbox?.uncheck();
+			await installFeaturesCheckbox?.uncheck();
 		}
 	}
 
