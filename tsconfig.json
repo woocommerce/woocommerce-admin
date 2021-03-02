@@ -18,7 +18,6 @@
 		"typeRoots": [ "./typings", "./node_modules/@types", "packages/**/node_modules/@types" ],
 		"baseUrl": "./",
 		"paths": {
-			"~/*": [ "client/*" ],
 			"@woocommerce/wc-admin-settings": [
 				"../client/wc-admin-settings/index"
 			],

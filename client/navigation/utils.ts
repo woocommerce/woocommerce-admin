@@ -3,8 +3,11 @@
  */
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
+<<<<<<< HEAD:client/navigation/utils.ts
 type MenuId = 'primary' | 'favorites' | 'plugins' | 'secondary';
 
+=======
+>>>>>>> 45b2702ac... Add typescript to nav utils--no-verify:client/navigation/utils.js
 interface Item {
 	id: string;
 	matchExpression: string;
@@ -12,11 +15,16 @@ interface Item {
 	order: number;
 	title: string;
 	parent: string;
+<<<<<<< HEAD:client/navigation/utils.ts
 	menuId: MenuId;
+=======
+	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+>>>>>>> 45b2702ac... Add typescript to nav utils--no-verify:client/navigation/utils.js
 	capability: string;
 	isCategory: boolean;
 }
 
+<<<<<<< HEAD:client/navigation/utils.ts
 interface Category {
 	id: string;
 	isCategory: boolean;
@@ -31,6 +39,8 @@ interface Category {
 	secondary?: Item[];
 }
 
+=======
+>>>>>>> 45b2702ac... Add typescript to nav utils--no-verify:client/navigation/utils.js
 /**
  * Get the full URL if a relative path is passed.
  */
@@ -82,8 +92,38 @@ export const getMatchScore = (
 	return ( decodeURIComponent( href ).match( regexp ) || [] ).length;
 };
 
+<<<<<<< HEAD:client/navigation/utils.ts
 interface wcNavigation {
 	menuItems: Item[];
+	rootBackLabel: string;
+	rootBackUrl: string;
+	historyPatched: boolean;
+}
+
+declare global {
+	interface Window {
+		wcNavigation: wcNavigation;
+	}
+}
+=======
+/**
+ * Get a default regex expression to match the path and provided params.
+ */
+export const getDefaultMatchExpression = ( url: string ): string => {
+	const escapedUrl = url.replace( /[-\/\\^$*+?.()|[\]{}]/gi, '\\$&' );
+	const [ path, args, hash ] = escapedUrl.split( /\\\?|#/ );
+	const hashExpression = hash ? `(.*#${ hash }$)` : '';
+	const argsExpression = args
+		? args.split( '&' ).reduce( ( acc, param ) => {
+				return `${ acc }(?=.*[?|&]${ param }(&|$|#))`;
+		  }, '' )
+		: '';
+	return '^' + path + argsExpression + hashExpression;
+};
+>>>>>>> 45b2702ac... Add typescript to nav utils--no-verify:client/navigation/utils.js
+
+interface wcNavigation {
+	menuItems: Array< Item >;
 	rootBackLabel: string;
 	rootBackUrl: string;
 	historyPatched: boolean;
@@ -101,13 +141,18 @@ declare global {
  * @param {Function} listener Listener to add on history change.
  * @return {Function} Function to remove listeners.
  */
+<<<<<<< HEAD:client/navigation/utils.ts
 export const addHistoryListener = ( listener: () => void ): ( () => void ) => {
+=======
+export const addHistoryListener = ( listener: Function ) => {
+>>>>>>> 45b2702ac... Add typescript to nav utils--no-verify:client/navigation/utils.js
 	// Monkey patch pushState to allow trigger the pushstate event listener.
 	if ( ! window.wcNavigation.historyPatched ) {
 		( ( history ) => {
 			/* global CustomEvent */
 			const pushState = history.pushState;
 			const replaceState = history.replaceState;
+<<<<<<< HEAD:client/navigation/utils.ts
 			history.pushState = function (
 				state: {
 					[ key: string ]: string;
@@ -116,6 +161,12 @@ export const addHistoryListener = ( listener: () => void ): ( () => void ) => {
 				url: string
 			) {
 				const pushStateEvent = new CustomEvent( 'pushstate', state );
+=======
+			history.pushState = function ( state: object ) {
+				const pushStateEvent = new CustomEvent( 'pushstate', {
+					state,
+				} );
+>>>>>>> 45b2702ac... Add typescript to nav utils--no-verify:client/navigation/utils.js
 				window.dispatchEvent( pushStateEvent );
 				return pushState.apply( history, [ state, title, url ] );
 			};
@@ -215,6 +266,21 @@ export const sortMenuItems = ( menuItems: Item[] ): Item[] => {
 	} );
 };
 
+interface Category {
+	matchExpression: string;
+	url: string;
+	order: number;
+	title: string;
+	parent: string;
+	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	capability: string;
+	isCategory: boolean;
+	primary?: Array< Item >;
+	favorites?: Array< Item >;
+	plugins?: Array< Item >;
+	secondary?: Array< Item >;
+}
+
 /**
  * Get a flat tree structure of all Categories and thier children grouped by menuId
  *
@@ -286,4 +352,14 @@ export const getMappedItemsCategories = (
 		items,
 		categories,
 	};
+};
+
+const assign = (
+	obj: {
+		[ key: string ]: Item;
+	},
+	item: Item
+) => {
+	obj[ item.title ] = item;
+	return obj;
 };
