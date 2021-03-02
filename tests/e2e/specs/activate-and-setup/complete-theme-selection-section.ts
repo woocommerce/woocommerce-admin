@@ -5,13 +5,12 @@
 /**
  * Internal dependencies
  */
-import { clickContinue } from './utils';
+import { OnboardingWizard } from '../../models/OnboardingWizard';
 
 export async function completeThemeSelectionSection() {
+	const onboarding = new OnboardingWizard( page );
 	// Make sure we're on the theme selection page before clicking continue
-	await page.waitForSelector(
-		'.woocommerce-profile-wizard__themes-tab-panel'
-	);
+	await onboarding.themes.isDisplayed();
 
-	await clickContinue();
+	await onboarding.continue();
 }
