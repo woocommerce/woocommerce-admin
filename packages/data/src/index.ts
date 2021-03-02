@@ -3,6 +3,17 @@
  */
 import '@wordpress/core-data';
 
+import type { REVIEWS_STORE_NAME } from './reviews';
+import type { SETTINGS_STORE_NAME } from './settings';
+import type { PLUGINS_STORE_NAME } from './plugins';
+import type { ONBOARDING_STORE_NAME } from './onboarding';
+import type { USER_STORE_NAME } from './user';
+import type { OPTIONS_STORE_NAME } from './options';
+import type { NAVIGATION_STORE_NAME } from './navigation';
+import type { NOTES_STORE_NAME } from './notes';
+import type { REPORTS_STORE_NAME } from './reports';
+import type { ITEMS_STORE_NAME } from './items';
+
 export { SETTINGS_STORE_NAME } from './settings';
 export { withSettingsHydration } from './settings/with-settings-hydration';
 export { useSettings } from './settings/use-settings';
@@ -60,3 +71,41 @@ export {
 export { EXPORT_STORE_NAME } from './export';
 
 export { IMPORT_STORE_NAME } from './import';
+
+type WCDataStoreName =
+	| typeof REVIEWS_STORE_NAME
+	| typeof SETTINGS_STORE_NAME
+	| typeof PLUGINS_STORE_NAME
+	| typeof ONBOARDING_STORE_NAME
+	| typeof USER_STORE_NAME
+	| typeof OPTIONS_STORE_NAME
+	| typeof NAVIGATION_STORE_NAME
+	| typeof NOTES_STORE_NAME
+	| typeof REPORTS_STORE_NAME
+	| typeof ITEMS_STORE_NAME;
+
+type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
+	? {}
+	: T extends typeof SETTINGS_STORE_NAME
+	? {}
+	: T extends typeof PLUGINS_STORE_NAME
+	? {}
+	: T extends typeof ONBOARDING_STORE_NAME
+	? {}
+	: T extends typeof USER_STORE_NAME
+	? {}
+	: T extends typeof OPTIONS_STORE_NAME
+	? {}
+	: T extends typeof NAVIGATION_STORE_NAME
+	? {}
+	: T extends typeof NOTES_STORE_NAME
+	? {}
+	: T extends typeof REPORTS_STORE_NAME
+	? {}
+	: T extends typeof ITEMS_STORE_NAME
+	? {}
+	: never;
+
+export type WCDataSelector< T extends WCDataStoreName > = (
+	storeName: T
+) => WCSelectorType< T >;
