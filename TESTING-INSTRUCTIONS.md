@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+### Fix double prefixing of navigation URLs #6460
+
+1. Register a navigation menu item with a full URL or admin link.
+```
+	\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_item(
+		array(
+			'id'         => 'my-page,
+			'title'      => 'My Page,
+			'capability' => 'manage_woocommerce',
+			'url'        => admin_url( 'my-page '),
+		)
+	);
+```
+2. Enable the navigation.
+3. Check that the menu item is marked active when visiting that page.
+4. Make sure old menu items are still correctly marked active.
+
+### Fix summary number style regression on analytics reports #5913
+
+- Go to Analytics
+- See that the active (selected) tab is white, with a highlight above the tab.
+- See that inactive tabs are a lighter shade of grey.
+
+### Update payment card style on mobile #6413
+
+- Using a small size screen, go to your WooCommerce -> Home -> Choose payment methods.
+- See that the text descriptions for payment methods have a margin between them and the edge of the screen.
+
 ### Navigation: Correct error thrown when enabling #6462
 
 1. Create a fresh store
