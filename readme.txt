@@ -84,6 +84,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Deprecate Onboarding::has_woocommerce_support. #6401
 - Fix: Broken link anchors to online documentation. #6455
 - Dev: Add Dependency Extraction Webpack Plugin #5762
+- Fix: Update payment card style on mobile #6413
 
 == 2.1.0 ==
 
@@ -130,7 +131,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add navigation favorites data store #6275
 - Add: Add navigation intro modal. #6367
 - Fix: Reset Navigation submenu before making Flyout #6396
-- Fix: Update payment card style on mobile #6413
 
 == 2.0.0 02/05/2021 ==
 
