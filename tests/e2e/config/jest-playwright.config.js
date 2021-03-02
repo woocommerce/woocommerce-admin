@@ -9,7 +9,6 @@ if ( E2E_DEBUG ) {
 	process.env.DEBUG = 'pw:browser|api|error';
 	HEADLESS = 'false';
 }
-console.log( 'using playwright config' );
 module.exports = {
 	exitOnPageError: false,
 	launchOptions: {

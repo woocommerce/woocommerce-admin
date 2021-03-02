@@ -1,11 +1,4 @@
 /**
- * WordPress dependencies
- */
-import {
-	setBrowserViewport,
-	enablePageDialogAccept,
-} from '@wordpress/e2e-test-utils';
-/**
  * Environment variables
  */
 const { E2E_DEBUG, E2E_TIMEOUT } = process.env;
@@ -47,7 +40,5 @@ async function setUserAgent() {
 beforeAll( async () => {
 	await setUserAgent();
 
-	// Handles not saved changed dialog in block editor
-	await enablePageDialogAccept();
 	setupConsoleLogs();
 } );

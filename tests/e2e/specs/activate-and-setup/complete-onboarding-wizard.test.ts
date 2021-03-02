@@ -15,7 +15,6 @@ import { completeProductTypesSection } from './complete-product-types-section';
 import {
 	completeBusinessSection,
 	completeSelectiveBundleInstallBusinessDetailsTab,
-	unselectAllFeaturesAndContinue,
 } from './complete-business-section';
 import { completeThemeSelectionSection } from './complete-theme-selection-section';
 import { completeBenefitsSection } from './complete-benefits-section';
@@ -27,6 +26,7 @@ import {
 	TaskTitles,
 } from './homescreen';
 import { getElementByText } from './utils';
+import { OnboardingWizard } from '../../models/OnboardingWizard';
 
 /**
  * This tests a default, happy path for the onboarding wizard.
@@ -34,9 +34,12 @@ import { getElementByText } from './utils';
 describe( 'Store owner can complete onboarding wizard', () => {
 	it( 'can log in', StoreOwnerFlow.login );
 	it( 'can start the profile wizard', StoreOwnerFlow.startProfileWizard );
-	it( 'can complete the store details section', completeStoreDetailsSection );
-	it( 'can complete the industry section', completeIndustrySection );
-	it( 'can complete the product types section', completeProductTypesSection );
+	it( 'can complete the store details section', async () =>
+		await completeStoreDetailsSection() );
+	it( 'can complete the industry section', async () =>
+		await completeIndustrySection() );
+	it( 'can complete the product types section', async () =>
+		await completeProductTypesSection() );
 	it( 'can complete the business section', async () =>
 		await completeSelectiveBundleInstallBusinessDetailsTab() );
 	it( 'can unselect all business features and contine', async () =>
@@ -63,7 +66,8 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 	it( 'can complete the industry section', async () => {
 		await completeIndustrySection( 7 );
 	} );
-	it( 'can complete the product types section', completeProductTypesSection );
+	it( 'can complete the product types section', async () =>
+		await completeProductTypesSection() );
 	it( 'does not have the install recommended features checkbox', async () => {
 		const installFeaturesCheckbox = await page.$(
 			'#woocommerce-business-extensions__checkbox'
@@ -115,13 +119,21 @@ describe( 'A japanese store can complete the selective bundle install but does n
 	it( 'can choose the "Other" industry', async () => {
 		await chooseIndustries( [ 'Other' ] );
 	} );
-	it( 'can complete the product types section', completeProductTypesSection );
+	it( 'can complete the product types section', async () =>
+		await completeProductTypesSection() );
 	it( 'can complete the business details tab', async () => {
 		await completeSelectiveBundleInstallBusinessDetailsTab();
 	} );
 
 	it( 'can choose not to install any extensions', async () => {
-		await unselectAllFeaturesAndContinue( false );
+		const onboarding = new OnboardingWizard( page );
+
+		// Add WC Pay check
+		await onboarding.business.expandRecommendedBusinessFeatures();
+
+		await onboarding.business.uncheckAllRecommendedBusinessFeatures();
+
+		await onboarding.continue();
 	} );
 
 	it(
