@@ -126,6 +126,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: CES survey for adding product categories, tags, and attributes #6418
 - Add: Include tracking for mail poet installs in the selective bundle install #6603
 - Dev: Add script automation for gathering hooks and filters. #6454
+- Dev: Replace puppeteer with Playwright and write tests in TypeScript. #6484
 
 == 2.1.3 3/14/2021  ==
 
