@@ -43,13 +43,14 @@ import {
 	getMethodContainerMap,
 	installActivateAndConnectWcpay,
 } from './methods';
+import { Method } from './method';
 
 export const setMethodEnabledOption = async (
 	optionName,
 	value,
-	{ clearTaskStatusCache, updateOptions, gatewayOptions }
+	{ clearTaskStatusCache, options, updateOptions }
 ) => {
-	const methodOptions = gatewayOptions[ optionName ];
+	const methodOptions = options[ optionName ] || {};
 
 	// Don't update the option if it already has the same value.
 	if ( methodOptions.enabled !== value ) {
@@ -95,10 +96,9 @@ class Payments extends Component {
 	async markConfigured( key, queryParams = {} ) {
 		const { enabledMethods, methods } = this.state;
 		const method = methods.find( ( m ) => m.key === key );
-		const { settings } = method.options;
 
 		if ( ! method ) {
-			throw `Method ${ methodName } not found in available methods list`;
+			throw `Method ${ key } not found in available methods list`;
 		}
 
 		this.setState( {
@@ -107,6 +107,8 @@ class Payments extends Component {
 				[ key ]: true,
 			},
 		} );
+
+		const { settings } = method.options;
 
 		await setMethodEnabledOption( settings, 'yes', this.props );
 
@@ -179,20 +181,23 @@ class Payments extends Component {
 	async toggleMethod( key ) {
 		const { enabledMethods, methods } = this.state;
 		const method = methods.find( ( m ) => m.key === key );
-		const { settings } = method.options;
-		const isEnabled = this.isMethodEnabled( method );
 
 		if ( ! method ) {
 			throw `Method ${ key } not found in available methods list`;
 		}
 
+		const isEnabled = this.isMethodEnabled( method );
+
 		enabledMethods[ key ] = ! enabledMethods[ key ];
+
 		this.setState( { enabledMethods } );
 
 		recordEvent( 'tasklist_payment_toggle', {
 			enabled: ! isEnabled,
 			payment_method: key,
 		} );
+
+		const { settings } = method.options;
 
 		await setMethodEnabledOption(
 			settings,
@@ -240,12 +245,10 @@ class Payments extends Component {
 
 	getSetupButtons( method ) {
 		const { busyMethod, enabledMethods } = this.state;
-		const { methodContainerMap } = this.props;
 		const { key, recommended } = method;
 		const isConfigured = this.isMethodConfigured( method );
-		const container = methodContainerMap[ key ];
 
-		if ( container && ! isConfigured ) {
+		if ( ! isConfigured ) {
 			return (
 				<div>
 					<Button
@@ -328,19 +331,11 @@ class Payments extends Component {
 	}
 
 	isMethodConfigured( method ) {
-		const {
-			activePlugins,
-			gatewayOptions,
-			onboardingStatus: { wcPayIsConnected },
-		} = this.props;
-		const {
-			key,
-			options: { config, settings },
-			slug,
-		} = method;
+		const { activePlugins, onboardingStatus, options } = this.props;
+		const { key, options: methodOptions, slug } = method;
 
 		if ( key === 'wcpay' ) {
-			return wcPayIsConnected;
+			return onboardingStatus.wcPayIsConnected;
 		}
 
 		if ( key === 'paypal' ) {
@@ -353,12 +348,13 @@ class Payments extends Component {
 			);
 		}
 
+		const { config, settings } = methodOptions;
+
 		if ( config && settings ) {
 			return config.every( ( o ) => {
 				return (
-					gatewayOptions[ o ] ||
-					( gatewayOptions[ settings ] &&
-						gatewayOptions[ settings ][ o ] )
+					options[ o ] ||
+					( options[ settings ] && options[ settings ][ o ] )
 				);
 			} );
 		}
@@ -367,19 +363,15 @@ class Payments extends Component {
 	}
 
 	isMethodEnabled( method ) {
-		const {
-			gatewayOptions,
-			onboardingStatus: { enabledPaymentGateways },
-		} = this.props;
-		const {
-			options: { settings },
-			slug,
-		} = method;
+		const { onboardingStatus, options } = this.props;
+		const { enabledPaymentGateways } = onboardingStatus;
+		const { options: methodOptions, slug } = method;
+		const { settings } = methodOptions;
 
 		return (
-			( gatewayOptions[ settings ] &&
-				gatewayOptions[ settings ].enabled &&
-				gatewayOptions[ settings ].enabled === 'yes' ) ||
+			( options[ settings ] &&
+				options[ settings ].enabled &&
+				options[ settings ].enabled === 'yes' ) ||
 			enabledPaymentGateways.includes( slug )
 		);
 	}
@@ -401,15 +393,18 @@ class Payments extends Component {
 		const currentMethod = this.getCurrentMethod();
 
 		if ( currentMethod ) {
-			const container = methodContainerMap[ currentMethod.key ];
+			const container = methodContainerMap[ currentMethod.key ] || (
+				<Method />
+			);
 			return (
 				<Card className="woocommerce-task-payment-method woocommerce-task-card">
 					<CardBody>
 						{ cloneElement( container, {
-							query,
+							hasCbdIndustry: currentMethod.supportsCbd,
 							installStep: this.getInstallStep(),
 							markConfigured: this.markConfigured,
-							hasCbdIndustry: currentMethod.hasCbdIndustry,
+							method: currentMethod,
+							query,
 						} ) }
 					</CardBody>
 				</Card>
@@ -526,6 +521,7 @@ export default compose(
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const paypalOnboardingStatus = getPaypalOnboardingStatus();
+		const methodContainerMap = getMethodContainerMap();
 		const loadingPaypalStatus =
 			! hasFinishedResolution( 'getPaypalOnboardingStatus' ) &&
 			! paypalOnboardingStatus;
@@ -549,19 +545,17 @@ export default compose(
 			'woocommerce_payubiz_settings',
 		];
 
-		const gatewayOptions = optionNames.reduce( ( result, name ) => {
+		const options = optionNames.reduce( ( result, name ) => {
 			result[ name ] = getOption( name );
 			return result;
 		}, {} );
 
-		const methodContainerMap = getMethodContainerMap();
-
 		return {
 			activePlugins,
-			gatewayOptions,
 			loadingPaypalStatus,
 			methodContainerMap,
 			onboardingStatus,
+			options,
 			paypalOnboardingStatus,
 			profileItems,
 		};

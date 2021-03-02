@@ -22,7 +22,7 @@ describe( 'TaskList > Payments', () => {
 			const mockProps = {
 				clearTaskStatusCache: jest.fn(),
 				updateOptions: jest.fn(),
-				gatewayOptions: {
+				options: {
 					woocommerce_klarna_payments_settings: false,
 					woocommerce_mollie_payments_settings: { enabled: 'yes' },
 				},
@@ -36,7 +36,7 @@ describe( 'TaskList > Payments', () => {
 			const mockProps = {
 				clearTaskStatusCache: jest.fn(),
 				updateOptions: jest.fn(),
-				gatewayOptions: {
+				options: {
 					woocommerce_klarna_payments_settings: false,
 					woocommerce_mollie_payments_settings: { enabled: 'no' },
 				},
