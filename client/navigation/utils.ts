@@ -3,13 +3,22 @@
  */
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
+interface Item {
+	id: string;
+	matchExpression: string;
+	url: string;
+	order: number;
+	title: string;
+	parent: string;
+	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	capability: string;
+	isCategory: boolean;
+}
+
 /**
  * Get the full URL if a relative path is passed.
- *
- * @param {string} url URL
- * @return {string} Full URL
  */
-export const getFullUrl = ( url ) => {
+export const getFullUrl = ( url: string ): string => {
 	if ( url.indexOf( 'http' ) === 0 ) {
 		return url;
 	}
@@ -19,15 +28,14 @@ export const getFullUrl = ( url ) => {
 
 /**
  * Get a match score for a menu item given a location.
- *
- * @param {Object} location Window location
- * @param {string} itemUrl	 URL to compare
- * @param {string} itemExpression Custom match expression
- * @return {number} Number of matches or 0 if not matched.
  */
-export const getMatchScore = ( location, itemUrl, itemExpression = null ) => {
+export const getMatchScore = (
+	location: Location,
+	itemUrl: string,
+	itemExpression: string | null = null
+): number => {
 	if ( ! itemUrl ) {
-		return;
+		return 0;
 	}
 
 	const fullUrl = getFullUrl( itemUrl );
@@ -44,12 +52,9 @@ export const getMatchScore = ( location, itemUrl, itemExpression = null ) => {
 };
 
 /**
- * Get a default expression to match the path and provided params.
- *
- * @param {string} url URL to match.
- * @return {string} Regex expression.
+ * Get a default regex expression to match the path and provided params.
  */
-export const getDefaultMatchExpression = ( url ) => {
+export const getDefaultMatchExpression = ( url: string ): string => {
 	const escapedUrl = url.replace( /[-\/\\^$*+?.()|[\]{}]/gi, '\\$&' );
 	const [ path, args, hash ] = escapedUrl.split( /\\\?|#/ );
 	const hashExpression = hash ? `(.*#${ hash }$)` : '';
@@ -61,20 +66,33 @@ export const getDefaultMatchExpression = ( url ) => {
 	return '^' + path + argsExpression + hashExpression;
 };
 
+interface wcNavigation {
+	menuItems: Array< Item >;
+	rootBackLabel: string;
+	rootBackUrl: string;
+	historyPatched: boolean;
+}
+
+declare global {
+	interface Window {
+		wcNavigation: wcNavigation;
+	}
+}
+
 /**
  * Adds a listener that runs on history change.
  *
  * @param {Function} listener Listener to add on history change.
  * @return {Function} Function to remove listeners.
  */
-export const addHistoryListener = ( listener ) => {
+export const addHistoryListener = ( listener: Function ) => {
 	// Monkey patch pushState to allow trigger the pushstate event listener.
 	if ( ! window.wcNavigation.historyPatched ) {
 		( ( history ) => {
 			/* global CustomEvent */
 			const pushState = history.pushState;
 			const replaceState = history.replaceState;
-			history.pushState = function ( state ) {
+			history.pushState = function ( state: object ) {
 				const pushStateEvent = new CustomEvent( 'pushstate', {
 					state,
 				} );
@@ -108,7 +126,7 @@ export const addHistoryListener = ( listener ) => {
  *
  * @param {Array} items An array of items to match against.
  */
-export const getMatchingItem = ( items ) => {
+export const getMatchingItem = ( items: Array< Item > ): Item | null => {
 	let matchedItem = null;
 	let highestMatchScore = 0;
 
@@ -153,7 +171,7 @@ export const defaultCategories = {
  * @param {Array} menuItems Array of menu items.
  * @return {Array} Sorted menu items.
  */
-export const sortMenuItems = ( menuItems ) => {
+export const sortMenuItems = ( menuItems: Array< Item > ): Array< Item > => {
 	return menuItems.sort( ( a, b ) => {
 		if ( a.order === b.order ) {
 			return a.title.localeCompare( b.title );
@@ -163,6 +181,21 @@ export const sortMenuItems = ( menuItems ) => {
 	} );
 };
 
+interface Category {
+	matchExpression: string;
+	url: string;
+	order: number;
+	title: string;
+	parent: string;
+	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	capability: string;
+	isCategory: boolean;
+	primary?: Array< Item >;
+	favorites?: Array< Item >;
+	plugins?: Array< Item >;
+	secondary?: Array< Item >;
+}
+
 /**
  * Get a flat tree structure of all Categories and thier children grouped by menuId
  *
@@ -171,45 +204,65 @@ export const sortMenuItems = ( menuItems ) => {
  * @return {Object} Mapped menu items and categories.
  */
 export const getMappedItemsCategories = (
-	menuItems,
-	currentUserCan = null
+	menuItems: Array< Item >,
+	currentUserCan: Function | null = null
 ) => {
-	const categories = { ...defaultCategories };
+	const categories: {
+		[ key: string ]: Category | object;
+	} = { ...defaultCategories };
 
-	const items = sortMenuItems( menuItems ).reduce( ( acc, item ) => {
-		// Set up the category if it doesn't yet exist.
-		if ( ! acc[ item.parent ] ) {
-			acc[ item.parent ] = {};
-			menuIds.forEach( ( menuId ) => {
-				acc[ item.parent ][ menuId ] = [];
-			} );
-		}
+	const items = sortMenuItems( menuItems ).reduce(
+		(
+			acc: {
+				[ key: string ]: Category | { [ key: string ]: Array< Item > };
+			},
+			item: Item
+		) => {
+			// Set up the category if it doesn't yet exist.
+			if ( ! acc[ item.parent ] ) {
+				acc[ item.parent ] = {};
+				menuIds.forEach( ( menuId ) => {
+					acc[ item.parent ][ menuId ] = [];
+				} );
+			}
 
-		// Incorrect menu ID.
-		if ( ! acc[ item.parent ][ item.menuId ] ) {
+			// Incorrect menu ID.
+			if ( ! acc[ item.parent ][ item.menuId ] ) {
+				return acc;
+			}
+
+			// User does not have permission to view this item.
+			if (
+				currentUserCan &&
+				item.capability &&
+				! currentUserCan( item.capability )
+			) {
+				return acc;
+			}
+
+			// Add categories.
+			if ( item.isCategory ) {
+				categories[ item.id ] = item;
+			}
+
+			acc[ item.parent ][ item.menuId ].push( item );
 			return acc;
-		}
-
-		// User does not have permission to view this item.
-		if (
-			currentUserCan &&
-			item.capability &&
-			! currentUserCan( item.capability )
-		) {
-			return acc;
-		}
-
-		// Add categories.
-		if ( item.isCategory ) {
-			categories[ item.id ] = item;
-		}
-
-		acc[ item.parent ][ item.menuId ].push( item );
-		return acc;
-	}, {} );
+		},
+		{}
+	);
 
 	return {
 		items,
 		categories,
 	};
+};
+
+const assign = (
+	obj: {
+		[ key: string ]: Item;
+	},
+	item: Item
+) => {
+	obj[ item.title ] = item;
+	return obj;
 };
