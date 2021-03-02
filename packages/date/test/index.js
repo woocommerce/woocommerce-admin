@@ -561,7 +561,6 @@ describe( 'getLastPeriod', () => {
 			const lastMonthkLastYearEnd = lastMonthkLastYearStart
 				.clone()
 				.endOf( 'month' );
-
 			expect(
 				lastMonthkLastYearStart.isSame(
 					dateValue.secondaryStart,
