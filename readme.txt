@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: Add check for navigating being enabled. #6462
 - Dev: Add a changelog lint check to PRs. #6414
 - Fix: Move the shipping input and text 1px lower. #6408
 - Dev: support use of Array.flat in client and packages. #6411
@@ -82,6 +83,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Refactor autoloader to remove global variable. #6412
 - Dev: Deprecate Onboarding::has_woocommerce_support. #6401
 - Fix: Broken link anchors to online documentation. #6455
+- Dev: Add Dependency Extraction Webpack Plugin #5762
 
 == 2.1.0 ==
 
