@@ -30,7 +30,6 @@ import {
 } from '@woocommerce/navigation';
 import { H, Link, Plugins } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
-import { LOCALE } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -146,12 +145,11 @@ class Payments extends Component {
 			return;
 		}
 
-		const { activePlugins, siteLocale } = this.props;
+		const { activePlugins } = this.props;
 		const pluginsToInstall = currentMethod.plugins.filter(
 			( method ) => ! activePlugins.includes( method )
 		);
-		const pluginLocaleData = currentMethod.locales[ siteLocale ];
-		const pluginNamesString = pluginLocaleData.name;
+		const pluginNamesString = currentMethod.name;
 
 		return {
 			key: 'install',
@@ -232,7 +230,6 @@ class Payments extends Component {
 				.catch( () => {
 					this.setState( { busyMethod: null } );
 				} );
-
 			return;
 		}
 
@@ -242,9 +239,9 @@ class Payments extends Component {
 	}
 
 	getSetupButtons( method ) {
-		const { key, recommended } = method;
 		const { busyMethod, enabledMethods } = this.state;
 		const { methodContainerMap } = this.props;
+		const { key, recommended } = method;
 		const isConfigured = this.isMethodConfigured( method );
 		const container = methodContainerMap[ key ];
 
@@ -283,14 +280,59 @@ class Payments extends Component {
 				path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/payment-method-recommendations?per_page=${ perPage }`,
 			} );
 
-			return [ ...methods, ...defaultMethods ];
+			const defaultKeys = defaultMethods.map( ( m ) => m.key );
+
+			return [
+				...methods.filter( ( m ) => ! defaultKeys.includes( m.key ) ),
+				...defaultMethods,
+			];
 		} catch {
 			return defaultMethods;
 		}
 	}
 
+	getTosPrompt() {
+		const tosLink = (
+			<Link
+				href={ 'https://wordpress.com/tos/' }
+				target="_blank"
+				type="external"
+			/>
+		);
+
+		const tosPrompt = interpolateComponents( {
+			mixedString: __(
+				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}',
+				'woocommerce-admin'
+			),
+			components: {
+				link: tosLink,
+			},
+		} );
+
+		return <p>{ tosPrompt }</p>;
+	}
+
+	getMethodLogo( method ) {
+		const { imageContainer, imageUrl, key } = method;
+
+		if ( imageContainer ) {
+			return imageContainer;
+		}
+
+		if ( imageUrl ) {
+			return <img src={ imageUrl } alt={ `${ key } logo.` } />;
+		}
+
+		return <WCPayLogo />;
+	}
+
 	isMethodConfigured( method ) {
-		const { activePlugins, gatewayOptions } = this.props;
+		const {
+			activePlugins,
+			gatewayOptions,
+			onboardingStatus: { wcPayIsConnected },
+		} = this.props;
 		const {
 			key,
 			options: { config, settings },
@@ -298,7 +340,7 @@ class Payments extends Component {
 		} = method;
 
 		if ( key === 'wcpay' ) {
-			return this.props.wcPayIsConnected;
+			return wcPayIsConnected;
 		}
 
 		if ( key === 'paypal' ) {
@@ -325,7 +367,10 @@ class Payments extends Component {
 	}
 
 	isMethodEnabled( method ) {
-		const { enabledPaymentGateways, gatewayOptions } = this.props;
+		const {
+			gatewayOptions,
+			onboardingStatus: { enabledPaymentGateways },
+		} = this.props;
 		const {
 			options: { settings },
 			slug,
@@ -339,28 +384,6 @@ class Payments extends Component {
 		);
 	}
 
-	getTosPrompt() {
-		const tosLink = (
-			<Link
-				href={ 'https://wordpress.com/tos/' }
-				target="_blank"
-				type="external"
-			/>
-		);
-
-		const tosPrompt = interpolateComponents( {
-			mixedString: __(
-				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}',
-				'woocommerce-admin'
-			),
-			components: {
-				link: tosLink,
-			},
-		} );
-
-		return <p>{ tosPrompt }</p>;
-	}
-
 	render() {
 		const { isLoading, methods } = this.state;
 
@@ -372,7 +395,6 @@ class Payments extends Component {
 			activePlugins,
 			loadingPaypalStatus,
 			methodContainerMap,
-			siteLocale,
 			query,
 		} = this.props;
 
@@ -397,10 +419,8 @@ class Payments extends Component {
 		return (
 			<div className="woocommerce-task-payments">
 				{ methods.map( ( method ) => {
+					const { content, key, recommended, title, tos } = method;
 					const isConfigured = this.isMethodConfigured( method );
-					const { imageUrl, key, locales, recommended } = method;
-					const { content, title, tos } =
-						locales[ siteLocale ] || locales.en_US;
 
 					const classes = classnames(
 						'woocommerce-task-payment',
@@ -421,11 +441,7 @@ class Payments extends Component {
 						activePlugins.includes( PAYPAL_PLUGIN ) &&
 						loadingPaypalStatus;
 
-					const logo = method.imageUrl ? (
-						<img src={ imageUrl } alt={ `${ key } logo.` } />
-					) : (
-						<WCPayLogo />
-					);
+					const logo = this.getMethodLogo( method );
 
 					return (
 						<Card key={ key } className={ classes }>
@@ -506,7 +522,7 @@ export default compose(
 			hasFinishedResolution,
 		} = select( PLUGINS_STORE_NAME );
 
-		const { enabledPaymentGateways, wcPayIsConnected } = getTasksStatus();
+		const onboardingStatus = getTasksStatus();
 		const activePlugins = getActivePlugins();
 		const profileItems = getProfileItems();
 		const paypalOnboardingStatus = getPaypalOnboardingStatus();
@@ -539,18 +555,15 @@ export default compose(
 		}, {} );
 
 		const methodContainerMap = getMethodContainerMap();
-		const siteLocale = LOCALE.siteLocale;
 
 		return {
 			activePlugins,
-			enabledPaymentGateways,
 			gatewayOptions,
 			loadingPaypalStatus,
 			methodContainerMap,
+			onboardingStatus,
 			paypalOnboardingStatus,
 			profileItems,
-			siteLocale,
-			wcPayIsConnected,
 		};
 	} )
 )( Payments );

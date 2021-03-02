@@ -528,60 +528,67 @@ export function getPaymentMethods( {
 }
 
 export function getDefaultPaymentMethods( profileItems ) {
+	const methods = [
+		{
+			key: 'paypal',
+			countries: [ 'any' ],
+			slug: 'ppcp-gateway',
+			name: __( 'PayPal Payments', 'woocommerce-admin' ),
+			title: __( 'PayPal Payments', 'woocommerce-admin' ),
+			content: __(
+				"Safe and secure payments using credit cards or your customer's PayPal account.",
+				'woocommerce-admin'
+			),
+			plugins: [ 'woocommerce-paypal-payments' ],
+			options: {
+				settings: 'woocommerce_ppcp-gateway_settings',
+			},
+			imageUrl: wcAssetUrl + 'images/paypal.png',
+		},
+		{
+			key: 'cod',
+			countries: [ 'any' ],
+			name: __(
+				'Take payments in cash upon delivery.',
+				'woocommerce-admin'
+			),
+			title: __( 'Cash on delivery', 'woocommerce-admin' ),
+			content: __(
+				'Take payments in cash upon delivery.',
+				'woocommerce-admin'
+			),
+			options: {
+				settings: 'woocommerce_cod_settings',
+			},
+			imageContainer: <CodLogo />,
+		},
+		{
+			key: 'bacs',
+			countries: [ 'any' ],
+			name: __(
+				'Take payments in cash upon delivery.',
+				'woocommerce-admin'
+			),
+			title: __( 'Direct bank transfer', 'woocommerce-admin' ),
+			content: __(
+				'Take payments via bank transfer.',
+				'woocommerce-admin'
+			),
+			options: {
+				config: [ 'woocommerce_bacs_accounts' ],
+				settings: 'woocommerce_bacs_settings',
+			},
+			imageContainer: <BacsLogo />,
+		},
+	];
+
 	const hasCbdIndustry = ( profileItems.industry || [] ).some(
 		( { slug } ) => {
 			return slug === 'cbd-other-hemp-derived-products';
 		}
 	);
 
-	if ( ! hasCbdIndustry ) {
-		return [
-			{
-				key: 'cod',
-				locales: {
-					en_US: {
-						name: __(
-							'Take payments in cash upon delivery.',
-							'woocommerce-admin'
-						),
-						title: __( 'Cash on delivery', 'woocommerce-admin' ),
-						content: __(
-							'Take payments in cash upon delivery.',
-							'woocommerce-admin'
-						),
-					},
-				},
-				options: {
-					settings: 'woocommerce_cod_settings',
-				},
-			},
-			{
-				key: 'bacs',
-				locales: {
-					en_US: {
-						name: __(
-							'Take payments in cash upon delivery.',
-							'woocommerce-admin'
-						),
-						title: __(
-							'Direct bank transfer',
-							'woocommerce-admin'
-						),
-						content: __(
-							'Take payments via bank transfer.',
-							'woocommerce-admin'
-						),
-					},
-				},
-				options: {
-					config: [ 'woocommerce_bacs_accounts' ],
-					settings: 'woocommerce_bacs_settings',
-				},
-			},
-		];
-	}
-
-	return [];
+	return methods.filter( ( m ) => ! hasCbdIndustry || m.supportsCbd );
 }
 
 export function getMethodContainerMap() {

@@ -481,27 +481,24 @@ class OnboardingTasks {
 		if ( ! $methods ) {
 			$methods       = array();
 			$base_location = wc_get_base_location();
+			$locale        = get_locale();
 			$profile       = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
-			$filters       = array(
-				'country_code'     => isset( $base_location['country'] ) ? $base_location['country'] : 'US',
-				'has_cbd_industry' => isset( $profile['has_cbd_industry'] ) ? $profile['has_cbd_industry'] : false,
+			$url           = 'https://woocommerce.test/wp-json/wccom/payment-methods/1.0/recommendations'; // Development URL.
+			$response      = wp_remote_post(
+				$url,
+				array(
+					'sslverify' => false, // Development only!
+					'body'      => array(
+						'country_code' => $base_location['country'],
+						'locale'       => $locale,
+						'has_cbd'      => in_array( 'cbd-other-hemp-derived-products', array_column( $profile['industry'], 'slug' ), true ),
+					),
+				)
 			);
 
-			$args = array(
-				'sslverify' => false, // Development only!
-				'body'      => array(
-					'filters' => wp_json_encode( $filters ),
-				),
-			);
-
-			$request = wp_remote_post(
-				'https://woocommerce.test/wp-json/wccom/payment-methods/1.0/recommendations', // Development only!
-				$args
-			);
-
-			if ( ! is_wp_error( $request ) && 200 === wp_remote_retrieve_response_code( $request ) ) {
+			if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
 				$methods = json_decode(
-					wp_remote_retrieve_body( $request ),
+					wp_remote_retrieve_body( $response ),
 					true
 				);
 
