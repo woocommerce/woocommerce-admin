@@ -15,6 +15,21 @@ interface Item {
 	isCategory: boolean;
 }
 
+interface Category {
+	matchExpression: string;
+	url: string;
+	order: number;
+	title: string;
+	parent: string;
+	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	capability: string;
+	isCategory: boolean;
+	primary?: Array< Item >;
+	favorites?: Array< Item >;
+	plugins?: Array< Item >;
+	secondary?: Array< Item >;
+}
+
 /**
  * Get the full URL if a relative path is passed.
  */
@@ -180,21 +195,6 @@ export const sortMenuItems = ( menuItems: Array< Item > ): Array< Item > => {
 		return a.order - b.order;
 	} );
 };
-
-interface Category {
-	matchExpression: string;
-	url: string;
-	order: number;
-	title: string;
-	parent: string;
-	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
-	capability: string;
-	isCategory: boolean;
-	primary?: Array< Item >;
-	favorites?: Array< Item >;
-	plugins?: Array< Item >;
-	secondary?: Array< Item >;
-}
 
 /**
  * Get a flat tree structure of all Categories and thier children grouped by menuId
