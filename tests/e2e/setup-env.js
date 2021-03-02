@@ -1,14 +1,3 @@
-/**
- * Environment variables
- */
-const { E2E_DEBUG, E2E_TIMEOUT } = process.env;
-
-// The Jest timeout is increased because these tests are a bit slow
-jest.setTimeout( E2E_TIMEOUT || 300000 );
-if ( E2E_DEBUG ) {
-	jest.setTimeout( 2147483647 ); // max 32-bit signed integer
-}
-
 function setupConsoleLogs() {
 	page.on( 'pageerror', function ( err ) {
 		const theTempValue = err.toString();
