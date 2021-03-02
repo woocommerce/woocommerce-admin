@@ -84,26 +84,28 @@ type WCDataStoreName =
 	| typeof REPORTS_STORE_NAME
 	| typeof ITEMS_STORE_NAME;
 
+// As we add types to all the package selectors we can fill out these unknown types with real ones. See one
+// of the already typed selectors for an example of how you can do this.
 type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof SETTINGS_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof PLUGINS_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof ONBOARDING_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof USER_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof OPTIONS_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof NAVIGATION_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof NOTES_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof REPORTS_STORE_NAME
-	? {}
+	? unknown
 	: T extends typeof ITEMS_STORE_NAME
-	? {}
+	? unknown
 	: never;
 
 export type WCDataSelector< T extends WCDataStoreName > = (
