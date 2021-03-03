@@ -1,6 +1,8 @@
 # Unreleased
 
--   Update Lodash.
+## Breaking changes
+
+-   Move Lodash to a peer dependency.
 
 # 5.3.0
 

@@ -11,7 +11,10 @@
 -   Deprecate use of `<Card>` in favor of the `<Card>` component in `@wordpress/components`.
 -   Fixing screen reader text being undefined for report `<Table>`
 -   Update `<SearchListControl />` to use checkbox and radio inputs.
--   Update Lodash.
+
+## Breaking changes
+
+-   Move Lodash to a peer dependency.
 
 # 5.1.2
 
