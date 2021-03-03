@@ -399,7 +399,9 @@ This passes when the option value matches the value using the operation.
 
 ### WCA updated
 This passes when WooCommerce Admin has just been updated. The specs will be run
-on update.
+on update. Note that this doesn't provide a way to check the version number as
+the `plugin_version` rule can be used to check for a specific version of the
+WooCommerce Admin plugin.
 
 ```
 {
