@@ -84,6 +84,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Deprecate Onboarding::has_woocommerce_support. #6401
 - Fix: Broken link anchors to online documentation. #6455
 - Dev: Add Dependency Extraction Webpack Plugin #5762
+- Dev: Add client-side filter for Navigation rootBackUrl #6505
 
 == 2.1.0 ==
 
