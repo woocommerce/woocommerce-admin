@@ -7,12 +7,8 @@ export class ThemeSection {
 		this.page = page;
 	}
 
-	async isDisplayed( ) {
-		await this.page.waitForSelector(
-			':text("Choose a theme")'
-		);
-        await this.page.waitForSelector(
-			':text("All themes")'
-		);
+	async isDisplayed() {
+		await this.page.waitForSelector( ':text("Choose a theme")' );
+		await this.page.waitForSelector( ':text("All themes")' );
 	}
 }
