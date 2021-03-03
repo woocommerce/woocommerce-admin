@@ -13,9 +13,6 @@ export class DropdownField {
 		await this.page.click(
 			this.id + ' .woocommerce-select-control__control'
 		);
-		await this.page.waitForSelector(
-			this.id + ' button:text("' + value + '")'
-		);
 		await this.page.click( this.id + ' button:text("' + value + '")' );
 		await this.checkSelected( value );
 	}

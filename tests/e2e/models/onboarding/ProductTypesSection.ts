@@ -9,7 +9,7 @@ export class ProductTypeSection {
 
 	async isDisplayed( productCount: number ) {
 		await this.page.waitForSelector(
-			':text("What type of products will be listed?")'
+			'h2:text("What type of products will be listed?")'
 		);
 		const length = await this.page.$$eval(
 			'.components-checkbox-control__input',
@@ -29,6 +29,8 @@ export class ProductTypeSection {
 	}
 
 	async selectProduct( productLabel: string ) {
-		await this.page.check( '.components-base-control :text("' + productLabel + '")' );
+		await this.page.check(
+			'.components-base-control :text("' + productLabel + '")'
+		);
 	}
 }

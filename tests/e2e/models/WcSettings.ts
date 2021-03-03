@@ -1,4 +1,7 @@
-import { WP_ADMIN_PERMALINK_SETTINGS, WP_ADMIN_WC_SETTINGS } from '../utils/constants';
+import {
+	WP_ADMIN_PERMALINK_SETTINGS,
+	WP_ADMIN_WC_SETTINGS,
+} from '../utils/constants';
 import { Page } from 'playwright';
 
 export class WcSettings {
@@ -22,20 +25,23 @@ export class WcSettings {
 	}
 
 	async enableTaxRates() {
-		const checkbox = await this.page.$('#woocommerce_calc_taxes');
+		const checkbox = await this.page.$( '#woocommerce_calc_taxes' );
 		await checkbox?.check();
 	}
 
 	async getTaxRateValue() {
-		return await this.page.getAttribute('#woocommerce_calc_taxes', 'checked');
+		return await this.page.getAttribute(
+			'#woocommerce_calc_taxes',
+			'checked'
+		);
 	}
 
 	async saveSettings() {
-		await this.page.click(':text("Save changes")');
+		await this.page.click( ':text("Save changes")' );
 		await this.page.waitForNavigation( {
-			waitUntil: 'networkidle'
-		});
-		await this.page.waitForSelector(
+			waitUntil: 'networkidle',
+		} );
+		await this.page.isVisible(
 			'#message :text("Your settings have been saved.")'
 		);
 	}

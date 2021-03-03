@@ -26,7 +26,7 @@ describe( 'Store owner can login and make sure WooCommerce is activated', () => 
 		}
 		await page.click( `tr[data-slug="${ slug }"] .activate a` );
 
-		await page.waitForSelector( `tr[data-slug="${ slug }"] .deactivate a` );
+		await page.isVisible( `tr[data-slug="${ slug }"] .deactivate a` );
 	} );
 } );
 
@@ -64,7 +64,7 @@ describe( 'Store owner can finish initial store setup', () => {
 
 		// Verify that settings have been saved
 		await Promise.all( [
-			page.waitForSelector(
+			page.isVisible(
 				'#setting-error-settings_updated :text("Permalink structure updated.")'
 			),
 			verifyValueOfInputField( '#permalink_structure', '/%postname%/' ),

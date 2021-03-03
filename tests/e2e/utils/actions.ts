@@ -39,12 +39,8 @@ const verifyPublishAndTrash = async (
 	publishNotice: string,
 	publishVerification: string
 ) => {
-	await page.waitForSelector( button );
-
 	// Publish
 	await page.click( button );
-
-	await page.waitForSelector( publishNotice );
 
 	// Verify
 	await page.isVisible(
@@ -61,7 +57,7 @@ const verifyPublishAndTrash = async (
 
 	// Trash
 	await page.click( 'a:text("Move to Trash")' );
-	await page.waitForSelector( '#message' );
+	await page.isVisible( '#message' );
 
 	// Verify
 	await page.isVisible(
@@ -104,7 +100,6 @@ const verifyCheckboxIsUnset = async ( selector: string ) => {
  * @param {string} value Value of the input field that needs to be verified.
  */
 const verifyValueOfInputField = async ( selector: string, value: string ) => {
-	await page.waitForSelector( selector );
 	const fieldValue = await page.getAttribute( selector, 'value' );
 	await expect( fieldValue ).toBe( value );
 };
