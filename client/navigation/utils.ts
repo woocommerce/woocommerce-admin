@@ -217,11 +217,15 @@ export const getMappedItemsCategories = (
 	menuItems: Item[],
 	currentUserCan: ( capability: string ) => boolean | undefined
 ): {
-	items: Item[];
-	categories: Array< Category >;
+	items: {
+		[ key: string ]: Category | { [ key: string ]: Item[] };
+	};
+	categories: {
+		[ key: string ]: Category | Item;
+	};
 } => {
 	const categories: {
-		[ key: string ]: Category;
+		[ key: string ]: Category | Item;
 	} = { ...defaultCategories };
 
 	const items = sortMenuItems( menuItems ).reduce(
