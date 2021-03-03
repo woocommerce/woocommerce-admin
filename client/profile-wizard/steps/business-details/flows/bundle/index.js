@@ -58,6 +58,9 @@ class BusinessDetails extends Component {
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
+			'mailpoet': businessExtensions
+				? businessExtensions.includes( 'mailpoet' )
+				: true,
 			'facebook-for-woocommerce': businessExtensions
 				? businessExtensions.includes( 'facebook-for-woocommerce' )
 				: true,
@@ -76,6 +79,7 @@ class BusinessDetails extends Component {
 		};
 
 		this.extensions = [
+			'mailpoet',
 			'facebook-for-woocommerce',
 			'mailchimp-for-woocommerce',
 			'kliken-marketing-for-google',
@@ -136,6 +140,9 @@ class BusinessDetails extends Component {
 			install_jetpack: businessExtensions.includes( 'jetpack' ),
 			install_facebook: businessExtensions.includes(
 				'facebook-for-woocommerce'
+			),
+			install_mailpoet: businessExtensions.includes(
+				'mailpoet'
 			),
 			install_mailchimp: businessExtensions.includes(
 				'mailchimp-for-woocommerce'

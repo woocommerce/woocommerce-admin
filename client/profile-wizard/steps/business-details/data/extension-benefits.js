@@ -5,6 +5,15 @@ import { __ } from '@wordpress/i18n';
 
 export const extensionBenefits = [
 	{
+		slug: 'mailpoet',
+		title: __( 'The default all-in-one solution for WooCommerce email. Powered by MailPoet.', 'woocommerce-admin' ),
+		icon: 'onboarding/mailpoet-logo.png',
+		description: __(
+			'Grow your business by targeting the right people and driving sales with Facebook.',
+			'woocommerce-admin'
+		),
+	},
+	{
 		slug: 'facebook-for-woocommerce',
 		title: __( 'Market on Facebook', 'woocommerce-admin' ),
 		icon: 'onboarding/fb-woocommerce.png',
