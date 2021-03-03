@@ -12,4 +12,5 @@ module.exports = {
 		'expect-playwright',
 	],
 	testMatch: [ '**/*.(test|spec).(j|t)s', '*.(test|spec).(j|t)s' ],
+	extraGlobals: [],
 };

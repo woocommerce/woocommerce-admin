@@ -27,7 +27,7 @@ if ( process.argv.length == 3 ) {
 	}
 }
 
-let jestCommand = 'jest';
+let jestCommand = './node_modules/.bin/jest';
 const jestArgs = [
 	'--maxWorkers=1',
 	'--rootDir=./',
