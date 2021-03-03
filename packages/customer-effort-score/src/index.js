@@ -10,7 +10,7 @@ import { withDispatch } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import CustomerFeedbackModal from './customer-feedback-modal';
+import CustomerFeedbackModal from './customer-feedback-modal/index.tsx';
 
 const noop = () => {};
 
