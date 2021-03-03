@@ -15,21 +15,6 @@ interface Item {
 	isCategory: boolean;
 }
 
-interface Category {
-	matchExpression: string;
-	url: string;
-	order: number;
-	title: string;
-	parent: string;
-	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
-	capability: string;
-	isCategory: boolean;
-	primary?: Array< Item >;
-	favorites?: Array< Item >;
-	plugins?: Array< Item >;
-	secondary?: Array< Item >;
-}
-
 /**
  * Get the full URL if a relative path is passed.
  */
@@ -167,10 +152,26 @@ export const getMatchingItem = ( items: Array< Item > ): Item | null => {
  */
 export const menuIds = [ 'primary', 'favorites', 'plugins', 'secondary' ];
 
+interface Category {
+	id: string;
+	isCategory: boolean;
+	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	migrate: boolean;
+	order: number;
+	parent: string;
+	title: string;
+	primary?: Array< Item >;
+	favorites?: Array< Item >;
+	plugins?: Array< Item >;
+	secondary?: Array< Item >;
+}
+
 /**
  * Default categories for the menu.
  */
-export const defaultCategories = {
+export const defaultCategories: {
+	[ key: string ]: Category;
+} = {
 	woocommerce: {
 		id: 'woocommerce',
 		isCategory: true,
