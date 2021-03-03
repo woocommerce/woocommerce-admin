@@ -6,13 +6,10 @@ import { __ } from '@wordpress/i18n';
 export const extensionBenefits = [
 	{
 		slug: 'mailpoet',
-		title: __(
-			'The default all-in-one solution for WooCommerce email. Powered by MailPoet.',
-			'woocommerce-admin'
-		),
-		icon: 'onboarding/mailpoet-logo.png',
+		title: __( 'Email Marketing by WooCommerce', 'woocommerce-admin' ),
+		icon: 'onboarding/mailpoet.png',
 		description: __(
-			'Grow your business by targeting the right people and driving sales with Facebook.',
+			'The default all-in-one solution for WooCommerce email. Powered by MailPoet.',
 			'woocommerce-admin'
 		),
 	},
