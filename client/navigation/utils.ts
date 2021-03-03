@@ -3,6 +3,8 @@
  */
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
+type MenuId = 'primary' | 'favorites' | 'plugins' | 'secondary';
+
 interface Item {
 	id: string;
 	matchExpression: string;
@@ -10,7 +12,7 @@ interface Item {
 	order: number;
 	title: string;
 	parent: string;
-	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	menuId: MenuId;
 	capability: string;
 	isCategory: boolean;
 }
@@ -67,7 +69,7 @@ export const getMatchScore = (
 };
 
 interface wcNavigation {
-	menuItems: Array< Item >;
+	menuItems: Item[];
 	rootBackLabel: string;
 	rootBackUrl: string;
 	historyPatched: boolean;
@@ -128,7 +130,7 @@ export const addHistoryListener = ( listener: () => void ): ( () => void ) => {
  *
  * @param {Array} items An array of items to match against.
  */
-export const getMatchingItem = ( items: Array< Item > ): Item | null => {
+export const getMatchingItem = ( items: Item[] ): Item | null => {
 	let matchedItem = null;
 	let highestMatchScore = 0;
 
@@ -150,20 +152,25 @@ export const getMatchingItem = ( items: Array< Item > ): Item | null => {
 /**
  * Available menu IDs.
  */
-export const menuIds = [ 'primary', 'favorites', 'plugins', 'secondary' ];
+export const menuIds: MenuId[] = [
+	'primary',
+	'favorites',
+	'plugins',
+	'secondary',
+];
 
 interface Category {
 	id: string;
 	isCategory: boolean;
-	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	menuId: MenuId;
 	migrate: boolean;
 	order: number;
 	parent: string;
 	title: string;
-	primary?: Array< Item >;
-	favorites?: Array< Item >;
-	plugins?: Array< Item >;
-	secondary?: Array< Item >;
+	primary?: Item[];
+	favorites?: Item[];
+	plugins?: Item[];
+	secondary?: Item[];
 }
 
 /**
@@ -189,7 +196,7 @@ export const defaultCategories: {
  * @param {Array} menuItems Array of menu items.
  * @return {Array} Sorted menu items.
  */
-export const sortMenuItems = ( menuItems: Array< Item > ): Array< Item > => {
+export const sortMenuItems = ( menuItems: Item[] ): Item[] => {
 	return menuItems.sort( ( a, b ) => {
 		if ( a.order === b.order ) {
 			return a.title.localeCompare( b.title );
@@ -207,10 +214,10 @@ export const sortMenuItems = ( menuItems: Array< Item > ): Array< Item > => {
  * @return {Object} Mapped menu items and categories.
  */
 export const getMappedItemsCategories = (
-	menuItems: Array< Item >,
+	menuItems: Item[],
 	currentUserCan: ( capability: string ) => boolean | undefined
 ): {
-	items: Array< Item >;
+	items: Item[];
 	categories: Array< Category >;
 } => {
 	const categories: {
@@ -220,7 +227,7 @@ export const getMappedItemsCategories = (
 	const items = sortMenuItems( menuItems ).reduce(
 		(
 			acc: {
-				[ key: string ]: Category | { [ key: string ]: Array< Item > };
+				[ key: string ]: Category | { [ key: string ]: Item[] };
 			},
 			item: Item
 		) => {
