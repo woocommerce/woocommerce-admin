@@ -195,6 +195,20 @@ export const menuIds: MenuId[] = [
 	'secondary',
 ];
 
+interface Category {
+	id: string;
+	isCategory: boolean;
+	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	migrate: boolean;
+	order: number;
+	parent: string;
+	title: string;
+	primary?: Array< Item >;
+	favorites?: Array< Item >;
+	plugins?: Array< Item >;
+	secondary?: Array< Item >;
+}
+
 /**
  * Default categories for the menu.
  */
