@@ -24,7 +24,12 @@ import { setAllPropsToValue } from '../../../../../../lib/collections';
 import { getCountryCode } from '../../../../../../dashboard/utils';
 import { isWCPaySupported } from '../../../../../../task-list/tasks/payments/wcpay';
 
-const generatePluginDescriptionWithLink = ( description, productName ) => {
+const generatePluginDescriptionWithLink = (
+	description,
+	productName,
+	linkURL
+) => {
+	const url = linkURL ?? `https://woocommerce.com/products/${ productName }`;
 	return interpolateComponents( {
 		mixedString: description,
 		components: {
@@ -33,7 +38,7 @@ const generatePluginDescriptionWithLink = ( description, productName ) => {
 					type="external"
 					target="_blank"
 					className="woocommerce-admin__business-details__selective-extensions-bundle__link"
-					href={ `https://woocommerce.com/products/${ productName }` }
+					href={ url }
 				/>
 			),
 		},
@@ -87,6 +92,17 @@ const installableExtensions = [
 	{
 		title: 'Grow your store',
 		plugins: [
+			{
+				slug: 'mailpoet',
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Level up your email marketing with {{link}}Mailpoet{{/link}}',
+						'woocommerce-admin'
+					),
+					'mailpoet',
+					'https://wordpress.org/plugins/mailpoet/'
+				),
+			},
 			{
 				slug: 'facebook-for-woocommerce',
 				description: generatePluginDescriptionWithLink(
