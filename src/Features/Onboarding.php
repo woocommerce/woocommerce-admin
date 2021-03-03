@@ -636,7 +636,7 @@ class Onboarding {
 			return false;
 		}
 
-		return in_array( $current_page['path'], $allowed_paths );
+		return in_array( $current_page['path'], $allowed_paths, true );
 	}
 
 	/**
@@ -720,6 +720,14 @@ class Onboarding {
 		$options[] = 'woocommerce_payubiz_settings';
 		$options[] = 'woocommerce_mollie_payments_settings';
 
+		$recommended_methods = OnboardingTasks::get_recommended_payment_methods();
+		foreach ( $recommended_methods as $method ) {
+			$option = $method['options']['settings'];
+			if ( ! isset( $options[ $option ] ) ) {
+				$options[] = $method['options']['settings'];
+			}
+		}
+
 		return $options;
 	}
 
@@ -767,6 +775,15 @@ class Onboarding {
 				'payu-india'                          => 'payu-india/index.php',
 			)
 		);
+
+		$recommended_methods = OnboardingTasks::get_recommended_payment_methods();
+		foreach ( $recommended_methods as $method ) {
+			$plugin = $method['slug'];
+			if ( ! isset( $onboarding_plugins[ $plugin ] ) ) {
+				$onboarding_plugins[ $plugin ] = $method['path'];
+			}
+		}
+
 		return array_merge( $plugins, $onboarding_plugins );
 	}
 

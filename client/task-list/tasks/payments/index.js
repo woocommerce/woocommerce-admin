@@ -50,7 +50,7 @@ export const setMethodEnabledOption = async (
 	value,
 	{ clearTaskStatusCache, options, updateOptions }
 ) => {
-	const methodOptions = options[ optionName ] || {};
+	const methodOptions = options[ optionName ];
 
 	// Don't update the option if it already has the same value.
 	if ( methodOptions.enabled !== value ) {
@@ -187,7 +187,6 @@ class Payments extends Component {
 		}
 
 		const isEnabled = this.isMethodEnabled( method );
-
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 
 		this.setState( { enabledMethods } );
@@ -543,6 +542,7 @@ export default compose(
 			'woocommerce_razorpay_settings',
 			'woocommerce_mollie_payments_settings',
 			'woocommerce_payubiz_settings',
+			'hello_dolly',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {

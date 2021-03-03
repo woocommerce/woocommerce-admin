@@ -25,7 +25,7 @@ export const Method = ( { installStep, markConfigured, method } ) => {
 						<MethodConnectStep
 							method={ method }
 							onFinish={ () => {
-								markConfigured( 'test-payment-method' );
+								markConfigured( method.key );
 							} }
 						/>
 					),
@@ -36,11 +36,9 @@ export const Method = ( { installStep, markConfigured, method } ) => {
 };
 
 const MethodConnectStep = ( { method, onFinish } ) => {
-	const { key, name } = method;
-
 	const settingsLink = (
 		<Link
-			href={ `${ adminUrl }admin.php?page=wc-settings&tab=${ key }` }
+			href={ `${ adminUrl }admin.php?page=wc-settings&tab=checkout&section=${ method.key }` }
 			target="_blank"
 			type="external"
 		/>
@@ -52,7 +50,7 @@ const MethodConnectStep = ( { method, onFinish } ) => {
 				'Finish configuration in {{settingsLink}}%s settings.{{/settingsLink}}',
 				'woocommerce-admin'
 			),
-			name
+			method.name
 		),
 		components: {
 			settingsLink,
