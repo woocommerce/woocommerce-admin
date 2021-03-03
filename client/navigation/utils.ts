@@ -262,7 +262,11 @@ export const getMappedItemsCategories = (
 				categories[ item.id ] = item;
 			}
 
-			acc[ item.parent ][ item.menuId ].push( item );
+			const menuIdArray = acc[ item.parent ][ item.menuId ];
+
+			if ( menuIdArray ) {
+				menuIdArray.push( item );
+			}
 
 			return acc;
 		},
