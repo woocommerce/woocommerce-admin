@@ -58,9 +58,6 @@ class BusinessDetails extends Component {
 			product_count: profileItems.product_count || '',
 			selling_venues: profileItems.selling_venues || '',
 			revenue: profileItems.revenue || '',
-			mailpoet: businessExtensions
-				? businessExtensions.includes( 'mailpoet' )
-				: true,
 			'facebook-for-woocommerce': businessExtensions
 				? businessExtensions.includes( 'facebook-for-woocommerce' )
 				: true,
@@ -74,6 +71,9 @@ class BusinessDetails extends Component {
 				: false,
 			'kliken-marketing-for-google': businessExtensions
 				? businessExtensions.includes( 'kliken-marketing-for-google' )
+				: true,
+			mailpoet: businessExtensions
+				? businessExtensions.includes( 'mailpoet' )
 				: true,
 			install_extensions: true,
 		};
