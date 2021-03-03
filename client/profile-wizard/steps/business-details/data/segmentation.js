@@ -26,5 +26,9 @@ const SUPPORTED_COUNTRIES = [
 	'JP',
 ];
 export const isSelectiveBundleInstallSegmentation = ( country ) => {
-	return SUPPORTED_COUNTRIES.includes( getCountryCode( country ) );
+	return (
+		SUPPORTED_COUNTRIES.includes( getCountryCode( country ) ) &&
+		window.wcAdminFeatures &&
+		window.wcAdminFeatures[ 'onboarding/selective-feature-bundle-tab' ]
+	);
 };

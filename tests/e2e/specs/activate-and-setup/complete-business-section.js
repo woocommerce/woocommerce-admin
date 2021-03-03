@@ -47,3 +47,24 @@ export async function completeSelectiveBundleInstallBusinessDetailsTab() {
 
 	await page.click( 'button.is-primary' );
 }
+
+export async function unselectAllFeaturesAndContinue() {
+	const expandButtonSelector =
+		'.woocommerce-admin__business-details__selective-extensions-bundle__expand';
+	await page.waitForSelector( expandButtonSelector );
+	await page.click( expandButtonSelector );
+
+	// Confirm that expanding the list shows all the extensions available to install.
+	await waitForElementCount( page, '.components-checkbox-control__input', 8 );
+
+	const allCheckboxes = await page.$$(
+		'.components-checkbox-control__input'
+	);
+
+	// Uncheck all checkboxes, to avoid installing plugins
+	for ( const checkbox of allCheckboxes ) {
+		await setCheckboxToUnchecked( checkbox );
+	}
+
+	await page.click( 'button.is-primary' );
+}

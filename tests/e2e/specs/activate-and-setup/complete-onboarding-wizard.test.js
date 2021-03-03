@@ -13,8 +13,8 @@ import {
 } from './complete-industry-section';
 import { completeProductTypesSection } from './complete-product-types-section';
 import {
-	completeBusinessSection,
 	completeSelectiveBundleInstallBusinessDetailsTab,
+	unselectAllFeaturesAndContinue,
 } from './complete-business-section';
 import { completeThemeSelectionSection } from './complete-theme-selection-section';
 import { completeBenefitsSection } from './complete-benefits-section';
@@ -30,7 +30,10 @@ describe( 'Store owner can complete onboarding wizard', () => {
 	it( 'can complete the store details section', completeStoreDetailsSection );
 	it( 'can complete the industry section', completeIndustrySection );
 	it( 'can complete the product types section', completeProductTypesSection );
-	it( 'can complete the business section', completeBusinessSection );
+	it( 'can complete the business section', async () =>
+		await completeSelectiveBundleInstallBusinessDetailsTab() );
+	it( 'can unselect all business features and contine', async () =>
+		await unselectAllFeaturesAndContinue() );
 	it(
 		'can complete the theme selection section',
 		completeThemeSelectionSection
@@ -41,14 +44,14 @@ describe( 'Store owner can complete onboarding wizard', () => {
 /**
  * A non-US store doesn't get the "install recommended features" checkbox.
  */
-describe( 'Non-US store does not get the install recommended features checkbox', () => {
+describe( 'A spanish store does not get the install recommended features tab', () => {
 	it( 'can log in', StoreOwnerFlow.login );
 	it( 'can start the profile wizard', StoreOwnerFlow.startProfileWizard );
 	it( 'can complete the store details section', async () => {
 		await completeStoreDetailsSection( {
-			countryRegionSubstring: 'australia',
-			countryRegionSelector: 'AU\\:QLD',
-			countryRegion: 'Australia - Queensland',
+			countryRegionSubstring: 'spain',
+			countryRegionSelector: 'ES\\:B',
+			countryRegion: 'Spain - Barcelona',
 		} );
 	} );
 	it( 'can complete the industry section', async () => {
@@ -77,28 +80,7 @@ describe( 'A US store with industry "other" can complete the selective bundle in
 	} );
 
 	it( 'can choose not to install any extensions', async () => {
-		const expandButtonSelector =
-			'.woocommerce-admin__business-details__selective-extensions-bundle__expand';
-		await page.waitForSelector( expandButtonSelector );
-		await page.click( expandButtonSelector );
-
-		// Confirm that expanding the list shows all the extensions available to install.
-		await waitForElementCount(
-			page,
-			'.components-checkbox-control__input',
-			8
-		);
-
-		const allCheckboxes = await page.$$(
-			'.components-checkbox-control__input'
-		);
-
-		// Uncheck all checkboxes, to avoid installing plugins
-		for ( const checkbox of allCheckboxes ) {
-			await setCheckboxToUnchecked( checkbox );
-		}
-
-		await page.click( 'button.is-primary' );
+		await unselectAllFeaturesAndContinue();
 	} );
 
 	it(
