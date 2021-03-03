@@ -198,15 +198,15 @@ export const menuIds: MenuId[] = [
 interface Category {
 	id: string;
 	isCategory: boolean;
-	menuId: 'primary' | 'favorites' | 'plugins' | 'secondary';
+	menuId: MenuId;
 	migrate: boolean;
 	order: number;
 	parent: string;
 	title: string;
-	primary?: Array< Item >;
-	favorites?: Array< Item >;
-	plugins?: Array< Item >;
-	secondary?: Array< Item >;
+	primary?: Item[];
+	favorites?: Item[];
+	plugins?: Item[];
+	secondary?: Item[];
 }
 
 /**
