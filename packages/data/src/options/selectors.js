@@ -9,6 +9,15 @@ export const getOption = ( state, name ) => {
 };
 
 /**
+ * Get all options from state tree.
+ *
+ * @param {Object} state - Reducer state
+ */
+export const getOptions = ( state ) => {
+	return state;
+};
+
+/**
  * Determine if an options request resulted in an error.
  *
  * @param {Object} state - Reducer state

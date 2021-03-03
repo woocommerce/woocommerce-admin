@@ -508,7 +508,7 @@ export default compose(
 	} ),
 	withSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
-		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { getOptions } = select( OPTIONS_STORE_NAME );
 		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
 		const {
 			getActivePlugins,
@@ -518,37 +518,13 @@ export default compose(
 
 		const onboardingStatus = getTasksStatus();
 		const activePlugins = getActivePlugins();
+		const options = getOptions();
 		const profileItems = getProfileItems();
 		const paypalOnboardingStatus = getPaypalOnboardingStatus();
 		const methodContainerMap = getMethodContainerMap();
 		const loadingPaypalStatus =
 			! hasFinishedResolution( 'getPaypalOnboardingStatus' ) &&
 			! paypalOnboardingStatus;
-
-		const optionNames = [
-			'woocommerce_woocommerce_payments_settings',
-			'woocommerce_stripe_settings',
-			'woocommerce-ppcp-settings',
-			'woocommerce_ppcp-gateway_settings',
-			'woocommerce_payfast_settings',
-			'woocommerce_square_credit_card_settings',
-			'woocommerce_klarna_payments_settings',
-			'woocommerce_kco_settings',
-			'wc_square_refresh_tokens',
-			'woocommerce_cod_settings',
-			'woocommerce_bacs_settings',
-			'woocommerce_bacs_accounts',
-			'woocommerce_eway_settings',
-			'woocommerce_razorpay_settings',
-			'woocommerce_mollie_payments_settings',
-			'woocommerce_payubiz_settings',
-			'hello_dolly',
-		];
-
-		const options = optionNames.reduce( ( result, name ) => {
-			result[ name ] = getOption( name );
-			return result;
-		}, {} );
 
 		return {
 			activePlugins,
