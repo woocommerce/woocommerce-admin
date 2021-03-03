@@ -300,13 +300,3 @@ export const getMappedItemsCategories = (
 		categories,
 	};
 };
-
-const assign = (
-	obj: {
-		[ key: string ]: Item;
-	},
-	item: Item
-) => {
-	obj[ item.title ] = item;
-	return obj;
-};
