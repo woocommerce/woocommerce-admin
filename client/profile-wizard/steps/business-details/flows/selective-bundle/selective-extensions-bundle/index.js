@@ -137,7 +137,7 @@ const installableExtensions = [
 				slug: 'creative-mail-by-constant-contact',
 				description: generatePluginDescriptionWithLink(
 					__(
-						'Reach new customers with {{link}}Creative Mail{{/link}}',
+						'Emails made easy with {{link}}Creative Mail{{/link}}',
 						'woocommerce-admin'
 					),
 					'creative-mail-for-woocommerce'
