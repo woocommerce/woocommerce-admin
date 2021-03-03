@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { NavigationMenu, NavigationGroup } from '@woocommerce/experimental';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -21,7 +22,14 @@ export const PrimaryMenu = ( {
 	}
 
 	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
-	const isRootBackVisible = category.id === 'woocommerce' && rootBackUrl;
+
+	const filteredRootBackUrl = applyFilters(
+		'woocommerce_navigation_root_back_url',
+		rootBackUrl
+	);
+
+	const isRootBackVisible =
+		category.id === 'woocommerce' && filteredRootBackUrl;
 
 	return (
 		<NavigationMenu
@@ -37,7 +45,7 @@ export const PrimaryMenu = ( {
 				isRootBackVisible
 					? () => {
 							onBackClick( 'woocommerce' );
-							window.location = rootBackUrl;
+							window.location = filteredRootBackUrl;
 					  }
 					: () => onBackClick( category.id )
 			}
