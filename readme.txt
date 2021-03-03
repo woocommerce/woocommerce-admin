@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Add: Add legacy report items to new navigation #6507
 - Dev: Add initial tests for navigation Menu class #6492
 - Fix: Add check for navigating being enabled. #6462
 - Dev: Add nav favorite button tests #6446
