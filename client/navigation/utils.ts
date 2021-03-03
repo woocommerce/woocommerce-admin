@@ -215,7 +215,7 @@ export const sortMenuItems = ( menuItems: Item[] ): Item[] => {
  */
 export const getMappedItemsCategories = (
 	menuItems: Item[],
-	currentUserCan: ( capability: string ) => boolean | undefined
+	currentUserCan: ( capability: string ) => boolean
 ): {
 	items: {
 		[ key: string ]: Category | { [ key: string ]: Item[] };
@@ -263,6 +263,7 @@ export const getMappedItemsCategories = (
 			}
 
 			acc[ item.parent ][ item.menuId ].push( item );
+
 			return acc;
 		},
 		{}
