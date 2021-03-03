@@ -59,7 +59,7 @@
 		"react-transition-group": "4.4.1"
 	},
 	"peerDependencies": {
-		"lodash": "4.17.21"
+		"lodash": "^4.17.0"
 	},
 	"publishConfig": {
 		"access": "public"
