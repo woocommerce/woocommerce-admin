@@ -42,6 +42,21 @@ export const getFullUrl = ( url: string ): string => {
 };
 
 /**
+ * Get a default regex expression to match the path and provided params.
+ */
+export const getDefaultMatchExpression = ( url: string ): string => {
+	const escapedUrl = url.replace( /[-\/\\^$*+?.()|[\]{}]/gi, '\\$&' );
+	const [ path, args, hash ] = escapedUrl.split( /\\\?|#/ );
+	const hashExpression = hash ? `(.*#${ hash }$)` : '';
+	const argsExpression = args
+		? args.split( '&' ).reduce( ( acc, param ) => {
+				return `${ acc }(?=.*[?|&]${ param }(&|$|#))`;
+		  }, '' )
+		: '';
+	return '^' + path + argsExpression + hashExpression;
+};
+
+/**
  * Get a match score for a menu item given a location.
  */
 export const getMatchScore = (
@@ -66,21 +81,6 @@ export const getMatchScore = (
 	return ( decodeURIComponent( href ).match( regexp ) || [] ).length;
 };
 
-/**
- * Get a default regex expression to match the path and provided params.
- */
-export const getDefaultMatchExpression = ( url: string ): string => {
-	const escapedUrl = url.replace( /[-\/\\^$*+?.()|[\]{}]/gi, '\\$&' );
-	const [ path, args, hash ] = escapedUrl.split( /\\\?|#/ );
-	const hashExpression = hash ? `(.*#${ hash }$)` : '';
-	const argsExpression = args
-		? args.split( '&' ).reduce( ( acc, param ) => {
-				return `${ acc }(?=.*[?|&]${ param }(&|$|#))`;
-		  }, '' )
-		: '';
-	return '^' + path + argsExpression + hashExpression;
-};
-
 interface wcNavigation {
 	menuItems: Array< Item >;
 	rootBackLabel: string;
@@ -100,14 +100,16 @@ declare global {
  * @param {Function} listener Listener to add on history change.
  * @return {Function} Function to remove listeners.
  */
-export const addHistoryListener = ( listener: Function ) => {
+export const addHistoryListener = ( listener: () => void ): ( () => void ) => {
 	// Monkey patch pushState to allow trigger the pushstate event listener.
 	if ( ! window.wcNavigation.historyPatched ) {
 		( ( history ) => {
 			/* global CustomEvent */
 			const pushState = history.pushState;
 			const replaceState = history.replaceState;
-			history.pushState = function ( state: object ) {
+			history.pushState = function ( state: {
+				[ key: string ]: string;
+			} ) {
 				const pushStateEvent = new CustomEvent( 'pushstate', {
 					state,
 				} );
@@ -205,10 +207,13 @@ export const sortMenuItems = ( menuItems: Array< Item > ): Array< Item > => {
  */
 export const getMappedItemsCategories = (
 	menuItems: Array< Item >,
-	currentUserCan: Function | null = null
-) => {
+	currentUserCan: ( capability: string ) => boolean | undefined
+): {
+	items: Array< Item >;
+	categories: Array< Category >;
+} => {
 	const categories: {
-		[ key: string ]: Category | object;
+		[ key: string ]: Category;
 	} = { ...defaultCategories };
 
 	const items = sortMenuItems( menuItems ).reduce(
@@ -255,14 +260,4 @@ export const getMappedItemsCategories = (
 		items,
 		categories,
 	};
-};
-
-const assign = (
-	obj: {
-		[ key: string ]: Item;
-	},
-	item: Item
-) => {
-	obj[ item.title ] = item;
-	return obj;
 };
