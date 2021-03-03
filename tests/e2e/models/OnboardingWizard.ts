@@ -33,7 +33,6 @@ export class OnboardingWizard {
 	}
 
 	async continue() {
-		await this.page.waitForSelector( 'button.is-primary:not(:disabled)' );
 		await this.page.click( 'button.is-primary:text("Continue")' );
 	}
 

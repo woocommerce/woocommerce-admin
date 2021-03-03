@@ -19,9 +19,7 @@ export class BusinessSection {
 	}
 
 	async isDisplayed() {
-		await this.page.waitForSelector(
-			':text("Tell us about your business")'
-		);
+		await this.page.isVisible( ':text("Tell us about your business")' );
 	}
 
 	async selectProductNumber( productLabel: string ) {
@@ -46,11 +44,10 @@ export class BusinessSection {
 	async expandRecommendedBusinessFeatures() {
 		const expandButtonSelector =
 			'.woocommerce-admin__business-details__selective-extensions-bundle__expand';
-		await this.page.waitForSelector( expandButtonSelector );
 		await this.page.click( expandButtonSelector );
 
 		// Confirm that expanding the list shows all the extensions available to install.
-		await this.page.waitForSelector(
+		await this.page.isVisible(
 			':nth-match(.components-checkbox-control__input, 8)'
 		);
 	}

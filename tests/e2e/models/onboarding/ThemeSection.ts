@@ -8,7 +8,7 @@ export class ThemeSection {
 	}
 
 	async isDisplayed() {
-		await this.page.waitForSelector( ':text("Choose a theme")' );
-		await this.page.waitForSelector( ':text("All themes")' );
+		await this.page.isVisible( ':text("Choose a theme")' );
+		await this.page.isVisible( ':text("All themes")' );
 	}
 }

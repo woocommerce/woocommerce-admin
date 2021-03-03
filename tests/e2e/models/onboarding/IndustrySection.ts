@@ -9,7 +9,7 @@ export class IndustrySection {
 
 	async isDisplayed( industryCount?: number ) {
 		await this.page.waitForSelector(
-			':text("In which industry does the store operate?")'
+			'h2:text("In which industry does the store operate?")'
 		);
 
 		if ( industryCount ) {
