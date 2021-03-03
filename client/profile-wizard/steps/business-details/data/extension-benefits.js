@@ -6,7 +6,10 @@ import { __ } from '@wordpress/i18n';
 export const extensionBenefits = [
 	{
 		slug: 'mailpoet',
-		title: __( 'The default all-in-one solution for WooCommerce email. Powered by MailPoet.', 'woocommerce-admin' ),
+		title: __(
+			'The default all-in-one solution for WooCommerce email. Powered by MailPoet.',
+			'woocommerce-admin'
+		),
 		icon: 'onboarding/mailpoet-logo.png',
 		description: __(
 			'Grow your business by targeting the right people and driving sales with Facebook.',
@@ -19,6 +22,18 @@ export const extensionBenefits = [
 		icon: 'onboarding/fb-woocommerce.png',
 		description: __(
 			'Grow your business by targeting the right people and driving sales with Facebook.',
+			'woocommerce-admin'
+		),
+	},
+	{
+		slug: 'kliken-marketing-for-google',
+		title: __(
+			'Drive traffic to your store with Google Ads & Marketing by Kliken',
+			'woocommerce-admin'
+		),
+		icon: 'onboarding/g-shopping.png',
+		description: __(
+			'Get in front of shoppers and drive traffic so you can grow your business with Smart Shopping Campaigns and free listings.',
 			'woocommerce-admin'
 		),
 	},
@@ -40,18 +55,6 @@ export const extensionBenefits = [
 		icon: 'onboarding/creativemail.png',
 		description: __(
 			'Create on-brand store campaigns, fast email promotions and customer retargeting with Creative Mail.',
-			'woocommerce-admin'
-		),
-	},
-	{
-		slug: 'kliken-marketing-for-google',
-		title: __(
-			'Drive traffic to your store with Google Ads & Marketing by Kliken',
-			'woocommerce-admin'
-		),
-		icon: 'onboarding/g-shopping.png',
-		description: __(
-			'Get in front of shoppers and drive traffic so you can grow your business with Smart Shopping Campaigns and free listings.',
 			'woocommerce-admin'
 		),
 	},
