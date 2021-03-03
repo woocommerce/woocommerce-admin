@@ -51,6 +51,16 @@ class Menu {
 	const CSS_CLASSES = 4;
 
 	/**
+	 * Array of usable menu IDs.
+	 */
+	const MENU_IDS = array(
+		'primary',
+		'favorites',
+		'plugins',
+		'secondary',
+	);
+
+	/**
 	 * Store menu items.
 	 *
 	 * @var array
@@ -504,6 +514,54 @@ class Menu {
 	}
 
 	/**
+	 * Add an item or taxonomy.
+	 *
+	 * @param array $menu_item Menu item.
+	 */
+	public function add_item_and_taxonomy( $menu_item ) {
+		if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
+			return;
+		}
+
+		$menu_item[2] = htmlspecialchars_decode( $menu_item[2] );
+
+		// Don't add already added items.
+		$callbacks = self::get_callbacks();
+		if ( array_key_exists( $menu_item[2], $callbacks ) ) {
+			return;
+		}
+
+		// Don't add these Product submenus because they are added elsewhere.
+		if ( in_array( $menu_item[2], array( 'product_importer', 'product_exporter', 'product_attributes' ), true ) ) {
+			return;
+		}
+
+		self::add_plugin_item(
+			array(
+				'title'      => $menu_item[0],
+				'capability' => $menu_item[1],
+				'id'         => sanitize_title( $menu_item[0] ),
+				'url'        => $menu_item[2],
+			)
+		);
+
+		// Determine if migrated items are a taxonomy or post_type. If they are, register them.
+		$parsed_url   = wp_parse_url( $menu_item[2] );
+		$query_string = isset( $parsed_url['query'] ) ? $parsed_url['query'] : false;
+
+		if ( $query_string ) {
+			$query = array();
+			parse_str( $query_string, $query );
+
+			if ( isset( $query['taxonomy'] ) ) {
+				Screen::register_taxonomy( $query['taxonomy'] );
+			} elseif ( isset( $query['post_type'] ) ) {
+				Screen::register_post_type( $query['post_type'] );
+			}
+		}
+	}
+
+	/**
 	 * Migrate any remaining WooCommerce child items.
 	 *
 	 * @param array $menu Menu items.
@@ -516,52 +574,24 @@ class Menu {
 			return $menu;
 		}
 
-		$submenu_items = array_merge(
-			isset( $submenu['woocommerce'] ) ? $submenu['woocommerce'] : array(),
-			isset( $submenu['edit.php?post_type=product'] ) ? $submenu['edit.php?post_type=product'] : array()
-		);
+		$main_items    = isset( $submenu['woocommerce'] ) ? $submenu['woocommerce'] : array();
+		$product_items = isset( $submenu['edit.php?post_type=product'] ) ? $submenu['edit.php?post_type=product'] : array();
 
-		foreach ( $submenu_items as $key => $menu_item ) {
-			if ( in_array( $menu_item[2], CoreMenu::get_excluded_items(), true ) ) {
+		foreach ( $main_items as $key => $menu_item ) {
+			self::add_item_and_taxonomy( $menu_item );
+			// phpcs:disable
+			if ( ! isset( $menu_item[ self::CSS_CLASSES ] ) ) {
+				$submenu['woocommerce'][ $key ][] .= ' hide-if-js';
+			} else if ( strpos( $submenu['woocommerce'][ $key ][ self::CSS_CLASSES ], 'hide-if-js' ) !== false ) {
 				continue;
+			} else {
+				$submenu['woocommerce'][ $key ][ self::CSS_CLASSES ] .= ' hide-if-js';
 			}
+			// phpcs:enable
+		}
 
-			$menu_item[2] = htmlspecialchars_decode( $menu_item[2] );
-
-			// Don't add already added items.
-			$callbacks = self::get_callbacks();
-			if ( array_key_exists( $menu_item[2], $callbacks ) ) {
-				continue;
-			}
-
-			// Don't add these Product submenus because they are added elsewhere.
-			if ( in_array( $menu_item[2], array( 'product_importer', 'product_exporter', 'product_attributes' ), true ) ) {
-				continue;
-			}
-
-			self::add_plugin_item(
-				array(
-					'title'      => $menu_item[0],
-					'capability' => $menu_item[1],
-					'id'         => sanitize_title( $menu_item[0] ),
-					'url'        => $menu_item[2],
-				)
-			);
-
-			// Determine if migrated items are a taxonomy or post_type. If they are, register them.
-			$parsed_url   = wp_parse_url( $menu_item[2] );
-			$query_string = isset( $parsed_url['query'] ) ? $parsed_url['query'] : false;
-
-			if ( $query_string ) {
-				$query = array();
-				parse_str( $query_string, $query );
-
-				if ( isset( $query['taxonomy'] ) ) {
-					Screen::register_taxonomy( $query['taxonomy'] );
-				} elseif ( isset( $query['post_type'] ) ) {
-					Screen::register_post_type( $query['post_type'] );
-				}
-			}
+		foreach ( $product_items as $key => $menu_item ) {
+			self::add_item_and_taxonomy( $menu_item );
 		}
 
 		return $menu;
@@ -675,8 +705,7 @@ class Menu {
 	 * @return array
 	 */
 	public static function get_items() {
-		$menu_items = self::get_prepared_menu_item_data( self::$menu_items );
-		return apply_filters( 'woocommerce_navigation_menu_items', $menu_items );
+		return apply_filters( 'woocommerce_navigation_menu_items', self::$menu_items );
 	}
 
 	/**
@@ -691,7 +720,6 @@ class Menu {
 
 		$menu_item_ids = self::$categories[ $category ];
 
-		
 		$category_menu_items = array();
 		foreach ( $menu_item_ids as $id ) {
 			if ( isset( self::$menu_items[ $id ] ) ) {
@@ -699,7 +727,6 @@ class Menu {
 			}
 		}
 
-		$category_menu_items = self::get_prepared_menu_item_data( $category_menu_items );
 		return apply_filters( 'woocommerce_navigation_menu_category_items', $category_menu_items );
 	}
 
@@ -713,31 +740,43 @@ class Menu {
 	}
 
 	/**
-	 * Gets the menu item data for use in the client.
+	 * Gets the menu item data mapped by category and menu ID.
 	 *
-	 * @param array $menu_items Menu items to prepare.
 	 * @return array
 	 */
-	public static function get_prepared_menu_item_data( $menu_items ) {
-		foreach ( $menu_items as $index => $menu_item ) {
-			if ( isset( $menu_item[ 'capability' ] ) && ! current_user_can( $menu_item[ 'capability' ] ) ) {
-				unset( $menu_items[ $index ] );
-			}
-		}
+	public static function get_mapped_menu_items() {
+		$menu_items   = self::get_items();
+		$mapped_items = array();
 
-		// Sort the menu items.
-		$menuOrder = array(
-			'primary'   => 0,
-			'secondary' => 1,
-			'plugins'   => 2,
-			'favorites' => 3,
-		);
-		$menu      = array_map( function( $item ) use( $menuOrder ) { return $menuOrder[ $item['menuId'] ]; }, $menu_items );
+		// Sort the items by order and title.
 		$order     = array_column( $menu_items, 'order' );
 		$title     = array_column( $menu_items, 'title' );
-		array_multisort( $menu, SORT_ASC, $order, SORT_ASC, $title, SORT_ASC, $menu_items );
+		array_multisort( $order, SORT_ASC, $title, SORT_ASC, $menu_items );
 
-		return $menu_items;
+		foreach ( $menu_items as $id => $menu_item ) {
+			$category_id = $menu_item[ 'parent' ];
+			$menu_id     = $menu_item[ 'menuId' ];
+			if ( ! isset( $mapped_items[ $category_id ] ) ) {
+				$mapped_items[ $category_id ] = array();
+				foreach ( self::MENU_IDS as $available_menu_id ) {
+					$mapped_items[ $category_id ][ $available_menu_id ] = array();
+				}
+			}
+
+			// Incorrect menu ID.
+			if ( ! isset( $mapped_items[ $category_id ][ $menu_id ] ) ) {
+				continue;
+			}
+
+			// Remove the item if the user cannot access it.
+			if ( isset( $menu_item[ 'capability' ] ) && ! current_user_can( $menu_item[ 'capability' ] ) ) {
+				continue;
+			}
+
+			$mapped_items[ $category_id ][ $menu_id ][] = $menu_item;
+		}
+
+		return $mapped_items;
 	}
 
 	/**

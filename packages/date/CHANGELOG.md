@@ -1,6 +1,7 @@
 # Unreleased
 
 -   Update Lodash.
+-   Take into account leap year in calculating `getLastPeriod`.
 
 # 2.1.0
 
