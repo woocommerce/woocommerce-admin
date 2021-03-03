@@ -434,6 +434,8 @@ export default compose(
 		const installedPlugins = getInstalledPlugins();
 		const onboardingStatus = getTasksStatus();
 
+		console.log( profileItems );
+
 		return {
 			activePlugins,
 			countryCode,

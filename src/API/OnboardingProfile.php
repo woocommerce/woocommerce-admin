@@ -240,18 +240,6 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 					'installed',
 				),
 			),
-			'account_type'        => array(
-				'type'              => 'string',
-				'description'       => __( 'Account type used for Jetpack.', 'woocommerce-admin' ),
-				'context'           => array( 'view' ),
-				'readonly'          => true,
-				'validate_callback' => 'rest_validate_request_arg',
-				'enum'              => array(
-					'new',
-					'existing',
-					'google',
-				),
-			),
 			'industry'            => array(
 				'type'              => 'array',
 				'description'       => __( 'Industry.', 'woocommerce-admin' ),
