@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	Button,
 	Card,
@@ -21,6 +21,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { AppIllustration } from '../app-illustration';
 import './style.scss';
 import { setAllPropsToValue } from '../../../../../../lib/collections';
+import { getCountryCode } from '../../../../../../dashboard/utils';
 
 const generatePluginDescriptionWithLink = ( description, productName ) => {
 	return interpolateComponents( {
@@ -51,6 +52,7 @@ const installableExtensions = [
 					),
 					'woocommerce-payments'
 				),
+				acceptedCountryCodes: [ 'US', 'AU', 'CA', 'GB', 'IE', 'NZ' ],
 			},
 			{
 				slug: 'woocommerce-services',
@@ -120,20 +122,6 @@ const installableExtensions = [
 		],
 	},
 ];
-
-const initialValues = installableExtensions.reduce(
-	( acc, curr ) => {
-		const plugins = curr.plugins.reduce( ( pluginAcc, { slug } ) => {
-			return { ...pluginAcc, [ slug ]: true };
-		}, {} );
-
-		return {
-			...acc,
-			...plugins,
-		};
-	},
-	{ install_extensions: true }
-);
 
 const FreeBadge = () => {
 	return (
@@ -239,12 +227,46 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 	);
 };
 
+/**
+ * Returns plugins that either don't have the acceptedCountryCodes param or one defined
+ * that includes the passed in country.
+ */
+const getVisiblePlugins = ( plugins, country ) => {
+	const countryCode = getCountryCode( country );
+	return plugins.filter(
+		( plugin ) =>
+			! plugin.acceptedCountryCodes ||
+			plugin.acceptedCountryCodes.includes( countryCode )
+	);
+};
+
 export const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
+	country,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
-	const [ values, setValues ] = useState( initialValues );
+	const [ values, setValues ] = useState( {} );
+
+	useEffect( () => {
+		const initialValues = installableExtensions.reduce(
+			( acc, curr ) => {
+				const plugins = getVisiblePlugins(
+					curr.plugins,
+					country
+				).reduce( ( pluginAcc, { slug } ) => {
+					return { ...pluginAcc, [ slug ]: true };
+				}, {} );
+
+				return {
+					...acc,
+					...plugins,
+				};
+			},
+			{ install_extensions: true }
+		);
+		setValues( initialValues );
+	}, [ country ] );
 
 	const getCheckboxChangeHandler = ( slug ) => {
 		return ( checked ) => {
@@ -315,16 +337,18 @@ export const SelectiveExtensionsBundle = ( {
 								<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
 									{ title }
 								</div>
-								{ plugins.map( ( { description, slug } ) => (
-									<BundleExtensionCheckbox
-										key={ slug }
-										description={ description }
-										isChecked={ values[ slug ] }
-										onChange={ getCheckboxChangeHandler(
-											slug
-										) }
-									/>
-								) ) }
+								{ getVisiblePlugins( plugins, country ).map(
+									( { description, slug } ) => (
+										<BundleExtensionCheckbox
+											key={ slug }
+											description={ description }
+											isChecked={ values[ slug ] }
+											onChange={ getCheckboxChangeHandler(
+												slug
+											) }
+										/>
+									)
+								) }
 							</div>
 						) ) }
 				</div>
