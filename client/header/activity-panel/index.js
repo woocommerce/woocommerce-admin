@@ -183,7 +183,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 
 		const previewSite = {
 			name: 'previewSite',
-			title: __( 'Preview Site', 'woocommerce-admin' ),
+			title: __( 'Preview site', 'woocommerce-admin' ),
 			icon: <Icon icon={ external } />,
 			visible: query.page === 'wc-admin' && query.task === 'appearance',
 			onClick: () => {
