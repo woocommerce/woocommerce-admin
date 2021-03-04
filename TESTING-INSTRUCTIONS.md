@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Update contrast and hover / active colors for analytics dropdown buttons #6504
+
+1. Go to analytics.
+2. Verifty the dropdown buttons (date range or filters) are now higher contrast.
+3. Verifty the text and chevron in the dropdown button turn blue on hover, and while active.
+
 ### Fix double prefixing of navigation URLs #6460
 
 1. Register a navigation menu item with a full URL or admin link.

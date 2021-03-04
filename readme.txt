@@ -92,6 +92,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Missing i18n in Welcome modal. #6456
 - Fix: Restore visual styles back to Analytics tabs. #5913
 - Add: Add a "rather not say" option to revenue in the profile wizard. #6475
+- Fix: Update contrast and hover / active colors for analytics dropdown buttons #6504
 
 == 2.1.0 ==
 
