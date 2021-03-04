@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+### Fix double prefixing of navigation URLs #6460
+
+1. Register a navigation menu item with a full URL or admin link.
+```
+	\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_item(
+		array(
+			'id'         => 'my-page,
+			'title'      => 'My Page,
+			'capability' => 'manage_woocommerce',
+			'url'        => admin_url( 'my-page '),
+		)
+	);
+```
+2. Enable the navigation.
+3. Check that the menu item is marked active when visiting that page.
+4. Make sure old menu items are still correctly marked active.
+
+### Fix summary number style regression on analytics reports #5913
+
+- Go to Analytics
+- See that the active (selected) tab is white, with a highlight above the tab.
+- See that inactive tabs are a lighter shade of grey.
+
+### Update payment card style on mobile #6413
+
+- Using a small size screen, go to your WooCommerce -> Home -> Choose payment methods.
+- See that the text descriptions for payment methods have a margin between them and the edge of the screen.
+
 ### Navigation: Correct error thrown when enabling #6462
 
 1. Create a fresh store
@@ -23,11 +51,24 @@
 
 ### Deprecate Onboarding::has_woocommerce_support #6401
 
-- Clear existing site transients. For example, by using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and pressing the "Delete all transients" button it provides.
-- Add any new theme to WordPress but **DO NOT** activate it.
-- Initialize the Onboarding Wizard.
-- See that the Themes step loads fast 😎 
-- See that the new theme is listed in the Themes step.
+-   Clear existing site transients. For example, by using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and pressing the "Delete all transients" button it provides.
+-   Add any new theme to WordPress but **DO NOT** activate it.
+-   Initialize the Onboarding Wizard.
+-   See that the Themes step loads fast 😎
+-   See that the new theme is listed in the Themes step.
+
+### Set up tasks can now navigate back to the home screen #6397
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen
+2. Going to the homescreen redirects to the profile setup wizard, click "Skip setup store details" to return to the home screen
+3. On the home screen you will see the setup task list. It has the heading "Get ready to start selling"
+
+For each task in that list apart from "Store details":
+
+1. Click the item
+2. You should land on the setup task page
+3. A title in the top left should reflect the original task name from the task list. e.g. "Add tax rates"
+4. Clicking the chevron to the left of the title should take you back to the home screen
 
 ## 2.1.0
 
@@ -70,9 +111,9 @@ wp option delete 'woocommerce_merchant_email_notifications';
 ```
 
 -   Run the cron job `wc_admin_daily` (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
-    - Go to **Tools > Cron Events** and scroll down to the `wc_admin_daily`.
-    -  Hover over the item and click `Edit` change the **Next Run** to `Now` and click `Update Event`.
-    - It will redirect you to the cron event list, and `wc_admin_daily` should be near the top, if you wait 10 seconds and refresh the page the `wc_admin_daily` should be near the bottom again, this means it has been run, and scheduled again to run tomorrow.
+    -   Go to **Tools > Cron Events** and scroll down to the `wc_admin_daily`.
+    -   Hover over the item and click `Edit` change the **Next Run** to `Now` and click `Update Event`.
+    -   It will redirect you to the cron event list, and `wc_admin_daily` should be near the top, if you wait 10 seconds and refresh the page the `wc_admin_daily` should be near the bottom again, this means it has been run, and scheduled again to run tomorrow.
 -   You should have not received an email note.
 -   Verify the note `wc-admin-add-first-product-note` was added in the DB and its `status` is `unactioned`. You can use a statement like this:
 
