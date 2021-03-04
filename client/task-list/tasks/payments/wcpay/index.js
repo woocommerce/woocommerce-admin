@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import WCPayUsageModal from './wcpay-usage-modal';
 import WCPay from './wcpay';
 

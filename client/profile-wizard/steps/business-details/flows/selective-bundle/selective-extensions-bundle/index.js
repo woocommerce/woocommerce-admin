@@ -238,6 +238,10 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 /**
  * Returns plugins that either don't have the acceptedCountryCodes param or one defined
  * that includes the passed in country.
+ *
+ * @param {Array}  plugins  list of plugins
+ * @param {string} country  Woo store country
+ * @param {Array}  industry List of selected industries
  */
 const getVisiblePlugins = ( plugins, country, industry ) => {
 	const countryCode = getCountryCode( country );
