@@ -32,7 +32,6 @@ async function fillOutDropdowns() {
 		);
 		return inputs[ 1 ].value;
 	} );
-	console.log( value );
 	if ( value !== config.get( 'onboardingwizard.sellingelsewhere' ) ) {
 		await selectControls[ 1 ].click();
 		await page.waitForSelector( '.woocommerce-select-control__listbox' );
