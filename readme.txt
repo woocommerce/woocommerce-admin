@@ -105,6 +105,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Feature: Increase target audience for business feature step. #6508
 - Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
 - Dev: Store profiler - Added MailPoet to Business Details step  #6503
+- Dev: Store profiler - Added MailPoet to new Business Details step  #6515
 
 == 2.1.0 ==
 
