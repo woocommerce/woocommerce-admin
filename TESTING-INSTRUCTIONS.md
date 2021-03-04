@@ -13,7 +13,7 @@
 1. On a new site, finish the store setup wizard, but don't hide the task list.
 2. Navigate to a WooCommerce Admin Analytics page.
 3. Note the menu is under the "Analytics" level.
-4. Click the "Store Setup" link.
+4. Click the "Store Setup" link in the top right hand corner.
 5. Note that the navigation level automatically is updated to the root level where the "Home" item is marked active.
 
 ### Fix double prefixing of navigation URLs #6460
