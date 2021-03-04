@@ -172,7 +172,7 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 6. Check that the users are able to see the new navigation menu.
 7. Click on various tabs in the activity panel.
 8. Make sure the tabs work as expected.
-9. Make sure that users without the `manage_woocommerce` permission are not able to see the "Store Setup" tab.
+9. Make sure that users without the `manage_woocommerce` permission are not able to see the "Finish setup" tab.
 10. With a user that can `manage_woocommerce`, navigate to the homepage via URL and make sure the homescreen is shown. `/wp-admin/admin.php?page=wc-admin`
 11. With a user that cannot `view_woocommerce_reports` make sure navigating to an analytics report does not work. `/wp-admin/admin.php?page=wc-admin&path=/analytics/overview`
 

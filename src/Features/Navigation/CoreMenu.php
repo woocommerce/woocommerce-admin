@@ -241,7 +241,7 @@ class CoreMenu {
 					'title'      => __( 'Utilities', 'woocommerce-admin' ),
 					'capability' => 'manage_woocommerce',
 					'id'         => 'tools-utilities',
-					'url'        => 'admin.php?page=wc-status&tab=tools',
+					'url'        => 'admin.php?page=wc-status&tab=utilities',
 					'order'      => 30,
 				),
 				array(
@@ -254,7 +254,7 @@ class CoreMenu {
 				),
 				array(
 					'parent'     => 'woocommerce-tools',
-					'title'      => __( 'Scheduled Actions', 'woocommerce-admin' ),
+					'title'      => __( 'Scheduled actions', 'woocommerce-admin' ),
 					'capability' => 'manage_woocommerce',
 					'id'         => 'tools-scheduled_actions',
 					'url'        => 'admin.php?page=wc-status&tab=action-scheduler',
