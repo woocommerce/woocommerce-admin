@@ -326,7 +326,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	protected function include_extended_info( &$orders_data, $query_args ) {
 		$mapped_orders    = $this->map_array_by_key( $orders_data, 'order_id' );
 		$related_orders   = $this->get_orders_with_parent_id( $mapped_orders );
-		$products         = $this->get_products_by_order_ids( array_keys( $mapped_orders ) );
+		$order_ids        = array_merge( array_keys( $mapped_orders ), array_keys( $related_orders ) );
+		$products         = $this->get_products_by_order_ids( $order_ids );
 		$coupons          = $this->get_coupons_by_order_ids( array_keys( $mapped_orders ) );
 		$customers        = $this->get_customers_by_orders( $orders_data );
 		$mapped_customers = $this->map_array_by_key( $customers, 'customer_id' );
