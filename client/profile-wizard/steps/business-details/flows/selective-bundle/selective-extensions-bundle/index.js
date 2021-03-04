@@ -22,6 +22,7 @@ import { AppIllustration } from '../app-illustration';
 import './style.scss';
 import { setAllPropsToValue } from '../../../../../../lib/collections';
 import { getCountryCode } from '../../../../../../dashboard/utils';
+import { isWCPaySupported } from '../../../../../../task-list/tasks/payments/wcpay';
 
 const generatePluginDescriptionWithLink = ( description, productName ) => {
 	return interpolateComponents( {
@@ -52,7 +53,14 @@ const installableExtensions = [
 					),
 					'woocommerce-payments'
 				),
-				acceptedCountryCodes: [ 'US', 'AU', 'CA', 'GB', 'IE', 'NZ' ],
+				isVisible: ( countryCode, industry ) => {
+					const hasCbdIndustry = ( industry || [] ).some(
+						( { slug } ) => {
+							return slug === 'cbd-other-hemp-derived-products';
+						}
+					);
+					return isWCPaySupported( countryCode ) && ! hasCbdIndustry;
+				},
 			},
 			{
 				slug: 'woocommerce-services',
@@ -231,12 +239,12 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
  * Returns plugins that either don't have the acceptedCountryCodes param or one defined
  * that includes the passed in country.
  */
-const getVisiblePlugins = ( plugins, country ) => {
+const getVisiblePlugins = ( plugins, country, industry ) => {
 	const countryCode = getCountryCode( country );
+
 	return plugins.filter(
 		( plugin ) =>
-			! plugin.acceptedCountryCodes ||
-			plugin.acceptedCountryCodes.includes( countryCode )
+			! plugin.isVisible || plugin.isVisible( countryCode, industry )
 	);
 };
 
@@ -244,6 +252,7 @@ export const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
 	country,
+	industry,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( {} );
@@ -253,7 +262,8 @@ export const SelectiveExtensionsBundle = ( {
 			( acc, curr ) => {
 				const plugins = getVisiblePlugins(
 					curr.plugins,
-					country
+					country,
+					industry
 				).reduce( ( pluginAcc, { slug } ) => {
 					return { ...pluginAcc, [ slug ]: true };
 				}, {} );
@@ -337,18 +347,20 @@ export const SelectiveExtensionsBundle = ( {
 								<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
 									{ title }
 								</div>
-								{ getVisiblePlugins( plugins, country ).map(
-									( { description, slug } ) => (
-										<BundleExtensionCheckbox
-											key={ slug }
-											description={ description }
-											isChecked={ values[ slug ] }
-											onChange={ getCheckboxChangeHandler(
-												slug
-											) }
-										/>
-									)
-								) }
+								{ getVisiblePlugins(
+									plugins,
+									country,
+									industry
+								).map( ( { description, slug } ) => (
+									<BundleExtensionCheckbox
+										key={ slug }
+										description={ description }
+										isChecked={ values[ slug ] }
+										onChange={ getCheckboxChangeHandler(
+											slug
+										) }
+									/>
+								) ) }
 							</div>
 						) ) }
 				</div>

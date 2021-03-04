@@ -17,6 +17,6 @@
 		"shipping-label-banner": true,
 		"store-alerts": true,
 		"wcpay": true,
-		"onboarding/selective-feature-bundle-tab": true
+		"wcpay/support-international-countries": true
 	}
 }

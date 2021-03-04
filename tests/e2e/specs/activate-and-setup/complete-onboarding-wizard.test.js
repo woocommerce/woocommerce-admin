@@ -13,13 +13,12 @@ import {
 } from './complete-industry-section';
 import { completeProductTypesSection } from './complete-product-types-section';
 import {
+	completeBusinessSection,
 	completeSelectiveBundleInstallBusinessDetailsTab,
 	unselectAllFeaturesAndContinue,
 } from './complete-business-section';
 import { completeThemeSelectionSection } from './complete-theme-selection-section';
 import { completeBenefitsSection } from './complete-benefits-section';
-import { waitForElementCount } from '../../utils/lib';
-import { getElementProperty, setCheckboxToUnchecked } from './utils';
 
 /**
  * This tests a default, happy path for the onboarding wizard.
@@ -38,13 +37,12 @@ describe( 'Store owner can complete onboarding wizard', () => {
 		'can complete the theme selection section',
 		completeThemeSelectionSection
 	);
-	it( 'can complete the benefits section', completeBenefitsSection );
 } );
 
 /**
  * A non-US store doesn't get the "install recommended features" checkbox.
  */
-describe( 'A spanish store does not get the install recommended features tab', () => {
+describe( 'A spanish store does not get the install recommended features tab, but sees the benefits section', () => {
 	it( 'can log in', StoreOwnerFlow.login );
 	it( 'can start the profile wizard', StoreOwnerFlow.startProfileWizard );
 	it( 'can complete the store details section', async () => {
@@ -65,12 +63,26 @@ describe( 'A spanish store does not get the install recommended features tab', (
 
 		expect( installFeaturesCheckbox ).toBe( null );
 	} );
+	it( 'can complete the business section', async () =>
+		await completeBusinessSection() );
+	it(
+		'can complete the theme selection section',
+		completeThemeSelectionSection
+	);
+	it( 'can complete the benefits section', completeBenefitsSection );
 } );
 
-describe( 'A US store with industry "other" can complete the selective bundle install a/b test. ', () => {
+describe( 'A japanese store can complete the selective bundle install but does not include WCPay. ', () => {
 	it( 'can log in', StoreOwnerFlow.login );
 	it( 'can start the profile wizard', StoreOwnerFlow.startProfileWizard );
-	it( 'can complete the store details section', completeStoreDetailsSection );
+	it( 'can complete the store details section', async () => {
+		await completeStoreDetailsSection( {
+			countryRegionSubstring: 'japan',
+			countryRegionSelector: 'JP\\:JP01',
+			countryRegion: 'Japan — Hokkaido',
+		} );
+	} );
+	// JP:JP01
 	it( 'can choose the "Other" industry', async () => {
 		await chooseIndustries( [ 'Other' ] );
 	} );
@@ -80,7 +92,7 @@ describe( 'A US store with industry "other" can complete the selective bundle in
 	} );
 
 	it( 'can choose not to install any extensions', async () => {
-		await unselectAllFeaturesAndContinue();
+		await unselectAllFeaturesAndContinue( false );
 	} );
 
 	it(
