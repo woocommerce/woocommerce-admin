@@ -6,16 +6,14 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
 	Button,
+	Card,
+	CardBody,
+	CardFooter,
 	TabPanel,
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import {
-	Card,
-	SelectControl,
-	Form,
-	TextControl,
-} from '@woocommerce/components';
+import { SelectControl, Form, TextControl } from '@woocommerce/components';
 import {
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
@@ -106,7 +104,7 @@ class BusinessDetails extends Component {
 				],
 		} );
 
-		const _updates = {
+		const updates = {
 			other_platform: otherPlatform,
 			other_platform_name:
 				otherPlatform === 'other' ? otherPlatformName : '',
@@ -117,9 +115,9 @@ class BusinessDetails extends Component {
 		};
 
 		// Remove possible empty values like `revenue` and `other_platform`.
-		const updates = Object.entries( _updates ).filter( ( { value } ) => {
-			return value !== '';
-		} );
+		Object.keys( updates ).forEach(
+			( key ) => updates[ key ] === '' && delete updates[ key ]
+		);
 
 		const promises = [
 			updateProfileItems( updates ).catch( () => {
@@ -148,7 +146,7 @@ class BusinessDetails extends Component {
 				createNotice(
 					'error',
 					__(
-						'There was a problem updating your business details.',
+						'There was a problem updating your business details',
 						'woocommerce-admin'
 					)
 				);
@@ -262,8 +260,9 @@ class BusinessDetails extends Component {
 								</Text>
 							</div>
 							<Card>
-								<>
+								<CardBody>
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'How many products do you plan to display?',
 											'woocommerce-admin'
@@ -274,6 +273,7 @@ class BusinessDetails extends Component {
 									/>
 
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'Currently selling elsewhere?',
 											'woocommerce-admin'
@@ -290,6 +290,7 @@ class BusinessDetails extends Component {
 										'other-woocommerce',
 									].includes( values.selling_venues ) && (
 										<SelectControl
+											excludeSelectedOptions={ false }
 											label={ __(
 												"What's your current annual revenue?",
 												'woocommerce-admin'
@@ -311,6 +312,9 @@ class BusinessDetails extends Component {
 										<>
 											<div className="business-competitors">
 												<SelectControl
+													excludeSelectedOptions={
+														false
+													}
 													label={ __(
 														'Which platform is the store using?',
 														'woocommerce-admin'
@@ -337,36 +341,35 @@ class BusinessDetails extends Component {
 											</div>
 										</>
 									) }
-
-									<div className="woocommerce-profile-wizard__card-actions">
-										<Button
-											isPrimary
-											onClick={ handleSubmit }
-											disabled={ ! isValidForm }
-											isBusy={ isInstallingActivating }
-										>
-											{ ! hasInstallActivateError
-												? __(
-														'Continue',
-														'woocommerce-admin'
-												  )
-												: __(
-														'Retry',
-														'woocommerce-admin'
-												  ) }
-										</Button>
-										{ hasInstallActivateError && (
-											<Button
-												onClick={ () => goToNextStep() }
-											>
-												{ __(
-													'Continue without installing',
+								</CardBody>
+								<CardFooter isBorderless justify="center">
+									<Button
+										isPrimary
+										onClick={ handleSubmit }
+										disabled={ ! isValidForm }
+										isBusy={ isInstallingActivating }
+									>
+										{ ! hasInstallActivateError
+											? __(
+													'Continue',
 													'woocommerce-admin'
-												) }
-											</Button>
-										) }
-									</div>
-								</>
+											  )
+											: __(
+													'Retry',
+													'woocommerce-admin'
+											  ) }
+									</Button>
+									{ hasInstallActivateError && (
+										<Button
+											onClick={ () => goToNextStep() }
+										>
+											{ __(
+												'Continue without installing',
+												'woocommerce-admin'
+											) }
+										</Button>
+									) }
+								</CardFooter>
 							</Card>
 						</>
 					);
@@ -410,6 +413,8 @@ class BusinessDetails extends Component {
 	}
 
 	render() {
+		const { initialValues } = this.props;
+
 		// There is a hack here to help us manage the selected tab programatically.
 		// We set the tab name "current-tab". when its the one we want selected. This tricks
 		// the logic in the TabPanel and allows us to switch which tab has the name "current-tab"
@@ -420,7 +425,10 @@ class BusinessDetails extends Component {
 				initialTabName="current-tab"
 				onSelect={ ( tabName ) => {
 					if ( this.state.currentTab !== tabName ) {
-						this.setState( { currentTab: tabName } );
+						this.setState( {
+							currentTab: tabName,
+							savedValues: initialValues,
+						} );
 					}
 				} }
 				tabs={ [

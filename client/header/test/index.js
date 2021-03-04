@@ -19,6 +19,17 @@ jest.mock( '@woocommerce/data', () => ( {
 	} ),
 } ) );
 
+jest.mock( '@wordpress/data', () => {
+	// Require the original module to not be mocked...
+	const originalModule = jest.requireActual( '@wordpress/data' );
+
+	return {
+		__esModule: true, // Use it when dealing with esModules
+		...originalModule,
+		useSelect: jest.fn().mockReturnValue( {} ),
+	};
+} );
+
 /**
  * External dependencies
  */
@@ -29,10 +40,19 @@ import { render, fireEvent } from '@testing-library/react';
  */
 import { Header } from '../index.js';
 
+global.window.wcNavigation = {};
+
 const encodedBreadcrumb = [
 	[ 'admin.php?page=wc-settings', 'Settings' ],
 	'Accounts &amp; Privacy',
 ];
+
+const stubLocation = ( location ) => {
+	jest.spyOn( window, 'location', 'get' ).mockReturnValue( {
+		...window.location,
+		...location,
+	} );
+};
 
 describe( 'Header', () => {
 	beforeEach( () => {
@@ -51,6 +71,22 @@ describe( 'Header', () => {
 
 	afterEach( () => {
 		window.requestAnimationFrame.mockRestore();
+	} );
+
+	it( 'should render a back button and a custom title on task list pages', () => {
+		stubLocation( { href: 'http://localhost?task=payments' } );
+
+		const { queryByTestId, queryByText } = render(
+			<Header sections={ encodedBreadcrumb } isEmbedded={ false } />
+		);
+
+		expect(
+			queryByTestId( 'header-back-button' )
+		).not.toBeEmptyDOMElement();
+
+		expect(
+			queryByText( 'Choose payment methods' )
+		).not.toBeEmptyDOMElement();
 	} );
 
 	it( 'should render decoded breadcrumb name', () => {

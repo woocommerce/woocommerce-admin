@@ -49,6 +49,15 @@
 }
 
 .woocommerce-inbox-message__content {
+	.woocommerce-inbox-message__unread-indicator {
+		height: 8px;
+		width: 8px;
+		background-color: var(--wp-admin-theme-color);
+		border-radius: 100px;
+		display: inline-block;
+		margin-right: $gap-smaller;
+	}
+
 	.woocommerce-inbox-message__title {
 		color: $gray-900;
 		@include font-size( 16 );
@@ -162,16 +171,6 @@
 	.is-placeholder & {
 		padding: 10px 24px;
 		display: flow-root;
-	}
-}
-
-.woocommerce-inbox-message__image {
-	.banner-block {
-		.is-placeholder & {
-			@include placeholder();
-			width: 100%;
-			height: 120px;
-		}
 	}
 }
 

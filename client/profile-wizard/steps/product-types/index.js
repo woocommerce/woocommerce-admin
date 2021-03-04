@@ -73,7 +73,7 @@ export class ProductTypes extends Component {
 				createNotice(
 					'error',
 					__(
-						'There was a problem updating your product types.',
+						'There was a problem updating your product types',
 						'woocommerce-admin'
 					)
 				)
@@ -161,6 +161,7 @@ export class ProductTypes extends Component {
 						<Button
 							isPrimary
 							onClick={ this.onContinue }
+							isBusy={ isProfileItemsRequesting }
 							disabled={
 								! selected.length || isProfileItemsRequesting
 							}

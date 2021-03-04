@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { EmptyContent, Section } from '@woocommerce/components';
 import {
@@ -74,17 +74,15 @@ const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 const InboxPanel = ( props ) => {
 	const { isError, isResolving, isBatchUpdating, notes } = props;
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
-	const lastRead = userPrefs.activity_panel_inbox_last_read;
+	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
 
 	useEffect( () => {
 		const mountTime = Date.now();
 
-		return () => {
-			const userDataFields = {
-				activity_panel_inbox_last_read: mountTime,
-			};
-			updateUserPreferences( userDataFields );
+		const userDataFields = {
+			activity_panel_inbox_last_read: mountTime,
 		};
+		updateUserPreferences( userDataFields );
 	}, [] );
 
 	if ( isError ) {
@@ -135,6 +133,29 @@ const InboxPanel = ( props ) => {
 	);
 };
 
+const INBOX_QUERY = {
+	page: 1,
+	per_page: QUERY_DEFAULTS.pageSize,
+	status: 'unactioned',
+	type: QUERY_DEFAULTS.noteTypes,
+	orderby: 'date',
+	order: 'desc',
+	_fields: [
+		'id',
+		'name',
+		'title',
+		'content',
+		'type',
+		'status',
+		'actions',
+		'date_created',
+		'date_created_gmt',
+		'layout',
+		'image',
+		'is_deleted',
+	],
+};
+
 export default compose(
 	withSelect( ( select ) => {
 		const {
@@ -143,33 +164,11 @@ export default compose(
 			isResolving,
 			isNotesRequesting,
 		} = select( NOTES_STORE_NAME );
-		const inboxQuery = {
-			page: 1,
-			per_page: QUERY_DEFAULTS.pageSize,
-			status: 'unactioned',
-			type: QUERY_DEFAULTS.noteTypes,
-			orderby: 'date',
-			order: 'desc',
-			_fields: [
-				'id',
-				'name',
-				'title',
-				'content',
-				'type',
-				'status',
-				'actions',
-				'date_created',
-				'date_created_gmt',
-				'layout',
-				'image',
-				'is_deleted',
-			],
-		};
 
 		return {
-			notes: getNotes( inboxQuery ),
-			isError: Boolean( getNotesError( 'getNotes', [ inboxQuery ] ) ),
-			isResolving: isResolving( 'getNotes', [ inboxQuery ] ),
+			notes: getNotes( INBOX_QUERY ),
+			isError: Boolean( getNotesError( 'getNotes', [ INBOX_QUERY ] ) ),
+			isResolving: isResolving( 'getNotes', [ INBOX_QUERY ] ),
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 		};
 	} )

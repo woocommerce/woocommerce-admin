@@ -32,11 +32,18 @@
 				height: 32px;
 			}
 
-			.woocommerce-list__item-before svg {
+			.woocommerce-list__item-before .woocommerce-task__icon svg {
 				fill: $white;
 				position: relative;
 				top: 4px;
 				left: 5px;
+			}
+
+			.woocommerce-list__item-text {
+				.woocommerce-pill {
+					padding: 1px $gap-smaller;
+					margin-left: $gap-smaller;
+				}
 			}
 
 			.components-popover__content {
@@ -127,12 +134,12 @@
 			padding: 0;
 			align-items: center;
 			display: flex;
-			top: -12px;
+			top: -11px;
 		}
 
 		.components-text-control__input {
 			position: relative;
-			top: -12px;
+			top: -11px;
 		}
 
 		.text-control-with-affixes__prefix {
@@ -201,6 +208,7 @@
 	align-items: center;
 	position: relative;
 	overflow: hidden;
+	box-shadow: $muriel-box-shadow-1dp;
 
 	.woocommerce-task-payment__recommended-ribbon {
 		position: absolute;
@@ -236,8 +244,8 @@
 		}
 	}
 
-	.components-card__header {
-		margin-right: $gap-larger;
+	.components-card__media {
+		margin: $gap-large $gap-larger;
 
 		img {
 			max-width: 100px;
@@ -267,8 +275,14 @@
 		}
 	}
 
+	.components-card__body {
+		padding: $gap-large 0;
+		flex: 1;
+	}
+
 	.components-card__footer {
 		margin-left: auto;
+		width: auto;
 
 		.components-button.is-button {
 			margin: 0;
@@ -286,16 +300,15 @@
 			display: none;
 		}
 
-		.components-card__header {
+		.components-card__media {
 			order: 1;
 			margin-right: auto;
-			margin-bottom: $gap-large;
 		}
 
 		.components-card__footer {
 			position: absolute;
 			right: $gap-larger;
-			top: $gap-large;
+			top: $gap-smaller;
 
 			.components-form-toggle {
 				margin-top: $gap-smallest;
@@ -304,7 +317,9 @@
 
 		.components-card__body {
 			order: 3;
-			margin-top: $gap;
+			margin-right: auto;
+			margin-left: $gap-larger;
+			padding-top: $gap-smaller;
 		}
 	}
 }
@@ -336,8 +351,10 @@
 }
 
 .woocommerce-task-dashboard__container {
-	button.components-button.is-primary {
-		margin: 0 8px 0 0;
+	.woocommerce-stepper {
+		button.components-button.is-primary {
+			margin: 0 8px 0 0;
+		}
 	}
 
 	button.components-button.is-link {

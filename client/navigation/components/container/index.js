@@ -1,64 +1,46 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
+import classnames from 'classnames';
 import { compose } from '@wordpress/compose';
-import {
-	Navigation,
-	NavigationBackButton,
-	NavigationMenu,
-	NavigationGroup,
-} from '@woocommerce/experimental';
-import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
+import { Navigation } from '@woocommerce/experimental';
+import { NAVIGATION_STORE_NAME, useUser } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { addHistoryListener, getMatchingItem } from '../../utils';
+import {
+	addHistoryListener,
+	getMappedItemsCategories,
+	getMatchingItem,
+} from '../../utils';
 import Header from '../header';
-import Item from '../../components/Item';
+import { PrimaryMenu } from './primary-menu';
+import { SecondaryMenu } from './secondary-menu';
 
 const Container = ( { menuItems } ) => {
 	useEffect( () => {
 		// Collapse the original WP Menu.
+		document.documentElement.classList.remove( 'wp-toolbar' );
+		document.body.classList.add( 'has-woocommerce-navigation' );
 		const adminMenu = document.getElementById( 'adminmenumain' );
+
+		if ( ! adminMenu ) {
+			return;
+		}
+
 		adminMenu.classList.add( 'folded' );
 	}, [] );
-
-	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
-
-	const parentCategory = {
-		capability: 'manage_woocommerce',
-		id: 'woocommerce',
-		isCategory: true,
-		menuId: 'primary',
-		migrate: true,
-		order: 10,
-		parent: '',
-		title: 'WooCommerce',
-	};
-	const categoriesMap = menuItems.reduce(
-		( acc, item ) => {
-			if ( item.isCategory ) {
-				return { ...acc, [ item.id ]: item };
-			}
-			return acc;
-		},
-		{
-			woocommerce: parentCategory,
-		}
-	);
-	const categories = Object.values( categoriesMap );
 
 	const [ activeItem, setActiveItem ] = useState( 'woocommerce-home' );
 	const [ activeLevel, setActiveLevel ] = useState( 'woocommerce' );
 
 	useEffect( () => {
 		const initialMatchedItem = getMatchingItem( menuItems );
-		if ( initialMatchedItem ) {
+		if ( initialMatchedItem && activeItem !== initialMatchedItem ) {
 			setActiveItem( initialMatchedItem );
 			setActiveLevel( initialMatchedItem.parent );
 		}
@@ -75,49 +57,29 @@ const Container = ( { menuItems } ) => {
 		return removeListener;
 	}, [ menuItems ] );
 
-	const getMenuItemsByCategory = ( items ) => {
-		return items.reduce( ( acc, item ) => {
-			// Set up the category if it doesn't yet exist.
-			if ( ! acc[ item.parent ] ) {
-				acc[ item.parent ] = {};
-			}
+	const { currentUserCan } = useUser();
 
-			// Check if parent category is in the same menu.
-			if (
-				item.parent !== 'woocommerce' &&
-				categoriesMap[ item.parent ] &&
-				categoriesMap[ item.parent ].menuId !== item.menuId
-			) {
-				return acc;
-			}
-
-			// Create the menu object if it doesn't exist in this category.
-			if ( ! acc[ item.parent ][ item.menuId ] ) {
-				acc[ item.parent ][ item.menuId ] = [];
-			}
-
-			acc[ item.parent ][ item.menuId ].push( item );
-			return acc;
-		}, {} );
-	};
-
-	const categorizedItems = useMemo(
-		() => getMenuItemsByCategory( menuItems ),
-		[ menuItems ]
+	const { categories, items } = useMemo(
+		() => getMappedItemsCategories( menuItems, currentUserCan ),
+		[ menuItems, currentUserCan ]
 	);
 
 	const navDomRef = useRef( null );
 
-	const trackBackClick = ( id ) => {
+	const onBackClick = ( id ) => {
 		recordEvent( 'navigation_back_click', {
 			category: id,
 		} );
 	};
 
-	const isRootBackVisible = activeLevel === 'woocommerce' && rootBackUrl;
+	const isRoot = activeLevel === 'woocommerce';
+
+	const classes = classnames( 'woocommerce-navigation', {
+		'is-root': isRoot,
+	} );
 
 	return (
-		<div className="woocommerce-navigation">
+		<div className={ classes }>
 			<Header />
 			<div className="woocommerce-navigation__wrapper" ref={ navDomRef }>
 				<Navigation
@@ -131,79 +93,28 @@ const Container = ( { menuItems } ) => {
 						setActiveLevel( ...args );
 					} }
 				>
-					{ isRootBackVisible && (
-						<NavigationBackButton
-							className="woocommerce-navigation__back-to-dashboard"
-							href={ rootBackUrl }
-							backButtonLabel={ rootBackLabel }
-							onClick={ () => trackBackClick( 'woocommerce' ) }
-						></NavigationBackButton>
-					) }
-					{ categories.map( ( category ) => {
-						const {
-							primary: primaryItems,
-							secondary: secondaryItems,
-							plugins: pluginItems,
-						} = categorizedItems[ category.id ] || {};
+					{ Object.values( categories ).map( ( category ) => {
+						const categoryItems = items[ category.id ];
+
 						return (
-							<NavigationMenu
-								key={ category.id }
-								title={ category.title }
-								menu={ category.id }
-								parentMenu={ category.parent }
-								backButtonLabel={
-									category.backButtonLabel || null
-								}
-								onBackButtonClick={
-									isRootBackVisible
-										? null
-										: () => trackBackClick( category.id )
-								}
-							>
-								{ !! primaryItems && (
-									<NavigationGroup>
-										{ primaryItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
-								) }
-								{ !! pluginItems && (
-									<NavigationGroup
-										title={
-											category.id === 'woocommerce'
-												? __(
-														'Extensions',
-														'woocommerce-admin'
-												  )
-												: null
-										}
-									>
-										{ pluginItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
-								) }
-								{ !! secondaryItems && (
-									<NavigationGroup
-										onBackButtonClick={ () =>
-											trackBackClick( category.id )
-										}
-									>
-										{ secondaryItems.map( ( item ) => (
-											<Item
-												key={ item.id }
-												item={ item }
-											/>
-										) ) }
-									</NavigationGroup>
-								) }
-							</NavigationMenu>
+							!! categoryItems && [
+								<PrimaryMenu
+									key={ category.id }
+									category={ category }
+									onBackClick={ onBackClick }
+									primaryItems={ [
+										...categoryItems.primary,
+										...categoryItems.favorites,
+									] }
+									pluginItems={ categoryItems.plugins }
+								/>,
+								<SecondaryMenu
+									key={ `secondary/${ category.id }` }
+									category={ category }
+									onBackClick={ onBackClick }
+									items={ categoryItems.secondary }
+								/>,
+							]
 						);
 					} ) }
 				</Navigation>
@@ -214,10 +125,9 @@ const Container = ( { menuItems } ) => {
 
 export default compose(
 	withSelect( ( select ) => {
-		const { getActiveItem, getMenuItems } = select( NAVIGATION_STORE_NAME );
+		const { getMenuItems } = select( NAVIGATION_STORE_NAME );
 
 		return {
-			activeItem: getActiveItem(),
 			menuItems: getMenuItems(),
 		};
 	} )

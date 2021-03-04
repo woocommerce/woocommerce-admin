@@ -26,10 +26,10 @@ exports[`ProductTypes should render product types 1`] = `
         class="components-card__body css-xmjzce-BodyUI e1q7k77g3"
       >
         <div
-          class="components-base-control woocommerce-profile-wizard__checkbox"
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
         >
           <div
-            class="components-base-control__field"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
             <span
               class="components-checkbox-control__input-container"
@@ -55,12 +55,19 @@ exports[`ProductTypes should render product types 1`] = `
                 class="components-button is-tertiary"
                 type="button"
               >
-                <i
+                <svg
                   aria-hidden="true"
-                  class="material-icons-outlined"
+                  focusable="false"
+                  height="24"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  info
-                </i>
+                  <path
+                    d="M12 3.2c-4.8 0-8.8 3.9-8.8 8.8 0 4.8 3.9 8.8 8.8 8.8 4.8 0 8.8-3.9 8.8-8.8 0-4.8-4-8.8-8.8-8.8zm0 16c-4 0-7.2-3.3-7.2-7.2C4.8 8 8 4.8 12 4.8s7.2 3.3 7.2 7.2c0 4-3.2 7.2-7.2 7.2zM11 17h2v-6h-2v6zm0-8h2V7h-2v2z"
+                  />
+                </svg>
               </button>
               
               <span
@@ -79,10 +86,10 @@ you can purchase and install it later.
           </div>
         </div>
         <div
-          class="components-base-control woocommerce-profile-wizard__checkbox"
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
         >
           <div
-            class="components-base-control__field"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
             <span
               class="components-checkbox-control__input-container"
@@ -104,7 +111,7 @@ you can purchase and install it later.
         </div>
       </div>
       <div
-        class="components-flex components-card__footer is-borderless is-size-medium e1q7k77g4 css-5hda2c-Flex-FooterUI eboqfv50"
+        class="components-flex components-card__footer is-borderless is-size-medium e1q7k77g4 css-1fpr7ir-Flex-FooterUI eboqfv50"
       >
         <button
           class="components-button is-primary"
@@ -183,10 +190,10 @@ exports[`ProductTypes should show annual prices on toggle 1`] = `
         class="components-card__body css-xmjzce-BodyUI e1q7k77g3"
       >
         <div
-          class="components-base-control woocommerce-profile-wizard__checkbox"
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
         >
           <div
-            class="components-base-control__field"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
             <span
               class="components-checkbox-control__input-container"
@@ -212,12 +219,19 @@ exports[`ProductTypes should show annual prices on toggle 1`] = `
                 class="components-button is-tertiary"
                 type="button"
               >
-                <i
+                <svg
                   aria-hidden="true"
-                  class="material-icons-outlined"
+                  focusable="false"
+                  height="24"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  info
-                </i>
+                  <path
+                    d="M12 3.2c-4.8 0-8.8 3.9-8.8 8.8 0 4.8 3.9 8.8 8.8 8.8 4.8 0 8.8-3.9 8.8-8.8 0-4.8-4-8.8-8.8-8.8zm0 16c-4 0-7.2-3.3-7.2-7.2C4.8 8 8 4.8 12 4.8s7.2 3.3 7.2 7.2c0 4-3.2 7.2-7.2 7.2zM11 17h2v-6h-2v6zm0-8h2V7h-2v2z"
+                  />
+                </svg>
               </button>
               
               <span
@@ -236,10 +250,10 @@ you can purchase and install it later.
           </div>
         </div>
         <div
-          class="components-base-control woocommerce-profile-wizard__checkbox"
+          class="components-base-control woocommerce-profile-wizard__checkbox css-wdf2ti-Wrapper e1puf3u0"
         >
           <div
-            class="components-base-control__field"
+            class="components-base-control__field css-11vcxb9-StyledField e1puf3u1"
           >
             <span
               class="components-checkbox-control__input-container"
@@ -261,7 +275,7 @@ you can purchase and install it later.
         </div>
       </div>
       <div
-        class="components-flex components-card__footer is-borderless is-size-medium e1q7k77g4 css-5hda2c-Flex-FooterUI eboqfv50"
+        class="components-flex components-card__footer is-borderless is-size-medium e1q7k77g4 css-1fpr7ir-Flex-FooterUI eboqfv50"
       >
         <button
           class="components-button is-primary"

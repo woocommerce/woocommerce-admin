@@ -9,6 +9,10 @@ export const getMenuItems = ( state ) => {
 	return applyFilters( MENU_ITEMS_HOOK, state.menuItems );
 };
 
-export const getActiveItem = ( state ) => {
-	return state.activeItem || null;
+export const getFavorites = ( state ) => {
+	return state.favorites || [];
+};
+
+export const isNavigationRequesting = ( state, selector ) => {
+	return state.requesting[ selector ] || false;
 };

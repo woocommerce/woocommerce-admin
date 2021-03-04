@@ -41,22 +41,22 @@ function getHomeItems() {
 		{
 			title: __( 'Inbox', 'woocommerce-admin' ),
 			link:
-				'https://docs.woocommerce.com/document/home-screen/#section-1',
+				'https://docs.woocommerce.com/document/home-screen/#section-2',
 		},
 		{
 			title: __( 'Stats Overview', 'woocommerce-admin' ),
 			link:
-				'https://docs.woocommerce.com/document/home-screen/#section-2',
+				'https://docs.woocommerce.com/document/home-screen/#section-4',
 		},
 		{
 			title: __( 'Store Management', 'woocommerce-admin' ),
 			link:
-				'https://docs.woocommerce.com/document/home-screen/#section-3',
+				'https://docs.woocommerce.com/document/home-screen/#section-5',
 		},
 		{
 			title: __( 'Store Setup Checklist', 'woocommerce-admin' ),
 			link:
-				'https://docs.woocommerce.com/document/woocommerce-setup-wizard/#section-9',
+				'https://docs.woocommerce.com/document/woocommerce-setup-wizard/#store-setup-checklist',
 		},
 	];
 }
@@ -147,7 +147,7 @@ function getPaymentsItems( props ) {
 				'woocommerce-admin'
 			),
 			link:
-				'https://docs.woocommerce.com/document/paypal-express-checkout/?utm_source=help_panel',
+				'https://docs.woocommerce.com/document/2-0/woocommerce-paypal-payments/#section-3',
 		},
 		showSquare && {
 			title: __( 'Square - Get started', 'woocommerce-admin' ),

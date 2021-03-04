@@ -102,7 +102,7 @@ class Industry extends Component {
 			createNotice(
 				'error',
 				__(
-					'There was a problem updating your industries.',
+					'There was a problem updating your industries',
 					'woocommerce-admin'
 				)
 			);
@@ -247,6 +247,7 @@ class Industry extends Component {
 						<Button
 							isPrimary
 							onClick={ this.onContinue }
+							isBusy={ isProfileItemsRequesting }
 							disabled={
 								! selected.length || isProfileItemsRequesting
 							}

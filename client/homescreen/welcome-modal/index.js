@@ -36,7 +36,7 @@ const pages = [
 		content: (
 			<PageContent
 				title={ __(
-					'A personalized inbox full of relevant advice.',
+					'A personalized inbox full of relevant advice',
 					'woocommerce-admin'
 				) }
 				body={ __(
@@ -51,12 +51,13 @@ const pages = [
 		content: (
 			<PageContent
 				title={ __(
-					'Good data leads to smart business decisions.',
+					'Good data leads to smart business decisions',
 					'woocommerce-admin'
 				) }
-				body={
-					'Monitor your stats to improve performance, increase sales, and track your progress toward revenue goals. The more you know, the better you can serve your customers and grow your store.'
-				}
+				body={ __(
+					'Monitor your stats to improve performance, increase sales, and track your progress toward revenue goals. The more you know, the better you can serve your customers and grow your store.',
+					'woocommerce-admin'
+				) }
 			/>
 		),
 	},

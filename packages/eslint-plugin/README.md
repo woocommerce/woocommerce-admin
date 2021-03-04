@@ -6,10 +6,11 @@ This is an [ESLint](https://eslint.org/) plugin including configurations and cus
 
 However, this ruleset does implement the following (which do not conflict with WordPress standards):
 
-- prettier formatting (using `wp-prettier`)
-- Dependency grouping (External and Internal) for dependencies in JavaScript files
-- No yoda conditionals
-- Radix argument required for `parseInt`.
+-   Using typescript eslint parser to allow for eslint Import ([see issue](https://github.com/gajus/eslint-plugin-jsdoc/issues/604#issuecomment-653962767))
+-   prettier formatting (using `wp-prettier`)
+-   Dependency grouping (External and Internal) for dependencies in JavaScript files
+-   No yoda conditionals
+-   Radix argument required for `parseInt`.
 
 ## Installation
 
@@ -21,10 +22,10 @@ npm install @woocommerce/eslint-plugin --save-dev
 
 ## Usage
 
-To opt-in to the default configuration, extend your own project's `.eslintrc` file:
+To opt-in to the default configuration, extend your own project's `.eslintrc.js` file:
 
-```
-{
+```js
+module.exports = {
   "extends": [ "plugin:@woocommerce/eslint-plugin/recommended" ]
 }
 ```
@@ -33,8 +34,14 @@ Refer to the [ESLint documentation on Shareable Configs](http://eslint.org/docs/
 
 The `recommended` preset will include rules governing an ES2015+ environment, and includes rules from the [`@wordpress/eslint-plugin/recommended`](https://github.com/WordPress/gutenberg/tree/master/packages/eslint-plugin) project.
 
+If you want to use prettier in your code editor, you'll need ot create a `.prettierrc.js` file at the root of your project with the following:
+
+```js
+module.exports = require("@wordpress/prettier-config");
+```
+
 ### Rules
 
-Rule|Description|Recommended
----|---|---
-[dependency-group](/packages/eslint-plugin/docs/rules/dependency-group.md)|Enforce dependencies docblocks formatting|✓
+| Rule                                                                       | Description                               | Recommended |
+| -------------------------------------------------------------------------- | ----------------------------------------- | ----------- |
+| [dependency-group](/packages/eslint-plugin/docs/rules/dependency-group.md) | Enforce dependencies docblocks formatting | ✓           |
