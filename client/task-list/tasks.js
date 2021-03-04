@@ -86,7 +86,12 @@ export function getAllTasks( {
 	const {
 		completed: profilerCompleted,
 		product_types: productTypes,
+		business_extensions: businessExtensions,
 	} = profileItems;
+
+	const woocommercePaymentsSelectedInProfiler = (
+		businessExtensions || []
+	).includes( 'woocommerce-payments' );
 
 	let purchaseAndInstallText = __(
 		'Add paid extensions to your store',
@@ -174,6 +179,7 @@ export function getAllTasks( {
 			},
 			visible:
 				window.wcAdminFeatures.wcpay &&
+				woocommercePaymentsSelectedInProfiler &&
 				woocommercePaymentsInstalled &&
 				isWCPaySupported( countryCode ),
 			additionalInfo: __(
@@ -194,6 +200,7 @@ export function getAllTasks( {
 			},
 			visible:
 				! woocommercePaymentsInstalled ||
+				! woocommercePaymentsSelectedInProfiler ||
 				! isWCPaySupported( countryCode ),
 			time: __( '2 minutes', 'woocommerce-admin' ),
 			type: 'setup',
