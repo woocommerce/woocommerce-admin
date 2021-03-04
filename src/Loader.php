@@ -115,7 +115,7 @@ class Loader {
 						echo '<div class="error"><p>';
 						printf(
 							/* translators: %s: is referring to the plugin's name. */
-							esc_html__( 'You have %s activated but it is not being used.', 'woocommerce-admin' ),
+							esc_html__( 'You have the %s plugin activated but it is not being used.', 'woocommerce-admin' ),
 							'<code>WooCommerce Admin</code>'
 						);
 						echo '</p></div>';
