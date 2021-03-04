@@ -21,15 +21,17 @@ export const PrimaryMenu = ( {
 		return null;
 	}
 
-	const { rootBackLabel, rootBackUrl } = window.wcNavigation;
-
-	const filteredRootBackUrl = applyFilters(
-		'woocommerce_navigation_root_back_url',
-		rootBackUrl
+	const rootBackLabel = applyFilters(
+		'woocommerce_navigation_root_back_label',
+		__( 'WordPress Dashboard', 'woocommerce-admin' )
 	);
 
-	const isRootBackVisible =
-		category.id === 'woocommerce' && filteredRootBackUrl;
+	const rootBackUrl = applyFilters(
+		'woocommerce_navigation_root_back_url',
+		window.wcNavigation.rootBackUrl
+	);
+
+	const isRootBackVisible = category.id === 'woocommerce' && rootBackUrl;
 
 	return (
 		<NavigationMenu
@@ -45,7 +47,7 @@ export const PrimaryMenu = ( {
 				isRootBackVisible
 					? () => {
 							onBackClick( 'woocommerce' );
-							window.location = filteredRootBackUrl;
+							window.location = rootBackUrl;
 					  }
 					: () => onBackClick( category.id )
 			}
