@@ -18,7 +18,8 @@
 		"typeRoots": [ "**/node_modules/@types" ],
 		"baseUrl": "./client",
 		"paths": {
-			"@woocommerce/*": [ "../packages/*/src" ]
+			"@woocommerce/*": [ "../packages/*/src" ],
+			"~/*": [ "../client/*" ]
 		}
 	},
 	"exclude": [ "node_modules", "build", "build-module", "dist", "vendor" ]
