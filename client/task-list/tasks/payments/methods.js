@@ -446,18 +446,32 @@ export function getPaymentMethods( {
 				{ __( 'Settings', 'woocommerce-admin' ) }
 			</Link>
 		);
+		const wcPayFeesLink = (
+			<Link
+				href={
+					'https://docs.woocommerce.com/document/payments/faq/fees/'
+				}
+				target="_blank"
+				type="external"
+			/>
+		);
+
+		const wooPaymentsCopy = interpolateComponents( {
+			mixedString: __(
+				'Accept credit card payments the easy way! {{feesLink}}No setup fees. No monthly fees.{{/feesLink}}',
+				'woocommerce-admin'
+			),
+			components: {
+				feesLink: wcPayFeesLink,
+			},
+		} );
 
 		methods.unshift( {
 			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
 				<>
-					{ __(
-						'Accept credit card payments the easy way! No setup fees. No ' +
-							'monthly fees. Just 2.9% + $0.30 per transaction ' +
-							'on U.S. issued cards. ',
-						'woocommerce-admin'
-					) }
+					{ wooPaymentsCopy }
 					{ wcPayIsConnected && wcPaySettingsLink }
 					{ ! wcPayIsConnected && <p>{ tosPrompt }</p> }
 					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
