@@ -98,6 +98,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Added warning when WC-Admin is active but not being used #6453
 - Add: Remove Mollie promo note on install #6510
 - Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
+- Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
 
 == 2.1.0 ==
 
