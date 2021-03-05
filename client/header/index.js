@@ -94,26 +94,26 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		window.addEventListener( 'resize', updateBodyMargin );
 		return () => {
 			window.removeEventListener( 'resize', updateBodyMargin );
-			const wpBody = document.querySelector( '#wpbody' );
+			const bodyEl = document.querySelector( 'body' );
 
-			if ( ! wpBody ) {
+			if ( ! bodyEl ) {
 				return;
 			}
 
-			wpBody.style.marginTop = null;
+			bodyEl.style.marginTop = null;
 		};
 	}, [ isModalDismissed ] );
 
 	const updateBodyMargin = () => {
 		clearTimeout( debounceTimer );
 		debounceTimer = setTimeout( function () {
-			const wpBody = document.querySelector( '#wpbody' );
+			const bodyEl = document.querySelector( 'body' );
 
-			if ( ! wpBody || ! headerElement.current ) {
+			if ( ! bodyEl || ! headerElement.current ) {
 				return;
 			}
 
-			wpBody.style.marginTop = `${ headerElement.current.offsetHeight }px`;
+			bodyEl.style.marginTop = `${ headerElement.current.offsetHeight }px`;
 		}, 200 );
 	};
 

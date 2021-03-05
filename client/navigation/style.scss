@@ -38,7 +38,9 @@ body.is-wc-nav-expanded {
 		height: 100%;
 	}
 
-	font > .xe-notice {
+	font > .xe-notice,
+	font > .xdebug-error,
+	font > .xe-warning {
 		margin-left: calc(#{$navigation-width} + #{$gap});
 	}
 }
@@ -131,10 +133,6 @@ body.is-wc-nav-folded {
 	&:not(.is-wp-toolbar-disabled) {
 		#wpbody-content {
 			margin-top: $adminbar-height;
-		}
-
-		font > .xe-notice {
-			margin-top: $header-height;
 		}
 	}
 }
