@@ -140,8 +140,8 @@ class CategoriesReportTable extends Component {
 		return [
 			{
 				label: _n(
-					'category',
-					'categories',
+					'Category',
+					'Categories',
 					totalResults,
 					'woocommerce-admin'
 				),
@@ -149,21 +149,21 @@ class CategoriesReportTable extends Component {
 			},
 			{
 				label: _n(
-					'item sold',
-					'items sold',
+					'Item sold',
+					'Items sold',
 					itemsSold,
 					'woocommerce-admin'
 				),
 				value: formatValue( currency, 'number', itemsSold ),
 			},
 			{
-				label: __( 'net sales', 'woocommerce-admin' ),
+				label: __( 'Net sales', 'woocommerce-admin' ),
 				value: formatAmount( netRevenue ),
 			},
 			{
 				label: _n(
-					'order',
-					'orders',
+					'Order',
+					'Orders',
 					ordersCount,
 					'woocommerce-admin'
 				),

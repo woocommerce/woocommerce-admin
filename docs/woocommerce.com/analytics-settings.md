@@ -18,7 +18,7 @@ In this section, statuses that are **unchecked** are **included** in anayltics r
 
 ![Default Date Range setting](images/settings-default-date-range.png)
 
-WooCommerce Admin is pre-configured with a default date range of `Month to Date`. This is the date range that will be used when loading the WooCommerce Dashboard or Analytics page from any non-WooCommerce Admin page. Any reports that support a date range will have a Date Range Picker to allow changing the date range for the report.
+WooCommerce Admin is pre-configured with a default date range of `Month to date`. This is the date range that will be used when loading the WooCommerce Dashboard or Analytics page from any non-WooCommerce Admin page. Any reports that support a date range will have a Date Range Picker to allow changing the date range for the report.
 
 ### Reset defaults
 

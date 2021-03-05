@@ -284,8 +284,8 @@ class ProductsReportTable extends Component {
 		return [
 			{
 				label: _n(
-					'product',
-					'products',
+					'Product',
+					'Products',
 					productsCount,
 					'woocommerce-admin'
 				),
@@ -293,21 +293,21 @@ class ProductsReportTable extends Component {
 			},
 			{
 				label: _n(
-					'item sold',
-					'items sold',
+					'Item sold',
+					'Items sold',
 					itemsSold,
 					'woocommerce-admin'
 				),
 				value: formatValue( currency, 'number', itemsSold ),
 			},
 			{
-				label: __( 'net sales', 'woocommerce-admin' ),
+				label: __( 'Net sales', 'woocommerce-admin' ),
 				value: formatAmount( netRevenue ),
 			},
 			{
 				label: _n(
-					'orders',
-					'orders',
+					'Orders',
+					'Orders',
 					ordersCount,
 					'woocommerce-admin'
 				),

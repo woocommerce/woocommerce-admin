@@ -254,8 +254,8 @@ class OrdersReportTable extends Component {
 		return [
 			{
 				label: _n(
-					'order',
-					'orders',
+					'Order',
+					'Orders',
 					ordersCount,
 					'woocommerce-admin'
 				),
@@ -263,8 +263,8 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: _n(
-					' customer',
-					' customers',
+					' Customer',
+					' Customers',
 					totalCustomers,
 					'woocommerce-admin'
 				),
@@ -272,8 +272,8 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: _n(
-					'product',
-					'products',
+					'Product',
+					'Products',
 					products,
 					'woocommerce-admin'
 				),
@@ -281,8 +281,8 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: _n(
-					'item sold',
-					'items sold',
+					'Item sold',
+					'Items sold',
 					numItemsSold,
 					'woocommerce-admin'
 				),
@@ -290,8 +290,8 @@ class OrdersReportTable extends Component {
 			},
 			{
 				label: _n(
-					'coupon',
-					'coupons',
+					'Coupon',
+					'Coupons',
 					couponsCount,
 					'woocommerce-admin'
 				),

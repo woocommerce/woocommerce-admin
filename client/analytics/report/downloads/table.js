@@ -170,8 +170,8 @@ class DownloadsReportTable extends Component {
 			},
 			{
 				label: _n(
-					'download',
-					'downloads',
+					'Download',
+					'Downloads',
 					downloadCount,
 					'woocommerce-admin'
 				),

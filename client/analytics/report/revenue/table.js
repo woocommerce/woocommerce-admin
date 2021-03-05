@@ -232,31 +232,31 @@ class RevenueReportTable extends Component {
 				value: formatValue( currency, 'number', ordersCount ),
 			},
 			{
-				label: __( 'gross sales', 'woocommerce-admin' ),
+				label: __( 'Gross sales', 'woocommerce-admin' ),
 				value: formatAmount( grossSales ),
 			},
 			{
-				label: __( 'returns', 'woocommerce-admin' ),
+				label: __( 'Returns', 'woocommerce-admin' ),
 				value: formatAmount( refunds ),
 			},
 			{
-				label: __( 'coupons', 'woocommerce-admin' ),
+				label: __( 'Coupons', 'woocommerce-admin' ),
 				value: formatAmount( coupons ),
 			},
 			{
-				label: __( 'net sales', 'woocommerce-admin' ),
+				label: __( 'Net sales', 'woocommerce-admin' ),
 				value: formatAmount( netRevenue ),
 			},
 			{
-				label: __( 'taxes', 'woocommerce-admin' ),
+				label: __( 'Taxes', 'woocommerce-admin' ),
 				value: formatAmount( taxes ),
 			},
 			{
-				label: __( 'shipping', 'woocommerce-admin' ),
+				label: __( 'Shipping', 'woocommerce-admin' ),
 				value: formatAmount( shipping ),
 			},
 			{
-				label: __( 'total sales', 'woocommerce-admin' ),
+				label: __( 'Total sales', 'woocommerce-admin' ),
 				value: formatAmount( totalSales ),
 			},
 		];

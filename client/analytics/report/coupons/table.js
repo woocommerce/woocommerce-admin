@@ -178,8 +178,8 @@ class CouponsReportTable extends Component {
 		return [
 			{
 				label: _n(
-					'coupon',
-					'coupons',
+					'Coupon',
+					'Coupons',
 					couponsCount,
 					'woocommerce-admin'
 				),
@@ -187,15 +187,15 @@ class CouponsReportTable extends Component {
 			},
 			{
 				label: _n(
-					'order',
-					'orders',
+					'Order',
+					'Orders',
 					ordersCount,
 					'woocommerce-admin'
 				),
 				value: formatValue( currency, 'number', ordersCount ),
 			},
 			{
-				label: __( 'amount discounted', 'woocommerce-admin' ),
+				label: __( 'Amount discounted', 'woocommerce-admin' ),
 				value: formatAmount( amount ),
 			},
 		];

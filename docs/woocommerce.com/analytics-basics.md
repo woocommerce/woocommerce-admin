@@ -11,8 +11,8 @@ The Date Range picker allows you to specify which dates you want to include in t
 - Yesterday
 - Week to date
 - Last week
-- Month to Date
-- Last Month
+- Month to date
+- Last month
 - Quarter to date
 - Last year
 
