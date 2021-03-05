@@ -38,9 +38,7 @@ body.is-wc-nav-expanded {
 		height: 100%;
 	}
 
-	font > .xe-notice,
-	font > .xdebug-error,
-	font > .xe-warning {
+	font > .xdebug-error {
 		margin-left: calc(#{$navigation-width} + #{$gap});
 	}
 }
