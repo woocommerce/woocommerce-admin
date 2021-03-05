@@ -339,6 +339,7 @@ class Loader {
 			'wc-store-data',
 			'wc-currency',
 			'wc-navigation',
+			'wc-abtest',
 		);
 
 		$scripts_map = array(
