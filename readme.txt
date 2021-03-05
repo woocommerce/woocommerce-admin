@@ -75,6 +75,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Dev: Add nav header component tests #6509
+- Add: Add legacy report items to new navigation #6507
 - Dev: Add initial tests for navigation Menu class #6492
 - Dev: Remove active item from navigation store #6486
 - Fix: Add check for navigating being enabled. #6462
@@ -93,6 +95,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Missing i18n in Welcome modal. #6456
 - Fix: Restore visual styles back to Analytics tabs. #5913
 - Add: Add a "rather not say" option to revenue in the profile wizard. #6475
+- Dev: Added warning when WC-Admin is active but not being used #6453
 - Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
 
 == 2.1.0 ==
