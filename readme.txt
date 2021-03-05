@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Dev: Use wc filter to get status tabs for tools category #6525
 - Dev: Add nav header component tests #6509
 - Add: Add legacy report items to new navigation #6507
 - Dev: Add initial tests for navigation Menu class #6492
