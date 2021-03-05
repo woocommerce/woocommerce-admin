@@ -16,18 +16,18 @@ export async function possibleDismissWelcomeModal() {
 	);
 	if ( modal ) {
 		let nextButton = await getElementByText( 'button', 'Next' );
-		nextButton.click();
+		await nextButton.click();
 
 		await page.waitForFunction(
 			'document.querySelector(".woocommerce__welcome-modal h2").innerText == "A personalized inbox full of relevant advice"'
 		);
 		nextButton = await getElementByText( 'button', 'Next' );
-		nextButton.click();
+		await nextButton.click();
 		await page.waitForFunction(
 			'document.querySelector(".woocommerce__welcome-modal h2").innerText == "Good data leads to smart business decisions"'
 		);
 		nextButton = await page.$( '.components-guide__finish-button' );
-		nextButton.click();
+		await nextButton.click();
 	}
 }
 
