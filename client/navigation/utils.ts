@@ -17,6 +17,20 @@ interface Item {
 	isCategory: boolean;
 }
 
+interface Category {
+	id: string;
+	isCategory: boolean;
+	menuId: MenuId;
+	migrate: boolean;
+	order: number;
+	parent: string;
+	title: string;
+	primary?: Item[];
+	favorites?: Item[];
+	plugins?: Item[];
+	secondary?: Item[];
+}
+
 /**
  * Get the full URL if a relative path is passed.
  */
@@ -158,20 +172,6 @@ export const menuIds: MenuId[] = [
 	'plugins',
 	'secondary',
 ];
-
-interface Category {
-	id: string;
-	isCategory: boolean;
-	menuId: MenuId;
-	migrate: boolean;
-	order: number;
-	parent: string;
-	title: string;
-	primary?: Item[];
-	favorites?: Item[];
-	plugins?: Item[];
-	secondary?: Item[];
-}
 
 /**
  * Default categories for the menu.
