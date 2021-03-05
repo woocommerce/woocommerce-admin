@@ -19,6 +19,14 @@ import {
 } from './complete-business-section';
 import { completeThemeSelectionSection } from './complete-theme-selection-section';
 import { completeBenefitsSection } from './complete-benefits-section';
+import {
+	clickOnTaskList,
+	getTaskList,
+	onHomescreen,
+	possibleDismissWelcomeModal,
+	TaskTitles,
+} from './homescreen';
+import { getElementByText } from './utils';
 
 /**
  * This tests a default, happy path for the onboarding wizard.
@@ -70,6 +78,27 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 		completeThemeSelectionSection
 	);
 	it( 'can complete the benefits section', completeBenefitsSection );
+	it( 'should display the choose payments task, and not the woocommerce payments task', async () => {
+		await onHomescreen();
+		await possibleDismissWelcomeModal();
+		const tasks = await getTaskList();
+		expect( tasks ).toContain( TaskTitles.addPayments );
+		expect( tasks ).not.toContain( TaskTitles.wooPayments );
+	} );
+
+	it( 'should not display woocommerce payments as a payments option', async () => {
+		const tasks = await getTaskList();
+		const index = tasks.indexOf( TaskTitles.addPayments );
+		await clickOnTaskList( index );
+		await page.waitForFunction(
+			'document.querySelector(".woocommerce-layout__header-heading").innerText == "Choose payment methods"'
+		);
+		const wcPayLabel = await getElementByText(
+			'h2',
+			'WooCommerce Payments'
+		);
+		expect( wcPayLabel ).toBeUndefined();
+	} );
 } );
 
 describe( 'A japanese store can complete the selective bundle install but does not include WCPay. ', () => {
@@ -99,4 +128,11 @@ describe( 'A japanese store can complete the selective bundle install but does n
 		'can finish the rest of the wizard successfully',
 		completeThemeSelectionSection
 	);
+	it( 'should display the choose payments task, and not the woocommerce payments task', async () => {
+		await onHomescreen();
+		await possibleDismissWelcomeModal();
+		const tasks = await getTaskList();
+		expect( tasks ).toContain( TaskTitles.addPayments );
+		expect( tasks ).not.toContain( TaskTitles.wooPayments );
+	} );
 } );
