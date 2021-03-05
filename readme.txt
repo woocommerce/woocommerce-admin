@@ -75,7 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == 2.1.1 ==
 
-- Fix: Restore missing code from Correct the Klarna slug #6440
+- Fix: Restore missing Correct the Klarna slug #6440
 
 == 2.1.0 ==
 
