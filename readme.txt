@@ -80,6 +80,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add initial tests for navigation Menu class #6492
 - Dev: Remove active item from navigation store #6486
 - Dev: Add navigation container tests #6464
+- Add: Add preview site button on the appearance task #6457
 - Fix: Add check for navigating being enabled. #6462
 - Dev: Add nav favorite button tests #6446
 - Dev: Add a changelog lint check to PRs. #6414
@@ -97,6 +98,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Restore visual styles back to Analytics tabs. #5913
 - Add: Add a "rather not say" option to revenue in the profile wizard. #6475
 - Dev: Added warning when WC-Admin is active but not being used #6453
+- Add: Remove Mollie promo note on install #6510
+- Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
 
 == 2.1.0 ==
 
@@ -171,8 +174,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Add: Allow users to install the PayU plugin in the payments setup task. #6332
 - Fix: Persist the enabling of plugins in the payments setup task. #6332
-
-== Changelog ==
 
 == 1.9.0 1/15/2021 ==
 

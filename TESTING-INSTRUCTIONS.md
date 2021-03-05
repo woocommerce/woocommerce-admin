@@ -16,6 +16,14 @@
 4. Click the "Store Setup" link in the top right hand corner.
 5. Note that the navigation level automatically is updated to the root level where the "Home" item is marked active.
 
+### Add preview site button on the appearance task #6457
+
+1. Navigate to Home and click "Personalzie your store" task.
+2. Click on the "Preview Site" button on the header.
+3. A new tab should open and the URL should be the site URL.
+4. Navigate to other tasks such as "Store Details" or "Add products" .
+5. The "Preview Site" should not be shown on the other tasks.
+
 ### Fix double prefixing of navigation URLs #6460
 
 1. Register a navigation menu item with a full URL or admin link.
@@ -50,6 +58,18 @@
 2. Navigate to WooCommerce -> Settings -> Advanced Tab -> Features
 3. Check the box to add the new navigation feature, and hit save
 4. Ensure that the new navigation appears on the left as expected
+
+### Remove Mollie promo note on install #6510
+
+- If you do not currently have the Mollie note on your WooCommerce Admin home screen, you can add a test note with the correct name as follows:
+    1. install the WooCommerce Admin Test Helper plugin [here](https://github.com/woocommerce/woocommerce-admin-test-helper)
+    2. Go to the Admin notes tab
+    3. Add an admin note with the name `wc-admin-effortless-payments-by-mollie`
+    4. Go to the WCA home screen and verify that your test note is present
+- The note is removed on a new version install, so either install an old version of WCA and upgrade to the current one, or trigger the install process manually:
+    1. install the WCA test helper
+    2. go to the Tools tab
+    3. click the `Trigger WCA install` button
 
 ### Deprecate Onboarding::has_woocommerce_support #6401
 
