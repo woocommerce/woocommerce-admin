@@ -7,7 +7,7 @@
 1. Download the [WooCommerce 4.7 zip](https://downloads.wordpress.org/plugin/woocommerce.4.7.0.zip)and install it on the site.
 2. See that there are no fatal errors on site frontend or wp-admin dashboard.
 3. Update WooCommerce to the latest version from WP Admin
-4. See that there are no fatal errors on site frontend or wp-admin dashboard.
+4. Perform some smoke tests to see that WooCommerce Admin works as expected.
 
 ### Add legacy report items to new navigation #6507
 
