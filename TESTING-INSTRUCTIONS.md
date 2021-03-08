@@ -2,6 +2,56 @@
 
 ## Unreleased
 
+### Add legacy report items to new navigation #6507
+
+1. Enable the new navigation experience.
+2. Navigate to Analytics->Reports.
+3. Note that all the reports exist and navigating to those reports works as expected.
+4. Check that report menu items are marked active when navigating to that page.
+### Add navigation container tests #6464
+
+1. On a new site, finish the store setup wizard, but don't hide the task list.
+2. Navigate to a WooCommerce Admin Analytics page.
+3. Note the menu is under the "Analytics" level.
+4. Click the "Store Setup" link in the top right hand corner.
+5. Note that the navigation level automatically is updated to the root level where the "Home" item is marked active.
+
+### Add preview site button on the appearance task #6457
+
+1. Navigate to Home and click "Personalzie your store" task.
+2. Click on the "Preview Site" button on the header.
+3. A new tab should open and the URL should be the site URL.
+4. Navigate to other tasks such as "Store Details" or "Add products" .
+5. The "Preview Site" should not be shown on the other tasks.
+
+### Fix double prefixing of navigation URLs #6460
+
+1. Register a navigation menu item with a full URL or admin link.
+```
+	\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_item(
+		array(
+			'id'         => 'my-page,
+			'title'      => 'My Page,
+			'capability' => 'manage_woocommerce',
+			'url'        => admin_url( 'my-page '),
+		)
+	);
+```
+2. Enable the navigation.
+3. Check that the menu item is marked active when visiting that page.
+4. Make sure old menu items are still correctly marked active.
+
+### Fix summary number style regression on analytics reports #5913
+
+- Go to Analytics
+- See that the active (selected) tab is white, with a highlight above the tab.
+- See that inactive tabs are a lighter shade of grey.
+
+### Update payment card style on mobile #6413
+
+- Using a small size screen, go to your WooCommerce -> Home -> Choose payment methods.
+- See that the text descriptions for payment methods have a margin between them and the edge of the screen.
+
 ### Navigation: Correct error thrown when enabling #6462
 
 1. Create a fresh store
@@ -9,13 +59,38 @@
 3. Check the box to add the new navigation feature, and hit save
 4. Ensure that the new navigation appears on the left as expected
 
+### Remove Mollie promo note on install #6510
+
+- If you do not currently have the Mollie note on your WooCommerce Admin home screen, you can add a test note with the correct name as follows:
+    1. install the WooCommerce Admin Test Helper plugin [here](https://github.com/woocommerce/woocommerce-admin-test-helper)
+    2. Go to the Admin notes tab
+    3. Add an admin note with the name `wc-admin-effortless-payments-by-mollie`
+    4. Go to the WCA home screen and verify that your test note is present
+- The note is removed on a new version install, so either install an old version of WCA and upgrade to the current one, or trigger the install process manually:
+    1. install the WCA test helper
+    2. go to the Tools tab
+    3. click the `Trigger WCA install` button
+
 ### Deprecate Onboarding::has_woocommerce_support #6401
 
-- Clear existing site transients. For example, by using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and pressing the "Delete all transients" button it provides.
-- Add any new theme to WordPress but **DO NOT** activate it.
-- Initialize the Onboarding Wizard.
-- See that the Themes step loads fast 😎 
-- See that the new theme is listed in the Themes step.
+-   Clear existing site transients. For example, by using the [Transients Manager](https://wordpress.org/plugins/transients-manager/) plugin, and pressing the "Delete all transients" button it provides.
+-   Add any new theme to WordPress but **DO NOT** activate it.
+-   Initialize the Onboarding Wizard.
+-   See that the Themes step loads fast 😎
+-   See that the new theme is listed in the Themes step.
+
+### Set up tasks can now navigate back to the home screen #6397
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen
+2. Going to the homescreen redirects to the profile setup wizard, click "Skip setup store details" to return to the home screen
+3. On the home screen you will see the setup task list. It has the heading "Get ready to start selling"
+
+For each task in that list apart from "Store details":
+
+1. Click the item
+2. You should land on the setup task page
+3. A title in the top left should reflect the original task name from the task list. e.g. "Add tax rates"
+4. Clicking the chevron to the left of the title should take you back to the home screen
 
 ## 2.1.0
 
@@ -58,9 +133,9 @@ wp option delete 'woocommerce_merchant_email_notifications';
 ```
 
 -   Run the cron job `wc_admin_daily` (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
-    - Go to **Tools > Cron Events** and scroll down to the `wc_admin_daily`.
-    -  Hover over the item and click `Edit` change the **Next Run** to `Now` and click `Update Event`.
-    - It will redirect you to the cron event list, and `wc_admin_daily` should be near the top, if you wait 10 seconds and refresh the page the `wc_admin_daily` should be near the bottom again, this means it has been run, and scheduled again to run tomorrow.
+    -   Go to **Tools > Cron Events** and scroll down to the `wc_admin_daily`.
+    -   Hover over the item and click `Edit` change the **Next Run** to `Now` and click `Update Event`.
+    -   It will redirect you to the cron event list, and `wc_admin_daily` should be near the top, if you wait 10 seconds and refresh the page the `wc_admin_daily` should be near the bottom again, this means it has been run, and scheduled again to run tomorrow.
 -   You should have not received an email note.
 -   Verify the note `wc-admin-add-first-product-note` was added in the DB and its `status` is `unactioned`. You can use a statement like this:
 

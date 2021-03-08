@@ -75,8 +75,16 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Dev: Add nav header component tests #6509
+- Add: Add legacy report items to new navigation #6507
+- Dev: Add initial tests for navigation Menu class #6492
+- Dev: Remove active item from navigation store #6486
+- Dev: Add navigation container tests #6464
+- Add: Add preview site button on the appearance task #6457
 - Fix: Add check for navigating being enabled. #6462
+- Dev: Add nav favorite button tests #6446
 - Dev: Add a changelog lint check to PRs. #6414
+- Dev: Add navigation favorites tests #6409
 - Fix: Move the shipping input and text 1px lower. #6408
 - Dev: support use of Array.flat in client and packages. #6411
 - Fix: Correct the Klarna slug #6440
@@ -84,6 +92,15 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Deprecate Onboarding::has_woocommerce_support. #6401
 - Fix: Broken link anchors to online documentation. #6455
 - Dev: Add Dependency Extraction Webpack Plugin #5762
+- Dev: Add client-side filter for Navigation rootBackUrl #6505
+- Add: Back button to go to home screen from tasks in the task list. #6397
+- Fix: Update payment card style on mobile #6413
+- Fix: Missing i18n in Welcome modal. #6456
+- Fix: Restore visual styles back to Analytics tabs. #5913
+- Add: Add a "rather not say" option to revenue in the profile wizard. #6475
+- Dev: Added warning when WC-Admin is active but not being used #6453
+- Add: Remove Mollie promo note on install #6510
+- Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
 
 == 2.1.0 ==
 
@@ -129,7 +146,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Change `siteUrl` to `homeUrl` on navigation site title #6240
 - Dev: Add navigation favorites data store #6275
 - Add: Add navigation intro modal. #6367
+- Fix: Fix double prefixing of full navigation URLs #6460
 - Fix: Reset Navigation submenu before making Flyout #6396
+- Dev: Add a changelog lint check to PRs. #6414
+- Fix: Move the shipping input and text 1px lower. #6408
+- Add: WC Admin Docker setup with WP-ENV
 
 == 2.0.0 02/05/2021 ==
 
@@ -154,8 +175,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Add: Allow users to install the PayU plugin in the payments setup task. #6332
 - Fix: Persist the enabling of plugins in the payments setup task. #6332
-
-== Changelog ==
 
 == 1.9.0 1/15/2021 ==
 
