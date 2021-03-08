@@ -221,7 +221,7 @@ class FeaturePlugin {
 		$errors                      = array();
 		$wordpress_version           = get_bloginfo( 'version' );
 		$minimum_wordpress_version   = '5.4';
-		$minimum_woocommerce_version = '4.8';
+		$minimum_woocommerce_version = '3.6'; // Don't bump this until this https://github.com/woocommerce/woocommerce-admin/issues/6530 is resolved.
 		$wordpress_minimum_met       = version_compare( $wordpress_version, $minimum_wordpress_version, '>=' );
 		$woocommerce_minimum_met     = class_exists( 'WooCommerce' ) && version_compare( WC_VERSION, $minimum_woocommerce_version, '>=' );
 
