@@ -73,6 +73,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 2.0.3 03/10/2021 ==
+
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
 == 2.0.2 25/05/2021 ==
 
 - Fix: Correct the Klarna slug #6440
