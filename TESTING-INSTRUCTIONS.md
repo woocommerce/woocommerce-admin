@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Revert minimum WooCommerce version to 3.6 #6531
+
+1. Download the [WooCommerce 4.7 zip](https://downloads.wordpress.org/plugin/woocommerce.4.7.0.zip)and install it on the site.
+2. See that there are no fatal errors on site frontend or wp-admin dashboard.
+3. Update WooCommerce to the latest version from WP Admin
+4. See that there are no fatal errors on site frontend or wp-admin dashboard.
+
 ### Add legacy report items to new navigation #6507
 
 1. Enable the new navigation experience.
