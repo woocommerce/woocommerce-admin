@@ -373,7 +373,10 @@ class BusinessDetails extends Component {
 	}
 
 	renderFreeFeaturesStep() {
-		const { isInstallingActivating } = this.props;
+		const { isInstallingActivating, settings, profileItems } = this.props;
+		const country = settings.woocommerce_default_country
+			? settings.woocommerce_default_country
+			: null;
 
 		return (
 			<>
@@ -401,6 +404,8 @@ class BusinessDetails extends Component {
 				<SelectiveExtensionsBundle
 					isInstallingActivating={ isInstallingActivating }
 					onSubmit={ this.onContinue }
+					country={ country }
+					industry={ profileItems.industry }
 				/>
 			</>
 		);

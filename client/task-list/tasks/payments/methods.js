@@ -2,14 +2,12 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import interpolateComponents from 'interpolate-components';
 import {
 	getAdminLink,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
 import { Link } from '@woocommerce/components';
-import { WC_ADMIN_NAMESPACE } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -23,7 +21,12 @@ import { MollieLogo } from './images/mollie';
 import { PayUIndiaLogo } from './images/payu-india';
 import Stripe from './stripe';
 import Square from './square';
-import WCPay from './wcpay';
+import {
+	WCPay,
+	WCPayUsageModal,
+	installActivateAndConnectWcpay,
+	isWCPaySupported,
+} from './wcpay';
 import PayPal, { PAYPAL_PLUGIN } from './paypal';
 import Klarna from './klarna';
 import PayFast from './payfast';
@@ -478,18 +481,32 @@ export function getPaymentMethods( {
 				{ __( 'Settings', 'woocommerce-admin' ) }
 			</Link>
 		);
+		const wcPayFeesLink = (
+			<Link
+				href={
+					'https://docs.woocommerce.com/document/payments/faq/fees/'
+				}
+				target="_blank"
+				type="external"
+			/>
+		);
+
+		const wooPaymentsCopy = interpolateComponents( {
+			mixedString: __(
+				'Accept credit card payments the easy way! {{feesLink}}No setup fees. No monthly fees.{{/feesLink}}',
+				'woocommerce-admin'
+			),
+			components: {
+				feesLink: wcPayFeesLink,
+			},
+		} );
 
 		methods.unshift( {
 			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
 				<>
-					{ __(
-						'Accept credit card payments the easy way! No setup fees. No ' +
-							'monthly fees. Just 2.9% + $0.30 per transaction ' +
-							'on U.S. issued cards. ',
-						'woocommerce-admin'
-					) }
+					{ wooPaymentsCopy }
 					{ wcPayIsConnected && wcPaySettingsLink }
 					{ ! wcPayIsConnected && <p>{ tosPrompt }</p> }
 					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
@@ -499,13 +516,12 @@ export function getPaymentMethods( {
 			before: <WCPayLogo />,
 			onClick: ( resolve, reject ) => {
 				return installActivateAndConnectWcpay(
-					resolve,
 					reject,
 					createNotice,
 					installAndActivatePlugins
 				);
 			},
-			visible: [ 'US', 'PR' ].includes( countryCode ) && ! hasCbdIndustry,
+			visible: isWCPaySupported( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
 			isConfigured: wcPayIsConnected,
