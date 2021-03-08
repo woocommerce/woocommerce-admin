@@ -16,10 +16,11 @@ if ( global.window ) {
 	} );
 
 	// Setup fake localStorage
-	const storage = {};
+	let storage = {};
 	global.window.localStorage = {
 		getItem: ( key ) => ( key in storage ? storage[ key ] : null ),
 		setItem: ( key, value ) => ( storage[ key ] = value ),
+		clear: () => ( storage = {} ),
 	};
 
 	// UserSettings global

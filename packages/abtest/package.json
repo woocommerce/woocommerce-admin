@@ -27,5 +27,8 @@
 		"@wordpress/api-fetch": "^3.21.5",
 		"@wordpress/element": "^2.19.1",
 		"@wordpress/url": "^2.21.2"
+	},
+	"devDependencies": {
+		"@testing-library/react": "^11.2.5"
 	}
 }
