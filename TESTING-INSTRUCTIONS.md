@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### Fix a bug where the JetPack connection flow would not activate
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen
+2. Going to the homescreen redirects to the profile setup wizard
+3. The first step is "Store details" choose United States (any state) for country and fill in the other details with test data.
+4. Click "continue", you should be taken to the "Industry" step.
+5. In the "Industry" step check the "Food and Drink" option only. Click "continue"
+6. In the "Product Type" step choose any value and click "continue"
+7. You should arrive at the "Business details" step which provides 2 tabs: "Business details" and "Free features". In the "Business Details" tab fill out the dropdowns with any values. Click "continue".
+8. In the "Free features" step expand the list of extensions to install by clicking the arrow to the right of "Add recommended business features to my site".
+9. Uncheck all the extensions except for "Enhance speed and security with Jetpack"
+10. Click "continue", the plugin will be installed and you should arrive at the theme step.
+11. Click "Continue with my active theme"
+12. After finishing the wizard, this should redirect you to the "Jetpack" setup connection flow. (You should not be redirected straight to the homescreen).
+
 ### Add legacy report items to new navigation #6507
 
 1. Enable the new navigation experience.
@@ -12,6 +27,7 @@
 ### Fix double prefixing of navigation URLs #6460
 
 1. Register a navigation menu item with a full URL or admin link.
+
 ```
 	\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_item(
 		array(
@@ -22,20 +38,21 @@
 		)
 	);
 ```
+
 2. Enable the navigation.
 3. Check that the menu item is marked active when visiting that page.
 4. Make sure old menu items are still correctly marked active.
 
 ### Fix summary number style regression on analytics reports #5913
 
-- Go to Analytics
-- See that the active (selected) tab is white, with a highlight above the tab.
-- See that inactive tabs are a lighter shade of grey.
+-   Go to Analytics
+-   See that the active (selected) tab is white, with a highlight above the tab.
+-   See that inactive tabs are a lighter shade of grey.
 
 ### Update payment card style on mobile #6413
 
-- Using a small size screen, go to your WooCommerce -> Home -> Choose payment methods.
-- See that the text descriptions for payment methods have a margin between them and the edge of the screen.
+-   Using a small size screen, go to your WooCommerce -> Home -> Choose payment methods.
+-   See that the text descriptions for payment methods have a margin between them and the edge of the screen.
 
 ### Navigation: Correct error thrown when enabling #6462
 
@@ -46,12 +63,12 @@
 
 ### Remove Mollie promo note on install #6510
 
-- If you do not currently have the Mollie note on your WooCommerce Admin home screen, you can add a test note with the correct name as follows:
+-   If you do not currently have the Mollie note on your WooCommerce Admin home screen, you can add a test note with the correct name as follows:
     1. install the WooCommerce Admin Test Helper plugin [here](https://github.com/woocommerce/woocommerce-admin-test-helper)
     2. Go to the Admin notes tab
     3. Add an admin note with the name `wc-admin-effortless-payments-by-mollie`
     4. Go to the WCA home screen and verify that your test note is present
-- The note is removed on a new version install, so either install an old version of WCA and upgrade to the current one, or trigger the install process manually:
+-   The note is removed on a new version install, so either install an old version of WCA and upgrade to the current one, or trigger the install process manually:
     1. install the WCA test helper
     2. go to the Tools tab
     3. click the `Trigger WCA install` button
