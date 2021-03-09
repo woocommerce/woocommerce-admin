@@ -118,7 +118,7 @@ class Package {
 	 * Add deactivation hook for versions of the plugin that don't have the deactivation note.
 	 */
 	public static function on_deactivation() {
-		if ( ! self::is_package_active() ) {
+		if ( ! self::is_notes_initialized() ) {
 			return;
 		}
 
@@ -131,7 +131,8 @@ class Package {
 	 * and adds/removes DeactivatePlugin note as necessary.
 	 */
 	public static function check_outdated_wca_plugin() {
-		if ( ! self::is_package_active() ) {
+
+		if ( ! self::is_notes_initialized() ) {
 			return;
 		}
 
