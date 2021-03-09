@@ -62,10 +62,10 @@ export const IntroModal = () => {
 	// Dismiss the modal when the welcome modal is shown.
 	// It is likely in this case that the navigation is on by default.
 	useEffect( () => {
-		if ( ! isResolving && isWelcomeModalShown ) {
+		if ( ! isResolving && isWelcomeModalShown && ! isDismissed ) {
 			dismissModal();
 		}
-	}, [ isResolving, isWelcomeModalShown ] );
+	}, [ isDismissed, isResolving, isWelcomeModalShown ] );
 
 	if ( ! isOpen || isDismissed || isResolving || isWelcomeModalShown ) {
 		return null;

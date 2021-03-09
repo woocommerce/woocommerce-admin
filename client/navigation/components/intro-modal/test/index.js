@@ -52,6 +52,23 @@ describe( 'IntroModal', () => {
 		} );
 	} );
 
+	test( 'should not dismiss when the modal has already been dismissed', () => {
+		const updateOptions = jest.fn();
+		useSelect.mockImplementation( () => ( {
+			isDismissed: true,
+			isResolving: false,
+			isWelcomeModalShown: true,
+		} ) );
+		useDispatch.mockImplementation( () => ( {
+			updateOptions,
+		} ) );
+
+		const { container } = render( <IntroModal /> );
+
+		expect( container ).toBeEmptyDOMElement();
+		expect( updateOptions ).not.toHaveBeenCalled();
+	} );
+
 	test( 'should show the intro modal when welcome modal is not shown', () => {
 		useSelect.mockImplementation( () => ( {
 			isResolving: false,
