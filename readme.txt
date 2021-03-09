@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.6.0
 Requires PHP: 7.0
-Stable tag: 2.2.0-dev
+Stable tag: 2.1.2-beta.1
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -73,7 +73,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-== Unreleased ==
+== 2.1.2 ==
 
 - Dev: Add nav intro modal tests #6518
 - Dev: Use wc filter to get status tabs for tools category #6525
