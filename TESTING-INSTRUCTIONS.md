@@ -20,6 +20,14 @@ add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
 3. Note that all the reports exist and navigating to those reports works as expected.
 4. Check that report menu items are marked active when navigating to that page.
 
+### Add navigation container tests #6464
+
+1. On a new site, finish the store setup wizard, but don't hide the task list.
+2. Navigate to a WooCommerce Admin Analytics page.
+3. Note the menu is under the "Analytics" level.
+4. Click the "Store Setup" link in the top right hand corner.
+5. Note that the navigation level automatically is updated to the root level where the "Home" item is marked active.
+
 ### Add preview site button on the appearance task #6457
 
 1. Navigate to Home and click "Personalzie your store" task.
@@ -27,6 +35,23 @@ add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
 3. A new tab should open and the URL should be the site URL.
 4. Navigate to other tasks such as "Store Details" or "Add products" .
 5. The "Preview Site" should not be shown on the other tasks.
+
+### Store profiler - Added MailPoet to Business Details step  #6503
+
+- Create a brand new site and go to the OBW.
+- In the first OBW step (`Store Details`) set a Country / Region other than `US | BR | FR | ID | GB | DE | VN | CA | PL | MY | AU | NG | GR | BE | PT | DK | SE | JP` (e.g.: Uruguay).
+- Continue with the profiler.
+- In the 4th step (`Business Details`) choose any of the options in both selectors.
+- Verify that the displayed extensions are:
+```
+Mailpoet
+Facebook
+Google Ads
+Mailchimp
+Creative Mail
+```
+(In that order)
+- Verify that the Creative Mail option is toggled off by default.
 
 ### Fix double prefixing of navigation URLs #6460
 
@@ -95,6 +120,37 @@ For each task in that list apart from "Store details":
 2. You should land on the setup task page
 3. A title in the top left should reflect the original task name from the task list. e.g. "Add tax rates"
 4. Clicking the chevron to the left of the title should take you back to the home screen
+
+### Update target audience of business feature step #6508
+
+Scenario #1
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a canadian address (addr: 4428 Blanshard, country/region: Canada -- British Columbia, city: Victoria, postcode: V8W 2H9)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. The business details tab should show a **Business details** tab, and a **Free features** tab (disabled at first)
+     - There should only be dropdowns visible on the **Business details** step (no checkboxes)
+5. Select **1-10** for the first dropdown, and **No** for the second, and click Continue.
+6. Click on the expansion icon for the **Add recommended business features to my site**
+7. It should list 7 features, including **WooCommerce Payments** (top one)
+     - Note down the selected features, for step 10
+8. Click continue, and select your theme, after it should redirect to the home screen (showing the welcome modal, you can step through this).
+9. The home screen task list should include a **Set up WooCommerce Payments** task, and there should also be a **Set up additional payment providers** inbox card displayed (below the task list).
+10. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 7 are installed and activated.
+
+Scenario #2
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a spanish address (addr: C/ Benito Guinea 52, country/region: Spain -- Barcelona, city: Canet de Mar, postcode: 08360)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. On the business details tab select **1-10** for the first dropdown, and **No** for the second.
+     - After filling the dropdowns it should show several checkboxes with plugins (Facebook, mailchimp, creative mail, google ads)
+     - Note which ones you kept selected (you can unselect one or two)
+5. Click continue, and select your theme, it should show the **WooCommerce Shipping & Tax** step after, you can click **No thanks**.
+6. You will be redirected to the home screen, showing the welcome modal, you can step through this.
+7. The task list should show the **Choose payment methods** task, and the **Set up additional payment providers** inbox card should not be present.
+8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
+9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
 
 ## 2.1.0
 
@@ -166,6 +222,13 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 6. Make sure the menu item order is correct after unfavoriting.
 7. Create a user with permissions to see some but not all registered WooCommerce pages.
 8. Check that a user without permission to access a menu item cannot see said menu item.
+
+### Fixed associated Order Number for refunds #6428
+
+1. In a store with refunded orders.
+2. Go to `Analytics` > `Orders`
+3. Set the `Date Range` filter in order to cover the refunded order date.
+4. Verify that now the associated order number and the related products are visible.
 
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
