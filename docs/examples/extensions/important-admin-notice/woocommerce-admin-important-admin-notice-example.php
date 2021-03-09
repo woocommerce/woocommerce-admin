@@ -42,7 +42,7 @@ function wc_admin_add_important_notice() {
 		<p class="notice-text">Important notice targeted by inspecting DOM.</p>
 	</div>
 	<div class="updated woocommerce-admin woocommerce-message">
-		<p>Impotant notice targeted by class.</p>
+		<p>Important notice targeted by class.</p>
 	</div>
 	<div class="updated woocommerce-admin woocommerce-message ok-to-hide">
 		<p>Notice excluded from importance clause targeted by class.</p>
