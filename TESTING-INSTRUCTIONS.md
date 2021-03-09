@@ -28,7 +28,7 @@
 ### Store profiler - Added MailPoet to Business Details step  #6503
 
 - Create a brand new site and go to the OBW.
-- In the first OBW step (`Store Details`) set a Country / Region other than `US` (e.g.: Uruguay).
+- In the first OBW step (`Store Details`) set a Country / Region other than `US | BR | FR | ID | GB | DE | VN | CA | PL | MY | AU | NG | GR | BE | PT | DK | SE | JP` (e.g.: Uruguay).
 - Continue with the profiler.
 - In the 4th step (`Business Details`) choose any of the options in both selectors.
 - Verify that the displayed extensions are:
