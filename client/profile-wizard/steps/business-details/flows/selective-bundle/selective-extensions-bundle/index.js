@@ -12,8 +12,14 @@ import { Link } from '@woocommerce/components';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
-import { pluginNames } from '@woocommerce/data';
+import {
+	pluginNames,
+	SETTINGS_STORE_NAME,
+	ONBOARDING_STORE_NAME,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -51,9 +57,10 @@ const installableExtensions = [
 					),
 					'woocommerce-payments'
 				),
+				visible: true,
 			},
 			{
-				slug: 'woocommerce-services',
+				slug: 'woocommerce-services:shipping',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Print shipping labels with {{link}}WooCommerce Shipping{{/link}}',
@@ -61,6 +68,18 @@ const installableExtensions = [
 					),
 					'shipping'
 				),
+				visible: true,
+			},
+			{
+				slug: 'woocommerce-services:tax',
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Get automated sales tax with {{link}}WooCommerce Tax{{/link}}',
+						'woocommerce-admin'
+					),
+					'tax'
+				),
+				visible: true,
 			},
 			{
 				slug: 'jetpack',
@@ -71,6 +90,7 @@ const installableExtensions = [
 					),
 					'jetpack'
 				),
+				visible: true,
 			},
 		],
 	},
@@ -86,6 +106,7 @@ const installableExtensions = [
 					),
 					'facebook'
 				),
+				visible: true,
 			},
 			{
 				slug: 'kliken-marketing-for-google',
@@ -96,6 +117,7 @@ const installableExtensions = [
 					),
 					'google-ads-and-marketing'
 				),
+				visible: true,
 			},
 			{
 				slug: 'mailchimp-for-woocommerce',
@@ -106,6 +128,7 @@ const installableExtensions = [
 					),
 					'mailchimp-for-woocommerce'
 				),
+				visible: true,
 			},
 			{
 				slug: 'creative-mail-by-constant-contact',
@@ -116,6 +139,7 @@ const installableExtensions = [
 					),
 					'creative-mail-for-woocommerce'
 				),
+				visible: true,
 			},
 		],
 	},
@@ -239,12 +263,65 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 	);
 };
 
-export const SelectiveExtensionsBundle = ( {
+const determineShippingAndTaxInclusion = ( country, productTypes ) => {
+	// Exclude the WooCommerce Shipping mention if the user is not in the US.
+	// Exclude the WooCommerce Shipping mention if the user is in the US but
+	// only selected digital products in the Product Types step.
+	let shippingVisibility = true;
+	if (
+		country !== 'US' ||
+		( country === 'US' &&
+			productTypes.length === 1 &&
+			productTypes[ 0 ] === 'downloads' )
+	) {
+		shippingVisibility = false;
+	}
+
+	installableExtensions[ 0 ].plugins.forEach( ( plugin ) => {
+		if ( plugin.slug === 'woocommerce-services:shipping' ) {
+			plugin.visible = shippingVisibility;
+		}
+	} );
+
+	const taxExtensionAllowedCountries = [
+		'US',
+		'FR',
+		'GB',
+		'DE',
+		'CA',
+		'PL',
+		'AU',
+		'GR',
+		'BE',
+		'PT',
+		'DK',
+		'SE',
+	];
+
+	let taxVisibility = true;
+	// Exclude the WooCommerce Tax if the user is not in one of the following countries:
+	// US | FR | GB | DE | CA | PL | AU | GR | BE | PT | DK | SE
+	if ( ! taxExtensionAllowedCountries.includes( country ) ) {
+		taxVisibility = false;
+	}
+
+	installableExtensions[ 0 ].plugins.forEach( ( plugin ) => {
+		if ( plugin.slug === 'woocommerce-services:tax' ) {
+			plugin.visible = taxVisibility;
+		}
+	} );
+};
+
+const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
+	country,
+	productTypes,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( initialValues );
+
+	determineShippingAndTaxInclusion( country, productTypes );
 
 	const getCheckboxChangeHandler = ( slug ) => {
 		return ( checked ) => {
@@ -315,16 +392,20 @@ export const SelectiveExtensionsBundle = ( {
 								<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
 									{ title }
 								</div>
-								{ plugins.map( ( { description, slug } ) => (
-									<BundleExtensionCheckbox
-										key={ slug }
-										description={ description }
-										isChecked={ values[ slug ] }
-										onChange={ getCheckboxChangeHandler(
-											slug
-										) }
-									/>
-								) ) }
+								{ plugins
+									.filter(
+										( plugin ) => plugin.visible === true
+									)
+									.map( ( { description, slug } ) => (
+										<BundleExtensionCheckbox
+											key={ slug }
+											description={ description }
+											isChecked={ values[ slug ] }
+											onChange={ getCheckboxChangeHandler(
+												slug
+											) }
+										/>
+									) ) }
 							</div>
 						) ) }
 				</div>
@@ -347,3 +428,23 @@ export const SelectiveExtensionsBundle = ( {
 		</div>
 	);
 };
+
+export default compose(
+	withSelect( ( select ) => {
+		const { general: generalSettings } = select(
+			SETTINGS_STORE_NAME
+		).getSettings( 'general' );
+
+		const countryAndState =
+			generalSettings.woocommerce_default_country || '';
+		const country = countryAndState.split( ':' )[ 0 ];
+
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
+		const productTypes = getProfileItems().product_types;
+
+		return {
+			country,
+			productTypes,
+		};
+	} )
+)( SelectiveExtensionsBundle );
