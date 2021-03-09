@@ -45,9 +45,10 @@ INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `
 1. Narrow your viewport to < 782px.
 2. Navigate to various WooCommerce pages.
 3. Make sure the various tabs can be seen and function as expected.
-4. Open the "Inbox" panel.
-5. Click on the "Inbox" panel button again.
-6. Make sure the panel closes as expected and does not reopen immediately.
+4. Navigate to a WooCommerce Admin page that is not the homepage.
+5. Open the "Inbox" panel.
+6. Click on the "Inbox" panel button again.
+7. Make sure the panel closes as expected and does not reopen immediately.
 
 ### Add legacy report items to new navigation #6507
 
