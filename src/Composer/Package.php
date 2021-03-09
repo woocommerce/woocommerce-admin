@@ -145,4 +145,16 @@ class Package {
 			$update_version::delete_note();
 		}
 	}
+
+	/**
+	 * Checks if notes have been initialized.
+	 */
+	private static function is_notes_initialized() {
+		try {
+			\WC_Data_Store::load( 'admin-note' );
+		} catch ( \Exception $e ) {
+			return false;
+		}
+		return true;
+	}
 }
