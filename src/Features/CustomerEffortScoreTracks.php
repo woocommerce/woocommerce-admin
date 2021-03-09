@@ -99,8 +99,8 @@ class CustomerEffortScoreTracks {
 	 * via wp.data.dispatch method.
 	 *
 	 * Due to lack of options to directly hook ourselves into the ajax post request
-	 * initiated by edit-tags.php page, we infer a successful request by looking
-	 * for a new tag ID generated within tags table.
+	 * initiated by edit-tags.php page, we infer a successful request by observing
+	 * an increase of the number of rows in tags table
 	 *
 	 * @param string $action Action name for the survey.
 	 * @param string $label Label for the snackbar.
@@ -113,21 +113,12 @@ class CustomerEffortScoreTracks {
 		return sprintf(
 			"(function( $ ) {
 				'use strict';
-				// Returns an array of tag IDs based on the table displayed.
-				function getTagIds() {
-					return $('.tags tbody > tr').map( function( idx, tr ) { return tr.getAttribute( 'id' ).split( '-' )[ 1 ]; } ).toArray();
-				}
-				// Gets the highest tag ID - assuming it's the latest.
-				function getMaxId() {
-					return Math.max.apply( this, getTagIds() );
-				}
 				// Hook on submit button and sets a 500ms interval function
 				// to determine successful add tag or otherwise.
 				$('#addtag #submit').on( 'click', function() {
-					const lastId = getMaxId();
+					const initialCount = $('.tags tbody > tr').length;
 					const interval = setInterval( function() {
-						let newId = getMaxId();
-						if ( newId > lastId ) {
+						if ( $('.tags tbody > tr').length > initialCount ) {
 							// New tag detected.
 							clearInterval( interval );
 							wp.data.dispatch('wc/customer-effort-score').addCesSurvey( '%s', '%s', '%s', '%s', '%s' );
