@@ -249,8 +249,18 @@ class CoreMenu {
 		);
 		$tabs = apply_filters( 'woocommerce_admin_status_tabs', $tabs );
 
-		$order = 0;
-		$items = array();
+		$order = 1;
+		$items = array(
+			array(
+				'parent'     => 'woocommerce-tools',
+				'title'      => __( 'Import / Export', 'woocommerce-admin' ),
+				'capability' => 'import',
+				'id'         => 'tools-import-export',
+				'url'        => 'import.php',
+				'migrate'    => false,
+				'order'      => 0,
+			),
+		);
 
 		foreach ( $tabs as $key => $tab ) {
 			$items[] = array(
@@ -377,6 +387,7 @@ class CoreMenu {
 			'woocommerce',
 			'wc-reports',
 			'wc-settings',
+			'wc-status',
 		);
 
 		return apply_filters( 'woocommerce_navigation_core_excluded_items', $excluded_items );
