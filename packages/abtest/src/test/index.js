@@ -7,14 +7,13 @@ import { render, findByText } from '@testing-library/react';
 /**
  * Internal dependencies
  */
+import { ABTEST_OPTION_NAME } from '../constants';
 import { ABTest } from '../index';
 import { getAndSetGroup, getCachedGroup, setCachedGroup } from '../utils';
 
-import { ABTEST_OPTION_NAME } from '../constants';
-
 jest.mock( '@wordpress/api-fetch' );
 
-describe( 'ABTest', () => {
+describe( 'ABTest Suite', () => {
 	beforeEach( () => window.localStorage.clear() );
 	afterEach( () => jest.clearAllMocks() );
 
@@ -36,24 +35,24 @@ describe( 'ABTest', () => {
 		expect( window.localStorage.getItem( 'test' ) ).toBe( 'experiment' );
 	} );
 
-	it( 'Should fetch options from backend and set cache to experiment.', async () => {
+	it( 'Should fetch group from backend and set cache to experiment.', async () => {
 		apiFetch.mockResolvedValue( {
-			[ ABTEST_OPTION_NAME ]: { test: 'control' },
+			[ ABTEST_OPTION_NAME + '_test' ]: 'experiment',
 		} );
+
+		const group = await getAndSetGroup( 'test' );
+
+		expect( group ).toBe( 'experiment' );
+		expect( window.localStorage.getItem( 'test' ) ).toBe( 'experiment' );
+	} );
+
+	it( 'Should fail to fetch group and default to control.', async () => {
+		apiFetch.mockRejectedValue( new Error() );
 
 		const group = await getAndSetGroup( 'test' );
 
 		expect( group ).toBe( 'control' );
 		expect( window.localStorage.getItem( 'test' ) ).toBe( 'control' );
-	} );
-
-	it( 'Should fail to fetch option, not set cache, and return control.', async () => {
-		apiFetch.mockResolvedValue( {} );
-
-		const group = await getAndSetGroup( 'test' );
-
-		expect( group ).toBe( 'control' );
-		expect( window.localStorage.getItem( 'test' ) ).toBeFalsy();
 	} );
 
 	it( 'Should render experiment when cache is experiment.', async () => {
@@ -73,7 +72,7 @@ describe( 'ABTest', () => {
 
 	it( 'Should render control when fetched option is control.', async () => {
 		apiFetch.mockResolvedValue( {
-			[ ABTEST_OPTION_NAME ]: { test: 'control' },
+			[ ABTEST_OPTION_NAME + '_test' ]: 'control',
 		} );
 
 		const { container } = render(

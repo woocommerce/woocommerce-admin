@@ -34,11 +34,13 @@ export const setCachedGroup = ( name, value ) =>
 
 /**
  * Fetch abtest option from backend.
+ *
+ * @param {string} name
  */
-const getABTestOption = () => {
+const getABTestOption = ( name ) => {
 	return apiFetch( {
 		path: addQueryArgs( `${ WC_ADMIN_NAMESPACE }/options`, {
-			options: ABTEST_OPTION_NAME,
+			options: `${ ABTEST_OPTION_NAME }_${ name }`,
 		} ),
 	} );
 };
@@ -46,49 +48,45 @@ const getABTestOption = () => {
 /**
  * Set abtest option in backend.
  *
- * Note: Groups for multiple experiments are stored in a single array in the db.
- * As such, we should limit the number of ABTests that are displayed on a page to 1.
- * If we attempt to display more, only one of the experiment groups will be persisted.
- *
- * @param {Object} option Object containing experiment name keys to group values.
+ * @param {string} name
+ * @param {string} value
  */
-const setABTestOption = ( option ) => {
+const setABTestOption = ( name, value ) => {
 	apiFetch( {
 		method: 'POST',
 		path: `${ WC_ADMIN_NAMESPACE }/options`,
-		data: { [ ABTEST_OPTION_NAME ]: option },
+		data: { [ `${ ABTEST_OPTION_NAME }_${ name }` ]: value },
 	} );
 };
 
 /**
  * Fetch option from backend and set localStorage accordingly.
  *
- * If name doesn't exist, then we pick a value, and update in the backend.
- * We also set localStorage here and trigger a tracks event after we
- * persist this result.
+ * If option doesn't exist, then pick a group, update in the backend,
+ * set localStorage, and trigger a tracks event.
  *
- * @param {string} name Key name.
+ * If apiFetch fails, default to control.
+ *
+ * @param {string} name
  *
  * @return {string} - Group name (CONTROL or EXPERIMENT).
  */
 export const getAndSetGroup = async ( name ) => {
 	try {
-		const option = await getABTestOption();
-		const group = option[ ABTEST_OPTION_NAME ][ name ] || getRandomGroup();
+		const option = await getABTestOption( name );
+		const group =
+			option[ `${ ABTEST_OPTION_NAME }_${ name }` ] || getRandomGroup();
 
-		if ( ! option[ ABTEST_OPTION_NAME ][ name ] ) {
-			setABTestOption( {
-				...option[ ABTEST_OPTION_NAME ],
-				[ name ]: group,
-			} );
+		if ( ! option[ `${ ABTEST_OPTION_NAME }_${ name }` ] ) {
+			setABTestOption( name, group );
 			// Then fire tracks event.
 		}
 
 		setCachedGroup( name, group );
-
 		return group;
 	} catch {
-		return CONTROL; // We've failed to initialize. Return control and don't track.
+		setCachedGroup( name, CONTROL );
+		return CONTROL;
 	}
 };
 
