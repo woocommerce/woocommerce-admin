@@ -29,7 +29,6 @@
 
 - Create a brand new site and go to the OBW.
 - In the first OBW step (`Store Details`) set `US` in the `Country / Region` selector.
-- Set `Food and drink` in the second step (`Industry`)
 - Continue with the profiler.
 - In the 4th step (`Business Details`) choose any of the options in both selectors.
 - Under `Free features` tab, verify that the displayed extensions are:
