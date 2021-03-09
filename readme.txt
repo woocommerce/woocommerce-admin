@@ -103,6 +103,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
 - Feature: Increase target audience for business feature step. #6508
 - Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+- Add: CES survey for adding product categories, tags, and attributes #6418
 
 == 2.1.0 ==
 
@@ -153,7 +154,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add a changelog lint check to PRs. #6414
 - Fix: Move the shipping input and text 1px lower. #6408
 - Add: WC Admin Docker setup with WP-ENV
-- Add: CES survey for adding product categories, tags, and attributes #6418
 
 == 2.0.0 02/05/2021 ==
 
