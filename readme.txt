@@ -75,9 +75,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Tweak: Remove mobile activity panel toggle #6539
+- Dev: Add nav header component tests #6509
 - Add: Add legacy report items to new navigation #6507
 - Dev: Add initial tests for navigation Menu class #6492
 - Dev: Remove active item from navigation store #6486
+- Dev: Add navigation container tests #6464
+- Add: Add preview site button on the appearance task #6457
 - Fix: Add check for navigating being enabled. #6462
 - Dev: Add nav favorite button tests #6446
 - Dev: Add a changelog lint check to PRs. #6414
@@ -89,6 +93,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Deprecate Onboarding::has_woocommerce_support. #6401
 - Fix: Broken link anchors to online documentation. #6455
 - Dev: Add Dependency Extraction Webpack Plugin #5762
+- Dev: Add client-side filter for Navigation rootBackUrl #6505
 - Add: Back button to go to home screen from tasks in the task list. #6397
 - Fix: Update payment card style on mobile #6413
 - Fix: Missing i18n in Welcome modal. #6456
@@ -96,6 +101,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Add a "rather not say" option to revenue in the profile wizard. #6475
 - Dev: Added warning when WC-Admin is active but not being used #6453
 - Fix: Associated Order Number for refunds was hidden #6428
+- Add: Remove Mollie promo note on install #6510
+- Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
+- Feature: Increase target audience for business feature step. #6508
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
 
 == 2.1.0 ==
 
@@ -170,8 +179,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Add: Allow users to install the PayU plugin in the payments setup task. #6332
 - Fix: Persist the enabling of plugins in the payments setup task. #6332
-
-== Changelog ==
 
 == 1.9.0 1/15/2021 ==
 
