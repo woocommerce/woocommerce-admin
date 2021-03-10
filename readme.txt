@@ -117,6 +117,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: CES survey for importing products #6419
 - Add: CES survey for adding product categories, tags, and attributes #6418
 - Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
+- Fix: Add customer name column to CSV export #6556
 
 == 2.1.0 3/10/2021  ==
 

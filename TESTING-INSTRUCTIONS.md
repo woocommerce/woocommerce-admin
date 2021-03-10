@@ -17,6 +17,13 @@
 11. Click "Continue with my active theme"
 12. After finishing the wizard, this should redirect you to the "Jetpack" setup connection flow. (You should not be redirected straight to the homescreen).
 
+### Add customer name column to CSV export #6556
+
+- Create more than 25 orders
+- Go to Analytics -> Orders -> Click "Download"
+- Click download link in the email
+- See customer column with customer full name
+
 ### Allow the manager role to query certain options #6577
 
 Testing `woocommerce_ces_tracks_queue`
