@@ -275,19 +275,17 @@ class CustomerEffortScoreTracks {
 	 */
 	public function run_on_load_edit_php() {
 		$allowed_types = array( 'product', 'shop_order' );
+		$post_type     = get_current_screen()->post_type;
 
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		// We're only interested for certain post types.
-		if ( empty( $_GET['post_type'] ) || ! in_array( $_GET['post_type'], $allowed_types, true ) ) {
+		if ( ! in_array( $post_type, $allowed_types, true ) ) {
 			return;
 		}
 
 		// Determine whether request is search by "s" GET parameter.
-		if ( empty( $_GET['s'] ) ) {
+		if ( empty( $_GET['s'] ) ) { // phpcs:disable WordPress.Security.NonceVerification.Recommended
 			return;
 		}
-		$post_type = wc_clean( wp_unslash( $_GET['post_type'] ) );
-		// phpcs:enable
 
 		$page_now = 'edit-' . $post_type;
 		$this->enqueue_ces_survey_for_search( $post_type, $page_now, 'edit-php' );
