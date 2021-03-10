@@ -55,10 +55,13 @@ export const ActivityPanel = () => {
 	const panels = getAllPanels( panelsData );
 
 	useEffect( () => {
-		const visiblePanels = panels.reduce( ( acc, panel ) => {
-			acc[ panel.id ] = true;
-			return acc;
-		}, {} );
+		const visiblePanels = panels.reduce(
+			( acc, panel ) => {
+				acc[ panel.id ] = true;
+				return acc;
+			},
+			{ taskList: panelsData.isTaskListHidden !== 'yes' }
+		);
 		recordEvent( 'activity_panel_visible_panels', visiblePanels );
 	}, [] );
 
