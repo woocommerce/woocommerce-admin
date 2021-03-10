@@ -307,7 +307,7 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
  * @param {Array} plugins  list of plugins
  * @param {string} country  Woo store country
  * @param {Array} industry List of selected industries
- * @param productTypes
+ * @param {Array} productTypes List of selected product types
  */
 const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 	const countryCode = getCountryCode( country );
