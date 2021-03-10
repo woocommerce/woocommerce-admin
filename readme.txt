@@ -108,16 +108,16 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Feature: Increase target audience for business feature step. #6508
 - Dev: Store profiler - Added MailPoet to Business Details step  #6503
 
-== 2.1.2 ==
+== 2.1.0 3/10/2021  ==
 
 - Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
 - Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
 
-== 2.1.1 ==
+== 2.1.0 3/4/2021  ==
 
 - Fix: Restore missing Correct the Klarna slug #6440
 
-== 2.1.0 ==
+== 2.1.0 3/4/2021  ==
 
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
