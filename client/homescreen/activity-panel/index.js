@@ -63,7 +63,7 @@ export const ActivityPanel = () => {
 			{ taskList: panelsData.isTaskListHidden !== 'yes' }
 		);
 		recordEvent( 'activity_panel_visible_panels', visiblePanels );
-	}, [] );
+	}, [ panelsData.isTaskListHidden ] );
 
 	if ( panels.length === 0 ) {
 		return null;
