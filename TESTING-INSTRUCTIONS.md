@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Add legacy report items to new navigation #6507
+
+1. Enable the new navigation experience.
+2. Navigate to Analytics->Reports.
+3. Note that all the reports exist and navigating to those reports works as expected.
+4. Check that report menu items are marked active when navigating to that page.
+
 ### Fix double prefixing of navigation URLs #6460
 
 1. Register a navigation menu item with a full URL or admin link.
@@ -36,6 +43,18 @@
 2. Navigate to WooCommerce -> Settings -> Advanced Tab -> Features
 3. Check the box to add the new navigation feature, and hit save
 4. Ensure that the new navigation appears on the left as expected
+
+### Remove Mollie promo note on install #6510
+
+- If you do not currently have the Mollie note on your WooCommerce Admin home screen, you can add a test note with the correct name as follows:
+    1. install the WooCommerce Admin Test Helper plugin [here](https://github.com/woocommerce/woocommerce-admin-test-helper)
+    2. Go to the Admin notes tab
+    3. Add an admin note with the name `wc-admin-effortless-payments-by-mollie`
+    4. Go to the WCA home screen and verify that your test note is present
+- The note is removed on a new version install, so either install an old version of WCA and upgrade to the current one, or trigger the install process manually:
+    1. install the WCA test helper
+    2. go to the Tools tab
+    3. click the `Trigger WCA install` button
 
 ### Deprecate Onboarding::has_woocommerce_support #6401
 
