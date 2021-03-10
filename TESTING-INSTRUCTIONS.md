@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Add gross sales column to CSV export #6567
+
+1. Create more than 25 revenues
+2. Go to Analytics -> Revenue -> Click "Download"
+3. Click the download link in the email
+4. See gross sales column
+
 ### Fix a bug where the JetPack connection flow would not activate
 
 1. With a fresh install of wc-admin and woocommerce, go to the home screen
@@ -51,6 +58,7 @@ add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
 ```
 2. Enable the new navigation.
 3. Make sure the menu item for the registered tab is shown under `Tools`.
+
 ### Remove mobile activity panel toggle #6539
 
 1. Narrow your viewport to < 782px.
