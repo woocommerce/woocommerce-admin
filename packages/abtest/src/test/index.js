@@ -24,7 +24,6 @@ describe( 'ABTest Suite', () => {
 
 	const Control = () => <div>Control</div>;
 	const Experiment = () => <div>Experiment</div>;
-	const Loading = () => <div>Loading</div>;
 
 	it( 'Should show test is active.', async () => {
 		Date.now = jest.fn( () => 1615339211640 );
@@ -84,7 +83,6 @@ describe( 'ABTest Suite', () => {
 				name="test"
 				control={ <Control /> }
 				experiment={ <Experiment /> }
-				loading={ <Loading /> }
 				start={ 1615339211630 }
 				end={ 1615944011630 }
 			/>
@@ -92,6 +90,23 @@ describe( 'ABTest Suite', () => {
 
 		expect( await findByText( container, 'Control' ) ).toBeDefined();
 		expect( window.localStorage.getItem( 'test' ) ).toBeFalsy();
+	} );
+
+	it( 'Should call onComplete callback when rendering.', async () => {
+		window.localStorage.setItem( 'test', 'experiment' );
+		const onComplete = jest.fn( () => null );
+
+		const { container } = render(
+			<ABTest
+				name="test"
+				control={ <Control /> }
+				experiment={ <Experiment /> }
+				onComplete={ onComplete }
+			/>
+		);
+
+		expect( await findByText( container, 'Experiment' ) ).toBeDefined();
+		expect( onComplete ).toHaveBeenCalled();
 	} );
 
 	it( 'Should render experiment when cache is experiment.', async () => {
@@ -102,7 +117,6 @@ describe( 'ABTest Suite', () => {
 				name="test"
 				control={ <Control /> }
 				experiment={ <Experiment /> }
-				loading={ <Loading /> }
 			/>
 		);
 
@@ -119,7 +133,6 @@ describe( 'ABTest Suite', () => {
 				name="test"
 				control={ <Control /> }
 				experiment={ <Experiment /> }
-				loading={ <Loading /> }
 			/>
 		);
 

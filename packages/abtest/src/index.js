@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useCallback } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -18,48 +18,49 @@ import { getCachedGroup, getAndSetGroup, isActive } from './utils';
  * @param {string} props.name Name of the experiment.
  * @param {Object} props.control React component to display to control group.
  * @param {Object} props.experiment React component to display to experiment group.
- * @param {Object} props.loading React component to display while getting group.
- * @param {number} props.start A/B Test start timestamp.
- * @param {number} props.end A/B Test end timestamp.
+ * @param {Function|null} props.onComplete Optional. Callback triggered once A/B Test has completed setup.
+ * @param {number} props.start Optional. A/B Test start timestamp.
+ * @param {number} props.end Optional. A/B Test end timestamp.
  */
 export const ABTest = ( {
 	name,
 	control,
 	experiment,
-	loading,
+	onComplete,
 	start = 0,
 	end = Infinity,
 } ) => {
 	const [ variation, setVariation ] = useState( CONTROL );
 	const [ isFetching, setIsFetching ] = useState( CONTROL );
 	const active = isActive( start, end );
+	const handleComplete = useCallback( () => {
+		setIsFetching( false );
+		if ( onComplete ) {
+			onComplete();
+		}
+	}, [ onComplete ] );
 
 	useEffect( () => {
 		if ( ! active ) {
-			setIsFetching( false );
+			handleComplete();
 			return;
 		}
 
 		const cachedGroup = getCachedGroup( name );
-
 		if ( cachedGroup ) {
 			setVariation( cachedGroup );
-			setIsFetching( false );
-			return;
+			handleComplete();
+		} else {
+			( async () => {
+				const group = await getAndSetGroup( name );
+				setVariation( group );
+				handleComplete();
+			} )();
 		}
-
-		getAndSetGroup( name ).then( ( group ) => {
-			setVariation( group );
-			setIsFetching( false );
-		} );
-	}, [ active, name ] );
-
-	if ( ! active ) {
-		return control;
-	}
+	}, [ active, handleComplete, name ] );
 
 	if ( isFetching ) {
-		return loading;
+		return null;
 	}
 
 	return variation === CONTROL ? control : experiment;
