@@ -1,6 +1,14 @@
 Testing instructions
 ====================
 
+## 2.0.3
+
+### Fix a bug in useSettings that causes an infinite loop. #6540
+
+1. Install latest gutenberg plugin
+2. Visit the Analytics > Settings page.
+3. It should not crash, smoke test the page elements.
+
 ## 2.0.2
 
 ### Correct the Klarna slug #6440
