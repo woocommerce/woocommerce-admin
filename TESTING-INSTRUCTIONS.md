@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Close activity panel tabs by default and track #6566
+
+1. Open your browser console and enter `localStorage.setItem( 'debug', 'wc-admin:tracks' );`.
+2. With the task list enabled, navigate to the homescreen.
+3. Check that the `wcadmin_activity_panel_visible_panels` event is shown with `taskList: true` in its data.
+4. Hide the task list.
+5. Note that `wcadmin_activity_panel_visible_panels` event is shown with visible activity panels.
+6. After refreshing, make sure that the "Orders" activity panel is closed by default.
+
 ### Use wc filter to get status tabs for tools category #6525
 
 1. Register a new tab via the filter.

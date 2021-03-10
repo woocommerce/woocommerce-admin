@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Dev: Close activity panel tabs by default and track #6566
 - Dev: Add nav intro modal tests #6518
 - Dev: Use wc filter to get status tabs for tools category #6525
 - Tweak: Remove mobile activity panel toggle #6539
