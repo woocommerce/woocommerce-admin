@@ -95,3 +95,14 @@ export const getAndSetGroup = async ( name ) => {
  */
 export const getRandomGroup = () =>
 	Math.random() < 0.5 ? CONTROL : EXPERIMENT;
+
+/**
+ * Check if we are between start and end timestamps.
+ *
+ * @param {number} start Start timestamp.
+ * @param {number} end End timestamp.
+ *
+ * @return {boolean} - Whether test is active.
+ */
+export const isActive = ( start, end ) =>
+	Date.now() >= start && Date.now() <= end;
