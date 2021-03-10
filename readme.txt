@@ -167,6 +167,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Move the shipping input and text 1px lower. #6408
 - Add: WC Admin Docker setup with WP-ENV
 
+== 2.0.3 03/10/2021 ==
+
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
+== 2.0.2 25/05/2021 ==
+
+- Fix: Correct the Klarna slug #6440
+
 == 2.0.0 02/05/2021 ==
 
 - Tweak: Bump minimum supported version of PHP to 7.0. #6046
