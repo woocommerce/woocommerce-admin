@@ -187,6 +187,7 @@
 		"cross-env": "7.0.3",
 		"css-loader": "3.6.0",
 		"docsify-cli": "4.4.2",
+		"eslint-import-resolver-webpack": "^0.13.0",
 		"eslint-plugin-import": "^2.22.1",
 		"fork-ts-checker-webpack-plugin": "^6.1.0",
 		"fs-extra": "8.1.0",
@@ -224,7 +225,7 @@
 		"webpack": "4.43.0",
 		"webpack-bundle-analyzer": "3.6.1",
 		"webpack-cli": "3.3.11",
-		"webpack-fix-style-only-entries": "0.6.0",
+		"webpack-fix-style-only-entries": "0.6.1",
 		"webpack-rtl-plugin": "2.0.0"
 	},
 	"engines": {

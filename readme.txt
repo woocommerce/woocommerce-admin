@@ -75,6 +75,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Dev: Add nav intro modal tests #6518
+- Dev: Use wc filter to get status tabs for tools category #6525
 - Tweak: Remove mobile activity panel toggle #6539
 - Dev: Add nav header component tests #6509
 - Add: Add legacy report items to new navigation #6507
@@ -100,14 +102,24 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Restore visual styles back to Analytics tabs. #5913
 - Add: Add a "rather not say" option to revenue in the profile wizard. #6475
 - Dev: Added warning when WC-Admin is active but not being used #6453
+- Fix: Associated Order Number for refunds was hidden #6428
 - Add: Remove Mollie promo note on install #6510
 - Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
 - Feature: Increase target audience for business feature step. #6508
-- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
 - Dev: Store profiler - Added MailPoet to Business Details step  #6503
 - Dev: Store profiler - Added MailPoet to new Business Details step  #6515
+- Dev: Add tilde (~) to represent client root directory for imports. #6517
 
-== 2.1.0 ==
+== 2.1.0 3/10/2021  ==
+
+- Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
+== 2.1.0 3/4/2021  ==
+
+- Fix: Restore missing Correct the Klarna slug #6440
+
+== 2.1.0 3/4/2021  ==
 
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
@@ -156,6 +168,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add a changelog lint check to PRs. #6414
 - Fix: Move the shipping input and text 1px lower. #6408
 - Add: WC Admin Docker setup with WP-ENV
+
+== 2.0.3 03/10/2021 ==
+
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
+== 2.0.2 25/05/2021 ==
+
+- Fix: Correct the Klarna slug #6440
 
 == 2.0.0 02/05/2021 ==
 

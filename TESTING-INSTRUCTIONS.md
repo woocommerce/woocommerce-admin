@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Use wc filter to get status tabs for tools category #6525
+
+1. Register a new tab via the filter.
+```
+add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
+	$tabs['my-tools-page'] = __( 'My Tools Page', 'your-text-domain' );
+	return $tabs;
+} );
+```
+2. Enable the new navigation.
+3. Make sure the menu item for the registered tab is shown under `Tools`.
+### Remove mobile activity panel toggle #6539
+
+1. Narrow your viewport to < 782px.
+2. Navigate to various WooCommerce pages.
+3. Make sure the various tabs can be seen and function as expected.
+4. Navigate to a WooCommerce Admin page that is not the homepage.
+5. Open the "Inbox" panel.
+6. Click on the "Inbox" panel button again.
+7. Make sure the panel closes as expected and does not reopen immediately.
+
 ### Add legacy report items to new navigation #6507
 
 1. Enable the new navigation experience.
@@ -158,6 +179,47 @@ Scenario #2
 8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
 9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
 
+## 2.1.2
+
+### Add Guards to "Deactivate Plugin" Note Handlers #6532
+
+#### Test incompatible WooCommerce version
+
+-   Install and activate Woocommerce 4.7
+-   See that the Woocommerce Admin plugin is deactivated.
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   See that the note is in the inbox
+-   Activate the Woocommerce Admin plugin.
+-   See that Woocommerce Admin immediately de-activates without a fatal error.
+-   See that the note remains in inbox
+
+#### Test compatible WooCommerce version
+
+-   Deactivate the Woocommerce Admin plugin.
+-   Install and activate the latest Woocommerce version.
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   Activate the Woocommerce Admin plugin.
+-   See that note is **not** in the inbox
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   De-activate the Woocommerce Admin plugin.
+-   See that note is **not** in the inbox
+
+
 ## 2.1.0
 
 ### Correct the Klarna slug #6440
@@ -228,6 +290,13 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 6. Make sure the menu item order is correct after unfavoriting.
 7. Create a user with permissions to see some but not all registered WooCommerce pages.
 8. Check that a user without permission to access a menu item cannot see said menu item.
+
+### Fixed associated Order Number for refunds #6428
+
+1. In a store with refunded orders.
+2. Go to `Analytics` > `Orders`
+3. Set the `Date Range` filter in order to cover the refunded order date.
+4. Verify that now the associated order number and the related products are visible.
 
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
