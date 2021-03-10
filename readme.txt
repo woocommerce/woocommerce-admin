@@ -105,10 +105,17 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Associated Order Number for refunds was hidden #6428
 - Add: Remove Mollie promo note on install #6510
 - Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
-- Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
 - Feature: Increase target audience for business feature step. #6508
-- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
 - Dev: Store profiler - Added MailPoet to Business Details step  #6503
+
+== 2.1.2 ==
+
+- Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
+== 2.1.1 ==
+
+- Fix: Restore missing Correct the Klarna slug #6440
 
 == 2.1.0 ==
 
