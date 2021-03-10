@@ -73,11 +73,16 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-== 2.1.1 ==
+== 2.1.2 3/10/2021  ==
+
+- Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
+== 2.1.1 3/4/2021  ==
 
 - Fix: Restore missing Correct the Klarna slug #6440
 
-== 2.1.0 ==
+== 2.1.0 3/4/2021  ==
 
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
@@ -125,6 +130,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Broken link anchors to online documentation. #6455
 - Fix: Add check for navigating being enabled. #6462
 
+== 2.0.3 03/10/2021 ==
+
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
 == 2.0.2 25/05/2021 ==
 
 - Fix: Correct the Klarna slug #6440
@@ -152,8 +161,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Add: Allow users to install the PayU plugin in the payments setup task. #6332
 - Fix: Persist the enabling of plugins in the payments setup task. #6332
-
-== Changelog ==
 
 == 1.9.0 1/15/2021 ==
 
