@@ -68,7 +68,7 @@ const installableExtensions = [
 				},
 			},
 			{
-				slug: 'woocommerce-services',
+				slug: 'woocommerce-services:shipping',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Print shipping labels with {{link}}WooCommerce Shipping{{/link}}',
@@ -76,6 +76,55 @@ const installableExtensions = [
 					),
 					'shipping'
 				),
+				isVisible: ( countryCode, industry, productTypes ) => {
+					// Exclude the WooCommerce Shipping mention if the user is not in the US.
+					// Exclude the WooCommerce Shipping mention if the user is in the US but
+					// only selected digital products in the Product Types step.
+					if (
+						countryCode !== 'US' ||
+						( countryCode === 'US' &&
+							productTypes.length === 1 &&
+							productTypes[ 0 ] === 'downloads' )
+					) {
+						return false;
+					}
+
+					return true;
+				},
+			},
+			{
+				slug: 'woocommerce-services:tax',
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Get automated sales tax with {{link}}WooCommerce Tax{{/link}}',
+						'woocommerce-admin'
+					),
+					'tax'
+				),
+				isVisible: ( countryCode ) => {
+					const allowedCountries = [
+						'US',
+						'FR',
+						'GB',
+						'DE',
+						'CA',
+						'PL',
+						'AU',
+						'GR',
+						'BE',
+						'PT',
+						'DK',
+						'SE',
+					];
+
+					// Exclude the WooCommerce Tax if the user is not in one of the following countries:
+					// US | FR | GB | DE | CA | PL | AU | GR | BE | PT | DK | SE
+					if ( ! allowedCountries.includes( countryCode ) ) {
+						return false;
+					}
+
+					return true;
+				},
 			},
 			{
 				slug: 'jetpack',
@@ -255,16 +304,18 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
  * Returns plugins that either don't have the acceptedCountryCodes param or one defined
  * that includes the passed in country.
  *
- * @param {Array}  plugins  list of plugins
+ * @param {Array} plugins  list of plugins
  * @param {string} country  Woo store country
- * @param {Array}  industry List of selected industries
+ * @param {Array} industry List of selected industries
+ * @param productTypes
  */
-const getVisiblePlugins = ( plugins, country, industry ) => {
+const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 	const countryCode = getCountryCode( country );
 
 	return plugins.filter(
 		( plugin ) =>
-			! plugin.isVisible || plugin.isVisible( countryCode, industry )
+			! plugin.isVisible ||
+			plugin.isVisible( countryCode, industry, productTypes )
 	);
 };
 
@@ -273,6 +324,7 @@ export const SelectiveExtensionsBundle = ( {
 	onSubmit,
 	country,
 	industry,
+	productTypes,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( {} );
@@ -283,7 +335,8 @@ export const SelectiveExtensionsBundle = ( {
 				const plugins = getVisiblePlugins(
 					curr.plugins,
 					country,
-					industry
+					industry,
+					productTypes
 				).reduce( ( pluginAcc, { slug } ) => {
 					return { ...pluginAcc, [ slug ]: true };
 				}, {} );
@@ -370,7 +423,8 @@ export const SelectiveExtensionsBundle = ( {
 								{ getVisiblePlugins(
 									plugins,
 									country,
-									industry
+									industry,
+									productTypes
 								).map( ( { description, slug } ) => (
 									<BundleExtensionCheckbox
 										key={ slug }

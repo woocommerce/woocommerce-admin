@@ -69,13 +69,21 @@ class BusinessDetails extends Component {
 
 		const { getCurrencyConfig } = this.context;
 
-		const businessExtensions = Object.keys(
-			extensionInstallationOptions
-		).filter(
-			( key ) =>
-				extensionInstallationOptions[ key ] &&
-				key !== 'install_extensions'
-		);
+		const businessExtensions = Object.keys( extensionInstallationOptions )
+			.filter(
+				( key ) =>
+					extensionInstallationOptions[ key ] &&
+					key !== 'install_extensions'
+			)
+			.map( ( key ) => {
+				// Remove anything after :
+				// Please refer to selective-extensions-bundle/index.js
+				// installableExtensions variable
+				// this is to allow duplicate slugs (Tax & Shipping for example)
+				return key.split( ':' )[ 0 ];
+			} )
+			// remove duplicate
+			.filter( ( item, index, arr ) => arr.indexOf( item ) === index );
 
 		recordEvent( 'storeprofiler_store_business_features_continue', {
 			product_number: productCount,
@@ -88,7 +96,9 @@ class BusinessDetails extends Component {
 				extensionInstallationOptions
 			).every( ( val ) => val ),
 			install_woocommerce_services:
-				extensionInstallationOptions[ 'woocommerce-services' ],
+				extensionInstallationOptions[
+					'woocommerce-services:shipping'
+				] || extensionInstallationOptions[ 'woocommerce-services:tax' ],
 			install_mailchimp:
 				extensionInstallationOptions[ 'mailchimp-for-woocommerce' ],
 			install_mailpoet: extensionInstallationOptions.mailpoet,
@@ -413,6 +423,7 @@ class BusinessDetails extends Component {
 					onSubmit={ this.onContinue }
 					country={ country }
 					industry={ profileItems.industry }
+					productTypes={ profileItems.product_types }
 				/>
 			</>
 		);
