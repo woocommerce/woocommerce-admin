@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Update undefined task name properties for help panel tracks #6565
+
+1. Enter `localStorage.setItem( 'debug', 'wc-admin:*' );` into your console. Leave your console open.
+2. Navigate to the homescreen.
+3. Open the "Help" tab in the top right.
+4. Note the tracks information in the console includes `homescreen` for the `taskName` property.
+5. Click on a help item.
+6. Note `homescreen` is used for the `taskName` in the help panel click tracks event.
+6. Navigate to any task in the task list.
+7. Click on the "Help" tab.
+8. Note the `taskName` for the event is the current task.
+9. Click on a help item.
+10. Note the `taskName` for the event is the current task.
 ### Use wc filter to get status tabs for tools category #6525
 
 1. Register a new tab via the filter.
