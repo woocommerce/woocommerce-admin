@@ -4,10 +4,11 @@
 
 ### Add gross sales column to CSV export #6567
 
-1. Create more than 25 revenues
-2. Go to Analytics -> Revenue -> Click "Download"
-3. Click the download link in the email
-4. See gross sales column
+1. Navigate to Analytics -> Revenue
+2. Adjust the date filter so that more than 25 rows are visible
+4. Click "Download"
+5. Click the download link in the email
+6. See gross sales column
 
 ### Fix a bug where the JetPack connection flow would not activate
 
