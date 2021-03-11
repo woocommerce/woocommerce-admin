@@ -13,44 +13,43 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Internal dependencies
  */
 import './style.scss';
+import NavInto1 from './images/nav-intro-1.png';
+import NavInto2 from './images/nav-intro-2.png';
+import NavInto3 from './images/nav-intro-3.png';
 import { WELCOME_MODAL_DISMISSED_OPTION_NAME } from '../../../homescreen/constants';
 
-const INTRO_MODAL_DISMISSED_OPTION_NAME =
+export const INTRO_MODAL_DISMISSED_OPTION_NAME =
 	'woocommerce_navigation_intro_modal_dismissed';
-const TRACKING_OPTION_NAME = 'woocommerce_allow_tracking';
 
 export const IntroModal = () => {
 	const [ isOpen, setOpen ] = useState( true );
 
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 
-	const {
-		allowTracking,
-		isDismissed,
-		isResolving,
-		isWelcomeModalShown,
-	} = useSelect( ( select ) => {
-		const { getOption, isResolving: isOptionResolving } = select(
-			OPTIONS_STORE_NAME
-		);
-		const dismissedOption = getOption( INTRO_MODAL_DISMISSED_OPTION_NAME );
+	const { isDismissed, isResolving, isWelcomeModalShown } = useSelect(
+		( select ) => {
+			const { getOption, isResolving: isOptionResolving } = select(
+				OPTIONS_STORE_NAME
+			);
+			const dismissedOption = getOption(
+				INTRO_MODAL_DISMISSED_OPTION_NAME
+			);
 
-		return {
-			allowTracking: getOption( TRACKING_OPTION_NAME ) === 'yes',
-			isDismissed: dismissedOption === 'yes',
-			isWelcomeModalShown:
-				getOption( WELCOME_MODAL_DISMISSED_OPTION_NAME ) !== 'yes',
-			isResolving:
-				typeof dismissedOption === 'undefined' ||
-				isOptionResolving( 'getOption', [
-					INTRO_MODAL_DISMISSED_OPTION_NAME,
-				] ) ||
-				isOptionResolving( 'getOption', [
-					WELCOME_MODAL_DISMISSED_OPTION_NAME,
-				] ) ||
-				isOptionResolving( 'getOption', [ TRACKING_OPTION_NAME ] ),
-		};
-	} );
+			return {
+				isDismissed: dismissedOption === 'yes',
+				isWelcomeModalShown:
+					getOption( WELCOME_MODAL_DISMISSED_OPTION_NAME ) !== 'yes',
+				isResolving:
+					typeof dismissedOption === 'undefined' ||
+					isOptionResolving( 'getOption', [
+						INTRO_MODAL_DISMISSED_OPTION_NAME,
+					] ) ||
+					isOptionResolving( 'getOption', [
+						WELCOME_MODAL_DISMISSED_OPTION_NAME,
+					] ),
+			};
+		}
+	);
 
 	const dismissModal = () => {
 		updateOptions( {
@@ -63,18 +62,12 @@ export const IntroModal = () => {
 	// Dismiss the modal when the welcome modal is shown.
 	// It is likely in this case that the navigation is on by default.
 	useEffect( () => {
-		if ( ! isResolving && isWelcomeModalShown ) {
+		if ( ! isResolving && isWelcomeModalShown && ! isDismissed ) {
 			dismissModal();
 		}
-	}, [ isResolving, isWelcomeModalShown ] );
+	}, [ isDismissed, isResolving, isWelcomeModalShown ] );
 
-	if (
-		! isOpen ||
-		isDismissed ||
-		isResolving ||
-		! allowTracking ||
-		isWelcomeModalShown
-	) {
+	if ( ! isOpen || isDismissed || isResolving || isWelcomeModalShown ) {
 		return null;
 	}
 
@@ -110,7 +103,7 @@ export const IntroModal = () => {
 						'All of your store management features in one place',
 						'woocommerce-admin'
 					),
-					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-1-32.gif'
+					NavInto1
 				),
 				getPage(
 					__( 'Focus on managing your store', 'woocommerce-admin' ),
@@ -118,7 +111,7 @@ export const IntroModal = () => {
 						'Give your attention to key areas of WooCommerce with little distraction',
 						'woocommerce-admin'
 					),
-					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-2-32.gif'
+					NavInto2
 				),
 				getPage(
 					__(
@@ -129,7 +122,7 @@ export const IntroModal = () => {
 						"They'll appear in the top level of the navigation for quick access",
 						'woocommerce-admin'
 					),
-					'https://woocommerce.com/wp-content/uploads/2021/02/nav-intro-video-3-32.gif'
+					NavInto3
 				),
 			] }
 		/>

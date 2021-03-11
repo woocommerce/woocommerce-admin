@@ -38,6 +38,11 @@ class CustomerEffortScoreTracks {
 	 * Action name for import products.
 	 */
 	const IMPORT_PRODUCTS_ACTION_NAME = 'import_products';
+  
+	/**
+	 * Action name for search.
+	 */
+	const SEARCH_ACTION_NAME = 'ces_search';
 
 	/**
 	 * Label for the snackbar that appears when a user submits the survey.
@@ -45,7 +50,6 @@ class CustomerEffortScoreTracks {
 	 * @var string
 	 */
 	private $onsubmit_label;
-
 
 	/**
 	 * Constructor. Sets up filters to hook into WooCommerce.
@@ -91,6 +95,7 @@ class CustomerEffortScoreTracks {
 			10,
 			3
 		);
+		add_action( 'load-edit.php', array( $this, 'run_on_load_edit_php' ), 10, 3 );
 
 		add_action( 'product_page_product_importer', array( $this, 'run_on_product_import' ), 10, 3 );
 
@@ -176,6 +181,35 @@ class CustomerEffortScoreTracks {
 		update_option(
 			self::CES_TRACKS_QUEUE_OPTION_NAME,
 			$queue
+		);
+	}
+
+	/**
+	 * Enqueue the CES survey on using search dynamically.
+	 *
+	 * @param string $search_area Search area such as "product" or "shop_order".
+	 * @param string $page_now Value of window.pagenow.
+	 * @param string $admin_page Value of window.adminpage.
+	 */
+	public function enqueue_ces_survey_for_search( $search_area, $page_now, $admin_page ) {
+		if ( $this->has_been_shown( self::SEARCH_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::SEARCH_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to use search?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => $page_now,
+				'adminpage'      => $admin_page,
+				'props'          => (object) array(
+					'search_area' => $search_area,
+				),
+			)
 		);
 	}
 
@@ -268,5 +302,26 @@ class CustomerEffortScoreTracks {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Determine on initiating CES survey on searching for product or orders.
+	 */
+	public function run_on_load_edit_php() {
+		$allowed_types = array( 'product', 'shop_order' );
+		$post_type     = get_current_screen()->post_type;
+
+		// We're only interested for certain post types.
+		if ( ! in_array( $post_type, $allowed_types, true ) ) {
+			return;
+		}
+
+		// Determine whether request is search by "s" GET parameter.
+		if ( empty( $_GET['s'] ) ) { // phpcs:disable WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		$page_now = 'edit-' . $post_type;
+		$this->enqueue_ces_survey_for_search( $post_type, $page_now, 'edit-php' );
 	}
 }

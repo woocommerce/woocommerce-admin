@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.6.0
 Requires PHP: 7.0
-Stable tag: 2.1.0-dev
+Stable tag: 2.2.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -75,6 +75,56 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Dev: Add nav intro modal tests #6518
+- Dev: Use wc filter to get status tabs for tools category #6525
+- Tweak: Remove mobile activity panel toggle #6539
+- Dev: Add nav header component tests #6509
+- Add: Add legacy report items to new navigation #6507
+- Dev: Add initial tests for navigation Menu class #6492
+- Dev: Remove active item from navigation store #6486
+- Dev: Add navigation container tests #6464
+- Add: Add preview site button on the appearance task #6457
+- Fix: Add check for navigating being enabled. #6462
+- Dev: Add nav favorite button tests #6446
+- Dev: Add a changelog lint check to PRs. #6414
+- Dev: Add navigation favorites tests #6409
+- Fix: Move the shipping input and text 1px lower. #6408
+- Dev: support use of Array.flat in client and packages. #6411
+- Fix: Correct the Klarna slug #6440
+- Tweak: Refactor autoloader to remove global variable. #6412
+- Dev: Deprecate Onboarding::has_woocommerce_support. #6401
+- Fix: Broken link anchors to online documentation. #6455
+- Dev: Add Dependency Extraction Webpack Plugin #5762
+- Dev: Add client-side filter for Navigation rootBackUrl #6505
+- Add: Back button to go to home screen from tasks in the task list. #6397
+- Fix: Update payment card style on mobile #6413
+- Fix: Missing i18n in Welcome modal. #6456
+- Fix: Restore visual styles back to Analytics tabs. #5913
+- Add: Add a "rather not say" option to revenue in the profile wizard. #6475
+- Dev: Remove `items_purchased` and `account_type` props from onboarding profile API. #6520
+- Dev: Added warning when WC-Admin is active but not being used #6453
+- Fix: Associated Order Number for refunds was hidden #6428
+- Add: Remove Mollie promo note on install #6510
+- Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
+- Feature: Increase target audience for business feature step. #6508
+- Dev: Store profiler - Added MailPoet to Business Details step  #6503
+- Dev: Store profiler - Added MailPoet to new Business Details step  #6515
+- Dev: Add tilde (~) to represent client root directory for imports. #6517
+- Add: Add Ireland to Square payment method #6559
+- Add: CES survey for search product, order, customer #6420
+- Add: CES survey for importing products #6419
+
+== 2.1.0 3/10/2021  ==
+
+- Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
+== 2.1.0 3/4/2021  ==
+
+- Fix: Restore missing Correct the Klarna slug #6440
+
+== 2.1.0 3/4/2021  ==
+
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Dev: Remove Google fonts and material icons. #6343
 - Add: Remove CES actions for adding and editing a product and editing an order #6355
@@ -117,8 +167,19 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Change `siteUrl` to `homeUrl` on navigation site title #6240
 - Dev: Add navigation favorites data store #6275
 - Add: Add navigation intro modal. #6367
+- Fix: Fix double prefixing of full navigation URLs #6460
 - Fix: Reset Navigation submenu before making Flyout #6396
-- Add: CES survey for importing products #6419
+- Dev: Add a changelog lint check to PRs. #6414
+- Fix: Move the shipping input and text 1px lower. #6408
+- Add: WC Admin Docker setup with WP-ENV
+
+== 2.0.3 03/10/2021 ==
+
+- Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
+
+== 2.0.2 25/05/2021 ==
+
+- Fix: Correct the Klarna slug #6440
 
 == 2.0.0 02/05/2021 ==
 
@@ -143,8 +204,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Allow highlight tooltip to use body tag as parent. #6309
 - Add: Allow users to install the PayU plugin in the payments setup task. #6332
 - Fix: Persist the enabling of plugins in the payments setup task. #6332
-
-== Changelog ==
 
 == 1.9.0 1/15/2021 ==
 

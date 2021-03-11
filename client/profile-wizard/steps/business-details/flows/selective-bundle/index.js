@@ -24,8 +24,8 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { CurrencyContext } from '../../../../../lib/currency-context';
-import { createNoticesFromResponse } from '../../../../../lib/notices';
+import { CurrencyContext } from '~/lib/currency-context';
+import { createNoticesFromResponse } from '~/lib/notices';
 import { platformOptions } from '../../data/platform-options';
 import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { getRevenueOptions } from '../../data/revenue-options';
@@ -262,6 +262,7 @@ class BusinessDetails extends Component {
 							<Card>
 								<CardBody>
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'How many products do you plan to display?',
 											'woocommerce-admin'
@@ -272,6 +273,7 @@ class BusinessDetails extends Component {
 									/>
 
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'Currently selling elsewhere?',
 											'woocommerce-admin'
@@ -288,6 +290,7 @@ class BusinessDetails extends Component {
 										'other-woocommerce',
 									].includes( values.selling_venues ) && (
 										<SelectControl
+											excludeSelectedOptions={ false }
 											label={ __(
 												"What's your current annual revenue?",
 												'woocommerce-admin'
@@ -309,6 +312,9 @@ class BusinessDetails extends Component {
 										<>
 											<div className="business-competitors">
 												<SelectControl
+													excludeSelectedOptions={
+														false
+													}
 													label={ __(
 														'Which platform is the store using?',
 														'woocommerce-admin'
@@ -373,7 +379,10 @@ class BusinessDetails extends Component {
 	}
 
 	renderFreeFeaturesStep() {
-		const { isInstallingActivating } = this.props;
+		const { isInstallingActivating, settings, profileItems } = this.props;
+		const country = settings.woocommerce_default_country
+			? settings.woocommerce_default_country
+			: null;
 
 		return (
 			<>
@@ -401,6 +410,8 @@ class BusinessDetails extends Component {
 				<SelectiveExtensionsBundle
 					isInstallingActivating={ isInstallingActivating }
 					onSubmit={ this.onContinue }
+					country={ country }
+					industry={ profileItems.industry }
 				/>
 			</>
 		);

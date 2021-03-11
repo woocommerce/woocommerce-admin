@@ -37,6 +37,10 @@ body.is-wc-nav-expanded {
 		width: $navigation-width;
 		height: 100%;
 	}
+
+	font > .xdebug-error {
+		margin-left: calc(#{$navigation-width} + #{$gap});
+	}
 }
 
 body.is-wc-nav-folded {
@@ -75,6 +79,7 @@ body.is-wc-nav-folded {
 		display: none !important;
 	}
 
+	&.woocommerce_page_wc-reports,
 	&.woocommerce_page_wc-settings,
 	&.woocommerce_page_wc-status {
 		.woo-nav-tab-wrapper {
@@ -127,5 +132,9 @@ body.is-wc-nav-folded {
 		#wpbody-content {
 			margin-top: $adminbar-height;
 		}
+	}
+
+	font > .xdebug-error {
+		margin-top: $header-height;
 	}
 }

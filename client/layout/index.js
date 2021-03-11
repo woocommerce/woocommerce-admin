@@ -18,6 +18,7 @@ import {
 	withOptionsHydration,
 } from '@woocommerce/data';
 import { recordPageView } from '@woocommerce/tracks';
+import '@woocommerce/notices';
 
 /**
  * Internal dependencies
@@ -35,7 +36,7 @@ const StoreAlerts = lazy( () =>
 
 const WCPayUsageModal = lazy( () =>
 	import(
-		/* webpackChunkName: "wcpay-usage-modal" */ '../task-list/tasks/payments/wcpay-usage-modal'
+		/* webpackChunkName: "wcpay-usage-modal" */ '../task-list/tasks/payments/wcpay/wcpay-usage-modal'
 	)
 );
 

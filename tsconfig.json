@@ -6,7 +6,7 @@
 		"moduleResolution": "node",
 		// Process & infer types from .js files.
 		"allowJs": true,
-		"jsx": "react",
+		"jsx": "preserve",
 		// Don't emit; allow Babel to transform files.
 		"noEmit": true,
 		// Enable strictest settings like strictNullChecks & noImplicitAny.
@@ -16,9 +16,10 @@
 		"skipLibCheck": false,
 		"module": "esnext",
 		"typeRoots": [ "**/node_modules/@types" ],
-		"baseUrl": "./client",
+		"baseUrl": "./",
 		"paths": {
-			"@woocommerce/*": [ "../packages/*/src" ]
+			"@woocommerce/*": [ "packages/*/src" ],
+			"~/*": [ "client/*" ]
 		}
 	},
 	"exclude": [ "node_modules", "build", "build-module", "dist", "vendor" ]
