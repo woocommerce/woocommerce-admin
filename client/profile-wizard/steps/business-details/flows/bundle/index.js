@@ -28,8 +28,8 @@ import { Text } from '@woocommerce/experimental';
 /**
  * Internal dependencies
  */
-import { CurrencyContext } from '../../../../../lib/currency-context';
-import { createNoticesFromResponse } from '../../../../../lib/notices';
+import { CurrencyContext } from '~/lib/currency-context';
+import { createNoticesFromResponse } from '~/lib/notices';
 import { extensionBenefits } from '../../data/extension-benefits';
 import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { platformOptions } from '../../data/platform-options';
@@ -68,14 +68,18 @@ class BusinessDetails extends Component {
 				? businessExtensions.includes(
 						'creative-mail-by-constant-contact'
 				  )
-				: true,
+				: false,
 			'kliken-marketing-for-google': businessExtensions
 				? businessExtensions.includes( 'kliken-marketing-for-google' )
+				: true,
+			mailpoet: businessExtensions
+				? businessExtensions.includes( 'mailpoet' )
 				: true,
 			install_extensions: true,
 		};
 
 		this.extensions = [
+			'mailpoet',
 			'facebook-for-woocommerce',
 			'mailchimp-for-woocommerce',
 			'kliken-marketing-for-google',
@@ -137,6 +141,7 @@ class BusinessDetails extends Component {
 			install_facebook: businessExtensions.includes(
 				'facebook-for-woocommerce'
 			),
+			install_mailpoet: businessExtensions.includes( 'mailpoet' ),
 			install_mailchimp: businessExtensions.includes(
 				'mailchimp-for-woocommerce'
 			),
