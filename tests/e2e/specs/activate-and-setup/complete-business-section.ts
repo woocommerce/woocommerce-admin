@@ -17,8 +17,7 @@ export async function completeBusinessSection() {
 	);
 
 	// Site is in US so the "Install recommended free business features"
-	// checkbox is present, uncheck it.
-	await onboarding.business.selectInstallFreeBusinessFeatures( false );
+	await onboarding.business.uncheckBusinessFeatures();
 
 	await onboarding.continue();
 }

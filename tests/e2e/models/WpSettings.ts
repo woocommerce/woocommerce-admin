@@ -3,7 +3,6 @@ import { Page } from 'playwright';
 
 export class WpSettings {
 	page: Page;
-
 	constructor( page: Page ) {
 		this.page = page;
 	}
@@ -14,10 +13,10 @@ export class WpSettings {
 		} );
 	}
 
-    async saveSettings() {
-        await this.page.click('.button-primary:text("Save Changes")');
+	async saveSettings() {
+		await this.page.click( '.button-primary:text("Save Changes")' );
 		await this.page.waitForNavigation( {
-			waitUntil: 'networkidle'
-		});
-    }
+			waitUntil: 'networkidle',
+		} );
+	}
 }

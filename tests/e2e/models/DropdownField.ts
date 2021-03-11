@@ -10,11 +10,17 @@ export class DropdownField {
 	}
 
 	async select( value: string ) {
-		await this.page.click(
-			this.id + ' .woocommerce-select-control__control'
+		const currentVal = await this.page.getAttribute(
+			this.id + ' input',
+			'value'
 		);
-		await this.page.click( this.id + ' button:text("' + value + '")' );
-		await this.checkSelected( value );
+		if ( currentVal !== value ) {
+			await this.page.click(
+				this.id + ' .woocommerce-select-control__control'
+			);
+			await this.page.click( this.id + ' button:text("' + value + '")' );
+			await this.checkSelected( value );
+		}
 	}
 
 	async checkSelected( value: string ) {

@@ -62,4 +62,16 @@ export class BusinessSection {
 			await checkbox.uncheck();
 		}
 	}
+
+	// The old list displayed on the dropdown page
+	async uncheckBusinessFeatures() {
+		// checkbox is present, uncheck it.
+		const installFeaturesCheckboxes = await page.$$(
+			'.woocommerce-profile-wizard__benefit .components-form-toggle__input'
+		);
+		// Uncheck all checkboxes, to avoid installing plugins
+		for ( const checkbox of installFeaturesCheckboxes ) {
+			await checkbox.uncheck();
+		}
+	}
 }
