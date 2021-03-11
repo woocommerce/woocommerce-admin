@@ -53,7 +53,7 @@ class CustomerEffortScoreTracks {
 	 * Action name for import products.
 	 */
 	const IMPORT_PRODUCTS_ACTION_NAME = 'import_products';
-  
+
 	/**
 	 * Action name for search.
 	 */
@@ -323,7 +323,7 @@ class CustomerEffortScoreTracks {
 			)
 		);
 	}
-  
+
 	/**
 	 * Maybe enqueue the CES survey on product import, if step is done.
 	 */
@@ -401,7 +401,8 @@ class CustomerEffortScoreTracks {
 				'props'          => (object) array(),
 			)
 		);
- 
+	}
+
 	/**
 	 * Determine on initiating CES survey on searching for product or orders.
 	 */
@@ -420,6 +421,6 @@ class CustomerEffortScoreTracks {
 		}
 
 		$page_now = 'edit-' . $post_type;
-		$this->enqueue_ces_survey_for_search( $post_type, $page_now, 'edit-php' 
+		$this->enqueue_ces_survey_for_search( $post_type, $page_now, 'edit-php' );
 	}
 }
