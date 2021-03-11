@@ -29,6 +29,7 @@ import {
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import ABTest from '@woocommerce/abtest';
 
 /**
  * Internal dependencies
@@ -36,6 +37,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
+import { PaymentMethodPlaceholder } from '../../placeholder';
 
 export const setMethodEnabledOption = async (
 	optionName,
@@ -66,10 +68,16 @@ class Payments extends Component {
 		methods.forEach(
 			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
 		);
+
+		const isLoading = methods.some(
+			( method ) => method.key === 'wcpay' && method.visible
+		);
+
 		this.state = {
 			busyMethod: null,
 			enabledMethods,
 			recommendedMethod: this.getRecommendedMethod(),
+			isLoading,
 		};
 
 		this.markConfigured = this.markConfigured.bind( this );
@@ -263,9 +271,11 @@ class Payments extends Component {
 		);
 	}
 
+	handleABTestComplete = () => this.setState( { isLoading: false } );
+
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { recommendedMethod } = this.state;
+		const { isLoading, recommendedMethod } = this.state;
 		const { methods, query } = this.props;
 
 		if ( currentMethod ) {
@@ -284,75 +294,87 @@ class Payments extends Component {
 			);
 		}
 
-		return (
-			<div className="woocommerce-task-payments">
-				{ methods.map( ( method ) => {
-					const {
-						before,
-						content,
-						isConfigured,
-						key,
-						title,
-						visible,
-						loading,
-					} = method;
+		const cards = methods.map( ( method ) => {
+			const {
+				before,
+				content,
+				isConfigured,
+				key,
+				title,
+				visible,
+				loading,
+			} = method;
 
-					if ( ! visible ) {
-						return null;
-					}
+			if ( ! visible ) {
+				return null;
+			}
 
-					const classes = classnames(
-						'woocommerce-task-payment',
-						'woocommerce-task-card',
-						! isConfigured &&
-							'woocommerce-task-payment-not-configured',
-						'woocommerce-task-payment-' + key
-					);
+			const classes = classnames(
+				'woocommerce-task-payment',
+				'woocommerce-task-card',
+				! isConfigured && 'woocommerce-task-payment-not-configured',
+				'woocommerce-task-payment-' + key
+			);
 
-					const isRecommended =
-						key === recommendedMethod && ! isConfigured;
-					const showRecommendedRibbon =
-						isRecommended && key !== 'wcpay';
-					const showRecommendedPill =
-						isRecommended && key === 'wcpay';
-					const recommendedText =
-						key === 'mercadopago'
-							? __( 'Local Partner', 'woocommerce-admin' )
-							: __( 'Recommended', 'woocommerce-admin' );
-
-					return (
-						<Card key={ key } className={ classes }>
-							{ showRecommendedRibbon && (
-								<div className="woocommerce-task-payment__recommended-ribbon">
-									<span>{ recommendedText }</span>
-								</div>
+			const isRecommended = key === recommendedMethod && ! isConfigured;
+			const showRecommendedRibbon = isRecommended && key !== 'wcpay';
+			const showRecommendedPill = isRecommended && key === 'wcpay';
+			const recommendedText =
+				key === 'mercadopago'
+					? __( 'Local Partner', 'woocommerce-admin' )
+					: __( 'Recommended', 'woocommerce-admin' );
+			const card = (
+				<Card key={ key } className={ classes }>
+					{ showRecommendedRibbon && (
+						<div className="woocommerce-task-payment__recommended-ribbon">
+							<span>{ recommendedText }</span>
+						</div>
+					) }
+					<CardMedia isBorderless>{ before }</CardMedia>
+					<CardBody>
+						<H className="woocommerce-task-payment__title">
+							{ title }
+							{ showRecommendedPill && (
+								<span className="woocommerce-task-payment__recommended-pill">
+									{ recommendedText }
+								</span>
 							) }
-							<CardMedia isBorderless>{ before }</CardMedia>
-							<CardBody>
-								<H className="woocommerce-task-payment__title">
-									{ title }
-									{ showRecommendedPill && (
-										<span className="woocommerce-task-payment__recommended-pill">
-											{ recommendedText }
-										</span>
-									) }
-								</H>
-								<div className="woocommerce-task-payment__content">
-									{ content }
-								</div>
-							</CardBody>
-							<CardFooter isBorderless>
-								{ loading ? (
-									<Spinner />
-								) : (
-									this.getSetupButtons( method )
-								) }
-							</CardFooter>
-						</Card>
-					);
-				} ) }
-			</div>
-		);
+						</H>
+						<div className="woocommerce-task-payment__content">
+							{ content }
+						</div>
+					</CardBody>
+					<CardFooter isBorderless>
+						{ loading ? (
+							<Spinner />
+						) : (
+							this.getSetupButtons( method )
+						) }
+					</CardFooter>
+				</Card>
+			);
+
+			if ( key === 'wcpay' ) {
+				return (
+					<ABTest
+						name="validate_randomization_mechanism"
+						control={ card }
+						experiment={ card } // Eventually, replace with experiment version of card.
+						onComplete={ this.handleABTestComplete }
+						key={ key }
+					/>
+				);
+			}
+
+			return isLoading ? <PaymentMethodPlaceholder key={ key } /> : card;
+		} );
+
+		// Workaround for missing WCPay ABTest placeholder.
+		if ( isLoading ) {
+			cards.push( <PaymentMethodPlaceholder key="wcpay-loading" /> );
+		}
+
+		return <div className="woocommerce-task-payments">{ cards }</div>;
 	}
 }
 

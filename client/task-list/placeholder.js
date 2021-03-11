@@ -1,4 +1,15 @@
 /**
+ * External dependencies
+ */
+import {
+	Card,
+	CardBody,
+	CardMedia,
+	CardFooter,
+	Spinner,
+} from '@wordpress/components';
+
+/**
  * Internal dependencies
  */
 import './style.scss';
@@ -46,5 +57,23 @@ const TaskListPlaceholder = ( props ) => {
 		</div>
 	);
 };
+
+export const PaymentMethodPlaceholder = () => (
+	<Card className="woocommerce-task-card woocommerce-task-payment">
+		<CardMedia isBorderless>
+			<span className="is-placeholder" />
+		</CardMedia>
+		<CardBody>
+			<div className="woocommerce-task-payment__title">
+				<span className="is-placeholder" />
+			</div>
+			<span className="is-placeholder" />
+			<span className="is-placeholder" />
+		</CardBody>
+		<CardFooter isBorderless>
+			<Spinner />
+		</CardFooter>
+	</Card>
+);
 
 export default TaskListPlaceholder;

@@ -250,34 +250,63 @@
 		img {
 			max-width: 100px;
 		}
-	}
 
-	.woocommerce-task-payment__title {
-		font-size: 16px;
-		font-weight: 400;
-		color: $studio-gray-80;
-		margin-top: 0;
-		margin-bottom: $gap-smaller;
-	}
-
-	.woocommerce-task-payment__content {
-		font-size: 14px;
-		color: $studio-gray-60;
-		margin: 0;
-		margin-right: $gap-larger;
-
-		.text-style-strong {
-			font-weight: bold;
-		}
-
-		p {
-			font-size: 12px;
+		.is-placeholder {
+			display: block;
+			width: 75px;
+			height: 75px;
+			background-color: $gray-100;
 		}
 	}
 
 	.components-card__body {
 		padding: $gap-large 0;
 		flex: 1;
+
+		.is-placeholder {
+			display: block;
+			width: 100%;
+			height: 1em;
+			margin-bottom: 1em;
+			background-color: $gray-100;
+			animation: loading-fade 1.6s ease-in-out infinite;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			@media screen and ( prefers-reduced-motion: reduce ) {
+				animation: none;
+			}
+		}
+
+		.woocommerce-task-payment__title {
+			font-size: 16px;
+			font-weight: 400;
+			color: $studio-gray-80;
+			margin-top: 0;
+			margin-bottom: $gap-smaller;
+
+			.is-placeholder {
+				width: 75%;
+				height: 1em;
+			}
+		}
+
+		.woocommerce-task-payment__content {
+			font-size: 14px;
+			color: $studio-gray-60;
+			margin: 0;
+			margin-right: $gap-larger;
+
+			.text-style-strong {
+				font-weight: bold;
+			}
+
+			p {
+				font-size: 12px;
+			}
+		}
 	}
 
 	.components-card__footer {
