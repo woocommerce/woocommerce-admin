@@ -109,7 +109,7 @@ install_deps() {
 	rm -f wp-config.php
 	rm -rf wp-content/plugins/woocommerce
 
-	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=root --dbpass=$DB_PASS --dbhost=localhost --dbprefix=wptests_ --allow-root
+	php wp-cli.phar core config --dbname=$DB_NAME --dbuser=root --dbpass=$DB_PASS --dbhost=127.0.0.1 --dbprefix=wptests_ --allow-root
 	php wp-cli.phar core install --url="$WP_SITE_URL" --title="Example" --admin_user=admin --admin_password=password --admin_email=info@example.com --path=$WP_CORE_DIR --skip-email --allow-root
 
 	# Install WooCommerce (latest non-hyphenated (beta, RC) tag)
