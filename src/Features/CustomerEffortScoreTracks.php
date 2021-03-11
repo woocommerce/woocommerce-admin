@@ -104,12 +104,10 @@ class CustomerEffortScoreTracks {
 	 *
 	 * @param string $action Action name for the survey.
 	 * @param string $label Label for the snackbar.
-	 * @param string $page_now Value of window.pagenow.
-	 * @param string $admin_page Value of window.adminpage.
 	 *
 	 * @return string Generated JavaScript to append to page.
 	 */
-	private function get_script_track_edit_php( $action, $label, $page_now, $admin_page ) {
+	private function get_script_track_edit_php( $action, $label ) {
 		return sprintf(
 			"(function( $ ) {
 				'use strict';
@@ -121,7 +119,7 @@ class CustomerEffortScoreTracks {
 						if ( $('.tags tbody > tr').length > initialCount ) {
 							// New tag detected.
 							clearInterval( interval );
-							wp.data.dispatch('wc/customer-effort-score').addCesSurvey( '%s', '%s', '%s', '%s', '%s' );
+							wp.data.dispatch('wc/customer-effort-score').addCesSurvey( '%s', '%s', window.pagenow, window.adminpage, '%s' );
 						} else {
 							// Form is no longer loading, most likely failed.
 							if ( $( '#addtag .submit .spinner.is-active' ).length < 1 ) {
@@ -131,11 +129,9 @@ class CustomerEffortScoreTracks {
 					}, 500 );
 				});
 			})( jQuery );",
-			addslashes( $action ),
-			addslashes( $label ),
-			addslashes( $page_now ),
-			addslashes( $admin_page ),
-			addslashes( $this->onsubmit_label )
+			esc_js( $action ),
+			esc_js( $label ),
+			esc_js( $this->onsubmit_label )
 		);
 	}
 
@@ -267,9 +263,7 @@ class CustomerEffortScoreTracks {
 		wc_enqueue_js(
 			$this->get_script_track_edit_php(
 				self::ADD_PRODUCT_CATEGORIES_ACTION_NAME,
-				__( 'How easy was it to add product category?', 'woocommerce-admin' ),
-				'edit-product_cat',
-				'edit-tags-php'
+				__( 'How easy was it to add product category?', 'woocommerce-admin' )
 			)
 		);
 	}
@@ -285,9 +279,7 @@ class CustomerEffortScoreTracks {
 		wc_enqueue_js(
 			$this->get_script_track_edit_php(
 				self::ADD_PRODUCT_TAGS_ACTION_NAME,
-				__( 'How easy was it to add a product tag?', 'woocommerce-admin' ),
-				'edit-product_tag',
-				'edit-tags-php'
+				__( 'How easy was it to add a product tag?', 'woocommerce-admin' )
 			)
 		);
 	}
