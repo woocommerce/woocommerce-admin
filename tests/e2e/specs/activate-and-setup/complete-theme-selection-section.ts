@@ -12,5 +12,5 @@ export async function completeThemeSelectionSection() {
 	// Make sure we're on the theme selection page before clicking continue
 	await onboarding.themes.isDisplayed();
 
-	await onboarding.continue();
+	await onboarding.themes.continueWithActiveTheme();
 }

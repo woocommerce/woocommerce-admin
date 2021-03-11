@@ -41,14 +41,16 @@ export class BusinessSection {
 		}
 	}
 
-	async expandRecommendedBusinessFeatures() {
+	async expandRecommendedBusinessFeatures( shouldWCPayBeListed = true ) {
 		const expandButtonSelector =
 			'.woocommerce-admin__business-details__selective-extensions-bundle__expand';
 		await this.page.click( expandButtonSelector );
 
 		// Confirm that expanding the list shows all the extensions available to install.
 		await this.page.isVisible(
-			':nth-match(.components-checkbox-control__input, 8)'
+			`:nth-match(.components-checkbox-control__input, ${
+				shouldWCPayBeListed ? 10 : 7
+			})`
 		);
 	}
 
@@ -59,6 +61,18 @@ export class BusinessSection {
 
 		// Uncheck all checkboxes, to avoid installing plugins
 		for ( const checkbox of allCheckboxes ) {
+			await checkbox.uncheck();
+		}
+	}
+
+	// The old list displayed on the dropdown page
+	async uncheckBusinessFeatures() {
+		// checkbox is present, uncheck it.
+		const installFeaturesCheckboxes = await page.$$(
+			'.woocommerce-profile-wizard__benefit .components-form-toggle__input'
+		);
+		// Uncheck all checkboxes, to avoid installing plugins
+		for ( const checkbox of installFeaturesCheckboxes ) {
 			await checkbox.uncheck();
 		}
 	}
