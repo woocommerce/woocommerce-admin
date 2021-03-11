@@ -60,15 +60,6 @@ class FeaturePlugin {
 	 * Init the feature plugin, only if we can detect both Gutenberg and WooCommerce.
 	 */
 	public function init() {
-		/**
-		 * Filter allowing WooCommerce Admin to be disabled.
-		 *
-		 * @param bool $disabled False.
-		 */
-		if ( apply_filters( 'woocommerce_admin_disabled', false ) ) {
-			return;
-		}
-
 		$this->define_constants();
 
 		require_once WC_ADMIN_ABSPATH . '/src/Notes/DeprecatedNotes.php';
