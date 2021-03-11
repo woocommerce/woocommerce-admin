@@ -2,15 +2,15 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import {
-	ABTEST_OPTION_NAME,
 	CONTROL,
 	EXPERIMENT,
+	OPTION_NAME,
 	WC_ADMIN_NAMESPACE,
 } from './constants';
 
@@ -39,9 +39,7 @@ export const setCachedGroup = ( name, value ) =>
  */
 const getABTestOption = ( name ) => {
 	return apiFetch( {
-		path: addQueryArgs( `${ WC_ADMIN_NAMESPACE }/options`, {
-			options: `${ ABTEST_OPTION_NAME }_${ name }`,
-		} ),
+		path: `${ WC_ADMIN_NAMESPACE }/options?options=${ OPTION_NAME }_${ name }`,
 	} );
 };
 
@@ -55,7 +53,7 @@ const setABTestOption = ( name, value ) => {
 	apiFetch( {
 		method: 'POST',
 		path: `${ WC_ADMIN_NAMESPACE }/options`,
-		data: { [ `${ ABTEST_OPTION_NAME }_${ name }` ]: value },
+		data: { [ `${ OPTION_NAME }_${ name }` ]: value },
 	} );
 };
 
@@ -75,17 +73,18 @@ export const getAndSetGroup = async ( name ) => {
 	try {
 		const option = await getABTestOption( name );
 		const group =
-			option[ `${ ABTEST_OPTION_NAME }_${ name }` ] || getRandomGroup();
+			option[ `${ OPTION_NAME }_${ name }` ] || getRandomGroup();
 
-		if ( ! option[ `${ ABTEST_OPTION_NAME }_${ name }` ] ) {
+		if ( ! option[ `${ OPTION_NAME }_${ name }` ] ) {
 			setABTestOption( name, group );
-			// Then fire tracks event.
 		}
 
 		setCachedGroup( name, group );
+		recordABTestEvent( name, group, 'persisted' );
 		return group;
 	} catch {
 		setCachedGroup( name, CONTROL );
+		recordABTestEvent( name, CONTROL, 'fetch_failed' );
 		return CONTROL;
 	}
 };
@@ -106,3 +105,26 @@ export const getRandomGroup = () =>
  */
 export const isActive = ( start, end ) =>
 	Date.now() >= start && Date.now() <= end;
+
+/**
+ * Send an A/B Test event.
+ *
+ * Either assign event (abtest_assign_variant) or serve event (abtest_serve_variant).
+ *
+ * @param {string} name A/B Test name.
+ * @param {string} group A/B Test group.
+ * @param {string} context Additional context (persisted, fetch_failed, from_cache, from_db).
+ * @param {string} stage Stage of A/B Test. 'assign' (default) or 'serve'.
+ */
+export const recordABTestEvent = ( name, group, context, stage = 'assign' ) => {
+	const properties = {
+		abtest_name: name,
+		abtest_group: group,
+		context,
+	};
+
+	recordEvent(
+		stage === 'assign' ? 'abtest_assign_variant' : 'abtest_serve_variant',
+		properties
+	);
+};

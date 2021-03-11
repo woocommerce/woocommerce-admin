@@ -7,8 +7,8 @@ import { render, findByText } from '@testing-library/react';
 /**
  * Internal dependencies
  */
-import { ABTEST_OPTION_NAME } from '../constants';
-import { ABTest } from '../index';
+import ABTest from '../index';
+import { OPTION_NAME } from '../constants';
 import {
 	getAndSetGroup,
 	getCachedGroup,
@@ -57,7 +57,7 @@ describe( 'ABTest Suite', () => {
 
 	it( 'Should fetch group from backend and set cache to experiment.', async () => {
 		apiFetch.mockResolvedValue( {
-			[ ABTEST_OPTION_NAME + '_test' ]: 'experiment',
+			[ OPTION_NAME + '_test' ]: 'experiment',
 		} );
 
 		const group = await getAndSetGroup( 'test' );
@@ -125,7 +125,7 @@ describe( 'ABTest Suite', () => {
 
 	it( 'Should render control when fetched option is control.', async () => {
 		apiFetch.mockResolvedValue( {
-			[ ABTEST_OPTION_NAME + '_test' ]: 'control',
+			[ OPTION_NAME + '_test' ]: 'control',
 		} );
 
 		const { container } = render(

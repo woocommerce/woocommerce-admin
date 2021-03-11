@@ -7,7 +7,12 @@ import { useState, useEffect, useCallback } from '@wordpress/element';
  * Internal dependencies
  */
 import { CONTROL } from './constants';
-import { getCachedGroup, getAndSetGroup, isActive } from './utils';
+import {
+	getAndSetGroup,
+	getCachedGroup,
+	isActive,
+	recordABTestEvent,
+} from './utils';
 
 /**
  * ABTest component.
@@ -22,7 +27,7 @@ import { getCachedGroup, getAndSetGroup, isActive } from './utils';
  * @param {number} props.start Optional. A/B Test start timestamp.
  * @param {number} props.end Optional. A/B Test end timestamp.
  */
-export const ABTest = ( {
+const ABTest = ( {
 	name,
 	control,
 	experiment,
@@ -31,7 +36,7 @@ export const ABTest = ( {
 	end = Infinity,
 } ) => {
 	const [ variation, setVariation ] = useState( CONTROL );
-	const [ isFetching, setIsFetching ] = useState( CONTROL );
+	const [ isFetching, setIsFetching ] = useState( true );
 	const active = isActive( start, end );
 	const handleComplete = useCallback( () => {
 		setIsFetching( false );
@@ -50,11 +55,13 @@ export const ABTest = ( {
 		if ( cachedGroup ) {
 			setVariation( cachedGroup );
 			handleComplete();
+			recordABTestEvent( name, cachedGroup, 'from_cache', 'serve' );
 		} else {
 			( async () => {
 				const group = await getAndSetGroup( name );
 				setVariation( group );
 				handleComplete();
+				recordABTestEvent( name, group, 'from_db', 'serve' );
 			} )();
 		}
 	}, [ active, handleComplete, name ] );
@@ -65,3 +72,5 @@ export const ABTest = ( {
 
 	return variation === CONTROL ? control : experiment;
 };
+
+export default ABTest;
