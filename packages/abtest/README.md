@@ -13,7 +13,7 @@ npm install @woocommerce/abtest --save
 
 
 ```javascript
-import { ABTest } from '@woocommerce/abtest';
+import ABTest from '@woocommerce/abtest';
 
 ...
 
@@ -38,5 +38,5 @@ Name | Type | Default | Description
 `control` | Object | `undefined` | React component to show to control group.
 `experiment` | Object | `undefined` | React component to show to experiment group.
 `onComplete` | Function | `undefined` | Optional. A callback fired after A/B Test selects group.
-`start` | `int` | 0 | Optional. Start timestamp for A/B Test. If not supplied, A/B Test begins immediately.
-`end` | `int` | Infinity | Optional. End timestamp for A/B Test. If not supplied, A/B Test will continue indefinitely.
+`start` | Number | `0` | Optional. Start timestamp for A/B Test. If not supplied, A/B Test begins immediately.
+`end` | Number | `Infinity` | Optional. End timestamp for A/B Test. If not supplied, A/B Test will continue indefinitely.
