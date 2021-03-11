@@ -80,7 +80,6 @@ class Benefits extends Component {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
-			updateProfileItems,
 			updateOptions,
 		} = this.props;
 		const plugins = this.isJetpackActive ? 'installed-wcs' : 'installed';
@@ -315,14 +314,12 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
-		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
 
 		return {
 			createNotice,
 			installAndActivatePlugins,
-			updateProfileItems,
 			updateOptions,
 		};
 	} )

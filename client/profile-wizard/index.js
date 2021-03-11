@@ -288,11 +288,9 @@ export default compose(
 	withSelect( ( select ) => {
 		const { getNotes } = select( NOTES_STORE_NAME );
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const {
-			getProfileItems,
-			getOnboardingError,
-			hasFinishedResolution,
-		} = select( ONBOARDING_STORE_NAME );
+		const { getProfileItems, getOnboardingError } = select(
+			ONBOARDING_STORE_NAME
+		);
 		const {
 			getActivePlugins,
 			getPluginsError,
@@ -303,7 +301,6 @@ export default compose(
 		).getSettings( 'general' );
 
 		const profileItems = getProfileItems();
-		const profileItemsLoaded = hasFinishedResolution( 'getProfileItems' );
 		const country = generalSettings.woocommerce_default_country || null;
 		const industrySlugs = ( profileItems.industry || [] ).map(
 			( industry ) => industry.slug
@@ -332,7 +329,6 @@ export default compose(
 			isJetpackConnected: isJetpackConnected(),
 			notes,
 			profileItems,
-			profileItemsLoaded,
 			activePlugins,
 			selectiveBundleInstallSegmentation,
 		};
