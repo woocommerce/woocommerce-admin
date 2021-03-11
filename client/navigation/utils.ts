@@ -108,21 +108,30 @@ export const addHistoryListener = ( listener: () => void ): ( () => void ) => {
 			/* global CustomEvent */
 			const pushState = history.pushState;
 			const replaceState = history.replaceState;
-			history.pushState = function ( state: {
-				[ key: string ]: string;
-			} ) {
-				const pushStateEvent = new CustomEvent( 'pushstate', {
-					state,
-				} );
+			history.pushState = function (
+				state: {
+					[ key: string ]: string;
+				},
+				title: string,
+				url: string
+			) {
+				const pushStateEvent = new CustomEvent( 'pushstate', state );
 				window.dispatchEvent( pushStateEvent );
-				return pushState.apply( history, arguments );
+				return pushState.apply( history, [ state, title, url ] );
 			};
-			history.replaceState = function ( state ) {
-				const replaceStateEvent = new CustomEvent( 'replacestate', {
-					state,
-				} );
+			history.replaceState = function (
+				state: {
+					[ key: string ]: string;
+				},
+				title: string,
+				url: string
+			) {
+				const replaceStateEvent = new CustomEvent(
+					'replacestate',
+					state
+				);
 				window.dispatchEvent( replaceStateEvent );
-				return replaceState.apply( history, arguments );
+				return replaceState.apply( history, [ state, title, url ] );
 			};
 			window.wcNavigation.historyPatched = true;
 		} )( window.history );
