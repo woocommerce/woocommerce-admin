@@ -53,15 +53,9 @@ class Benefits extends Component {
 	}
 
 	async skipPluginInstall() {
-		const {
-			createNotice,
-			goToNextStep,
-			isProfileItemsError,
-			updateProfileItems,
-		} = this.props;
+		const { createNotice, goToNextStep, isProfileItemsError } = this.props;
 
 		const plugins = this.isJetpackActive ? 'skipped-wcs' : 'skipped';
-		await updateProfileItems( { plugins } );
 
 		if ( isProfileItemsError ) {
 			createNotice(
@@ -98,7 +92,6 @@ class Benefits extends Component {
 
 		Promise.all( [
 			installAndActivatePlugins( this.pluginsToInstall ),
-			updateProfileItems( { plugins } ),
 			updateOptions( {
 				woocommerce_setup_jetpack_opted_in: true,
 			} ),

@@ -258,25 +258,6 @@ class ProfileWizard extends Component {
 			} );
 	}
 
-	checkPluginsAreInstalled() {
-		const {
-			activePlugins,
-			profileItems,
-			updateProfileItems,
-			profileItemsLoaded,
-		} = this.props;
-
-		// Track plugins if already installed.
-		if (
-			profileItemsLoaded &&
-			profileItems.plugins !== 'installed' &&
-			activePlugins.includes( 'woocommerce-services' ) &&
-			activePlugins.includes( 'jetpack' )
-		) {
-			updateProfileItems( { plugins: 'installed' } );
-		}
-	}
-
 	render() {
 		const { query } = this.props;
 		const step = this.getCurrentStep();
@@ -293,8 +274,6 @@ class ProfileWizard extends Component {
 			pick( _step, [ 'key', 'label', 'isComplete' ] )
 		);
 		const classNames = `woocommerce-profile-wizard__container ${ stepKey }`;
-
-		this.checkPluginsAreInstalled();
 
 		return (
 			<>

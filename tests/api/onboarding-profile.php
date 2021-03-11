@@ -119,7 +119,6 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'theme', $properties );
 		$this->assertArrayHasKey( 'wccom_connected', $properties );
 		$this->assertArrayHasKey( 'items_purchased', $properties );
-		$this->assertArrayHasKey( 'plugins', $properties );
 		$this->assertArrayHasKey( 'setup_client', $properties );
 	}
 
