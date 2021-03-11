@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
 
 export class WcHomescreen {
 	page: Page;
@@ -14,7 +14,7 @@ export class WcHomescreen {
 
 	async possiblyDismissWelcomeModal() {
 		// Wait for Benefits section to appear
-		const modal = await this.page.isVisible(
+		const modal = await this.page.waitForSelector(
 			'h2:text("Welcome to your WooCommerce store’s online HQ!")',
 			{
 				timeout: 2000,

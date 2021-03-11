@@ -1,4 +1,5 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
+import { setCheckbox } from '@woocommerce/e2e-utils';
 
 export class IndustrySection {
 	page: Page;
@@ -28,11 +29,16 @@ export class IndustrySection {
 		);
 
 		for ( const checkbox of industryCheckboxes ) {
-			await checkbox.uncheck();
+			const checkboxStatus = await (
+				await checkbox.getProperty( 'checked' )
+			 ).jsonValue();
+			if ( checkboxStatus === true ) {
+				await checkbox.click();
+			}
 		}
 	}
 
 	async selectIndustry( industryLabel: string ) {
-		await this.page.check( 'label:text-is("' + industryLabel + '")' );
+		setCheckbox( 'label:text-is("' + industryLabel + '")' );
 	}
 }

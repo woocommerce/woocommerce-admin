@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
 
 export class BenefitsSection {
 	page: Page;
@@ -8,7 +8,7 @@ export class BenefitsSection {
 	}
 
 	async isDisplayed() {
-		await this.page.isVisible(
+		await this.page.waitForSelector(
 			'.woocommerce-profile-wizard__container.benefits'
 		);
 	}

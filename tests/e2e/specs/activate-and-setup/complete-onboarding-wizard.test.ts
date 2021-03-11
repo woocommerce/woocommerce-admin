@@ -16,6 +16,7 @@ import { completeThemeSelectionSection } from './complete-theme-selection-sectio
 import { OnboardingWizard } from '../../models/OnboardingWizard';
 import { WcHomescreen } from '../../models/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
+import { getElementByText } from '../../utils/actions';
 
 /**
  * This tests a default, happy path for the onboarding wizard.
@@ -92,13 +93,11 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 	it( 'should not display woocommerce payments as a payments option', async () => {
 		const homescreen = new WcHomescreen( page );
 		await homescreen.clickOnTaskList( TaskTitles.addPayments );
-		const isNotDisplayed = page.isHidden(
-			'h2:text("WooCommerce Payments")',
-			{
-				timeout: 2000,
-			}
+		const wcPayLabel = await getElementByText(
+			'h2',
+			'WooCommerce Payments'
 		);
-		expect( isNotDisplayed ).toBeTruthy();
+		expect( wcPayLabel ).toBeUndefined();
 	} );
 } );
 

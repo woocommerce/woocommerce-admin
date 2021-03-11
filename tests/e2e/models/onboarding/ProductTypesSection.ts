@@ -1,4 +1,5 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
+import { setCheckbox } from '@woocommerce/e2e-utils';
 
 export class ProductTypeSection {
 	page: Page;
@@ -24,12 +25,17 @@ export class ProductTypeSection {
 		);
 
 		for ( const checkbox of productCheckboxes ) {
-			await checkbox.uncheck();
+			const checkboxStatus = await (
+				await checkbox.getProperty( 'checked' )
+			 ).jsonValue();
+			if ( checkboxStatus === true ) {
+				await checkbox.click();
+			}
 		}
 	}
 
 	async selectProduct( productLabel: string ) {
-		await this.page.check(
+		await setCheckbox(
 			'.components-base-control :text("' + productLabel + '")'
 		);
 	}

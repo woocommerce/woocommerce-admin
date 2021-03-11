@@ -1,15 +1,4 @@
 /**
- * Perform a "select all" and then fill a input.
- *
- * @param {string} selector
- * @param {string} value
- */
-const clearAndFillInput = async ( selector: string, value: string ) => {
-	await page.focus( selector );
-	await page.fill( selector, value );
-};
-
-/**
  * Click a tab (on post type edit screen).
  *
  * @param {string} tabName Tab label
@@ -37,79 +26,80 @@ const uiUnblocked = async () => {
 const verifyPublishAndTrash = async (
 	button: string,
 	publishNotice: string,
-	publishVerification: string
+	publishVerification: string,
+	trashVerification: string
 ) => {
+	// Wait for auto save
+	await page.waitFor( 2000 );
 	// Publish
 	await page.click( button );
 
 	// Verify
-	await page.isVisible(
-		publishNotice + ' :text("' + publishVerification + '")'
-	);
+	await expect( page ).toMatchElement( publishNotice, {
+		text: publishVerification,
+	} );
 	if ( button === '.order_actions li .save_order' ) {
-		await page.isVisible(
-			'#select2-order_status-container :text("Processing")'
+		await expect( page ).toMatchElement(
+			'#select2-order_status-container',
+			{ text: 'Processing' }
 		);
-		await page.isVisible(
-			'#woocommerce-order-notes .note_content :text("Order status changed from Pending payment to Processing.")'
+		await expect( page ).toMatchElement(
+			'#woocommerce-order-notes .note_content',
+			{
+				text:
+					'Order status changed from Pending payment to Processing.',
+			}
 		);
 	}
 
 	// Trash
-	await page.click( 'a:text("Move to Trash")' );
-	await page.isVisible( '#message' );
+	await expect( page ).toClick( 'a', { text: 'Move to Trash' } );
+	await page.waitForSelector( '#message' );
 
 	// Verify
-	await page.isVisible(
-		publishNotice + ' :text("' + publishVerification + '")'
+	await expect( page ).toMatchElement( publishNotice, {
+		text: trashVerification,
+	} );
+};
+
+const getInputValue = async ( selector: string ) => {
+	await page.focus( selector );
+	const field = await page.$( selector );
+	if ( field ) {
+		const fieldValue = await (
+			await field.getProperty( 'value' )
+		 ).jsonValue();
+
+		return fieldValue;
+	}
+	return null;
+};
+
+const getAttribute = async ( selector: string, attribute: string ) => {
+	await page.focus( selector );
+	const field = await page.$( selector );
+	if ( field ) {
+		const fieldValue = await (
+			await field.getProperty( 'attribute' )
+		 ).jsonValue();
+
+		return fieldValue;
+	}
+	return null;
+};
+
+const getElementByText = async ( element: string, text: string ) => {
+	const els = await page.$x(
+		`//${ element }[contains(text(), '${ text }')]`
 	);
-};
-
-/**
- * Verify that checkbox is set.
- *
- * @param {string} selector Selector of the checkbox that needs to be verified.
- */
-const verifyCheckboxIsSet = async ( selector: string ) => {
-	await page.focus( selector );
-	const checkbox = await page.$( selector );
-	const checkboxStatus = await (
-		await checkbox?.getProperty( 'checked' )
-	 )?.jsonValue();
-	await expect( checkboxStatus ).toBe( true );
-};
-
-/**
- * Verify that checkbox is unset.
- *
- * @param {string} selector Selector of the checkbox that needs to be verified.
- */
-const verifyCheckboxIsUnset = async ( selector: string ) => {
-	await page.focus( selector );
-	const checkbox = await page.$( selector );
-	const checkboxStatus = await (
-		await checkbox?.getProperty( 'checked' )
-	 )?.jsonValue();
-	await expect( checkboxStatus ).not.toBe( true );
-};
-
-/**
- * Verify the value of input field once it was saved (can be used for radio buttons verification as well).
- *
- * @param {string} selector Selector of the input field that needs to be verified.
- * @param {string} value Value of the input field that needs to be verified.
- */
-const verifyValueOfInputField = async ( selector: string, value: string ) => {
-	const fieldValue = await page.getAttribute( selector, 'value' );
-	await expect( fieldValue ).toBe( value );
+	return els[ 0 ];
 };
 
 export {
-	clearAndFillInput,
 	clickTab,
 	uiUnblocked,
 	verifyPublishAndTrash,
-	verifyCheckboxIsSet,
-	verifyCheckboxIsUnset,
-	verifyValueOfInputField,
+	getInputValue,
+	getAttribute,
+	getElementByText,
 };

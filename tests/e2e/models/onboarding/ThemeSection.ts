@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
 
 export class ThemeSection {
 	page: Page;
@@ -8,8 +8,8 @@ export class ThemeSection {
 	}
 
 	async isDisplayed() {
-		await this.page.isVisible( ':text("Choose a theme")' );
-		await this.page.isVisible( ':text("All themes")' );
+		await this.page.waitForSelector( ':text("Choose a theme")' );
+		await this.page.waitForSelector( ':text("All themes")' );
 	}
 
 	async continueWithActiveTheme() {

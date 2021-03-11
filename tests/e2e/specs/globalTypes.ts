@@ -1,4 +1,4 @@
-import { Browser, Page } from 'playwright';
+import { Browser, Page } from 'puppeteer';
 
 declare global {
 	const page: Page;

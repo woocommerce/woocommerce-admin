@@ -1,4 +1,5 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
+import { setCheckbox, unsetCheckbox } from '@woocommerce/e2e-utils';
 import { DropdownField } from '../DropdownField';
 
 export class BusinessSection {
@@ -19,7 +20,9 @@ export class BusinessSection {
 	}
 
 	async isDisplayed() {
-		await this.page.isVisible( ':text("Tell us about your business")' );
+		await this.page.waitForSelector(
+			':text("Tell us about your business")'
+		);
 	}
 
 	async selectProductNumber( productLabel: string ) {
@@ -31,13 +34,10 @@ export class BusinessSection {
 	}
 
 	async selectInstallFreeBusinessFeatures( select: boolean ) {
-		const installFeaturesCheckbox = await this.page.$(
-			'#woocommerce-business-extensions__checkbox'
-		);
 		if ( select ) {
-			await installFeaturesCheckbox?.check();
+			await setCheckbox( '#woocommerce-business-extensions__checkbox' );
 		} else {
-			await installFeaturesCheckbox?.uncheck();
+			await unsetCheckbox( '#woocommerce-business-extensions__checkbox' );
 		}
 	}
 
@@ -47,7 +47,7 @@ export class BusinessSection {
 		await this.page.click( expandButtonSelector );
 
 		// Confirm that expanding the list shows all the extensions available to install.
-		await this.page.isVisible(
+		await this.page.waitForSelector(
 			`:nth-match(.components-checkbox-control__input, ${
 				shouldWCPayBeListed ? 10 : 7
 			})`
@@ -61,7 +61,12 @@ export class BusinessSection {
 
 		// Uncheck all checkboxes, to avoid installing plugins
 		for ( const checkbox of allCheckboxes ) {
-			await checkbox.uncheck();
+			const checkboxStatus = await (
+				await checkbox.getProperty( 'checked' )
+			 ).jsonValue();
+			if ( checkboxStatus === true ) {
+				await checkbox.click();
+			}
 		}
 	}
 
@@ -73,7 +78,12 @@ export class BusinessSection {
 		);
 		// Uncheck all checkboxes, to avoid installing plugins
 		for ( const checkbox of installFeaturesCheckboxes ) {
-			await checkbox.uncheck();
+			const checkboxStatus = await (
+				await checkbox.getProperty( 'checked' )
+			 ).jsonValue();
+			if ( checkboxStatus === true ) {
+				await checkbox.click();
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
 import { WP_ADMIN_START_PROFILE_WIZARD } from '../utils/constants';
 import { BenefitsSection } from './onboarding/BenefitsSection';
 import { BusinessSection } from './onboarding/BusinessSection';
@@ -28,7 +28,7 @@ export class OnboardingWizard {
 
 	async start() {
 		await this.page.goto( WP_ADMIN_START_PROFILE_WIZARD, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	}
 
@@ -46,10 +46,12 @@ export class OnboardingWizard {
 		if ( ! usageTrackingHeader ) {
 			return;
 		}
-		const content = await this.page.textContent(
-			'.components-modal__header-heading'
+		await expect( page ).toMatchElement(
+			'.components-modal__header-heading',
+			{
+				text: 'Build a better WooCommerce',
+			}
 		);
-		expect( content ).toBe( 'Build a better WooCommerce' );
 
 		// Query for primary buttons: "Continue" and "Yes, count me in"
 		const primaryButtons = await this.page.$$( 'button.is-primary' );
@@ -63,7 +65,7 @@ export class OnboardingWizard {
 			await this.page.click( 'button.is-secondary:text("No thanks")' );
 		}
 		this.page.waitForNavigation( {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 			timeout: 2000,
 		} );
 	}

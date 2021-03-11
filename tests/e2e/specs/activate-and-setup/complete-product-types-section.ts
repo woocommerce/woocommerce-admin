@@ -18,5 +18,5 @@ export async function completeProductTypesSection(
 	await onboarding.productTypes.selectProduct( 'Downloads' );
 
 	await onboarding.continue();
-	await page.waitForNavigation( { waitUntil: 'networkidle' } );
+	await page.waitForNavigation( { waitUntil: 'networkidle0' } );
 }

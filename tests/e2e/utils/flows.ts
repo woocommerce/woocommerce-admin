@@ -1,11 +1,11 @@
 /**
  * @format
  */
+import { clearAndFillInput } from '@woocommerce/e2e-utils';
 
 /**
  * Internal dependencies
  */
-import { clearAndFillInput } from './actions';
 import * as constants from './constants';
 
 const config = require( 'config' );
@@ -13,7 +13,7 @@ const config = require( 'config' );
 const StoreOwnerFlow = {
 	login: async () => {
 		await page.goto( constants.WP_ADMIN_LOGIN, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 
 		await expect( page.title() ).resolves.toMatch( 'Log In' );
@@ -25,7 +25,7 @@ const StoreOwnerFlow = {
 
 		await Promise.all( [
 			page.click( 'input[type=submit]' ),
-			page.waitForNavigation( { waitUntil: 'networkidle' } ),
+			page.waitForNavigation( { waitUntil: 'networkidle0' } ),
 		] );
 	},
 
@@ -35,54 +35,54 @@ const StoreOwnerFlow = {
 			'#wp-admin-bar-logout a',
 			( am ) =>
 				am
-					.filter( ( e ) => ( <HTMLLinkElement>e ).href )
-					.map( ( e ) => ( <HTMLLinkElement>e ).href )
+					.filter( ( e ) => ( e as HTMLLinkElement ).href )
+					.map( ( e ) => ( e as HTMLLinkElement ).href )
 		);
 
 		await page.goto( logoutLinks[ 0 ], {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 
 	openAllOrdersView: async () => {
 		await page.goto( constants.WP_ADMIN_ALL_ORDERS_VIEW, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 
 	openDashboard: async () => {
 		await page.goto( constants.WP_ADMIN_DASHBOARD, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 
 	openNewCoupon: async () => {
 		await page.goto( constants.WP_ADMIN_NEW_COUPON, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 
 	openNewOrder: async () => {
 		await page.goto( constants.WP_ADMIN_NEW_ORDER, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 
 	openNewProduct: async () => {
 		await page.goto( constants.WP_ADMIN_NEW_PRODUCT, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 
 	openPlugins: async () => {
 		await page.goto( constants.WP_ADMIN_PLUGINS, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 
 	startProfileWizard: async () => {
 		await page.goto( constants.WP_ADMIN_START_PROFILE_WIZARD, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 	},
 };

@@ -1,12 +1,15 @@
 /**
  * @format
  */
+import {
+	clearAndFillInput,
+	verifyValueOfInputField,
+} from '@woocommerce/e2e-utils';
 
 /**
  * Internal dependencies
  */
 import { StoreOwnerFlow } from '../../utils/flows';
-import { verifyValueOfInputField } from '../../utils/actions';
 import { WcSettings } from '../../models/WcSettings';
 import { WpSettings } from '../../models/WpSettings';
 
@@ -26,7 +29,7 @@ describe( 'Store owner can login and make sure WooCommerce is activated', () => 
 		}
 		await page.click( `tr[data-slug="${ slug }"] .activate a` );
 
-		await page.isVisible( `tr[data-slug="${ slug }"] .deactivate a` );
+		await page.waitForSelector( `tr[data-slug="${ slug }"] .deactivate a` );
 	} );
 } );
 
@@ -58,15 +61,16 @@ describe( 'Store owner can finish initial store setup', () => {
 		await page.click( '#woocommerce_custom_selection' );
 
 		// Fill custom base slug to use
-		await page.fill( '#woocommerce_permalink_structure', '/product/' );
+		await clearAndFillInput( '#woocommerce_permalink_structure', '' );
+		await page.type( '#woocommerce_permalink_structure', '/product/' );
 
 		await wpSettings.saveSettings();
 
 		// Verify that settings have been saved
 		await Promise.all( [
-			page.isVisible(
-				'#setting-error-settings_updated :text("Permalink structure updated.")'
-			),
+			expect( page ).toMatchElement( '#setting-error-settings_updated', {
+				text: 'Permalink structure updated.',
+			} ),
 			verifyValueOfInputField( '#permalink_structure', '/%postname%/' ),
 			verifyValueOfInputField(
 				'#woocommerce_permalink_structure',

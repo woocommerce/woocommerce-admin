@@ -1,4 +1,5 @@
-import { Page } from 'playwright';
+import { Page } from 'puppeteer';
+import { getInputValue } from '../utils/actions';
 
 export class DropdownField {
 	page: Page;
@@ -10,10 +11,7 @@ export class DropdownField {
 	}
 
 	async select( value: string ) {
-		const currentVal = await this.page.getAttribute(
-			this.id + ' input',
-			'value'
-		);
+		const currentVal = await getInputValue( this.id + ' input' );
 		if ( currentVal !== value ) {
 			await this.page.click(
 				this.id + ' .woocommerce-select-control__control'
@@ -24,10 +22,7 @@ export class DropdownField {
 	}
 
 	async checkSelected( value: string ) {
-		const currentVal = await this.page.getAttribute(
-			this.id + ' input',
-			'value'
-		);
+		const currentVal = await getInputValue( this.id + ' input' );
 		expect( currentVal ).toBe( value );
 	}
 }

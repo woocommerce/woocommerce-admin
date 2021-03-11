@@ -1,9 +1,11 @@
-import { Page } from 'playwright';
-import { DropdownTypeaheadField } from '../DropdownTypeaheadField';
+import { Page } from 'puppeteer';
 import {
+	setCheckbox,
+	clearAndFillInput,
 	verifyCheckboxIsSet,
 	verifyCheckboxIsUnset,
-} from '../../utils/actions';
+} from '@woocommerce/e2e-utils';
+import { DropdownTypeaheadField } from '../DropdownTypeaheadField';
 
 export class StoreDetailsSection {
 	page: Page;
@@ -18,13 +20,11 @@ export class StoreDetailsSection {
 	}
 
 	async fillAddress( address: string ) {
-		await this.page.fill( '#inspector-text-control-0', '' );
-		await this.page.type( '#inspector-text-control-0', address );
+		await clearAndFillInput( '#inspector-text-control-0', address );
 	}
 
 	async fillAddressLineTwo( address: string ) {
-		await this.page.fill( '#inspector-text-control-1', '' );
-		await this.page.type( '#inspector-text-control-1', address );
+		await clearAndFillInput( '#inspector-text-control-1', address );
 	}
 
 	async selectCountry( search: string, selector: string ) {
@@ -33,20 +33,15 @@ export class StoreDetailsSection {
 	}
 
 	async fillCity( city: string ) {
-		await this.page.fill( '#inspector-text-control-2', '' );
-		await this.page.type( '#inspector-text-control-2', city );
+		await clearAndFillInput( '#inspector-text-control-2', city );
 	}
 
 	async fillPostalCode( postalCode: string ) {
-		await this.page.fill( '#inspector-text-control-3', '' );
-		await this.page.type( '#inspector-text-control-3', postalCode );
+		await clearAndFillInput( '#inspector-text-control-3', postalCode );
 	}
 
 	async selectSetupForClient() {
-		const checkbox = await this.page.$(
-			'.components-checkbox-control__input'
-		);
-		await checkbox?.check();
+		setCheckbox( '.components-checkbox-control__input' );
 	}
 
 	async checkClientSetupCheckbox( selected: boolean ) {

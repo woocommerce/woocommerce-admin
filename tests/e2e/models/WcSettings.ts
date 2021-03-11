@@ -1,8 +1,7 @@
-import {
-	WP_ADMIN_PERMALINK_SETTINGS,
-	WP_ADMIN_WC_SETTINGS,
-} from '../utils/constants';
-import { Page } from 'playwright';
+import { setCheckbox } from '@woocommerce/e2e-utils';
+import { WP_ADMIN_WC_SETTINGS } from '../utils/constants';
+import { Page } from 'puppeteer';
+import { getAttribute } from '../utils/actions';
 
 export class WcSettings {
 	page: Page;
@@ -19,29 +18,25 @@ export class WcSettings {
 		}
 
 		await this.page.goto( settingsUrl, {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
 		await this.page.waitForSelector( 'a.nav-tab-active:text("General")' );
 	}
 
 	async enableTaxRates() {
-		const checkbox = await this.page.$( '#woocommerce_calc_taxes' );
-		await checkbox?.check();
+		setCheckbox( '#woocommerce_calc_taxes' );
 	}
 
 	async getTaxRateValue() {
-		return await this.page.getAttribute(
-			'#woocommerce_calc_taxes',
-			'checked'
-		);
+		return await getAttribute( '#woocommerce_calc_taxes', 'checked' );
 	}
 
 	async saveSettings() {
 		await this.page.click( ':text("Save changes")' );
 		await this.page.waitForNavigation( {
-			waitUntil: 'networkidle',
+			waitUntil: 'networkidle0',
 		} );
-		await this.page.isVisible(
+		await this.page.waitForSelector(
 			'#message :text("Your settings have been saved.")'
 		);
 	}
