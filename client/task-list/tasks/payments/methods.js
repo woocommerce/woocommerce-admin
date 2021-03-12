@@ -212,11 +212,14 @@ export function getPaymentMethods( {
 		},
 		{
 			key: 'mercadopago',
-			title: __( 'Mercado Pago Payments', 'woocommerce-admin' ),
+			title: __(
+				'Mercado Pago Checkout Pro & Custom',
+				'woocommerce-admin'
+			),
 			content: (
 				<>
 					{ __(
-						'The official Mercado Pago plugin allows you to process payments for your online store.',
+						'Accept credit and debit cards, offline (cash or bank transfer) and logged-in payments with money in Mercado Pago. Safe and secure payments with the leading payment processor in LATAM.',
 						'woocommerce-admin'
 					) }
 				</>
