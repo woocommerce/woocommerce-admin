@@ -77,19 +77,12 @@ const installableExtensions = [
 					'shipping'
 				),
 				isVisible: ( countryCode, industry, productTypes ) => {
-					// Exclude the WooCommerce Shipping mention if the user is not in the US.
-					// Exclude the WooCommerce Shipping mention if the user is in the US but
-					// only selected digital products in the Product Types step.
-					if (
-						countryCode !== 'US' ||
+					return (
+						countryCode === 'US' ||
 						( countryCode === 'US' &&
 							productTypes.length === 1 &&
 							productTypes[ 0 ] === 'downloads' )
-					) {
-						return false;
-					}
-
-					return true;
+					);
 				},
 			},
 			{
@@ -102,7 +95,7 @@ const installableExtensions = [
 					'tax'
 				),
 				isVisible: ( countryCode ) => {
-					const allowedCountries = [
+					return [
 						'US',
 						'FR',
 						'GB',
@@ -115,15 +108,7 @@ const installableExtensions = [
 						'PT',
 						'DK',
 						'SE',
-					];
-
-					// Exclude the WooCommerce Tax if the user is not in one of the following countries:
-					// US | FR | GB | DE | CA | PL | AU | GR | BE | PT | DK | SE
-					if ( ! allowedCountries.includes( countryCode ) ) {
-						return false;
-					}
-
-					return true;
+					].includes( countryCode );
 				},
 			},
 			{
