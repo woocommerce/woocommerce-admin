@@ -3,11 +3,10 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardFooter } from '@wordpress/components';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
-import { H, Link } from '@woocommerce/components';
+import { Link } from '@woocommerce/components';
 import {
 	pluginNames,
 	ONBOARDING_STORE_NAME,
@@ -20,16 +19,14 @@ import { Text } from '@woocommerce/experimental';
 /**
  * Internal dependencies
  */
+import { Benefits } from './benefits';
 import { createNoticesFromResponse } from '../../../lib/notices';
 import Logo from './logo';
-import ManagementIcon from './images/management';
-import SalesTaxIcon from './images/sales_tax';
-import ShippingLabels from './images/shipping_labels';
-import SpeedIcon from './images/speed';
 
-export const Benefits = ( { goToNextStep } ) => {
+export const BenefitsLayout = ( { goToNextStep } ) => {
 	const {
 		activePlugins,
+		isJetpackConnected,
 		isProfileItemsError,
 		isUpdatingProfileItems,
 	} = useSelect( ( select ) => {
@@ -40,6 +37,7 @@ export const Benefits = ( { goToNextStep } ) => {
 
 		return {
 			activePlugins: getActivePlugins(),
+			isJetpackConnected: select( PLUGINS_STORE_NAME ),
 			isProfileItemsError: Boolean(
 				getOnboardingError( 'updateProfileItems' )
 			),
@@ -59,15 +57,11 @@ export const Benefits = ( { goToNextStep } ) => {
 	);
 
 	// Cache the initial plugin list so we don't change benefits midway through activation.
-	const pluginsToInstall = useMemo( () => pluginsRemaining, [] );
+	const [ pluginsToInstall ] = useState( pluginsRemaining );
 	const [ isInstalling, setIsInstalling ] = useState( false );
 
-	const isJetpackActive = pluginsToInstall
-		? pluginsToInstall.includes( 'jetpack' )
-		: false;
-	const isWcsActive = pluginsToInstall
-		? pluginsToInstall.includes( 'woocommerce-services' )
-		: false;
+	const isJetpackActive = ! pluginsToInstall.includes( 'jetpack' );
+	const isWcsActive = ! pluginsToInstall.includes( 'woocommerce-services' );
 
 	useEffect( () => {
 		recordEvent( 'storeprofiler_plugins_to_install', {
@@ -138,80 +132,6 @@ export const Benefits = ( { goToNextStep } ) => {
 			} );
 	};
 
-	const renderBenefit = ( benefit ) => {
-		const { description, icon, title } = benefit;
-
-		return (
-			<div
-				className="woocommerce-profile-wizard__benefit-card"
-				key={ title }
-			>
-				{ icon }
-				<div className="woocommerce-profile-wizard__benefit-card-content">
-					<H className="woocommerce-profile-wizard__benefit-card-title">
-						{ title }
-					</H>
-					<p>{ description }</p>
-				</div>
-			</div>
-		);
-	};
-
-	const getBenefits = () => {
-		return [
-			{
-				title: __( 'Store management on the go', 'woocommerce-admin' ),
-				icon: <ManagementIcon />,
-				description: __(
-					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
-					'woocommerce-admin'
-				),
-				visible: ! isJetpackActive,
-			},
-			{
-				title: __( 'Automated sales taxes', 'woocommerce-admin' ),
-				icon: <SalesTaxIcon />,
-				description: __(
-					'Ensure that the correct rate of tax is charged on all of your orders automatically, and print shipping labels at home.',
-					'woocommerce-admin'
-				),
-				visible: ! isWcsActive || ! isJetpackActive,
-			},
-			{
-				title: __( 'Improved speed & security', 'woocommerce-admin' ),
-				icon: <SpeedIcon />,
-				description: __(
-					'Automatically block brute force attacks and speed up your store using our powerful, global server network to cache images.',
-					'woocommerce-admin'
-				),
-				visible: ! isJetpackActive,
-			},
-			{
-				title: __(
-					'Print shipping labels at home',
-					'woocommerce-admin'
-				),
-				icon: <ShippingLabels />,
-				description: __(
-					'Save time at the post office by printing shipping labels for your orders at home.',
-					'woocommerce-admin'
-				),
-				visible: isJetpackActive && ! isWcsActive,
-			},
-		];
-	};
-
-	const renderBenefits = () => {
-		return (
-			<div className="woocommerce-profile-wizard__benefits">
-				{ filter(
-					getBenefits(),
-					( benefit ) => benefit.visible
-				).map( ( benefit ) => renderBenefit( benefit ) ) }
-			</div>
-		);
-	};
-
 	const pluginNamesString = pluginsToInstall
 		.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
 		.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
@@ -238,8 +158,10 @@ export const Benefits = ( { goToNextStep } ) => {
 						) }
 					</Text>
 				</div>
-
-				{ renderBenefits() }
+				<Benefits
+					jetpack={ ! isJetpackActive || ! isJetpackConnected }
+					wcs={ ! isWcsActive }
+				/>
 			</CardBody>
 			<CardFooter isBorderless justify="center">
 				<Button
@@ -261,40 +183,40 @@ export const Benefits = ( { goToNextStep } ) => {
 				</Button>
 			</CardFooter>
 
-			<CardFooter isBorderless justify="center">
-				<p className="woocommerce-profile-wizard__benefits-install-notice">
-					{ isAcceptingTos
-						? interpolateComponents( {
-								mixedString: sprintf(
+			{ !! pluginsToInstall.length && (
+				<CardFooter isBorderless justify="center">
+					<p className="woocommerce-profile-wizard__benefits-install-notice">
+						{ isAcceptingTos
+							? interpolateComponents( {
+									mixedString: sprintf(
+										__(
+											'%s %s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
+											'woocommerce-admin'
+										),
+										pluginNamesString,
+										pluralizedPlugins
+									),
+									components: {
+										link: (
+											<Link
+												href="https://wordpress.com/tos/"
+												target="_blank"
+												type="external"
+											/>
+										),
+									},
+							  } )
+							: sprintf(
 									__(
-										'%s %s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
+										'%s %s will be installed & activated for free.',
 										'woocommerce-admin'
 									),
 									pluginNamesString,
 									pluralizedPlugins
-								),
-								components: {
-									link: (
-										<Link
-											href="https://wordpress.com/tos/"
-											target="_blank"
-											type="external"
-										/>
-									),
-								},
-						  } )
-						: sprintf(
-								__(
-									'%s %s will be installed & activated for free.',
-									'woocommerce-admin'
-								),
-								pluginNamesString,
-								pluralizedPlugins
-						  ) }
-				</p>
-			</CardFooter>
+							  ) }
+					</p>
+				</CardFooter>
+			) }
 		</Card>
 	);
 };
-
-export default Benefits;
