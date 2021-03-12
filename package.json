@@ -122,7 +122,6 @@
 		"gridicons": "3.3.1",
 		"interpolate-components": "1.1.1",
 		"memize": "1.1.0",
-		"jest": "^26.6.3",
 		"memoize-one": "5.1.1",
 		"qs": "6.9.6",
 		"react-dates": "17.2.0",
