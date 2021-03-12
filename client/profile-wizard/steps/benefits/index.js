@@ -3,7 +3,7 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardFooter } from '@wordpress/components';
-import { Component } from '@wordpress/element';
+import { useEffect, useMemo } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { filter } from 'lodash';
@@ -28,34 +28,40 @@ import SalesTaxIcon from './images/sales_tax';
 import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';
 
-class Benefits extends Component {
-	constructor( props ) {
-		super( props );
+function Benefits( {
+	activePlugins,
+	createNotice,
+	goToNextStep,
+	installAndActivatePlugins,
+	isInstallingActivating,
+	isProfileItemsError,
+	isUpdatingProfileItems,
+	updateOptions,
+	updateProfileItems,
+} ) {
+	const pluginsRemaining = [ 'jetpack', 'woocommerce-services' ].filter(
+		( plugin ) => ! activePlugins.includes( plugin )
+	);
 
-		this.isJetpackActive = props.activePlugins.includes( 'jetpack' );
-		this.isWcsActive = props.activePlugins.includes(
-			'woocommerce-services'
-		);
-		this.pluginsToInstall = [];
-		if ( ! this.isJetpackActive ) {
-			this.pluginsToInstall.push( 'jetpack' );
-		}
-		if ( ! this.isWcsActive ) {
-			this.pluginsToInstall.push( 'woocommerce-services' );
-		}
+	// Cache the initial plugin list so we don't change benefits midway through activation.
+	const pluginsToInstall = useMemo( () => pluginsRemaining, [] );
 
+	const isJetpackActive = pluginsToInstall
+		? pluginsToInstall.includes( 'jetpack' )
+		: false;
+	const isWcsActive = pluginsToInstall
+		? pluginsToInstall.includes( 'woocommerce-services' )
+		: false;
+
+	useEffect( () => {
 		recordEvent( 'storeprofiler_plugins_to_install', {
-			plugins: this.pluginsToInstall,
+			plugins: pluginsToInstall,
 		} );
+	}, [] );
 
-		this.startPluginInstall = this.startPluginInstall.bind( this );
-		this.skipPluginInstall = this.skipPluginInstall.bind( this );
-	}
-
-	async skipPluginInstall() {
-		const { createNotice, goToNextStep, isProfileItemsError } = this.props;
-
-		const plugins = this.isJetpackActive ? 'skipped-wcs' : 'skipped';
+	const skipPluginInstall = async () => {
+		const plugins = isJetpackActive ? 'skipped-wcs' : 'skipped';
+		await updateProfileItems( { plugins } );
 
 		if ( isProfileItemsError ) {
 			createNotice(
@@ -73,16 +79,10 @@ class Benefits extends Component {
 		}
 
 		goToNextStep();
-	}
+	};
 
-	startPluginInstall() {
-		const {
-			createNotice,
-			goToNextStep,
-			installAndActivatePlugins,
-			updateOptions,
-		} = this.props;
-		const plugins = this.isJetpackActive ? 'installed-wcs' : 'installed';
+	const startPluginInstall = () => {
+		const plugins = isJetpackActive ? 'installed-wcs' : 'installed';
 
 		recordEvent( 'storeprofiler_install_plugins', {
 			install: true,
@@ -90,7 +90,8 @@ class Benefits extends Component {
 		} );
 
 		Promise.all( [
-			installAndActivatePlugins( this.pluginsToInstall ),
+			installAndActivatePlugins( pluginsToInstall ),
+			updateProfileItems( { plugins } ),
 			updateOptions( {
 				woocommerce_setup_jetpack_opted_in: true,
 			} ),
@@ -111,9 +112,9 @@ class Benefits extends Component {
 				}
 				goToNextStep();
 			} );
-	}
+	};
 
-	renderBenefit( benefit ) {
+	const renderBenefit = ( benefit ) => {
 		const { description, icon, title } = benefit;
 
 		return (
@@ -130,9 +131,9 @@ class Benefits extends Component {
 				</div>
 			</div>
 		);
-	}
+	};
 
-	getBenefits() {
+	const getBenefits = () => {
 		return [
 			{
 				title: __( 'Store management on the go', 'woocommerce-admin' ),
@@ -141,7 +142,7 @@ class Benefits extends Component {
 					'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 					'woocommerce-admin'
 				),
-				visible: ! this.isJetpackActive,
+				visible: ! isJetpackActive,
 			},
 			{
 				title: __( 'Automated sales taxes', 'woocommerce-admin' ),
@@ -150,7 +151,7 @@ class Benefits extends Component {
 					'Ensure that the correct rate of tax is charged on all of your orders automatically, and print shipping labels at home.',
 					'woocommerce-admin'
 				),
-				visible: ! this.isWcsActive || ! this.isJetpackActive,
+				visible: ! isWcsActive || ! isJetpackActive,
 			},
 			{
 				title: __( 'Improved speed & security', 'woocommerce-admin' ),
@@ -159,7 +160,7 @@ class Benefits extends Component {
 					'Automatically block brute force attacks and speed up your store using our powerful, global server network to cache images.',
 					'woocommerce-admin'
 				),
-				visible: ! this.isJetpackActive,
+				visible: ! isJetpackActive,
 			},
 			{
 				title: __(
@@ -171,118 +172,106 @@ class Benefits extends Component {
 					'Save time at the post office by printing shipping labels for your orders at home.',
 					'woocommerce-admin'
 				),
-				visible: this.isJetpackActive && ! this.isWcsActive,
+				visible: isJetpackActive && ! isWcsActive,
 			},
 		];
-	}
+	};
 
-	renderBenefits() {
+	const renderBenefits = () => {
 		return (
 			<div className="woocommerce-profile-wizard__benefits">
 				{ filter(
-					this.getBenefits(),
+					getBenefits(),
 					( benefit ) => benefit.visible
-				).map( ( benefit ) => this.renderBenefit( benefit ) ) }
+				).map( ( benefit ) => renderBenefit( benefit ) ) }
 			</div>
 		);
-	}
+	};
 
-	render() {
-		const {
-			activePlugins,
-			isInstallingActivating,
-			isUpdatingProfileItems,
-		} = this.props;
+	const pluginNamesString = pluginsToInstall
+		.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
+		.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
+	const isInstallAction = isInstallingActivating || ! pluginsRemaining.length;
+	const isAcceptingTos = ! isWcsActive;
+	const pluralizedPlugins = _n(
+		'plugin',
+		'plugins',
+		pluginsToInstall.length,
+		'woocommerce-admin'
+	);
 
-		const pluginNamesString = this.pluginsToInstall
-			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
-			.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
-		const pluginsRemaining = this.pluginsToInstall.filter(
-			( plugin ) => ! activePlugins.includes( plugin )
-		);
-		const isInstallAction =
-			isInstallingActivating || ! pluginsRemaining.length;
-		const isAcceptingTos = ! this.isWcsActive;
-		const pluralizedPlugins = _n(
-			'plugin',
-			'plugins',
-			this.pluginsToInstall.length,
-			'woocommerce-admin'
-		);
+	return (
+		<Card className="woocommerce-profile-wizard__benefits-card">
+			<CardBody justify="center">
+				<Logo />
+				<div className="woocommerce-profile-wizard__step-header">
+					<Text variant="title.small" as="h2">
+						{ sprintf(
+							__(
+								'Enhance your store with %s',
+								'woocommerce-admin'
+							),
+							pluginNamesString
+						) }
+					</Text>
+				</div>
 
-		return (
-			<Card className="woocommerce-profile-wizard__benefits-card">
-				<CardBody justify="center">
-					<Logo />
-					<div className="woocommerce-profile-wizard__step-header">
-						<Text variant="title.small" as="h2">
-							{ sprintf(
-								__(
-									'Enhance your store with %s',
-									'woocommerce-admin'
-								),
-								pluginNamesString
-							) }
-						</Text>
-					</div>
+				{ renderBenefits() }
+			</CardBody>
+			<CardFooter isBorderless justify="center">
+				<Button
+					isPrimary
+					isBusy={ isInstallAction }
+					disabled={ isUpdatingProfileItems || isInstallAction }
+					onClick={ startPluginInstall }
+				>
+					{ __( 'Yes please!', 'woocommerce-admin' ) }
+				</Button>
+				<Button
+					isSecondary
+					isBusy={ isUpdatingProfileItems && ! isInstallAction }
+					disabled={ isUpdatingProfileItems || isInstallAction }
+					className="woocommerce-profile-wizard__skip"
+					onClick={ skipPluginInstall }
+				>
+					{ __( 'No thanks', 'woocommerce-admin' ) }
+				</Button>
+			</CardFooter>
 
-					{ this.renderBenefits() }
-				</CardBody>
-				<CardFooter isBorderless justify="center">
-					<Button
-						isPrimary
-						isBusy={ isInstallAction }
-						disabled={ isUpdatingProfileItems || isInstallAction }
-						onClick={ this.startPluginInstall }
-					>
-						{ __( 'Yes please!', 'woocommerce-admin' ) }
-					</Button>
-					<Button
-						isSecondary
-						isBusy={ isUpdatingProfileItems && ! isInstallAction }
-						disabled={ isUpdatingProfileItems || isInstallAction }
-						className="woocommerce-profile-wizard__skip"
-						onClick={ this.skipPluginInstall }
-					>
-						{ __( 'No thanks', 'woocommerce-admin' ) }
-					</Button>
-				</CardFooter>
-
-				<CardFooter isBorderless justify="center">
-					<p className="woocommerce-profile-wizard__benefits-install-notice">
-						{ isAcceptingTos
-							? interpolateComponents( {
-									mixedString: sprintf(
-										__(
-											'%s %s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
-											'woocommerce-admin'
-										),
-										pluginNamesString,
-										pluralizedPlugins
-									),
-									components: {
-										link: (
-											<Link
-												href="https://wordpress.com/tos/"
-												target="_blank"
-												type="external"
-											/>
-										),
-									},
-							  } )
-							: sprintf(
+			<CardFooter isBorderless justify="center">
+				<p className="woocommerce-profile-wizard__benefits-install-notice">
+					{ isAcceptingTos
+						? interpolateComponents( {
+								mixedString: sprintf(
 									__(
-										'%s %s will be installed & activated for free.',
+										'%s %s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
 										'woocommerce-admin'
 									),
 									pluginNamesString,
 									pluralizedPlugins
-							  ) }
-					</p>
-				</CardFooter>
-			</Card>
-		);
-	}
+								),
+								components: {
+									link: (
+										<Link
+											href="https://wordpress.com/tos/"
+											target="_blank"
+											type="external"
+										/>
+									),
+								},
+						  } )
+						: sprintf(
+								__(
+									'%s %s will be installed & activated for free.',
+									'woocommerce-admin'
+								),
+								pluginNamesString,
+								pluralizedPlugins
+						  ) }
+				</p>
+			</CardFooter>
+		</Card>
+	);
 }
 
 export default compose(
