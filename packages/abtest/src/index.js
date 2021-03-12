@@ -37,7 +37,7 @@ const ABTest = ( {
 	start = 0,
 	end = Infinity,
 } ) => {
-	const [ variation, setVariation ] = useState( CONTROL );
+	const [ group, setGroup ] = useState( CONTROL );
 	const [ isFetching, setIsFetching ] = useState( true );
 	const active = isActive( start, end );
 	const handleComplete = useCallback( () => {
@@ -55,15 +55,15 @@ const ABTest = ( {
 
 		const cachedGroup = getCachedGroup( name );
 		if ( cachedGroup ) {
-			setVariation( cachedGroup );
+			setGroup( cachedGroup );
 			handleComplete();
 			recordABTestEvent( name, cachedGroup, 'from_cache', 'serve' );
 		} else {
 			( async () => {
-				const group = await getAndSetGroup( name, size );
-				setVariation( group );
+				const newGroup = await getAndSetGroup( name, size );
+				setGroup( newGroup );
 				handleComplete();
-				recordABTestEvent( name, group, 'from_db', 'serve' );
+				recordABTestEvent( name, newGroup, 'from_db', 'serve' );
 			} )();
 		}
 	}, [ active, handleComplete, name, size ] );
@@ -72,7 +72,7 @@ const ABTest = ( {
 		return null;
 	}
 
-	return variation === CONTROL ? control : experiment;
+	return group === CONTROL ? control : experiment;
 };
 
 export default ABTest;

@@ -361,7 +361,6 @@ class Payments extends Component {
 						control={ card }
 						experiment={ card } // Eventually, replace with experiment version of card.
 						onComplete={ this.handleABTestComplete }
-						size={ 10 }
 						key={ key }
 					/>
 				);
