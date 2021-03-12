@@ -150,6 +150,7 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 				<div className="woocommerce-profile-wizard__step-header">
 					<Text variant="title.small" as="h2">
 						{ sprintf(
+							/* translators: %s = names of plugins to install, e.g. Jetpack and Woocommerce Services */
 							__(
 								'Enhance your store with %s',
 								'woocommerce-admin'
@@ -189,8 +190,9 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 						{ isAcceptingTos
 							? interpolateComponents( {
 									mixedString: sprintf(
+										/* translators: %1$s: names of plugins to install, e.g. Jetpack and Woocommerce Services, %2$s: singular or plural form of 'plugins'   */
 										__(
-											'%s %s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
+											'%1$s %2$s will be installed & activated for free, and you agree to our {{link}}Terms of Service{{/link}}.',
 											'woocommerce-admin'
 										),
 										pluginNamesString,
@@ -207,8 +209,9 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 									},
 							  } )
 							: sprintf(
+									/* translators: %1$s: names of plugins to install, e.g. Jetpack and Woocommerce Services, %2$s: singular or plural form of 'plugins'   */
 									__(
-										'%s %s will be installed & activated for free.',
+										'%1$s %2$s will be installed & activated for free.',
 										'woocommerce-admin'
 									),
 									pluginNamesString,
