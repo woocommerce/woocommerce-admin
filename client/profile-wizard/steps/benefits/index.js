@@ -37,7 +37,9 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 
 		return {
 			activePlugins: getActivePlugins(),
-			isJetpackConnected: select( PLUGINS_STORE_NAME ),
+			isJetpackConnected: select(
+				PLUGINS_STORE_NAME
+			).isJetpackConnected(),
 			isProfileItemsError: Boolean(
 				getOnboardingError( 'updateProfileItems' )
 			),
@@ -62,12 +64,23 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 
 	const isJetpackActive = ! pluginsToInstall.includes( 'jetpack' );
 	const isWcsActive = ! pluginsToInstall.includes( 'woocommerce-services' );
+	const isComplete = isWcsActive && isJetpackActive && isJetpackConnected();
 
 	useEffect( () => {
+		// Skip this step if already complete.
+		if ( isComplete ) {
+			goToNextStep();
+			return;
+		}
+
 		recordEvent( 'storeprofiler_plugins_to_install', {
 			plugins: pluginsToInstall,
 		} );
 	}, [] );
+
+	if ( isComplete ) {
+		return null;
+	}
 
 	const skipPluginInstall = async () => {
 		const plugins = isJetpackActive ? 'skipped-wcs' : 'skipped';
@@ -160,8 +173,8 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 					</Text>
 				</div>
 				<Benefits
-					jetpack={ ! isJetpackActive || ! isJetpackConnected }
-					wcs={ ! isWcsActive }
+					isJetpackSetup={ isJetpackActive && isJetpackConnected }
+					isWcsSetup={ isWcsActive }
 				/>
 			</CardBody>
 			<CardFooter isBorderless justify="center">

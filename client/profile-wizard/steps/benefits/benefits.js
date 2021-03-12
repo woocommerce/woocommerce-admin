@@ -12,10 +12,10 @@ import SalesTaxIcon from './images/sales_tax';
 import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';
 
-export const Benefits = ( { jetpack = false, wcs = false } ) => {
+export const Benefits = ( { isJetpackSetup = false, isWcsSetup = false } ) => {
 	return (
 		<div className="woocommerce-profile-wizard__benefits">
-			{ ! jetpack && (
+			{ ! isJetpackSetup && (
 				<Benefit
 					title={ __(
 						'Store management on the go',
@@ -28,7 +28,7 @@ export const Benefits = ( { jetpack = false, wcs = false } ) => {
 					) }
 				/>
 			) }
-			{ ( ! wcs || ! jetpack ) && (
+			{ ( ! isWcsSetup || ! isJetpackSetup ) && (
 				<Benefit
 					title={ __( 'Automated sales taxes', 'woocommerce-admin' ) }
 					icon={ <SalesTaxIcon /> }
@@ -38,7 +38,7 @@ export const Benefits = ( { jetpack = false, wcs = false } ) => {
 					) }
 				/>
 			) }
-			{ ! jetpack && (
+			{ ! isJetpackSetup && (
 				<Benefit
 					title={ __(
 						'Improved speed & security',
@@ -51,7 +51,7 @@ export const Benefits = ( { jetpack = false, wcs = false } ) => {
 					) }
 				/>
 			) }
-			{ jetpack && ! wcs && (
+			{ isJetpackSetup && ! isWcsSetup && (
 				<Benefit
 					title={ __(
 						'Print shipping labels at home',
