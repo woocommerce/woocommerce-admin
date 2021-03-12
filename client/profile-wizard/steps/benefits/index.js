@@ -4,8 +4,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardFooter } from '@wordpress/components';
 import { useEffect, useMemo } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
-import { withDispatch, withSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
 import { H, Link } from '@woocommerce/components';
@@ -28,17 +27,41 @@ import SalesTaxIcon from './images/sales_tax';
 import ShippingLabels from './images/shipping_labels';
 import SpeedIcon from './images/speed';
 
-function Benefits( {
-	activePlugins,
-	createNotice,
-	goToNextStep,
-	installAndActivatePlugins,
-	isInstallingActivating,
-	isProfileItemsError,
-	isUpdatingProfileItems,
-	updateOptions,
-	updateProfileItems,
-} ) {
+export const Benefits = ( { goToNextStep } ) => {
+	const {
+		activePlugins,
+		isProfileItemsError,
+		isUpdatingProfileItems,
+		isInstallingActivating,
+	} = useSelect( ( select ) => {
+		const { getOnboardingError, isOnboardingRequesting } = select(
+			ONBOARDING_STORE_NAME
+		);
+
+		const { getActivePlugins, isPluginsRequesting } = select(
+			PLUGINS_STORE_NAME
+		);
+
+		return {
+			activePlugins: getActivePlugins(),
+			isInstallingActivating:
+				isPluginsRequesting( 'installPlugins' ) ||
+				isPluginsRequesting( 'activatePlugins' ) ||
+				isPluginsRequesting( 'getJetpackConnectUrl' ),
+			isProfileItemsError: Boolean(
+				getOnboardingError( 'updateProfileItems' )
+			),
+			isUpdatingProfileItems: isOnboardingRequesting(
+				'updateProfileItems'
+			),
+		};
+	} );
+
+	const { createNotice } = useDispatch( 'core/notices' );
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { updateProfileItems } = useDispatch( ONBOARDING_STORE_NAME );
+	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+
 	const pluginsRemaining = [ 'jetpack', 'woocommerce-services' ].filter(
 		( plugin ) => ! activePlugins.includes( plugin )
 	);
@@ -272,44 +295,6 @@ function Benefits( {
 			</CardFooter>
 		</Card>
 	);
-}
+};
 
-export default compose(
-	withSelect( ( select ) => {
-		const {
-			getOnboardingError,
-			getProfileItems,
-			isOnboardingRequesting,
-		} = select( ONBOARDING_STORE_NAME );
-
-		const { getActivePlugins, isPluginsRequesting } = select(
-			PLUGINS_STORE_NAME
-		);
-
-		return {
-			activePlugins: getActivePlugins(),
-			isProfileItemsError: Boolean(
-				getOnboardingError( 'updateProfileItems' )
-			),
-			profileItems: getProfileItems(),
-			isUpdatingProfileItems: isOnboardingRequesting(
-				'updateProfileItems'
-			),
-			isInstallingActivating:
-				isPluginsRequesting( 'installPlugins' ) ||
-				isPluginsRequesting( 'activatePlugins' ) ||
-				isPluginsRequesting( 'getJetpackConnectUrl' ),
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
-		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
-		const { createNotice } = dispatch( 'core/notices' );
-
-		return {
-			createNotice,
-			installAndActivatePlugins,
-			updateOptions,
-		};
-	} )
-)( Benefits );
+export default Benefits;
