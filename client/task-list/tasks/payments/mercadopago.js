@@ -53,16 +53,17 @@ export const MercadoPago = ( { installStep, markConfigured } ) => {
 
 const MercadoPagoCredentialsStep = ( { countryCode, onFinish } ) => {
 	const getregistrationURL = () => {
+		const mercadoPagoURL = 'https://www.mercadopago.com';
 		if (
 			! [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
 				countryCode
 			)
 		) {
-			return;
+			return mercadoPagoURL;
 		}
 
 		// As each country has its own domain, we will return the correct one. Otherwise, for example, a Spanish speaker could be redirected to a Mercado Pago page in Portuguese, etc.
-		return `https://www.mercadopago.com.${ countryCode.toLowerCase() }/registration-company?confirmation_url=https%3A%2F%2Fwww.mercadopago.com.${ countryCode.toLowerCase() }%2Fcomo-cobrar`;
+		return `${ mercadoPagoURL }.${ countryCode.toLowerCase() }/registration-company?confirmation_url=${ mercadoPagoURL }.${ countryCode.toLowerCase() }%2Fcomo-cobrar`;
 	};
 
 	const settingsLink = (
