@@ -24,6 +24,7 @@ import {
  * @param {Object} props.control React component to display to control group.
  * @param {Object} props.experiment React component to display to experiment group.
  * @param {Function|null} props.onComplete Optional. Callback triggered once A/B Test has completed setup.
+ * @param {number} props.size Optional. Size of experiment group.
  * @param {number} props.start Optional. A/B Test start timestamp.
  * @param {number} props.end Optional. A/B Test end timestamp.
  */
@@ -32,6 +33,7 @@ const ABTest = ( {
 	control,
 	experiment,
 	onComplete,
+	size = 50,
 	start = 0,
 	end = Infinity,
 } ) => {
@@ -58,13 +60,13 @@ const ABTest = ( {
 			recordABTestEvent( name, cachedGroup, 'from_cache', 'serve' );
 		} else {
 			( async () => {
-				const group = await getAndSetGroup( name );
+				const group = await getAndSetGroup( name, size );
 				setVariation( group );
 				handleComplete();
 				recordABTestEvent( name, group, 'from_db', 'serve' );
 			} )();
 		}
-	}, [ active, handleComplete, name ] );
+	}, [ active, handleComplete, name, size ] );
 
 	if ( isFetching ) {
 		return null;

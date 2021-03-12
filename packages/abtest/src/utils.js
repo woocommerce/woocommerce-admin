@@ -65,17 +65,18 @@ const setABTestOption = ( name, value ) => {
  *
  * If apiFetch fails, default to control.
  *
- * @param {string} name
+ * @param {string} name Experiment name.
+ * @param {number} size Perentage size of experimental group.
  *
  * @return {string} - Group name (CONTROL or EXPERIMENT).
  */
-export const getAndSetGroup = async ( name ) => {
+export const getAndSetGroup = async ( name, size ) => {
 	try {
 		const option = await getABTestOption( name );
-		const group =
-			option[ `${ OPTION_NAME }_${ name }` ] || getRandomGroup();
+		const optionName = `${ OPTION_NAME }_${ name }`;
+		const group = option[ optionName ] || getRandomGroup( size );
 
-		if ( ! option[ `${ OPTION_NAME }_${ name }` ] ) {
+		if ( ! option[ optionName ] ) {
 			setABTestOption( name, group );
 		}
 
@@ -91,9 +92,11 @@ export const getAndSetGroup = async ( name ) => {
 
 /**
  * Randomly select between CONTROL and EXPERIMENT groups.
+ *
+ * @param {number} size Percentage size of experiment group.
  */
-export const getRandomGroup = () =>
-	Math.random() < 0.5 ? CONTROL : EXPERIMENT;
+export const getRandomGroup = ( size ) =>
+	Math.random() * 100 < size ? EXPERIMENT : CONTROL;
 
 /**
  * Check if we are between start and end timestamps.
