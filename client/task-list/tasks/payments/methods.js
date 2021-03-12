@@ -216,7 +216,7 @@ export function getPaymentMethods( {
 			content: (
 				<>
 					{ __(
-						'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed eiusmod tempor incidunt ut labore et dolore. ',
+						'The official Mercado Pago plugin allows you to process payments for your online store.',
 						'woocommerce-admin'
 					) }
 				</>
