@@ -1,5 +1,6 @@
 import { WP_ADMIN_PERMALINK_SETTINGS } from '../utils/constants';
 import { Page } from 'puppeteer';
+import { getElementByText, waitForElementByText } from '../utils/actions';
 
 export class WpSettings {
 	page: Page;
@@ -11,10 +12,11 @@ export class WpSettings {
 		await this.page.goto( WP_ADMIN_PERMALINK_SETTINGS, {
 			waitUntil: 'networkidle0',
 		} );
+		await waitForElementByText( 'h1', 'Permalink Settings' );
 	}
 
 	async saveSettings() {
-		await this.page.click( '.button-primary:text("Save Changes")' );
+		await page.click( '#submit' );
 		await this.page.waitForNavigation( {
 			waitUntil: 'networkidle0',
 		} );

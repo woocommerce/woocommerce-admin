@@ -2,6 +2,7 @@
  * @format
  */
 import { clearAndFillInput } from '@woocommerce/e2e-utils';
+import { getElementByText } from './actions';
 
 /**
  * Internal dependencies
@@ -16,6 +17,7 @@ const StoreOwnerFlow = {
 			waitUntil: 'networkidle0',
 		} );
 
+		await getElementByText( 'label', 'Username or Email Address' );
 		await expect( page.title() ).resolves.toMatch( 'Log In' );
 
 		await clearAndFillInput( '#user_login', ' ' );

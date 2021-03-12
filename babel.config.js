@@ -1,7 +1,7 @@
 const {
 	babelConfig: e2eBabelConfig,
 } = require( '@woocommerce/e2e-environment' );
-console.log( 'BABEL config' );
+
 module.exports = function ( api ) {
 	api.cache( true );
 

@@ -78,8 +78,9 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 	it( 'can complete the theme selection section', async () =>
 		await completeThemeSelectionSection() );
 	it( 'can complete the benefits section', async () => {
-		await page.click( ':text("No thanks")' );
-		await page.waitForNavigation();
+		const onboarding = new OnboardingWizard( page );
+		await onboarding.benefits.isDisplayed();
+		await onboarding.benefits.noThanks();
 	} );
 	it( 'should display the choose payments task, and not the woocommerce payments task', async () => {
 		const homescreen = new WcHomescreen( page );

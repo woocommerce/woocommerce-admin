@@ -1,4 +1,5 @@
 import { Page } from 'puppeteer';
+import { getElementByText, waitForElementByText } from '../../utils/actions';
 
 export class ThemeSection {
 	page: Page;
@@ -8,11 +9,15 @@ export class ThemeSection {
 	}
 
 	async isDisplayed() {
-		await this.page.waitForSelector( ':text("Choose a theme")' );
-		await this.page.waitForSelector( ':text("All themes")' );
+		await waitForElementByText( 'h2', 'Choose a theme' );
+		await waitForElementByText( 'button', 'All themes' );
 	}
 
 	async continueWithActiveTheme() {
-		await this.page.click( 'button:text("Continue with my active theme")' );
+		const button = await getElementByText(
+			'button',
+			'Continue with my active theme'
+		);
+		await button?.click();
 	}
 }

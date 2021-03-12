@@ -1,5 +1,6 @@
 import { Page } from 'puppeteer';
 import { setCheckbox } from '@woocommerce/e2e-utils';
+import { getElementByText, waitForElementByText } from '../../utils/actions';
 
 export class ProductTypeSection {
 	page: Page;
@@ -9,8 +10,9 @@ export class ProductTypeSection {
 	}
 
 	async isDisplayed( productCount: number ) {
-		await this.page.waitForSelector(
-			'h2:text("What type of products will be listed?")'
+		await waitForElementByText(
+			'h2',
+			'What type of products will be listed?'
 		);
 		const length = await this.page.$$eval(
 			'.components-checkbox-control__input',
@@ -35,8 +37,7 @@ export class ProductTypeSection {
 	}
 
 	async selectProduct( productLabel: string ) {
-		await setCheckbox(
-			'.components-base-control :text("' + productLabel + '")'
-		);
+		const checkbox = await getElementByText( 'label', productLabel );
+		await checkbox?.click();
 	}
 }

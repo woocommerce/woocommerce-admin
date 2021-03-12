@@ -1,4 +1,5 @@
 import { Page } from 'puppeteer';
+import { getElementByText, waitForElementByText } from '../../utils/actions';
 
 export class BenefitsSection {
 	page: Page;
@@ -8,13 +9,15 @@ export class BenefitsSection {
 	}
 
 	async isDisplayed() {
-		await this.page.waitForSelector(
-			'.woocommerce-profile-wizard__container.benefits'
+		await waitForElementByText(
+			'h2',
+			'Enhance your store with Jetpack and WooCommerce Shipping & Tax'
 		);
 	}
 
 	async noThanks() {
 		// Click on "No thanks" button to move to the next step
-		await this.page.click( ':text("No thanks")' );
+		const button = await getElementByText( 'button', 'No thanks' );
+		await button?.click();
 	}
 }

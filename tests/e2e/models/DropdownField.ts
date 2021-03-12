@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { getInputValue } from '../utils/actions';
+import { getElementByText, getInputValue } from '../utils/actions';
 
 export class DropdownField {
 	page: Page;
@@ -16,7 +16,8 @@ export class DropdownField {
 			await this.page.click(
 				this.id + ' .woocommerce-select-control__control'
 			);
-			await this.page.click( this.id + ' button:text("' + value + '")' );
+			const button = await getElementByText( 'button', value, this.id );
+			await button?.click();
 			await this.checkSelected( value );
 		}
 	}

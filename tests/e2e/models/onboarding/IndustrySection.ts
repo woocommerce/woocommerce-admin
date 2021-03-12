@@ -1,5 +1,6 @@
 import { Page } from 'puppeteer';
 import { setCheckbox } from '@woocommerce/e2e-utils';
+import { getElementByText, waitForElementByText } from '../../utils/actions';
 
 export class IndustrySection {
 	page: Page;
@@ -9,8 +10,9 @@ export class IndustrySection {
 	}
 
 	async isDisplayed( industryCount?: number ) {
-		await this.page.waitForSelector(
-			'h2:text("In which industry does the store operate?")'
+		await waitForElementByText(
+			'h2',
+			'In which industry does the store operate?'
 		);
 
 		if ( industryCount ) {
@@ -39,6 +41,7 @@ export class IndustrySection {
 	}
 
 	async selectIndustry( industryLabel: string ) {
-		setCheckbox( 'label:text-is("' + industryLabel + '")' );
+		const checkbox = await getElementByText( 'label', industryLabel );
+		await checkbox?.click();
 	}
 }

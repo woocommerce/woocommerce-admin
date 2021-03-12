@@ -1,11 +1,4 @@
-/**
- * Click a tab (on post type edit screen).
- *
- * @param {string} tabName Tab label
- */
-const clickTab = async ( tabName: string ) => {
-	await page.click( '.wc-tabs > li > a:text("' + tabName + '")' );
-};
+import { ElementHandle } from 'puppeteer';
 
 /**
  * Wait for UI blocking to end.
@@ -63,7 +56,6 @@ const verifyPublishAndTrash = async (
 };
 
 const getInputValue = async ( selector: string ) => {
-	await page.focus( selector );
 	const field = await page.$( selector );
 	if ( field ) {
 		const fieldValue = await (
@@ -80,7 +72,7 @@ const getAttribute = async ( selector: string, attribute: string ) => {
 	const field = await page.$( selector );
 	if ( field ) {
 		const fieldValue = await (
-			await field.getProperty( 'attribute' )
+			await field.getProperty( attribute )
 		 ).jsonValue();
 
 		return fieldValue;
@@ -88,18 +80,38 @@ const getAttribute = async ( selector: string, attribute: string ) => {
 	return null;
 };
 
-const getElementByText = async ( element: string, text: string ) => {
-	const els = await page.$x(
+const getElementByText = async (
+	element: string,
+	text: string,
+	parentSelector?: string
+): Promise< ElementHandle | null > => {
+	let parent: ElementHandle | null = null;
+	if ( parentSelector ) {
+		parent = await page.$( parentSelector );
+	}
+	const els = await ( parent || page ).$x(
 		`//${ element }[contains(text(), '${ text }')]`
 	);
 	return els[ 0 ];
 };
 
+const waitForElementByText = async (
+	element: string,
+	text: string,
+	options?: { timeout?: number }
+): Promise< ElementHandle | null > => {
+	const els = await page.waitForXPath(
+		`//${ element }[contains(text(), '${ text }')]`,
+		options
+	);
+	return els;
+};
+
 export {
-	clickTab,
 	uiUnblocked,
 	verifyPublishAndTrash,
 	getInputValue,
 	getAttribute,
 	getElementByText,
+	waitForElementByText,
 };

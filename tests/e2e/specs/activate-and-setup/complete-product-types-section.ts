@@ -13,6 +13,8 @@ export async function completeProductTypesSection(
 	const onboarding = new OnboardingWizard( page );
 	await onboarding.productTypes.isDisplayed( expectedProductTypeCount );
 
+	await onboarding.productTypes.uncheckProducts();
+
 	// Select Physical and Downloadable products
 	await onboarding.productTypes.selectProduct( 'Physical products' );
 	await onboarding.productTypes.selectProduct( 'Downloads' );

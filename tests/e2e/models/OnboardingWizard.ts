@@ -1,4 +1,5 @@
 import { Page } from 'puppeteer';
+import { getElementByText } from '../utils/actions';
 import { WP_ADMIN_START_PROFILE_WIZARD } from '../utils/constants';
 import { BenefitsSection } from './onboarding/BenefitsSection';
 import { BusinessSection } from './onboarding/BusinessSection';
@@ -33,7 +34,8 @@ export class OnboardingWizard {
 	}
 
 	async continue() {
-		await this.page.click( 'button.is-primary:text("Continue")' );
+		const button = await getElementByText( 'button', 'Continue' );
+		await button?.click();
 	}
 
 	async optionallySelectUsageTracking( select = false ) {
@@ -58,11 +60,14 @@ export class OnboardingWizard {
 		expect( primaryButtons ).toHaveLength( 2 );
 
 		if ( select ) {
-			await this.page.click(
-				'button.is-secondary:text("Yes, count me in")'
+			const button = await getElementByText(
+				'button',
+				'Yes, count me in'
 			);
+			await button?.click();
 		} else {
-			await this.page.click( 'button.is-secondary:text("No thanks")' );
+			const button = await getElementByText( 'button', 'No thanks' );
+			await button?.click();
 		}
 		this.page.waitForNavigation( {
 			waitUntil: 'networkidle0',

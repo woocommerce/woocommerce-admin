@@ -46,7 +46,7 @@ describe( 'Store owner can finish initial store setup', () => {
 
 		// Verify that settings have been saved
 		const taxRate = await wcSettings.getTaxRateValue();
-		expect( taxRate ).toEqual( 'checked' );
+		expect( taxRate ).toEqual( true );
 	} );
 
 	it( 'can configure permalink settings', async () => {

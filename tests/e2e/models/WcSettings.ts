@@ -1,7 +1,11 @@
 import { setCheckbox } from '@woocommerce/e2e-utils';
 import { WP_ADMIN_WC_SETTINGS } from '../utils/constants';
 import { Page } from 'puppeteer';
-import { getAttribute } from '../utils/actions';
+import {
+	getAttribute,
+	getElementByText,
+	waitForElementByText,
+} from '../utils/actions';
 
 export class WcSettings {
 	page: Page;
@@ -20,11 +24,12 @@ export class WcSettings {
 		await this.page.goto( settingsUrl, {
 			waitUntil: 'networkidle0',
 		} );
-		await this.page.waitForSelector( 'a.nav-tab-active:text("General")' );
+		await waitForElementByText( 'a', 'General' );
 	}
 
 	async enableTaxRates() {
-		setCheckbox( '#woocommerce_calc_taxes' );
+		await waitForElementByText( 'th', 'Enable taxes' );
+		await setCheckbox( '#woocommerce_calc_taxes' );
 	}
 
 	async getTaxRateValue() {
@@ -32,12 +37,14 @@ export class WcSettings {
 	}
 
 	async saveSettings() {
-		await this.page.click( ':text("Save changes")' );
+		const button = await getElementByText( 'button', 'Save changes' );
+		await button?.click();
 		await this.page.waitForNavigation( {
 			waitUntil: 'networkidle0',
 		} );
-		await this.page.waitForSelector(
-			'#message :text("Your settings have been saved.")'
+		await waitForElementByText(
+			'strong',
+			'Your settings have been saved.'
 		);
 	}
 }
