@@ -200,7 +200,7 @@ function buildJsFileFor( file, silent, environment ) {
  */
 async function buildPackage( packagePath ) {
 	const srcDir = path.resolve( packagePath, SRC_DIR );
-	const jsFiles = glob.sync( `${ srcDir }/**/*.{ts, tsx, js}`, {
+	const jsFiles = glob.sync( `${ srcDir }/**/*.{ts,tsx,js}`, {
 		ignore: [
 			`${ srcDir }/**/test/**/*.js`,
 			`${ srcDir }/**/__mocks__/**/*.js`,
@@ -214,7 +214,9 @@ async function buildPackage( packagePath ) {
 	process.stdout.write( `${ path.basename( packagePath ) }\n` );
 
 	// Build js files individually.
-	jsFiles.forEach( ( file ) => buildJsFile( file, true ) );
+	jsFiles.forEach( ( file ) => {
+		buildJsFile( file, true );
+	} );
 
 	process.stdout.write( `${ DONE }\n` );
 }
