@@ -24,8 +24,9 @@
 		"access": "public"
 	},
 	"dependencies": {
+		"@woocommerce/data": "^1.1.1",
 		"@woocommerce/tracks": "^1.0.0",
-		"@wordpress/api-fetch": "^3.21.5",
+		"@wordpress/data": "^4.26.8",
 		"@wordpress/element": "^2.19.1"
 	},
 	"devDependencies": {

@@ -1,18 +1,12 @@
 /**
  * External dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import {
-	CONTROL,
-	EXPERIMENT,
-	OPTION_NAME,
-	WC_ADMIN_NAMESPACE,
-} from './constants';
+import { CONTROL, EXPERIMENT, OPTION_NAME } from './constants';
 
 /**
  * Get named key from localStorage.
@@ -33,31 +27,6 @@ export const setCachedGroup = ( name, value ) =>
 	window.localStorage.setItem( name, value );
 
 /**
- * Fetch abtest option from backend.
- *
- * @param {string} name
- */
-const getABTestOption = ( name ) => {
-	return apiFetch( {
-		path: `${ WC_ADMIN_NAMESPACE }/options?options=${ OPTION_NAME }_${ name }`,
-	} );
-};
-
-/**
- * Set abtest option in backend.
- *
- * @param {string} name
- * @param {string} value
- */
-const setABTestOption = ( name, value ) => {
-	apiFetch( {
-		method: 'POST',
-		path: `${ WC_ADMIN_NAMESPACE }/options`,
-		data: { [ `${ OPTION_NAME }_${ name }` ]: value },
-	} );
-};
-
-/**
  * Fetch option from backend and set localStorage accordingly.
  *
  * If option doesn't exist, then pick a group, update in the backend,
@@ -67,17 +36,25 @@ const setABTestOption = ( name, value ) => {
  *
  * @param {string} name Experiment name.
  * @param {number} size Perentage size of experimental group.
+ * @param {Function} getABTestOption Options data store selector.
+ * @param {Function} setABTestOption Options data store dispatch.
  *
  * @return {string} - Group name (CONTROL or EXPERIMENT).
  */
-export const getAndSetGroup = async ( name, size ) => {
+export const getAndSetGroup = (
+	name,
+	size,
+	getABTestOption,
+	setABTestOption
+) => {
 	try {
-		const option = await getABTestOption( name );
-		const optionName = `${ OPTION_NAME }_${ name }`;
-		const group = option[ optionName ] || getRandomGroup( size );
+		const option = getABTestOption( OPTION_NAME );
+		const group = option[ name ] || getRandomGroup( size );
 
-		if ( ! option[ optionName ] ) {
-			setABTestOption( name, group );
+		if ( ! option[ name ] ) {
+			setABTestOption( {
+				[ OPTION_NAME ]: { ...option, [ name ]: group },
+			} );
 		}
 
 		setCachedGroup( name, group );

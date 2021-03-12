@@ -1,5 +1,6 @@
 {
 	"features": {
+		"abtest": true,
 		"activity-panels": true,
 		"analytics": true,
 		"analytics-dashboard": true,

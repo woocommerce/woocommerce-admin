@@ -37,7 +37,6 @@ import ABTest from '@woocommerce/abtest';
 import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
-import { PaymentMethodPlaceholder } from '../../placeholder';
 
 export const setMethodEnabledOption = async (
 	optionName,
@@ -69,15 +68,10 @@ class Payments extends Component {
 			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
 		);
 
-		const isLoading = methods.some(
-			( method ) => method.key === 'wcpay' && method.visible
-		);
-
 		this.state = {
 			busyMethod: null,
 			enabledMethods,
 			recommendedMethod: this.getRecommendedMethod(),
-			isLoading,
 		};
 
 		this.markConfigured = this.markConfigured.bind( this );
@@ -271,11 +265,9 @@ class Payments extends Component {
 		);
 	}
 
-	handleABTestComplete = () => this.setState( { isLoading: false } );
-
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { isLoading, recommendedMethod } = this.state;
+		const { recommendedMethod } = this.state;
 		const { methods, query } = this.props;
 
 		if ( currentMethod ) {
@@ -360,19 +352,13 @@ class Payments extends Component {
 						name="validate_randomization_mechanism"
 						control={ card }
 						experiment={ card } // Eventually, replace with experiment version of card.
-						onComplete={ this.handleABTestComplete }
 						key={ key }
 					/>
 				);
 			}
 
-			return isLoading ? <PaymentMethodPlaceholder key={ key } /> : card;
+			return card;
 		} );
-
-		// Workaround for missing WCPay ABTest placeholder.
-		if ( isLoading ) {
-			cards.push( <PaymentMethodPlaceholder key="wcpay-loading" /> );
-		}
 
 		return <div className="woocommerce-task-payments">{ cards }</div>;
 	}

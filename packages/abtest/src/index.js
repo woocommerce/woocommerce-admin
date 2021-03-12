@@ -2,6 +2,8 @@
  * External dependencies
  */
 import { useState, useEffect, useCallback } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -47,26 +49,37 @@ const ABTest = ( {
 		}
 	}, [ onComplete ] );
 
-	useEffect( () => {
-		if ( ! active ) {
-			handleComplete();
-			return;
-		}
+	const setABTestOption = useDispatch( OPTIONS_STORE_NAME ).updateOptions;
+	const getABTestOption = useSelect(
+		( select ) => select( OPTIONS_STORE_NAME ).getOption
+	);
 
-		const cachedGroup = getCachedGroup( name );
-		if ( cachedGroup ) {
-			setGroup( cachedGroup );
-			handleComplete();
-			recordABTestEvent( name, cachedGroup, 'from_cache', 'serve' );
-		} else {
-			( async () => {
-				const newGroup = await getAndSetGroup( name, size );
+	useEffect( () => {
+		if ( active ) {
+			const cachedGroup = getCachedGroup( name );
+			if ( cachedGroup ) {
+				setGroup( cachedGroup );
+				recordABTestEvent( name, cachedGroup, 'from_cache', 'serve' );
+			} else {
+				const newGroup = getAndSetGroup(
+					name,
+					size,
+					getABTestOption,
+					setABTestOption
+				);
 				setGroup( newGroup );
-				handleComplete();
-				recordABTestEvent( name, newGroup, 'from_db', 'serve' );
-			} )();
+				recordABTestEvent( name, newGroup, 'from_store', 'serve' );
+			}
 		}
-	}, [ active, handleComplete, name, size ] );
+		handleComplete();
+	}, [
+		active,
+		name,
+		size,
+		handleComplete,
+		getABTestOption,
+		setABTestOption,
+	] );
 
 	if ( isFetching ) {
 		return null;

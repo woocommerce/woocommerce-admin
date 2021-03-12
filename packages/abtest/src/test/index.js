@@ -1,14 +1,14 @@
 /**
  * External dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { render, findByText } from '@testing-library/react';
 
 /**
  * Internal dependencies
  */
 import ABTest from '../index';
-import { OPTION_NAME } from '../constants';
+import { CONTROL, EXPERIMENT } from '../constants';
 import {
 	getAndSetGroup,
 	getCachedGroup,
@@ -16,14 +16,16 @@ import {
 	setCachedGroup,
 } from '../utils';
 
-jest.mock( '@wordpress/api-fetch' );
+jest.mock( '@wordpress/data' );
+
+useDispatch.mockReturnValue( { updateOptions: jest.fn() } );
+useSelect.mockReturnValue( jest.fn( () => ( { test: EXPERIMENT } ) ) );
 
 describe( 'ABTest Suite', () => {
 	beforeEach( () => window.localStorage.clear() );
-	afterEach( () => jest.clearAllMocks() );
 
-	const Control = () => <div>Control</div>;
-	const Experiment = () => <div>Experiment</div>;
+	const Control = () => <div>{ CONTROL }</div>;
+	const Experiment = () => <div>{ EXPERIMENT }</div>;
 
 	it( 'Should show test is active.', async () => {
 		Date.now = jest.fn( () => 1615339211640 );
@@ -42,37 +44,48 @@ describe( 'ABTest Suite', () => {
 	} );
 
 	it( 'Should get control from cache.', async () => {
-		window.localStorage.setItem( 'test', 'control' );
+		window.localStorage.setItem( 'test', CONTROL );
 
 		const result = getCachedGroup( 'test' );
 
-		expect( result ).toBe( 'control' );
+		expect( result ).toBe( CONTROL );
 	} );
 
 	it( 'Should set cache to experiment.', async () => {
-		setCachedGroup( 'test', 'experiment' );
+		setCachedGroup( 'test', EXPERIMENT );
 
-		expect( window.localStorage.getItem( 'test' ) ).toBe( 'experiment' );
+		expect( window.localStorage.getItem( 'test' ) ).toBe( EXPERIMENT );
 	} );
 
 	it( 'Should fetch group from backend and set cache to experiment.', async () => {
-		apiFetch.mockResolvedValue( {
-			[ OPTION_NAME + '_test' ]: 'experiment',
-		} );
+		const getABTestOption = useSelect();
+		const setABTestOption = useDispatch().updateOptions;
+		const group = getAndSetGroup(
+			'test',
+			50,
+			getABTestOption,
+			setABTestOption
+		);
 
-		const group = await getAndSetGroup( 'test' );
-
-		expect( group ).toBe( 'experiment' );
-		expect( window.localStorage.getItem( 'test' ) ).toBe( 'experiment' );
+		expect( group ).toBe( EXPERIMENT );
+		expect( window.localStorage.getItem( 'test' ) ).toBe( EXPERIMENT );
 	} );
 
 	it( 'Should fail to fetch group and default to control.', async () => {
-		apiFetch.mockRejectedValue( new Error() );
+		const getABTestOption = jest.fn( () => {
+			throw new Error();
+		} );
 
-		const group = await getAndSetGroup( 'test' );
+		const setABTestOption = useDispatch().updateOptions;
+		const group = getAndSetGroup(
+			'test',
+			50,
+			getABTestOption,
+			setABTestOption
+		);
 
-		expect( group ).toBe( 'control' );
-		expect( window.localStorage.getItem( 'test' ) ).toBe( 'control' );
+		expect( group ).toBe( CONTROL );
+		expect( window.localStorage.getItem( 'test' ) ).toBe( CONTROL );
 	} );
 
 	it( 'Should render control when test is not active yet.', async () => {
@@ -88,14 +101,14 @@ describe( 'ABTest Suite', () => {
 			/>
 		);
 
-		expect( await findByText( container, 'Control' ) ).toBeDefined();
+		expect( await findByText( container, CONTROL ) ).toBeDefined();
 		expect( window.localStorage.getItem( 'test' ) ).toBeFalsy();
 	} );
 
 	it( 'Should call onComplete callback when rendering.', async () => {
 		window.localStorage.setItem( 'test', 'experiment' );
-		const onComplete = jest.fn( () => null );
 
+		const onComplete = jest.fn( () => null );
 		const { container } = render(
 			<ABTest
 				name="test"
@@ -105,12 +118,12 @@ describe( 'ABTest Suite', () => {
 			/>
 		);
 
-		expect( await findByText( container, 'Experiment' ) ).toBeDefined();
+		expect( await findByText( container, EXPERIMENT ) ).toBeDefined();
 		expect( onComplete ).toHaveBeenCalled();
 	} );
 
 	it( 'Should render experiment when cache is experiment.', async () => {
-		window.localStorage.setItem( 'test', 'experiment' );
+		window.localStorage.setItem( 'test', EXPERIMENT );
 
 		const { container } = render(
 			<ABTest
@@ -120,14 +133,10 @@ describe( 'ABTest Suite', () => {
 			/>
 		);
 
-		expect( await findByText( container, 'Experiment' ) ).toBeDefined();
+		expect( await findByText( container, EXPERIMENT ) ).toBeDefined();
 	} );
 
-	it( 'Should render control when fetched option is control.', async () => {
-		apiFetch.mockResolvedValue( {
-			[ OPTION_NAME + '_test' ]: 'control',
-		} );
-
+	it( 'Should render experiment when fetched option is experiment.', async () => {
 		const { container } = render(
 			<ABTest
 				name="test"
@@ -136,7 +145,7 @@ describe( 'ABTest Suite', () => {
 			/>
 		);
 
-		expect( await findByText( container, 'Control' ) ).toBeDefined();
-		expect( window.localStorage.getItem( 'test' ) ).toBe( 'control' );
+		expect( await findByText( container, EXPERIMENT ) ).toBeDefined();
+		expect( window.localStorage.getItem( 'test' ) ).toBe( EXPERIMENT );
 	} );
 } );
