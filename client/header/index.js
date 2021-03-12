@@ -163,7 +163,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 			) }
 
 			<div className="woocommerce-layout__header-wrapper">
-				{ window.wcAdminFeatures.navigation && <Navigation /> }
+				{ /* { window.wcAdminFeatures.navigation && <Navigation /> } */ }
 				{ renderTaskListBackButton() }
 				<Text
 					className={ `woocommerce-layout__header-heading ${ backButtonClass }` }

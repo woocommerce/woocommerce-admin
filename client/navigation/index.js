@@ -11,12 +11,14 @@ import { withNavigationHydration } from '@woocommerce/data';
 import './style.scss';
 import Container from './components/container';
 
-const Navigation = () => (
-	<NavSlotFillProvider>
-		<Container />
-		<PluginArea />
-	</NavSlotFillProvider>
-);
+const Navigation = () => {
+	return (
+		<NavSlotFillProvider>
+			<Container />
+			<PluginArea />
+		</NavSlotFillProvider>
+	);
+};
 
 const HydratedNavigation = withNavigationHydration( window.wcNavigation )(
 	Navigation
