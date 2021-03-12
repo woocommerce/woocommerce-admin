@@ -2,12 +2,39 @@
 
 ## Unreleased
 
+### Fix hidden menu title on smaller screens #6562
+
+1. Enable the new navigation.
+2. Shorten your viewport height so that the secondary menu overlaps the main.
+3. Make sure the menu title can still be seen.
+### Use wc filter to get status tabs for tools category #6525
+
+1. Register a new tab via the filter.
+```
+add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
+	$tabs['my-tools-page'] = __( 'My Tools Page', 'your-text-domain' );
+	return $tabs;
+} );
+```
+2. Enable the new navigation.
+3. Make sure the menu item for the registered tab is shown under `Tools`.
+### Remove mobile activity panel toggle #6539
+
+1. Narrow your viewport to < 782px.
+2. Navigate to various WooCommerce pages.
+3. Make sure the various tabs can be seen and function as expected.
+4. Navigate to a WooCommerce Admin page that is not the homepage.
+5. Open the "Inbox" panel.
+6. Click on the "Inbox" panel button again.
+7. Make sure the panel closes as expected and does not reopen immediately.
+
 ### Add legacy report items to new navigation #6507
 
 1. Enable the new navigation experience.
 2. Navigate to Analytics->Reports.
 3. Note that all the reports exist and navigating to those reports works as expected.
 4. Check that report menu items are marked active when navigating to that page.
+
 ### Add navigation container tests #6464
 
 1. On a new site, finish the store setup wizard, but don't hide the task list.
@@ -23,6 +50,40 @@
 3. A new tab should open and the URL should be the site URL.
 4. Navigate to other tasks such as "Store Details" or "Add products" .
 5. The "Preview Site" should not be shown on the other tasks.
+
+### Store profiler - Added MailPoet to new Business Details step  #6515
+
+- Create a brand new site and go to the OBW.
+- In the first OBW step (`Store Details`) set `US` in the `Country / Region` selector.
+- Continue with the profiler.
+- In the 4th step (`Business Details`) choose any of the options in both selectors.
+- Under `Free features` tab, verify that the displayed extensions are:
+```
+Mailpoet
+Facebook
+Google Ads
+Mailchimp
+Creative Mail
+```
+(In that order)
+- Verify that the Creative Mail option copy is `Emails made easy with Creative Mail`.
+
+### Store profiler - Added MailPoet to Business Details step  #6503
+
+- Create a brand new site and go to the OBW.
+- In the first OBW step (`Store Details`) set a Country / Region other than `US | BR | FR | ID | GB | DE | VN | CA | PL | MY | AU | NG | GR | BE | PT | DK | SE | JP` (e.g.: Uruguay).
+- Continue with the profiler.
+- In the 4th step (`Business Details`) choose any of the options in both selectors.
+- Verify that the displayed extensions are:
+```
+Mailpoet
+Facebook
+Google Ads
+Mailchimp
+Creative Mail
+```
+(In that order)
+- Verify that the Creative Mail option is toggled off by default.
 
 ### Fix double prefixing of navigation URLs #6460
 
@@ -91,6 +152,137 @@ For each task in that list apart from "Store details":
 2. You should land on the setup task page
 3. A title in the top left should reflect the original task name from the task list. e.g. "Add tax rates"
 4. Clicking the chevron to the left of the title should take you back to the home screen
+
+### Update target audience of business feature step #6508
+
+Scenario #1
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a canadian address (addr: 4428 Blanshard, country/region: Canada -- British Columbia, city: Victoria, postcode: V8W 2H9)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. The business details tab should show a **Business details** tab, and a **Free features** tab (disabled at first)
+     - There should only be dropdowns visible on the **Business details** step (no checkboxes)
+5. Select **1-10** for the first dropdown, and **No** for the second, and click Continue.
+6. Click on the expansion icon for the **Add recommended business features to my site**
+7. It should list 7 features, including **WooCommerce Payments** (top one)
+     - Note down the selected features, for step 10
+8. Click continue, and select your theme, after it should redirect to the home screen (showing the welcome modal, you can step through this).
+9. The home screen task list should include a **Set up WooCommerce Payments** task, and there should also be a **Set up additional payment providers** inbox card displayed (below the task list).
+10. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 7 are installed and activated.
+
+Scenario #2
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a spanish address (addr: C/ Benito Guinea 52, country/region: Spain -- Barcelona, city: Canet de Mar, postcode: 08360)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. On the business details tab select **1-10** for the first dropdown, and **No** for the second.
+     - After filling the dropdowns it should show several checkboxes with plugins (Facebook, mailchimp, creative mail, google ads)
+     - Note which ones you kept selected (you can unselect one or two)
+5. Click continue, and select your theme, it should show the **WooCommerce Shipping & Tax** step after, you can click **No thanks**.
+6. You will be redirected to the home screen, showing the welcome modal, you can step through this.
+7. The task list should show the **Choose payment methods** task, and the **Set up additional payment providers** inbox card should not be present.
+8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
+9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
+
+### Add Ireland to Square payment method #6559
+
+1. Go to the store setup wizard `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`
+1. Set up your store with Ireland as its country, and proceed until the `Business Details` step
+1. In "Currently selling anywhere?" dropdown, select either:
+    - Yes, in person at physical stores and/or events
+    - Yes, on another platform and in person at physical stores and/or events
+1. Finish the setup wizard, and go to payments task `/wp-admin/admin.php?page=wc-admin&task=payments`
+1. Observe Square as a payment method option
+
+### Add CES survey for search product, order, customer #6420
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+
+**Testing search on products:**
+- Go to Products > All Products.
+- Type in anything in search bar, click on "Search products".
+- Observe CES prompt "How easy was it to use search?" is displayed.
+
+**Testing search on orders:**
+- Go to Orders > Orders.
+- Type in anything in search bar, click on "Search orders".
+- Observe CES prompt "How easy was it to use search?" is displayed.
+
+**Testing search on customers:**
+- Go to Customers.
+- Type in anything in search bar, and press enter.
+- Observe CES prompt "How easy was it to use search?" is displayed
+
+### Add CES survey for importing products #6419
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+- If you don't have a product CSV export, you can obtain a sample CSV [here](https://gist.githubusercontent.com/ilyasfoo/507f9579531cf4bf50fe4c0e9c48a23d/raw/05e47e6731471464c757e893c3f2d8a9b89453c0/product-export.csv).
+- Go to Products > All Products.
+- Click on "Import".
+- Upload CSV file and finish the import process.
+- Observe CES prompt "How easy was it to import products?" is displayed.
+
+### Add CES survey for adding product categories and tags #6418
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+
+**Testing product categories:**
+- Go to Products > Categories.
+- Add a new category.
+- Observe CES prompt "How easy was it to add a product category?" is displayed.
+
+**Testing product tags:**
+- Go to Products > Tags.
+- Add a new tag.
+- Observe CES prompt "How easy was it to add a product tag?" is displayed.
+
+**Testing product attributes:**
+- Go to Products > Attributes.
+- Add a new attribute.
+- Observe CES prompt "How easy was it to add a product attribute?" is displayed.
+
+## 2.1.2
+
+### Add Guards to "Deactivate Plugin" Note Handlers #6532
+
+#### Test incompatible WooCommerce version
+
+-   Install and activate Woocommerce 4.7
+-   See that the Woocommerce Admin plugin is deactivated.
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   See that the note is in the inbox
+-   Activate the Woocommerce Admin plugin.
+-   See that Woocommerce Admin immediately de-activates without a fatal error.
+-   See that the note remains in inbox
+
+#### Test compatible WooCommerce version
+
+-   Deactivate the Woocommerce Admin plugin.
+-   Install and activate the latest Woocommerce version.
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   Activate the Woocommerce Admin plugin.
+-   See that note is **not** in the inbox
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   De-activate the Woocommerce Admin plugin.
+-   See that note is **not** in the inbox
 
 ## 2.1.0
 
@@ -162,6 +354,13 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 6. Make sure the menu item order is correct after unfavoriting.
 7. Create a user with permissions to see some but not all registered WooCommerce pages.
 8. Check that a user without permission to access a menu item cannot see said menu item.
+
+### Fixed associated Order Number for refunds #6428
+
+1. In a store with refunded orders.
+2. Go to `Analytics` > `Orders`
+3. Set the `Date Range` filter in order to cover the refunded order date.
+4. Verify that now the associated order number and the related products are visible.
 
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
