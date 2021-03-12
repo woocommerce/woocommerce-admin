@@ -3,7 +3,7 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardFooter } from '@wordpress/components';
-import { useEffect, useMemo } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { filter } from 'lodash';
 import interpolateComponents from 'interpolate-components';
@@ -32,22 +32,14 @@ export const Benefits = ( { goToNextStep } ) => {
 		activePlugins,
 		isProfileItemsError,
 		isUpdatingProfileItems,
-		isInstallingActivating,
 	} = useSelect( ( select ) => {
 		const { getOnboardingError, isOnboardingRequesting } = select(
 			ONBOARDING_STORE_NAME
 		);
-
-		const { getActivePlugins, isPluginsRequesting } = select(
-			PLUGINS_STORE_NAME
-		);
+		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
 		return {
 			activePlugins: getActivePlugins(),
-			isInstallingActivating:
-				isPluginsRequesting( 'installPlugins' ) ||
-				isPluginsRequesting( 'activatePlugins' ) ||
-				isPluginsRequesting( 'getJetpackConnectUrl' ),
 			isProfileItemsError: Boolean(
 				getOnboardingError( 'updateProfileItems' )
 			),
@@ -68,6 +60,7 @@ export const Benefits = ( { goToNextStep } ) => {
 
 	// Cache the initial plugin list so we don't change benefits midway through activation.
 	const pluginsToInstall = useMemo( () => pluginsRemaining, [] );
+	const [ isInstalling, setIsInstalling ] = useState( false );
 
 	const isJetpackActive = pluginsToInstall
 		? pluginsToInstall.includes( 'jetpack' )
@@ -107,19 +100,26 @@ export const Benefits = ( { goToNextStep } ) => {
 	const startPluginInstall = () => {
 		const plugins = isJetpackActive ? 'installed-wcs' : 'installed';
 
+		setIsInstalling( true );
+
 		recordEvent( 'storeprofiler_install_plugins', {
 			install: true,
 			plugins,
 		} );
 
 		Promise.all( [
-			installAndActivatePlugins( pluginsToInstall ),
+			pluginsToInstall.length
+				? installAndActivatePlugins( pluginsToInstall )
+				: null,
 			updateProfileItems( { plugins } ),
 			updateOptions( {
 				woocommerce_setup_jetpack_opted_in: true,
 			} ),
 		] )
-			.then( goToNextStep )
+			.then( () => {
+				setIsInstalling( false );
+				goToNextStep();
+			} )
 			.catch( ( pluginError, profileError ) => {
 				if ( pluginError ) {
 					createNoticesFromResponse( pluginError );
@@ -133,6 +133,7 @@ export const Benefits = ( { goToNextStep } ) => {
 						)
 					);
 				}
+				setIsInstalling( false );
 				goToNextStep();
 			} );
 	};
@@ -214,7 +215,6 @@ export const Benefits = ( { goToNextStep } ) => {
 	const pluginNamesString = pluginsToInstall
 		.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
 		.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
-	const isInstallAction = isInstallingActivating || ! pluginsRemaining.length;
 	const isAcceptingTos = ! isWcsActive;
 	const pluralizedPlugins = _n(
 		'plugin',
@@ -244,16 +244,16 @@ export const Benefits = ( { goToNextStep } ) => {
 			<CardFooter isBorderless justify="center">
 				<Button
 					isPrimary
-					isBusy={ isInstallAction }
-					disabled={ isUpdatingProfileItems || isInstallAction }
+					isBusy={ isInstalling }
+					disabled={ isUpdatingProfileItems || isInstalling }
 					onClick={ startPluginInstall }
 				>
 					{ __( 'Yes please!', 'woocommerce-admin' ) }
 				</Button>
 				<Button
 					isSecondary
-					isBusy={ isUpdatingProfileItems && ! isInstallAction }
-					disabled={ isUpdatingProfileItems || isInstallAction }
+					isBusy={ isUpdatingProfileItems && ! isInstalling }
+					disabled={ isUpdatingProfileItems || isInstalling }
 					className="woocommerce-profile-wizard__skip"
 					onClick={ skipPluginInstall }
 				>
