@@ -145,7 +145,6 @@ export function getPaymentMethods( {
 					woocommerce_paystack_settings: {
 						...values,
 						testmode: 'no',
-						enabled: 'yes',
 					},
 				};
 			},
@@ -206,7 +205,6 @@ export function getPaymentMethods( {
 					woocommerce_payfast_settings: {
 						...values,
 						testmode: 'no',
-						enabled: 'yes',
 					},
 				};
 			},
