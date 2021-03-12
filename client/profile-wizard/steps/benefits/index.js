@@ -64,7 +64,7 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 
 	const isJetpackActive = ! pluginsToInstall.includes( 'jetpack' );
 	const isWcsActive = ! pluginsToInstall.includes( 'woocommerce-services' );
-	const isComplete = isWcsActive && isJetpackActive && isJetpackConnected();
+	const isComplete = isWcsActive && isJetpackActive && isJetpackConnected;
 
 	useEffect( () => {
 		// Skip this step if already complete.
