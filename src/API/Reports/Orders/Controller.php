@@ -481,7 +481,7 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @param array $customer Customer from report row.
 	 * @return string
 	 */
-	protected function _get_customer_name( $customer ) {
+	protected function get_customer_name( $customer ) {
 		return $customer['first_name'] . ' ' . $customer['last_name'];
 	}
 
@@ -557,7 +557,7 @@ class Controller extends ReportsController implements ExportableInterface {
 			'date_created'   => $item['date_created'],
 			'order_number'   => $item['order_number'],
 			'status'         => $item['status'],
-			'customer_name'  => isset( $item['extended_info']['customer'] ) ? $this->_get_customer_name( $item['extended_info']['customer'] ) : null,
+			'customer_name'  => isset( $item['extended_info']['customer'] ) ? $this->get_customer_name( $item['extended_info']['customer'] ) : null,
 			'customer_type'  => $item['customer_type'],
 			'products'       => isset( $item['extended_info']['products'] ) ? $this->_get_products( $item['extended_info']['products'] ) : null,
 			'num_items_sold' => $item['num_items_sold'],
