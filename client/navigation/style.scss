@@ -2,6 +2,11 @@
 @import './components/container/style';
 @import './components/header/style';
 
+#woocommerce-embedded-navigation {
+	position: fixed;
+	z-index: 100;
+}
+
 .woocommerce-navigation {
 	position: relative;
 	width: $navigation-width;
@@ -28,12 +33,12 @@
 	position: absolute;
 	top: $header-height;
 	width: 100%;
-	height: calc(100vh - #{$header-height + $adminbar-height});
+	height: calc( 100vh - #{$header-height + $adminbar-height} );
 	overflow-y: auto;
 }
 
 .is-wp-toolbar-disabled .woocommerce-navigation__wrapper {
-	height: calc(100vh - #{$header-height});
+	height: calc( 100vh - #{$header-height} );
 }
 
 body.is-wc-nav-expanded {
@@ -43,7 +48,7 @@ body.is-wc-nav-expanded {
 	}
 
 	font > .xdebug-error {
-		margin-left: calc(#{$navigation-width} + #{$gap});
+		margin-left: calc( #{$navigation-width} + #{$gap} );
 	}
 }
 
@@ -66,6 +71,11 @@ body.is-wc-nav-folded {
 		.components-navigation {
 			display: none;
 		}
+	}
+
+	.woocommerce-layout__header {
+		left: $header-height;
+		width: calc( 100vw - #{$header-height} );
 	}
 
 	.woocommerce-transient-notices {
@@ -113,6 +123,11 @@ body.is-wc-nav-folded {
 		}
 	}
 
+	.woocommerce-layout__header {
+		left: $navigation-width;
+		width: calc( 100vw - #{$navigation-width} );
+	}
+
 	.woocommerce-layout__header.is-embed-loading {
 		&::before {
 			content: '';
@@ -132,7 +147,7 @@ body.is-wc-nav-folded {
 		margin-bottom: -$adminbar-height;
 	}
 
-	&:not(.is-wp-toolbar-disabled) {
+	&:not( .is-wp-toolbar-disabled ) {
 		#wpbody-content {
 			margin-top: $adminbar-height;
 		}

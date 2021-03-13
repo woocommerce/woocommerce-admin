@@ -3,7 +3,7 @@
 	box-sizing: border-box;
 	padding: 0;
 	position: fixed;
-	width: calc(100% - 160px);
+	width: calc( 100% - 160px );
 	top: $adminbar-height;
 	z-index: 1001; /* on top of #wp-content-editor-tools */
 
@@ -34,7 +34,7 @@
 	}
 
 	@include breakpoint( '782px-960px' ) {
-		width: calc(100% - 36px);
+		width: calc( 100% - 36px );
 	}
 
 	.woocommerce-layout__header-breadcrumbs-wrapper {
@@ -62,11 +62,6 @@
 
 .is-wp-toolbar-disabled .woocommerce-layout__header {
 	top: 0;
-}
-
-.has-woocommerce-navigation .woocommerce-layout__header {
-	left: 0;
-	width: 100%;
 }
 
 .woocommerce-page {
