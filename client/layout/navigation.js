@@ -22,7 +22,6 @@ import { isWCAdmin } from '../dashboard/utils';
 import { addHistoryListener } from '../navigation/utils';
 
 const NavigationPlugin = () => {
-	console.info( 'NavigationPlugin render' );
 	const [ persistedQuery, setPersistedQuery ] = useState(
 		getPersistedQuery()
 	);
