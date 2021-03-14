@@ -112,8 +112,7 @@ type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? unknown
 	: never;
 
-export declare function WCDataSelector< T extends WCDataStoreName >(
-	storeName: T
-): WCSelectorType< T >;
-
+export interface WCDataSelector {
+	< T extends WCDataStoreName >( storeName: T ): WCSelectorType< T >;
+}
 export * from './onboarding/selectors';

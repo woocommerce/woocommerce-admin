@@ -31,7 +31,7 @@ const Homescreen = ( { profileItems, query }: HomescreenProps ) => {
 
 const onboardingData = getSetting( 'onboarding', {} );
 
-const withSelectHandler = ( select: typeof WCDataSelector ) => {
+const withSelectHandler = ( select: WCDataSelector ) => {
 	const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 	const profileItems = getProfileItems();
 
