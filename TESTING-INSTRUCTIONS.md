@@ -2,6 +2,47 @@
 
 ## Unreleased
 
+### Add gross sales column to CSV export #6567
+
+1. Navigate to Analytics -> Revenue
+2. Adjust the date filter so that more than 25 rows are visible
+4. Click "Download"
+5. Click the download link in the email
+6. See gross sales column
+
+### Fix a bug where the JetPack connection flow would not activate
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen
+2. Going to the homescreen redirects to the profile setup wizard
+3. The first step is "Store details" choose United States (any state) for country and fill in the other details with test data.
+4. Click "continue", you should be taken to the "Industry" step.
+5. In the "Industry" step check the "Food and Drink" option only. Click "continue"
+6. In the "Product Type" step choose any value and click "continue"
+7. You should arrive at the "Business details" step which provides 2 tabs: "Business details" and "Free features". In the "Business Details" tab fill out the dropdowns with any values. Click "continue".
+8. In the "Free features" step expand the list of extensions to install by clicking the arrow to the right of "Add recommended business features to my site".
+9. Uncheck all the extensions except for "Enhance speed and security with Jetpack"
+10. Click "continue", the plugin will be installed and you should arrive at the theme step.
+11. Click "Continue with my active theme"
+12. After finishing the wizard, this should redirect you to the "Jetpack" setup connection flow. (You should not be redirected straight to the homescreen).
+
+### Allow the manager role to query certain options #6577
+
+Testing `woocommerce_ces_tracks_queue`
+
+1. Checkout this branch.
+2. Open browser inspector and select the Network tab.
+2. Navigate to WooCommerce -> Settings.
+3. Confirm that the request to `/wp-json/wc-admin/options?options=woocommerce_ces_tracks_queue&_locale=user` returns 200 status.
+
+
+Testing `woocommerce_navigation_intro_modal_dismissed`
+
+1. Checkout this branch.
+2. Navigate to WooCommerce -> Settings -> Advanced -> features (/wp-admin/admin.php?page=wc-settings&tab=advanced&section=features) and enable Navigation
+3. Open browser inspector and select the Network tab.
+4. Navigate to WooCommerce -> Home
+5. Confirm that the request to `/wp-json/wc-admin/options?options=woocommerce_navigation_intro_modal_dismissed&_locale=user` returns 200 status.
+
 ### Fix hidden menu title on smaller screens #6562
 
 1. Enable the new navigation.
@@ -18,6 +59,7 @@ add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
 ```
 2. Enable the new navigation.
 3. Make sure the menu item for the registered tab is shown under `Tools`.
+
 ### Remove mobile activity panel toggle #6539
 
 1. Narrow your viewport to < 782px.

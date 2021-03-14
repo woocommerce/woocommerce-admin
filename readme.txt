@@ -75,7 +75,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: Allow the manager role to query certain options #6577
 - Fix: Fix hidden menu title on smaller screens #6562
+- Fix: Add gross sales column to CSV export #6567
 - Dev: Add nav intro modal tests #6518
 - Dev: Use wc filter to get status tabs for tools category #6525
 - Tweak: Remove mobile activity panel toggle #6539
@@ -115,6 +117,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: CES survey for search product, order, customer #6420
 - Add: CES survey for importing products #6419
 - Add: CES survey for adding product categories, tags, and attributes #6418
+- Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
 
 == 2.1.0 3/10/2021  ==
 
