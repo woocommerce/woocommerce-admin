@@ -3,6 +3,9 @@
  */
 import '@wordpress/core-data';
 
+/**
+ * Internal dependencies
+ */
 import type { REVIEWS_STORE_NAME } from './reviews';
 import type { SETTINGS_STORE_NAME } from './settings';
 import type { PLUGINS_STORE_NAME } from './plugins';
@@ -13,6 +16,7 @@ import type { NAVIGATION_STORE_NAME } from './navigation';
 import type { NOTES_STORE_NAME } from './notes';
 import type { REPORTS_STORE_NAME } from './reports';
 import type { ITEMS_STORE_NAME } from './items';
+import { OnboardingSelectors } from './onboarding/selectors';
 
 export { SETTINGS_STORE_NAME } from './settings';
 export { withSettingsHydration } from './settings/with-settings-hydration';
@@ -93,7 +97,7 @@ type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	: T extends typeof PLUGINS_STORE_NAME
 	? unknown
 	: T extends typeof ONBOARDING_STORE_NAME
-	? unknown
+	? OnboardingSelectors
 	: T extends typeof USER_STORE_NAME
 	? unknown
 	: T extends typeof OPTIONS_STORE_NAME
@@ -108,6 +112,8 @@ type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? unknown
 	: never;
 
-export type WCDataSelector< T extends WCDataStoreName > = (
+export declare function WCDataSelector< T extends WCDataStoreName >(
 	storeName: T
-) => WCSelectorType< T >;
+): WCSelectorType< T >;
+
+export * from './onboarding/selectors';

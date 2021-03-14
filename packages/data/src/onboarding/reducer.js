@@ -6,7 +6,21 @@ import TYPES from './action-types';
 const onboarding = (
 	state = {
 		errors: {},
-		profileItems: {},
+		profileItems: {
+			business_extensions: null,
+			completed: null,
+			industry: null,
+			other_platform: null,
+			other_platform_name: null,
+			product_count: null,
+			product_types: null,
+			revenue: null,
+			selling_venues: null,
+			setup_client: null,
+			skipped: null,
+			theme: null,
+			wccom_connected: null,
+		},
 		requesting: {},
 		tasksStatus: {},
 	},

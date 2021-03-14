@@ -15,7 +15,6 @@
 		"esModuleInterop": true,
 		"skipLibCheck": false,
 		"module": "esnext",
-		"typeRoots": [ "**/node_modules/@types" ],
 		"baseUrl": "./",
 		"paths": {
 			"@woocommerce/*": [ "packages/*/src" ],
