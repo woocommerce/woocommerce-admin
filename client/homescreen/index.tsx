@@ -17,6 +17,10 @@ import type { History } from 'history';
  */
 import Layout from './layout';
 
+type HomescreenProps = ReturnType< typeof withSelectHandler > & {
+	query: Record< string, string >;
+};
+
 const Homescreen = ( { profileItems, query }: HomescreenProps ) => {
 	const { completed: profilerCompleted, skipped: profilerSkipped } =
 		profileItems || {};
@@ -47,7 +51,3 @@ export default compose(
 		: identity,
 	withSelect( withSelectHandler )
 )( Homescreen );
-
-type HomescreenProps = ReturnType< typeof withSelectHandler > & {
-	query: Record< string, string >;
-};
