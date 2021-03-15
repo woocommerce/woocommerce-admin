@@ -2,6 +2,7 @@ const { readFile } = require( 'fs' ).promises;
 const exec = require( 'await-exec' );
 const { parse } = require( 'comment-parser/lib' );
 const { relative, resolve } = require( 'path' );
+const chalk = require( 'chalk' );
 
 const getHooks = ( parsedData ) =>
 	parsedData.filter( ( docBlock ) =>
@@ -15,11 +16,21 @@ const getSourceFile = ( file, commit, { source } ) => {
 	return `https://github.com/woocommerce/woocommerce-admin/blob/${ commit }/${ file }#L${ first }-L${ last }`;
 };
 
+const logProgress = ( fileName, { tags } ) => {
+	const hook = tags.find( ( tag ) => tag.tag === 'hook' );
+	console.log(
+		chalk.cyan( `${ hook.name } ` ) +
+			chalk.yellow( 'generated in ' ) +
+			chalk.yellow.underline( fileName )
+	);
+};
+
 const addSourceFiles = async ( hooks, fileName ) => {
 	const { stdout } = await exec( 'git log --pretty="format:%H" -1' );
 	const commit = stdout.trim();
 
 	return hooks.map( ( hook ) => {
+		logProgress( fileName, hook );
 		hook.sourceFile = getSourceFile( fileName, commit, hook );
 		return hook;
 	} );
