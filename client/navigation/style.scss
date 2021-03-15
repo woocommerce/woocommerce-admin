@@ -4,7 +4,7 @@
 
 #woocommerce-embedded-navigation {
 	position: fixed;
-	z-index: 100;
+	z-index: 1; //Needed to display over #wpbody
 }
 
 .woocommerce-navigation {
