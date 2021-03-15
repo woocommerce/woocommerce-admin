@@ -34,41 +34,6 @@ import EWay from './eway';
 import Razorpay from './razorpay';
 import { Mollie } from './mollie';
 import { PayUIndia } from './payu-india';
-import WCPayUsageModal from './wcpay-usage-modal';
-import { createNoticesFromResponse } from '../../../lib/notices';
-
-export function installActivateAndConnectWcpay(
-	resolve,
-	reject,
-	createNotice,
-	installAndActivatePlugins
-) {
-	const errorMessage = __(
-		'There was an error connecting to WooCommerce Payments. Please try again or connect later in store settings.',
-		'woocommerce-admin'
-	);
-
-	const connect = () => {
-		apiFetch( {
-			path: WC_ADMIN_NAMESPACE + '/plugins/connect-wcpay',
-			method: 'POST',
-		} )
-			.then( ( response ) => {
-				window.location = response.connectUrl;
-			} )
-			.catch( () => {
-				createNotice( 'error', errorMessage );
-				reject();
-			} );
-	};
-
-	installAndActivatePlugins( [ 'woocommerce-payments' ] )
-		.then( () => connect() )
-		.catch( ( error ) => {
-			createNoticesFromResponse( error );
-			reject();
-		} );
-}
 
 export function getPaymentMethods( {
 	activePlugins,
