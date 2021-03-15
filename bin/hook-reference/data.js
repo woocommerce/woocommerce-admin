@@ -1,4 +1,4 @@
-const { readFile } = require( 'fs/promises' );
+const { readFile } = require( 'fs' ).promises;
 const exec = require( 'await-exec' );
 const { parse } = require( 'comment-parser/lib' );
 const { relative, resolve } = require( 'path' );

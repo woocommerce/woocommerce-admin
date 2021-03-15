@@ -1,5 +1,5 @@
 const fs = require( 'fs' );
-const { stat, readdir, writeFile } = require( 'fs/promises' );
+const { stat, readdir, writeFile } = require( 'fs' ).promises;
 const { resolve } = require( 'path' );
 const createData = require( './data' );
 

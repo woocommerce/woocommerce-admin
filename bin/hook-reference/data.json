@@ -1,7 +1,7 @@
 [
     {
         "description": "List of homepage stats enabled by default",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/1682331e6fe5e898d41049baf41a7da4270a6865/client/homescreen/stats-overview/defaults.js#L5-L16",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c93bd2b89650ee0050a155dee553c563ffc0a49f/client/homescreen/stats-overview/defaults.js#L5-L16",
         "name": "woocommerce_admin_homepage_default_stats",
         "example": "addFilter( 'woocommerce_admin_homepage_default_stats', 'plugin-domain', ( defaultStats ) => defaultStats.filter( ( stat ) => stat !== 'jetpack/stats/views' ) );"
     }
