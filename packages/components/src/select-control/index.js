@@ -42,6 +42,7 @@ export class SelectControl extends Component {
 		this.search = this.search.bind( this );
 		this.selectOption = this.selectOption.bind( this );
 		this.setExpanded = this.setExpanded.bind( this );
+		this.setNewValue = this.setNewValue.bind( this );
 	}
 
 	bindNode( node ) {
@@ -92,21 +93,29 @@ export class SelectControl extends Component {
 	}
 
 	selectOption( option ) {
-		const { multiple, onChange, selected } = this.props;
-		const { query } = this.state;
+		const { multiple, selected } = this.props;
 		const newSelected = multiple ? [ ...selected, option ] : [ option ];
 
 		this.reset( newSelected );
 
+		const oldSelected = Array.isArray( selected )
+			? selected
+			: [ { key: selected } ];
+		const isSelected = findIndex( oldSelected, { key: option.key } );
+		if ( isSelected === -1 ) {
+			this.setNewValue( newSelected );
+		}
+	}
+
+	setNewValue( newValue ) {
+		const { onChange, selected, multiple } = this.props;
+		const { query } = this.state;
 		// Trigger a change if the selected value is different and pass back
 		// an array or string depending on the original value.
-		if ( Array.isArray( selected ) ) {
-			const isSelected = findIndex( selected, { key: option.key } );
-			if ( isSelected === -1 ) {
-				onChange( newSelected, query );
-			}
-		} else if ( selected !== option.key ) {
-			onChange( option.key, query );
+		if ( multiple || Array.isArray( selected ) ) {
+			onChange( newValue, query );
+		} else if ( newValue.length < 2 ) {
+			onChange( newValue.length > 0 ? newValue[ 0 ].key : '', query );
 		}
 	}
 
@@ -337,6 +346,7 @@ export class SelectControl extends Component {
 					listboxId={ listboxId }
 					onSearch={ this.search }
 					selected={ this.getSelected() }
+					onChange={ this.setNewValue }
 					setExpanded={ this.setExpanded }
 					updateSearchOptions={ this.updateSearchOptions }
 					decrementSelectedIndex={ this.decrementSelectedIndex }
