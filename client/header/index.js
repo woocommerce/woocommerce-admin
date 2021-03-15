@@ -21,7 +21,6 @@ import './style.scss';
 import ActivityPanel from './activity-panel';
 import { MobileAppBanner } from '../mobile-banner';
 import useIsScrolled from '../hooks/useIsScrolled';
-import Navigation from '../navigation';
 
 const renderTaskListBackButton = () => {
 	const currentUrl = new URL( window.location.href );
