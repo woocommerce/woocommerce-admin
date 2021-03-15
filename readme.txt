@@ -128,6 +128,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Feature: Increase target audience for business feature step. #6508
 - Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
 - Fix: Add customer name column to CSV export #6556
+- Dev: Add script automation for gathering hooks and filters. #6454
 
 == 2.1.2 3/10/2021  ==
 
