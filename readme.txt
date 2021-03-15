@@ -73,6 +73,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 2.1.3 3/14/2021  ==
+
+- Feature: Increase target audience for business feature step. #6508
+- Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
+
 == 2.1.2 3/10/2021  ==
 
 - Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532

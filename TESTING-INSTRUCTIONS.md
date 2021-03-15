@@ -1,15 +1,92 @@
 # Testing instructions
+# 2.1.3
+### Fix a bug where the JetPack connection flow would not activate #6521
 
-## Unreleased
+1. With a fresh install of wc-admin and woocommerce, go to the home screen
+2. Going to the homescreen redirects to the profile setup wizard
+3. The first step is "Store details" choose United States (any state) for country and fill in the other details with test data.
+4. Click "continue", you should be taken to the "Industry" step.
+5. In the "Industry" step check the "Food and Drink" option only. Click "continue"
+6. In the "Product Type" step choose any value and click "continue"
+7. You should arrive at the "Business details" step which provides 2 tabs: "Business details" and "Free features". In the "Business Details" tab fill out the dropdowns with any values. Click "continue".
+8. In the "Free features" step expand the list of extensions to install by clicking the arrow to the right of "Add recommended business features to my site".
+9. Uncheck all the extensions except for "Enhance speed and security with Jetpack"
+10. Click "continue", the plugin will be installed and you should arrive at the theme step.
+11. Click "Continue with my active theme"
+12. After finishing the wizard, this should redirect you to the "Jetpack" setup connection flow. (You should not be redirected straight to the homescreen).
+
+### Update target audience of business feature step #6508
+
+Scenario #1
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a canadian address (addr: 4428 Blanshard, country/region: Canada -- British Columbia, city: Victoria, postcode: V8W 2H9)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. The business details tab should show a **Business details** tab, and a **Free features** tab (disabled at first)
+     - There should only be dropdowns visible on the **Business details** step (no checkboxes)
+5. Select **1-10** for the first dropdown, and **No** for the second, and click Continue.
+6. Click on the expansion icon for the **Add recommended business features to my site**
+7. It should list 7 features, including **WooCommerce Payments** (top one)
+     - Note down the selected features, for step 10
+8. Click continue, and select your theme, after it should redirect to the home screen (showing the welcome modal, you can step through this).
+9. The home screen task list should include a **Set up WooCommerce Payments** task, and there should also be a **Set up additional payment providers** inbox card displayed (below the task list).
+10. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 7 are installed and activated.
+
+Scenario #2
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a spanish address (addr: C/ Benito Guinea 52, country/region: Spain -- Barcelona, city: Canet de Mar, postcode: 08360)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. On the business details tab select **1-10** for the first dropdown, and **No** for the second.
+     - After filling the dropdowns it should show several checkboxes with plugins (Facebook, mailchimp, creative mail, google ads)
+     - Note which ones you kept selected (you can unselect one or two)
+5. Click continue, and select your theme, it should show the **WooCommerce Shipping & Tax** step after, you can click **No thanks**.
+6. You will be redirected to the home screen, showing the welcome modal, you can step through this.
+7. The task list should show the **Choose payment methods** task, and the **Set up additional payment providers** inbox card should not be present.
+8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
+9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
+
+## 2.1.2
+
+### Add Guards to "Deactivate Plugin" Note Handlers #6532
+
+#### Test incompatible WooCommerce version
+
+-   Install and activate Woocommerce 4.7
+-   See that the Woocommerce Admin plugin is deactivated.
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   See that the note is in the inbox
+-   Activate the Woocommerce Admin plugin.
+-   See that Woocommerce Admin immediately de-activates without a fatal error.
+-   See that the note remains in inbox
+
+#### Test compatible WooCommerce version
+
+-   Deactivate the Woocommerce Admin plugin.
+-   Install and activate the latest Woocommerce version.
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   Activate the Woocommerce Admin plugin.
+-   See that note is **not** in the inbox
+-   Add the Deactivate Plugin note via SQL.
+
+```
+INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `content_data`, `status`, `source`, `date_created`, `date_reminder`, `is_snoozable`, `layout`, `image`, `is_deleted`, `icon`) VALUES ( 'wc-admin-deactivate-plugin', 'info', 'en_US', 'Deactivate old WooCommerce Admin version', 'Your current version of WooCommerce Admin is outdated and a newer version is included with WooCommerce.  We recommend deactivating the plugin and using the stable version included with WooCommerce.', '{}', 'unactioned', 'woocommerce-admin', '2021-03-08 01:26:44', NULL, 0, 'plain', '', 0, 'info');
+```
+
+-   De-activate the Woocommerce Admin plugin.
+-   See that note is **not** in the inbox
 
 ## 2.1.0
-
-### Navigation: Correct error thrown when enabling #6462
-
-1. Create a fresh store
-2. Navigate to WooCommerce -> Settings -> Advanced Tab -> Features
-3. Check the box to add the new navigation feature, and hit save
-4. Ensure that the new navigation appears on the left as expected
 
 ### Correct the Klarna slug #6440
 
