@@ -106,8 +106,6 @@ export class ProductTypes extends Component {
 		const { error, isMonthlyPricing, selected } = this.state;
 		const { isProfileItemsRequesting } = this.props;
 
-		console.log( productTypes );
-
 		return (
 			<div className="woocommerce-profile-wizard__product-types">
 				<div className="woocommerce-profile-wizard__step-header">

@@ -1,3 +1,5 @@
+import { WPDataSelectors } from '../types';
+
 export const getProfileItems = (
 	state: OnboardingState
 ): ProfileItemsState | Record< string, never > => {
@@ -30,7 +32,7 @@ export type OnboardingSelectors = {
 	getTasksStatus: () => ReturnType< typeof getTasksStatus >;
 	getOnboardingError: () => ReturnType< typeof getOnboardingError >;
 	isOnboardingRequesting: () => ReturnType< typeof isOnboardingRequesting >;
-};
+} & WPDataSelectors;
 
 export type OnboardingState = {
 	profileItems: ProfileItemsState;
