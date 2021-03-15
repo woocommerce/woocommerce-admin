@@ -35,12 +35,36 @@ class CustomerEffortScoreTracks {
 	const SETTINGS_CHANGE_ACTION_NAME = 'settings_change';
 
 	/**
+	 * Action name for add product categories.
+	 */
+	const ADD_PRODUCT_CATEGORIES_ACTION_NAME = 'add_product_categories';
+
+	/**
+	 * Action name for add product tags.
+	 */
+	const ADD_PRODUCT_TAGS_ACTION_NAME = 'add_product_tags';
+
+	/*
+	 * Action name for add product attributes.
+	 */
+	const ADD_PRODUCT_ATTRIBUTES_ACTION_NAME = 'add_product_attributes';
+
+	/**
+	 * Action name for import products.
+	 */
+	const IMPORT_PRODUCTS_ACTION_NAME = 'import_products';
+
+	/**
+	 * Action name for search.
+	 */
+	const SEARCH_ACTION_NAME = 'ces_search';
+
+	/**
 	 * Label for the snackbar that appears when a user submits the survey.
 	 *
 	 * @var string
 	 */
 	private $onsubmit_label;
-
 
 	/**
 	 * Constructor. Sets up filters to hook into WooCommerce.
@@ -69,25 +93,57 @@ class CustomerEffortScoreTracks {
 			return;
 		}
 
-		add_action(
-			'admin_init',
-			array(
-				$this,
-				'maybe_clear_ces_tracks_queue',
-			)
-		);
-
-		add_action(
-			'woocommerce_update_options',
-			array(
-				$this,
-				'run_on_update_options',
-			),
-			10,
-			3
-		);
+		add_action( 'admin_init', array( $this, 'maybe_clear_ces_tracks_queue' ) );
+		add_action( 'woocommerce_update_options', array( $this, 'run_on_update_options' ), 10, 3 );
+		add_action( 'product_cat_add_form', array( $this, 'add_script_track_product_categories' ), 10, 3 );
+		add_action( 'product_tag_add_form', array( $this, 'add_script_track_product_tags' ), 10, 3 );
+		add_action( 'woocommerce_attribute_added', array( $this, 'run_on_add_product_attributes' ), 10, 3 );
+		add_action( 'load-edit.php', array( $this, 'run_on_load_edit_php' ), 10, 3 );
+		add_action( 'product_page_product_importer', array( $this, 'run_on_product_import' ), 10, 3 );
 
 		$this->onsubmit_label = __( 'Thank you for your feedback!', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Returns a generated script for tracking tags added on edit-tags.php page.
+	 * CES survey is triggered via direct access to wc/customer-effort-score store
+	 * via wp.data.dispatch method.
+	 *
+	 * Due to lack of options to directly hook ourselves into the ajax post request
+	 * initiated by edit-tags.php page, we infer a successful request by observing
+	 * an increase of the number of rows in tags table
+	 *
+	 * @param string $action Action name for the survey.
+	 * @param string $label Label for the snackbar.
+	 *
+	 * @return string Generated JavaScript to append to page.
+	 */
+	private function get_script_track_edit_php( $action, $label ) {
+		return sprintf(
+			"(function( $ ) {
+				'use strict';
+				// Hook on submit button and sets a 500ms interval function
+				// to determine successful add tag or otherwise.
+				$('#addtag #submit').on( 'click', function() {
+					const initialCount = $('.tags tbody > tr').length;
+					const interval = setInterval( function() {
+						if ( $('.tags tbody > tr').length > initialCount ) {
+							// New tag detected.
+							clearInterval( interval );
+							wp.data.dispatch('wc/customer-effort-score').addCesSurvey( '%s', '%s', window.pagenow, window.adminpage, '%s' );
+						} else {
+							// Form is no longer loading, most likely failed.
+							if ( $( '#addtag .submit .spinner.is-active' ).length < 1 ) {
+								clearInterval( interval );
+							}
+						}
+					}, 500 );
+				});
+			})( jQuery );",
+			esc_js( $action ),
+			esc_js( $label ),
+			esc_js( $this->onsubmit_label )
+		);
 	}
 
 	/**
@@ -173,6 +229,35 @@ class CustomerEffortScoreTracks {
 	}
 
 	/**
+	 * Enqueue the CES survey on using search dynamically.
+	 *
+	 * @param string $search_area Search area such as "product" or "shop_order".
+	 * @param string $page_now Value of window.pagenow.
+	 * @param string $admin_page Value of window.adminpage.
+	 */
+	public function enqueue_ces_survey_for_search( $search_area, $page_now, $admin_page ) {
+		if ( $this->has_been_shown( self::SEARCH_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::SEARCH_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to use search?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => $page_now,
+				'adminpage'      => $admin_page,
+				'props'          => (object) array(
+					'search_area' => $search_area,
+				),
+			)
+		);
+	}
+
+	/**
 	 * Maybe clear the CES tracks queue, executed on every page load. If the
 	 * clear option is set it clears the queue. In practice, this executes a
 	 * page load after the queued CES tracks are displayed on the client, which
@@ -208,6 +293,66 @@ class CustomerEffortScoreTracks {
 	}
 
 	/**
+	 * Appends a script to footer to trigger CES on adding product categories.
+	 */
+	public function add_script_track_product_categories() {
+		if ( $this->has_been_shown( self::ADD_PRODUCT_CATEGORIES_ACTION_NAME ) ) {
+			return;
+		}
+
+		wc_enqueue_js(
+			$this->get_script_track_edit_php(
+				self::ADD_PRODUCT_CATEGORIES_ACTION_NAME,
+				__( 'How easy was it to add product category?', 'woocommerce-admin' )
+			)
+		);
+	}
+
+	/**
+	 * Appends a script to footer to trigger CES on adding product tags.
+	 */
+	public function add_script_track_product_tags() {
+		if ( $this->has_been_shown( self::ADD_PRODUCT_TAGS_ACTION_NAME ) ) {
+			return;
+		}
+
+		wc_enqueue_js(
+			$this->get_script_track_edit_php(
+				self::ADD_PRODUCT_TAGS_ACTION_NAME,
+				__( 'How easy was it to add a product tag?', 'woocommerce-admin' )
+			)
+		);
+	}
+
+	/**
+	 * Maybe enqueue the CES survey on product import, if step is done.
+	 */
+	public function run_on_product_import() {
+		// We're only interested in when the importer completes.
+		if ( empty( $_GET['step'] ) || 'done' !== $_GET['step'] ) { // phpcs:ignore CSRF ok.
+			return;
+		}
+
+		if ( $this->has_been_shown( self::IMPORT_PRODUCTS_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::IMPORT_PRODUCTS_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to import products?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product_page_product_importer',
+				'adminpage'      => 'product_page_product_importer',
+				'props'          => (object) array(),
+			)
+		);
+	}
+
+	/**
 	 * Enqueue the CES survey trigger for setting changes.
 	 */
 	public function run_on_update_options() {
@@ -233,5 +378,49 @@ class CustomerEffortScoreTracks {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Enqueue the CES survey on adding new product attributes.
+	 */
+	public function run_on_add_product_attributes() {
+		if ( $this->has_been_shown( self::ADD_PRODUCT_ATTRIBUTES_ACTION_NAME ) ) {
+			return;
+		}
+
+		$this->enqueue_to_ces_tracks(
+			array(
+				'action'         => self::ADD_PRODUCT_ATTRIBUTES_ACTION_NAME,
+				'label'          => __(
+					'How easy was it to add a product attribute?',
+					'woocommerce-admin'
+				),
+				'onsubmit_label' => $this->onsubmit_label,
+				'pagenow'        => 'product_page_product_attributes',
+				'adminpage'      => 'product_page_product_attributes',
+				'props'          => (object) array(),
+			)
+		);
+	}
+
+	/**
+	 * Determine on initiating CES survey on searching for product or orders.
+	 */
+	public function run_on_load_edit_php() {
+		$allowed_types = array( 'product', 'shop_order' );
+		$post_type     = get_current_screen()->post_type;
+
+		// We're only interested for certain post types.
+		if ( ! in_array( $post_type, $allowed_types, true ) ) {
+			return;
+		}
+
+		// Determine whether request is search by "s" GET parameter.
+		if ( empty( $_GET['s'] ) ) { // phpcs:disable WordPress.Security.NonceVerification.Recommended
+			return;
+		}
+
+		$page_now = 'edit-' . $post_type;
+		$this->enqueue_ces_survey_for_search( $post_type, $page_now, 'edit-php' );
 	}
 }

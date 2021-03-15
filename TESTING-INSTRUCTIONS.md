@@ -4,12 +4,58 @@
 
 ### Close activity panel tabs by default and track #6566
 
-1. Open your browser console and enter `localStorage.setItem( 'debug', 'wc-admin:tracks' );`.
+1. Open your browser console and enter `localStorage.setItem( 'debug', 'wc-admin:tracks' );`.  Make sure the "Verbose" is selected under the levels shown.
 2. With the task list enabled, navigate to the homescreen.
 3. Check that the `wcadmin_activity_panel_visible_panels` event is shown with `taskList: true` in its data.
 4. Hide the task list.
 5. Note that `wcadmin_activity_panel_visible_panels` event is shown with visible activity panels.
 6. After refreshing, make sure that the "Orders" activity panel is closed by default.
+
+### Update undefined task name properties for help panel tracks #6565
+
+1. Enter `localStorage.setItem( 'debug', 'wc-admin:*' );` into your console. Leave your console open.
+2. Navigate to the homescreen.
+3. Open the "Help" tab in the top right.
+4. Note the tracks information in the console includes `homescreen` for the `taskName` property.
+5. Click on a help item.
+6. Note `homescreen` is used for the `taskName` in the help panel click tracks event.
+6. Navigate to any task in the task list.
+7. Click on the "Help" tab.
+8. Note the `taskName` for the event is the current task.
+9. Click on a help item.
+10. Note the `taskName` for the event is the current task.
+
+### Add gross sales column to CSV export #6567
+
+1. Navigate to Analytics -> Revenue
+2. Adjust the date filter so that more than 25 rows are visible
+4. Click "Download"
+5. Click the download link in the email
+6. See gross sales column
+
+### Allow the manager role to query certain options #6577
+
+Testing `woocommerce_ces_tracks_queue`
+
+1. Checkout this branch.
+2. Open browser inspector and select the Network tab.
+2. Navigate to WooCommerce -> Settings.
+3. Confirm that the request to `/wp-json/wc-admin/options?options=woocommerce_ces_tracks_queue&_locale=user` returns 200 status.
+
+
+Testing `woocommerce_navigation_intro_modal_dismissed`
+
+1. Checkout this branch.
+2. Navigate to WooCommerce -> Settings -> Advanced -> features (/wp-admin/admin.php?page=wc-settings&tab=advanced&section=features) and enable Navigation
+3. Open browser inspector and select the Network tab.
+4. Navigate to WooCommerce -> Home
+5. Confirm that the request to `/wp-json/wc-admin/options?options=woocommerce_navigation_intro_modal_dismissed&_locale=user` returns 200 status.
+
+### Fix hidden menu title on smaller screens #6562
+
+1. Enable the new navigation.
+2. Shorten your viewport height so that the secondary menu overlaps the main.
+3. Make sure the menu title can still be seen.
 
 ### Use wc filter to get status tabs for tools category #6525
 
@@ -22,6 +68,7 @@ add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
 ```
 2. Enable the new navigation.
 3. Make sure the menu item for the registered tab is shown under `Tools`.
+
 ### Remove mobile activity panel toggle #6539
 
 1. Narrow your viewport to < 782px.
@@ -157,6 +204,82 @@ For each task in that list apart from "Store details":
 3. A title in the top left should reflect the original task name from the task list. e.g. "Add tax rates"
 4. Clicking the chevron to the left of the title should take you back to the home screen
 
+### Add Ireland to Square payment method #6559
+
+1. Go to the store setup wizard `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`
+1. Set up your store with Ireland as its country, and proceed until the `Business Details` step
+1. In "Currently selling anywhere?" dropdown, select either:
+    - Yes, in person at physical stores and/or events
+    - Yes, on another platform and in person at physical stores and/or events
+1. Finish the setup wizard, and go to payments task `/wp-admin/admin.php?page=wc-admin&task=payments`
+1. Observe Square as a payment method option
+
+### Add CES survey for search product, order, customer #6420
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+
+**Testing search on products:**
+- Go to Products > All Products.
+- Type in anything in search bar, click on "Search products".
+- Observe CES prompt "How easy was it to use search?" is displayed.
+
+**Testing search on orders:**
+- Go to Orders > Orders.
+- Type in anything in search bar, click on "Search orders".
+- Observe CES prompt "How easy was it to use search?" is displayed.
+
+**Testing search on customers:**
+- Go to Customers.
+- Type in anything in search bar, and press enter.
+- Observe CES prompt "How easy was it to use search?" is displayed
+
+### Add CES survey for importing products #6419
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+- If you don't have a product CSV export, you can obtain a sample CSV [here](https://gist.githubusercontent.com/ilyasfoo/507f9579531cf4bf50fe4c0e9c48a23d/raw/05e47e6731471464c757e893c3f2d8a9b89453c0/product-export.csv).
+- Go to Products > All Products.
+- Click on "Import".
+- Upload CSV file and finish the import process.
+- Observe CES prompt "How easy was it to import products?" is displayed.
+
+### Add CES survey for adding product categories and tags #6418
+- Make sure tracking is enabled in settings.
+- Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
+- Enable the logging of Tracks events to your browser dev console `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+
+**Testing product categories:**
+- Go to Products > Categories.
+- Add a new category.
+- Observe CES prompt "How easy was it to add a product category?" is displayed.
+
+**Testing product tags:**
+- Go to Products > Tags.
+- Add a new tag.
+- Observe CES prompt "How easy was it to add a product tag?" is displayed.
+
+**Testing product attributes:**
+- Go to Products > Attributes.
+- Add a new attribute.
+- Observe CES prompt "How easy was it to add a product attribute?" is displayed.
+
+# 2.1.3
+### Fix a bug where the JetPack connection flow would not activate #6521
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen
+2. Going to the homescreen redirects to the profile setup wizard
+3. The first step is "Store details" choose United States (any state) for country and fill in the other details with test data.
+4. Click "continue", you should be taken to the "Industry" step.
+5. In the "Industry" step check the "Food and Drink" option only. Click "continue"
+6. In the "Product Type" step choose any value and click "continue"
+7. You should arrive at the "Business details" step which provides 2 tabs: "Business details" and "Free features". In the "Business Details" tab fill out the dropdowns with any values. Click "continue".
+8. In the "Free features" step expand the list of extensions to install by clicking the arrow to the right of "Add recommended business features to my site".
+9. Uncheck all the extensions except for "Enhance speed and security with Jetpack"
+10. Click "continue", the plugin will be installed and you should arrive at the theme step.
+11. Click "Continue with my active theme"
+12. After finishing the wizard, this should redirect you to the "Jetpack" setup connection flow. (You should not be redirected straight to the homescreen).
+
 ### Update target audience of business feature step #6508
 
 Scenario #1
@@ -227,7 +350,6 @@ INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `
 
 -   De-activate the Woocommerce Admin plugin.
 -   See that note is **not** in the inbox
-
 
 ## 2.1.0
 
