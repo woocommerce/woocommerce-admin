@@ -36,6 +36,26 @@ import './style.scss';
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
 const FREE_FEATURES_TAB_NAME = 'free-features';
 
+export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
+	return (
+		Object.keys( extensionInstallationOptions )
+			.filter(
+				( key ) =>
+					extensionInstallationOptions[ key ] &&
+					key !== 'install_extensions'
+			)
+			.map( ( key ) => {
+				// Remove anything after :
+				// Please refer to selective-extensions-bundle/index.js
+				// installableExtensions variable
+				// this is to allow duplicate slugs (Tax & Shipping for example)
+				return key.split( ':' )[ 0 ];
+			} )
+			// remove duplicate
+			.filter( ( item, index, arr ) => arr.indexOf( item ) === index )
+	);
+};
+
 class BusinessDetails extends Component {
 	constructor() {
 		super();
@@ -69,21 +89,9 @@ class BusinessDetails extends Component {
 
 		const { getCurrencyConfig } = this.context;
 
-		const businessExtensions = Object.keys( extensionInstallationOptions )
-			.filter(
-				( key ) =>
-					extensionInstallationOptions[ key ] &&
-					key !== 'install_extensions'
-			)
-			.map( ( key ) => {
-				// Remove anything after :
-				// Please refer to selective-extensions-bundle/index.js
-				// installableExtensions variable
-				// this is to allow duplicate slugs (Tax & Shipping for example)
-				return key.split( ':' )[ 0 ];
-			} )
-			// remove duplicate
-			.filter( ( item, index, arr ) => arr.indexOf( item ) === index );
+		const businessExtensions = filterBusinessExtensions(
+			extensionInstallationOptions
+		);
 
 		recordEvent( 'storeprofiler_store_business_features_continue', {
 			product_number: productCount,
