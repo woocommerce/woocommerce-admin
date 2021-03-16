@@ -88,9 +88,15 @@ class Payments extends Component {
 
 	getRecommendedMethod() {
 		const { methods } = this.props;
-		return methods.find( ( m ) => m.key === 'wcpay' && m.visible )
-			? 'wcpay'
-			: 'stripe';
+		const recommendedMethod = methods.find(
+			( m ) =>
+				( m.key === 'wcpay' && m.visible ) ||
+				( m.key === 'mercadopago' && m.visible )
+		);
+		if ( ! recommendedMethod ) {
+			return 'stripe';
+		}
+		return recommendedMethod.key;
 	}
 
 	async markConfigured( methodName, queryParams = {} ) {
@@ -309,17 +315,16 @@ class Payments extends Component {
 						isRecommended && key !== 'wcpay';
 					const showRecommendedPill =
 						isRecommended && key === 'wcpay';
+					const recommendedText =
+						key === 'mercadopago'
+							? __( 'Local Partner', 'woocommerce-admin' )
+							: __( 'Recommended', 'woocommerce-admin' );
 
 					return (
 						<Card key={ key } className={ classes }>
 							{ showRecommendedRibbon && (
 								<div className="woocommerce-task-payment__recommended-ribbon">
-									<span>
-										{ __(
-											'Recommended',
-											'woocommerce-admin'
-										) }
-									</span>
+									<span>{ recommendedText }</span>
 								</div>
 							) }
 							<CardMedia isBorderless>{ before }</CardMedia>
@@ -328,10 +333,7 @@ class Payments extends Component {
 									{ title }
 									{ showRecommendedPill && (
 										<span className="woocommerce-task-payment__recommended-pill">
-											{ __(
-												'Recommended',
-												'woocommerce-admin'
-											) }
+											{ recommendedText }
 										</span>
 									) }
 								</H>
