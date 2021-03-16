@@ -65,9 +65,9 @@ Testing `woocommerce_navigation_intro_modal_dismissed`
 3. Make sure the menu title can still be seen.
 ### Add filter to profile wizard steps #6564
 
-1. Remove a step via the filter.
+1. Add the following JS to your admin head.  You can use a plugin like "Add Admin Javascript" to do this:
 ```
-addFilter( STEPS_FILTER, 'woocommerce-admin', ( steps ) => {
+wp.hooks.addFilter( 'woocommerce_admin_profile_wizard_steps', 'woocommerce-admin', ( steps ) => {
 	return steps.filter( ( step ) => step.key !== 'product-types' );
 } );
 ```
