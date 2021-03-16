@@ -109,6 +109,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Store profiler - Added MailPoet to Business Details step  #6503
 - Dev: Store profiler - Added MailPoet to new Business Details step  #6515
 - Dev: Add tilde (~) to represent client root directory for imports. #6517
+- Fix: Fix issue where Loader::is_admin_page() would error if WooCommerce admin is disabled. #6563
 
 == 2.1.0 3/10/2021  ==
 
