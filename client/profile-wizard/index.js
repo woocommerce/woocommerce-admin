@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { Component, createElement } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { identity, pick } from 'lodash';
@@ -26,7 +27,7 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import Benefits from './steps/benefits';
+import { BenefitsLayout } from './steps/benefits';
 import { BusinessDetailsStep } from './steps/business-details';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
@@ -35,6 +36,8 @@ import StoreDetails from './steps/store-details';
 import Theme from './steps/theme';
 import './style.scss';
 import { isSelectiveBundleInstallSegmentation } from './steps/business-details/data/segmentation';
+
+const STEPS_FILTER = 'woocommerce_admin_profile_wizard_steps';
 
 class ProfileWizard extends Component {
 	constructor( props ) {
@@ -152,10 +155,11 @@ class ProfileWizard extends Component {
 		) {
 			steps.push( {
 				key: 'benefits',
-				container: Benefits,
+				container: BenefitsLayout,
 			} );
 		}
-		return steps;
+
+		return applyFilters( STEPS_FILTER, steps );
 	}
 
 	getCurrentStep() {

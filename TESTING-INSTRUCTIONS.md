@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+### Close activity panel tabs by default and track #6566
+
+1. Open your browser console and enter `localStorage.setItem( 'debug', 'wc-admin:tracks' );`.  Make sure the "Verbose" is selected under the levels shown.
+2. With the task list enabled, navigate to the homescreen.
+3. Check that the `wcadmin_activity_panel_visible_panels` event is shown with `taskList: true` in its data.
+4. Hide the task list.
+5. Note that `wcadmin_activity_panel_visible_panels` event is shown with visible activity panels.
+6. After refreshing, make sure that the "Orders" activity panel is closed by default.
+
+### Update undefined task name properties for help panel tracks #6565
+
+1. Enter `localStorage.setItem( 'debug', 'wc-admin:*' );` into your console. Leave your console open.
+2. Navigate to the homescreen.
+3. Open the "Help" tab in the top right.
+4. Note the tracks information in the console includes `homescreen` for the `taskName` property.
+5. Click on a help item.
+6. Note `homescreen` is used for the `taskName` in the help panel click tracks event.
+6. Navigate to any task in the task list.
+7. Click on the "Help" tab.
+8. Note the `taskName` for the event is the current task.
+9. Click on a help item.
+10. Note the `taskName` for the event is the current task.
+
 ### Add gross sales column to CSV export #6567
 
 1. Navigate to Analytics -> Revenue
@@ -10,20 +33,12 @@
 5. Click the download link in the email
 6. See gross sales column
 
-### Fix a bug where the JetPack connection flow would not activate
+### Add customer name column to CSV export #6556
 
-1. With a fresh install of wc-admin and woocommerce, go to the home screen
-2. Going to the homescreen redirects to the profile setup wizard
-3. The first step is "Store details" choose United States (any state) for country and fill in the other details with test data.
-4. Click "continue", you should be taken to the "Industry" step.
-5. In the "Industry" step check the "Food and Drink" option only. Click "continue"
-6. In the "Product Type" step choose any value and click "continue"
-7. You should arrive at the "Business details" step which provides 2 tabs: "Business details" and "Free features". In the "Business Details" tab fill out the dropdowns with any values. Click "continue".
-8. In the "Free features" step expand the list of extensions to install by clicking the arrow to the right of "Add recommended business features to my site".
-9. Uncheck all the extensions except for "Enhance speed and security with Jetpack"
-10. Click "continue", the plugin will be installed and you should arrive at the theme step.
-11. Click "Continue with my active theme"
-12. After finishing the wizard, this should redirect you to the "Jetpack" setup connection flow. (You should not be redirected straight to the homescreen).
+- Create more than 25 orders
+- Go to Analytics -> Orders -> Click "Download"
+- Click download link in the email
+- See customer column with customer full name
 
 ### Allow the manager role to query certain options #6577
 
@@ -42,12 +57,34 @@ Testing `woocommerce_navigation_intro_modal_dismissed`
 3. Open browser inspector and select the Network tab.
 4. Navigate to WooCommerce -> Home
 5. Confirm that the request to `/wp-json/wc-admin/options?options=woocommerce_navigation_intro_modal_dismissed&_locale=user` returns 200 status.
+### Refactor profile wizard benefits step and add tests #6583
+
+1. Deactivate Jetpack and/or WooCommerce Services.
+2. Visit the profiler benefits page. `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard&step=benefits`
+3. Click "Yes please!" to continue.
+4. Without connecting to Jetpack, navigate backwards using your browser's back button.
+5. Make sure the page continues to display (benefits may have changed) and that action buttons are functional.
+6. Make sure skipping the install works as expected.
+7. Connect Jetpack.
+8. Attempt to directly visit the benefits page. `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard&step=benefits`
+9. Note that you are redirected to the homescreen.
 
 ### Fix hidden menu title on smaller screens #6562
 
 1. Enable the new navigation.
 2. Shorten your viewport height so that the secondary menu overlaps the main.
 3. Make sure the menu title can still be seen.
+### Add filter to profile wizard steps #6564
+
+1. Add the following JS to your admin head.  You can use a plugin like "Add Admin Javascript" to do this:
+```
+wp.hooks.addFilter( 'woocommerce_admin_profile_wizard_steps', 'woocommerce-admin', ( steps ) => {
+	return steps.filter( ( step ) => step.key !== 'product-types' );
+} );
+```
+2. Navigate to the profile wizard. `wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`.
+3. Make sure the filtered step (product types) is not shown.
+
 ### Use wc filter to get status tabs for tools category #6525
 
 1. Register a new tab via the filter.
@@ -195,37 +232,6 @@ For each task in that list apart from "Store details":
 3. A title in the top left should reflect the original task name from the task list. e.g. "Add tax rates"
 4. Clicking the chevron to the left of the title should take you back to the home screen
 
-### Update target audience of business feature step #6508
-
-Scenario #1
-
-1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
-2. Fill out the store details with a canadian address (addr: 4428 Blanshard, country/region: Canada -- British Columbia, city: Victoria, postcode: V8W 2H9)
-3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
-4. The business details tab should show a **Business details** tab, and a **Free features** tab (disabled at first)
-     - There should only be dropdowns visible on the **Business details** step (no checkboxes)
-5. Select **1-10** for the first dropdown, and **No** for the second, and click Continue.
-6. Click on the expansion icon for the **Add recommended business features to my site**
-7. It should list 7 features, including **WooCommerce Payments** (top one)
-     - Note down the selected features, for step 10
-8. Click continue, and select your theme, after it should redirect to the home screen (showing the welcome modal, you can step through this).
-9. The home screen task list should include a **Set up WooCommerce Payments** task, and there should also be a **Set up additional payment providers** inbox card displayed (below the task list).
-10. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 7 are installed and activated.
-
-Scenario #2
-
-1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
-2. Fill out the store details with a spanish address (addr: C/ Benito Guinea 52, country/region: Spain -- Barcelona, city: Canet de Mar, postcode: 08360)
-3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
-4. On the business details tab select **1-10** for the first dropdown, and **No** for the second.
-     - After filling the dropdowns it should show several checkboxes with plugins (Facebook, mailchimp, creative mail, google ads)
-     - Note which ones you kept selected (you can unselect one or two)
-5. Click continue, and select your theme, it should show the **WooCommerce Shipping & Tax** step after, you can click **No thanks**.
-6. You will be redirected to the home screen, showing the welcome modal, you can step through this.
-7. The task list should show the **Choose payment methods** task, and the **Set up additional payment providers** inbox card should not be present.
-8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
-9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
-
 ### Add Ireland to Square payment method #6559
 
 1. Go to the store setup wizard `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`
@@ -285,6 +291,53 @@ Scenario #2
 - Go to Products > Attributes.
 - Add a new attribute.
 - Observe CES prompt "How easy was it to add a product attribute?" is displayed.
+
+# 2.1.3
+### Fix a bug where the JetPack connection flow would not activate #6521
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen
+2. Going to the homescreen redirects to the profile setup wizard
+3. The first step is "Store details" choose United States (any state) for country and fill in the other details with test data.
+4. Click "continue", you should be taken to the "Industry" step.
+5. In the "Industry" step check the "Food and Drink" option only. Click "continue"
+6. In the "Product Type" step choose any value and click "continue"
+7. You should arrive at the "Business details" step which provides 2 tabs: "Business details" and "Free features". In the "Business Details" tab fill out the dropdowns with any values. Click "continue".
+8. In the "Free features" step expand the list of extensions to install by clicking the arrow to the right of "Add recommended business features to my site".
+9. Uncheck all the extensions except for "Enhance speed and security with Jetpack"
+10. Click "continue", the plugin will be installed and you should arrive at the theme step.
+11. Click "Continue with my active theme"
+12. After finishing the wizard, this should redirect you to the "Jetpack" setup connection flow. (You should not be redirected straight to the homescreen).
+
+### Update target audience of business feature step #6508
+
+Scenario #1
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a canadian address (addr: 4428 Blanshard, country/region: Canada -- British Columbia, city: Victoria, postcode: V8W 2H9)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. The business details tab should show a **Business details** tab, and a **Free features** tab (disabled at first)
+     - There should only be dropdowns visible on the **Business details** step (no checkboxes)
+5. Select **1-10** for the first dropdown, and **No** for the second, and click Continue.
+6. Click on the expansion icon for the **Add recommended business features to my site**
+7. It should list 7 features, including **WooCommerce Payments** (top one)
+     - Note down the selected features, for step 10
+8. Click continue, and select your theme, after it should redirect to the home screen (showing the welcome modal, you can step through this).
+9. The home screen task list should include a **Set up WooCommerce Payments** task, and there should also be a **Set up additional payment providers** inbox card displayed (below the task list).
+10. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 7 are installed and activated.
+
+Scenario #2
+
+1. With a fresh install of wc-admin and woocommerce, go to the home screen, which starts the onboarding wizard
+2. Fill out the store details with a spanish address (addr: C/ Benito Guinea 52, country/region: Spain -- Barcelona, city: Canet de Mar, postcode: 08360)
+3. Click continue and select **Fashion, apparel, and accessories**, continue, and select **Physical products**, and continue.
+4. On the business details tab select **1-10** for the first dropdown, and **No** for the second.
+     - After filling the dropdowns it should show several checkboxes with plugins (Facebook, mailchimp, creative mail, google ads)
+     - Note which ones you kept selected (you can unselect one or two)
+5. Click continue, and select your theme, it should show the **WooCommerce Shipping & Tax** step after, you can click **No thanks**.
+6. You will be redirected to the home screen, showing the welcome modal, you can step through this.
+7. The task list should show the **Choose payment methods** task, and the **Set up additional payment providers** inbox card should not be present.
+8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
+9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
 
 ## 2.1.2
 

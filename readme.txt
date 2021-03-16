@@ -75,9 +75,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Dev: Close activity panel tabs by default and track #6566
+- Dev: Update undefined task name properties for help panel tracks #6565
 - Fix: Allow the manager role to query certain options #6577
+- Dev: Refactor profile wizard benefits step and add tests #6583
 - Fix: Fix hidden menu title on smaller screens #6562
 - Fix: Add gross sales column to CSV export #6567
+- Dev: Add filter to profile wizard steps #6564
 - Dev: Add nav intro modal tests #6518
 - Dev: Use wc filter to get status tabs for tools category #6525
 - Tweak: Remove mobile activity panel toggle #6539
@@ -109,7 +113,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Associated Order Number for refunds was hidden #6428
 - Add: Remove Mollie promo note on install #6510
 - Add: Remote Inbox Notifications rule to trigger when WooCommerce Admin is upgraded. #6040
-- Feature: Increase target audience for business feature step. #6508
 - Dev: Store profiler - Added MailPoet to Business Details step  #6503
 - Dev: Store profiler - Added MailPoet to new Business Details step  #6515
 - Dev: Add tilde (~) to represent client root directory for imports. #6517
@@ -117,14 +120,20 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: CES survey for search product, order, customer #6420
 - Add: CES survey for importing products #6419
 - Add: CES survey for adding product categories, tags, and attributes #6418
-- Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
+- Add: Include tracking for mail poet installs in the selective bundle install #6603
 
-== 2.1.0 3/10/2021  ==
+== 2.1.3 3/14/2021  ==
+
+- Feature: Increase target audience for business feature step. #6508
+- Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
+- Fix: Add customer name column to CSV export #6556
+
+== 2.1.2 3/10/2021  ==
 
 - Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
 - Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
 
-== 2.1.0 3/4/2021  ==
+== 2.1.1 3/4/2021  ==
 
 - Fix: Restore missing Correct the Klarna slug #6440
 
