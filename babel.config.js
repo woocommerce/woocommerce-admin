@@ -10,6 +10,7 @@ module.exports = function ( api ) {
 		presets: [
 			...e2eBabelConfig.presets,
 			'@wordpress/babel-preset-default',
+			'@babel/preset-typescript',
 		],
 		sourceType: 'unambiguous',
 		plugins: [
