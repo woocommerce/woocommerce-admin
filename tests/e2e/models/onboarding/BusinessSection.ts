@@ -24,6 +24,10 @@ export class BusinessSection {
 		await waitForElementByText( 'h2', 'Tell us about your business' );
 	}
 
+	async freeFeaturesIsDisplayed() {
+		await waitForElementByText( 'h2', 'Included business features' );
+	}
+
 	async selectProductNumber( productLabel: string ) {
 		await this.howManyProductsDropdown.select( productLabel );
 	}
@@ -43,6 +47,7 @@ export class BusinessSection {
 	async expandRecommendedBusinessFeatures( shouldWCPayBeListed = true ) {
 		const expandButtonSelector =
 			'.woocommerce-admin__business-details__selective-extensions-bundle__expand';
+		await this.page.waitForSelector( expandButtonSelector );
 		await this.page.click( expandButtonSelector );
 
 		// Confirm that expanding the list shows all the extensions available to install.

@@ -35,6 +35,7 @@ describe( 'Store owner can complete onboarding wizard', () => {
 	it( 'can unselect all business features and contine', async () => {
 		const onboarding = new OnboardingWizard( page );
 
+		await onboarding.business.freeFeaturesIsDisplayed();
 		// Add WC Pay check
 		await onboarding.business.expandRecommendedBusinessFeatures();
 
@@ -129,6 +130,7 @@ describe( 'A japanese store can complete the selective bundle install but does n
 	it( 'can choose not to install any extensions', async () => {
 		const onboarding = new OnboardingWizard( page );
 
+		await onboarding.business.freeFeaturesIsDisplayed();
 		// Add WC Pay check
 		await onboarding.business.expandRecommendedBusinessFeatures( false );
 
