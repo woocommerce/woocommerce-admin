@@ -115,7 +115,7 @@ function CustomerFeedbackModal( {
 						) }
 						value={ comments }
 						onChange={ ( value: string ) => setComments( value ) }
-						rows="5"
+						rows={ 5 }
 					/>
 				</div>
 			) }
