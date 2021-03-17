@@ -52,20 +52,26 @@ export class TaskList extends Component {
 	possiblyCompleteTaskList() {
 		const { isComplete, name = 'task_list', updateOptions } = this.props;
 		const taskListVariableName = `woocommerce_${ name }_complete`;
-		const taskListToComplete = isComplete
-			? { [ taskListVariableName ]: 'no' }
-			: { [ taskListVariableName ]: 'yes' };
-		if ( name === 'task_list' ) {
-			taskListToComplete.woocommerce_default_homepage_layout =
-				'two_columns';
-		}
+		const remainingIncompleteTasks = !! this.getIncompleteTasks().length;
 
 		if (
-			( ! this.getIncompleteTasks().length && ! isComplete ) ||
-			( this.getIncompleteTasks().length && isComplete )
+			( remainingIncompleteTasks && isComplete ) ||
+			( ! remainingIncompleteTasks && ! isComplete )
 		) {
+			const layoutUpdate =
+				name === 'task_list'
+					? { woocommerce_default_homepage_layout: 'two_columns' }
+					: {};
+
+			const taskListHiddenUpdate =
+				name === 'task_list' && isComplete
+					? { woocommerce_task_list_hidden: 'yes' }
+					: {};
+
 			updateOptions( {
-				...taskListToComplete,
+				[ taskListVariableName ]: isComplete ? 'yes' : 'no',
+				...layoutUpdate,
+				...taskListHiddenUpdate,
 			} );
 		}
 	}
