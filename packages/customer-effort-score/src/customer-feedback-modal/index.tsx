@@ -27,7 +27,13 @@ import { __ } from '@wordpress/i18n';
  * @param {Function} props.recordScoreCallback Function to call when the results are sent.
  * @param {string} props.label                 Question to ask the customer.
  */
-function CustomerFeedbackModal({ recordScoreCallback, label }: { recordScoreCallback: (score: number, comments: string ) => void, label: string } ) {
+function CustomerFeedbackModal( {
+	recordScoreCallback,
+	label,
+}: {
+	recordScoreCallback: ( score: number, comments: string ) => void;
+	label: string;
+} ) {
 	const options = [
 		{
 			label: __( 'Very difficult', 'woocommerce-admin' ),
@@ -52,7 +58,7 @@ function CustomerFeedbackModal({ recordScoreCallback, label }: { recordScoreCall
 	];
 
 	const [ score, setScore ] = useState( NaN );
-	const [ comments, setComments ] = useState('');
+	const [ comments, setComments ] = useState( '' );
 	const [ showNoScoreMessage, setShowNoScoreMessage ] = useState( false );
 	const [ isOpen, setOpen ] = useState( true );
 
