@@ -20,6 +20,16 @@ export class DropdownTypeaheadField {
 	}
 
 	async checkSelected( value: string ) {
-		await verifyValueOfInputField( this.id + '-0__control-input', value );
+		const selector = this.id + '-0__control-input';
+		await page.focus( selector );
+		const field = await this.page.$( selector );
+		const curValue = await field?.getProperty( 'value' );
+		if ( curValue ) {
+			const fieldValue = ( await curValue.jsonValue() ) as string;
+			// Only compare alphanumeric characters
+			expect( fieldValue?.replace( /\W/g, '' ) ).toBe(
+				value.replace( /\W/g, '' )
+			);
+		}
 	}
 }

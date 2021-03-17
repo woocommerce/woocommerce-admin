@@ -41,6 +41,11 @@ export async function completeStoreDetailsSection(
 		storeDetails.countryRegionSubstring || 'cali',
 		storeDetails.countryRegionSelector || 'US\\:CA'
 	);
+	if ( storeDetails.countryRegion ) {
+		await onboardingWizard.storeDetails.countryDropdown.checkSelected(
+			storeDetails.countryRegion
+		);
+	}
 
 	// Fill the city where the store is located
 	await onboardingWizard.storeDetails.fillCity(
