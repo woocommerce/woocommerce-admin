@@ -44,10 +44,10 @@ const ABTest = ( {
 	const active = isActive( start, end );
 	const handleComplete = useCallback( () => {
 		setIsFetching( false );
-		if ( onComplete ) {
+		if ( active && onComplete ) {
 			onComplete();
 		}
-	}, [ onComplete ] );
+	}, [ active, onComplete ] );
 
 	const setABTestOption = useDispatch( OPTIONS_STORE_NAME ).updateOptions;
 	const getABTestOption = useSelect(

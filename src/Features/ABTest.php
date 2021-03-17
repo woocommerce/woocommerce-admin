@@ -11,7 +11,7 @@ namespace Automattic\WooCommerce\Admin\Features;
  */
 class ABTest {
 	/**
-	 * Clear cache tool identifier.
+	 * ABTest option name.
 	 */
 	const OPTION_NAME = 'woocommerce_admin_abtests';
 
