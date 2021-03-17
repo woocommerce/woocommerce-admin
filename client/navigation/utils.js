@@ -68,6 +68,8 @@ export const getDefaultMatchExpression = ( url ) => {
  * @return {Function} Function to remove listeners.
  */
 export const addHistoryListener = ( listener ) => {
+	window.wcNavigation = window.wcNavigation || {};
+
 	// Monkey patch pushState to allow trigger the pushstate event listener.
 	if ( ! window.wcNavigation.historyPatched ) {
 		( ( history ) => {
