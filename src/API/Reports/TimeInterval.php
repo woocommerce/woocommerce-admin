@@ -30,18 +30,21 @@ class TimeInterval {
 	 * Converts local datetime to GMT/UTC time.
 	 *
 	 * @param string $datetime_string String representation of local datetime.
-	 * @return \DateTime
+	 *
+	 * @return \DateTimeInterface
+	 * @throws \Exception \DateTime emits Exception in case of an error.
 	 */
 	public static function convert_local_datetime_to_gmt( $datetime_string ) {
 		$datetime = new \DateTime( $datetime_string, new \DateTimeZone( wc_timezone_string() ) );
 		$datetime->setTimezone( new \DateTimeZone( 'GMT' ) );
+
 		return $datetime;
 	}
 
 	/**
 	 * Returns default 'before' parameter for the reports.
 	 *
-	 * @return \WC_DateTime
+	 * @return \DateTimeInterface
 	 */
 	public static function default_before() {
 		$datetime = new \WC_DateTime();
@@ -51,13 +54,14 @@ class TimeInterval {
 		} else {
 			$datetime->set_utc_offset( wc_timezone_offset() );
 		}
+
 		return $datetime;
 	}
 
 	/**
 	 * Returns default 'after' parameter for the reports.
 	 *
-	 * @return \WC_DateTime
+	 * @return \DateTimeInterface
 	 */
 	public static function default_after() {
 		$now       = time();
@@ -71,6 +75,7 @@ class TimeInterval {
 		} else {
 			$datetime->set_utc_offset( wc_timezone_offset() );
 		}
+
 		return $datetime;
 	}
 
@@ -78,8 +83,9 @@ class TimeInterval {
 	 * Returns date format to be used as grouping clause in SQL.
 	 *
 	 * @param string $time_interval Time interval.
-	 * @param string $table_name Name of the db table relevant for the date constraint.
-	 * @return mixed
+	 * @param string $table_name    Name of the db table relevant for the date constraint.
+	 *
+	 * @return string
 	 */
 	public static function db_datetime_format( $time_interval, $table_name ) {
 		$first_day_of_week = absint( get_option( 'start_of_week' ) );
@@ -110,7 +116,8 @@ class TimeInterval {
 	/**
 	 * Returns quarter for the DateTime.
 	 *
-	 * @param \DateTime $datetime Local date & time.
+	 * @param \DateTimeInterface $datetime Local date & time.
+	 *
 	 * @return int|null
 	 */
 	public static function quarter( $datetime ) {
@@ -133,6 +140,7 @@ class TimeInterval {
 				return 4;
 
 		}
+
 		return null;
 	}
 
@@ -142,8 +150,9 @@ class TimeInterval {
 	 * The first week of the year is considered to be the week containing January 1.
 	 * The second week starts on the next $first_day_of_week.
 	 *
-	 * @param \DateTime $datetime          Local date for which the week number is to be calculated.
-	 * @param int      $first_day_of_week 0 for Sunday to 6 for Saturday.
+	 * @param \DateTimeInterface $datetime          Local date for which the week number is to be calculated.
+	 * @param int                $first_day_of_week 0 for Sunday to 6 for Saturday.
+	 *
 	 * @return int
 	 */
 	public static function simple_week_number( $datetime, $first_day_of_week ) {
@@ -160,8 +169,9 @@ class TimeInterval {
 	 *
 	 * @see TimeInterval::simple_week_number()
 	 *
-	 * @param \DateTime $datetime          Local date for which the week number is to be calculated.
-	 * @param int      $first_day_of_week 0 for Sunday to 6 for Saturday.
+	 * @param \DateTimeInterface $datetime          Local date for which the week number is to be calculated.
+	 * @param int                $first_day_of_week 0 for Sunday to 6 for Saturday.
+	 *
 	 * @return int
 	 */
 	public static function week_number( $datetime, $first_day_of_week ) {
@@ -170,14 +180,16 @@ class TimeInterval {
 		} else {
 			$week_number = self::simple_week_number( $datetime, $first_day_of_week );
 		}
+
 		return $week_number;
 	}
 
 	/**
 	 * Returns time interval id for the DateTime.
 	 *
-	 * @param string   $time_interval Time interval type (week, day, etc).
-	 * @param \DateTime $datetime      Date & time.
+	 * @param string             $time_interval Time interval type (week, day, etc).
+	 * @param \DateTimeInterface $datetime      Date & time.
+	 *
 	 * @return string
 	 */
 	public static function time_interval_id( $time_interval, $datetime ) {
@@ -198,6 +210,7 @@ class TimeInterval {
 			$week_no = self::simple_week_number( $datetime, $first_day_of_week );
 			$week_no = str_pad( $week_no, 2, '0', STR_PAD_LEFT );
 			$year_no = $datetime->format( 'Y' );
+
 			return "$year_no-$week_no";
 		}
 
@@ -207,9 +220,9 @@ class TimeInterval {
 	/**
 	 * Calculates number of time intervals between two dates, closed interval on both sides.
 	 *
-	 * @param \DateTime $start_datetime Start date & time.
-	 * @param \DateTime $end_datetime End date & time.
-	 * @param string   $interval Time interval increment, e.g. hour, day, week.
+	 * @param \DateTimeInterface $start_datetime Start date & time.
+	 * @param \DateTimeInterface $end_datetime   End date & time.
+	 * @param string             $interval       Time interval increment, e.g. hour, day, week.
 	 *
 	 * @return int
 	 */
@@ -247,6 +260,7 @@ class TimeInterval {
 					$start_datetime = self::next_week_start( $start_datetime );
 					$week_count++;
 				} while ( $start_datetime <= $end_datetime );
+
 				return $week_count;
 			case 'month':
 				// Year diff in months: (end_year - start_year - 1) * 12.
@@ -255,6 +269,7 @@ class TimeInterval {
 				$month_diff = (int) $end_datetime->format( 'n' ) + ( 12 - (int) $start_datetime->format( 'n' ) );
 				// Add months for number of years between end_date and start_date.
 				$month_diff += $year_diff_in_months + 1;
+
 				return $month_diff;
 			case 'quarter':
 				// Year diff in quarters: (end_year - start_year - 1) * 4.
@@ -263,20 +278,24 @@ class TimeInterval {
 				$quarter_diff = self::quarter( $end_datetime ) + ( 4 - self::quarter( $start_datetime ) );
 				// Add quarters for number of years between end_date and start_date.
 				$quarter_diff += $year_diff_in_quarters + 1;
+
 				return $quarter_diff;
 			case 'year':
 				$year_diff = (int) $end_datetime->format( 'Y' ) - (int) $start_datetime->format( 'Y' );
+
 				return $year_diff + 1;
 		}
+
 		return 0;
 	}
 
 	/**
 	 * Returns a new DateTime object representing the next hour start/previous hour end if reversed.
 	 *
-	 * @param \DateTime $datetime Date and time.
-	 * @param bool     $reversed Going backwards in time instead of forward.
-	 * @return \DateTime
+	 * @param \DateTimeInterface $datetime Date and time.
+	 * @param bool               $reversed Going backwards in time instead of forward.
+	 *
+	 * @return \DateTimeInterface
 	 */
 	public static function next_hour_start( $datetime, $reversed = false ) {
 		$hour_increment         = $reversed ? 0 : 1;
@@ -285,21 +304,23 @@ class TimeInterval {
 		$hours_offset_timestamp = $timestamp + ( $hour_increment * HOUR_IN_SECONDS - $seconds_into_hour );
 
 		if ( $reversed ) {
-			$hours_offset_timestamp --;
+			$hours_offset_timestamp--;
 		}
 
 		$hours_offset_time = new \DateTime();
 		$hours_offset_time->setTimestamp( $hours_offset_timestamp );
 		$hours_offset_time->setTimezone( new \DateTimeZone( wc_timezone_string() ) );
+
 		return $hours_offset_time;
 	}
 
 	/**
 	 * Returns a new DateTime object representing the next day start, or previous day end if reversed.
 	 *
-	 * @param \DateTime $datetime Date and time.
-	 * @param bool     $reversed Going backwards in time instead of forward.
-	 * @return \DateTime
+	 * @param \DateTimeInterface $datetime Date and time.
+	 * @param bool               $reversed Going backwards in time instead of forward.
+	 *
+	 * @return \DateTimeInterface
 	 */
 	public static function next_day_start( $datetime, $reversed = false ) {
 		$seconds_into_day = (int) $datetime->format( 'H' ) * HOUR_IN_SECONDS + (int) $datetime->format( 'i' ) * MINUTE_IN_SECONDS + (int) $datetime->format( 's' );
@@ -319,15 +340,17 @@ class TimeInterval {
 		$next_day = new \DateTime();
 		$next_day->setTimestamp( $next_day_timestamp );
 		$next_day->setTimezone( new \DateTimeZone( wc_timezone_string() ) );
+
 		return $next_day;
 	}
 
 	/**
 	 * Returns DateTime object representing the next week start, or previous week end if reversed.
 	 *
-	 * @param \DateTime $datetime Date and time.
-	 * @param bool     $reversed Going backwards in time instead of forward.
-	 * @return \DateTime
+	 * @param \DateTimeInterface $datetime Date and time.
+	 * @param bool               $reversed Going backwards in time instead of forward.
+	 *
+	 * @return \DateTimeInterface
 	 */
 	public static function next_week_start( $datetime, $reversed = false ) {
 		$first_day_of_week = absint( get_option( 'start_of_week' ) );
@@ -351,9 +374,11 @@ class TimeInterval {
 	/**
 	 * Returns a new DateTime object representing the next month start, or previous month end if reversed.
 	 *
-	 * @param \DateTime $datetime Date and time.
-	 * @param bool     $reversed Going backwards in time instead of forward.
-	 * @return \DateTime
+	 * @param \DateTimeInterface $datetime Date and time.
+	 * @param bool               $reversed Going backwards in time instead of forward.
+	 *
+	 * @return \DateTimeInterface
+	 * @throws \Exception \DateTime emits Exception in case of an error.
 	 */
 	public static function next_month_start( $datetime, $reversed = false ) {
 		$month_increment = 1;
@@ -369,7 +394,7 @@ class TimeInterval {
 			$month += $month_increment;
 			if ( $month > 12 ) {
 				$month = 1;
-				$year ++;
+				$year++;
 			}
 			$day      = '01';
 			$datetime = new \DateTime( "$year-$month-$day 00:00:00", new \DateTimeZone( wc_timezone_string() ) );
@@ -381,9 +406,11 @@ class TimeInterval {
 	/**
 	 * Returns a new DateTime object representing the next quarter start, or previous quarter end if reversed.
 	 *
-	 * @param \DateTime $datetime Date and time.
-	 * @param bool     $reversed Going backwards in time instead of forward.
-	 * @return \DateTime
+	 * @param \DateTimeInterface $datetime Date and time.
+	 * @param bool               $reversed Going backwards in time instead of forward.
+	 *
+	 * @return \DateTimeInterface
+	 * @throws \Exception \DateTime emits Exception in case of an error.
 	 */
 	public static function next_quarter_start( $datetime, $reversed = false ) {
 		$year  = $datetime->format( 'Y' );
@@ -424,7 +451,7 @@ class TimeInterval {
 					$month = 10;
 				} else {
 					$month = 1;
-					$year ++;
+					$year++;
 				}
 				break;
 		}
@@ -441,9 +468,11 @@ class TimeInterval {
 	/**
 	 * Return a new DateTime object representing the next year start, or previous year end if reversed.
 	 *
-	 * @param \DateTime $datetime Date and time.
-	 * @param bool     $reversed Going backwards in time instead of forward.
-	 * @return \DateTime
+	 * @param \DateTimeInterface $datetime Date and time.
+	 * @param bool               $reversed Going backwards in time instead of forward.
+	 *
+	 * @return \DateTimeInterface
+	 * @throws \Exception \DateTime emits Exception in case of an error.
 	 */
 	public static function next_year_start( $datetime, $reversed = false ) {
 		$year_increment = 1;
@@ -457,7 +486,8 @@ class TimeInterval {
 			$end_of_prev_year_timestamp = $timestamp - 1;
 			$datetime->setTimestamp( $end_of_prev_year_timestamp );
 		} else {
-			$year    += $year_increment;
+			$year += $year_increment;
+
 			$datetime = new \DateTime( "$year-$month-$day 00:00:00", new \DateTimeZone( wc_timezone_string() ) );
 		}
 
@@ -469,10 +499,11 @@ class TimeInterval {
 	 *
 	 * E.g. for current DateTime, beginning of next day, week, quarter, etc.
 	 *
-	 * @param \DateTime $datetime      Date and time.
-	 * @param string   $time_interval Time interval, e.g. week, day, hour.
-	 * @param bool     $reversed Going backwards in time instead of forward.
-	 * @return \DateTime
+	 * @param \DateTimeInterface $datetime      Date and time.
+	 * @param string             $time_interval Time interval, e.g. week, day, hour.
+	 * @param bool               $reversed      Going backwards in time instead of forward.
+	 *
+	 * @return \DateTimeInterface
 	 */
 	public static function iterate( $datetime, $time_interval, $reversed = false ) {
 		return call_user_func( array( __CLASS__, "next_{$time_interval}_start" ), $datetime, $reversed );
@@ -517,6 +548,7 @@ class TimeInterval {
 		}
 		if ( 'date' === $order_by ) {
 			$expected_intervals_on_page = self::expected_intervals_on_page( $expected_interval_count, $items_per_page, $page_no );
+
 			return $intervals_count < $expected_intervals_on_page;
 		}
 		if ( 'desc' === $order ) {
@@ -525,6 +557,7 @@ class TimeInterval {
 		if ( 'asc' === $order ) {
 			return $page_no <= ceil( ( $expected_interval_count - $db_records ) / $items_per_page );
 		}
+
 		// Invalid ordering.
 		return false;
 	}
@@ -533,9 +566,10 @@ class TimeInterval {
 	 * Normalize "*_between" parameters to "*_min" and "*_max" for numeric values
 	 * and "*_after" and "*_before" for date values.
 	 *
-	 * @param array        $request Query params from REST API request.
+	 * @param array        $request     Query params from REST API request.
 	 * @param string|array $param_names One or more param names to handle. Should not include "_between" suffix.
-	 * @param bool         $is_date Boolean if the param is date is related.
+	 * @param bool         $is_date     Boolean if the param is date is related.
+	 *
 	 * @return array Normalized query values.
 	 */
 	public static function normalize_between_params( $request, $param_names, $is_date ) {
@@ -574,10 +608,12 @@ class TimeInterval {
 	/**
 	 * Validate a "*_between" range argument (an array with 2 numeric items).
 	 *
-	 * @param  mixed           $value Parameter value.
-	 * @param  \WP_REST_Request $request REST Request.
-	 * @param  string          $param Parameter name.
-	 * @return \WP_Error|boolean
+	 * @param mixed            $value   Parameter value.
+	 * @param \WP_REST_Request $request REST Request (Unused).
+	 * @param string           $param   Parameter name.
+	 *
+	 * @return \WP_Error|true
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public static function rest_validate_between_numeric_arg( $value, $request, $param ) {
 		if ( ! wp_is_numeric_array( $value ) ) {
@@ -606,10 +642,12 @@ class TimeInterval {
 	/**
 	 * Validate a "*_between" range argument (an array with 2 date items).
 	 *
-	 * @param  mixed           $value Parameter value.
-	 * @param  \WP_REST_Request $request REST Request.
-	 * @param  string          $param Parameter name.
-	 * @return \WP_Error|boolean
+	 * @param mixed            $value   Parameter value.
+	 * @param \WP_REST_Request $request REST Request (Unused).
+	 * @param string           $param   Parameter name.
+	 *
+	 * @return \WP_Error|true
+	 * @noinspection PhpUnusedParameterInspection
 	 */
 	public static function rest_validate_between_date_arg( $value, $request, $param ) {
 		if ( ! wp_is_numeric_array( $value ) ) {
