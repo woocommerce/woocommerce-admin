@@ -96,7 +96,7 @@ declare global {
 }
 
 interface wcNavigation {
-	menuItems: Array< Item >;
+	menuItems: Item[];
 	rootBackLabel: string;
 	rootBackUrl: string;
 	historyPatched: boolean;
@@ -122,9 +122,7 @@ export const addHistoryListener = ( listener: () => void ): ( () => void ) => {
 			const pushState = history.pushState;
 			const replaceState = history.replaceState;
 			history.pushState = function (
-				state: {
-					[ key: string ]: string;
-				},
+				state: Record< string, string >,
 				title: string,
 				url: string
 			) {
@@ -133,9 +131,7 @@ export const addHistoryListener = ( listener: () => void ): ( () => void ) => {
 				return pushState.apply( history, [ state, title, url ] );
 			};
 			history.replaceState = function (
-				state: {
-					[ key: string ]: string;
-				},
+				state: Record< string, string >,
 				title: string,
 				url: string
 			) {
@@ -253,12 +249,8 @@ export const getMappedItemsCategories = (
 	menuItems: Item[],
 	currentUserCan: ( capability: string ) => boolean
 ): {
-	items: {
-		[ key: string ]: Category | { [ key: string ]: Item[] };
-	};
-	categories: {
-		[ key: string ]: Category | Item;
-	};
+	items: Record< string, Category | Record< string, Item[] > >;
+	categories: Record< string, Category | Item >;
 } => {
 	const categories: {
 		[ key: string ]: Category | Item;
