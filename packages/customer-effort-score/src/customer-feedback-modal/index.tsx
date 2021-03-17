@@ -33,7 +33,7 @@ function CustomerFeedbackModal( {
 }: {
 	recordScoreCallback: ( score: number, comments: string ) => void;
 	label: string;
-} ): JSX.Element {
+} ): JSX.Element | null {
 	const options = [
 		{
 			label: __( 'Very difficult', 'woocommerce-admin' ),
