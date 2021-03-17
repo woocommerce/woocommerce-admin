@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### Next new novel navigation nudge note #6610
+
+1. Download a plugin like WP Crontrol.
+2. Turn on the new navigation under WooCommerce -> Settings -> Advanced.
+3. Under Tools -> Cron Events, run the `wc_admin_daily` event.
+4. Go to the homescreen, and note that the new note `You now have access to the WooCommerce navigation` is not added.
+5. Turn off the new navigation.
+6. Run `wc_admin_daily` again.
+7. Go to the homescreen and see the new note.
+8. Click `Enable` on the note actions.
+9. Make sure the navigation has been enabled and you are redirected back to the screen where you viewed the note.
+10. Delete the note if you have database access (or create a new site).
+11. With navigation disabled, run the `wc_admin_daily` cron event.
+12. Check that the note was added.
+13. Manually turn on the note via WooCommerce -> Settings -> Advanced.
+14. Check that the note was removed (actioned).
+
 ### Close activity panel tabs by default and track #6566
 
 1. Open your browser console and enter `localStorage.setItem( 'debug', 'wc-admin:tracks' );`.  Make sure the "Verbose" is selected under the levels shown.

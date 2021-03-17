@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Add: Next new novel navigation nudge note #6610
 - Dev: Close activity panel tabs by default and track #6566
 - Dev: Update undefined task name properties for help panel tracks #6565
 - Fix: Allow the manager role to query certain options #6577
