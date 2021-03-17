@@ -38,6 +38,10 @@ describe( 'Store owner can complete onboarding wizard', () => {
 		// Add WC Pay check
 		await onboarding.business.expandRecommendedBusinessFeatures();
 
+		expect( page ).toMatchElement( 'a', {
+			text: 'WooCommerce Payments',
+		} );
+
 		await onboarding.business.uncheckAllRecommendedBusinessFeatures();
 
 		await onboarding.continue();
@@ -127,6 +131,10 @@ describe( 'A japanese store can complete the selective bundle install but does n
 
 		// Add WC Pay check
 		await onboarding.business.expandRecommendedBusinessFeatures( false );
+
+		expect( page ).not.toMatchElement( 'a', {
+			text: 'WooCommerce Payments',
+		} );
 
 		await onboarding.business.uncheckAllRecommendedBusinessFeatures();
 

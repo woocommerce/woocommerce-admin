@@ -46,12 +46,16 @@ export class BusinessSection {
 		await this.page.click( expandButtonSelector );
 
 		// Confirm that expanding the list shows all the extensions available to install.
-		await this.page.waitForFunction( () => {
-			const inputsNum = document.querySelectorAll(
-				'.components-checkbox-control__input'
-			).length;
-			return inputsNum > ( shouldWCPayBeListed ? 10 : 7 );
-		} );
+		await this.page.waitForFunction(
+			( hasWcPay ) => {
+				const inputsNum = document.querySelectorAll(
+					'.components-checkbox-control__input'
+				).length;
+				return inputsNum > ( hasWcPay ? 8 : 7 );
+			},
+			undefined,
+			shouldWCPayBeListed
+		);
 	}
 
 	async uncheckAllRecommendedBusinessFeatures() {
