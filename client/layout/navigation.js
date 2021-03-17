@@ -11,7 +11,9 @@ import {
 } from '@woocommerce/navigation';
 import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -22,15 +24,24 @@ import { isWCAdmin } from '../dashboard/utils';
 import { addHistoryListener } from '../navigation/utils';
 
 const NavigationPlugin = () => {
-	const [ persistedQuery, setPersistedQuery ] = useState(
-		getPersistedQuery()
-	);
+	const { persistedQuery } = useSelect( ( select ) => {
+		return {
+			persistedQuery: select(
+				NAVIGATION_STORE_NAME
+			).getPersistedQueryFromStore(),
+		};
+	} );
+
+	const { setPersistedQuery } = useDispatch( NAVIGATION_STORE_NAME );
 
 	const pathIsExcluded = ( path ) =>
 		getQueryExcludedScreens().includes( getScreenFromPath( path ) );
 
 	// Update the persisted queries when history is updated
 	useEffect( () => {
+		if ( Object.keys( getPersistedQuery() ).length ) {
+			setPersistedQuery( getPersistedQuery() );
+		}
 		return addHistoryListener( () => {
 			setTimeout( () => {
 				if ( pathIsExcluded() ) {

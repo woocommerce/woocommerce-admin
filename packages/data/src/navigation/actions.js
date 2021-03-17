@@ -16,6 +16,13 @@ export function setMenuItems( menuItems ) {
 	};
 }
 
+export function setPersistedQuery( persistedQuery ) {
+	return {
+		type: TYPES.SET_PERSISTED_QUERY,
+		persistedQuery,
+	};
+}
+
 export function addMenuItems( menuItems ) {
 	return {
 		type: TYPES.ADD_MENU_ITEMS,

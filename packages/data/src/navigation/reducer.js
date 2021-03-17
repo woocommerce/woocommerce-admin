@@ -9,8 +9,9 @@ const reducer = (
 		menuItems: [],
 		favorites: [],
 		requesting: {},
+		persistedQuery: {},
 	},
-	{ type, error, favorite, favorites, menuItems }
+	{ type, error, favorite, favorites, menuItems, persistedQuery }
 ) => {
 	switch ( type ) {
 		case TYPES.SET_MENU_ITEMS:
@@ -23,6 +24,12 @@ const reducer = (
 			state = {
 				...state,
 				menuItems: [ ...state.menuItems, ...menuItems ],
+			};
+			break;
+		case TYPES.SET_PERSISTED_QUERY:
+			state = {
+				...state,
+				persistedQuery,
 			};
 			break;
 		case TYPES.GET_FAVORITES_FAILURE:
