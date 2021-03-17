@@ -11,7 +11,6 @@ module.exports = function ( api ) {
 			...e2eBabelConfig.presets,
 			'@babel/preset-typescript',
 			'@wordpress/babel-preset-default',
-			'@babel/preset-typescript',
 		],
 		sourceType: 'unambiguous',
 		plugins: [
