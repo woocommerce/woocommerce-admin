@@ -132,7 +132,7 @@ describe( 'A japanese store can complete the selective bundle install but does n
 
 		await onboarding.business.freeFeaturesIsDisplayed();
 		// Add WC Pay check
-		await onboarding.business.expandRecommendedBusinessFeatures( false );
+		await onboarding.business.expandRecommendedBusinessFeatures();
 
 		expect( page ).not.toMatchElement( 'a', {
 			text: 'WooCommerce Payments',

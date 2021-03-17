@@ -44,23 +44,19 @@ export class BusinessSection {
 		}
 	}
 
-	async expandRecommendedBusinessFeatures( shouldWCPayBeListed = true ) {
+	async expandRecommendedBusinessFeatures() {
 		const expandButtonSelector =
 			'.woocommerce-admin__business-details__selective-extensions-bundle__expand';
 		await this.page.waitForSelector( expandButtonSelector );
 		await this.page.click( expandButtonSelector );
 
 		// Confirm that expanding the list shows all the extensions available to install.
-		await this.page.waitForFunction(
-			( hasWcPay ) => {
-				const inputsNum = document.querySelectorAll(
-					'.components-checkbox-control__input'
-				).length;
-				return inputsNum > ( hasWcPay ? 8 : 7 );
-			},
-			undefined,
-			shouldWCPayBeListed
-		);
+		await this.page.waitForFunction( () => {
+			const inputsNum = document.querySelectorAll(
+				'.components-checkbox-control__input'
+			).length;
+			return inputsNum > 6;
+		} );
 	}
 
 	async uncheckAllRecommendedBusinessFeatures() {
