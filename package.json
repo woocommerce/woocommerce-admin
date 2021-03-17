@@ -151,6 +151,7 @@
 		"@testing-library/react": "11.2.5",
 		"@testing-library/react-hooks": "3.7.0",
 		"@testing-library/user-event": "12.8.3",
+		"@types/wordpress__components": "^9.8.6",
 		"@typescript-eslint/eslint-plugin": "4.15.2",
 		"@woocommerce/components": "file:packages/components",
 		"@woocommerce/csv-export": "file:packages/csv-export",
