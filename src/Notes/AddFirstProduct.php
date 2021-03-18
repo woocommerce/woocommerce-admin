@@ -68,7 +68,7 @@ class AddFirstProduct {
 		);
 
 		$note = new Note();
-		$note->set_title( __( 'Get ready to start selling', 'woocommerce-admin' ) );
+		$note->set_title( __( 'Add your first product', 'woocommerce-admin' ) );
 		$note->set_content( implode( '', $content_lines ) );
 		$note->set_content_data( (object) $additional_data );
 		$note->set_image(
