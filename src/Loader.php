@@ -98,6 +98,31 @@ class Loader {
 		// Handler for WooCommerce and WooCommerce Admin plugin activation.
 		add_action( 'woocommerce_activated_plugin', array( __CLASS__, 'activated_plugin' ) );
 		add_action( 'activated_plugin', array( __CLASS__, 'activated_plugin' ) );
+		add_action( 'admin_init', array( __CLASS__, 'is_using_installed_wc_admin_plugin' ) );
+	}
+
+	/**
+	 * Verifies which plugin version is being used. If WooCommerce Admin is installed and activated but not in use
+	 * it will show a warning.
+	 */
+	public static function is_using_installed_wc_admin_plugin() {
+		if ( PluginsHelper::is_plugin_active( 'woocommerce-admin' ) ) {
+			$path = PluginsHelper::get_plugin_data( 'woocommerce-admin' );
+			if ( WC_ADMIN_VERSION_NUMBER !== $path['Version'] ) {
+				add_action(
+					'admin_notices',
+					function() {
+						echo '<div class="error"><p>';
+						printf(
+							/* translators: %s: is referring to the plugin's name. */
+							esc_html__( 'You have the %s plugin activated but it is not being used.', 'woocommerce-admin' ),
+							'<code>WooCommerce Admin</code>'
+						);
+						echo '</p></div>';
+					}
+				);
+			}
+		}
 	}
 
 	/**
@@ -730,7 +755,8 @@ class Loader {
 	 * Returns true if we are on a JS powered admin page.
 	 */
 	public static function is_admin_page() {
-		return wc_admin_is_registered_page();
+		// Check the function exists before calling in case WC Admin is disabled. See PR #6563.
+		return function_exists( 'wc_admin_is_registered_page' ) && wc_admin_is_registered_page();
 	}
 
 	/**

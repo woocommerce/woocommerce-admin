@@ -48,10 +48,19 @@ export const pluginNames = {
 		'WooCommerce Shipping & Tax',
 		'woocommerce-admin'
 	),
+	'woocommerce-services:shipping': __(
+		'WooCommerce Shipping & Tax',
+		'woocommerce-admin'
+	),
+	'woocommerce-services:tax': __(
+		'WooCommerce Shipping & Tax',
+		'woocommerce-admin'
+	),
 	'woocommerce-shipstation-integration': __(
 		'WooCommerce ShipStation Gateway',
 		'woocommerce-admin'
 	),
 	'kliken-marketing-for-google': __( 'Google Ads', 'woocommerce-admin' ),
 	'woo-razorpay': __( 'Razorpay', 'woocommerce-admin' ),
+	mailpoet: __( 'MailPoet', 'woocommerce-admin' ),
 };

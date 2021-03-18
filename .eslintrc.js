@@ -1,12 +1,15 @@
 module.exports = {
 	extends: [ 'plugin:@woocommerce/eslint-plugin/recommended' ],
+	settings: {
+		'import/resolver': 'typescript',
+	},
 	rules: {
 		// temporary conversion to warnings until the below are all handled.
 		'@wordpress/i18n-translator-comments': 'warn',
 		'@wordpress/valid-sprintf': 'warn',
 		'jsdoc/check-tag-names': [
 			'error',
-			{ definedTags: [ 'jest-environment' ] },
+			{ definedTags: [ 'jest-environment', 'hook' ] },
 		],
 		'import/no-extraneous-dependencies': 'warn',
 		'import/no-unresolved': 'warn',
@@ -24,6 +27,9 @@ module.exports = {
 				'plugin:@typescript-eslint/recommended',
 			],
 			rules: {
+				camelcase: 'off',
+				'import/no-unresolved': 'warn',
+				'import/no-extraneous-dependencies': 'warn',
 				'@typescript-eslint/no-explicit-any': 'error',
 				'no-use-before-define': 'off',
 				'@typescript-eslint/no-use-before-define': [ 'error' ],
