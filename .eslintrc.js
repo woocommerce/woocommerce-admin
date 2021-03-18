@@ -9,7 +9,7 @@ module.exports = {
 		'@wordpress/valid-sprintf': 'warn',
 		'jsdoc/check-tag-names': [
 			'error',
-			{ definedTags: [ 'jest-environment' ] },
+			{ definedTags: [ 'jest-environment', 'hook' ] },
 		],
 		'import/no-extraneous-dependencies': 'warn',
 		'import/no-unresolved': 'warn',
@@ -17,6 +17,12 @@ module.exports = {
 		'@wordpress/no-unsafe-wp-apis': 'warn',
 		'jest/valid-title': 'warn',
 		'@wordpress/no-global-active-element': 'warn',
+	},
+	settings: {
+		jest: {
+			// only needed as we use jest-24.9.0 in our package.json, can be removed once we update and set it to 'jest'.
+			version: '24.9.0',
+		},
 	},
 	overrides: [
 		{

@@ -74,6 +74,7 @@ Testing `woocommerce_navigation_intro_modal_dismissed`
 1. Enable the new navigation.
 2. Shorten your viewport height so that the secondary menu overlaps the main.
 3. Make sure the menu title can still be seen.
+
 ### Add filter to profile wizard steps #6564
 
 1. Add the following JS to your admin head.  You can use a plugin like "Add Admin Javascript" to do this:
@@ -84,6 +85,75 @@ wp.hooks.addFilter( 'woocommerce_admin_profile_wizard_steps', 'woocommerce-admin
 ```
 2. Navigate to the profile wizard. `wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`.
 3. Make sure the filtered step (product types) is not shown.
+
+### Adjust targeting store age: 2 - 5 days for the Add First Product note #6554
+
+- Checkout this branch.
+- Create a zip for testing with `npm run zip:test`.
+- Create a `jurassic.ninja` instance.
+- Upload the plugin and activate it.
+- Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
+
+### Update Insight inbox message #6555
+
+1. Checkout this branch.
+2. Update the installation date of your store if it hasn't been at least a day. You can use the following SQL uqery.
+
+```
+UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 5 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
+```
+
+- Run the cron (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
+- You should have received an email like the image above.
+- Verify the note's status is `sent`. You can use an SQL statement like this:
+```
+SELECT `status` FROM `wp_wc_admin_notes` WHERE `name` = 'wc-admin-add-first-product-note'
+```
+- Now delete the note with an SQL statement like:
+```
+DELETE FROM `wp_wc_admin_notes` WHERE `name` = 'wc-admin-add-first-product-note';
+```
+- Add a new order and run the cron.
+- No note should have been added.
+- Remove the order, add a product and run the cron.
+- No note should have been added.
+- Delete the product and modify the store creation date to 7 days with an SQL statement like:
+```
+UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
+```
+- No note should have been added.
+
+### Improve WC Shipping & Tax logic #6547
+
+**Scenario 1** - Exclude the WooCommerce Shipping mention if the user is not in the US
+
+1. Start OBW and enter an address that is not in the US
+2. Choose "food and drink" from the Industry (this forces Business Details to display "Free features" tab)
+3. When you get to the "Business Details", click "Free features"
+4. Expand "Add recommended business features to my site" by clicking the down arrow.
+5. Confirm that "WooCommerce Shipping" is not listed
+
+**Scenario 2**- Exclude the WooCommerce Shipping mention if the user is in the US but only selected digital products in the Product Types step
+
+1. Start OBW and enter an address that is in the US.
+2. Choose "food and drink" from the Industry (this forces Business Details to display the "Free features" tab)
+3. Choose "Downloads" from the Product Types step.
+4. When you get to the Business Details step, expand "Add recommended business features to my site" by clicking the down arrow.
+5. Confirm that "WooCommerce Shipping" is not listed
+
+**Scenario 3** -  Include WooCommerce Tax if the user is in one of the following countries: US | FR | GB | DE | CA | PL | AU | GR | BE | PT | DK | SE
+
+1. Start OBW and enter an address that is in one of the following countries 
+
+    US | FR | GB | DE | CA | PL | AU | GR | BE | PT | DK | SE
+
+2. Continue to the Business Details step.
+3. Expand "Add recommended business features to my site" by clicking the down arrow.
+4. Confirm that "WooCommerce Tax" is listed.
+3. Install & activate [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/) plugin
+4. Navigate to Tools -> Cron Events
+5. Run `wc_admin_daily` job
+6. Navigate to WooCommerce -> Home and confirm the Insight note.
 
 ### Use wc filter to get status tabs for tools category #6525
 
