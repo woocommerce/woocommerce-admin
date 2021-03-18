@@ -28,6 +28,8 @@ module.exports = {
 			],
 			rules: {
 				camelcase: 'off',
+				'import/no-unresolved': 'warn',
+				'import/no-extraneous-dependencies': 'warn',
 				'@typescript-eslint/no-explicit-any': 'error',
 				'no-use-before-define': 'off',
 				'@typescript-eslint/no-use-before-define': [ 'error' ],
