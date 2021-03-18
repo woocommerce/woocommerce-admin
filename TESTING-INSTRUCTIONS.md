@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### Add track data for the preview site btn  #6623
+
+1. Navigate to WooCommerce -> Home and click "Personalize your store" from the OBW task list or navigate to `/wp-admin/admin.php?page=wc-admin&task=appearance`
+2. Open your inspector and enable debugging mode by executing `localStorage.setItem( 'debug', 'wc-admin:*' );` 
+3. Click the `Preview site` button and confirm it contains the following event data.
+
+Prop | Possible Values | Note
+-----|-----------------|-------
+create_homepage| Y or N | when user created homepage from step #2
+upload_logo| Y or N | when user uploads a logo from step #3
+set_notice | Y or N | when user sets notice text from step #4
+
 ### Close activity panel tabs by default and track #6566
 
 1. Open your browser console and enter `localStorage.setItem( 'debug', 'wc-admin:tracks' );`.  Make sure the "Verbose" is selected under the levels shown.
