@@ -39,6 +39,8 @@ import { GenericPaymentStep } from './generic-payment-step';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
+const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
+
 export function getPaymentMethods( {
 	activePlugins,
 	countryCode,
@@ -225,7 +227,10 @@ export function getPaymentMethods( {
 				</>
 			),
 			before: (
-				<img src={ wcAssetUrl + 'images/mercadopago.png' } alt="" />
+				<img
+					src={ wcAdminAssetUrl + 'onboarding/mercadopago.png' }
+					alt=""
+				/>
 			),
 			visible: [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
 				countryCode
