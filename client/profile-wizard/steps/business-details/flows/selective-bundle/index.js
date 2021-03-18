@@ -36,6 +36,26 @@ import './style.scss';
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
 const FREE_FEATURES_TAB_NAME = 'free-features';
 
+export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
+	return (
+		Object.keys( extensionInstallationOptions )
+			.filter(
+				( key ) =>
+					extensionInstallationOptions[ key ] &&
+					key !== 'install_extensions'
+			)
+			.map( ( key ) => {
+				// Remove anything after :
+				// Please refer to selective-extensions-bundle/index.js
+				// installableExtensions variable
+				// this is to allow duplicate slugs (Tax & Shipping for example)
+				return key.split( ':' )[ 0 ];
+			} )
+			// remove duplicate
+			.filter( ( item, index, arr ) => arr.indexOf( item ) === index )
+	);
+};
+
 class BusinessDetails extends Component {
 	constructor() {
 		super();
@@ -67,28 +87,18 @@ class BusinessDetails extends Component {
 			selling_venues: sellingVenues,
 		} = this.state.savedValues;
 
-		const { getCurrencyConfig } = this.context;
-
-		const businessExtensions = Object.keys(
+		const businessExtensions = filterBusinessExtensions(
 			extensionInstallationOptions
-		).filter(
-			( key ) =>
-				extensionInstallationOptions[ key ] &&
-				key !== 'install_extensions'
 		);
 
 		recordEvent( 'storeprofiler_store_business_features_continue', {
-			product_number: productCount,
-			already_selling: sellingVenues,
-			currency: getCurrencyConfig().code,
-			revenue,
-			used_platform: otherPlatform,
-			used_platform_name: otherPlatformName,
 			all_extensions_installed: Object.values(
 				extensionInstallationOptions
 			).every( ( val ) => val ),
 			install_woocommerce_services:
-				extensionInstallationOptions[ 'woocommerce-services' ],
+				extensionInstallationOptions[
+					'woocommerce-services:shipping'
+				] || extensionInstallationOptions[ 'woocommerce-services:tax' ],
 			install_mailchimp:
 				extensionInstallationOptions[ 'mailchimp-for-woocommerce' ],
 			install_mailpoet: extensionInstallationOptions.mailpoet,
@@ -214,6 +224,25 @@ class BusinessDetails extends Component {
 		return errors;
 	}
 
+	trackBusinessDetailsStep( {
+		other_platform: otherPlatform,
+		other_platform_name: otherPlatformName,
+		product_count: productCount,
+		selling_venues: sellingVenues,
+		revenue,
+	} ) {
+		const { getCurrencyConfig } = this.context;
+
+		recordEvent( 'storeprofiler_store_business_details_continue_variant', {
+			already_selling: sellingVenues,
+			currency: getCurrencyConfig().code,
+			product_number: productCount,
+			revenue,
+			used_platform: otherPlatform,
+			used_platform_name: otherPlatformName,
+		} );
+	}
+
 	renderBusinessDetailsStep() {
 		const {
 			goToNextStep,
@@ -237,6 +266,8 @@ class BusinessDetails extends Component {
 						savedValues: values,
 						currentTab: 'free-features',
 					} );
+
+					this.trackBusinessDetailsStep( values );
 				} }
 				onChangeCallback={ ( _, values, isValid ) => {
 					this.setState( { savedValues: values, isValid } );
@@ -413,6 +444,7 @@ class BusinessDetails extends Component {
 					onSubmit={ this.onContinue }
 					country={ country }
 					industry={ profileItems.industry }
+					productTypes={ profileItems.product_types }
 				/>
 			</>
 		);

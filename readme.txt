@@ -82,6 +82,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Fix hidden menu title on smaller screens #6562
 - Fix: Add gross sales column to CSV export #6567
 - Dev: Add filter to profile wizard steps #6564
+- Tweak: Adjust targeting store age for the Add First Product note #6554
+- Tweak: Improve WC Shipping & Tax logic #6547
+- Tweak: Update Insight inbox note content #6555
 - Dev: Add nav intro modal tests #6518
 - Dev: Use wc filter to get status tabs for tools category #6525
 - Tweak: Remove mobile activity panel toggle #6539
@@ -121,9 +124,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: CES survey for search product, order, customer #6420
 - Add: CES survey for importing products #6419
 - Add: CES survey for adding product categories, tags, and attributes #6418
+- Add: Additional analytics tracking for the business details step. #6575
 - Add: Include tracking for mail poet installs in the selective bundle install #6603
 - Dev: Add script automation for gathering hooks and filters. #6454
 - Dev: Add TypeScript to CustomerFeedbackModal component. #6498
+- Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
+- Dev: Add TypeScript and page objects to the E2E test suite. #6582
+- Dev: Introduce Typescript to Navigation utils #6477
 
 == 2.1.3 3/14/2021  ==
 
