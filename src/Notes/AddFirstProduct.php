@@ -57,7 +57,8 @@ class AddFirstProduct {
 		}
 
 		$content_lines = array(
-			__( 'Nice one, you’ve created a WooCommerce store! Now it’s time to add your first product.<br/><br/>', 'woocommerce-admin' ),
+			'{greetings}<br/><br/>',
+			__( 'Nice one, you’ve created a WooCommerce store! Now it’s time to add your first product and get ready to start selling.<br/><br/>', 'woocommerce-admin' ),
 			__( 'There are three ways to add your products: you can <strong>create products manually, import them at once via CSV file</strong>, or <strong>migrate them from another service</strong>.<br/><br/>', 'woocommerce-admin' ),
 			__( '<a href="https://docs.woocommerce.com/document/managing-products/?utm_source=help_panel">Explore our docs</a> for more information, or just get started!', 'woocommerce-admin' ),
 		);
@@ -67,12 +68,12 @@ class AddFirstProduct {
 		);
 
 		$note = new Note();
-		$note->set_title( __( 'Store setup', 'woocommerce-admin' ) );
+		$note->set_title( __( 'Get ready to start selling', 'woocommerce-admin' ) );
 		$note->set_content( implode( '', $content_lines ) );
 		$note->set_content_data( (object) $additional_data );
 		$note->set_image(
 			plugins_url(
-				'/images/admin_notes/openbox+purple.png',
+				'/images/admin_notes/dashboard-widget-setup.png',
 				WC_ADMIN_PLUGIN_FILE
 			)
 		);
