@@ -24,7 +24,7 @@ class NavigationNudge {
 	/**
 	 * Name of the note for use in the database.
 	 */
-	const NOTE_NAME = 'wc-admin-navigation';
+	const NOTE_NAME = 'wc-admin-navigation-nudge';
 
 	/**
 	 * Attach hooks.
