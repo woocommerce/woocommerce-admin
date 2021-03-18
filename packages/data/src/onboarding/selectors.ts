@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import { WPDataSelectors } from '../types';
 
 export const getProfileItems = (

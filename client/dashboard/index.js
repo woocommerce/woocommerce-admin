@@ -2,10 +2,6 @@
  * External dependencies
  */
 import { Component, Suspense, lazy } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
-import { identity } from 'lodash';
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import { withOnboardingHydration } from '@woocommerce/data';
 import { Spinner } from '@woocommerce/components';
 
 /**
