@@ -36,23 +36,30 @@ export const setCachedGroup = ( name, value ) =>
  *
  * @param {string} name Experiment name.
  * @param {number} size Perentage size of experimental group.
- * @param {Function} getABTestOption Options data store selector.
- * @param {Function} setABTestOption Options data store dispatch.
+ * @param {boolean} isOptionResolving Resolving state of selector.
+ * @param {Function} getOption Options data store selector.
+ * @param {Function} updateOptions Options data store dispatch.
  *
- * @return {string} - Group name (CONTROL or EXPERIMENT).
+ * @return {string|null} - Group name (CONTROL or EXPERIMENT).
  */
 export const getAndSetGroup = (
 	name,
 	size,
-	getABTestOption,
-	setABTestOption
+	isOptionResolving,
+	getOption,
+	updateOptions
 ) => {
 	try {
-		const option = getABTestOption( OPTION_NAME );
+		const option = getOption( OPTION_NAME );
+
+		if ( isOptionResolving ) {
+			return null;
+		}
+
 		const group = option[ name ] || getRandomGroup( size );
 
 		if ( ! option[ name ] ) {
-			setABTestOption( {
+			updateOptions( {
 				[ OPTION_NAME ]: { ...option, [ name ]: group },
 			} );
 		}

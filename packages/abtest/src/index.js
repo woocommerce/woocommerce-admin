@@ -1,14 +1,14 @@
 /**
  * External dependencies
  */
-import { useState, useEffect, useCallback } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
  */
-import { CONTROL } from './constants';
+import { CONTROL, OPTION_NAME } from './constants';
 import {
 	getAndSetGroup,
 	getCachedGroup,
@@ -44,41 +44,60 @@ const ABTest = ( {
 	const active = isActive( start, end );
 	const handleComplete = useCallback( () => {
 		setIsFetching( false );
-		if ( active && onComplete ) {
+		if ( onComplete ) {
 			onComplete();
 		}
-	}, [ active, onComplete ] );
+	}, [ onComplete ] );
 
-	const setABTestOption = useDispatch( OPTIONS_STORE_NAME ).updateOptions;
-	const getABTestOption = useSelect(
-		( select ) => select( OPTIONS_STORE_NAME ).getOption
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { getOption, hasFinishedResolution, isResolving } = useSelect(
+		( select ) => {
+			return {
+				getOption: select( OPTIONS_STORE_NAME ).getOption,
+				hasFinishedResolution: select(
+					OPTIONS_STORE_NAME
+				).hasFinishedResolution( 'getOption', [ OPTION_NAME ] ),
+				isResolving: select(
+					OPTIONS_STORE_NAME
+				).isResolving( 'getOption', [ OPTION_NAME ] ),
+			};
+		}
 	);
+	const isOptionResolving = isResolving || ! hasFinishedResolution;
 
 	useEffect( () => {
-		if ( active ) {
-			const cachedGroup = getCachedGroup( name );
-			if ( cachedGroup ) {
-				setGroup( cachedGroup );
-				recordABTestEvent( name, cachedGroup, 'from_cache', 'serve' );
-			} else {
-				const newGroup = getAndSetGroup(
-					name,
-					size,
-					getABTestOption,
-					setABTestOption
-				);
+		if ( ! active ) {
+			setIsFetching( false );
+			return;
+		}
+
+		const cachedGroup = getCachedGroup( name );
+		if ( cachedGroup ) {
+			setGroup( cachedGroup );
+			recordABTestEvent( name, cachedGroup, 'from_cache', 'serve' );
+			handleComplete();
+		} else {
+			const newGroup = getAndSetGroup(
+				name,
+				size,
+				isOptionResolving,
+				getOption,
+				updateOptions
+			);
+			if ( newGroup ) {
 				setGroup( newGroup );
 				recordABTestEvent( name, newGroup, 'from_store', 'serve' );
+				handleComplete();
 			}
 		}
-		handleComplete();
 	}, [
 		active,
 		name,
 		size,
 		handleComplete,
-		getABTestOption,
-		setABTestOption,
+		isOptionResolving,
+		getOption,
+		updateOptions,
 	] );
 
 	if ( isFetching ) {

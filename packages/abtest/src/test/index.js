@@ -19,7 +19,11 @@ import {
 jest.mock( '@wordpress/data' );
 
 useDispatch.mockReturnValue( { updateOptions: jest.fn() } );
-useSelect.mockReturnValue( jest.fn( () => ( { test: EXPERIMENT } ) ) );
+useSelect.mockReturnValue( {
+	getOption: jest.fn( () => ( { test: EXPERIMENT } ) ),
+	hasFinishedResolution: true,
+	isResolving: false,
+} );
 
 describe( 'ABTest Suite', () => {
 	beforeEach( () => window.localStorage.clear() );
@@ -58,13 +62,14 @@ describe( 'ABTest Suite', () => {
 	} );
 
 	it( 'Should fetch group from backend and set cache to experiment.', async () => {
-		const getABTestOption = useSelect();
-		const setABTestOption = useDispatch().updateOptions;
+		const { getOption } = useSelect();
+		const { updateOptions } = useDispatch();
 		const group = getAndSetGroup(
 			'test',
 			50,
-			getABTestOption,
-			setABTestOption
+			false,
+			getOption,
+			updateOptions
 		);
 
 		expect( group ).toBe( EXPERIMENT );
@@ -72,16 +77,17 @@ describe( 'ABTest Suite', () => {
 	} );
 
 	it( 'Should fail to fetch group and default to control.', async () => {
-		const getABTestOption = jest.fn( () => {
+		const getOption = jest.fn( () => {
 			throw new Error();
 		} );
 
-		const setABTestOption = useDispatch().updateOptions;
+		const { updateOptions } = useDispatch();
 		const group = getAndSetGroup(
 			'test',
 			50,
-			getABTestOption,
-			setABTestOption
+			false,
+			getOption,
+			updateOptions
 		);
 
 		expect( group ).toBe( CONTROL );
@@ -105,7 +111,7 @@ describe( 'ABTest Suite', () => {
 		expect( window.localStorage.getItem( 'test' ) ).toBeFalsy();
 	} );
 
-	it( 'Should call onComplete callback when rendering.', async () => {
+	it( 'Should call onComplete callback exactly once after rendering.', async () => {
 		window.localStorage.setItem( 'test', 'experiment' );
 
 		const onComplete = jest.fn( () => null );
@@ -119,7 +125,7 @@ describe( 'ABTest Suite', () => {
 		);
 
 		expect( await findByText( container, EXPERIMENT ) ).toBeDefined();
-		expect( onComplete ).toHaveBeenCalled();
+		expect( onComplete ).toHaveBeenCalledTimes( 1 );
 	} );
 
 	it( 'Should render experiment when cache is experiment.', async () => {
