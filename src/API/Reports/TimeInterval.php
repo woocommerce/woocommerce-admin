@@ -452,8 +452,7 @@ class TimeInterval {
 			$end_of_prev_year_timestamp = $timestamp - 1;
 			$datetime->setTimestamp( $end_of_prev_year_timestamp );
 		} else {
-			$year += $year_increment;
-
+			$year    += $year_increment;
 			$datetime = new \DateTime( "$year-$month-$day 00:00:00", new \DateTimeZone( wc_timezone_string() ) );
 		}
 		return $datetime;
