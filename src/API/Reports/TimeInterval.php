@@ -510,7 +510,6 @@ class TimeInterval {
 		}
 		if ( 'date' === $order_by ) {
 			$expected_intervals_on_page = self::expected_intervals_on_page( $expected_interval_count, $items_per_page, $page_no );
-
 			return $intervals_count < $expected_intervals_on_page;
 		}
 		if ( 'desc' === $order ) {
