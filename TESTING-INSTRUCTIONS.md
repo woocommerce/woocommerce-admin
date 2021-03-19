@@ -3,6 +3,13 @@ Testing instructions
 
 ## Unreleased
 
+### Check active plugins before getting the PayPal onboarding status #6625
+
+-  Go to the WooCommerce home page
+-  Open your browser console
+-  Choose payment methods
+-  See no error message
+
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
 1. Add a product. The customer effort score survey should not appear.
