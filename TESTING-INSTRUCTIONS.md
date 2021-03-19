@@ -487,7 +487,8 @@ Scenario #2
 
 ### Improve AddFirstProduct email note contents #6617
 
-- Install the plugin in a fresh site site.
+- Install the plugin in a fresh site.
+- Make sure the store has 0 products and 0 orders.
 - Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
 
 ```

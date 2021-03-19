@@ -56,9 +56,12 @@ class AddFirstProduct {
 			return;
 		}
 
+		// If you're updating the following please use sprintf to separate HTML tags.
+		// https://github.com/woocommerce/woocommerce-admin/pull/6617#discussion_r596889685.
 		$content_lines = array(
 			'{greetings}<br/><br/>',
-			__( 'Nice one, you’ve created a WooCommerce store! Now it’s time to add your first product and get ready to start selling.<br/><br/>', 'woocommerce-admin' ),
+			/* translators: %s: line break */
+			sprintf( __( 'Nice one; you\'ve created a WooCommerce store! Now it\'s time to add your first product and get ready to start selling.%s', 'woocommerce-admin' ), '<br/><br/>' ),
 			__( 'There are three ways to add your products: you can <strong>create products manually, import them at once via CSV file</strong>, or <strong>migrate them from another service</strong>.<br/><br/>', 'woocommerce-admin' ),
 			__( '<a href="https://docs.woocommerce.com/document/managing-products/?utm_source=help_panel">Explore our docs</a> for more information, or just get started!', 'woocommerce-admin' ),
 		);
