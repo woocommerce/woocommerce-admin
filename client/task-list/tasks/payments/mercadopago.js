@@ -52,7 +52,7 @@ export const MercadoPago = ( { installStep, markConfigured } ) => {
 };
 
 const MercadoPagoCredentialsStep = ( { countryCode, onFinish } ) => {
-	const getregistrationURL = () => {
+	const getRegistrationURL = () => {
 		const mercadoPagoURL = 'https://www.mercadopago.com';
 		if (
 			! [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
@@ -75,7 +75,7 @@ const MercadoPagoCredentialsStep = ( { countryCode, onFinish } ) => {
 	);
 
 	const accountLink = (
-		<Link href={ getregistrationURL() } target="_blank" type="external" />
+		<Link href={ getRegistrationURL() } target="_blank" type="external" />
 	);
 
 	const configureText = interpolateComponents( {
