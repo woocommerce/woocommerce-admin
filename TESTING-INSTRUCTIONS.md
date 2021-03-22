@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Use the store timezone to make time data requests #6632
+
+1. Create a store with a timezone significantly ahead of or behind the timezone you currently reside in.
+2. Create a test order and mark complete.
+3. Navigate to various analytics reports and note the time filter is based on the current store time.  E.g., If your store timezone is 12 hours ahead of your current time, you may see `1st - 23rd` instead of `1st - 22nd` for "Month to date" depending on your time of day.
+4. Note that the recently added order shows up in analytics reports.
+
 ### Add plugin installer to allow installation of plugins via URL #6805
 
 1. Visit any admin page with the params `plugin_action` (`install`, `activate`, or `install-activate`) and `plugins` (list of comma separated plugins). `wp-admin/admin.php?page=wc-admin&plugin_action=install&plugins=jetpack`
