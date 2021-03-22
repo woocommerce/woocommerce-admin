@@ -414,6 +414,7 @@ export default compose(
 			'woocommerce_mollie_payments_settings',
 			'woocommerce_payubiz_settings',
 			'woocommerce_paystack_settings',
+			'woocommerce_mercadopago_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {

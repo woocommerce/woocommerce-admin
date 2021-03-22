@@ -29,6 +29,7 @@ import {
 	isWCPaySupported,
 } from './wcpay';
 import PayPal, { PAYPAL_PLUGIN } from './paypal';
+import { MercadoPago, MERCADOPAGO_PLUGIN } from './mercadopago';
 import Klarna from './klarna';
 import EWay from './eway';
 import Razorpay from './razorpay';
@@ -208,6 +209,29 @@ export function getPaymentMethods( {
 					},
 				};
 			},
+		},
+		{
+			key: 'mercadopago',
+			title: __( 'Mercado Pago Payments', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed eiusmod tempor incidunt ut labore et dolore. ',
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			before: (
+				<img src={ wcAssetUrl + 'images/mercadopago.png' } alt="" />
+			),
+			visible: [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
+				countryCode
+			),
+			plugins: [ MERCADOPAGO_PLUGIN ],
+			container: <MercadoPago />,
+			isConfigured: activePlugins.includes( MERCADOPAGO_PLUGIN ),
+			isEnabled: enabledPaymentGateways.includes( 'mercadopago' ),
+			optionName: 'woocommerce_mercadopago_settings',
 		},
 		{
 			key: 'paypal',
