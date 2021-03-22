@@ -136,7 +136,13 @@ export function getRangeLabel( after, before ) {
  * @return {DateValue} -  DateValue data about the selected period
  */
 export function getLastPeriod( period, compare ) {
-	const primaryStart = moment().startOf( period ).subtract( 1, period );
+	const primaryStart = moment(
+		moment()
+			.tz( window.wcSettings ? window.wcSettings.timeZone : null )
+			.format( 'YYYY-MM-DD HH:mm:ss' )
+	)
+		.startOf( period )
+		.subtract( 1, period );
 	const primaryEnd = primaryStart.clone().endOf( period );
 	let secondaryStart;
 	let secondaryEnd;
@@ -180,8 +186,17 @@ export function getLastPeriod( period, compare ) {
  * @return {DateValue} -  DateValue data about the selected period
  */
 export function getCurrentPeriod( period, compare ) {
-	const primaryStart = moment().startOf( period );
-	const primaryEnd = moment();
+	const primaryStart = moment(
+		moment()
+			.tz( window.wcSettings ? window.wcSettings.timeZone : null )
+			.format( 'YYYY-MM-DD HH:mm:ss' )
+	).startOf( period );
+	const primaryEnd = moment(
+		moment()
+			.tz( window.wcSettings ? window.wcSettings.timeZone : null )
+			.format( 'YYYY-MM-DD HH:mm:ss' )
+	);
+
 	const daysSoFar = primaryEnd.diff( primaryStart, 'days' );
 	let secondaryStart;
 	let secondaryEnd;
