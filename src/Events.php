@@ -147,7 +147,7 @@ class Events {
 		CustomizingProductCatalog::possibly_add_note();
 		GettingStartedInEcommerceWebinar::possibly_add_note();
 		FirstDownlaodableProduct::possibly_add_note();
-		Navigation::possibly_add_note();
+		NavigationNudge::possibly_add_note();
 	}
 
 	/**
