@@ -39,8 +39,6 @@ import { GenericPaymentStep } from './generic-payment-step';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
-const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
-
 export function getPaymentMethods( {
 	activePlugins,
 	countryCode,
