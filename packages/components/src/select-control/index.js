@@ -114,7 +114,7 @@ export class SelectControl extends Component {
 		// an array or string depending on the original value.
 		if ( multiple || Array.isArray( selected ) ) {
 			onChange( newValue, query );
-		} else if ( newValue.length < 2 ) {
+		} else {
 			onChange( newValue.length > 0 ? newValue[ 0 ].key : '', query );
 		}
 	}
