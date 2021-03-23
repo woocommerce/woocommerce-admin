@@ -62,15 +62,15 @@ export const periods = [
  */
 export const appendTimestamp = ( date, timeOfDay ) => {
 	if ( timeOfDay === 'start' ) {
-		return date.startOf( 'day' ).format();
+		return date.startOf( 'day' ).format( 'YYYY-MM-DDTHH:mm:ss' );
 	}
 	if ( timeOfDay === 'now' ) {
 		// Set seconds to 00 to avoid consecutives calls happening before the previous
 		// one finished.
-		return date.format();
+		return date.format( 'YYYY-MM-DDTHH:mm:ss' );
 	}
 	if ( timeOfDay === 'end' ) {
-		return date.endOf( 'day' ).format();
+		return date.endOf( 'day' ).format( 'YYYY-MM-DDTHH:mm:ss' );
 	}
 	throw new Error(
 		'appendTimestamp requires second parameter to be either `start`, `now` or `end`'
@@ -128,6 +128,27 @@ export function getRangeLabel( after, before ) {
 }
 
 /**
+ * Gets the current time in the store time zone if set.
+ *
+ * @return {string} - Datetime string.
+ */
+export function getStoreCurrentTime() {
+	if ( ! window.wcSettings || ! window.wcSettings.timeZone || ! moment.tz ) {
+		return moment().format( 'YYYY-MM-DD HH:mm:ss' );
+	}
+
+	if ( [ '+', '-' ].includes( window.wcSettings.timeZone.charAt( 0 ) ) ) {
+		return moment()
+			.utcOffset( window.wcSettings.timeZone )
+			.format( 'YYYY-MM-DD HH:mm:ss' );
+	}
+
+	return moment()
+		.tz( window.wcSettings.timeZone )
+		.format( 'YYYY-MM-DD HH:mm:ss' );
+}
+
+/**
  * Get a DateValue object for a period prior to the current period.
  *
  * @param {string} period - the chosen period
@@ -135,11 +156,7 @@ export function getRangeLabel( after, before ) {
  * @return {DateValue} -  DateValue data about the selected period
  */
 export function getLastPeriod( period, compare ) {
-	const primaryStart = moment(
-		moment()
-			.tz( window.wcSettings ? window.wcSettings.timeZone : null )
-			.format( 'YYYY-MM-DD HH:mm:ss' )
-	)
+	const primaryStart = moment( getStoreCurrentTime() )
 		.startOf( period )
 		.subtract( 1, period );
 	const primaryEnd = primaryStart.clone().endOf( period );
@@ -185,16 +202,8 @@ export function getLastPeriod( period, compare ) {
  * @return {DateValue} -  DateValue data about the selected period
  */
 export function getCurrentPeriod( period, compare ) {
-	const primaryStart = moment(
-		moment()
-			.tz( window.wcSettings ? window.wcSettings.timeZone : null )
-			.format( 'YYYY-MM-DD HH:mm:ss' )
-	).startOf( period );
-	const primaryEnd = moment(
-		moment()
-			.tz( window.wcSettings ? window.wcSettings.timeZone : null )
-			.format( 'YYYY-MM-DD HH:mm:ss' )
-	);
+	const primaryStart = moment( getStoreCurrentTime() ).startOf( period );
+	const primaryEnd = moment( getStoreCurrentTime() );
 
 	const daysSoFar = primaryEnd.diff( primaryStart, 'days' );
 	let secondaryStart;

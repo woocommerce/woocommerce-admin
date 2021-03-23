@@ -33,9 +33,9 @@ describe( 'appendTimestamp', () => {
 
 	it( 'should append `now` timestamp', () => {
 		const nowTimestamp = moment().format( 'HH:mm:00' );
-		expect( appendTimestamp( moment( '2018-01-01' ), 'now' ) ).toEqual(
-			'2018-01-01T' + nowTimestamp
-		);
+		expect(
+			appendTimestamp( moment( '2018-01-01 ' + nowTimestamp ), 'now' )
+		).toEqual( '2018-01-01T' + nowTimestamp );
 	} );
 
 	it( 'should append `end` timestamp', () => {
