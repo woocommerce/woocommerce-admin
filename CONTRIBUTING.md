@@ -12,7 +12,7 @@ If you're filing a bug, specific steps to reproduce are always helpful. Please i
 
 ## Localizing WooCommerce Admin
 
-To translate WooCommerce Admin in your locale or language, [select your locale here](https://translate.wordpress.org/projects/wp-plugins/woocommerce-admin) and translate *Development* (which contains the plugin's string) and/or *Development Readme* (please translate what you see in the Details tab of the [plugin page](https://wordpress.org/plugins/woocommerce-admin/)).
+To translate WooCommerce Admin in your locale or language, [select your locale here](https://translate.wordpress.org/projects/wp-plugins/woocommerce-admin) and translate _Development_ (which contains the plugin's string) and/or _Development Readme_ (please translate what you see in the Details tab of the [plugin page](https://wordpress.org/plugins/woocommerce-admin/)).
 
 A Global Translation Editor (GTE) or Project Translation Editor (PTE) with suitable rights will process your translations in due time.
 
@@ -41,9 +41,10 @@ If you're a first-time code contributor to the repository, here's a quick guide 
 5. Visit your dev environment in the browser to enable the `WooCommerce Admin` plugin and try it out.
 
 Tips:
-- Try to keep each PR small (around 200-250 lines or less, if you can), and having multiple very small commits in each PR is preferable to one larger commit (especially if the PR is larger).
-- Don't combine code formatting changes with meaningful ones. If there's formatting work that needs to be done en masse, do it all in one PR, then open another one for meaningful code changes.
-- Add unit tests to your PR for better code coverage and review.
+
+-   Try to keep each PR small (around 200-250 lines or less, if you can), and having multiple very small commits in each PR is preferable to one larger commit (especially if the PR is larger).
+-   Don't combine code formatting changes with meaningful ones. If there's formatting work that needs to be done en masse, do it all in one PR, then open another one for meaningful code changes.
+-   Add unit tests to your PR for better code coverage and review.
 
 After you've made your updates, you're ready to commit:
 
@@ -52,18 +53,66 @@ After you've made your updates, you're ready to commit:
 3. Create your commit. Write a descriptive, but short first line (e.g. "Reports: Reticulate the splines"), and add more details below. If your commit addresses a github issue, reference it by number here (e.g. "This commit fixes issue #123 by reticulating all the splines.")
 4. Push the branch up to your local fork, then create a PR via the GitHub web interface.
 
+## Creating a Pull Request
+
+The pull request template will remind you of some of the details you need to fill out in your pull request, but there are 2 critical pieces of information that may be needed:
+
+### Changelog Entry
+
+For many pull requests a changelog entry is required. You'll need to add an entry under the `== Unreleased ==` heading in `readme.txt` with the format:
+
+`- <Type of change>: <Description of change>. #<PR Number>`
+
+For example:
+
+`- Add: a cool new feature. #1234`
+
+The types we use currently are: "Dev", "Tweak", "Add", "Fix" and "Enhancement"
+
+-   `Dev` is for a code change that doesn't have an obvious user facing benefit. e.g. "Refactor a class to be single responsibility."
+-   `Tweak`. For minor changes to user facing functionality. e.g. "Styling updates to the site footer."
+-   `Add`. This is reserved for new features and functionality. e.g. "A new page for payment settings."
+-   `Fix`. For bugfixes minor and major. e.g. "Fix a crash when the user selected 0 for revenue."
+-   `Enhancement`. This is used interchangeably with `Tweak` at the moment. Use your best discretion to choose.
+
+### Testing Instructions
+
+Every release we do some manual testing of new features, workflows and major bugfixes. For these kind of changes we need to include
+testing instructions. If your pull request requires testing instructions you'll need to add them under the `## Unreleased` heading in
+`TESTING-INSTRUCTIONS.md`. Add a detailed set of testing instructions to test your change.
+
+#### When to Add Testing Instrutcions
+
+_DO_ Add testing instructions for:
+
+-   Significant new features and workflows being added.
+-   Major bugs and regressions. (This does not include fatal crashes on main screens though, these are covered by general testing).
+
+_DON'T_ Add testing instructions for:
+
+-   Visual issues and changes.
+-   Minor bugs.
+-   Tweaks
+-   Analytics tracking
+
+Please make testing instructions as comprehensive as possible as testers may not have context of how to test some aspects
+of the system.
+
+For example an instruction like: `Enable new navigation` should be `Toggle on the new navigation under WooCommerce->Settings->Advanced->Features`.
+Assume the tester does not have context on how to test the feature except for a basic understanding of Wordpress.
+
 ## PHP Unit tests
 
 ### Setting up PHP unit tests using [VVV](https://github.com/Varying-Vagrant-Vagrants/VVV)
 
 1. SSH into the Vagrant box:
-    1. `cd` down to the Vagrant root (where `www` lives) 
+    1. `cd` down to the Vagrant root (where `www` lives)
     2. `vagrant ssh`
 2. `cd /srv/www/<name of wp install>/public_html/wp-content/plugins/woocommerce-admin`
 3. Set up test environment: `bin/install-wp-tests.sh wc-admin-tests root root`
 4. Generate feature config: `php bin/generate-feature-config.php`
 
-*Note: A WooCommerce development environment is required to live within the same `plugins` folder. Follow these [steps](https://github.com/woocommerce/woocommerce/wiki/How-to-set-up-WooCommerce-development-environment) to do so.*
+_Note: A WooCommerce development environment is required to live within the same `plugins` folder. Follow these [steps](https://github.com/woocommerce/woocommerce/wiki/How-to-set-up-WooCommerce-development-environment) to do so._
 
 ### Running tests
 
@@ -83,10 +132,10 @@ For example, to just run Order Report Stats tests:
 
 There are a number of helper scripts exposed via our `package.json` (below list is not exhaustive, you can view the [`package.json` file directly to see all](https://github.com/woocommerce/woocommerce-admin/blob/main/package.json)):
 
- - `npm run lint` : Run eslint over the javascript files
- - `npm run i18n` : A multi-step process, used to create a pot file from both the JS and PHP gettext calls. First it runs `i18n:js`, which creates a temporary `.pot` file from the JS files. Next it runs `i18n:php`, which converts that `.pot` file to a PHP file. Lastly, it runs `i18n:pot`, which creates the final `.pot` file from all the PHP files in the plugin (including the generated one with the JS strings).
- - `npm test` : Run the JS test suite
- - `npm run docs`: Runs the script for generating/updating docs.
+-   `npm run lint` : Run eslint over the javascript files
+-   `npm run i18n` : A multi-step process, used to create a pot file from both the JS and PHP gettext calls. First it runs `i18n:js`, which creates a temporary `.pot` file from the JS files. Next it runs `i18n:php`, which converts that `.pot` file to a PHP file. Lastly, it runs `i18n:pot`, which creates the final `.pot` file from all the PHP files in the plugin (including the generated one with the JS strings).
+-   `npm test` : Run the JS test suite
+-   `npm run docs`: Runs the script for generating/updating docs.
 
 ## Debugging
 
@@ -115,4 +164,4 @@ WooCommerce Admin is licensed under [GNU General Public License v3 (or later)](/
 All materials contributed should be compatible with the GPLv3. This means that if you own the material, you agree to license it under the GPLv3 license. If you are contributing code that is not your own, such as adding a component from another Open Source project, or adding an `npm` package, you need to make sure you follow these steps:
 
 1. Check that the code has a license. If you can't find one, you can try to contact the original author and get permission to use, or ask them to release under a compatible Open Source license.
-2. Check the license is compatible with [GPLv3](https://www.gnu.org/licenses/license-list.en.html#GPLCompatibleLicenses), note that the Apache 2.0 license is *not* compatible.
+2. Check the license is compatible with [GPLv3](https://www.gnu.org/licenses/license-list.en.html#GPLCompatibleLicenses), note that the Apache 2.0 license is _not_ compatible.
