@@ -8,6 +8,8 @@ import { parse } from 'qs';
 
 export const isoDateFormat = 'YYYY-MM-DD';
 
+export const defaultDateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
+
 /**
  * DateValue Object
  *
@@ -62,15 +64,15 @@ export const periods = [
  */
 export const appendTimestamp = ( date, timeOfDay ) => {
 	if ( timeOfDay === 'start' ) {
-		return date.startOf( 'day' ).format( 'YYYY-MM-DDTHH:mm:ss' );
+		return date.startOf( 'day' ).format( defaultDateTimeFormat );
 	}
 	if ( timeOfDay === 'now' ) {
 		// Set seconds to 00 to avoid consecutives calls happening before the previous
 		// one finished.
-		return date.format( 'YYYY-MM-DDTHH:mm:ss' );
+		return date.format( defaultDateTimeFormat );
 	}
 	if ( timeOfDay === 'end' ) {
-		return date.endOf( 'day' ).format( 'YYYY-MM-DDTHH:mm:ss' );
+		return date.endOf( 'day' ).format( defaultDateTimeFormat );
 	}
 	throw new Error(
 		'appendTimestamp requires second parameter to be either `start`, `now` or `end`'
@@ -134,18 +136,18 @@ export function getRangeLabel( after, before ) {
  */
 export function getStoreCurrentTime() {
 	if ( ! window.wcSettings || ! window.wcSettings.timeZone || ! moment.tz ) {
-		return moment().format( 'YYYY-MM-DD HH:mm:ss' );
+		return moment().format( defaultDateTimeFormat );
 	}
 
 	if ( [ '+', '-' ].includes( window.wcSettings.timeZone.charAt( 0 ) ) ) {
 		return moment()
 			.utcOffset( window.wcSettings.timeZone )
-			.format( 'YYYY-MM-DD HH:mm:ss' );
+			.format( defaultDateTimeFormat );
 	}
 
 	return moment()
 		.tz( window.wcSettings.timeZone )
-		.format( 'YYYY-MM-DD HH:mm:ss' );
+		.format( defaultDateTimeFormat );
 }
 
 /**
