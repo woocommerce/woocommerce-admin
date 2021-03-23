@@ -440,9 +440,7 @@ For each task in that list apart from "Store details":
 
 - Install the plugin in a fresh site.
 - Make sure the store has 0 products and 0 orders.
-
 - Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
-
 ```
 UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
 ```
