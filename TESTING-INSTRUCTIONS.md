@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### Fix varation bug with Products reports #6647
+
+
+1. Add two variable products. You want to have at least one variable for each product. 
+
+Product A - color:black
+Product A - color:white
+
+Prorudct B - size:small
+Product B - size:medium
+
+2. Make an order for each product.
+3. Navigate to Analytics -> Products
+4. Choose 'Single product' from the 'Show' dropdown and search for the product.
+5. Confirm that the "Variations" table shows the correct variations. If you searched for the 'Product A', then you should see color:black and color:white.
+
 ### Payments task: include Mercado Pago #6572
 
 - Create a brand new store.
