@@ -19,13 +19,39 @@ import ABTest from '@woocommerce/abtest';
 
 ...
 
-const control = <p>Hello World</p>;
-const experiment = <p>Hello Dolly</p>;
+const Control = () => <div>Hello World</div>;
+const Experiment = () => <div>Hello Dolly</div>;
 
 <ABTest
 	name="abtest_name"
-	control={ control }
-	experiment={ experiment }
+	control={ <Control /> }
+	experiment={ <Experiment /> }
+/>
+
+...
+```
+
+Depending on the context in which the ABTest component is rendered, group assignment may be asynchrounous. In these cases, you may want to render a loading state. You can do this by using the optional `onComplete` callback.
+
+```javascript
+
+...
+
+const [ isLoading, setIsLoading ] = useState( true );
+
+...
+
+const Loading = () => <div>Loading...</div>;
+
+if isLoading {
+	return <Loading />
+}
+
+return <ABTest
+	name="abtest_name"
+	control={ <Control /> }
+	experiment={ <Experiment /> }
+	onComplete={ () => setIsLoading( false ) }
 />
 
 ...
