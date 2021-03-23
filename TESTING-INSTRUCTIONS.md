@@ -436,6 +436,16 @@ For each task in that list apart from "Store details":
 12. Go to **WooCommerce > Settings > Payments**, **Paystack** should be selected.
 13. Click **Manage**, the secret and public key's should match what you entered in step 9.
 
+### Add New Zealand and Ireland to the selective bundle option #6649
+- Start a new Woo store and go to **WooCommerce > Home** to start the onboarding wizard
+- Fill in an address with the country set to **New Zealand — Northland** (try a second time with **Ireland — Carlow**)
+- You can select what every industry and product type for the next two windows or select (**Fashion, apparel, and accessories**, and **Physical products**)
+- On the business details tab it should just show the dropdowns, and show a **Free features** tab at the top (disabled at first)
+- Fill out the dropdowns and click continue
+- It should show the free features tab, click the expansion button, **WooCommerce payments** should be listed as part of the free features.
+- Keeping WooCommerce payments selected, finish the onboarding
+- Check your installed plugins, WooCommerce payments should be installed.
+
 # 2.1.3
 ### Fix a bug where the JetPack connection flow would not activate #6521
 
