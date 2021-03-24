@@ -360,16 +360,6 @@ For each task in that list apart from "Store details":
 3. A title in the top left should reflect the original task name from the task list. e.g. "Add tax rates"
 4. Clicking the chevron to the left of the title should take you back to the home screen
 
-### Add Ireland to Square payment method #6559
-
-1. Go to the store setup wizard `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`
-1. Set up your store with Ireland as its country, and proceed until the `Business Details` step
-1. In "Currently selling anywhere?" dropdown, select either:
-    - Yes, in person at physical stores and/or events
-    - Yes, on another platform and in person at physical stores and/or events
-1. Finish the setup wizard, and go to payments task `/wp-admin/admin.php?page=wc-admin&task=payments`
-1. Observe Square as a payment method option
-
 ### Add CES survey for search product, order, customer #6420
 - Make sure tracking is enabled in settings.
 - Delete the option `woocommerce_ces_shown_for_actions` to make sure CES prompt triggers when updating settings.
@@ -482,7 +472,6 @@ Scenario #2
 7. The task list should show the **Choose payment methods** task, and the **Set up additional payment providers** inbox card should not be present.
 8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
 9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
-
 
 ## 2.1.2
 

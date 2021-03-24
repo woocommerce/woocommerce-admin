@@ -386,9 +386,7 @@ export function getPaymentMethods( {
 				( [ 'brick-mortar', 'brick-mortar-other' ].includes(
 					profileItems.selling_venues
 				) &&
-					[ 'US', 'CA', 'JP', 'GB', 'AU', 'IE' ].includes(
-						countryCode
-					) ),
+					[ 'US', 'CA', 'JP', 'GB', 'AU' ].includes( countryCode ) ),
 			plugins: [ 'woocommerce-square' ],
 			container: <Square />,
 			isConfigured:
