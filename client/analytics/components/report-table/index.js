@@ -4,9 +4,8 @@
 import { CheckboxControl, Button } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 import { Fragment, useRef, useState } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import { focus } from '@wordpress/dom';
-import { withDispatch, withSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { get, noop, partial, uniq } from 'lodash';
 import { __, sprintf } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
@@ -28,6 +27,7 @@ import {
 	EXPORT_STORE_NAME,
 	SETTINGS_STORE_NAME,
 	useUserPreferences,
+	getReportTableQuery,
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -44,13 +44,28 @@ import './style.scss';
 const TABLE_FILTER = 'woocommerce_admin_report_table';
 
 const ReportTable = ( props ) => {
+	const { startExport } = useDispatch( EXPORT_STORE_NAME );
+	const { createNotice } = useDispatch( 'core/notices' );
+	const { addCesSurveyForCustomerSearch } = useDispatch( CES_STORE_KEY );
+	const useSelectData = useSelect( ( select ) =>
+		getSelectData( select, props )
+	);
+	const {
+		primaryData,
+		itemData,
+		totalResults: itemTotalResults,
+		dataRequesting,
+		dataError,
+		defaultDateRange,
+	} = useSelectData;
+
+	const items = { data: itemData, itemTotalResults };
+
 	const {
 		getHeadersContent,
 		getRowsContent,
 		getSummary,
 		isRequesting,
-		primaryData,
-		tableData,
 		endpoint,
 		// These props are not used in the render function, but are destructured
 		// so they are not included in the `tableProps` variable.
@@ -66,9 +81,20 @@ const ReportTable = ( props ) => {
 	} = props;
 
 	// Pull these props out separately because they need to be included in tableProps.
-	const { query, columnPrefsKey } = props;
+	const { columnPrefsKey, query, filters, advancedFilters } = props;
 
-	const { items, query: reportQuery } = tableData;
+	const ids =
+		itemIdField && items.data
+			? items.data.map( ( item ) => item[ itemIdField ] )
+			: [];
+	const reportQuery = getReportTableQuery( {
+		endpoint,
+		query,
+		tableQuery,
+		filters,
+		advancedFilters,
+		defaultDateRange,
+	} );
 
 	const initialSelectedRows = query[ compareParam ]
 		? getIdsFromQuery( query[ compareBy ] )
@@ -78,11 +104,8 @@ const ReportTable = ( props ) => {
 
 	const { updateUserPreferences, ...userData } = useUserPreferences();
 
-	// Bail early if we've encountered an error.
-	const isError = tableData.isError || primaryData.isError;
-
-	if ( isError ) {
-		return <ReportError isError />;
+	if ( dataError ) {
+		return <ReportError isError={ dataError } />;
 	}
 
 	let userPrefColumns = [];
@@ -179,7 +202,7 @@ const ReportTable = ( props ) => {
 	};
 
 	const onClickDownload = () => {
-		const { createNotice, startExport, title } = props;
+		const { title } = props;
 		const params = Object.assign( {}, query );
 		const { data, totalResults } = items;
 		let downloadType = 'browser';
@@ -247,7 +270,7 @@ const ReportTable = ( props ) => {
 	};
 
 	const onSearchChange = ( values ) => {
-		const { baseSearchQuery, addCesSurveyForCustomerSearch } = props;
+		const { baseSearchQuery } = props;
 		// A comma is used as a separator between search terms, so we want to escape
 		// any comma they contain.
 		const searchTerms = values.map( ( v ) =>
@@ -274,12 +297,10 @@ const ReportTable = ( props ) => {
 	};
 
 	const selectAllRows = ( checked ) => {
-		const { ids } = props;
 		setSelectedRows( checked ? ids : [] );
 	};
 
 	const selectRow = ( i, checked ) => {
-		const { ids } = props;
 		if ( checked ) {
 			setSelectedRows( uniq( [ ids[ i ], ...selectedRows ] ) );
 		} else {
@@ -292,7 +313,6 @@ const ReportTable = ( props ) => {
 	};
 
 	const getCheckbox = ( i ) => {
-		const { ids = [] } = props;
 		const isChecked = selectedRows.indexOf( ids[ i ] ) !== -1;
 		return {
 			display: (
@@ -306,7 +326,6 @@ const ReportTable = ( props ) => {
 	};
 
 	const getAllCheckbox = () => {
-		const { ids = [] } = props;
 		const hasData = ids.length > 0;
 		const isAllChecked = hasData && ids.length === selectedRows.length;
 		return {
@@ -324,9 +343,8 @@ const ReportTable = ( props ) => {
 		};
 	};
 
-	const isLoading =
-		isRequesting || tableData.isRequesting || primaryData.isRequesting;
-	const totals = get( primaryData, [ 'data', 'totals' ], {} );
+	const isLoading = isRequesting || dataRequesting;
+	const totals = get( primaryData, [ 'totals' ], {} );
 	const totalResults = items.totalResults || 0;
 	const downloadable = totalResults > 0;
 	// Search words are in the query string, not the table query.
@@ -453,6 +471,7 @@ const ReportTable = ( props ) => {
 				}
 				summary={ summary }
 				totalRows={ totalResults }
+				query={ query }
 				{ ...tableProps }
 			/>
 		</Fragment>
@@ -540,7 +559,7 @@ ReportTable.propTypes = {
 	 * Table data of that report. If it's not provided, it will be automatically
 	 * loaded via the provided `endpoint`.
 	 */
-	tableData: PropTypes.object.isRequired,
+	tableData: PropTypes.object,
 	/**
 	 * Properties to be added to the query sent to the report table endpoint.
 	 */
@@ -552,14 +571,6 @@ ReportTable.propTypes = {
 };
 
 ReportTable.defaultProps = {
-	primaryData: {},
-	tableData: {
-		items: {
-			data: [],
-			totalResults: 0,
-		},
-		query: {},
-	},
 	tableQuery: {},
 	compareParam: 'filter',
 	downloadable: false,
@@ -567,87 +578,83 @@ ReportTable.defaultProps = {
 	baseSearchQuery: {},
 };
 
-const EMPTY_ARRAY = [];
-const EMPTY_OBJECT = {};
+function getSelectData( select, props ) {
+	const {
+		endpoint,
+		getSummary,
+		isRequesting,
+		query,
+		tableData,
+		tableQuery,
+		filters,
+		advancedFilters,
+		summaryFields,
+	} = props;
 
-export default compose(
-	withSelect( ( select, props ) => {
-		const {
-			endpoint,
-			getSummary,
-			isRequesting,
-			itemIdField,
-			query,
-			tableData,
-			tableQuery,
-			filters,
-			advancedFilters,
-			summaryFields,
-		} = props;
+	if (
+		isRequesting ||
+		( query.search && ! ( query[ endpoint ] && query[ endpoint ].length ) )
+	) {
+		return {};
+	}
+	const { woocommerce_default_date_range: defaultDateRange } = select(
+		SETTINGS_STORE_NAME
+	).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		if (
-			isRequesting ||
-			( query.search &&
-				! ( query[ endpoint ] && query[ endpoint ].length ) )
-		) {
-			return EMPTY_OBJECT;
-		}
-		const { woocommerce_default_date_range: defaultDateRange } = select(
-			SETTINGS_STORE_NAME
-		).getSetting( 'wc_admin', 'wcAdminSettings' );
-
-		// Category charts are powered by the /reports/products/stats endpoint.
-		const chartEndpoint = endpoint === 'categories' ? 'products' : endpoint;
-		const primaryData = getSummary
-			? getReportChartData( {
-					endpoint: chartEndpoint,
-					dataType: 'primary',
-					query,
-					select,
-					filters,
-					advancedFilters,
-					defaultDateRange,
-					fields: summaryFields,
-			  } )
-			: EMPTY_OBJECT;
-		const queriedTableData =
-			tableData ||
-			getReportTableData( {
-				endpoint,
+	// Category charts are powered by the /reports/products/stats endpoint.
+	const chartEndpoint = endpoint === 'categories' ? 'products' : endpoint;
+	const primaryData = getSummary
+		? getReportChartData( {
+				endpoint: chartEndpoint,
+				dataType: 'primary',
 				query,
 				select,
-				tableQuery,
 				filters,
 				advancedFilters,
 				defaultDateRange,
-			} );
-		const extendedTableData = extendTableData(
-			select,
-			props,
-			queriedTableData
-		);
-
-		return {
-			primaryData,
-			ids:
-				itemIdField && extendedTableData.items.data
-					? extendedTableData.items.data.map(
-							( item ) => item[ itemIdField ]
-					  )
-					: EMPTY_ARRAY,
-			tableData: extendedTableData,
+				fields: summaryFields,
+		  } )
+		: {};
+	const queriedTableData =
+		tableData ||
+		getReportTableData( select, {
+			endpoint,
 			query,
-		};
-	} ),
-	withDispatch( ( dispatch ) => {
-		const { startExport } = dispatch( EXPORT_STORE_NAME );
-		const { createNotice } = dispatch( 'core/notices' );
-		const { addCesSurveyForCustomerSearch } = dispatch( CES_STORE_KEY );
+			tableQuery,
+			filters,
+			advancedFilters,
+			defaultDateRange,
+		} );
+	const extendedTableData = extendTableData(
+		select,
+		props,
+		queriedTableData
+	);
 
+	if (
+		primaryData.isRequesting ||
+		extendedTableData.isRequesting ||
+		primaryData.isError ||
+		extendedTableData.isError
+	) {
 		return {
-			createNotice,
-			startExport,
-			addCesSurveyForCustomerSearch,
+			defaultDateRange,
+			dataRequesting:
+				extendedTableData.isRequesting || primaryData.isRequesting,
+			dataError: extendedTableData.isError || primaryData.isError,
 		};
-	} )
-)( ReportTable );
+	}
+
+	return {
+		defaultDateRange,
+		primaryData: primaryData.data,
+		itemData: extendedTableData.items && extendedTableData.items.data,
+		totalResults:
+			extendedTableData.items && extendedTableData.items.totalResults,
+		dataRequesting:
+			extendedTableData.isRequesting || primaryData.isRequesting,
+		dataError: extendedTableData.isError || primaryData.isError,
+	};
+}
+
+export default ReportTable;

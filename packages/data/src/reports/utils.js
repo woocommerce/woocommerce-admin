@@ -17,7 +17,6 @@ import {
 /**
  * Internal dependencies
  */
-import * as reportsUtils from './utils';
 import { MAX_PER_PAGE, QUERY_DEFAULTS } from '../constants';
 import { STORE_NAME } from './constants';
 import { getResourceName } from '../utils';
@@ -486,29 +485,26 @@ export function getReportTableQuery( options ) {
 /**
  * Returns table data needed to render a report page.
  *
+ * @param  {Object} select                 Instance of @wordpress/select
  * @param  {Object} options                arguments
  * @param  {string} options.endpoint       Report API Endpoint
  * @param  {Object} options.query          Query parameters in the url
- * @param  {Object} options.select         Instance of @wordpress/select
  * @param  {Object} options.tableQuery     Query parameters specific for that endpoint
  * @param  {string}  options.defaultDateRange   User specified default date range.
  * @return {Object} Object    Table data response
  */
-export function getReportTableData( options ) {
-	const { endpoint, select } = options;
+export function getReportTableData( select, options ) {
+	const { endpoint } = options;
 	const { getReportItems, getReportItemsError, isResolving } = select(
 		STORE_NAME
 	);
 
-	const tableQuery = reportsUtils.getReportTableQuery( options );
+	const tableQuery = getReportTableQuery( options );
 	const response = {
 		query: tableQuery,
 		isRequesting: false,
 		isError: false,
-		items: {
-			data: [],
-			totalResults: 0,
-		},
+		items: {},
 	};
 
 	// Disable eslint rule requiring `items` to be defined below because the next two if statements
