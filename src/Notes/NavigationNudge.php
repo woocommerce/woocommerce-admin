@@ -30,7 +30,6 @@ class NavigationNudge {
 	 * Attach hooks.
 	 */
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'enable_navigation' ) );
 		add_action( 'update_option_' . Navigation::TOGGLE_OPTION_NAME, array( $this, 'action_note' ), 10, 2 );
 	}
 
@@ -40,7 +39,7 @@ class NavigationNudge {
 	 * @return Note
 	 */
 	public static function get_note() {
-		if ( Features::is_enabled( 'navigation' ) ) {
+		if ( Features::is_enabled( 'navigation' ) || ! Features::exists( 'navigation' ) ) {
 			return;
 		}
 
@@ -52,24 +51,10 @@ class NavigationNudge {
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action(
 			'enable-navigation',
-			__( 'Enable', 'woocommerce-admin' ),
-			wc_admin_url( '&wc_nav_toggle=1' )
+			__( 'Enable in Settings', 'woocommerce-admin' ),
+			admin_url( 'admin.php?page=wc-settings&tab=advanced&section=features' )
 		);
 		return $note;
-	}
-
-	/**
-	 * Enable the navigation and redirect to referring page.
-	 *
-	 * @param Note $note Note being acted upon.
-	 */
-	public function enable_navigation( $note ) {
-		if ( isset( $_GET['wc_nav_toggle'] ) && absint( $_GET['wc_nav_toggle'] ) === 1 ) { // phpcs:ignore WordPress.Security.NonceVerification
-			Features::enable( 'navigation' );
-			if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-				wp_safe_redirect( wp_unslash( $_SERVER['HTTP_REFERER'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			}
-		}
 	}
 
 	/**
