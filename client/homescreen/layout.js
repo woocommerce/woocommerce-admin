@@ -49,7 +49,7 @@ export const Layout = ( {
 	isBatchUpdating,
 	query,
 	requestingTaskList,
-	isTaskListHidden,
+	taskListComplete,
 	bothTaskListsHidden,
 	shouldShowWelcomeModal,
 	shouldShowWelcomeFromCalypsoModal,
@@ -102,7 +102,7 @@ export const Layout = ( {
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
 					<StatsOverview />
-					{ isTaskListHidden && <StoreManagementLinks /> }
+					{ taskListComplete && <StoreManagementLinks /> }
 				</Column>
 			</>
 		);
@@ -230,7 +230,6 @@ export default compose(
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			shouldShowWelcomeFromCalypsoModal,
-			isTaskListHidden,
 			bothTaskListsHidden:
 				isTaskListHidden &&
 				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
@@ -244,6 +243,10 @@ export default compose(
 				isResolving( 'getOption', [
 					'woocommerce_extended_task_list_hidden',
 				] ),
+			taskListComplete:
+				! isResolving( 'getOption', [
+					'woocommerce_task_list_complete',
+				] ) && getOption( 'woocommerce_task_list_complete' ) === 'yes',
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
