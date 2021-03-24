@@ -703,12 +703,14 @@ class Onboarding {
 		$options[] = 'woocommerce_task_list_tracked_completed_tasks';
 		$options[] = 'woocommerce_task_list_dismissed_tasks';
 		$options[] = 'woocommerce_allow_tracking';
+		$options[] = 'woocommerce_mercadopago_settings';
 		$options[] = 'woocommerce_stripe_settings';
 		$options[] = 'woocommerce-ppcp-settings';
 		$options[] = 'woocommerce_ppcp-gateway_settings';
 		$options[] = 'wc_square_refresh_tokens';
 		$options[] = 'woocommerce_square_credit_card_settings';
 		$options[] = 'woocommerce_payfast_settings';
+		$options[] = 'woocommerce_paystack_settings';
 		$options[] = 'woocommerce_kco_settings';
 		$options[] = 'woocommerce_klarna_payments_settings';
 		$options[] = 'woocommerce_cod_settings';
@@ -760,12 +762,14 @@ class Onboarding {
 				'woocommerce-square'                  => 'woocommerce-square/woocommerce-square.php',
 				'woocommerce-shipstation-integration' => 'woocommerce-shipstation-integration/woocommerce-shipstation.php',
 				'woocommerce-payfast-gateway'         => 'woocommerce-payfast-gateway/gateway-payfast.php',
+				'woo-paystack'                        => 'woo-paystack/woo-paystack.php',
 				'woocommerce-payments'                => 'woocommerce-payments/woocommerce-payments.php',
 				'woocommerce-gateway-eway'            => 'woocommerce-gateway-eway/woocommerce-gateway-eway.php',
 				'woo-razorpay'                        => 'woo-razorpay/woo-razorpay.php',
 				'mollie-payments-for-woocommerce'     => 'mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php',
 				'payu-india'                          => 'payu-india/index.php',
 				'mailpoet'                            => 'mailpoet/mailpoet.php',
+				'woocommerce-mercadopago'             => 'woocommerce-mercadopago/woocommerce-mercadopago.php',
 			)
 		);
 		return array_merge( $plugins, $onboarding_plugins );
