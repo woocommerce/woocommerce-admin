@@ -134,20 +134,16 @@ export function getRangeLabel( after, before ) {
  *
  * @return {string} - Datetime string.
  */
-export function getStoreCurrentTime() {
+export function getStoreTimeZoneMoment() {
 	if ( ! window.wcSettings || ! window.wcSettings.timeZone || ! moment.tz ) {
-		return moment().format( defaultDateTimeFormat );
+		return moment();
 	}
 
 	if ( [ '+', '-' ].includes( window.wcSettings.timeZone.charAt( 0 ) ) ) {
-		return moment()
-			.utcOffset( window.wcSettings.timeZone )
-			.format( defaultDateTimeFormat );
+		return moment().utcOffset( window.wcSettings.timeZone );
 	}
 
-	return moment()
-		.tz( window.wcSettings.timeZone )
-		.format( defaultDateTimeFormat );
+	return moment().tz( window.wcSettings.timeZone );
 }
 
 /**
@@ -158,7 +154,7 @@ export function getStoreCurrentTime() {
  * @return {DateValue} -  DateValue data about the selected period
  */
 export function getLastPeriod( period, compare ) {
-	const primaryStart = moment( getStoreCurrentTime() )
+	const primaryStart = getStoreTimeZoneMoment()
 		.startOf( period )
 		.subtract( 1, period );
 	const primaryEnd = primaryStart.clone().endOf( period );
@@ -204,8 +200,8 @@ export function getLastPeriod( period, compare ) {
  * @return {DateValue} -  DateValue data about the selected period
  */
 export function getCurrentPeriod( period, compare ) {
-	const primaryStart = moment( getStoreCurrentTime() ).startOf( period );
-	const primaryEnd = moment( getStoreCurrentTime() );
+	const primaryStart = getStoreTimeZoneMoment().startOf( period );
+	const primaryEnd = getStoreTimeZoneMoment();
 
 	const daysSoFar = primaryEnd.diff( primaryStart, 'days' );
 	let secondaryStart;
