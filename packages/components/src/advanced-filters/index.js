@@ -274,7 +274,9 @@ class AdvancedFilters extends Component {
 		return (
 			<Card className="woocommerce-filters-advanced" size="small">
 				<CardHeader justify="flex-start">
-					<Text variant="subtitle.small">{ this.getTitle() }</Text>
+					<Text variant="subtitle.small" as="span">
+						{ this.getTitle() }
+					</Text>
 				</CardHeader>
 				{ !! activeFilters.length && (
 					<CardBody size={ null }>
