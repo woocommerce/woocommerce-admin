@@ -19,18 +19,6 @@ class ComparisonOperation {
 	 * @param string $operation     The operation used to compare the operands.
 	 */
 	public static function compare( $left_operand, $right_operand, $operation ) {
-		if ( $operation && strpos( $operation, 'contains' ) !== false && ! is_array( $left_operand ) ) {
-			$logger = wc_get_logger();
-			$logger->warning(
-				'Operation comparison "contains" option value is not an array, defaulting to empty array.',
-				array(
-					'operation'     => $operation,
-					'left_operand'  => $left_operand,
-					'right_operand' => $right_operand,
-				)
-			);
-			$left_operand = array();
-		}
 		switch ( $operation ) {
 			case '=':
 				return $left_operand === $right_operand;
