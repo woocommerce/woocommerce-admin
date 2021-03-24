@@ -83,6 +83,7 @@ export const Layout = ( {
 	}, [ maybeToggleColumns ] );
 
 	const shouldStickColumns = isWideViewport.current && twoColumns;
+	const shouldShowStoreLinks = taskListComplete || ! isTaskListEnabled;
 
 	const renderColumns = () => {
 		return (
@@ -102,7 +103,7 @@ export const Layout = ( {
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
 					<StatsOverview />
-					{ taskListComplete && <StoreManagementLinks /> }
+					{ shouldShowStoreLinks && <StoreManagementLinks /> }
 				</Column>
 			</>
 		);
