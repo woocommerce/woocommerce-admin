@@ -53,6 +53,7 @@ export const Layout = ( {
 	bothTaskListsHidden,
 	shouldShowWelcomeModal,
 	shouldShowWelcomeFromCalypsoModal,
+	isTaskListHidden,
 	updateOptions,
 } ) => {
 	const userPrefs = useUserPreferences();
@@ -83,7 +84,7 @@ export const Layout = ( {
 	}, [ maybeToggleColumns ] );
 
 	const shouldStickColumns = isWideViewport.current && twoColumns;
-	const shouldShowStoreLinks = taskListComplete || ! isTaskListEnabled;
+	const shouldShowStoreLinks = taskListComplete || isTaskListHidden;
 
 	const renderColumns = () => {
 		return (
@@ -231,6 +232,7 @@ export default compose(
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			shouldShowWelcomeFromCalypsoModal,
+			isTaskListHidden,
 			bothTaskListsHidden:
 				isTaskListHidden &&
 				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
