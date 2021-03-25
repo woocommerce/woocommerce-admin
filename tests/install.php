@@ -20,7 +20,7 @@ class WC_Admin_Tests_Install extends WP_UnitTestCase {
 	function test_create_tables() {
 		global $wpdb;
 
-		// List of tables created by Install::test_create_tables.
+		// List of tables created by Install::create_tables.
 		$tables = array(
 			"{$wpdb->prefix}wc_order_stats",
 			"{$wpdb->prefix}wc_order_product_lookup",
