@@ -25,3 +25,10 @@ export type WPError< ErrorKey extends string = string, ErrorData = unknown > = {
 	error_data?: Record< ErrorKey, ErrorData >;
 	additional_data?: Record< ErrorKey, ErrorData[] >;
 };
+
+export type Query = {
+	period: string;
+	compare: string;
+	after: string;
+	before: string;
+};
