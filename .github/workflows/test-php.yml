@@ -68,6 +68,7 @@ jobs:
               run: |
                   if [ "$(php -r "echo version_compare(PHP_VERSION,'8.0','>=');")" ]; then
                     composer install 
+                    rm ./vendor/bin/phpunit
                     composer bin all install --ansi
                     curl -L https://github.com/woocommerce/phpunit/archive/add-compatibility-with-php8-to-phpunit-7.zip -o /tmp/phpunit-7.5-fork.zip
                     unzip -d /tmp/phpunit-7.5-fork /tmp/phpunit-7.5-fork.zip
