@@ -1,6 +1,8 @@
-FROM alpine
+FROM alpine:3.13
 
 WORKDIR /tmp
+
+ARG PHP_VERSION
 
 RUN apk --no-cache add \
 	bash \
@@ -13,33 +15,11 @@ RUN apk --no-cache add \
 	npm \
 	subversion \
 	unzip \
-	wget \
-	php7 \
-	php7-bcmath \
-	php7-ctype \
-	php7-curl \
-	php7-dom \
-	php7-exif \
-	php7-json \
-	php7-mcrypt \
-	php7-opcache \
-	php7-openssl \
-	php7-mbstring \
-	php7-mysqli \
-	php7-pcntl \
-	php7-pdo \
-	php7-pdo_pgsql \
-	php7-pdo_sqlite \
-	php7-pdo_mysql \
-	php7-phar \
-	php7-session \
-	php7-soap \
-	php7-tokenizer \
-	php7-xdebug \
-	php7-xml \
-	php7-xmlreader \
-	php7-zip \
-	php7-zlib
+	wget
+	
+COPY install-php-version.sh /tmp/  
+RUN echo "PHP${PHP_VERSION}"
+RUN chmod u+x /tmp/install-php-version.sh && /tmp/install-php-version.sh $PHP_VERSION
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php --install-dir=/usr/bin --filename=composer

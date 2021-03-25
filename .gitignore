@@ -27,6 +27,7 @@ wp-cli.local.yml
 
 # Composer
 /vendor/
+/vendor-bin/
 
 # wp-env config
 .wp-env.override.json
