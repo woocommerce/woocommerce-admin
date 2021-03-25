@@ -75,10 +75,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Tweak: Add default value for contains op #6622
 - Dev: Close activity panel tabs by default and track #6566
 - Dev: Update undefined task name properties for help panel tracks #6565
 - Fix: Allow the manager role to query certain options #6577
 - Dev: Refactor profile wizard benefits step and add tests #6583
+- Fix: Delete customer data on network user deletion #6574
+- Fix: Fix Themes step visibility in IE 11 #6578
 - Fix: Fix hidden menu title on smaller screens #6562
 - Fix: Add gross sales column to CSV export #6567
 - Dev: Add filter to profile wizard steps #6564
@@ -111,6 +114,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Missing i18n in Welcome modal. #6456
 - Fix: Restore visual styles back to Analytics tabs. #5913
 - Add: Add a "rather not say" option to revenue in the profile wizard. #6475
+- Fix: Update contrast and hover / active colors for analytics dropdown buttons #6504
 - Dev: Remove `items_purchased` and `account_type` props from onboarding profile API. #6520
 - Dev: Added warning when WC-Admin is active but not being used #6453
 - Fix: Associated Order Number for refunds was hidden #6428
@@ -131,6 +135,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
 - Dev: Add TypeScript and page objects to the E2E test suite. #6582
 - Dev: Introduce Typescript to Navigation utils #6477
+- Add: Paystack payment provider to several african countries. #6579
+- Dev: Payments task: include Mercado Pago #6572
+- Dev: Ensure script asset.php files are included in builds #6635
+- Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
 
 == 2.1.3 3/14/2021  ==
 
