@@ -10,12 +10,6 @@ import { NewProduct } from '../pages/NewProduct';
 import { OnboardingWizard } from '../pages/OnboardingWizard';
 import { Plugins } from '../pages/Plugins';
 import { getElementByText } from './actions';
-
-/**
- * Internal dependencies
- */
-import * as constants from './constants';
-
 const config = require( 'config' );
 
 const StoreOwnerFlow = {

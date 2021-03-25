@@ -100,7 +100,12 @@ export abstract class BasePage {
 			throw new Error( 'You must define a url for the page object' );
 		}
 
-		await this.page.goto( baseUrl + BasePage.url, {
+		await this.goto( baseUrl + this.url );
+	}
+
+	// useful if you need to do something different from the default navigation to this.url
+	protected async goto( url: string ) {
+		await this.page.goto( url, {
 			waitUntil: 'networkidle0',
 		} );
 	}
