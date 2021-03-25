@@ -20,6 +20,10 @@ class WC_Admin_Tests_Install extends WP_UnitTestCase {
 	function test_create_tables() {
 		global $wpdb;
 
+		// Remove the Test Suite’s use of temporary tables https://wordpress.stackexchange.com/a/220308
+		remove_filter( 'query', array( $this, '_create_temporary_tables' ) );
+		remove_filter( 'query', array( $this, '_drop_temporary_tables' ) );
+
 		// List of tables created by Install::create_tables.
 		$tables = array(
 			"{$wpdb->prefix}wc_order_stats",
