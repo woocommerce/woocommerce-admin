@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import interpolateComponents from 'interpolate-components';
 import {
 	getAdminLink,
+	getSetting,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
 import { Link } from '@woocommerce/components';
@@ -28,12 +29,15 @@ import {
 	isWCPaySupported,
 } from './wcpay';
 import PayPal, { PAYPAL_PLUGIN } from './paypal';
+import { MercadoPago, MERCADOPAGO_PLUGIN } from './mercadopago';
 import Klarna from './klarna';
-import PayFast from './payfast';
 import EWay from './eway';
 import Razorpay from './razorpay';
 import { Mollie } from './mollie';
 import { PayUIndia } from './payu-india';
+import { GenericPaymentStep } from './generic-payment-step';
+
+const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
 export function getPaymentMethods( {
 	activePlugins,
@@ -94,6 +98,149 @@ export function getPaymentMethods( {
 				options.woocommerce_stripe_settings &&
 				options.woocommerce_stripe_settings.enabled === 'yes',
 			optionName: 'woocommerce_stripe_settings',
+		},
+		{
+			key: 'paystack',
+			title: __( 'Paystack', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						'Paystack helps African merchants accept one-time and recurring payments online with a modern, safe, and secure payment gateway.',
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			before: (
+				<img
+					src={ wcAdminAssetUrl + 'onboarding/paystack.png' }
+					alt="Paystack logo"
+				/>
+			),
+			visible:
+				[ 'ZA', 'GH', 'NG' ].includes( countryCode ) &&
+				! hasCbdIndustry,
+			plugins: [ 'woo-paystack' ],
+			container: <GenericPaymentStep />,
+			isConfigured:
+				options.woocommerce_paystack_settings &&
+				options.woocommerce_paystack_settings.live_public_key &&
+				options.woocommerce_paystack_settings.live_secret_key,
+			isEnabled: enabledPaymentGateways.includes( 'paystack' ),
+			optionName: 'woocommerce_paystack_settings',
+			apiDetailsLink:
+				'https://dashboard.paystack.com/#/settings/developer',
+			fields: [
+				{
+					name: 'live_public_key',
+					title: __( 'Live Public Key', 'woocommerce-admin' ),
+				},
+				{
+					name: 'live_secret_key',
+					title: __( 'Live Secret Key', 'woocommerce-admin' ),
+				},
+			],
+			getOptions: ( values ) => {
+				// Paystack only supports NGN (₦), GHS (₵), USD ($) or ZAR (R)
+				return {
+					woocommerce_currency: 'ZAR',
+					woocommerce_paystack_settings: {
+						...values,
+						testmode: 'no',
+					},
+				};
+			},
+		},
+		{
+			key: 'payfast',
+			title: __( 'PayFast', 'woocommerce-admin' ),
+			content: (
+				<>
+					{ __(
+						'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
+						'woocommerce-admin'
+					) }
+					<p>
+						{ __(
+							'Selecting this extension will configure your store to use South African rands as the selected currency.',
+							'woocommerce-admin'
+						) }
+					</p>
+				</>
+			),
+			before: (
+				<img
+					src={ wcAssetUrl + 'images/payfast.png' }
+					alt="PayFast logo"
+				/>
+			),
+			visible: [ 'ZA' ].includes( countryCode ) && ! hasCbdIndustry,
+			plugins: [ 'woocommerce-payfast-gateway' ],
+			container: <GenericPaymentStep />,
+			isConfigured:
+				options.woocommerce_payfast_settings &&
+				options.woocommerce_payfast_settings.merchant_id &&
+				options.woocommerce_payfast_settings.merchant_key &&
+				options.woocommerce_payfast_settings.pass_phrase,
+			isEnabled:
+				options.woocommerce_payfast_settings &&
+				options.woocommerce_payfast_settings.enabled === 'yes',
+			optionName: 'woocommerce_payfast_settings',
+			apiDetailsLink: 'https://www.payfast.co.za/',
+			fields: [
+				{
+					name: 'merchant_id',
+					title: __( 'Merchant ID', 'woocommerce-admin' ),
+				},
+				{
+					name: 'merchant_key',
+					title: __( 'Merchant Key', 'woocommerce-admin' ),
+				},
+				{
+					name: 'pass_phrase',
+					title: __( 'Passphrase', 'woocommerce-admin' ),
+				},
+			],
+			getOptions: ( values ) => {
+				return {
+					woocommerce_currency: 'ZAR',
+					woocommerce_payfast_settings: {
+						...values,
+						testmode: 'no',
+					},
+				};
+			},
+		},
+		{
+			key: 'mercadopago',
+			title: __(
+				'Mercado Pago Checkout Pro & Custom',
+				'woocommerce-admin'
+			),
+			content: (
+				<>
+					{ __(
+						'Accept credit and debit cards, offline (cash or bank transfer) and logged-in payments with money in Mercado Pago. Safe and secure payments with the leading payment processor in LATAM.',
+						'woocommerce-admin'
+					) }
+				</>
+			),
+			before: (
+				<img
+					src={ wcAdminAssetUrl + 'onboarding/mercadopago.png' }
+					alt=""
+				/>
+			),
+			visible: [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
+				countryCode
+			),
+			plugins: [ MERCADOPAGO_PLUGIN ],
+			container: <MercadoPago />,
+			isConfigured: activePlugins.includes( MERCADOPAGO_PLUGIN ),
+			isEnabled:
+				options[ 'woocommerce_woo-mercado-pago-basic_settings' ] &&
+				options[ 'woocommerce_woo-mercado-pago-basic_settings' ]
+					.enabled === 'yes',
+			optionName: 'woocommerce_woo-mercado-pago-basic_settings',
 		},
 		{
 			key: 'paypal',
@@ -256,42 +403,6 @@ export function getPaymentMethods( {
 					'yes',
 			optionName: 'woocommerce_square_credit_card_settings',
 			hasCbdIndustry,
-		},
-		{
-			key: 'payfast',
-			title: __( 'PayFast', 'woocommerce-admin' ),
-			content: (
-				<>
-					{ __(
-						'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.',
-						'woocommerce-admin'
-					) }
-					<p>
-						{ __(
-							'Selecting this extension will configure your store to use South African rands as the selected currency.',
-							'woocommerce-admin'
-						) }
-					</p>
-				</>
-			),
-			before: (
-				<img
-					src={ wcAssetUrl + 'images/payfast.png' }
-					alt="PayFast logo"
-				/>
-			),
-			visible: [ 'ZA' ].includes( countryCode ) && ! hasCbdIndustry,
-			plugins: [ 'woocommerce-payfast-gateway' ],
-			container: <PayFast />,
-			isConfigured:
-				options.woocommerce_payfast_settings &&
-				options.woocommerce_payfast_settings.merchant_id &&
-				options.woocommerce_payfast_settings.merchant_key &&
-				options.woocommerce_payfast_settings.pass_phrase,
-			isEnabled:
-				options.woocommerce_payfast_settings &&
-				options.woocommerce_payfast_settings.enabled === 'yes',
-			optionName: 'woocommerce_payfast_settings',
 		},
 		{
 			key: 'eway',

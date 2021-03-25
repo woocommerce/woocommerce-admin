@@ -2,22 +2,44 @@
 
 ## Unreleased
 
-### Next new novel navigation nudge note #6610
+## 2.2.0
 
-1. Download a plugin like WP Crontrol.
-2. Turn on the new navigation under WooCommerce -> Settings -> Advanced.
-3. Under Tools -> Cron Events, run the `wc_admin_daily` event.
-4. Go to the homescreen, and note that the new note `You now have access to the WooCommerce navigation` is not added.
-5. Turn off the new navigation.
-6. Run `wc_admin_daily` again.
-7. Go to the homescreen and see the new note.
-8. Click `Enable` on the note actions.
-9. Make sure the navigation has been enabled and you are redirected back to the screen where you viewed the note.
-10. Delete the note if you have database access (or create a new site).
-11. With navigation disabled, run the `wc_admin_daily` cron event.
-12. Check that the note was added.
-13. Manually turn on the note via WooCommerce -> Settings -> Advanced.
-14. Check that the note was removed (actioned).
+### Payments task: include Mercado Pago #6572
+
+- Create a brand new store.
+- Set one of the following countries in the first OBW step:
+```
+Mexico
+Brazil
+Argentina
+Chile
+Colombia
+Peru
+Uruguay
+```
+- Continue with the OBW and finish it up. 
+- Select `Choose payment methods` in the setup task list (`Get ready to start selling`).
+- Press the `Setup` button in the `Mercado Pago Payments` box.
+- Try the links presented after the plugin's installation and verify they are working.
+- Confirm that the `Mercado Pago payments for WooCommerce` plugin was installed.
+- Press `Continue`.
+- Now the `Mercado Pago Payments` option should appear as active.
+
+### Update contrast and hover / active colors for analytics dropdown buttons #6504
+
+1. Go to analytics.
+2. Verifty the dropdown buttons (date range or filters) are now higher contrast.
+3. Verifty the text and chevron in the dropdown button turn blue on hover, and while active.
+
+### Set default value to array when op is `contains` #6622
+
+1. Clone and start https://github.com/Automattic/woocommerce.com
+2. Open `notifications.json.php` from woocommerce.com repository and find a rule that uses the `contains` operator and remove the `default` key. Please make a note of the option name.
+3. Open `src/RemoteInboxNotifications/DataSourcepoller.php` from your WooCommerce Admin repository and change the datasource to your local woocommerce.com (woocommerce.test)
+4. Make sure your local WooCommerce Admin database does not have the option from step #2
+5. Install and activate [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)
+6. Navigate to Tools -> Cron Events and run `wc_admin_daily` job
+7. Check your debug log in `wp-content/debug.log`. You should see PHP error.
 
 ### Close activity panel tabs by default and track #6566
 
@@ -86,11 +108,33 @@ Testing `woocommerce_navigation_intro_modal_dismissed`
 8. Attempt to directly visit the benefits page. `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard&step=benefits`
 9. Note that you are redirected to the homescreen.
 
+### Delete customer data on network user deletion #6574
+
+1. Set up a multisite network.
+2. Create a new user.
+3. Make an order with that user.
+4. Note the customer data under WooCommerce -> Customers.
+5. Navigate to Network -> All users `/wp-admin/network/users.php`.
+6. Delete that user.
+7. Wait for the scheduled action to finish or manually run the `wc-admin_delete_user_customers` action under Tools -> Scheduled Actions.
+8. Navigate to WooCommerce -> Customers.
+9. Make sure that customer data has been deleted.
+
+### Fix "Themes" step visibility in IE 11 #6578
+
+1. Get an IE 11 test environment. I downloaded a trial version of Parallels Desktop on [here](https://www.parallels.com/) and IE 11 virtual machine from [developer.microsoft.com](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/)
+2. Make a zip version of this branch by running `npm run test:zip`
+3. Make a JN site -> install and activate the zip file.
+4. Open IE 11 and start OBW
+5. Confirm that the themes are displayed correctly.
+
+
 ### Fix hidden menu title on smaller screens #6562
 
 1. Enable the new navigation.
 2. Shorten your viewport height so that the secondary menu overlaps the main.
 3. Make sure the menu title can still be seen.
+
 ### Add filter to profile wizard steps #6564
 
 1. Add the following JS to your admin head.  You can use a plugin like "Add Admin Javascript" to do this:
@@ -101,6 +145,75 @@ wp.hooks.addFilter( 'woocommerce_admin_profile_wizard_steps', 'woocommerce-admin
 ```
 2. Navigate to the profile wizard. `wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`.
 3. Make sure the filtered step (product types) is not shown.
+
+### Adjust targeting store age: 2 - 5 days for the Add First Product note #6554
+
+- Checkout this branch.
+- Create a zip for testing with `npm run zip:test`.
+- Create a `jurassic.ninja` instance.
+- Upload the plugin and activate it.
+- Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
+
+### Update Insight inbox message #6555
+
+1. Checkout this branch.
+2. Update the installation date of your store if it hasn't been at least a day. You can use the following SQL uqery.
+
+```
+UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 5 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
+```
+
+- Run the cron (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
+- You should have received an email like the image above.
+- Verify the note's status is `sent`. You can use an SQL statement like this:
+```
+SELECT `status` FROM `wp_wc_admin_notes` WHERE `name` = 'wc-admin-add-first-product-note'
+```
+- Now delete the note with an SQL statement like:
+```
+DELETE FROM `wp_wc_admin_notes` WHERE `name` = 'wc-admin-add-first-product-note';
+```
+- Add a new order and run the cron.
+- No note should have been added.
+- Remove the order, add a product and run the cron.
+- No note should have been added.
+- Delete the product and modify the store creation date to 7 days with an SQL statement like:
+```
+UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
+```
+- No note should have been added.
+
+### Improve WC Shipping & Tax logic #6547
+
+**Scenario 1** - Exclude the WooCommerce Shipping mention if the user is not in the US
+
+1. Start OBW and enter an address that is not in the US
+2. Choose "food and drink" from the Industry (this forces Business Details to display "Free features" tab)
+3. When you get to the "Business Details", click "Free features"
+4. Expand "Add recommended business features to my site" by clicking the down arrow.
+5. Confirm that "WooCommerce Shipping" is not listed
+
+**Scenario 2**- Exclude the WooCommerce Shipping mention if the user is in the US but only selected digital products in the Product Types step
+
+1. Start OBW and enter an address that is in the US.
+2. Choose "food and drink" from the Industry (this forces Business Details to display the "Free features" tab)
+3. Choose "Downloads" from the Product Types step.
+4. When you get to the Business Details step, expand "Add recommended business features to my site" by clicking the down arrow.
+5. Confirm that "WooCommerce Shipping" is not listed
+
+**Scenario 3** -  Include WooCommerce Tax if the user is in one of the following countries: US | FR | GB | DE | CA | PL | AU | GR | BE | PT | DK | SE
+
+1. Start OBW and enter an address that is in one of the following countries 
+
+    US | FR | GB | DE | CA | PL | AU | GR | BE | PT | DK | SE
+
+2. Continue to the Business Details step.
+3. Expand "Add recommended business features to my site" by clicking the down arrow.
+4. Confirm that "WooCommerce Tax" is listed.
+3. Install & activate [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/) plugin
+4. Navigate to Tools -> Cron Events
+5. Run `wc_admin_daily` job
+6. Navigate to WooCommerce -> Home and confirm the Insight note.
 
 ### Use wc filter to get status tabs for tools category #6525
 
@@ -179,7 +292,7 @@ Mailchimp
 Creative Mail
 ```
 (In that order)
-- Verify that the Creative Mail option is toggled off by default.
+- Verify that the Creative Mail option is toggled off by default
 
 ### Fix double prefixing of navigation URLs #6460
 
@@ -309,6 +422,22 @@ For each task in that list apart from "Store details":
 - Add a new attribute.
 - Observe CES prompt "How easy was it to add a product attribute?" is displayed.
 
+### Add paystack as payment option for African countries #6579
+
+1. Go to the store setup wizard `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`
+2. Set up your store with **South Africa - Eastern Cape** as its country, and proceed
+3. Select **Fashion, apparel, and accessories** as the industry, and finish the rest of the onboarding flow.
+4. Once finished it will redirect to the home screen, click on the **Choose payment methods** task
+5. Both **Paystack** and **Payfast** should be listed above **Paypal**
+6. Click **Set up** on the Paystack payment option
+7. It should successfully finish the **Install** step, and ask for a public and secret key.
+8. Check if the **Paystack account** link, directs you to the **dashboard.paystack.com/#/settings/developer**
+9. Set `public_key` for public key, and `secret_key` for secret key and click **Proceed**
+10. It should redirect you to the payment list and the **Set up** button should be gone, and replaced by an enabled toggle button.
+11. You should be able to successfully toggle paystack from on to off and back. Leave it selected for now.
+12. Go to **WooCommerce > Settings > Payments**, **Paystack** should be selected.
+13. Click **Manage**, the secret and public key's should match what you entered in step 9.
+
 # 2.1.3
 ### Fix a bug where the JetPack connection flow would not activate #6521
 
@@ -355,6 +484,7 @@ Scenario #2
 7. The task list should show the **Choose payment methods** task, and the **Set up additional payment providers** inbox card should not be present.
 8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
 9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
+
 
 ## 2.1.2
 

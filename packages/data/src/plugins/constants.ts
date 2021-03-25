@@ -48,8 +48,20 @@ export const pluginNames = {
 		'WooCommerce Shipping & Tax',
 		'woocommerce-admin'
 	),
+	'woocommerce-services:shipping': __(
+		'WooCommerce Shipping & Tax',
+		'woocommerce-admin'
+	),
+	'woocommerce-services:tax': __(
+		'WooCommerce Shipping & Tax',
+		'woocommerce-admin'
+	),
 	'woocommerce-shipstation-integration': __(
 		'WooCommerce ShipStation Gateway',
+		'woocommerce-admin'
+	),
+	'woocommerce-mercadopago': __(
+		'Mercado Pago payments for WooCommerce',
 		'woocommerce-admin'
 	),
 	'kliken-marketing-for-google': __( 'Google Ads', 'woocommerce-admin' ),
