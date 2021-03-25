@@ -33,7 +33,7 @@ class WC_Admin_Tests_Install extends WP_UnitTestCase {
 		);
 
 		// Remove any existing tables in the environment.
-		$query = 'DROP TABLES IF EXISTS' . implode( ',', $tables );
+		$query = 'DROP TABLE IF EXISTS ' . implode( ',', $tables );
 		$wpdb->query( $query );
 
 		// Try to create the tables.
