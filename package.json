@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/admin-library",
-	"version": "2.2.0-dev",
+	"version": "2.3.0-dev",
 	"homepage": "https://woocommerce.github.io/woocommerce-admin/",
 	"repository": {
 		"type": "git",
@@ -156,7 +156,9 @@
 		"@testing-library/react-hooks": "3.7.0",
 		"@testing-library/user-event": "12.8.3",
 		"@types/expect-puppeteer": "^4.4.5",
+		"@types/history": "^4.7.8",
 		"@types/jest": "^26.0.20",
+		"@types/lodash": "^4.14.168",
 		"@types/puppeteer": "^5.4.3",
 		"@typescript-eslint/eslint-plugin": "4.19.0",
 		"@woocommerce/api": "^0.1.1",

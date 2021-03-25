@@ -2,9 +2,9 @@
 Contributors: woocommerce, automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.4.0
-Tested up to: 5.6.0
+Tested up to: 5.7.0
 Requires PHP: 7.0
-Stable tag: 2.2.0-dev
+Stable tag: 2.3.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -75,6 +75,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Tweak: Add check to see if value for contains is array, show warning if not. #6645
+
+== 2.2.0 3/26/2021 ==
+
 - Fix: Fix the activity panel toggle not closing on click #6679
 - Tweak: Add default value for contains op #6622
 - Dev: Close activity panel tabs by default and track #6566
@@ -138,7 +142,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Paystack payment provider to several african countries. #6579
 - Dev: Payments task: include Mercado Pago #6572
 - Dev: Ensure script asset.php files are included in builds #6635
+- Fix: Show management links when the task list is complete (even if its not hidden). #6657
 - Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
+- Fix: Update the Mercado option used for enabling/disabling. #6677
 
 == 2.1.3 3/14/2021  ==
 
