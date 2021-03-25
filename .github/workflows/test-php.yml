@@ -76,5 +76,11 @@ jobs:
                     composer bin phpunit require --dev -W phpunit/phpunit:@dev --ignore-platform-reqs    
                   fi
             - name: Run the PHP unit tests
-              run: bin/phpunit.sh
+              run: |
+                  if [ "$(php -r "echo version_compare(PHP_VERSION,'8.0','>=');")" ]; then
+                    ./vendor/bin/phpunit --version
+                    ./vendor/bin/phpunit -c phpunit.xml.dist
+                  else
+                    bin/phpunit.sh
+                  fi
               shell: bash
