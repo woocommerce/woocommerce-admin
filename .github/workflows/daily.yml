@@ -8,7 +8,6 @@ on:
 jobs:
     test-php:
         env:
-            WC_CORE_DIR: /home/runner/work/_temp/wordpress/wp-content/plugins/woocommerce
             COMPOSER_DEV: 1
 
         runs-on: ubuntu-18.04
