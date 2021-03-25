@@ -62,6 +62,8 @@ if [ "$(php -r "echo version_compare(PHP_VERSION,'8','>=');")" ]; then
     	unzip -d /tmp/phpunit-7.5-fork -o /tmp/phpunit-7.5-fork.zip
 		cd /tmp/phpunit-7.5-fork/phpunit-add-compatibility-with-php8-to-phpunit-7
 		composer install
+		composer bin all install --ansi
+		sh ./bin/package-update.sh
 	#fi
     # composer bin phpunit config --unset platform
     # composer bin phpunit config repositories.0 '{"type": "path", "url": "/tmp/phpunit-7.5-fork/phpunit-add-compatibility-with-php8-to-phpunit-7", "options": {"symlink": false}}'

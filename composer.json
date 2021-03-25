@@ -25,14 +25,6 @@
 	},
 	"scripts": {
 		"bin": "echo 'bin not installed'",
-		"post-install-cmd": [
-			"@composer bin all install --ansi",
-			"sh ./bin/package-update.sh"
-		],
-		"post-update-cmd": [
-			"@composer bin all update --ansi",
-			"sh ./bin/package-update.sh"
-		],
 		"test": [
 			"phpunit"
 		],
