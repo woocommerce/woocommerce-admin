@@ -1,24 +1,12 @@
-import { Page } from 'puppeteer';
 import {
 	setCheckbox,
 	clearAndFillInput,
 	verifyCheckboxIsSet,
 	verifyCheckboxIsUnset,
 } from '@woocommerce/e2e-utils';
-import { DropdownTypeaheadField } from '../DropdownTypeaheadField';
+import { BaseSection } from '../../pages/BaseSection';
 
-export class StoreDetailsSection {
-	page: Page;
-	countryDropdown: DropdownTypeaheadField;
-
-	constructor( page: Page ) {
-		this.page = page;
-		this.countryDropdown = new DropdownTypeaheadField(
-			page,
-			'#woocommerce-select-control'
-		);
-	}
-
+export class StoreDetailsSection extends BaseSection {
 	async fillAddress( address: string ) {
 		await clearAndFillInput( '#inspector-text-control-0', address );
 	}
@@ -28,8 +16,11 @@ export class StoreDetailsSection {
 	}
 
 	async selectCountry( search: string, selector: string ) {
-		await this.countryDropdown.search( search );
-		await this.countryDropdown.select( selector );
+		const countryDropdown = this.getDropdownTypeahead(
+			'#woocommerce-select-control'
+		);
+		await countryDropdown.search( search );
+		await countryDropdown.select( selector );
 	}
 
 	async fillCity( city: string ) {

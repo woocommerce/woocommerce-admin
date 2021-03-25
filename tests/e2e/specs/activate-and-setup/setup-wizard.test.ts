@@ -10,8 +10,8 @@ import {
  * Internal dependencies
  */
 import { StoreOwnerFlow } from '../../utils/flows';
-import { WcSettings } from '../../models/WcSettings';
-import { WpSettings } from '../../models/WpSettings';
+import { WcSettings } from '../../pages/WcSettings';
+import { WpSettings } from '../../pages/WpSettings';
 
 describe( 'Store owner can login and make sure WooCommerce is activated', () => {
 	it( 'can login', async () => {
@@ -52,6 +52,7 @@ describe( 'Store owner can finish initial store setup', () => {
 	it( 'can configure permalink settings', async () => {
 		const wpSettings = new WpSettings( page );
 		// Go to Permalink Settings page
+		await wpSettings.navigate();
 		await wpSettings.openPermalinkSettings();
 
 		// Select "Post name" option in common settings section

@@ -1,21 +1,12 @@
 import { setCheckbox } from '@woocommerce/e2e-utils';
-import { WP_ADMIN_WC_SETTINGS } from '../utils/constants';
-import { Page } from 'puppeteer';
-import {
-	getAttribute,
-	getElementByText,
-	waitForElementByText,
-} from '../utils/actions';
+import { getAttribute, waitForElementByText } from '../utils/actions';
+import { BasePage } from './BasePage';
 
-export class WcSettings {
-	page: Page;
+export class WcSettings extends BasePage {
+	url = 'wp-admin/admin.php?page=wc-settings&tab=';
 
-	constructor( page: Page ) {
-		this.page = page;
-	}
-
-	async open( tab = 'general', section = '' ) {
-		let settingsUrl = WP_ADMIN_WC_SETTINGS + tab;
+	async navigate( tab = 'general', section = '' ) {
+		let settingsUrl = this.url + tab;
 
 		if ( section ) {
 			settingsUrl += `&section=${ section }`;
@@ -37,8 +28,7 @@ export class WcSettings {
 	}
 
 	async saveSettings() {
-		const button = await getElementByText( 'button', 'Save changes' );
-		await button?.click();
+		this.clickButtonWithText( 'Save changes' );
 		await this.page.waitForNavigation( {
 			waitUntil: 'networkidle0',
 		} );

@@ -2,6 +2,13 @@
  * @format
  */
 import { clearAndFillInput } from '@woocommerce/e2e-utils';
+import { AllOrdersView } from '../pages/AllOrdersView';
+import { Dashboard } from '../pages/Dashboard';
+import { Login } from '../pages/Login';
+import { NewOrder } from '../pages/NewOrder';
+import { NewProduct } from '../pages/NewProduct';
+import { OnboardingWizard } from '../pages/OnboardingWizard';
+import { Plugins } from '../pages/Plugins';
 import { getElementByText } from './actions';
 
 /**
@@ -13,9 +20,7 @@ const config = require( 'config' );
 
 const StoreOwnerFlow = {
 	login: async () => {
-		await page.goto( constants.WP_ADMIN_LOGIN, {
-			waitUntil: 'networkidle0',
-		} );
+		await new Login( page ).navigate();
 
 		await getElementByText( 'label', 'Username or Email Address' );
 		await expect( page.title() ).resolves.toMatch( 'Log In' );
@@ -47,45 +52,31 @@ const StoreOwnerFlow = {
 	},
 
 	openAllOrdersView: async () => {
-		await page.goto( constants.WP_ADMIN_ALL_ORDERS_VIEW, {
-			waitUntil: 'networkidle0',
-		} );
+		await new AllOrdersView( page ).navigate();
 	},
 
 	openDashboard: async () => {
-		await page.goto( constants.WP_ADMIN_DASHBOARD, {
-			waitUntil: 'networkidle0',
-		} );
+		await new Dashboard( page ).navigate();
 	},
 
 	openNewCoupon: async () => {
-		await page.goto( constants.WP_ADMIN_NEW_COUPON, {
-			waitUntil: 'networkidle0',
-		} );
+		await new NewOrder( page ).navigate();
 	},
 
 	openNewOrder: async () => {
-		await page.goto( constants.WP_ADMIN_NEW_ORDER, {
-			waitUntil: 'networkidle0',
-		} );
+		await new NewOrder( page ).navigate();
 	},
 
 	openNewProduct: async () => {
-		await page.goto( constants.WP_ADMIN_NEW_PRODUCT, {
-			waitUntil: 'networkidle0',
-		} );
+		await new NewProduct( page ).navigate();
 	},
 
 	openPlugins: async () => {
-		await page.goto( constants.WP_ADMIN_PLUGINS, {
-			waitUntil: 'networkidle0',
-		} );
+		await new Plugins( page ).navigate();
 	},
 
 	startProfileWizard: async () => {
-		await page.goto( constants.WP_ADMIN_START_PROFILE_WIZARD, {
-			waitUntil: 'networkidle0',
-		} );
+		await new OnboardingWizard( page ).navigate();
 	},
 };
 

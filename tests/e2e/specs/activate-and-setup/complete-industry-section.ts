@@ -6,10 +6,11 @@
  * Internal dependencies
  */
 
-import { OnboardingWizard } from '../../models/OnboardingWizard';
+import { OnboardingWizard } from '../../pages/OnboardingWizard';
 
 export async function completeIndustrySection( expectedIndustryCount = 8 ) {
 	const onboarding = new OnboardingWizard( page );
+
 	// Query for the industries checkboxes
 	await onboarding.industry.isDisplayed( expectedIndustryCount );
 

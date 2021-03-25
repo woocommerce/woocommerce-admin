@@ -13,8 +13,8 @@ import {
 	completeSelectiveBundleInstallBusinessDetailsTab,
 } from './complete-business-section';
 import { completeThemeSelectionSection } from './complete-theme-selection-section';
-import { OnboardingWizard } from '../../models/OnboardingWizard';
-import { WcHomescreen } from '../../models/WcHomescreen';
+import { OnboardingWizard } from '../../pages/OnboardingWizard';
+import { WcHomescreen } from '../../pages/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
 import { getElementByText } from '../../utils/actions';
 

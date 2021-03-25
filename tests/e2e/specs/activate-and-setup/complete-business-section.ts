@@ -2,13 +2,13 @@
 /**
  * Internal dependencies
  */
-import { OnboardingWizard } from '../../models/OnboardingWizard';
+import { OnboardingWizard } from '../../pages/OnboardingWizard';
 const config = require( 'config' );
 
 export async function completeBusinessSection() {
 	const onboarding = new OnboardingWizard( page );
-	await onboarding.business.isDisplayed();
 
+	await onboarding.business.isDisplayed();
 	await onboarding.business.selectProductNumber(
 		config.get( 'onboardingwizard.numberofproducts' )
 	);
@@ -18,7 +18,6 @@ export async function completeBusinessSection() {
 
 	// Site is in US so the "Install recommended free business features"
 	await onboarding.business.uncheckBusinessFeatures();
-
 	await onboarding.continue();
 }
 

@@ -5,7 +5,7 @@
 /**
  * Internal dependencies
  */
-import { OnboardingWizard } from '../../models/OnboardingWizard';
+import { OnboardingWizard } from '../../pages/OnboardingWizard';
 
 export async function completeThemeSelectionSection() {
 	const onboarding = new OnboardingWizard( page );

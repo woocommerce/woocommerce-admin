@@ -1,13 +1,8 @@
 import { Page } from 'puppeteer';
+import { BaseSection } from '../../pages/BaseSection';
 import { getElementByText, waitForElementByText } from '../../utils/actions';
 
-export class BenefitsSection {
-	page: Page;
-
-	constructor( page: Page ) {
-		this.page = page;
-	}
-
+export class BenefitsSection extends BaseSection {
 	async isDisplayed() {
 		await waitForElementByText(
 			'h2',
@@ -17,7 +12,6 @@ export class BenefitsSection {
 
 	async noThanks() {
 		// Click on "No thanks" button to move to the next step
-		const button = await getElementByText( 'button', 'No thanks' );
-		await button?.click();
+		await this.clickButtonWithText( 'No thanks' );
 	}
 }
