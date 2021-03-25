@@ -26,16 +26,13 @@ jobs:
                   access_token: ${{ github.token }}
             - name: Check out repository code
               uses: actions/checkout@v2
-            - name: Setup PHP
-              uses: shivammathur/setup-php@2.9.0
-              with:
-                  php-version: ${{matrix.php}}
-                  tools: phpunit:${{matrix.phpunit}}
-                  extensions: mysqli
             - name: Setup Node.js
               uses: actions/setup-node@v2-beta
               with:
                   node-version: '14'
+            - name: Run Composer Install
+              run: composer install
+              shell: bash
             - name: Run the PHP unit tests
               run: npm run test:php
               shell: bash
