@@ -48,7 +48,7 @@ function getPackageName( file ) {
 }
 
 const isJsFile = ( filepath ) => {
-	return /.\.js$/.test( filepath );
+	return /.\.(js|ts)$/.test( filepath );
 };
 
 const isScssFile = ( filepath ) => {
