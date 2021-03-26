@@ -6,24 +6,8 @@ on:
     - cron:  '0 0 * * *'
 
 jobs:
-    build:
-        name: "Build"
-        runs-on: ubuntu-18.04
-        steps:
-            - name: Check out repository code
-              uses: actions/checkout@v2
-            - name: Setup Node.js
-              uses: actions/setup-node@v2-beta
-              with:
-                  node-version: '14'
-            - name: Install
-              run: |
-                  npm run build:feature-config	
-                  composer install  --no-dev
-
     test-php:
         name: "Test PHP"
-        needs: build
         runs-on: ubuntu-18.04
         strategy:
             fail-fast: false
@@ -31,8 +15,21 @@ jobs:
                 wordpress: ['latest', 'nightly']
                 woocommerce: ['latest', 'nightly']
         steps:
-            - name: Run the PHP Test Suite
+            - name: Check out repository code
+              uses: actions/checkout@v2
+            - name: Setup Node.js
+              uses: actions/setup-node@v2-beta
+              with:
+                  node-version: '14'
+            - name: Build
+              run: |
+                  npm run build:feature-config	
+                  composer install  --no-dev
+              shell: bash
+            - name: Run the PHP unit tests
               env:
-                  WP_VERSION: ${{ matrix.wordpress }}
+                  WP_VERSION: ${{ matrix.woocommerce }}
                   WC_VERSION: ${{ matrix.woocommerce }}
+
               run: npm run test:php
+              shell: bash
