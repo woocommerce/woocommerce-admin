@@ -3,10 +3,10 @@ import { getAttribute, waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 
 export class WcSettings extends BasePage {
-	url = 'wp-admin/admin.php?page=wc-settings&tab=';
+	url = 'wp-admin/admin.php?page=wc-setting';
 
 	async navigate( tab = 'general', section = '' ) {
-		let settingsUrl = this.url + tab;
+		let settingsUrl = this.url + `?tab=${ tab }`;
 
 		if ( section ) {
 			settingsUrl += `&section=${ section }`;
