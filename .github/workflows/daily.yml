@@ -60,6 +60,5 @@ jobs:
                   npm i
                   composer require wp-cli/i18n-command
                   npm run build
-                  npm install jest --global
                   npx wc-e2e docker:up bin/e2e-init-wp-beta.sh
                   npx wc-e2e test:e2e
