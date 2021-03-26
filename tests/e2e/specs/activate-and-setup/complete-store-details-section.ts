@@ -41,8 +41,9 @@ export async function completeStoreDetailsSection(
 		storeDetails.countryRegionSubstring || 'cali',
 		storeDetails.countryRegionSelector || 'US\\:CA'
 	);
+
 	if ( storeDetails.countryRegion ) {
-		await onboardingWizard.storeDetails.countryDropdown.checkSelected(
+		await onboardingWizard.storeDetails.checkCountrySelected(
 			storeDetails.countryRegion
 		);
 	}

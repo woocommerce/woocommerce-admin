@@ -31,7 +31,10 @@ export abstract class BasePage {
 
 	getDropdownTypeahead( selector: string ) {
 		if ( ! this.elements[ selector ] ) {
-			this.elements[ selector ] = new DropdownField( page, selector );
+			this.elements[ selector ] = new DropdownTypeaheadField(
+				page,
+				selector
+			);
 		}
 
 		return this.elements[ selector ] as DropdownTypeaheadField;
@@ -69,7 +72,7 @@ export abstract class BasePage {
 		const checkboxes = await page.$$( selector );
 		// Uncheck all checkboxes, to avoid installing plugins
 		for ( const checkbox of checkboxes ) {
-			this.toggleCheckbox( checkbox, false );
+			await this.toggleCheckbox( checkbox, false );
 		}
 	}
 
@@ -77,7 +80,7 @@ export abstract class BasePage {
 		const checkboxes = await page.$$( selector );
 		// Uncheck all checkboxes, to avoid installing plugins
 		for ( const checkbox of checkboxes ) {
-			this.toggleCheckbox( checkbox, true );
+			await this.toggleCheckbox( checkbox, true );
 		}
 	}
 

@@ -56,7 +56,6 @@ export class BusinessSection extends BaseSection {
 
 	// The old list displayed on the dropdown page
 	async uncheckBusinessFeatures() {
-		// checkbox is present, uncheck it.
 		await this.unsetAllCheckboxes(
 			'.woocommerce-profile-wizard__benefit .components-form-toggle__input'
 		);

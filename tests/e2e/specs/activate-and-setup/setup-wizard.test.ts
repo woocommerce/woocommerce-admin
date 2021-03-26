@@ -38,7 +38,7 @@ describe( 'Store owner can finish initial store setup', () => {
 		const wcSettings = new WcSettings( page );
 
 		// Go to general settings page
-		await wcSettings.navigate();
+		await wcSettings.navigate( 'general' );
 
 		await wcSettings.enableTaxRates();
 

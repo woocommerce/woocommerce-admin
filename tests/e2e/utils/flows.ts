@@ -68,10 +68,6 @@ const StoreOwnerFlow = {
 	openPlugins: async () => {
 		await new Plugins( page ).navigate();
 	},
-
-	startProfileWizard: async () => {
-		await new OnboardingWizard( page ).navigate();
-	},
 };
 
 export { StoreOwnerFlow };
