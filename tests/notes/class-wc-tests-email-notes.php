@@ -82,6 +82,7 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 			'heading' => 'PHPUNIT_TEST_EMAIL_HEADING',
 			'role'    => 'administrator',
 		);
+		$note->set_image( '' );
 		$note->set_content_data( (object) $content_data );
 		$note->save();
 		$notification_email                          = new NotificationEmail( $note );
