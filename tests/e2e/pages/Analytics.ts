@@ -1,6 +1,6 @@
 import { BasePage } from './BasePage';
 
-const config = require( 'config' );
+const config = require( '../config' );
 
 export type AnalyticsSection =
 	| 'overview'
@@ -21,9 +21,7 @@ export class Analytics extends BasePage {
 
 	// If you need to go to a specific single page of the analytics use `navigateToSection`
 	async navigateToSection( section: AnalyticsSection ) {
-		await this.goto(
-			config.baseUrl + this.url.replace( 'overview', section )
-		);
+		await this.goto( this.url.replace( 'overview', section ) );
 	}
 
 	async isDisplayed() {

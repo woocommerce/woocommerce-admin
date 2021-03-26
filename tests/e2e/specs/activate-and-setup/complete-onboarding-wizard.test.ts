@@ -75,6 +75,8 @@ describe( 'Store owner can complete onboarding wizard', () => {
 		await profileWizard.themes.isDisplayed();
 		await profileWizard.themes.continueWithActiveTheme();
 	} );
+
+	afterAll( StoreOwnerFlow.logout );
 } );
 
 /**
@@ -145,6 +147,8 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 		);
 		expect( wcPayLabel ).toBeUndefined();
 	} );
+
+	afterAll( StoreOwnerFlow.logout );
 } );
 
 describe( 'A japanese store can complete the selective bundle install but does not include WCPay. ', () => {
@@ -212,4 +216,6 @@ describe( 'A japanese store can complete the selective bundle install but does n
 		expect( tasks ).toContain( TaskTitles.addPayments );
 		expect( tasks ).not.toContain( TaskTitles.wooPayments );
 	} );
+
+	afterAll( StoreOwnerFlow.logout );
 } );
