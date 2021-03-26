@@ -1,0 +1,16 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+      "phpunit/phpunit": "@dev"
+    },
+    "config": {
+    },
+    "repositories": [{
+            "type": "path",
+            "url": "/tmp/phpunit-7.5-fork/phpunit-add-compatibility-with-php8-to-phpunit-7",
+            "options": {
+                "symlink": false
+            }
+        }]
+}
