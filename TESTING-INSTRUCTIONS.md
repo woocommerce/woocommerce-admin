@@ -426,6 +426,24 @@ For each task in that list apart from "Store details":
 12. Go to **WooCommerce > Settings > Payments**, **Paystack** should be selected.
 13. Click **Manage**, the secret and public key's should match what you entered in step 9.
 
+### Improve AddFirstProduct email note contents #6617
+
+- Install the plugin in a fresh site.
+- Make sure the store has 0 products and 0 orders.
+- Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
+
+```
+UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
+```
+
+- Make sure the `woocommerce_merchant_email_notifications` option is set to `yes`:
+```
+UPDATE `wp_options` SET `option_value` = 'yes' WHERE `wp_options`.`option_name` = 'woocommerce_merchant_email_notifications';
+```
+
+- Run the `wc_admin_daily ` cron job (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
+- You should have received an email like the image above.
+
 # 2.1.3
 ### Fix a bug where the JetPack connection flow would not activate #6521
 
