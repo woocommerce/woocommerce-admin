@@ -17,9 +17,9 @@ jobs:
               with:
                   node-version: '14'
             - name: Install
-                  run: |
-                      npm run build:feature-config	
-                      composer install  --no-dev
+              run: |
+                  npm run build:feature-config	
+                  composer install  --no-dev
 
     test-php:
         name: "Test PHP"
