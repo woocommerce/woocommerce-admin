@@ -147,6 +147,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
 - Fix: Update the Mercado option used for enabling/disabling. #6677
 - Dev: Ensure production script asset names don't include .min suffix #6681
+- Fix: Improve AddFirstProduct email note contents. #6617
 
 == 2.1.3 3/14/2021  ==
 
