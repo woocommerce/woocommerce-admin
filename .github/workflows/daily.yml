@@ -3,38 +3,35 @@ name: 'Daily Tests'
 on:
   pull_request:
   schedule:
-    - cron:  '0 11 * * *'
+    - cron:  '0 0 * * *'
 
 jobs:
-    test-php:
-        env:
-            COMPOSER_DEV: 1
-
+    build:
+        name: "Build"
         runs-on: ubuntu-18.04
-        strategy:
-            fail-fast: false
-            matrix:
-                php: ['7.4']
-                wordpress: ['latest', 'nightly']
-                woocommerce: ['latest', 'nightly']
-                phpunit: ['7.5.20']
-                composer: ['2.0.6']
         steps:
-            - name: Cancel Previous Runs
-              uses: styfle/cancel-workflow-action@0.7.0
-              with:
-                  access_token: ${{ github.token }}
             - name: Check out repository code
               uses: actions/checkout@v2
             - name: Setup Node.js
               uses: actions/setup-node@v2-beta
               with:
                   node-version: '14'
-            - name: Build
-              run: |
-                  npm run build:feature-config	
-                  composer install  --no-dev
-              shell: bash
+            - name: Install
+                  run: |
+                      npm run build:feature-config	
+                      composer install  --no-dev
+
+    test-php:
+        name: "Test PHP"
+        needs: build
+        runs-on: ubuntu-18.04
+        strategy:
+            fail-fast: false
+            matrix:
+                wordpress: ['latest', 'nightly']
+                woocommerce: ['latest', 'nightly']
             - name: Run the PHP unit tests
+              env:
+                  WP_VERSION: ${{ matrix.wordpress }}
+                  WC_VERSION: ${{ matrix.woocommerce }}
               run: npm run test:php
-              shell: bash
