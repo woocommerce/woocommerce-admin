@@ -1,6 +1,5 @@
 #!/bin/bash
 
-PHP_VERSION="$1"
 echo "Installing packages for PHP$PHP_VERSION"
 
 apk --no-cache add \

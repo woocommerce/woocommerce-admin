@@ -18,8 +18,7 @@ RUN apk --no-cache add \
 	wget
 	
 COPY install-php-version.sh /tmp/  
-RUN echo "PHP${PHP_VERSION}"
-RUN chmod u+x /tmp/install-php-version.sh && /tmp/install-php-version.sh $PHP_VERSION
+RUN chmod u+x /tmp/install-php-version.sh && /tmp/install-php-version.sh
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php --install-dir=/usr/bin --filename=composer
