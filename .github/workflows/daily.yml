@@ -30,7 +30,8 @@ jobs:
             matrix:
                 wordpress: ['latest', 'nightly']
                 woocommerce: ['latest', 'nightly']
-            - name: Run the PHP unit tests
+        steps:
+            - name: Run the PHP Test Suite
               env:
                   WP_VERSION: ${{ matrix.wordpress }}
                   WC_VERSION: ${{ matrix.woocommerce }}
