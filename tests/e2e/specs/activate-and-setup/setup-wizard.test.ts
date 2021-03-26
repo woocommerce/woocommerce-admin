@@ -34,9 +34,10 @@ describe( 'Store owner can login and make sure WooCommerce is activated', () => 
 } );
 
 describe( 'Store owner can finish initial store setup', () => {
-	it( 'can enable tax rates and calculations', async () => {
-		const wcSettings = new WcSettings( page );
+	const wcSettings = new WcSettings( page );
+	const wpSettings = new WpSettings( page );
 
+	it( 'can enable tax rates and calculations', async () => {
 		// Go to general settings page
 		await wcSettings.navigate( 'general' );
 
@@ -50,7 +51,6 @@ describe( 'Store owner can finish initial store setup', () => {
 	} );
 
 	it( 'can configure permalink settings', async () => {
-		const wpSettings = new WpSettings( page );
 		// Go to Permalink Settings page
 		await wpSettings.navigate();
 		await wpSettings.openPermalinkSettings();

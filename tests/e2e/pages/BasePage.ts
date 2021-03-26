@@ -107,13 +107,14 @@ export abstract class BasePage {
 	}
 
 	protected async goto( url: string ) {
+		const fullUrl = baseUrl + url;
 		try {
-			await this.page.goto( baseUrl + url, {
+			await this.page.goto( fullUrl, {
 				waitUntil: 'networkidle0',
 			} );
 		} catch ( e ) {
 			throw new Error(
-				`Could not navigate to url: ${ url } with error: ${ e.message }`
+				`Could not navigate to url: ${ fullUrl } with error: ${ e.message }`
 			);
 		}
 	}

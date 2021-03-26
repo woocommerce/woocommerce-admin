@@ -12,9 +12,7 @@ export class WcSettings extends BasePage {
 			settingsUrl += `&section=${ section }`;
 		}
 
-		await this.page.goto( settingsUrl, {
-			waitUntil: 'networkidle0',
-		} );
+		await this.goto( settingsUrl );
 		await waitForElementByText( 'a', 'General' );
 	}
 

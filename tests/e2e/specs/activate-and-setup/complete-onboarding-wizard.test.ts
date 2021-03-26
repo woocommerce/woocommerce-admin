@@ -97,6 +97,12 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 			countryRegionSelector: 'ES\\:B',
 			countryRegion: 'Spain - Barcelona',
 		} );
+
+		// Wait for "Continue" button to become active
+		await profileWizard.continue();
+
+		// Wait for usage tracking pop-up window to appear
+		await profileWizard.optionallySelectUsageTracking();
 	} );
 
 	it( 'can complete the industry section', async () => {
@@ -114,21 +120,29 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 		expect( installFeaturesCheckbox ).toBe( null );
 	} );
 
-	it( 'can complete the business section', async () =>
-		await completeBusinessSection() );
+	it( 'can complete the business section', async () => {
+		await profileWizard.business.isDisplayed();
+		await profileWizard.business.selectProductNumber(
+			config.get( 'onboardingwizard.numberofproducts' )
+		);
+		await profileWizard.business.selectCurrentlySelling(
+			config.get( 'onboardingwizard.sellingelsewhere' )
+		);
+
+		await profileWizard.continue();
+	} );
 
 	it( 'can complete the theme selection section', async () =>
 		await completeThemeSelectionSection() );
 
 	it( 'can complete the benefits section', async () => {
-		const onboarding = new OnboardingWizard( page );
-		await onboarding.benefits.isDisplayed();
-		await onboarding.benefits.noThanks();
+		await profileWizard.benefits.isDisplayed();
+		// This performs a navigation to home screen.
+		await profileWizard.benefits.noThanks();
 	} );
 
 	it( 'should display the choose payments task, and not the woocommerce payments task', async () => {
 		const homescreen = new WcHomescreen( page );
-		await homescreen.navigate();
 		await homescreen.isDisplayed();
 		await homescreen.possiblyDismissWelcomeModal();
 
@@ -187,29 +201,27 @@ describe( 'A japanese store can complete the selective bundle install but does n
 	} );
 
 	it( 'can choose not to install any extensions', async () => {
-		const onboarding = new OnboardingWizard( page );
-
-		await onboarding.business.freeFeaturesIsDisplayed();
+		await profileWizard.business.freeFeaturesIsDisplayed();
 		// Add WC Pay check
-		await onboarding.business.expandRecommendedBusinessFeatures();
+		await profileWizard.business.expandRecommendedBusinessFeatures();
 
 		expect( page ).not.toMatchElement( 'a', {
 			text: 'WooCommerce Payments',
 		} );
 
-		await onboarding.business.uncheckAllRecommendedBusinessFeatures();
-
-		await onboarding.continue();
+		await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
+		await profileWizard.continue();
 	} );
 
-	it(
-		'can finish the rest of the wizard successfully',
-		completeThemeSelectionSection
-	);
+	it( 'can finish the rest of the wizard successfully', async () => {
+		await profileWizard.themes.isDisplayed();
+
+		//  This navigates to the home screen
+		await profileWizard.themes.continueWithActiveTheme();
+	} );
 
 	it( 'should display the choose payments task, and not the woocommerce payments task', async () => {
 		const homescreen = new WcHomescreen( page );
-		await homescreen.navigate();
 		await homescreen.isDisplayed();
 		await homescreen.possiblyDismissWelcomeModal();
 		const tasks = await homescreen.getTaskList();

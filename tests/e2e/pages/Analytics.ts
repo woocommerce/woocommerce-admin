@@ -1,7 +1,5 @@
 import { BasePage } from './BasePage';
 
-const config = require( '../config' );
-
 export type AnalyticsSection =
 	| 'overview'
 	| 'products'
