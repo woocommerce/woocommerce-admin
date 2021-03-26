@@ -34,7 +34,7 @@ jobs:
               run: npm run test:php
               shell: bash
 
-      e2e-tests:
+    e2e-tests:
         runs-on: ubuntu-18.04
         steps:
             - name: Check out repository code
