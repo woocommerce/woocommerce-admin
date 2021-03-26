@@ -82,9 +82,9 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 			'heading' => 'PHPUNIT_TEST_EMAIL_HEADING',
 			'role'    => 'administrator',
 		);
-		$note->set_image( '' );
 		$note->set_content_data( (object) $content_data );
 		$note->save();
+		$note->set_image( '' );
 		$notification_email                          = new NotificationEmail( $note );
 		$notification_email->opened_tracking_url     = 'PHPUNIT_TEST_NOTE_EMAIL_TRACKING_URL';
 		$notification_email->trigger_note_action_url = 'PHPUNIT_TEST_NOTE_EMAIL_TRIGGER_ACTION_URL';
