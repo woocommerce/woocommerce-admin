@@ -14,22 +14,23 @@ import {
 	setReportItems,
 	setReportStats,
 } from './actions';
+import { ReportQuery, ReportsResponse } from './types';
 
-export function* getReportItems( endpoint, query ) {
+export function* getReportItems( endpoint: string, query: ReportQuery ) {
 	const fetchArgs = {
 		parse: false,
 		path: addQueryArgs( `${ NAMESPACE }/reports/${ endpoint }`, query ),
 	};
 
 	try {
-		const response = yield fetchWithHeaders( fetchArgs );
+		const response: ReportsResponse = yield fetchWithHeaders( fetchArgs );
 		const data = response.data;
 		const totalResults = parseInt(
-			response.headers.get( 'x-wp-total' ),
+			response.headers.get( 'x-wp-total' ) as string,
 			10
 		);
 		const totalPages = parseInt(
-			response.headers.get( 'x-wp-totalpages' ),
+			response.headers.get( 'x-wp-totalpages' ) as string,
 			10
 		);
 
@@ -43,7 +44,7 @@ export function* getReportItems( endpoint, query ) {
 	}
 }
 
-export function* getReportStats( endpoint, query ) {
+export function* getReportStats( endpoint: string, query: ReportQuery ) {
 	const fetchArgs = {
 		parse: false,
 		path: addQueryArgs(
@@ -53,14 +54,14 @@ export function* getReportStats( endpoint, query ) {
 	};
 
 	try {
-		const response = yield fetchWithHeaders( fetchArgs );
+		const response: ReportsResponse = yield fetchWithHeaders( fetchArgs );
 		const data = response.data;
 		const totalResults = parseInt(
-			response.headers.get( 'x-wp-total' ),
+			response.headers.get( 'x-wp-total' ) as string,
 			10
 		);
 		const totalPages = parseInt(
-			response.headers.get( 'x-wp-totalpages' ),
+			response.headers.get( 'x-wp-totalpages' ) as string,
 			10
 		);
 

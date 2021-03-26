@@ -3,6 +3,8 @@ import { Query } from '../types';
 export type ReportsState = {
 	itemErrors: Record< string, unknown >;
 	statErrors: Record< string, unknown >;
+	items: Record< string, unknown >;
+	stats: Record< string, unknown >;
 };
 
 export type ReportQuery = {
@@ -28,3 +30,7 @@ export type ReportQuery = {
 	attribute_is?: { [ key: string ]: string }[];
 	attribute_is_not?: { [ key: string ]: string }[];
 } & Query;
+
+export type ReportsResponse = {
+	data: unknown;
+} & Response;
