@@ -250,8 +250,8 @@ class Loader {
 	 * @return string complete asset filename.
 	 */
 	public static function get_script_asset_filename( $file ) {
-		$script_debug        = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
-		$minification_suffix = self::should_use_minified_js_file( $script_debug ) ? '.min' : '';
+		$minification_suffix = Features::exists( 'minified-js' ) ? '.min' : '';
+
 		return $file . $minification_suffix . '.asset.php';
 	}
 
