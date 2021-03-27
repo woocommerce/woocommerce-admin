@@ -2,13 +2,17 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 import { Fragment, useEffect, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch } from '@wordpress/data';
 import { SectionHeader, ScrollTo } from '@woocommerce/components';
 import { useSettings } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import {
+	Card,
+	CardBody,
+	Button,
+} from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -129,39 +133,64 @@ const Settings = ( { createNotice, query } ) => {
 
 	return (
 		<Fragment>
-			<SectionHeader
-				title={ __( 'Analytics Settings', 'woocommerce-admin' ) }
-			/>
 			<div className="woocommerce-settings__wrapper">
-				{ Object.keys( config ).map( ( setting ) => (
-					<Setting
-						handleChange={ handleInputChange }
-						value={ wcAdminSettings[ setting ] }
-						key={ setting }
-						name={ setting }
-						{ ...config[ setting ] }
-					/>
-				) ) }
+				<div className="woocommerce-settings__section">
+					<div className="woocommerce-settings__title">
+{/* 						<SectionHeader
+							title={ __( 'General settings', 'woocommerce-admin' ) }
+						/> */}
+						<h2>General settings</h2>
+					</div>
+					<div className="woocommerce-settings__group">
+						<Card size="large">
+							<CardBody>
+								<div>
+									{ Object.keys( config ).map( ( setting ) => (
+										<Setting
+											handleChange={ handleInputChange }
+											value={ wcAdminSettings[ setting ] }
+											key={ setting }
+											name={ setting }
+											{ ...config[ setting ] }
+										/>
+									) ) }
+								</div>
+							</CardBody>	
+						</Card>
+					</div>
+				</div>
+				<div className="woocommerce-settings__section">
+					<div className="woocommerce-settings__title">
+						<h2>Import historical data</h2>
+						<p>This tool populates historical analytics data by processing customers and orders created prior to activating WooCommerce Admin. </p>
+					</div>
+					<div className="woocommerce-settings__group">	
+						<Card size="large">
+							<CardBody>
+								{ query.import === 'true' ? (
+									<ScrollTo offset="-56">
+										<HistoricalData createNotice={ createNotice } />
+									</ScrollTo>
+								) : (
+									<HistoricalData createNotice={ createNotice } />
+								) }
+							</CardBody>
+						</Card>
+					</div>
+				</div>
 				<div className="woocommerce-settings__actions">
 					<Button isSecondary onClick={ resetDefaults }>
-						{ __( 'Reset Defaults', 'woocommerce-admin' ) }
+						{ __( 'Reset defaults', 'woocommerce-admin' ) }
 					</Button>
 					<Button
 						isPrimary
 						isBusy={ isRequesting }
 						onClick={ saveChanges }
 					>
-						{ __( 'Save Settings', 'woocommerce-admin' ) }
+						{ __( 'Save', 'woocommerce-admin' ) }
 					</Button>
 				</div>
 			</div>
-			{ query.import === 'true' ? (
-				<ScrollTo offset="-56">
-					<HistoricalData createNotice={ createNotice } />
-				</ScrollTo>
-			) : (
-				<HistoricalData createNotice={ createNotice } />
-			) }
 		</Fragment>
 	);
 };
@@ -174,4 +203,4 @@ export default compose(
 			createNotice,
 		};
 	} )
-)( Settings );
+)( Analytics settings );

@@ -40,58 +40,41 @@ class HistoricalDataLayout extends Component {
 
 		return (
 			<Fragment>
-				<SectionHeader
-					title={ __(
-						'Import Historical Data',
-						'woocommerce-admin'
-					) }
-				/>
-				<div className="woocommerce-settings__wrapper">
-					<div className="woocommerce-setting">
-						<div className="woocommerce-setting__input">
-							<span className="woocommerce-setting__help">
-								{ __(
-									'This tool populates historical analytics data by processing customers ' +
-										'and orders created prior to activating WooCommerce Admin.',
+				
+					{ status !== 'finished' && (
+						<Fragment>
+							<HistoricalDataPeriodSelector
+								dateFormat={ dateFormat }
+								disabled={ inProgress }
+								value={ period }
+							/>
+							<HistoricalDataSkipCheckbox
+								disabled={ inProgress }
+								checked={ skipChecked }
+							/>
+							<HistoricalDataProgress
+								label={ __(
+									'Registered Customers',
 									'woocommerce-admin'
 								) }
-							</span>
-							{ status !== 'finished' && (
-								<Fragment>
-									<HistoricalDataPeriodSelector
-										dateFormat={ dateFormat }
-										disabled={ inProgress }
-										value={ period }
-									/>
-									<HistoricalDataSkipCheckbox
-										disabled={ inProgress }
-										checked={ skipChecked }
-									/>
-									<HistoricalDataProgress
-										label={ __(
-											'Registered Customers',
-											'woocommerce-admin'
-										) }
-										progress={ customersProgress }
-										total={ customersTotal }
-									/>
-									<HistoricalDataProgress
-										label={ __(
-											'Orders and Refunds',
-											'woocommerce-admin'
-										) }
-										progress={ ordersProgress }
-										total={ ordersTotal }
-									/>
-								</Fragment>
-							) }
-							<HistoricalDataStatus
-								importDate={ importDate }
-								status={ status }
+								progress={ customersProgress }
+								total={ customersTotal }
 							/>
-						</div>
-					</div>
-				</div>
+							<HistoricalDataProgress
+								label={ __(
+									'Orders and Refunds',
+									'woocommerce-admin'
+								) }
+								progress={ ordersProgress }
+								total={ ordersTotal }
+							/>
+						</Fragment>
+					) }
+					<HistoricalDataStatus
+						importDate={ importDate }
+						status={ status }
+					/>
+
 				<HistoricalDataActions
 					clearStatusAndTotalsCache={ clearStatusAndTotalsCache }
 					dateFormat={ dateFormat }

@@ -150,12 +150,12 @@ class Setting extends Component {
 					{ label }
 				</div>
 				<div className="woocommerce-setting__input">
-					{ this.renderInput() }
-					{ helpText && (
+				{ helpText && (
 						<span className="woocommerce-setting__help">
 							{ helpText }
 						</span>
 					) }
+					{ this.renderInput() }
 				</div>
 			</div>
 		);

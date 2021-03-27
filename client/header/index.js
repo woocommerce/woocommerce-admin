@@ -168,7 +168,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 				<Text
 					className={ `woocommerce-layout__header-heading ${ backButtonClass }` }
 					as="h1"
-					variant="subtitle.small"
+					variant="title.small"
 				>
 					{ getPageTitle( decodeEntities( pageTitle ) ) }
 				</Text>

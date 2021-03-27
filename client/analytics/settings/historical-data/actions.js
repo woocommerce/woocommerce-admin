@@ -103,7 +103,7 @@ function HistoricalDataActions( {
 				<Fragment>
 					<Button
 						className="woocommerce-settings-historical-data__action-button"
-						isPrimary
+						isSecondary
 						onClick={ onStopImport }
 					>
 						{ __( 'Stop Import', 'woocommerce-admin' ) }
@@ -128,7 +128,7 @@ function HistoricalDataActions( {
 				return (
 					<Fragment>
 						<Button
-							isPrimary
+							isSecondary
 							onClick={ onStartImport }
 							disabled={ importDisabled }
 						>
@@ -147,7 +147,7 @@ function HistoricalDataActions( {
 			return (
 				<Fragment>
 					<Button
-						isPrimary
+						isSecondary
 						onClick={ onStartImport }
 						disabled={ importDisabled }
 					>
