@@ -1,7 +1,12 @@
 import { Analytics } from '../../pages/Analytics';
+import { StoreOwnerFlow } from '../../utils/flows';
 
 describe( 'Analytics pages', () => {
 	const analyticsPage = new Analytics( page );
+
+	beforeAll( async () => {
+		await StoreOwnerFlow.login();
+	} );
 
 	it( 'A user can view the analytics overview without it crashing', async () => {
 		await analyticsPage.navigate();
