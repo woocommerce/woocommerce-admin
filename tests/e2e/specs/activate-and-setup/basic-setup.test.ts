@@ -14,9 +14,8 @@ import { WcSettings } from '../../pages/WcSettings';
 import { WpSettings } from '../../pages/WpSettings';
 
 describe( 'Store owner can login and make sure WooCommerce is activated', () => {
-	it( 'can login', async () => {
-		await StoreOwnerFlow.login();
-	} );
+	beforeAll( StoreOwnerFlow.login );
+	afterAll( StoreOwnerFlow.logout );
 
 	it( 'can make sure WooCommerce is activated. If not, activate it', async () => {
 		const slug = 'woocommerce';
@@ -37,12 +36,13 @@ describe( 'Store owner can finish initial store setup', () => {
 	const wcSettings = new WcSettings( page );
 	const wpSettings = new WpSettings( page );
 
+	beforeAll( StoreOwnerFlow.login );
+	afterAll( StoreOwnerFlow.logout );
+
 	it( 'can enable tax rates and calculations', async () => {
 		// Go to general settings page
 		await wcSettings.navigate( 'general' );
-
 		await wcSettings.enableTaxRates();
-
 		await wcSettings.saveSettings();
 
 		// Verify that settings have been saved

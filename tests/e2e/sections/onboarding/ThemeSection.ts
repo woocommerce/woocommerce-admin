@@ -1,7 +1,7 @@
-import { BaseSection } from '../../pages/BaseSection';
+import { BasePage } from '../../pages/BasePage';
 import { waitForElementByText } from '../../utils/actions';
 
-export class ThemeSection extends BaseSection {
+export class ThemeSection extends BasePage {
 	async isDisplayed() {
 		await waitForElementByText( 'h2', 'Choose a theme' );
 		await waitForElementByText( 'button', 'All themes' );

@@ -1,8 +1,7 @@
-import { Page } from 'puppeteer';
-import { BaseSection } from '../../pages/BaseSection';
-import { getElementByText, waitForElementByText } from '../../utils/actions';
+import { BasePage } from '../../pages/BasePage';
+import { waitForElementByText } from '../../utils/actions';
 
-export class BenefitsSection extends BaseSection {
+export class BenefitsSection extends BasePage {
 	async isDisplayed() {
 		await waitForElementByText(
 			'h2',

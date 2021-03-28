@@ -1,7 +1,7 @@
+import { BasePage } from '../../pages/BasePage';
 import { waitForElementByText } from '../../utils/actions';
-import { BaseSection } from '../../pages/BaseSection';
 
-export class IndustrySection extends BaseSection {
+export class IndustrySection extends BasePage {
 	async isDisplayed( industryCount?: number ) {
 		await waitForElementByText(
 			'h2',

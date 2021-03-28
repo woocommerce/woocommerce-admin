@@ -1,8 +1,8 @@
 import { setCheckbox, unsetCheckbox } from '@woocommerce/e2e-utils';
+import { BasePage } from '../../pages/BasePage';
 import { waitForElementByText } from '../../utils/actions';
-import { BaseSection } from '../../pages/BaseSection';
 
-export class BusinessSection extends BaseSection {
+export class BusinessSection extends BasePage {
 	async isDisplayed() {
 		await waitForElementByText( 'h2', 'Tell us about your business' );
 	}

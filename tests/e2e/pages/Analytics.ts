@@ -19,11 +19,12 @@ export class Analytics extends BasePage {
 
 	// If you need to go to a specific single page of the analytics use `navigateToSection`
 	async navigateToSection( section: AnalyticsSection ) {
+		console.log( this.url.replace( 'overview', section ) );
 		await this.goto( this.url.replace( 'overview', section ) );
 	}
 
 	async isDisplayed() {
 		// This is a smoke test that ensures the single page was rendered without crashing
-		await this.page.waitForSelector( '.woocommerce-layout__primary' );
+		await this.page.waitForSelector( '#woocommerce-layout__primary' );
 	}
 }

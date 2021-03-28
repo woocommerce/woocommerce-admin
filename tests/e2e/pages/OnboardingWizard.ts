@@ -27,15 +27,20 @@ export class OnboardingWizard extends BasePage {
 		this.benefits = new BenefitsSection( page );
 	}
 
+	async skipStoreSetup() {
+		await this.clickButtonWithText( 'Skip setup store details' );
+		await this.optionallySelectUsageTracking( false );
+	}
+
 	async continue() {
-		this.clickButtonWithText( 'Continue' );
+		await this.clickButtonWithText( 'Continue' );
 	}
 
 	async optionallySelectUsageTracking( select = false ) {
 		const usageTrackingHeader = await this.page.waitForSelector(
 			'.components-modal__header-heading',
 			{
-				timeout: 2000,
+				timeout: 5000,
 			}
 		);
 		if ( ! usageTrackingHeader ) {

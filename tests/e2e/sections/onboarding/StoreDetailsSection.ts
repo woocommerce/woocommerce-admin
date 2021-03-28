@@ -5,7 +5,7 @@ import {
 	verifyCheckboxIsUnset,
 } from '@woocommerce/e2e-utils';
 import { DropdownTypeaheadField } from '../../elements/DropdownTypeaheadField';
-import { BaseSection } from '../../pages/BaseSection';
+import { BasePage } from '../../pages/BasePage';
 const config = require( 'config' );
 
 interface StoreDetails {
@@ -18,7 +18,7 @@ interface StoreDetails {
 	postcode?: string;
 }
 
-export class StoreDetailsSection extends BaseSection {
+export class StoreDetailsSection extends BasePage {
 	private get countryDropdown(): DropdownTypeaheadField {
 		return this.getDropdownTypeahead( '#woocommerce-select-control' );
 	}

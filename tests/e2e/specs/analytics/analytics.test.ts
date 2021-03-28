@@ -62,4 +62,8 @@ describe( 'Analytics pages', () => {
 		await analyticsPage.navigateToSection( 'settings' );
 		await analyticsPage.isDisplayed();
 	} );
+
+	afterAll( async () => {
+		StoreOwnerFlow.logout();
+	} );
 } );

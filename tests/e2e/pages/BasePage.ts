@@ -2,6 +2,7 @@ import { ElementHandle, Page } from 'puppeteer';
 import { BaseElement } from '../elements/BaseElement';
 import { DropdownField } from '../elements/DropdownField';
 import { DropdownTypeaheadField } from '../elements/DropdownTypeaheadField';
+import { FormToggle } from '../elements/FormToggle';
 import { getElementByText } from '../utils/actions';
 
 const config = require( 'config' );
@@ -13,31 +14,48 @@ export abstract class BasePage {
 	protected url: string = '';
 	protected baseUrl: string = baseUrl;
 
-	// cache of elements that have been setup, note that they are unique per page/ per selector
-	private elements: Record< string, BaseElement >;
+	// cache of elements that have been setup, note that they are unique "per page/per selector"
+	private dropDownElements: Record< string, DropdownField > = {};
+	private dropDownTypeAheadElements: Record<
+		string,
+		DropdownTypeaheadField
+	> = {};
+	private formToggleElements: Record< string, FormToggle > = {};
 
 	constructor( page: Page ) {
 		this.page = page;
-		this.elements = {};
 	}
 
 	getDropdownField( selector: string ) {
-		if ( ! this.elements[ selector ] ) {
-			this.elements[ selector ] = new DropdownField( page, selector );
-		}
-
-		return this.elements[ selector ] as DropdownField;
-	}
-
-	getDropdownTypeahead( selector: string ) {
-		if ( ! this.elements[ selector ] ) {
-			this.elements[ selector ] = new DropdownTypeaheadField(
+		if ( ! this.dropDownElements[ selector ] ) {
+			this.dropDownElements[ selector ] = new DropdownField(
 				page,
 				selector
 			);
 		}
 
-		return this.elements[ selector ] as DropdownTypeaheadField;
+		return this.dropDownElements[ selector ];
+	}
+
+	getDropdownTypeahead( selector: string ) {
+		if ( ! this.dropDownTypeAheadElements[ selector ] ) {
+			this.dropDownTypeAheadElements[
+				selector
+			] = new DropdownTypeaheadField( page, selector );
+		}
+
+		return this.dropDownTypeAheadElements[ selector ];
+	}
+
+	getFormToggle( selector: string ) {
+		if ( ! this.formToggleElements[ selector ] ) {
+			this.formToggleElements[ selector ] = new FormToggle(
+				page,
+				selector
+			);
+		}
+
+		return this.formToggleElements[ selector ];
 	}
 
 	async click( selector: string ) {

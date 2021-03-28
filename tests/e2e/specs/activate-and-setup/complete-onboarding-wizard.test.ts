@@ -2,16 +2,6 @@
  * Internal dependencies
  */
 import { StoreOwnerFlow } from '../../utils/flows';
-import {
-	chooseIndustries,
-	completeIndustrySection,
-} from './complete-industry-section';
-import { completeProductTypesSection } from './complete-product-types-section';
-import {
-	completeBusinessSection,
-	completeSelectiveBundleInstallBusinessDetailsTab,
-} from './complete-business-section';
-import { completeThemeSelectionSection } from './complete-theme-selection-section';
 import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
@@ -25,7 +15,8 @@ const config = require( 'config' );
 describe( 'Store owner can complete onboarding wizard', () => {
 	const profileWizard = new OnboardingWizard( page );
 
-	it( 'can log in', StoreOwnerFlow.login );
+	beforeAll( StoreOwnerFlow.login );
+	afterAll( StoreOwnerFlow.logout );
 
 	it( 'can start the profile wizard', async () => {
 		await profileWizard.navigate();
@@ -40,11 +31,31 @@ describe( 'Store owner can complete onboarding wizard', () => {
 		await profileWizard.optionallySelectUsageTracking();
 	} );
 
-	it( 'can complete the industry section', async () =>
-		await completeIndustrySection() );
+	it( 'can complete the industry section', async () => {
+		// Query for the industries checkboxes
+		await profileWizard.industry.isDisplayed( 8 );
+		await profileWizard.industry.uncheckIndustries();
 
-	it( 'can complete the product types section', async () =>
-		await completeProductTypesSection() );
+		// Select just "fashion" and "health/beauty" to get the single checkbox business section when
+		// filling out details for a US store.
+		await profileWizard.industry.selectIndustry(
+			'Fashion, apparel, and accessories'
+		);
+		await profileWizard.industry.selectIndustry( 'Health and beauty' );
+
+		await profileWizard.continue();
+	} );
+
+	it( 'can complete the product types section', async () => {
+		await profileWizard.productTypes.isDisplayed( 7 );
+		await profileWizard.productTypes.uncheckProducts();
+
+		// Select Physical and Downloadable products
+		await profileWizard.productTypes.selectProduct( 'Physical products' );
+		await profileWizard.productTypes.selectProduct( 'Downloads' );
+
+		await profileWizard.continue();
+	} );
 
 	it( 'can complete the business section', async () => {
 		await profileWizard.business.isDisplayed();
@@ -75,8 +86,6 @@ describe( 'Store owner can complete onboarding wizard', () => {
 		await profileWizard.themes.isDisplayed();
 		await profileWizard.themes.continueWithActiveTheme();
 	} );
-
-	afterAll( StoreOwnerFlow.logout );
 } );
 
 /**
@@ -85,7 +94,8 @@ describe( 'Store owner can complete onboarding wizard', () => {
 describe( 'A spanish store does not get the install recommended features tab, but sees the benefits section', () => {
 	const profileWizard = new OnboardingWizard( page );
 
-	it( 'can log in', StoreOwnerFlow.login );
+	beforeAll( StoreOwnerFlow.login );
+	afterAll( StoreOwnerFlow.logout );
 
 	it( 'can start the profile wizard', async () => {
 		await profileWizard.navigate();
@@ -106,11 +116,26 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 	} );
 
 	it( 'can complete the industry section', async () => {
-		await completeIndustrySection( 7 );
+		await profileWizard.industry.isDisplayed( 7 );
+		await profileWizard.industry.uncheckIndustries();
+		await profileWizard.industry.selectIndustry(
+			'Fashion, apparel, and accessories'
+		);
+		await profileWizard.industry.selectIndustry( 'Health and beauty' );
+
+		await profileWizard.continue();
 	} );
 
-	it( 'can complete the product types section', async () =>
-		await completeProductTypesSection() );
+	it( 'can complete the product types section', async () => {
+		await profileWizard.productTypes.isDisplayed( 7 );
+		await profileWizard.productTypes.uncheckProducts();
+
+		// Select Physical and Downloadable products
+		await profileWizard.productTypes.selectProduct( 'Physical products' );
+		await profileWizard.productTypes.selectProduct( 'Downloads' );
+
+		await profileWizard.continue();
+	} );
 
 	it( 'does not have the install recommended features checkbox', async () => {
 		const installFeaturesCheckbox = await page.$(
@@ -132,8 +157,12 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 		await profileWizard.continue();
 	} );
 
-	it( 'can complete the theme selection section', async () =>
-		await completeThemeSelectionSection() );
+	it( 'can complete the theme selection section', async () => {
+		// Make sure we're on the theme selection page before clicking continue
+		await profileWizard.themes.isDisplayed();
+
+		await profileWizard.themes.continueWithActiveTheme();
+	} );
 
 	it( 'can complete the benefits section', async () => {
 		await profileWizard.benefits.isDisplayed();
@@ -161,14 +190,13 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 		);
 		expect( wcPayLabel ).toBeUndefined();
 	} );
-
-	afterAll( StoreOwnerFlow.logout );
 } );
 
 describe( 'A japanese store can complete the selective bundle install but does not include WCPay. ', () => {
 	const profileWizard = new OnboardingWizard( page );
 
-	it( 'can log in', StoreOwnerFlow.login );
+	beforeAll( StoreOwnerFlow.login );
+	afterAll( StoreOwnerFlow.logout );
 
 	it( 'can start the profile wizard', async () => {
 		await profileWizard.navigate();
@@ -190,14 +218,36 @@ describe( 'A japanese store can complete the selective bundle install but does n
 
 	// JP:JP01
 	it( 'can choose the "Other" industry', async () => {
-		await chooseIndustries( [ 'Other' ] );
+		// Query for the industries checkboxes
+		await profileWizard.industry.isDisplayed();
+		await profileWizard.industry.uncheckIndustries();
+		await profileWizard.industry.selectIndustry( 'Other' );
+		await profileWizard.continue();
 	} );
 
-	it( 'can complete the product types section', async () =>
-		await completeProductTypesSection() );
+	it( 'can complete the product types section', async () => {
+		await profileWizard.productTypes.isDisplayed( 7 );
+		await profileWizard.productTypes.uncheckProducts();
+
+		// Select Physical and Downloadable products
+		await profileWizard.productTypes.selectProduct( 'Physical products' );
+		await profileWizard.productTypes.selectProduct( 'Downloads' );
+
+		await profileWizard.continue();
+		await page.waitForNavigation( { waitUntil: 'networkidle0' } );
+	} );
 
 	it( 'can complete the business details tab', async () => {
-		await completeSelectiveBundleInstallBusinessDetailsTab();
+		await profileWizard.business.isDisplayed();
+
+		await profileWizard.business.selectProductNumber(
+			config.get( 'onboardingwizard.numberofproducts' )
+		);
+		await profileWizard.business.selectCurrentlySelling(
+			config.get( 'onboardingwizard.sellingelsewhere' )
+		);
+
+		await profileWizard.continue();
 	} );
 
 	it( 'can choose not to install any extensions', async () => {
