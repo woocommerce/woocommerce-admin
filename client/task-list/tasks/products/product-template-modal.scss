@@ -19,7 +19,7 @@ $border-color: $gray-100;
 			height: 20px;
 			margin-right: $gap;
 			&:checked::before {
-				margin: 1px 0 0 1px;
+				margin: -5px 0 0 -5px;
 				width: 10px;
 				height: 10px;
 				background: var(--wp-admin-theme-color);
