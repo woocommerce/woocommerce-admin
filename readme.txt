@@ -76,6 +76,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
+- Fix: Event tracking for merchant email notes #6616
 
 == 2.2.0 3/26/2021 ==
 
@@ -150,7 +151,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Update the Mercado option used for enabling/disabling. #6677
 - Dev: Ensure production script asset names don't include .min suffix #6681
 - Fix: Improve AddFirstProduct email note contents. #6617
-- Fix: Event tracking for merchant email notes #6616
 
 
 == 2.1.4 3/29/2021  ==
