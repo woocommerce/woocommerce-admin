@@ -31,6 +31,6 @@ export class BankAccountTransferSetup extends BasePage {
 		await clearAndFillInput( '[placeholder="IBAN"]', iban );
 		await clearAndFillInput( '[placeholder="BIC / Swift"]', swiftCode );
 
-		await this.clickButtonWithText( 'save' );
+		await this.clickButtonWithText( 'Save' );
 	}
 }
