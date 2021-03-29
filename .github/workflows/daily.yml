@@ -14,6 +14,8 @@ jobs:
             matrix:
                 wordpress: ['latest', 'nightly']
                 woocommerce: ['latest', 'nightly']
+                exclude:
+                    - {'wordpress': 'nightly', 'woocommerce': 'nightly'}
         steps:
             - name: Check out repository code
               uses: actions/checkout@v2
@@ -41,7 +43,8 @@ jobs:
             matrix:
                 wordpress: ['https://wordpress.org/latest.zip', 'https://wordpress.org/nightly-builds/wordpress-latest.zip']
                 woocommerce: ['https://downloads.wordpress.org/plugin/woocommerce.zip', 'https://github.com/woocommerce/woocommerce/releases/download/nightly/woocommerce-trunk-nightly.zip']
- 
+                exclude: 
+                    - {'wordpress': 'https://wordpress.org/nightly-builds/wordpress-latest.zip', 'woocommerce': 'https://github.com/woocommerce/woocommerce/releases/download/nightly/woocommerce-trunk-nightly.zip'}
         steps:
             - name: Check out repository code
               uses: actions/checkout@v2
