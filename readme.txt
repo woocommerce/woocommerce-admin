@@ -84,6 +84,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add event recording to start of gateway connections #6801
 - Fix: Event tracking for merchant email notes #6616
 - Fix: Use the store timezone to make time data requests #6632
+- Fix: Update the checked input radio button margin style #6701
 - Fix: Make pagination buttons height and width consistent #6725
 - Fix: Retain persisted queries when navigating to Homescreen #6614
 - Fix: Update folded header style #6724
@@ -260,6 +261,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == 2.0.2 25/05/2021 ==
 
 - Fix: Correct the Klarna slug #6440
+=======
 
 == 2.0.0 02/05/2021 ==
 

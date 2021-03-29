@@ -32,6 +32,11 @@
 1. Visit any admin page with the params `plugin_action` (`install`, `activate`, or `install-activate`) and `plugins` (list of comma separated plugins). `wp-admin/admin.php?page=wc-admin&plugin_action=install&plugins=jetpack`
 2. If visiting this URL from a link, make sure you are sent back to the referer.
 3. Check that the plugins provided are installed, activated, or both depending on your query.
+### Update the checked input radio button margin style #6701
+1. Go to Home.
+2. Click on 'Add my products'.
+3. Select 'Start with a template'.
+4. Click on the input radio button and see that render as expected.
 
 ### Retain persisted queries when navigating to Homescreen #6614
 
@@ -755,6 +760,7 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 2. Go to `Analytics` > `Orders`
 3. Set the `Date Range` filter in order to cover the refunded order date.
 4. Verify that now the associated order number and the related products are visible.
+=======
 
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
