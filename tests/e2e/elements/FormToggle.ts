@@ -6,7 +6,7 @@ export class FormToggle extends BaseElement {
 	// Represents a FormToggle input. Use `selector` to represent the container its found in.
 	async switchOn() {
 		const container = await this.getCheckboxContainer();
-		if ( container && ! hasClass( container, 'is-checked' ) ) {
+		if ( container && ! ( await hasClass( container, 'is-checked' ) ) ) {
 			const input = await this.getCheckboxInput();
 
 			if ( ! input ) {
@@ -25,7 +25,7 @@ export class FormToggle extends BaseElement {
 
 	async switchOff() {
 		const container = await this.getCheckboxContainer();
-		if ( container && hasClass( container, 'is-checked' ) ) {
+		if ( container && ( await hasClass( container, 'is-checked' ) ) ) {
 			const input = await this.getCheckboxInput();
 
 			if ( ! input ) {
