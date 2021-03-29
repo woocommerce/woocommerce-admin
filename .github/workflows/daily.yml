@@ -36,6 +36,12 @@ jobs:
 
     e2e-tests:
         runs-on: ubuntu-18.04
+        strategy:
+            fail-fast: false
+            matrix:
+                wordpress: ['https://wordpress.org/latest.zip', 'https://wordpress.org/nightly-builds/wordpress-latest.zip']
+                woocommerce: ['https://downloads.wordpress.org/plugin/woocommerce.zip', 'https://github.com/woocommerce/woocommerce/releases/download/nightly/woocommerce-trunk-nightly.zip']
+ 
         steps:
             - name: Check out repository code
               uses: actions/checkout@v2
@@ -54,7 +60,7 @@ jobs:
                   npm run build
             - name: Setup wp-env
               env:
-                  WP_ENV_CONFIG: '{ core: "https://wordpress.org/latest.zip", plugins: [ ".", "https://downloads.wordpress.org/plugin/woocommerce.zip" ] }'
+                  WP_ENV_CONFIG: '{ core: "${{ matrix.wordpress }}", plugins: [ ".", "${{ matrix.woocommerce }}" ] }'
               run: |
                   npm -g i @wordpress/env
                   printf '%s\n' "$WP_ENV_CONFIG" > .wp-env-override.json
