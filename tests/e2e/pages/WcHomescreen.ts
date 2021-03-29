@@ -44,7 +44,14 @@ export class WcHomescreen extends BasePage {
 
 	async clickOnTaskList( taskTitle: string ) {
 		const item = await getElementByText( 'div', taskTitle );
-		await item?.click();
-		await waitForElementByText( 'h1', taskTitle );
+
+		if ( ! item ) {
+			throw new Error(
+				`Could not find task list item with title: ${ taskTitle }`
+			);
+		} else {
+			await item.click();
+			await waitForElementByText( 'h1', taskTitle );
+		}
 	}
 }
