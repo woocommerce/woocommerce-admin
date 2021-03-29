@@ -20,7 +20,16 @@ import {
 import { MAX_PER_PAGE, QUERY_DEFAULTS } from '../constants';
 import { STORE_NAME } from './constants';
 import { getResourceName } from '../utils';
+import { Interval, ReportQuery, ReportStat } from './types';
+import { AdvancedFilter, ReportFilter } from '../types';
+import { WCDataSelector } from '..';
 
+type FilterConfig = {
+	value: string;
+	chartMode: string;
+	param: string;
+	filters?: FilterConfig[];
+};
 /**
  * Add filters and advanced filters values to a query object.
  *
@@ -32,20 +41,27 @@ import { getResourceName } from '../utils';
  * @param  {Object} [options.advancedFilters] config advanced filters
  * @return {Object} A query object with the values from filters and advanced fitlters applied.
  */
-export function getFilterQuery( options ) {
+export function getFilterQuery( options: {
+	endpoint: string;
+	query: ReportQuery;
+	limitBy?: string[];
+	filters?: FilterConfig[];
+	advancedFilters?: AdvancedFilter;
+} ): Partial< ReportQuery > {
 	const {
 		endpoint,
 		query,
 		limitBy,
 		filters = [],
-		advancedFilters = {},
+		advancedFilters = {} as AdvancedFilter,
 	} = options;
 	if ( query.search ) {
 		const limitProperties = limitBy || [ endpoint ];
 		return limitProperties.reduce( ( result, limitProperty ) => {
-			result[ limitProperty ] = query[ limitProperty ];
+			result[ limitProperty ] =
+				query[ limitProperty as keyof ReportQuery ];
 			return result;
-		}, {} );
+		}, {} as Record< string, unknown > );
 	}
 
 	return filters
@@ -69,8 +85,13 @@ const noIntervalEndpoints = [ 'stock', 'customers' ];
  * @param {Object} activeFilter - an active filter.
  * @return {Object} - an active filter with timestamp added to date values.
  */
-export function timeStampFilterDates( config, activeFilter ) {
-	const advancedFilterConfig = config.filters[ activeFilter.key ];
+export function timeStampFilterDates(
+	config: AdvancedFilter,
+	activeFilter: ReportFilter
+) {
+	const advancedFilterConfig = config.filters
+		? config.filters[ activeFilter.key ]
+		: {};
 	if ( get( advancedFilterConfig, [ 'input', 'component' ] ) !== 'Date' ) {
 		return activeFilter;
 	}
@@ -93,12 +114,19 @@ export function timeStampFilterDates( config, activeFilter ) {
 	}
 
 	return Object.assign( {}, activeFilter, {
-		value: appendTimestamp( moment( value ), timeOfDayMap[ rule ] ),
+		value: appendTimestamp(
+			moment( value ),
+			timeOfDayMap[ rule as 'after' | 'before' ]
+		),
 	} );
 }
 
-export function getQueryFromConfig( config, advancedFilters, query ) {
-	const queryValue = query[ config.param ];
+export function getQueryFromConfig(
+	config: FilterConfig,
+	advancedFilters: AdvancedFilter,
+	query: ReportQuery
+) {
+	const queryValue = query[ config.param as keyof ReportQuery ];
 
 	if ( ! queryValue ) {
 		return {};
@@ -107,8 +135,8 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
 	if ( queryValue === 'advanced' ) {
 		const activeFilters = getActiveFiltersFromQuery(
 			query,
-			advancedFilters.filters
-		);
+			advancedFilters.filters || {}
+		) as ReportFilter[];
 
 		if ( activeFilters.length === 0 ) {
 			return {};
@@ -119,7 +147,7 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
 				timeStampFilterDates( advancedFilters, filter )
 			),
 			{},
-			advancedFilters.filters
+			advancedFilters.filters || {}
 		);
 
 		return {
@@ -128,7 +156,7 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
 		};
 	}
 
-	const filter = find( flattenFilters( config.filters ), {
+	const filter = find( flattenFilters( config.filters as FilterConfig[] ), {
 		value: queryValue,
 	} );
 
@@ -139,9 +167,9 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
 	if ( filter.settings && filter.settings.param ) {
 		const { param } = filter.settings;
 
-		if ( query[ param ] ) {
+		if ( query[ param as keyof ReportQuery ] ) {
 			return {
-				[ param ]: query[ param ],
+				[ param ]: query[ param as keyof ReportQuery ],
 			};
 		}
 
@@ -160,7 +188,10 @@ export function getQueryFromConfig( config, advancedFilters, query ) {
  * @param  {string}  endpoint Endpoint slug
  * @return {boolean}        True if report is data is empty.
  */
-export function isReportDataEmpty( report, endpoint ) {
+export function isReportDataEmpty(
+	report: { data: ReportStat },
+	endpoint: string
+) {
 	if ( ! report ) {
 		return true;
 	}
@@ -192,7 +223,14 @@ export function isReportDataEmpty( report, endpoint ) {
  * @param  {string}  options.defaultDateRange   User specified default date range.
  * @return {Object} data request query parameters.
  */
-function getRequestQuery( options ) {
+function getRequestQuery( options: {
+	endpoint: string;
+	dataType: 'primary' | 'secondary';
+	query: ReportQuery;
+	limitBy: string[];
+	defaultDateRange: string;
+	fields?: Record< string, unknown >;
+} ): Partial< ReportQuery > {
 	const { endpoint, dataType, query, fields } = options;
 	const datesFromQuery = getCurrentDates( query, options.defaultDateRange );
 	const interval = getIntervalForQuery( query );
@@ -228,7 +266,15 @@ function getRequestQuery( options ) {
  * @param  {string}  options.defaultDateRange   User specified default date range.
  * @return {Object} Object containing summary number responses.
  */
-export function getSummaryNumbers( options ) {
+export function getSummaryNumbers( options: {
+	endpoint: string;
+	dataType: 'primary' | 'secondary';
+	query: ReportQuery;
+	limitBy: string[];
+	defaultDateRange: string;
+	fields: Record< string, unknown >;
+	select: WCDataSelector;
+} ) {
 	const { endpoint, select } = options;
 	const { getReportStats, getReportStatsError, isResolving } = select(
 		STORE_NAME
@@ -249,7 +295,12 @@ export function getSummaryNumbers( options ) {
 	// eslint-disable-next-line @wordpress/no-unused-vars-before-return
 	const primary = getReportStats( endpoint, primaryQuery );
 
-	if ( isResolving( 'getReportStats', [ endpoint, primaryQuery ] ) ) {
+	if (
+		isResolving< [ string, Partial< ReportQuery > ] >( 'getReportStats', [
+			endpoint,
+			primaryQuery,
+		] )
+	) {
 		return { ...response, isRequesting: true };
 	} else if ( getReportStatsError( endpoint, primaryQuery ) ) {
 		return { ...response, isError: true };
@@ -316,7 +367,7 @@ const reportChartDataResponses = {
 	},
 };
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY: Interval[] = [];
 
 /**
  * Cache helper for returning the full chart dataset after multiple
@@ -346,7 +397,14 @@ const getReportChartDataResponse = memoize(
  * @param  {string}  options.defaultDateRange   User specified default date range.
  * @return {Object}  Object containing API request information (response, fetching, and error details)
  */
-export function getReportChartData( options ) {
+export function getReportChartData( options: {
+	endpoint: string;
+	dataType: 'primary' | 'secondary';
+	query: ReportQuery;
+	limitBy: string[];
+	defaultDateRange: string;
+	select: WCDataSelector;
+} ) {
 	const { endpoint, select } = options;
 	const { getReportStats, getReportStatsError, isResolving } = select(
 		STORE_NAME
@@ -435,7 +493,10 @@ export function getReportChartData( options ) {
  * @param  {Function} formatAmount format currency function
  * @return {string|Function}  returns a number format based on the type or an overriding formatting function
  */
-export function getTooltipValueFormat( type, formatAmount ) {
+export function getTooltipValueFormat(
+	type: 'currency' | 'number' | 'percent' | 'average',
+	formatAmount: () => string
+) {
 	switch ( type ) {
 		case 'currency':
 			return formatAmount;
@@ -459,7 +520,12 @@ export function getTooltipValueFormat( type, formatAmount ) {
  * @param  {string} options.defaultDateRange   User specified default date range.
  * @return {Object} Object    Table data response
  */
-export function getReportTableQuery( options ) {
+export function getReportTableQuery( options: {
+	endpoint: string;
+	query: ReportQuery;
+	defaultDateRange: string;
+	tableQuery: Record< string, unknown >;
+} ) {
 	const { query, tableQuery = {} } = options;
 	const filterQuery = getFilterQuery( options );
 	const datesFromQuery = getCurrentDates( query, options.defaultDateRange );
@@ -493,7 +559,15 @@ export function getReportTableQuery( options ) {
  * @param  {string}  options.defaultDateRange   User specified default date range.
  * @return {Object} Object    Table data response
  */
-export function getReportTableData( select, options ) {
+export function getReportTableData(
+	select: WCDataSelector,
+	options: {
+		endpoint: string;
+		query: ReportQuery;
+		defaultDateRange: string;
+		tableQuery: Record< string, unknown >;
+	}
+) {
 	const { endpoint } = options;
 	const { getReportItems, getReportItemsError, isResolving } = select(
 		STORE_NAME

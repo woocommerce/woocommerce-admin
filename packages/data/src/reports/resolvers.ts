@@ -14,7 +14,7 @@ import {
 	setReportItems,
 	setReportStats,
 } from './actions';
-import { ReportQuery, ReportsResponse } from './types';
+import { ReportQuery, ReportsResponse, ReportStat } from './types';
 
 export function* getReportItems( endpoint: string, query: ReportQuery ) {
 	const fetchArgs = {
@@ -54,7 +54,9 @@ export function* getReportStats( endpoint: string, query: ReportQuery ) {
 	};
 
 	try {
-		const response: ReportsResponse = yield fetchWithHeaders( fetchArgs );
+		const response: ReportsResponse< ReportStat > = yield fetchWithHeaders(
+			fetchArgs
+		);
 		const data = response.data;
 		const totalResults = parseInt(
 			response.headers.get( 'x-wp-total' ) as string,

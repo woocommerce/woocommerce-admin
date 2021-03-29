@@ -19,6 +19,7 @@ import type { ITEMS_STORE_NAME } from './items';
 import { OnboardingSelectors } from './onboarding/selectors';
 import { WPDataSelectors } from './types';
 import { PluginSelectors } from './plugins/selectors';
+import { ReportsSelectors } from './reports/selectors';
 
 export * from './types';
 export { SETTINGS_STORE_NAME } from './settings';
@@ -114,7 +115,7 @@ export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	: T extends typeof NOTES_STORE_NAME
 	? WPDataSelectors
 	: T extends typeof REPORTS_STORE_NAME
-	? WPDataSelectors
+	? ReportsSelectors
 	: T extends typeof ITEMS_STORE_NAME
 	? WPDataSelectors
 	: never;

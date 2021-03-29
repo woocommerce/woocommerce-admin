@@ -2,15 +2,24 @@
  * Internal dependencies
  */
 import TYPES from './action-types';
+import { ReportsState } from './types';
+
+export type ReportsPayload = {
+	type: TYPES;
+	resourceName: string;
+	items?: Record< string, unknown >[];
+	stats?: Record< string, unknown >[];
+	error?: { status: number; message: string };
+};
 
 const reports = (
-	state = {
+	state: ReportsState = {
 		itemErrors: {},
 		items: {},
 		statErrors: {},
 		stats: {},
 	},
-	{ type, items, stats, error, resourceName }
+	{ type, items, stats, error, resourceName }: ReportsPayload
 ) => {
 	switch ( type ) {
 		case TYPES.SET_REPORT_ITEMS:

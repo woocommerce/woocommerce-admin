@@ -1,17 +1,64 @@
 import { Query } from '../types';
 
+export type ReportItems = {
+	data: Record< string, unknown >;
+	totalResults: number;
+	totalPages: number;
+};
+
+type DataValues = {
+	net_revenue: number;
+	orders_count: number;
+	avg_order_value: number;
+	avg_items_per_order: number;
+	num_items_sold: number;
+	coupons: number;
+	coupons_count: number;
+	total_customers: number;
+	products: number;
+};
+
+export type Segments = {
+	segments: {
+		segment_id: number;
+		subtotals: DataValues;
+	}[];
+};
+
+export type Interval = {
+	interval: 'day' | 'week' | 'month' | 'year';
+	date_start: string;
+	date_start_gmt: string;
+	date_end: string;
+	date_end_gmt: string;
+	subtotals: DataValues & Segments;
+};
+
+export type ReportStat = {
+	totals: DataValues & Segments;
+	intervals: Interval[];
+};
+
+export type ReportStatData = {
+	data: ReportStat;
+	totalResults: number;
+	totalPages: number;
+};
+
 export type ReportsState = {
 	itemErrors: Record< string, unknown >;
 	statErrors: Record< string, unknown >;
-	items: Record< string, unknown >;
-	stats: Record< string, unknown >;
+	items: Record< string, ReportItems >;
+	stats: Record< string, ReportStatData >;
 };
 
 export type ReportQuery = {
-	orderby: string;
-	order: 'asc' | 'desc';
-	page: number;
 	per_page: number;
+	order: 'asc' | 'desc';
+	page?: number;
+	paged?: number;
+	match?: string;
+	orderby?: string;
 	product_includes?: number[];
 	product_excludes?: number[];
 	variation_includes?: number[];
@@ -29,8 +76,11 @@ export type ReportQuery = {
 	order_excludes?: number[];
 	attribute_is?: { [ key: string ]: string }[];
 	attribute_is_not?: { [ key: string ]: string }[];
+	segmentby?: string;
+	fields?: Record< string, unknown >;
+	interval?: string;
 } & Query;
 
-export type ReportsResponse = {
-	data: unknown;
+export type ReportsResponse< T = Record< string, unknown > > = {
+	data: T;
 } & Response;

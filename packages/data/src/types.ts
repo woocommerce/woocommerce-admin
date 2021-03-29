@@ -24,11 +24,54 @@ export type WPError< ErrorKey extends string = string, ErrorData = unknown > = {
 	errors: Record< ErrorKey, string[] >;
 	error_data?: Record< ErrorKey, ErrorData >;
 	additional_data?: Record< ErrorKey, ErrorData[] >;
+	isResolving: < A extends unknown[] >(
+		selector: string,
+		args: A
+	) => boolean;
 };
 
 export type Query = {
+	search?: string;
 	period: string;
 	compare: string;
 	after: string;
 	before: string;
+};
+
+export type ReportFilter = {
+	key: string;
+	rule: string;
+	label: string;
+	value: string;
+	chartMode?: string;
+	component?: string;
+	subFilters?: ( ReportFilter & {
+		path: string[];
+	} )[];
+};
+type Rule = {
+	value: string;
+	label: string;
+};
+
+export type AdvancedFilter = {
+	title: string;
+	filters?: Record<
+		string,
+		{
+			labels: {
+				add: string;
+				remove: string;
+				rule: string;
+				title: string;
+				filter: string;
+			};
+			rules: Rule[];
+			input: {
+				component: string;
+				options: unknown;
+			};
+			allowMultiple: boolean;
+		}
+	>;
 };

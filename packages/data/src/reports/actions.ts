@@ -3,8 +3,13 @@
  */
 import { getResourceName } from '../utils';
 import TYPES from './action-types';
+import { ReportItems, ReportQuery, ReportStatData } from './types';
 
-export function setReportItemsError( endpoint, query, error ) {
+export function setReportItemsError(
+	endpoint: string,
+	query: ReportQuery,
+	error: { status: number; message: string }
+) {
 	const resourceName = getResourceName( endpoint, query );
 
 	return {
@@ -14,7 +19,11 @@ export function setReportItemsError( endpoint, query, error ) {
 	};
 }
 
-export function setReportItems( endpoint, query, items ) {
+export function setReportItems(
+	endpoint: string,
+	query: ReportQuery,
+	items: ReportItems
+) {
 	const resourceName = getResourceName( endpoint, query );
 
 	return {
@@ -24,7 +33,11 @@ export function setReportItems( endpoint, query, items ) {
 	};
 }
 
-export function setReportStats( endpoint, query, stats ) {
+export function setReportStats(
+	endpoint: string,
+	query: ReportQuery,
+	stats: ReportStatData
+) {
 	const resourceName = getResourceName( endpoint, query );
 
 	return {
@@ -34,7 +47,11 @@ export function setReportStats( endpoint, query, stats ) {
 	};
 }
 
-export function setReportStatsError( endpoint, query, error ) {
+export function setReportStatsError(
+	endpoint: string,
+	query: ReportQuery,
+	error: { status: number; message: string }
+) {
 	const resourceName = getResourceName( endpoint, query );
 
 	return {
