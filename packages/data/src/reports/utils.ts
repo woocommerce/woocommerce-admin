@@ -20,8 +20,13 @@ import {
 import { MAX_PER_PAGE, QUERY_DEFAULTS } from '../constants';
 import { STORE_NAME } from './constants';
 import { getResourceName } from '../utils';
-import { Interval, ReportQuery, ReportStat } from './types';
-import { AdvancedFilter, ReportFilter } from '../types';
+import {
+	Interval,
+	ReportQuery,
+	ReportStat,
+	AdvancedFilter,
+	ReportFilter,
+} from './types';
 import { WCDataSelector } from '..';
 
 type FilterConfig = {

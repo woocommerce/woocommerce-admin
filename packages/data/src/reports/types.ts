@@ -84,3 +84,41 @@ export type ReportQuery = {
 export type ReportsResponse< T = Record< string, unknown > > = {
 	data: T;
 } & Response;
+
+export type ReportFilter = {
+	key: string;
+	rule: string;
+	label: string;
+	value: string;
+	chartMode?: string;
+	component?: string;
+	subFilters?: ( ReportFilter & {
+		path: string[];
+	} )[];
+};
+type Rule = {
+	value: string;
+	label: string;
+};
+
+export type AdvancedFilter = {
+	title: string;
+	filters?: Record<
+		string,
+		{
+			labels: {
+				add: string;
+				remove: string;
+				rule: string;
+				title: string;
+				filter: string;
+			};
+			rules: Rule[];
+			input: {
+				component: string;
+				options: unknown;
+			};
+			allowMultiple: boolean;
+		}
+	>;
+};
