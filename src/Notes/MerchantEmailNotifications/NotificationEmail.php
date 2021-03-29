@@ -209,7 +209,7 @@ class NotificationEmail extends \WC_Email {
 		// We need to set the current user for tracking reasons.
 		$current_user_id = get_current_user_id();
 		wp_set_current_user( $user_id );
-		wc_admin_record_tracks_event( 'wcadmin_email_note_sent', array( 'note_name' => $this->note->get_name() ) );
+		wc_admin_record_tracks_event( 'email_note_sent', array( 'note_name' => $this->note->get_name() ) );
 		wp_set_current_user( $current_user_id );
 	}
 }
