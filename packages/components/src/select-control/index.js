@@ -4,7 +4,7 @@
 import { __, _n, sprintf } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
-import { debounce, escapeRegExp, findIndex, identity, noop } from 'lodash';
+import { debounce, escapeRegExp, identity, noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { withFocusOutside, withSpokenMessages } from '@wordpress/components';
 import { withInstanceId, compose } from '@wordpress/compose';
@@ -101,7 +101,9 @@ export class SelectControl extends Component {
 		const oldSelected = Array.isArray( selected )
 			? selected
 			: [ { key: selected } ];
-		const isSelected = findIndex( oldSelected, { key: option.key } );
+		const isSelected = oldSelected.findIndex(
+			( val ) => val.key === option.key
+		);
 		if ( isSelected === -1 ) {
 			this.setNewValue( newSelected );
 		}
