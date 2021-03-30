@@ -11,7 +11,6 @@ const initialValues = { firstName: '' };
 <Form
 	onSubmitCallback={ ( values ) => {} }
 	initialValues={ initialValues }
-	onChange={ ( _, values, isValid ) => {} }
 >
 	{ ( {
 		getInputProps,
