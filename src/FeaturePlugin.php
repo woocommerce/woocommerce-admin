@@ -22,6 +22,7 @@ use \Automattic\WooCommerce\Admin\Notes\SellingOnlineCourses;
 use \Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications\MerchantEmailNotifications;
 use \Automattic\WooCommerce\Admin\Notes\WelcomeToWooCommerceForStoreUsers;
 use \Automattic\WooCommerce\Admin\Notes\ManageStoreActivityFromHomeScreen;
+use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
 
 /**
  * Feature plugin main class.
@@ -154,7 +155,7 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '2.2.0-dev' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '2.3.0-dev' );
 	}
 
 	/**
@@ -195,6 +196,7 @@ class FeaturePlugin {
 		new LearnMoreAboutVariableProducts();
 		new WelcomeToWooCommerceForStoreUsers();
 		new ManageStoreActivityFromHomeScreen();
+		new NavigationNudge();
 
 		// Initialize RemoteInboxNotificationsEngine.
 		RemoteInboxNotificationsEngine::init();

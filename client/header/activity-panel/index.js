@@ -45,6 +45,7 @@ const InboxPanel = lazy( () =>
 
 export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	const [ currentTab, setCurrentTab ] = useState( '' );
+	const [ isPanelClosing, setIsPanelClosing ] = useState( false );
 	const [ isPanelOpen, setIsPanelOpen ] = useState( false );
 	const [ isPanelSwitching, setIsPanelSwitching ] = useState( false );
 
@@ -104,17 +105,23 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			isTabOpen &&
 			isPanelOpen;
 
+		if ( isPanelClosing ) {
+			return;
+		}
+
 		setCurrentTab( tabName );
 		setIsPanelOpen( isTabOpen );
 		setIsPanelSwitching( panelSwitching );
 	};
 
 	const closePanel = () => {
+		setIsPanelClosing( true );
 		setIsPanelOpen( false );
 	};
 
 	const clearPanel = () => {
 		if ( ! isPanelOpen ) {
+			setIsPanelClosing( false );
 			setIsPanelSwitching( false );
 			setCurrentTab( '' );
 		}
@@ -289,6 +296,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 							tab.onClick();
 							return;
 						}
+
 						togglePanel( tab, tabOpen );
 					} }
 				/>

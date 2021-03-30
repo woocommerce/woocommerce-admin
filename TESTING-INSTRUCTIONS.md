@@ -2,6 +2,65 @@
 
 ## Unreleased
 
+### Check active plugins before getting the PayPal onboarding status #6625
+
+-  Go to the WooCommerce home page
+-  Open your browser console
+-  Choose payment methods
+-  See no error message
+
+## 2.2.0
+
+### Fixed event tracking for merchant email notes #6616
+
+- Create a brand new site.
+- Install a plugin to log every sent email (you can use [WP mail logging](https://wordpress.org/plugins/wp-mail-logging/)).
+- Install and active [this gist](https://gist.github.com/octaedro/864315edaf9c6a2a6de71d297be1ed88) to create an email note. Just download the file and install it as a plugin.
+- After activating the plugin, press `Add Email Notes` to create a note.
+- Now go to WooCommerce > Settings > Email (`/wp-admin/admin.php?page=wc-settings&tab=email`) and check the checkbox `Enable email insights` and save changes.
+- You will need to run the cron so you can install a plugin like [WP Crontol](https://wordpress.org/plugins/wp-crontrol/)
+- Go to Tools > Cron events (`/wp-admin/tools.php?page=crontrol_admin_manage_page`).
+- Call the hook `wc_admin_daily` by pressing its `Run Now` link. (https://user-images.githubusercontent.com/1314156/111530634-4929ce80-8742-11eb-8b53-de936ceea76e.png)
+- Go to Tools > WP Mail Logging Log (`/wp-admin/tools.php?page=wpml_plugin_log`) and verify the testing email note was sent.
+- View the message and press `Test action` (a broken image will be visible under the button, but that's expected and only visible in a test environment).
+
+### Payments task: include Mercado Pago #6572
+
+- Create a brand new store.
+- Set one of the following countries in the first OBW step:
+```
+Mexico
+Brazil
+Argentina
+Chile
+Colombia
+Peru
+Uruguay
+```
+- Continue with the OBW and finish it up. 
+- Select `Choose payment methods` in the setup task list (`Get ready to start selling`).
+- Press the `Setup` button in the `Mercado Pago Payments` box.
+- Try the links presented after the plugin's installation and verify they are working.
+- Confirm that the `Mercado Pago payments for WooCommerce` plugin was installed.
+- Press `Continue`.
+- Now the `Mercado Pago Payments` option should appear as active.
+
+### Update contrast and hover / active colors for analytics dropdown buttons #6504
+
+1. Go to analytics.
+2. Verifty the dropdown buttons (date range or filters) are now higher contrast.
+3. Verifty the text and chevron in the dropdown button turn blue on hover, and while active.
+
+### Set default value to array when op is `contains` #6622
+
+1. Clone and start https://github.com/Automattic/woocommerce.com
+2. Open `notifications.json.php` from woocommerce.com repository and find a rule that uses the `contains` operator and remove the `default` key. Please make a note of the option name.
+3. Open `src/RemoteInboxNotifications/DataSourcepoller.php` from your WooCommerce Admin repository and change the datasource to your local woocommerce.com (woocommerce.test)
+4. Make sure your local WooCommerce Admin database does not have the option from step #2
+5. Install and activate [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)
+6. Navigate to Tools -> Cron Events and run `wc_admin_daily` job
+7. Check your debug log in `wp-content/debug.log`. You should see PHP error.
+
 ### Close activity panel tabs by default and track #6566
 
 1. Open your browser console and enter `localStorage.setItem( 'debug', 'wc-admin:tracks' );`.  Make sure the "Verbose" is selected under the levels shown.
@@ -68,6 +127,27 @@ Testing `woocommerce_navigation_intro_modal_dismissed`
 7. Connect Jetpack.
 8. Attempt to directly visit the benefits page. `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard&step=benefits`
 9. Note that you are redirected to the homescreen.
+
+### Delete customer data on network user deletion #6574
+
+1. Set up a multisite network.
+2. Create a new user.
+3. Make an order with that user.
+4. Note the customer data under WooCommerce -> Customers.
+5. Navigate to Network -> All users `/wp-admin/network/users.php`.
+6. Delete that user.
+7. Wait for the scheduled action to finish or manually run the `wc-admin_delete_user_customers` action under Tools -> Scheduled Actions.
+8. Navigate to WooCommerce -> Customers.
+9. Make sure that customer data has been deleted.
+
+### Fix "Themes" step visibility in IE 11 #6578
+
+1. Get an IE 11 test environment. I downloaded a trial version of Parallels Desktop on [here](https://www.parallels.com/) and IE 11 virtual machine from [developer.microsoft.com](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/)
+2. Make a zip version of this branch by running `npm run test:zip`
+3. Make a JN site -> install and activate the zip file.
+4. Open IE 11 and start OBW
+5. Confirm that the themes are displayed correctly.
+
 
 ### Fix hidden menu title on smaller screens #6562
 
@@ -232,7 +312,7 @@ Mailchimp
 Creative Mail
 ```
 (In that order)
-- Verify that the Creative Mail option is toggled off by default.
+- Verify that the Creative Mail option is toggled off by default
 
 ### Fix double prefixing of navigation URLs #6460
 
@@ -362,6 +442,22 @@ For each task in that list apart from "Store details":
 - Add a new attribute.
 - Observe CES prompt "How easy was it to add a product attribute?" is displayed.
 
+### Add paystack as payment option for African countries #6579
+
+1. Go to the store setup wizard `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard`
+2. Set up your store with **South Africa - Eastern Cape** as its country, and proceed
+3. Select **Fashion, apparel, and accessories** as the industry, and finish the rest of the onboarding flow.
+4. Once finished it will redirect to the home screen, click on the **Choose payment methods** task
+5. Both **Paystack** and **Payfast** should be listed above **Paypal**
+6. Click **Set up** on the Paystack payment option
+7. It should successfully finish the **Install** step, and ask for a public and secret key.
+8. Check if the **Paystack account** link, directs you to the **dashboard.paystack.com/#/settings/developer**
+9. Set `public_key` for public key, and `secret_key` for secret key and click **Proceed**
+10. It should redirect you to the payment list and the **Set up** button should be gone, and replaced by an enabled toggle button.
+11. You should be able to successfully toggle paystack from on to off and back. Leave it selected for now.
+12. Go to **WooCommerce > Settings > Payments**, **Paystack** should be selected.
+13. Click **Manage**, the secret and public key's should match what you entered in step 9.
+
 # 2.1.3
 ### Fix a bug where the JetPack connection flow would not activate #6521
 
@@ -409,6 +505,23 @@ Scenario #2
 8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
 9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
 
+### Improve AddFirstProduct email note contents #6617
+
+- Install the plugin in a fresh site.
+- Make sure the store has 0 products and 0 orders.
+- Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
+
+```
+UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
+```
+
+- Make sure the `woocommerce_merchant_email_notifications` option is set to `yes`:
+```
+UPDATE `wp_options` SET `option_value` = 'yes' WHERE `wp_options`.`option_name` = 'woocommerce_merchant_email_notifications';
+```
+
+- Run the `wc_admin_daily ` cron job (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
+- You should have received an email like the image above.
 ## 2.1.2
 
 ### Add Guards to "Deactivate Plugin" Note Handlers #6532
