@@ -45,9 +45,9 @@ class Form extends Component {
 			} ),
 			() => {
 				this.validate( () => {
-					// onChangeCallback keeps track of validity, so needs to
+					// onChange keeps track of validity, so needs to
 					// happen after setting the error state.
-					this.props.onChangeCallback(
+					this.props.onChange(
 						{ name, value },
 						this.state.values,
 						! Object.keys( this.state.errors || {} ).length
@@ -149,7 +149,7 @@ Form.propTypes = {
 	/**
 	 * Function to call when a value changes in the form.
 	 */
-	onChangeCallback: PropTypes.func,
+	onChange: PropTypes.func,
 	/**
 	 * A function that is passed a list of all values and
 	 * should return an `errors` object with error response.
@@ -161,7 +161,7 @@ Form.defaultProps = {
 	errors: {},
 	initialValues: {},
 	onSubmitCallback: () => {},
-	onChangeCallback: () => {},
+	onChange: () => {},
 	touched: {},
 	validate: () => {},
 };

@@ -269,7 +269,7 @@ class BusinessDetails extends Component {
 
 					this.trackBusinessDetailsStep( values );
 				} }
-				onChangeCallback={ ( _, values, isValid ) => {
+				onChange={ ( _, values, isValid ) => {
 					this.setState( { savedValues: values, isValid } );
 				} }
 				validate={ this.validate }
