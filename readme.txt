@@ -75,10 +75,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
-- Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Add: Consume remote payment methods on frontend #6867
 - Add: Add plugin installer to allow installation of plugins via URL #6805
 - Add: Optional children prop to SummaryNumber component #6748
+- Dev: Fix a bug where trying to load an asset registry causes a crash. #6951
 - Dev: Add data source filter to remote inbox notification system #6794
 - Dev: Add A/A test #6669
 - Dev: Add support for nonces in note actions #6726
@@ -97,6 +97,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add recommended payment methods in payment settings. #6760
 - Enhancement: Add expand/collapse to extendable task list. #6910
 - Enhancement: Add task hierarchy support to extended task list. #6916
+- Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Fix: Disable the continue btn on OBW when requested are being made #6838
 - Fix: Event tracking for merchant email notes #6616
 - Fix: Use the store timezone to make time data requests #6632
@@ -124,6 +125,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Exclude WC Shipping for store that are only offering downloadable products #6917
 - Fix: SelectControl focus and de-focus bug #6906
 - Fix: Calling of get_script_asset_filename with extra parameter #6955
+- Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
 - Performance: Avoid updating customer info synchronously from the front end. #6765
 - Tweak: Add settings_section event prop for CES #6762
 - Tweak: Refactor payments to allow management of methods #6786
@@ -138,8 +140,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Adding setup required icon for non-configured payment methods #6811
 - Update: Task list component with new Experimental Task list. #6849
 - Update: Redirect to WC Home after setting up a payment method #6891
-- Dev: Fix a bug where trying to load an asset registry causes a crash. #6951
-- Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
+- Update: Update Form's documentation #6708
 
 == 2.2.0 3/30/2021 ==
 
