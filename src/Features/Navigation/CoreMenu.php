@@ -96,6 +96,12 @@ class CoreMenu {
 				'order' => 30,
 			),
 			array(
+				'title'  => __( 'Reports', 'woocommerce-admin' ),
+				'id'     => 'woocommerce-reports',
+				'parent' => 'woocommerce-analytics',
+				'order'  => 200,
+			),
+			array(
 				'title' => __( 'Marketing', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-marketing',
 				'order' => 40,
@@ -104,7 +110,7 @@ class CoreMenu {
 				'title'  => __( 'Settings', 'woocommerce-admin' ),
 				'id'     => 'woocommerce-settings',
 				'menuId' => 'secondary',
-				'order'  => 10,
+				'order'  => 20,
 				'url'    => 'admin.php?page=wc-settings',
 			),
 			array(
@@ -216,56 +222,84 @@ class CoreMenu {
 					'id'         => 'woocommerce-marketplace',
 					'url'        => 'wc-addons',
 					'menuId'     => 'secondary',
-					'order'      => 20,
-				),
-				// Tools category.
-				array(
-					'parent'     => 'woocommerce-tools',
-					'title'      => __( 'System status', 'woocommerce-admin' ),
-					'capability' => 'manage_woocommerce',
-					'id'         => 'tools-system-status',
-					'url'        => 'wc-status',
-					'order'      => 20,
-				),
-				array(
-					'parent'     => 'woocommerce-tools',
-					'title'      => __( 'Import / Export', 'woocommerce-admin' ),
-					'capability' => 'import',
-					'id'         => 'tools-import-export',
-					'url'        => 'import.php',
-					'migrate'    => false,
 					'order'      => 10,
 				),
-				array(
-					'parent'     => 'woocommerce-tools',
-					'title'      => __( 'Utilities', 'woocommerce-admin' ),
-					'capability' => 'manage_woocommerce',
-					'id'         => 'tools-utilities',
-					'url'        => 'admin.php?page=wc-status&tab=tools',
-					'order'      => 30,
-				),
-				array(
-					'parent'     => 'woocommerce-tools',
-					'title'      => __( 'Logs', 'woocommerce-admin' ),
-					'capability' => 'manage_woocommerce',
-					'id'         => 'tools-logs',
-					'url'        => 'admin.php?page=wc-status&tab=logs',
-					'order'      => 40,
-				),
-				array(
-					'parent'     => 'woocommerce-tools',
-					'title'      => __( 'Scheduled Actions', 'woocommerce-admin' ),
-					'capability' => 'manage_woocommerce',
-					'id'         => 'tools-scheduled_actions',
-					'url'        => 'admin.php?page=wc-status&tab=action-scheduler',
-					'order'      => 50,
-				),
 			),
+			// Tools category.
+			self::get_tool_items(),
 			// WooCommerce Admin items.
 			$wca_items,
 			// Settings category.
-			$setting_items
+			$setting_items,
+			// Legacy report items.
+			self::get_legacy_report_items()
 		);
+	}
+
+	/**
+	 * Get items for tools category.
+	 *
+	 * @returna array
+	 */
+	public static function get_tool_items() {
+		$tabs = array(
+			'status' => __( 'System status', 'woocommerce-admin' ),
+			'tools'  => __( 'Utilities', 'woocommerce-admin' ),
+			'logs'   => __( 'Logs', 'woocommerce-admin' ),
+		);
+		$tabs = apply_filters( 'woocommerce_admin_status_tabs', $tabs );
+
+		$order = 1;
+		$items = array(
+			array(
+				'parent'     => 'woocommerce-tools',
+				'title'      => __( 'Import / Export', 'woocommerce-admin' ),
+				'capability' => 'import',
+				'id'         => 'tools-import-export',
+				'url'        => 'import.php',
+				'migrate'    => false,
+				'order'      => 0,
+			),
+		);
+
+		foreach ( $tabs as $key => $tab ) {
+			$items[] = array(
+				'parent'     => 'woocommerce-tools',
+				'title'      => $tab,
+				'capability' => 'manage_woocommerce',
+				'id'         => 'tools-' . $key,
+				'url'        => 'wc-status&tab=' . $key,
+				'order'      => $order,
+			);
+			$order++;
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Get legacy report items.
+	 *
+	 * @return array
+	 */
+	public static function get_legacy_report_items() {
+		$reports    = \WC_Admin_Reports::get_reports();
+		$menu_items = array();
+
+		$order = 0;
+		foreach ( $reports as $key => $report ) {
+			$menu_items[] = array(
+				'parent'     => 'woocommerce-reports',
+				'title'      => $report['title'],
+				'capability' => 'view_woocommerce_reports',
+				'id'         => $key,
+				'url'        => 'wc-reports&tab=' . $key,
+				'order'      => $order,
+			);
+			$order++;
+		}
+
+		return $menu_items;
 	}
 
 	/**
@@ -282,56 +316,63 @@ class CoreMenu {
 	 */
 	public function add_dashboard_menu_items() {
 		global $submenu, $menu;
-		$top_level_items = Menu::get_category_items( 'woocommerce' );
+		$mapped_items = Menu::get_mapped_menu_items();
+		$top_level    = $mapped_items['woocommerce'];
 
 		// phpcs:disable
-		if ( ! isset( $submenu['woocommerce'] ) ) {
+		if ( ! isset( $submenu['woocommerce'] ) || empty( $top_level ) ) {
 			return;
 		}
 
-		foreach( $top_level_items as $item ) {
-			// Skip extensions.
-			if ( ! isset( $item['menuId'] ) || $item['menuId'] === 'plugins' ) {
-				continue;
-			}
+		$menuIds = array(
+			'primary',
+			'secondary',
+			'favorites',
+		);
 
-			// Skip specific categories.
-			if (
-				in_array(
-					$item['id'],
-					array(
-						'woocommerce-tools',
-					),
-					true
-				)
-			) {
-				continue;
-			}
-
-			// Use the link from the first item if it's a category.
-			if ( ! isset( $item['url'] ) ) {
-				$category_items = Menu::get_category_items( $item['id'] );
-				if ( ! empty( $category_items ) ) {
-					$first_item     = $category_items[0];
-
-					$submenu['woocommerce'][] = array(
-						$item['title'],
-						$first_item['capability'],
-						isset( $first_item['url'] ) ? $first_item['url'] : null,
-						$item['title'],
-					);
+		foreach ( $menuIds as $menuId ) {
+			foreach( $top_level[ $menuId ] as $item ) {
+				// Skip specific categories.
+				if (
+					in_array(
+						$item['id'],
+						array(
+							'woocommerce-tools',
+						),
+						true
+					)
+				) {
+					continue;
 				}
+	
+				// Use the link from the first item if it's a category.
+				if ( ! isset( $item['url'] ) ) {
+					$categoryMenuId = $menuId === 'favorites' ? 'plugins' : $menuId;
+					$category_items = $mapped_items[ $item['id'] ][ $categoryMenuId ];
 
-				continue;
+					if ( ! empty( $category_items ) ) {
+						$first_item = $category_items[0];
+
+	
+						$submenu['woocommerce'][] = array(
+							$item['title'],
+							$first_item['capability'],
+							isset( $first_item['url'] ) ? $first_item['url'] : null,
+							$item['title'],
+						);
+					}
+	
+					continue;
+				}
+	
+				// Show top-level items.
+				$submenu['woocommerce'][] = array(
+					$item['title'],
+					$item['capability'],
+					isset( $item['url'] ) ? $item['url'] : null,
+					$item['title'],
+				);
 			}
-
-			// Show top-level items.
-			$submenu['woocommerce'][] = array(
-				$item['title'],
-				$item['capability'],
-				isset( $item['url'] ) ? $item['url'] : null,
-				$item['title'],
-			);
 		}
 		// phpcs:enable
 	}
@@ -346,6 +387,7 @@ class CoreMenu {
 			'woocommerce',
 			'wc-reports',
 			'wc-settings',
+			'wc-status',
 		);
 
 		return apply_filters( 'woocommerce_navigation_core_excluded_items', $excluded_items );

@@ -151,10 +151,13 @@ class ShippingLabelBanner {
 			Loader::get_file_version( 'css' )
 		);
 
+		$script_assets_filename = Loader::get_script_asset_filename( 'print-shipping-label-banner' );
+		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
+
 		wp_enqueue_script(
 			'print-shipping-label-banner',
 			Loader::get_url( 'wp-admin-scripts/print-shipping-label-banner', 'js' ),
-			array( 'wp-i18n', 'wp-data', 'wp-element', 'moment', 'wp-api-fetch', WC_ADMIN_APP ),
+			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
 			Loader::get_file_version( 'js' ),
 			true
 		);

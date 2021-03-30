@@ -8,7 +8,7 @@ import CurrencyFactory from '@woocommerce/currency';
 /**
  * Internal dependencies
  */
-import { getCurrencyRegion } from '../../../../dashboard/utils';
+import { getCurrencyRegion } from '~/dashboard/utils';
 import { getNumberRangeString } from './product-options';
 
 const { formatAmount } = CurrencyFactory( CURRENCY );
@@ -96,5 +96,9 @@ export const getRevenueOptions = ( numberConfig, country ) => [
 			__( 'More than %s', 'woocommerce-admin' ),
 			formatAmount( convertCurrency( 250000, country ) )
 		),
+	},
+	{
+		key: 'rather-not-say',
+		label: __( "I'd rather not say", 'woocommerce-admin' ),
 	},
 ];

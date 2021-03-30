@@ -1,204 +1,252 @@
 /**
+ * External dependencies
+ */
+import { act, render } from '@testing-library/react';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getHistory } from '@woocommerce/navigation';
+import { useSelect } from '@wordpress/data';
+import userEvent from '@testing-library/user-event';
+
+/**
  * Internal dependencies
  */
-import { getCategoriesMap, getMenuItemsByCategory } from '../';
+import Container from '../';
 
-describe( 'getCategoriesMap', () => {
-	const menuItems = [
-		{ id: 'zero', title: 'zero', isCategory: true },
-		{ id: 'one', title: 'one', isCategory: true },
-		{ id: 'two', title: 'two', isCategory: true },
-		{ id: 'three', title: 'three', isCategory: false },
-		{ id: 'four', title: 'four', isCategory: false },
-	];
+jest.mock( '@wordpress/data', () => {
+	// Require the original module to not be mocked...
+	const originalModule = jest.requireActual( '@wordpress/data' );
 
-	it( 'should get a map of all categories', () => {
-		const categoriesMap = getCategoriesMap( menuItems );
-
-		expect( categoriesMap.zero ).toMatchObject( menuItems[ 0 ] );
-		expect( categoriesMap.one ).toMatchObject( menuItems[ 1 ] );
-		expect( categoriesMap.two ).toMatchObject( menuItems[ 2 ] );
-		expect( categoriesMap.three ).toBeUndefined();
-		expect( categoriesMap.four ).toBeUndefined();
-	} );
-
-	it( 'should include the topmost WooCommerce parent category', () => {
-		const categoriesMap = getCategoriesMap( menuItems );
-
-		expect( categoriesMap.woocommerce ).toBeDefined();
-	} );
-
-	it( 'should have the correct number of values', () => {
-		const categoriesMap = getCategoriesMap( menuItems );
-
-		expect( Object.keys( categoriesMap ).length ).toBe( 4 );
-	} );
+	return {
+		__esModule: true, // Use it when dealing with esModules
+		...originalModule,
+		useSelect: jest.fn().mockReturnValue( {} ),
+	};
 } );
 
-describe( 'getMenuItemsByCategory', () => {
-	it( 'should get a map of all categories and child elements', () => {
-		const menuItems = [
-			{
-				id: 'child-one',
-				title: 'child-one',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'plugins',
-			},
-			{
-				id: 'child-two',
-				title: 'child-two',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'plugins',
-			},
-			{
-				id: 'parent',
-				title: 'parent',
-				isCategory: true,
-				parent: 'woocommerce',
-				menuId: 'plugins',
-			},
-		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
-		);
+const originalLocation = window.location;
+global.window = Object.create( window );
+window.wcNavigation = {
+	rootBackLabel: 'Root Back',
+	rootBackUrl: 'http://custombackbutton.com',
+};
 
-		expect( categorizedItems.woocommerce ).toBeDefined();
-		expect( categorizedItems.woocommerce.plugins ).toBeDefined();
-		expect( categorizedItems.woocommerce.plugins.length ).toBe( 1 );
+const menuItems = [
+	{
+		id: 'woocommerce-home',
+		title: 'Home',
+		parent: 'woocommerce',
+		menuId: 'primary',
+		url: 'admin.php?page=wc-admin',
+	},
+	{
+		id: 'primary-category',
+		title: 'Primary Category',
+		isCategory: true,
+		parent: 'woocommerce',
+		backButtonLabel: 'Custom Back Label',
+		menuId: 'primary',
+	},
+	{
+		id: 'primary-child',
+		title: 'Primary Child',
+		parent: 'primary-category',
+		menuId: 'primary',
+		url: 'admin.php?page=wc-admin&path=/child',
+	},
+	{
+		id: 'favorite-category',
+		title: 'Favorite Category',
+		isCategory: true,
+		parent: 'woocommerce',
+		menuId: 'favorites',
+	},
+	{
+		id: 'favorite-child',
+		title: 'Favorite Child',
+		parent: 'favorite-category',
+		menuId: 'plugins',
+	},
+	{
+		id: 'plugin-category',
+		title: 'Plugin Category',
+		isCategory: true,
+		parent: 'woocommerce',
+		menuId: 'plugins',
+	},
+	{
+		id: 'plugin-child',
+		title: 'Plugin Child',
+		parent: 'plugin-category',
+		menuId: 'plugins',
+		url: 'admin.php?page=my-plugin',
+	},
+	{
+		id: 'secondary-category',
+		title: 'Secondary Category',
+		isCategory: true,
+		parent: 'woocommerce',
+		menuId: 'secondary',
+	},
+	{
+		id: 'secondary-child',
+		title: 'Secondary Child',
+		parent: 'secondary-category',
+		menuId: 'secondary',
+	},
+];
 
-		expect( categorizedItems.parent ).toBeDefined();
-		expect( categorizedItems.parent.plugins ).toBeDefined();
-		expect( categorizedItems.parent.plugins.length ).toBe( 2 );
+describe( 'Container', () => {
+	beforeEach( () => {
+		delete window.location;
+		window.location = new URL( getAdminLink( 'admin.php?page=wc-admin' ) );
+
+		useSelect.mockImplementation( () => ( {
+			menuItems,
+			favorites: [ 'favorite-category' ],
+		} ) );
 	} );
 
-	it( 'should handle multiple depths', () => {
-		const menuItems = [
-			{
-				id: 'grand-child',
-				title: 'grand-child',
-				isCategory: false,
-				parent: 'child',
-				menuId: 'plugins',
-			},
-			{
-				id: 'child',
-				title: 'child',
-				isCategory: true,
-				parent: 'grand-parent',
-				menuId: 'plugins',
-			},
-			{
-				id: 'grand-parent',
-				title: 'grand-parent',
-				isCategory: true,
-				parent: 'woocommerce',
-				menuId: 'plugins',
-			},
-		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
-		);
-
-		expect( categorizedItems[ 'grand-parent' ] ).toBeDefined();
-		expect( categorizedItems[ 'grand-parent' ] ).toBeDefined();
-		expect( categorizedItems[ 'grand-parent' ].plugins.length ).toBe( 1 );
-
-		expect( categorizedItems.child ).toBeDefined();
-		expect( categorizedItems.child ).toBeDefined();
-		expect( categorizedItems.child.plugins.length ).toBe( 1 );
-
-		expect( categorizedItems[ 'grand-child' ] ).not.toBeDefined();
+	afterAll( () => {
+		window.location = originalLocation;
 	} );
 
-	it( 'should group by menuId', () => {
-		const menuItems = [
-			{
-				id: 'parent',
-				title: 'parent',
-				isCategory: true,
-				parent: 'woocommerce',
-				menuId: 'primary',
-			},
-			{
-				id: 'primary-one',
-				title: 'primary-one',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'primary',
-			},
-			{
-				id: 'primary-two',
-				title: 'primary-two',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'primary',
-			},
-		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
-		);
+	test( 'should show the woocommerce root items initially', () => {
+		const { container } = render( <Container /> );
 
-		expect( categorizedItems.parent ).toBeDefined();
-		expect( categorizedItems.parent.primary ).toBeDefined();
-		expect( categorizedItems.parent.primary.length ).toBe( 2 );
+		expect(
+			container.querySelectorAll( '.components-navigation__item' ).length
+		).toBe( 5 );
 	} );
 
-	it( 'should group children only if their menuId matches parent', () => {
-		const menuItems = [
-			{
-				id: 'plugin-one',
-				title: 'plugin-one',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'plugins',
-			},
-			{
-				id: 'plugin-two',
-				title: 'plugin-two',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'plugins',
-			},
-			{
-				id: 'parent',
-				title: 'parent',
-				isCategory: true,
-				parent: 'woocommerce',
-				menuId: 'plugins',
-			},
-			{
-				id: 'primary-one',
-				title: 'primary-one',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'primary',
-			},
-			{
-				id: 'primary-two',
-				title: 'primary-two',
-				isCategory: false,
-				parent: 'parent',
-				menuId: 'primary',
-			},
-		];
-		const categoriesMap = getCategoriesMap( menuItems );
-		const categorizedItems = getMenuItemsByCategory(
-			categoriesMap,
-			menuItems
+	test( 'should set the active item based on initial location', async () => {
+		const { queryByText } = render( <Container /> );
+
+		expect(
+			queryByText( 'Home' ).parentElement.parentElement.classList
+		).toContain( 'is-active' );
+	} );
+
+	test( 'should set the initial active item based on current location', () => {
+		window.location = new URL( getAdminLink( 'admin.php?page=my-plugin' ) );
+
+		const { container, queryByText } = render( <Container /> );
+
+		expect(
+			container.querySelector( '.woocommerce-navigation-category-title' )
+				.textContent
+		).toBe( 'Plugin Category' );
+		expect(
+			queryByText( 'Plugin Child' ).parentElement.parentElement.classList
+		).toContain( 'is-active' );
+	} );
+
+	test( 'should update the active item and level when location changes', async () => {
+		window.location = new URL( getAdminLink( 'admin.php?page=wc-admin' ) );
+
+		const { container, queryByText } = render( <Container /> );
+
+		expect( queryByText( 'Primary Child' ) ).toBeNull();
+
+		// Trigger and wait for history change.
+		await act( async () => {
+			delete window.location;
+			window.location = new URL(
+				getAdminLink( 'admin.php?page=wc-admin&path=/child' )
+			);
+			getHistory().push( getAdminLink( '/child' ) );
+
+			await new Promise( ( resolve ) => {
+				setTimeout( () => {
+					resolve();
+				}, 0 );
+			} );
+		} );
+
+		expect(
+			container.querySelector( '.woocommerce-navigation-category-title' )
+				.textContent
+		).toBe( 'Primary Category' );
+		expect(
+			queryByText( 'Primary Child' ).parentElement.parentElement.classList
+		).toContain( 'is-active' );
+	} );
+
+	test( 'should update the active level when a category is clicked', () => {
+		const { container, queryByText } = render( <Container /> );
+
+		userEvent.click( queryByText( 'Secondary Category' ) );
+
+		expect(
+			container.querySelector( '.woocommerce-navigation-category-title' )
+				.textContent
+		).toBe( 'Secondary Category' );
+	} );
+
+	test( 'should show the back button in each category', () => {
+		const { container, queryByText } = render( <Container /> );
+
+		userEvent.click( queryByText( 'Primary Category' ) );
+
+		const backButton = container.querySelector(
+			'.components-navigation__back-button'
 		);
 
-		expect( categorizedItems.parent ).toBeDefined();
-		expect( categorizedItems.parent.plugins ).toBeDefined();
-		expect( categorizedItems.parent.plugins.length ).toBe( 2 );
+		expect( backButton.textContent ).toBe( 'Custom Back Label' );
+	} );
 
-		expect( categorizedItems.primary ).not.toBeDefined();
+	test( 'should go up a level on back button click', () => {
+		const { container, queryByText } = render( <Container /> );
+
+		userEvent.click( queryByText( 'Primary Category' ) );
+
+		const backButton = container.querySelector(
+			'.components-navigation__back-button'
+		);
+
+		userEvent.click( backButton );
+
+		expect(
+			container.querySelector( '.woocommerce-navigation-category-title' )
+				.textContent
+		).toBe( 'WooCommerce' );
+	} );
+
+	test( 'should show the favorite items after the primary items', () => {
+		const { container } = render( <Container /> );
+
+		const navigationGroups = container.querySelectorAll(
+			'.components-navigation__group'
+		);
+
+		expect(
+			navigationGroups[ 0 ].querySelector( 'li:nth-child(1)' ).textContent
+		).toBe( 'Home' );
+		expect(
+			navigationGroups[ 0 ].querySelector( 'li:nth-child(2)' ).textContent
+		).toBe( 'Primary Category' );
+		expect(
+			navigationGroups[ 0 ].querySelector( 'li:nth-child(3)' ).textContent
+		).toBe( 'Favorite Category' );
+		expect(
+			navigationGroups[ 1 ].querySelector( 'li:nth-child(1)' ).textContent
+		).toBe( 'Plugin Category' );
+	} );
+
+	test( 'should not show multiple menus outside of the root category', () => {
+		const { container, queryByText } = render( <Container /> );
+
+		const rootNavigationGroups = container.querySelectorAll(
+			'.components-navigation__group'
+		);
+
+		expect( rootNavigationGroups.length ).toBe( 3 );
+
+		userEvent.click( queryByText( 'Primary Category' ) );
+
+		const categoryNavigationGroups = container.querySelectorAll(
+			'.components-navigation__group'
+		);
+
+		expect( categoryNavigationGroups.length ).toBe( 1 );
 	} );
 } );

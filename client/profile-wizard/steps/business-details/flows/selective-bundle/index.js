@@ -6,16 +6,14 @@ import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
 	Button,
+	Card,
+	CardBody,
+	CardFooter,
 	TabPanel,
 	__experimentalText as Text,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import {
-	Card,
-	SelectControl,
-	Form,
-	TextControl,
-} from '@woocommerce/components';
+import { SelectControl, Form, TextControl } from '@woocommerce/components';
 import {
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
@@ -26,8 +24,8 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { CurrencyContext } from '../../../../../lib/currency-context';
-import { createNoticesFromResponse } from '../../../../../lib/notices';
+import { CurrencyContext } from '~/lib/currency-context';
+import { createNoticesFromResponse } from '~/lib/notices';
 import { platformOptions } from '../../data/platform-options';
 import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { getRevenueOptions } from '../../data/revenue-options';
@@ -37,6 +35,26 @@ import './style.scss';
 
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
 const FREE_FEATURES_TAB_NAME = 'free-features';
+
+export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
+	return (
+		Object.keys( extensionInstallationOptions )
+			.filter(
+				( key ) =>
+					extensionInstallationOptions[ key ] &&
+					key !== 'install_extensions'
+			)
+			.map( ( key ) => {
+				// Remove anything after :
+				// Please refer to selective-extensions-bundle/index.js
+				// installableExtensions variable
+				// this is to allow duplicate slugs (Tax & Shipping for example)
+				return key.split( ':' )[ 0 ];
+			} )
+			// remove duplicate
+			.filter( ( item, index, arr ) => arr.indexOf( item ) === index )
+	);
+};
 
 class BusinessDetails extends Component {
 	constructor() {
@@ -69,30 +87,21 @@ class BusinessDetails extends Component {
 			selling_venues: sellingVenues,
 		} = this.state.savedValues;
 
-		const { getCurrencyConfig } = this.context;
-
-		const businessExtensions = Object.keys(
+		const businessExtensions = filterBusinessExtensions(
 			extensionInstallationOptions
-		).filter(
-			( key ) =>
-				extensionInstallationOptions[ key ] &&
-				key !== 'install_extensions'
 		);
 
 		recordEvent( 'storeprofiler_store_business_features_continue', {
-			product_number: productCount,
-			already_selling: sellingVenues,
-			currency: getCurrencyConfig().code,
-			revenue,
-			used_platform: otherPlatform,
-			used_platform_name: otherPlatformName,
 			all_extensions_installed: Object.values(
 				extensionInstallationOptions
 			).every( ( val ) => val ),
 			install_woocommerce_services:
-				extensionInstallationOptions[ 'woocommerce-services' ],
+				extensionInstallationOptions[
+					'woocommerce-services:shipping'
+				] || extensionInstallationOptions[ 'woocommerce-services:tax' ],
 			install_mailchimp:
 				extensionInstallationOptions[ 'mailchimp-for-woocommerce' ],
+			install_mailpoet: extensionInstallationOptions.mailpoet,
 			install_jetpack: extensionInstallationOptions.jetpack,
 			install_google_ads:
 				extensionInstallationOptions[ 'kliken-marketing-for-google' ],
@@ -215,6 +224,25 @@ class BusinessDetails extends Component {
 		return errors;
 	}
 
+	trackBusinessDetailsStep( {
+		other_platform: otherPlatform,
+		other_platform_name: otherPlatformName,
+		product_count: productCount,
+		selling_venues: sellingVenues,
+		revenue,
+	} ) {
+		const { getCurrencyConfig } = this.context;
+
+		recordEvent( 'storeprofiler_store_business_details_continue_variant', {
+			already_selling: sellingVenues,
+			currency: getCurrencyConfig().code,
+			product_number: productCount,
+			revenue,
+			used_platform: otherPlatform,
+			used_platform_name: otherPlatformName,
+		} );
+	}
+
 	renderBusinessDetailsStep() {
 		const {
 			goToNextStep,
@@ -238,6 +266,8 @@ class BusinessDetails extends Component {
 						savedValues: values,
 						currentTab: 'free-features',
 					} );
+
+					this.trackBusinessDetailsStep( values );
 				} }
 				onChangeCallback={ ( _, values, isValid ) => {
 					this.setState( { savedValues: values, isValid } );
@@ -262,8 +292,9 @@ class BusinessDetails extends Component {
 								</Text>
 							</div>
 							<Card>
-								<>
+								<CardBody>
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'How many products do you plan to display?',
 											'woocommerce-admin'
@@ -274,6 +305,7 @@ class BusinessDetails extends Component {
 									/>
 
 									<SelectControl
+										excludeSelectedOptions={ false }
 										label={ __(
 											'Currently selling elsewhere?',
 											'woocommerce-admin'
@@ -290,6 +322,7 @@ class BusinessDetails extends Component {
 										'other-woocommerce',
 									].includes( values.selling_venues ) && (
 										<SelectControl
+											excludeSelectedOptions={ false }
 											label={ __(
 												"What's your current annual revenue?",
 												'woocommerce-admin'
@@ -311,6 +344,9 @@ class BusinessDetails extends Component {
 										<>
 											<div className="business-competitors">
 												<SelectControl
+													excludeSelectedOptions={
+														false
+													}
 													label={ __(
 														'Which platform is the store using?',
 														'woocommerce-admin'
@@ -337,36 +373,35 @@ class BusinessDetails extends Component {
 											</div>
 										</>
 									) }
-
-									<div className="woocommerce-profile-wizard__card-actions">
-										<Button
-											isPrimary
-											onClick={ handleSubmit }
-											disabled={ ! isValidForm }
-											isBusy={ isInstallingActivating }
-										>
-											{ ! hasInstallActivateError
-												? __(
-														'Continue',
-														'woocommerce-admin'
-												  )
-												: __(
-														'Retry',
-														'woocommerce-admin'
-												  ) }
-										</Button>
-										{ hasInstallActivateError && (
-											<Button
-												onClick={ () => goToNextStep() }
-											>
-												{ __(
-													'Continue without installing',
+								</CardBody>
+								<CardFooter isBorderless justify="center">
+									<Button
+										isPrimary
+										onClick={ handleSubmit }
+										disabled={ ! isValidForm }
+										isBusy={ isInstallingActivating }
+									>
+										{ ! hasInstallActivateError
+											? __(
+													'Continue',
 													'woocommerce-admin'
-												) }
-											</Button>
-										) }
-									</div>
-								</>
+											  )
+											: __(
+													'Retry',
+													'woocommerce-admin'
+											  ) }
+									</Button>
+									{ hasInstallActivateError && (
+										<Button
+											onClick={ () => goToNextStep() }
+										>
+											{ __(
+												'Continue without installing',
+												'woocommerce-admin'
+											) }
+										</Button>
+									) }
+								</CardFooter>
 							</Card>
 						</>
 					);
@@ -376,7 +411,10 @@ class BusinessDetails extends Component {
 	}
 
 	renderFreeFeaturesStep() {
-		const { isInstallingActivating } = this.props;
+		const { isInstallingActivating, settings, profileItems } = this.props;
+		const country = settings.woocommerce_default_country
+			? settings.woocommerce_default_country
+			: null;
 
 		return (
 			<>
@@ -404,6 +442,9 @@ class BusinessDetails extends Component {
 				<SelectiveExtensionsBundle
 					isInstallingActivating={ isInstallingActivating }
 					onSubmit={ this.onContinue }
+					country={ country }
+					industry={ profileItems.industry }
+					productTypes={ profileItems.product_types }
 				/>
 			</>
 		);

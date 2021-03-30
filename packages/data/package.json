@@ -21,12 +21,14 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@babel/runtime-corejs2": "7.12.5",
 		"@woocommerce/date": "2.1.0",
 		"@woocommerce/navigation": "5.2.0",
 		"rememo": "^3.0.0"
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"peerDependencies": {
+		"@wordpress/core-data": "^2.24.2"
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import {
 	Button,
 	Card,
@@ -20,9 +20,16 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import { AppIllustration } from '../app-illustration';
 import './style.scss';
-import { setAllPropsToValue } from '../../../../../../lib/collections';
+import { setAllPropsToValue } from '~/lib/collections';
+import { getCountryCode } from '~/dashboard/utils';
+import { isWCPaySupported } from '~/task-list/tasks/payments/wcpay';
 
-const generatePluginDescriptionWithLink = ( description, productName ) => {
+const generatePluginDescriptionWithLink = (
+	description,
+	productName,
+	linkURL
+) => {
+	const url = linkURL ?? `https://woocommerce.com/products/${ productName }`;
 	return interpolateComponents( {
 		mixedString: description,
 		components: {
@@ -31,7 +38,15 @@ const generatePluginDescriptionWithLink = ( description, productName ) => {
 					type="external"
 					target="_blank"
 					className="woocommerce-admin__business-details__selective-extensions-bundle__link"
-					href={ `https://woocommerce.com/products/${ productName }` }
+					href={ url }
+					onClick={ () => {
+						recordEvent(
+							'storeprofiler_store_business_features_link_click',
+							{
+								extension_name: productName,
+							}
+						);
+					} }
 				/>
 			),
 		},
@@ -51,9 +66,17 @@ const installableExtensions = [
 					),
 					'woocommerce-payments'
 				),
+				isVisible: ( countryCode, industry ) => {
+					const hasCbdIndustry = ( industry || [] ).some(
+						( { slug } ) => {
+							return slug === 'cbd-other-hemp-derived-products';
+						}
+					);
+					return isWCPaySupported( countryCode ) && ! hasCbdIndustry;
+				},
 			},
 			{
-				slug: 'woocommerce-services',
+				slug: 'woocommerce-services:shipping',
 				description: generatePluginDescriptionWithLink(
 					__(
 						'Print shipping labels with {{link}}WooCommerce Shipping{{/link}}',
@@ -61,6 +84,40 @@ const installableExtensions = [
 					),
 					'shipping'
 				),
+				isVisible: ( countryCode, industry, productTypes ) => {
+					return (
+						countryCode === 'US' ||
+						( countryCode === 'US' &&
+							productTypes.length === 1 &&
+							productTypes[ 0 ] === 'downloads' )
+					);
+				},
+			},
+			{
+				slug: 'woocommerce-services:tax',
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Get automated sales tax with {{link}}WooCommerce Tax{{/link}}',
+						'woocommerce-admin'
+					),
+					'tax'
+				),
+				isVisible: ( countryCode ) => {
+					return [
+						'US',
+						'FR',
+						'GB',
+						'DE',
+						'CA',
+						'PL',
+						'AU',
+						'GR',
+						'BE',
+						'PT',
+						'DK',
+						'SE',
+					].includes( countryCode );
+				},
 			},
 			{
 				slug: 'jetpack',
@@ -77,6 +134,17 @@ const installableExtensions = [
 	{
 		title: 'Grow your store',
 		plugins: [
+			{
+				slug: 'mailpoet',
+				description: generatePluginDescriptionWithLink(
+					__(
+						'Level up your email marketing with {{link}}Mailpoet{{/link}}',
+						'woocommerce-admin'
+					),
+					'mailpoet',
+					'https://wordpress.org/plugins/mailpoet/'
+				),
+			},
 			{
 				slug: 'facebook-for-woocommerce',
 				description: generatePluginDescriptionWithLink(
@@ -111,7 +179,7 @@ const installableExtensions = [
 				slug: 'creative-mail-by-constant-contact',
 				description: generatePluginDescriptionWithLink(
 					__(
-						'Reach new customers with {{link}}Creative Mail{{/link}}',
+						'Emails made easy with {{link}}Creative Mail{{/link}}',
 						'woocommerce-admin'
 					),
 					'creative-mail-for-woocommerce'
@@ -120,20 +188,6 @@ const installableExtensions = [
 		],
 	},
 ];
-
-const initialValues = installableExtensions.reduce(
-	( acc, curr ) => {
-		const plugins = curr.plugins.reduce( ( pluginAcc, { slug } ) => {
-			return { ...pluginAcc, [ slug ]: true };
-		}, {} );
-
-		return {
-			...acc,
-			...plugins,
-		};
-	},
-	{ install_extensions: true }
-);
 
 const FreeBadge = () => {
 	return (
@@ -239,12 +293,56 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 	);
 };
 
+/**
+ * Returns plugins that either don't have the acceptedCountryCodes param or one defined
+ * that includes the passed in country.
+ *
+ * @param {Array} plugins  list of plugins
+ * @param {string} country  Woo store country
+ * @param {Array} industry List of selected industries
+ * @param {Array} productTypes List of selected product types
+ */
+const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
+	const countryCode = getCountryCode( country );
+
+	return plugins.filter(
+		( plugin ) =>
+			! plugin.isVisible ||
+			plugin.isVisible( countryCode, industry, productTypes )
+	);
+};
+
 export const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
+	country,
+	industry,
+	productTypes,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
-	const [ values, setValues ] = useState( initialValues );
+	const [ values, setValues ] = useState( {} );
+
+	useEffect( () => {
+		const initialValues = installableExtensions.reduce(
+			( acc, curr ) => {
+				const plugins = getVisiblePlugins(
+					curr.plugins,
+					country,
+					industry,
+					productTypes
+				).reduce( ( pluginAcc, { slug } ) => {
+					return { ...pluginAcc, [ slug ]: true };
+				}, {} );
+
+				return {
+					...acc,
+					...plugins,
+				};
+			},
+			{ install_extensions: true }
+		);
+		setValues( initialValues );
+	}, [ country ] );
 
 	const getCheckboxChangeHandler = ( slug ) => {
 		return ( checked ) => {
@@ -315,7 +413,12 @@ export const SelectiveExtensionsBundle = ( {
 								<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
 									{ title }
 								</div>
-								{ plugins.map( ( { description, slug } ) => (
+								{ getVisiblePlugins(
+									plugins,
+									country,
+									industry,
+									productTypes
+								).map( ( { description, slug } ) => (
 									<BundleExtensionCheckbox
 										key={ slug }
 										description={ description }

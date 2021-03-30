@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Suspense } from '@wordpress/element';
+import { Suspense, useRef, useCallback } from '@wordpress/element';
 import classnames from 'classnames';
 import { Spinner } from '@woocommerce/components';
 
@@ -14,41 +14,63 @@ import useFocusOutside from '../../hooks/useFocusOutside';
 export const Panel = ( {
 	content,
 	isPanelOpen,
-	currentTab,
 	isPanelSwitching,
+	currentTab,
 	tab,
 	closePanel,
 	clearPanel,
 } ) => {
+	const panelClass = 'woocommerce-layout__activity-panel-wrapper';
+
 	const handleFocusOutside = ( event ) => {
 		const isClickOnModalOrSnackbar =
-			event.target.closest(
+			event.relatedTarget &&
+			( event.relatedTarget.closest(
 				'.woocommerce-inbox-dismiss-confirmation_modal'
-			) || event.target.closest( '.components-snackbar__action' );
+			) ||
+				event.relatedTarget.closest( '.components-snackbar__action' ) );
 
 		if ( isPanelOpen && ! isClickOnModalOrSnackbar ) {
 			closePanel();
 		}
 	};
 
-	const ref = useFocusOnMount();
+	const possibleFocusPanel = () => {
+		if ( ! containerRef.current || ! isPanelOpen || ! tab ) {
+			return;
+		}
+
+		focusOnMountRef( containerRef.current );
+	};
+
+	const finishTransition = ( e ) => {
+		if ( e && e.propertyName === 'transform' ) {
+			clearPanel();
+			possibleFocusPanel();
+		}
+	};
+
+	const focusOnMountRef = useFocusOnMount();
 	const useFocusOutsideProps = useFocusOutside( handleFocusOutside );
+	const containerRef = useRef( null );
+
+	const mergedContainerRef = useCallback( ( node ) => {
+		containerRef.current = node;
+		focusOnMountRef( node );
+	}, [] );
 
 	if ( ! tab ) {
-		return <div className="woocommerce-layout__activity-panel-wrapper" />;
+		return <div className={ panelClass } />;
 	}
 
 	if ( ! content ) {
 		return null;
 	}
 
-	const classNames = classnames(
-		'woocommerce-layout__activity-panel-wrapper',
-		{
-			'is-open': isPanelOpen,
-			'is-switching': isPanelSwitching,
-		}
-	);
+	const classNames = classnames( panelClass, {
+		'is-open': isPanelOpen,
+		'is-switching': isPanelSwitching,
+	} );
 
 	return (
 		<div
@@ -56,10 +78,9 @@ export const Panel = ( {
 			tabIndex={ 0 }
 			role="tabpanel"
 			aria-label={ tab.title }
-			onTransitionEnd={ clearPanel }
-			onAnimationEnd={ clearPanel }
+			onTransitionEnd={ finishTransition }
 			{ ...useFocusOutsideProps }
-			ref={ ref }
+			ref={ mergedContainerRef }
 		>
 			<div
 				className="woocommerce-layout__activity-panel-content"

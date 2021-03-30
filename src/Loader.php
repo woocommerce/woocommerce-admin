@@ -98,6 +98,31 @@ class Loader {
 		// Handler for WooCommerce and WooCommerce Admin plugin activation.
 		add_action( 'woocommerce_activated_plugin', array( __CLASS__, 'activated_plugin' ) );
 		add_action( 'activated_plugin', array( __CLASS__, 'activated_plugin' ) );
+		add_action( 'admin_init', array( __CLASS__, 'is_using_installed_wc_admin_plugin' ) );
+	}
+
+	/**
+	 * Verifies which plugin version is being used. If WooCommerce Admin is installed and activated but not in use
+	 * it will show a warning.
+	 */
+	public static function is_using_installed_wc_admin_plugin() {
+		if ( PluginsHelper::is_plugin_active( 'woocommerce-admin' ) ) {
+			$path = PluginsHelper::get_plugin_data( 'woocommerce-admin' );
+			if ( WC_ADMIN_VERSION_NUMBER !== $path['Version'] ) {
+				add_action(
+					'admin_notices',
+					function() {
+						echo '<div class="error"><p>';
+						printf(
+							/* translators: %s: is referring to the plugin's name. */
+							esc_html__( 'You have the %s plugin activated but it is not being used.', 'woocommerce-admin' ),
+							'<code>WooCommerce Admin</code>'
+						);
+						echo '</p></div>';
+					}
+				);
+			}
+		}
 	}
 
 	/**
@@ -147,6 +172,7 @@ class Loader {
 	 * Gets WordPress capability required to use analytics features.
 	 *
 	 * @return string
+	 * @deprecated since 2.1.0, use value 'view_woocommerce_reports'
 	 */
 	public static function get_analytics_capability() {
 		if ( null === static::$required_capability ) {
@@ -164,6 +190,7 @@ class Loader {
 	 * Helper function indicating whether the current user has the required analytics capability.
 	 *
 	 * @return bool
+	 * @deprecated since 2.1.0, use current_user_can( 'view_woocommerce_reports' )
 	 */
 	public static function user_can_analytics() {
 		return current_user_can( static::get_analytics_capability() );
@@ -175,10 +202,10 @@ class Loader {
 	 * @param  string $feature Feature slug.
 	 * @return bool Returns true if the feature is enabled.
 	 *
-	 * @deprecated since 1.9.0, use Features::exists( $feature )
+	 * @deprecated since 1.9.0, use Features::is_enabled( $feature )
 	 */
 	public static function is_feature_enabled( $feature ) {
-		return Features::exists( $feature );
+		return Features::is_enabled( $feature );
 	}
 
 	/**
@@ -214,6 +241,18 @@ class Loader {
 		}
 
 		return plugins_url( self::get_path( $ext ) . $file . $suffix . '.' . $ext, WC_ADMIN_PLUGIN_FILE );
+	}
+
+	/**
+	 * Gets a script asset filename
+	 *
+	 * @param  string $file File name (without extension).
+	 * @return string complete asset filename.
+	 */
+	public static function get_script_asset_filename( $file ) {
+		$minification_suffix = Features::exists( 'minified-js' ) ? '.min' : '';
+
+		return $file . $minification_suffix . '.asset.php';
 	}
 
 	/**
@@ -299,121 +338,51 @@ class Loader {
 		$js_file_version  = self::get_file_version( 'js' );
 		$css_file_version = self::get_file_version( 'css' );
 
-		wp_register_script(
-			'wc-csv',
-			self::get_url( 'csv-export/index', 'js' ),
-			array( 'moment' ),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-currency',
-			self::get_url( 'currency/index', 'js' ),
-			array( 'wc-number' ),
-			$js_file_version,
-			true
-		);
-
-		wp_set_script_translations( 'wc-currency', 'woocommerce-admin' );
-
-		wp_register_script(
+		$scripts = array(
 			'wc-customer-effort-score',
-			self::get_url( 'customer-effort-score/index', 'js' ),
-			array(
-				'wp-components',
-				'wp-compose',
-				'wp-data',
-				'wp-element',
-				'wp-i18n',
-				'wp-notices',
-			),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
+			// NOTE: This should be removed when Gutenberg is updated and the notices package is removed from WooCommerce Admin.
+			'wc-notices',
+			'wc-number',
+			'wc-tracks',
+			'wc-date',
+			'wc-components',
+			WC_ADMIN_APP,
+			'wc-csv',
+			'wc-store-data',
+			'wc-currency',
 			'wc-navigation',
-			self::get_url( 'navigation/index', 'js' ),
-			array( 'wp-url', 'wp-hooks', 'wp-element', 'wp-data', 'moment', 'wp-components' ),
-			$js_file_version,
-			true
 		);
 
-			// NOTE: This should be removed when Gutenberg is updated and
-			// the notices package is removed from WooCommerce Admin.
+		$scripts_map = array(
+			WC_ADMIN_APP    => 'app',
+			'wc-csv'        => 'csv-export',
+			'wc-store-data' => 'data',
+		);
+
+		$translated_scripts = array(
+			'wc-currency',
+			'wc-date',
+			'wc-components',
+			WC_ADMIN_APP,
+		);
+
+		foreach ( $scripts as $script ) {
+			$script_path_name       = isset( $scripts_map[ $script ] ) ? $scripts_map[ $script ] : str_replace( 'wc-', '', $script );
+			$script_assets_filename = self::get_script_asset_filename( 'index' );
+			$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . $script_path_name . '/' . $script_assets_filename;
+
 			wp_register_script(
-				'wc-notices',
-				self::get_url( 'notices/index', 'js' ),
-				array(),
+				$script,
+				self::get_url( $script_path_name . '/index', 'js' ),
+				$script_assets ['dependencies'],
 				$js_file_version,
 				true
 			);
 
-		wp_register_script(
-			'wc-number',
-			self::get_url( 'number/index', 'js' ),
-			array(),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-tracks',
-			self::get_url( 'tracks/index', 'js' ),
-			array(),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-date',
-			self::get_url( 'date/index', 'js' ),
-			array( 'moment', 'wp-date', 'wp-i18n' ),
-			$js_file_version,
-			true
-		);
-
-		wp_register_script(
-			'wc-store-data',
-			self::get_url( 'data/index', 'js' ),
-			array( 'wp-data' ),
-			$js_file_version,
-			true
-		);
-
-		wp_set_script_translations( 'wc-date', 'woocommerce-admin' );
-
-		wp_register_script(
-			'wc-components',
-			self::get_url( 'components/index', 'js' ),
-			array(
-				'moment',
-				'wp-api-fetch',
-				'wp-data',
-				'wp-data-controls',
-				'wp-element',
-				'wp-hooks',
-				'wp-html-entities',
-				'wp-i18n',
-				'wp-keycodes',
-				'wc-csv',
-				'wc-currency',
-				'wc-customer-effort-score',
-				'wc-date',
-				'wc-navigation',
-				// NOTE: This should be removed when Gutenberg is updated and
-				// the notices package is removed from WooCommerce Admin.
-				'wc-notices',
-				'wc-number',
-				'wc-store-data',
-				'wp-components',
-			),
-			$js_file_version,
-			true
-		);
-
-		wp_set_script_translations( 'wc-components', 'woocommerce-admin' );
+			if ( in_array( $script, $translated_scripts, true ) ) {
+				wp_set_script_translations( $script, 'woocommerce-admin' );
+			}
+		}
 
 		wp_register_style(
 			'wc-components',
@@ -439,21 +408,6 @@ class Loader {
 		);
 		wp_style_add_data( 'wc-customer-effort-score', 'rtl', 'replace' );
 
-		wp_register_script(
-			WC_ADMIN_APP,
-			self::get_url( 'app/index', 'js' ),
-			array(
-				'wp-core-data',
-				'wp-components',
-				'wc-components',
-				'wp-date',
-				'wp-plugins',
-				'wc-tracks',
-				'wc-navigation',
-			),
-			$js_file_version,
-			true
-		);
 		wp_localize_script(
 			WC_ADMIN_APP,
 			'wcAdminAssets',
@@ -462,8 +416,6 @@ class Loader {
 				'version' => $js_file_version,
 			)
 		);
-
-		wp_set_script_translations( WC_ADMIN_APP, 'woocommerce-admin' );
 
 		// The "app" RTL files are in a different format than the components.
 		$rtl = is_rtl() ? '.rtl' : '';
@@ -698,10 +650,6 @@ class Loader {
 			return;
 		}
 
-		if ( ! static::user_can_analytics() ) {
-			return;
-		}
-
 		// Grab translation strings from Webpack-generated chunks.
 		add_filter( 'load_script_translation_file', array( __CLASS__, 'load_script_translation_file' ), 10, 3 );
 
@@ -820,7 +768,8 @@ class Loader {
 	 * Returns true if we are on a JS powered admin page.
 	 */
 	public static function is_admin_page() {
-		return wc_admin_is_registered_page();
+		// Check the function exists before calling in case WC Admin is disabled. See PR #6563.
+		return function_exists( 'wc_admin_is_registered_page' ) && wc_admin_is_registered_page();
 	}
 
 	/**
@@ -845,10 +794,6 @@ class Loader {
 	 * @param array $section Section to create breadcrumb from.
 	 */
 	private static function output_heading( $section ) {
-		if ( ! static::user_can_analytics() ) {
-			return;
-		}
-
 		echo esc_html( $section );
 	}
 
@@ -858,10 +803,6 @@ class Loader {
 	 */
 	public static function embed_page_header() {
 		if ( ! self::is_admin_page() && ! self::is_embed_page() ) {
-			return;
-		}
-
-		if ( ! static::user_can_analytics() ) {
 			return;
 		}
 

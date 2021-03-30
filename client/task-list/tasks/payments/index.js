@@ -88,9 +88,15 @@ class Payments extends Component {
 
 	getRecommendedMethod() {
 		const { methods } = this.props;
-		return methods.find( ( m ) => m.key === 'wcpay' && m.visible )
-			? 'wcpay'
-			: 'stripe';
+		const recommendedMethod = methods.find(
+			( m ) =>
+				( m.key === 'wcpay' && m.visible ) ||
+				( m.key === 'mercadopago' && m.visible )
+		);
+		if ( ! recommendedMethod ) {
+			return 'stripe';
+		}
+		return recommendedMethod.key;
 	}
 
 	async markConfigured( methodName, queryParams = {} ) {
@@ -98,6 +104,10 @@ class Payments extends Component {
 		const { methods } = this.props;
 
 		const method = methods.find( ( option ) => option.key === methodName );
+
+		if ( ! method ) {
+			throw `Method ${ methodName } not found in available methods list`;
+		}
 
 		this.setState( {
 			enabledMethods: {
@@ -124,7 +134,15 @@ class Payments extends Component {
 			return;
 		}
 
-		return methods.find( ( method ) => method.key === query.method );
+		const currentMethod = methods.find(
+			( method ) => method.key === query.method
+		);
+
+		if ( ! currentMethod ) {
+			throw `Current method ${ query.method } not found in available methods list`;
+		}
+
+		return currentMethod;
 	}
 
 	getInstallStep() {
@@ -171,6 +189,10 @@ class Payments extends Component {
 		const { methods } = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
+
+		if ( ! method ) {
+			throw `Method ${ key } not found in available methods list`;
+		}
 
 		enabledMethods[ key ] = ! enabledMethods[ key ];
 		this.setState( { enabledMethods } );
@@ -251,6 +273,7 @@ class Payments extends Component {
 				<Card className="woocommerce-task-payment-method woocommerce-task-card">
 					<CardBody>
 						{ cloneElement( currentMethod.container, {
+							methodConfig: currentMethod,
 							query,
 							installStep: this.getInstallStep(),
 							markConfigured: this.markConfigured,
@@ -292,31 +315,25 @@ class Payments extends Component {
 						isRecommended && key !== 'wcpay';
 					const showRecommendedPill =
 						isRecommended && key === 'wcpay';
+					const recommendedText =
+						key === 'mercadopago'
+							? __( 'Local Partner', 'woocommerce-admin' )
+							: __( 'Recommended', 'woocommerce-admin' );
 
 					return (
 						<Card key={ key } className={ classes }>
-							<CardMedia isBorderless>
-								{ showRecommendedRibbon && (
-									<div className="woocommerce-task-payment__recommended-ribbon">
-										<span>
-											{ __(
-												'Recommended',
-												'woocommerce-admin'
-											) }
-										</span>
-									</div>
-								) }
-								{ before }
-							</CardMedia>
+							{ showRecommendedRibbon && (
+								<div className="woocommerce-task-payment__recommended-ribbon">
+									<span>{ recommendedText }</span>
+								</div>
+							) }
+							<CardMedia isBorderless>{ before }</CardMedia>
 							<CardBody>
 								<H className="woocommerce-task-payment__title">
 									{ title }
 									{ showRecommendedPill && (
 										<span className="woocommerce-task-payment__recommended-pill">
-											{ __(
-												'Recommended',
-												'woocommerce-admin'
-											) }
+											{ recommendedText }
 										</span>
 									) }
 								</H>
@@ -398,6 +415,8 @@ export default compose(
 			'woocommerce_razorpay_settings',
 			'woocommerce_mollie_payments_settings',
 			'woocommerce_payubiz_settings',
+			'woocommerce_paystack_settings',
+			'woocommerce_woo-mercado-pago-basic_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {
