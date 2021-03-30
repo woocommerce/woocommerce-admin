@@ -73,7 +73,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-== 2.2.0 3/26/2021  ==
+== 2.2.0 3/30/2021  ==
 
 - Fix: Check if features are currently being enabled #6688
 - Add: Next new novel navigation nudge note #6610
