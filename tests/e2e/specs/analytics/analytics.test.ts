@@ -4,9 +4,8 @@ import { StoreOwnerFlow } from '../../utils/flows';
 describe( 'Analytics pages', () => {
 	const analyticsPage = new Analytics( page );
 
-	beforeAll( async () => {
-		await StoreOwnerFlow.login();
-	} );
+	beforeAll( StoreOwnerFlow.login );
+	afterAll( StoreOwnerFlow.logout );
 
 	it( 'A user can view the analytics overview without it crashing', async () => {
 		await analyticsPage.navigate();
@@ -61,9 +60,5 @@ describe( 'Analytics pages', () => {
 	it( 'A user can view the analytics for settings without it crashing', async () => {
 		await analyticsPage.navigateToSection( 'settings' );
 		await analyticsPage.isDisplayed();
-	} );
-
-	afterAll( async () => {
-		StoreOwnerFlow.logout();
 	} );
 } );
