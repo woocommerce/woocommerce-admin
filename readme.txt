@@ -2,9 +2,9 @@
 Contributors: woocommerce, automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.4.0
-Tested up to: 5.6.0
+Tested up to: 5.7.0
 Requires PHP: 7.0
-Stable tag: 2.2.0-dev
+Stable tag: 2.3.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -75,7 +75,16 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Tweak: Add check to see if value for contains is array, show warning if not. #6645
+- Fix: Event tracking for merchant email notes #6616
+
+== 2.2.0 3/26/2021 ==
+
+- Fix: Check if features are currently being enabled #6688
+- Add: Next new novel navigation nudge note #6610
+- Fix: Fix the activity panel toggle not closing on click #6679
 - Tweak: Add default value for contains op #6622
+- Fix: Fix use of feature checks and remove deprecated method calls #6687
 - Dev: Close activity panel tabs by default and track #6566
 - Dev: Update undefined task name properties for help panel tracks #6565
 - Fix: Allow the manager role to query certain options #6577
@@ -137,7 +146,15 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Paystack payment provider to several african countries. #6579
 - Dev: Payments task: include Mercado Pago #6572
 - Dev: Ensure script asset.php files are included in builds #6635
+- Fix: Show management links when the task list is complete (even if its not hidden). #6657
+- Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
+- Fix: Update the Mercado option used for enabling/disabling. #6677
+- Dev: Ensure production script asset names don't include .min suffix #6681
+- Fix: Improve AddFirstProduct email note contents. #6617
 - Fix: Missing margin between cards and viewport in setup wizard #6620
+
+== 2.1.4 3/29/2021  ==
+
 - Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
 
 == 2.1.3 3/14/2021  ==
