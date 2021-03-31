@@ -24,7 +24,6 @@ export class WcHomescreen extends BasePage {
 	}
 
 	async getTaskList() {
-		// Log out link in admin bar is not visible so can't be clicked directly.
 		await page.waitForSelector(
 			'.woocommerce-task-card .woocommerce-list__item-title'
 		);

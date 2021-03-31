@@ -55,4 +55,10 @@ export class FormToggle extends BaseElement {
 			`${ this.selector } .components-form-toggle__input`
 		);
 	}
+
+	async isEnabled() {
+		await this.page.waitForSelector(
+			`${ this.selector } .components-form-toggle.is-checked`
+		);
+	}
 }

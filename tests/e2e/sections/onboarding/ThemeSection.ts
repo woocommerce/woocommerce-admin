@@ -8,6 +8,6 @@ export class ThemeSection extends BasePage {
 	}
 
 	async continueWithActiveTheme() {
-		this.clickButtonWithText( 'Continue with my active theme' );
+		await this.clickButtonWithText( 'Continue with my active theme' );
 	}
 }

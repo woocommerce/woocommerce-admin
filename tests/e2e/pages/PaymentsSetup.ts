@@ -19,6 +19,10 @@ export class PaymentsSetup extends BasePage {
 		await waitForElementByText( 'h1', 'Choose payment methods' );
 	}
 
+	async maybeCloseHelpModal() {
+		await this.clickButtonWithText( 'Got it' );
+	}
+
 	async goToPaymentMethodSetup( method: PaymentMethodWithSetupButton ) {
 		const selector = `.woocommerce-task-payment-${ method } button`;
 		const button = await this.page.$( selector );
@@ -33,9 +37,11 @@ export class PaymentsSetup extends BasePage {
 	}
 
 	async methodHasBeenSetup( method: PaymentMethod ) {
-		await this.page.waitForSelector(
-			`.woocommerce-task-payment-${ method } .components-form-toggle.is-checked`
+		const toggle = this.getFormToggle(
+			`.woocommerce-task-payment-${ method }`
 		);
+
+		await toggle.isEnabled();
 	}
 
 	async enableCashOnDelivery() {
