@@ -62,6 +62,10 @@
 
 .folded .woocommerce-layout__header {
 	width: calc(100% - 36px);
+
+	@include breakpoint( '<782px' ) {
+		width: 100%;
+	}
 }
 
 .is-wp-toolbar-disabled .woocommerce-layout__header {
