@@ -58,6 +58,7 @@ describe( 'Payment setup task', () => {
 
 		// refresh the page to ensure it is persisted.
 		await paymentsSetup.navigate();
+		await paymentsSetup.maybeCloseHelpModal();
 		await paymentsSetup.methodHasBeenSetup( 'cod' );
 	} );
 } );
