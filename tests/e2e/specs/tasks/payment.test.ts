@@ -12,8 +12,15 @@ describe( 'Payment setup task', () => {
 
 	beforeAll( async () => {
 		await StoreOwnerFlow.login();
-		await homeScreen.navigate();
+
+		// This makes this test more isolated, by always navigating to the
+		// profile wizard and skipping, this behaves the same as if the profile wizard had not
+		// been run yet and the user is redirected to it when trying to go to wc-admin.
+		await profileWizard.navigate();
+		await profileWizard.skipStoreSetup();
+
 		await homeScreen.isDisplayed();
+		await homeScreen.possiblyDismissWelcomeModal();
 	} );
 
 	afterAll( StoreOwnerFlow.logout );
