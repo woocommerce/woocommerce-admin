@@ -17,6 +17,6 @@ export const isNavigationRequesting = ( state, selector ) => {
 	return state.requesting[ selector ] || false;
 };
 
-export const getPersistedQueryFromStore = ( state ) => {
+export const getPersistedQuery = ( state ) => {
 	return state.persistedQuery || {};
 };

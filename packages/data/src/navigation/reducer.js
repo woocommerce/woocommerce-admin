@@ -26,7 +26,7 @@ const reducer = (
 				menuItems: [ ...state.menuItems, ...menuItems ],
 			};
 			break;
-		case TYPES.SET_PERSISTED_QUERY:
+		case TYPES.ON_HISTORY_CHANGE:
 			state = {
 				...state,
 				persistedQuery,

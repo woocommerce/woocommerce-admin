@@ -22,9 +22,7 @@ import { isWCAdmin } from '../dashboard/utils';
 const NavigationPlugin = () => {
 	const { persistedQuery } = useSelect( ( select ) => {
 		return {
-			persistedQuery: select(
-				NAVIGATION_STORE_NAME
-			).getPersistedQueryFromStore(),
+			persistedQuery: select( NAVIGATION_STORE_NAME ).getPersistedQuery(),
 		};
 	} );
 

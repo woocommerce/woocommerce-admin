@@ -10,17 +10,6 @@ import { getPersistedQuery } from '@woocommerce/navigation';
 import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
 
-const setPersistedQuery = function ( persistedQuery ) {
-	if ( ! Object.keys( getPersistedQuery() ).length ) {
-		return;
-	}
-
-	return {
-		type: TYPES.SET_PERSISTED_QUERY,
-		persistedQuery,
-	};
-};
-
 export function setMenuItems( menuItems ) {
 	return {
 		type: TYPES.SET_MENU_ITEMS,
@@ -102,11 +91,20 @@ export function removeFavoriteSuccess( favorite, error ) {
 }
 
 export function* onLoad() {
-	yield setPersistedQuery( getPersistedQuery() );
+	yield onHistoryChange();
 }
 
 export function* onHistoryChange() {
-	yield setPersistedQuery( getPersistedQuery() );
+	const persistedQuery = getPersistedQuery();
+
+	if ( ! Object.keys( persistedQuery ).length ) {
+		return null;
+	}
+
+	yield {
+		type: TYPES.ON_HISTORY_CHANGE,
+		persistedQuery,
+	};
 }
 
 export function* addFavorite( favorite ) {
