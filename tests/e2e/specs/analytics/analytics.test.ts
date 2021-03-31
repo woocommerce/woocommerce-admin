@@ -9,10 +9,10 @@ describe( 'Analytics pages', () => {
 	const login = new Login( page );
 
 	beforeAll( async () => {
-		login.login();
+		await login.login();
 	} );
 	afterAll( async () => {
-		login.logout();
+		await login.logout();
 	} );
 
 	it( 'A user can view the analytics overview without it crashing', async () => {

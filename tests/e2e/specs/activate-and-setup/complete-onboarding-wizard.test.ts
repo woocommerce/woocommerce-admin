@@ -17,10 +17,10 @@ describe( 'Store owner can complete onboarding wizard', () => {
 	const login = new Login( page );
 
 	beforeAll( async () => {
-		login.login();
+		await login.login();
 	} );
 	afterAll( async () => {
-		login.logout();
+		await login.logout();
 	} );
 
 	it( 'can start the profile wizard', async () => {
@@ -101,10 +101,10 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 	const login = new Login( page );
 
 	beforeAll( async () => {
-		login.login();
+		await login.login();
 	} );
 	afterAll( async () => {
-		login.logout();
+		await login.logout();
 	} );
 
 	it( 'can start the profile wizard', async () => {
@@ -207,10 +207,10 @@ describe( 'A japanese store can complete the selective bundle install but does n
 	const login = new Login( page );
 
 	beforeAll( async () => {
-		login.login();
+		await login.login();
 	} );
 	afterAll( async () => {
-		login.logout();
+		await login.logout();
 	} );
 
 	it( 'can start the profile wizard', async () => {

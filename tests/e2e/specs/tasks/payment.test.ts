@@ -28,7 +28,7 @@ describe( 'Payment setup task', () => {
 	} );
 
 	afterAll( async () => {
-		login.logout();
+		await login.logout();
 	} );
 
 	it( 'Can visit the payment setup task from the homescreen if the setup wizard has been skipped', async () => {

@@ -19,10 +19,10 @@ describe( 'Store owner can login and make sure WooCommerce is activated', () => 
 	const plugins = new Plugins( page );
 
 	beforeAll( async () => {
-		login.login();
+		await login.login();
 	} );
 	afterAll( async () => {
-		login.logout();
+		await login.logout();
 	} );
 
 	it( 'can make sure WooCommerce is activated. If not, activate it', async () => {
@@ -46,10 +46,10 @@ describe( 'Store owner can finish initial store setup', () => {
 	const login = new Login( page );
 
 	beforeAll( async () => {
-		login.login();
+		await login.login();
 	} );
 	afterAll( async () => {
-		login.logout();
+		await login.logout();
 	} );
 
 	it( 'can enable tax rates and calculations', async () => {
