@@ -12,6 +12,7 @@ describe( 'Payment setup task', () => {
 
 	beforeAll( async () => {
 		await StoreOwnerFlow.login();
+		await homeScreen.navigate();
 		await homeScreen.isDisplayed();
 	} );
 
