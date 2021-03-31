@@ -1,5 +1,5 @@
 /**
- * @format
+ * External dependencies
  */
 import {
 	clearAndFillInput,
@@ -9,17 +9,25 @@ import {
 /**
  * Internal dependencies
  */
-import { StoreOwnerFlow } from '../../utils/flows';
 import { WcSettings } from '../../pages/WcSettings';
 import { WpSettings } from '../../pages/WpSettings';
+import { Login } from '../../pages/Login';
+import { Plugins } from '../../pages/Plugins';
 
 describe( 'Store owner can login and make sure WooCommerce is activated', () => {
-	beforeAll( StoreOwnerFlow.login );
-	afterAll( StoreOwnerFlow.logout );
+	const login = new Login( page );
+	const plugins = new Plugins( page );
+
+	beforeAll( async () => {
+		login.login();
+	} );
+	afterAll( async () => {
+		login.logout();
+	} );
 
 	it( 'can make sure WooCommerce is activated. If not, activate it', async () => {
 		const slug = 'woocommerce';
-		await StoreOwnerFlow.openPlugins();
+		await plugins.navigate();
 		const disableLink = await page.$(
 			`tr[data-slug="${ slug }"] .deactivate a`
 		);
@@ -35,9 +43,10 @@ describe( 'Store owner can login and make sure WooCommerce is activated', () => 
 describe( 'Store owner can finish initial store setup', () => {
 	const wcSettings = new WcSettings( page );
 	const wpSettings = new WpSettings( page );
+	const login = new Login( page );
 
-	beforeAll( StoreOwnerFlow.login );
-	afterAll( StoreOwnerFlow.logout );
+	beforeAll( login.login );
+	afterAll( login.logout );
 
 	it( 'can enable tax rates and calculations', async () => {
 		// Go to general settings page

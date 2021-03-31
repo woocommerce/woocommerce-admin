@@ -1,11 +1,19 @@
+/**
+ * Internal dependencies
+ */
 import { Analytics } from '../../pages/Analytics';
-import { StoreOwnerFlow } from '../../utils/flows';
+import { Login } from '../../pages/Login';
 
 describe( 'Analytics pages', () => {
 	const analyticsPage = new Analytics( page );
+	const login = new Login( page );
 
-	beforeAll( StoreOwnerFlow.login );
-	afterAll( StoreOwnerFlow.logout );
+	beforeAll( async () => {
+		login.login();
+	} );
+	afterAll( async () => {
+		login.logout();
+	} );
 
 	it( 'A user can view the analytics overview without it crashing', async () => {
 		await analyticsPage.navigate();

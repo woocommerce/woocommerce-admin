@@ -1,11 +1,11 @@
 /**
  * Internal dependencies
  */
-import { StoreOwnerFlow } from '../../utils/flows';
 import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
 import { getElementByText } from '../../utils/actions';
+import { Login } from '../../pages/Login';
 
 const config = require( 'config' );
 
@@ -14,9 +14,14 @@ const config = require( 'config' );
  */
 describe( 'Store owner can complete onboarding wizard', () => {
 	const profileWizard = new OnboardingWizard( page );
+	const login = new Login( page );
 
-	beforeAll( StoreOwnerFlow.login );
-	afterAll( StoreOwnerFlow.logout );
+	beforeAll( async () => {
+		login.login();
+	} );
+	afterAll( async () => {
+		login.logout();
+	} );
 
 	it( 'can start the profile wizard', async () => {
 		await profileWizard.navigate();
@@ -93,9 +98,14 @@ describe( 'Store owner can complete onboarding wizard', () => {
  */
 describe( 'A spanish store does not get the install recommended features tab, but sees the benefits section', () => {
 	const profileWizard = new OnboardingWizard( page );
+	const login = new Login( page );
 
-	beforeAll( StoreOwnerFlow.login );
-	afterAll( StoreOwnerFlow.logout );
+	beforeAll( async () => {
+		login.login();
+	} );
+	afterAll( async () => {
+		login.logout();
+	} );
 
 	it( 'can start the profile wizard', async () => {
 		await profileWizard.navigate();
@@ -194,9 +204,14 @@ describe( 'A spanish store does not get the install recommended features tab, bu
 
 describe( 'A japanese store can complete the selective bundle install but does not include WCPay. ', () => {
 	const profileWizard = new OnboardingWizard( page );
+	const login = new Login( page );
 
-	beforeAll( StoreOwnerFlow.login );
-	afterAll( StoreOwnerFlow.logout );
+	beforeAll( async () => {
+		login.login();
+	} );
+	afterAll( async () => {
+		login.logout();
+	} );
 
 	it( 'can start the profile wizard', async () => {
 		await profileWizard.navigate();
@@ -278,6 +293,4 @@ describe( 'A japanese store can complete the selective bundle install but does n
 		expect( tasks ).toContain( TaskTitles.addPayments );
 		expect( tasks ).not.toContain( TaskTitles.wooPayments );
 	} );
-
-	afterAll( StoreOwnerFlow.logout );
 } );
