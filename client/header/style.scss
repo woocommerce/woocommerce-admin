@@ -60,6 +60,10 @@
 	}
 }
 
+.folded .woocommerce-layout__header {
+	width: calc(100% - 36px);
+}
+
 .is-wp-toolbar-disabled .woocommerce-layout__header {
 	top: 0;
 }
