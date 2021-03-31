@@ -20,6 +20,7 @@ export class PaymentsSetup extends BasePage {
 	}
 
 	async maybeCloseHelpModal() {
+		await waitForElementByText( 'button', 'Got it' );
 		await this.clickButtonWithText( 'Got it' );
 	}
 

@@ -12,33 +12,6 @@ import {
 import { WcSettings } from '../../pages/WcSettings';
 import { WpSettings } from '../../pages/WpSettings';
 import { Login } from '../../pages/Login';
-import { Plugins } from '../../pages/Plugins';
-
-describe( 'Store owner can login and make sure WooCommerce is activated', () => {
-	const login = new Login( page );
-	const plugins = new Plugins( page );
-
-	beforeAll( async () => {
-		await login.login();
-	} );
-	afterAll( async () => {
-		await login.logout();
-	} );
-
-	it( 'can make sure WooCommerce is activated. If not, activate it', async () => {
-		const slug = 'woocommerce';
-		await plugins.navigate();
-		const disableLink = await page.$(
-			`tr[data-slug="${ slug }"] .deactivate a`
-		);
-		if ( disableLink ) {
-			return;
-		}
-		await page.click( `tr[data-slug="${ slug }"] .activate a` );
-
-		await page.waitForSelector( `tr[data-slug="${ slug }"] .deactivate a` );
-	} );
-} );
 
 describe( 'Store owner can finish initial store setup', () => {
 	const wcSettings = new WcSettings( page );

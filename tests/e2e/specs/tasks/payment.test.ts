@@ -18,8 +18,9 @@ describe( 'Payment setup task', () => {
 		await login.login();
 
 		// This makes this test more isolated, by always navigating to the
-		// profile wizard and skipping, this behaves the same as if the profile wizard had not
-		// been run yet and the user is redirected to it when trying to go to wc-admin.
+		// profile wizard and skipping, this behaves the same as if the
+		// profile wizard had not been run yet and the user is redirected
+		// to it when trying to go to wc-admin.
 		await profileWizard.navigate();
 		await profileWizard.skipStoreSetup();
 
