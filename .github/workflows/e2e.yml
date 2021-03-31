@@ -37,4 +37,4 @@ jobs:
                   composer require wp-cli/i18n-command
                   npm run build
                   npx wc-e2e docker:up
-                  npx wc-e2e test:e2e
+                  npx wc-e2e test:e2e --runInBand
