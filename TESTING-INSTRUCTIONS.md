@@ -2,6 +2,48 @@
 
 ## Unreleased
 
+
+### Fix varation bug with Products reports #6647
+
+
+1. Add two variable products. You want to have at least one variable for each product. 
+
+Product A - color:black
+Product A - color:white
+
+Product B - size:small
+Product B - size:medium
+
+2. Make an order for each product.
+3. Navigate to Analytics -> Products
+4. Choose 'Single product' from the 'Show' dropdown and search for the product.
+5. Confirm that the "Variations" table shows the correct variations. If you searched for the 'Product A', then you should see color:black and color:white.
+
+In case the report shows "no data", please reimport historical data by following the guide on [here](https://docs.woocommerce.com/document/woocommerce-analytics/#analytics-settings__import-historical-data)
+
+### Check active plugins before getting the PayPal onboarding status #6625
+
+-  Go to the WooCommerce home page
+-  Open your browser console
+-  Choose payment methods
+-  See no error message
+
+## 2.2.0
+
+### Fixed event tracking for merchant email notes #6616
+
+- Create a brand new site.
+- Install a plugin to log every sent email (you can use [WP mail logging](https://wordpress.org/plugins/wp-mail-logging/)).
+- Install and active [this gist](https://gist.github.com/octaedro/864315edaf9c6a2a6de71d297be1ed88) to create an email note. Just download the file and install it as a plugin.
+- After activating the plugin, press `Add Email Notes` to create a note.
+- Now go to WooCommerce > Settings > Email (`/wp-admin/admin.php?page=wc-settings&tab=email`) and check the checkbox `Enable email insights` and save changes.
+- You will need to run the cron so you can install a plugin like [WP Crontol](https://wordpress.org/plugins/wp-crontrol/)
+- Go to Tools > Cron events (`/wp-admin/tools.php?page=crontrol_admin_manage_page`).
+- Call the hook `wc_admin_daily` by pressing its `Run Now` link. (https://user-images.githubusercontent.com/1314156/111530634-4929ce80-8742-11eb-8b53-de936ceea76e.png)
+- Go to Tools > WP Mail Logging Log (`/wp-admin/tools.php?page=wpml_plugin_log`) and verify the testing email note was sent.
+- View the message and press `Test action` (a broken image will be visible under the button, but that's expected and only visible in a test environment).
+
+
 ### Payments task: include Mercado Pago #6572
 
 - Create a brand new store.
@@ -483,7 +525,23 @@ Scenario #2
 8. Click on the **Choose payment methods** task, it should not be displaying the **Woocommerce Payments** option.
 9. Go to **Plugins > installed Plugins**, check if the selected plugin features selected in step 4 are installed and activated.
 
+### Improve AddFirstProduct email note contents #6617
 
+- Install the plugin in a fresh site.
+- Make sure the store has 0 products and 0 orders.
+- Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
+
+```
+UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
+```
+
+- Make sure the `woocommerce_merchant_email_notifications` option is set to `yes`:
+```
+UPDATE `wp_options` SET `option_value` = 'yes' WHERE `wp_options`.`option_name` = 'woocommerce_merchant_email_notifications';
+```
+
+- Run the `wc_admin_daily ` cron job (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
+- You should have received an email like the image above.
 ## 2.1.2
 
 ### Add Guards to "Deactivate Plugin" Note Handlers #6532

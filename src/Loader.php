@@ -202,10 +202,10 @@ class Loader {
 	 * @param  string $feature Feature slug.
 	 * @return bool Returns true if the feature is enabled.
 	 *
-	 * @deprecated since 1.9.0, use Features::exists( $feature )
+	 * @deprecated since 1.9.0, use Features::is_enabled( $feature )
 	 */
 	public static function is_feature_enabled( $feature ) {
-		return Features::exists( $feature );
+		return Features::is_enabled( $feature );
 	}
 
 	/**
@@ -241,6 +241,18 @@ class Loader {
 		}
 
 		return plugins_url( self::get_path( $ext ) . $file . $suffix . '.' . $ext, WC_ADMIN_PLUGIN_FILE );
+	}
+
+	/**
+	 * Gets a script asset filename
+	 *
+	 * @param  string $file File name (without extension).
+	 * @return string complete asset filename.
+	 */
+	public static function get_script_asset_filename( $file ) {
+		$minification_suffix = Features::exists( 'minified-js' ) ? '.min' : '';
+
+		return $file . $minification_suffix . '.asset.php';
 	}
 
 	/**
@@ -355,8 +367,9 @@ class Loader {
 		);
 
 		foreach ( $scripts as $script ) {
-			$script_path_name = isset( $scripts_map[ $script ] ) ? $scripts_map[ $script ] : str_replace( 'wc-', '', $script );
-			$script_assets    = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . $script_path_name . '/index.min.asset.php';
+			$script_path_name       = isset( $scripts_map[ $script ] ) ? $scripts_map[ $script ] : str_replace( 'wc-', '', $script );
+			$script_assets_filename = self::get_script_asset_filename( 'index' );
+			$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . $script_path_name . '/' . $script_assets_filename;
 
 			wp_register_script(
 				$script,
