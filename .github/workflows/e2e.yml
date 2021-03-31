@@ -23,7 +23,7 @@ jobs:
               uses: actions/setup-node@v2-beta
               with:
                   node-version: '14'
-            - name: Build
+            - name: Build and run E2E Tests
               env:
                   WP_VERSION: latest
                   WP_MULTISITE: 0
