@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: Get currency from CurrencyContext #6723
 - Dev: Add data source filter to remote inbox notification system #6794
 - Fix: Make pagination buttons height and width consistent #6725
 - Tweak: Add settings_section event prop for CES #6762
@@ -199,6 +200,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add filter to allow enabling the WP toolbar within the new navigation. #6371
 - Dev: Add unit tests to Navigation's Container component. #6344
 - Fix: Enqueue scripts called incorrectly in php unit tests #6358
+<<<<<<< HEAD
 - Fix: Removed @woocommerce/components/card from OBW #6374
 - Fix: Email notes now are turned off by default #6324
 - Add: CES track settings tab on updating settings #6368
