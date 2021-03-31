@@ -34,7 +34,7 @@ describe( 'Payment setup task', () => {
 
 	it( 'Can visit the payment setup task from the homescreen if the setup wizard has been skipped', async () => {
 		await homeScreen.clickOnTaskList( 'Choose payment methods' );
-		await paymentsSetup.maybeCloseHelpModal();
+		await paymentsSetup.closeHelpModal();
 		await paymentsSetup.isDisplayed();
 	} );
 
@@ -58,7 +58,6 @@ describe( 'Payment setup task', () => {
 
 		// refresh the page to ensure it is persisted.
 		await paymentsSetup.navigate();
-		await paymentsSetup.maybeCloseHelpModal();
 		await paymentsSetup.methodHasBeenSetup( 'cod' );
 	} );
 } );

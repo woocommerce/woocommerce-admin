@@ -19,8 +19,7 @@ export class PaymentsSetup extends BasePage {
 		await waitForElementByText( 'h1', 'Choose payment methods' );
 	}
 
-	async maybeCloseHelpModal() {
-		await waitForElementByText( 'button', 'Got it' );
+	async closeHelpModal() {
 		await this.clickButtonWithText( 'Got it' );
 	}
 
