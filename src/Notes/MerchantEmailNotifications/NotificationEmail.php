@@ -5,7 +5,7 @@
 
 namespace Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications;
 
-use Automattic\WooCommerce\Admin\Notes;
+use Automattic\WooCommerce\Admin\Notes\Notes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -206,10 +206,6 @@ class NotificationEmail extends \WC_Email {
 			$this->get_headers(),
 			$this->get_attachments()
 		);
-		// We need to set the current user for tracking reasons.
-		$current_user_id = get_current_user_id();
-		wp_set_current_user( $user_id );
-		wc_admin_record_tracks_event( 'email_note_sent', array( 'note_name' => $this->note->get_name() ) );
-		wp_set_current_user( $current_user_id );
+		Notes::record_tracks_event_with_user( $user_id, 'email_note_sent', array( 'note_name' => $this->note->get_name() ) );
 	}
 }
