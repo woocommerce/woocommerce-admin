@@ -12,14 +12,13 @@ describe( 'Payment setup task', () => {
 
 	beforeAll( async () => {
 		await StoreOwnerFlow.login();
-		await profileWizard.navigate();
-		await profileWizard.skipStoreSetup();
 		await homeScreen.isDisplayed();
 	} );
 
 	afterAll( StoreOwnerFlow.logout );
 
 	it( 'Can visit the payment setup task from the homescreen if the setup wizard has been skipped', async () => {
+		await homeScreen.getTaskList();
 		await homeScreen.clickOnTaskList( 'Choose payment methods' );
 		await paymentsSetup.isDisplayed();
 	} );
