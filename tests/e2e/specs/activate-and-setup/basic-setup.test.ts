@@ -45,8 +45,12 @@ describe( 'Store owner can finish initial store setup', () => {
 	const wpSettings = new WpSettings( page );
 	const login = new Login( page );
 
-	beforeAll( login.login );
-	afterAll( login.logout );
+	beforeAll( async () => {
+		login.login();
+	} );
+	afterAll( async () => {
+		login.logout();
+	} );
 
 	it( 'can enable tax rates and calculations', async () => {
 		// Go to general settings page
