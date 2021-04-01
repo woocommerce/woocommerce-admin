@@ -42,7 +42,7 @@ export class WcHomescreen extends BasePage {
 	}
 
 	async clickOnTaskList( taskTitle: string ) {
-		const item = await getElementByText( 'div', taskTitle );
+		const item = await waitForElementByText( 'div', taskTitle );
 
 		if ( ! item ) {
 			throw new Error(
