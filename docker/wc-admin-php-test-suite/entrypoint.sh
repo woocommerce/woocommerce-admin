@@ -67,7 +67,6 @@ if [ ! -d /tmp/wordpress-tests-lib ]; then
 fi
 
 if [ "$(php -r "echo version_compare(PHP_VERSION,'8','>=');")" ]; then
-	composer install
 	if [ -f "/tmp/phpunit-7.5-fork.zip" ]; then
 	    echo "phpunit 7.5 fork already exists"
 	else
