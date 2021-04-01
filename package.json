@@ -163,6 +163,7 @@
 		"@typescript-eslint/eslint-plugin": "4.22.0",
 		"@woocommerce/explat": "file:packages/explat",
 		"@woocommerce/api": "0.1.2",
+		"@types/react-router-dom": "^5.1.7",
 		"@woocommerce/components": "file:packages/components",
 		"@woocommerce/csv-export": "file:packages/csv-export",
 		"@woocommerce/currency": "file:packages/currency",

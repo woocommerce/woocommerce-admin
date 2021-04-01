@@ -36,7 +36,10 @@ export { useUser } from './user/use-user';
 export { useUserPreferences } from './user/use-user-preferences';
 
 export { OPTIONS_STORE_NAME } from './options';
-export { withOptionsHydration } from './options/with-options-hydration';
+export {
+	withOptionsHydration,
+	useOptionsHydration,
+} from './options/with-options-hydration';
 
 export { REVIEWS_STORE_NAME } from './reviews';
 
