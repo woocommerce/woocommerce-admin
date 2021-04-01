@@ -607,6 +607,8 @@ class Note extends \WC_Data {
 			'status'        => $status,
 			'primary'       => $primary,
 			'actioned_text' => $actioned_text,
+			'nonce_name'    => '',
+			'nonce_action'  => '',
 		);
 
 		$note_actions   = $this->get_prop( 'actions', 'edit' );
@@ -621,5 +623,28 @@ class Note extends \WC_Data {
 	 */
 	public function set_actions( $actions ) {
 		$this->set_prop( 'actions', $actions );
+	}
+
+	/**
+	 * Add a nonce to an action.
+	 *
+	 * @link https://codex.wordpress.org/WordPress_Nonces
+	 *
+	 * @param string $action_name Name of action.
+	 * @param string $nonce_action The nonce action.
+	 * @param string $nonce_name The nonce Name. This is used as the paramater name in the resulting URL for the action.
+	 * @return void
+	 */
+	public function add_nonce_to_action( string $action_name, string $nonce_action, string $nonce_name ) {
+		$actions   = $this->get_prop( 'actions', 'edit' );
+
+		foreach ( $actions as $i => $action ) {
+			if ( $action->name === $action_name ) {
+				$actions[$i]->nonce_action = $nonce_action;
+				$actions[$i]->nonce_name   = $nonce_name;
+			}
+		}
+
+		$this->set_actions( $actions );
 	}
 }
