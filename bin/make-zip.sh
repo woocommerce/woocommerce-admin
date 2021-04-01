@@ -23,6 +23,10 @@ ZIP_FILE=$1
 
 build_files=$(find dist \( -name '*.js' -o -name '*.css' \))
 asset_files=$(find dist \( -name '*.min.asset.php' \))
+if [[ -z $asset_files ]]; then
+	output 3 "No min.asset.php files found, adding un minified assets"
+	asset_files=$(find dist \( -name '*.asset.php' \))
+fi
 
 zip -r "${ZIP_FILE}" \
 	woocommerce-admin.php \
