@@ -379,10 +379,6 @@ class Notes {
 	 * @param array  $params The params to send to the event recording.
 	 */
 	public static function record_tracks_event_with_user( $user_id, $event_name, $params ) {
-		if ( ! $user_id ) {
-			return;
-		}
-
 		// We save the current user id to set it back after the event recording.
 		$current_user_id = get_current_user_id();
 
