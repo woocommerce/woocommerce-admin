@@ -1,5 +1,4 @@
 import { ElementHandle, Page } from 'puppeteer';
-import { BaseElement } from '../elements/BaseElement';
 import { DropdownField } from '../elements/DropdownField';
 import { DropdownTypeaheadField } from '../elements/DropdownTypeaheadField';
 import { FormToggle } from '../elements/FormToggle';

@@ -55,9 +55,6 @@ describe( 'Payment setup task', () => {
 
 	it( 'Toggling cash on delivery enables the payment method', async () => {
 		await paymentsSetup.enableCashOnDelivery();
-
-		// refresh the page to ensure it is persisted.
-		await paymentsSetup.navigate();
 		await paymentsSetup.methodHasBeenSetup( 'cod' );
 	} );
 } );

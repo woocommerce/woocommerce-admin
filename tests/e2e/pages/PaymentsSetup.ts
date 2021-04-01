@@ -1,4 +1,6 @@
-import { FormToggle } from '../elements/FormToggle';
+/**
+ * Internal dependencies
+ */
 import { waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 
