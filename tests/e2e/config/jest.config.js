@@ -6,7 +6,7 @@ module.exports = {
 	moduleFileExtensions: [ 'js', 'ts' ],
 	roots: [ path.resolve( __dirname, '../specs' ) ],
 	testMatch: [ '**/*.(test|spec).(j|t)s', '*.(test|spec).(j|t)s' ],
-	testTimeout: 10000,
+	testTimeout: 30000,
 	transform: {
 		'\\.[jt]sx?$': [
 			'babel-jest',
