@@ -365,7 +365,7 @@ class Notes {
 		if ( in_array( $note->get_type(), array( 'error', 'update' ), true ) ) {
 			wc_admin_record_tracks_event( 'store_alert_action', $event_params );
 		} else {
-			self::record_tracks_event_without_cookie( 'inbox_action_click', $event_params );
+			self::record_tracks_event_without_cookies( 'inbox_action_click', $event_params );
 		}
 
 		return $note;
