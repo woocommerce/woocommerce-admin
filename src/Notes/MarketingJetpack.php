@@ -36,8 +36,7 @@ class MarketingJetpack {
 			return;
 		}
 
-		// $is_jetpack = true === apply_filters( 'is_jetpack_site', false, get_current_blog_id() );
-		if ( ! self::wc_admin_active_for( 3 ) || ! self::can_be_added() ) {
+		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || ! self::can_be_added() ) {
 			return;
 		}
 
@@ -48,18 +47,17 @@ class MarketingJetpack {
 		if ( ! empty( $note_ids ) ) {
 
 			$note_id = array_pop( $note_ids );
-			$note    = WC_Admin_Notes::get_note( $note_id );
+			$note    = Notes::get_note( $note_id );
 			if ( false === $note ) {
 				return;
 			}
 
 			// If Jetpack Backups was purchased after the note was created, mark this note as actioned.
-			// if ( self::has_backups() && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
-			// $note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
-			// $note->save();
-			// }.
+			if ( self::has_backups() && Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
+				$note->set_status( Note::E_WC_ADMIN_NOTE_ACTIONED );
+				$note->save();
+			}
 
-			$note->save();
 			return;
 		}
 
@@ -72,10 +70,10 @@ class MarketingJetpack {
 	 * Get the note.
 	 */
 	public static function get_note() {
-		$note = new WC_Admin_Note();
-		$note->set_title( __( 'Protect your WooCommerce Store with Jetpack Backup.', 'woocommerce-admin' ) );
+		$note = new Note();
+		$note->set_title( __( 'TEST Protect your WooCommerce Store with Jetpack Backup.', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Store downtime means lost sales. One-click restores get you back online quickly if something goes wrong.', 'woocommerce-admin' ) );
-		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_MARKETING );
+		$note->set_type( Note::E_WC_ADMIN_NOTE_MARKETING );
 		$note->set_name( self::NOTE_NAME );
 		$note->set_content_data( (object) array() );
 		$note->set_source( 'woocommerce-admin-notes' );
@@ -83,7 +81,7 @@ class MarketingJetpack {
 			'jetpack-backup-woocommerce',
 			__( 'Get backups', 'woocommerce-admin' ),
 			esc_url( 'https://jetpack.com/upgrade/backup-woocommerce/' ), // TODO Replace w own Jetpack Redirect?
-			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED
+			Note::E_WC_ADMIN_NOTE_ACTIONED
 		);
 		return $note;
 	}
