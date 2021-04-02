@@ -13,8 +13,8 @@ export const Action = ( {
 	isEnabled = false,
 	isLoading = false,
 	isRecommended = false,
-	key,
 	markConfigured,
+	methodKey,
 	onSetUp = () => {},
 	onSetupCallback,
 } ) => {
@@ -25,7 +25,7 @@ export const Action = ( {
 	}
 
 	const handleClick = async () => {
-		onSetUp( key );
+		onSetUp( methodKey );
 
 		if ( onSetupCallback ) {
 			setIsBusy( true );
@@ -41,7 +41,7 @@ export const Action = ( {
 		}
 
 		updateQueryString( {
-			method: key,
+			method: methodKey,
 		} );
 	};
 
@@ -67,7 +67,8 @@ export const Action = ( {
 				<Button
 					isSecondary
 					href={ getAdminLink(
-						'admin.php?page=wc-settings&tab=checkout&section=' + key
+						'admin.php?page=wc-settings&tab=checkout&section=' +
+							methodKey
 					) }
 				>
 					{ __( 'Manage', 'woocommerce-admin' ) }
@@ -77,7 +78,7 @@ export const Action = ( {
 	}
 
 	return (
-		<Button isSecondary onClick={ () => markConfigured( key ) }>
+		<Button isSecondary onClick={ () => markConfigured( methodKey ) }>
 			{ __( 'Enable', 'woocommerce-admin' ) }
 		</Button>
 	);

@@ -5,12 +5,12 @@ import { __ } from '@wordpress/i18n';
 
 const localPartners = [ 'mercadopago' ];
 
-export const RecommendedRibbon = ( { key, isPill = false } ) => {
+export const RecommendedRibbon = ( { methodKey, isPill = false } ) => {
 	const classes = isPill
 		? 'woocommerce-task-payment__recommended-pill'
 		: 'woocommerce-task-payment__recommended-ribbon';
 
-	const text = localPartners.includes( key )
+	const text = localPartners.includes( methodKey )
 		? __( 'Local Partner', 'woocommerce-admin' )
 		: __( 'Recommended', 'woocommerce-admin' );
 
