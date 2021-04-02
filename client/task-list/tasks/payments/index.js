@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { cloneElement, Component } from '@wordpress/element';
+import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import {
 	Button,
@@ -14,7 +14,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { H, Plugins } from '@woocommerce/components';
+import { H } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
@@ -25,7 +25,6 @@ import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	PLUGINS_STORE_NAME,
-	pluginNames,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -33,10 +32,10 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
 import { RecommendedRibbon } from './recommended-ribbon';
+import { Setup } from './setup';
 
 export const setMethodEnabledOption = async (
 	optionName,
@@ -146,46 +145,6 @@ class Payments extends Component {
 		return currentMethod;
 	}
 
-	getInstallStep() {
-		const currentMethod = this.getCurrentMethod();
-
-		if ( ! currentMethod.plugins || ! currentMethod.plugins.length ) {
-			return;
-		}
-
-		const { activePlugins } = this.props;
-		const pluginsToInstall = currentMethod.plugins.filter(
-			( method ) => ! activePlugins.includes( method )
-		);
-		const pluginNamesString = currentMethod.plugins
-			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
-			.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
-
-		return {
-			key: 'install',
-			label: sprintf(
-				__( 'Install %s', 'woocommerce-admin' ),
-				pluginNamesString
-			),
-			content: (
-				<Plugins
-					onComplete={ ( plugins, response ) => {
-						createNoticesFromResponse( response );
-						recordEvent( 'tasklist_payment_install_method', {
-							plugins: currentMethod.plugins,
-						} );
-					} }
-					onError={ ( errors, response ) =>
-						createNoticesFromResponse( response )
-					}
-					autoInstall
-					pluginSlugs={ currentMethod.plugins }
-				/>
-			),
-			isComplete: ! pluginsToInstall.length,
-		};
-	}
-
 	async enableMethod( key ) {
 		const { methods } = this.props;
 		const { enabledMethods } = this.state;
@@ -280,21 +239,14 @@ class Payments extends Component {
 	render() {
 		const currentMethod = this.getCurrentMethod();
 		const { recommendedMethod } = this.state;
-		const { methods, query } = this.props;
+		const { methods } = this.props;
 
 		if ( currentMethod ) {
 			return (
-				<Card className="woocommerce-task-payment-method woocommerce-task-card">
-					<CardBody>
-						{ cloneElement( currentMethod.container, {
-							methodConfig: currentMethod,
-							query,
-							installStep: this.getInstallStep(),
-							markConfigured: this.markConfigured,
-							hasCbdIndustry: currentMethod.hasCbdIndustry,
-						} ) }
-					</CardBody>
-				</Card>
+				<Setup
+					method={ currentMethod }
+					markConfigured={ this.markConfigured }
+				/>
 			);
 		}
 
