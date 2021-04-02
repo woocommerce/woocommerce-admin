@@ -1,26 +1,13 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import {
-	Button,
-	Card,
-	CardBody,
-	CardMedia,
-	CardFooter,
-	Spinner,
-} from '@wordpress/components';
+import { Card, CardBody, CardMedia, CardFooter } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { H } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
-import {
-	getHistory,
-	getNewPath,
-	updateQueryString,
-} from '@woocommerce/navigation';
+import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
@@ -32,6 +19,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
+import { Action } from './action';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
 import { RecommendedRibbon } from './recommended-ribbon';
@@ -67,7 +55,6 @@ class Payments extends Component {
 			( method ) => ( enabledMethods[ method.key ] = method.isEnabled )
 		);
 		this.state = {
-			busyMethod: null,
 			enabledMethods,
 			recommendedMethod: this.getRecommendedMethod(),
 		};
@@ -99,27 +86,27 @@ class Payments extends Component {
 		return recommendedMethod.key;
 	}
 
-	async markConfigured( methodName, queryParams = {} ) {
+	async markConfigured( methodKey, queryParams = {} ) {
 		const { enabledMethods } = this.state;
 		const { methods } = this.props;
 
-		const method = methods.find( ( option ) => option.key === methodName );
+		const method = methods.find( ( option ) => option.key === methodKey );
 
 		if ( ! method ) {
-			throw `Method ${ methodName } not found in available methods list`;
+			throw `Method ${ methodKey } not found in available methods list`;
 		}
 
 		this.setState( {
 			enabledMethods: {
 				...enabledMethods,
-				[ methodName ]: true,
+				[ methodKey ]: true,
 			},
 		} );
 
 		await setMethodEnabledOption( method.optionName, 'yes', this.props );
 
 		recordEvent( 'tasklist_payment_connect_method', {
-			payment_method: methodName,
+			payment_method: methodKey,
 		} );
 
 		getHistory().push(
@@ -145,100 +132,9 @@ class Payments extends Component {
 		return currentMethod;
 	}
 
-	async enableMethod( key ) {
-		const { methods } = this.props;
-		const { enabledMethods } = this.state;
-		const method = methods.find( ( option ) => option.key === key );
-
-		if ( ! method ) {
-			throw `Method ${ key } not found in available methods list`;
-		}
-
-		enabledMethods[ key ] = ! enabledMethods[ key ];
-		this.setState( { enabledMethods } );
-
-		recordEvent( 'tasklist_payment_toggle', {
-			enabled: true,
-			payment_method: key,
-		} );
-
-		await setMethodEnabledOption( method.optionName, 'yes', this.props );
-	}
-
-	async handleClick( method ) {
-		const { methods } = this.props;
-		const { key, onClick } = method;
-
-		recordEvent( 'tasklist_payment_setup', {
-			options: methods.map( ( option ) => option.key ),
-			selected: key,
-		} );
-
-		if ( onClick ) {
-			this.setState( { busyMethod: key } );
-			await new Promise( onClick )
-				.then( () => {
-					this.setState( { busyMethod: null } );
-				} )
-				.catch( () => {
-					this.setState( { busyMethod: null } );
-				} );
-
-			return;
-		}
-
-		updateQueryString( {
-			method: key,
-		} );
-	}
-
-	getSetupButtons( method ) {
-		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
-		const { container, isConfigured, key } = method;
-		const isEnabled = enabledMethods[ key ];
-
-		if ( container && ! isConfigured ) {
-			return (
-				<div>
-					<Button
-						isPrimary={ key === recommendedMethod }
-						isSecondary={ key !== recommendedMethod }
-						isBusy={ busyMethod === key }
-						disabled={ busyMethod }
-						onClick={ () => this.handleClick( method ) }
-					>
-						{ __( 'Set up', 'woocommerce-admin' ) }
-					</Button>
-				</div>
-			);
-		}
-
-		if ( ( container && isConfigured ) || ( ! container && isEnabled ) ) {
-			return (
-				<div>
-					<Button
-						isSecondary
-						href={ getAdminLink(
-							'admin.php?page=wc-settings&tab=checkout&section=' +
-								key
-						) }
-					>
-						{ __( 'Manage', 'woocommerce-admin' ) }
-					</Button>
-				</div>
-			);
-		}
-
-		return (
-			<Button isSecondary onClick={ () => this.enableMethod( key ) }>
-				{ __( 'Enable', 'woocommerce-admin' ) }
-			</Button>
-		);
-	}
-
 	render() {
 		const currentMethod = this.getCurrentMethod();
-		const { recommendedMethod } = this.state;
+		const { enabledMethods, recommendedMethod } = this.state;
 		const { methods } = this.props;
 
 		if ( currentMethod ) {
@@ -261,6 +157,7 @@ class Payments extends Component {
 						title,
 						visible,
 						loading,
+						onClick,
 					} = method;
 
 					if ( ! visible ) {
@@ -296,11 +193,22 @@ class Payments extends Component {
 								</div>
 							</CardBody>
 							<CardFooter isBorderless>
-								{ loading ? (
-									<Spinner />
-								) : (
-									this.getSetupButtons( method )
-								) }
+								<Action
+									key={ key }
+									isEnabled={ enabledMethods[ key ] }
+									isRecommended={ isRecommended }
+									isLoading={ loading }
+									markConfigured={ this.markConfigured }
+									onSetup={ () =>
+										recordEvent( 'tasklist_payment_setup', {
+											options: methods.map(
+												( option ) => option.key
+											),
+											selected: key,
+										} )
+									}
+									onSetupCallback={ onClick }
+								/>
 							</CardFooter>
 						</Card>
 					);
