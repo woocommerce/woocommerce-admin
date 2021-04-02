@@ -36,6 +36,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
+import { RecommendedRibbon } from './recommended-ribbon';
 
 export const setMethodEnabledOption = async (
 	optionName,
@@ -324,30 +325,18 @@ class Payments extends Component {
 
 					const isRecommended =
 						key === recommendedMethod && ! isConfigured;
-					const showRecommendedRibbon =
-						isRecommended && key !== 'wcpay';
-					const showRecommendedPill =
-						isRecommended && key === 'wcpay';
-					const recommendedText =
-						key === 'mercadopago'
-							? __( 'Local Partner', 'woocommerce-admin' )
-							: __( 'Recommended', 'woocommerce-admin' );
 
 					return (
 						<Card key={ key } className={ classes }>
-							{ showRecommendedRibbon && (
-								<div className="woocommerce-task-payment__recommended-ribbon">
-									<span>{ recommendedText }</span>
-								</div>
+							{ isRecommended && key !== 'wcpay' && (
+								<RecommendedRibbon key={ key } />
 							) }
 							<CardMedia isBorderless>{ before }</CardMedia>
 							<CardBody>
 								<H className="woocommerce-task-payment__title">
 									{ title }
-									{ showRecommendedPill && (
-										<span className="woocommerce-task-payment__recommended-pill">
-											{ recommendedText }
-										</span>
+									{ isRecommended && key === 'wcpay' && (
+										<RecommendedRibbon isPill key={ key } />
 									) }
 								</H>
 								<div className="woocommerce-task-payment__content">
