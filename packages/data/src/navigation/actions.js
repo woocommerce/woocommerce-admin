@@ -2,6 +2,7 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { getPersistedQuery } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -9,17 +10,21 @@ import apiFetch from '@wordpress/api-fetch';
 import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
 
+const setPersistedQuery = function ( persistedQuery ) {
+	if ( ! Object.keys( getPersistedQuery() ).length ) {
+		return;
+	}
+
+	return {
+		type: TYPES.SET_PERSISTED_QUERY,
+		persistedQuery,
+	};
+};
+
 export function setMenuItems( menuItems ) {
 	return {
 		type: TYPES.SET_MENU_ITEMS,
 		menuItems,
-	};
-}
-
-export function setPersistedQuery( persistedQuery ) {
-	return {
-		type: TYPES.SET_PERSISTED_QUERY,
-		persistedQuery,
 	};
 }
 
@@ -94,6 +99,14 @@ export function removeFavoriteSuccess( favorite, error ) {
 		favorite,
 		error,
 	};
+}
+
+export function* onLoad() {
+	yield setPersistedQuery( getPersistedQuery() );
+}
+
+export function* onHistoryChange() {
+	yield setPersistedQuery( getPersistedQuery() );
 }
 
 export function* addFavorite( favorite ) {
