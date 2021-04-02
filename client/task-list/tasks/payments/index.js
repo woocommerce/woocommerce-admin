@@ -11,7 +11,6 @@ import {
 	CardBody,
 	CardMedia,
 	CardFooter,
-	FormToggle,
 	Spinner,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
@@ -186,7 +185,7 @@ class Payments extends Component {
 		};
 	}
 
-	async toggleMethod( key ) {
+	async enableMethod( key ) {
 		const { methods } = this.props;
 		const { enabledMethods } = this.state;
 		const method = methods.find( ( option ) => option.key === key );
@@ -199,15 +198,11 @@ class Payments extends Component {
 		this.setState( { enabledMethods } );
 
 		recordEvent( 'tasklist_payment_toggle', {
-			enabled: ! method.isEnabled,
+			enabled: true,
 			payment_method: key,
 		} );
 
-		await setMethodEnabledOption(
-			method.optionName,
-			method.isEnabled ? 'no' : 'yes',
-			this.props
-		);
+		await setMethodEnabledOption( method.optionName, 'yes', this.props );
 	}
 
 	async handleClick( method ) {
@@ -275,11 +270,9 @@ class Payments extends Component {
 		}
 
 		return (
-			<FormToggle
-				checked={ isEnabled }
-				onChange={ () => this.toggleMethod( key ) }
-				onClick={ ( e ) => e.stopPropagation() }
-			/>
+			<Button isSecondary onClick={ () => this.enableMethod( key ) }>
+				{ __( 'Enable', 'woocommerce-admin' ) }
+			</Button>
 		);
 	}
 
