@@ -135,7 +135,7 @@ export function getRangeLabel( after, before ) {
  * @return {string} - Datetime string.
  */
 export function getStoreTimeZoneMoment() {
-	if ( ! window.wcSettings || ! window.wcSettings.timeZone || ! moment.tz ) {
+	if ( ! window.wcSettings || ! window.wcSettings.timeZone ) {
 		return moment();
 	}
 
