@@ -16,6 +16,7 @@ import {
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { H, Plugins } from '@woocommerce/components';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import {
 	getHistory,
 	getNewPath,
@@ -239,6 +240,8 @@ class Payments extends Component {
 	getSetupButtons( method ) {
 		const { busyMethod, enabledMethods, recommendedMethod } = this.state;
 		const { container, isConfigured, key } = method;
+		const isEnabled = enabledMethods[ key ];
+
 		if ( container && ! isConfigured ) {
 			return (
 				<div>
@@ -254,9 +257,26 @@ class Payments extends Component {
 				</div>
 			);
 		}
+
+		if ( ( container && isConfigured ) || ( ! container && isEnabled ) ) {
+			return (
+				<div>
+					<Button
+						isSecondary
+						href={ getAdminLink(
+							'admin.php?page=wc-settings&tab=checkout&section=' +
+								key
+						) }
+					>
+						{ __( 'Manage', 'woocommerce-admin' ) }
+					</Button>
+				</div>
+			);
+		}
+
 		return (
 			<FormToggle
-				checked={ enabledMethods[ key ] }
+				checked={ isEnabled }
 				onChange={ () => this.toggleMethod( key ) }
 				onClick={ ( e ) => e.stopPropagation() }
 			/>
