@@ -80,7 +80,7 @@ class MarketingJetpack {
 		$note->add_action(
 			'jetpack-backup-woocommerce',
 			__( 'Get backups', 'woocommerce-admin' ),
-			esc_url( 'https://jetpack.com/upgrade/backup-woocommerce/' ), // TODO Replace w own Jetpack Redirect?
+			esc_url( 'https://jetpack.com/upgrade/backup-woocommerce/' ), // TODO utm?
 			Note::E_WC_ADMIN_NOTE_ACTIONED
 		);
 		return $note;
@@ -92,7 +92,7 @@ class MarketingJetpack {
 	protected static function has_backups() {
 		// Jetpack::is_module_active( 'backup' );!
 		$products = get_option( 'jetpack_site_products', array() );
-		error_log( print_r( $products, true ) );
+		// TODO
 		return false;
 	}
 
