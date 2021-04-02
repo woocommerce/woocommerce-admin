@@ -1,0 +1,101 @@
+<?php
+/**
+ * WooCommerce Admin Jetpack Marketing Note Provider.
+ *
+ * Adds notes to the merchant's inbox concerning Jetpack Backup.
+ */
+
+namespace Automattic\WooCommerce\Admin\Notes;
+
+use Automattic\Jetpack\Constants;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Suggest Jetpack Backup to Woo users.
+ */
+class MarketingJetpack {
+	/**
+	 * Note traits.
+	 */
+	use NoteTraits;
+
+	/**
+	 * Name of the note for use in the database.
+	 */
+	const NOTE_NAME = 'wc-admin-marketing-jetpack-backup';
+
+	/**
+	 * Maybe add a note on Jetpack Backups for Jetpack sites older than a week without Backups.
+	 */
+	public static function possibly_add_note() {
+		/**
+		 * Check if Jetpack is active.
+		 */
+		if ( ! in_array( 'jetpack/jetpack.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+			return;
+		}
+
+		// $is_jetpack = true === apply_filters( 'is_jetpack_site', false, get_current_blog_id() );
+		if ( ! self::wc_admin_active_for( 3 ) || ! self::can_be_added() ) {
+			return;
+		}
+
+		$data_store = \WC_Data_Store::load( 'admin-note' );
+
+		// Do we already have this note?
+		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
+		if ( ! empty( $note_ids ) ) {
+
+			$note_id = array_pop( $note_ids );
+			$note    = WC_Admin_Notes::get_note( $note_id );
+			if ( false === $note ) {
+				return;
+			}
+
+			// If Jetpack Backups was purchased after the note was created, mark this note as actioned.
+			// if ( self::has_backups() && WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) {
+			// $note->set_status( WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED );
+			// $note->save();
+			// }.
+
+			$note->save();
+			return;
+		}
+
+		// Add note.
+		$note = self::get_note();
+		$note->save();
+	}
+
+	/**
+	 * Get the note.
+	 */
+	public static function get_note() {
+		$note = new WC_Admin_Note();
+		$note->set_title( __( 'Protect your WooCommerce Store with Jetpack Backup.', 'woocommerce-admin' ) );
+		$note->set_content( __( 'Store downtime means lost sales. One-click restores get you back online quickly if something goes wrong.', 'woocommerce-admin' ) );
+		$note->set_type( WC_Admin_Note::E_WC_ADMIN_NOTE_MARKETING );
+		$note->set_name( self::NOTE_NAME );
+		$note->set_content_data( (object) array() );
+		$note->set_source( 'woocommerce-admin-notes' );
+		$note->add_action(
+			'jetpack-backup-woocommerce',
+			__( 'Get backups', 'woocommerce-admin' ),
+			esc_url( 'https://jetpack.com/upgrade/backup-woocommerce/' ), // TODO Replace w own Jetpack Redirect?
+			WC_Admin_Note::E_WC_ADMIN_NOTE_ACTIONED
+		);
+		return $note;
+	}
+
+	/**
+	 * Check if Jetpack Backups are installed.
+	 */
+	protected static function has_backups() {
+		// Jetpack::is_module_active( 'backup' );!
+		$products = get_option( 'jetpack_site_products', array() );
+		error_log( print_r( $products, true ) );
+		return false;
+	}
+
+}
