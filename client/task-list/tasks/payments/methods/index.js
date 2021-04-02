@@ -2,13 +2,10 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import interpolateComponents from 'interpolate-components';
 import {
-	getAdminLink,
 	getSetting,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
-import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -220,7 +217,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'stripe' ),
 		},
 		{
-			key: 'mercadopago',
+			key: 'woo-mercado-pago-basic',
 			title: __(
 				'Mercado Pago Checkout Pro & Custom',
 				'woocommerce-admin'
@@ -253,7 +250,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'woo-mercado-pago-basic' ),
 		},
 		{
-			key: 'paypal',
+			key: 'ppcp-gateway',
 			title: __( 'PayPal Payments', 'woocommerce-admin' ),
 			content: (
 				<>
@@ -279,7 +276,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'ppcp-gateway' ),
 		},
 		{
-			key: 'klarna_checkout',
+			key: 'kco',
 			title: __( 'Klarna Checkout', 'woocommerce-admin' ),
 			content: __(
 				'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
@@ -340,7 +337,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'klarna_payments' ),
 		},
 		{
-			key: 'mollie',
+			key: 'mollie_wc_gateway_creditcard',
 			title: __( 'Mollie Payments for WooCommerce', 'woocommerce-admin' ),
 			before: <MollieLogo />,
 			plugins: [ 'mollie-payments-for-woocommerce' ],
@@ -376,7 +373,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'mollie_wc_gateway_creditcard' ),
 		},
 		{
-			key: 'square',
+			key: 'square_credit_card',
 			title: __( 'Square', 'woocommerce-admin' ),
 			content: (
 				<>
@@ -531,83 +528,15 @@ export function getPaymentMethods( {
 	];
 
 	if ( window.wcAdminFeatures.wcpay ) {
-		const tosLink = (
-			<Link
-				href={ 'https://wordpress.com/tos/' }
-				target="_blank"
-				type="external"
-			/>
-		);
-
-		const tosPrompt = interpolateComponents( {
-			mixedString: __(
-				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}',
-				'woocommerce-admin'
-			),
-			components: {
-				link: tosLink,
-			},
-		} );
-
-		const wcPayDocLink = (
-			<Link
-				href={
-					'https://docs.woocommerce.com/document/payments/testing/dev-mode/'
-				}
-				target="_blank"
-				type="external"
-			/>
-		);
-
-		const wcPayDocPrompt = interpolateComponents( {
-			mixedString: __(
-				'Setting up a store for a client? {{link}}Start here{{/link}}',
-				'woocommerce-admin'
-			),
-			components: {
-				link: wcPayDocLink,
-			},
-		} );
-
-		const wcPaySettingsLink = (
-			<Link
-				href={ getAdminLink(
-					'admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments'
-				) }
-				type="wp-admin"
-			>
-				{ __( 'Settings', 'woocommerce-admin' ) }
-			</Link>
-		);
-		const wcPayFeesLink = (
-			<Link
-				href={
-					'https://docs.woocommerce.com/document/payments/faq/fees/'
-				}
-				target="_blank"
-				type="external"
-			/>
-		);
-
-		const wooPaymentsCopy = interpolateComponents( {
-			mixedString: __(
-				'Accept credit card payments the easy way! {{feesLink}}No setup fees. No monthly fees.{{/feesLink}}',
-				'woocommerce-admin'
-			),
-			components: {
-				feesLink: wcPayFeesLink,
-			},
-		} );
-
 		methods.unshift( {
-			key: 'wcpay',
+			key: 'woocommerce_payments',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
 				<>
-					{ wooPaymentsCopy }
-					{ wcPayIsConnected && wcPaySettingsLink }
-					{ ! wcPayIsConnected && <p>{ tosPrompt }</p> }
-					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
+					{ __(
+						'Manage transactions without leaving your WordPress Dashboard. Only with WooCommerce Payments.',
+						'woocommerce-admin'
+					) }
 					<WCPayUsageModal />
 				</>
 			),

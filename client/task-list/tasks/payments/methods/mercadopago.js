@@ -26,6 +26,7 @@ export const MercadoPago = ( { installStep, markConfigured } ) => {
 			),
 		};
 	} );
+
 	return (
 		<Stepper
 			isVertical
@@ -42,7 +43,9 @@ export const MercadoPago = ( { installStep, markConfigured } ) => {
 					content: (
 						<MercadoPagoCredentialsStep
 							countryCode={ countryCode }
-							onFinish={ () => markConfigured( 'mercadopago' ) }
+							onFinish={ () =>
+								markConfigured( 'woo-mercado-pago-basic' )
+							}
 						/>
 					),
 				},
