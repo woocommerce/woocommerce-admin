@@ -76,13 +76,15 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Update: Update choose niche note cta URL #6733
+- Fix: Update folded header style #6724
 - Fix: Fix unreleated variations showing up in the Products reports #6647
 - Tweak: Add tracking data for the preview site btn #6623
+- Tweak: Update WC Payments copy on the task list #6734
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
 - Fix: Event tracking for merchant email notes #6616
 - Fix: Check active plugins before getting the PayPal onboarding status #6625
 
-== 2.2.0 3/26/2021 ==
+== 2.2.0 3/30/2021 ==
 
 - Fix: Check if features are currently being enabled #6688
 - Add: Next new novel navigation nudge note #6610
