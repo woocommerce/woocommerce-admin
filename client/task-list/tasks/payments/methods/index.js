@@ -14,12 +14,12 @@ import { Link } from '@woocommerce/components';
  * Internal dependencies
  */
 import Bacs from './bacs';
-import BacsLogo from './images/bacs';
-import CodLogo from './images/cod';
-import WCPayLogo from './images/wcpay';
-import RazorpayLogo from './images/razorpay';
-import { MollieLogo } from './images/mollie';
-import { PayUIndiaLogo } from './images/payu-india';
+import BacsLogo from '../images/bacs';
+import CodLogo from '../images/cod';
+import WCPayLogo from '../images/wcpay';
+import RazorpayLogo from '../images/razorpay';
+import { MollieLogo } from '../images/mollie';
+import { PayUIndiaLogo } from '../images/payu-india';
 import Stripe from './stripe';
 import Square from './square';
 import {
@@ -35,7 +35,7 @@ import EWay from './eway';
 import Razorpay from './razorpay';
 import { Mollie } from './mollie';
 import { PayUIndia } from './payu-india';
-import { GenericPaymentStep } from './generic-payment-step';
+import { GenericPaymentStep } from '../generic-payment-step';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 
