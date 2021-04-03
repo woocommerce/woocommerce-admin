@@ -54,10 +54,10 @@ or in headless mode:
 npx wc-e2e test:e2e
 ```
 
-Run a single test by adding the file name:
+Run a single test by adding the path to the file name:
 
 ```
-npx wc-e2e test:e2e-dev complete-onboarding-wizard.test.js
+npx wc-e2e test:e2e-dev tests/e2e/specs/activate-and-setup/complete-onboarding-wizard.test.ts
 ```
 
 ## Common Issues
