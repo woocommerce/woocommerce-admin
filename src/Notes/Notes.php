@@ -394,7 +394,7 @@ class Notes {
 	 * @param string $event_name Name of the event to record.
 	 * @param array  $params The params to send to the event recording.
 	 */
-	public static function record_tracks_event_without_cookies( $event_name, $params ) {
+	private static function record_tracks_event_without_cookies( $event_name, $params ) {
 		// We save the cookie to set it back after the event recording.
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$anon_id = isset( $_COOKIE['tk_ai'] ) ? $_COOKIE['tk_ai'] : null;
