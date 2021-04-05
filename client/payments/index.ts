@@ -4,6 +4,10 @@
 import { lazy } from '@wordpress/element';
 import { embeddedPageRegistry } from '~/embedded-body-layout/page-registry';
 
+/**
+ * Internal dependencies
+ */
+
 const PaymentRecommendations = lazy(
 	() =>
 		import(
@@ -13,5 +17,5 @@ const PaymentRecommendations = lazy(
 
 embeddedPageRegistry.registerPage( 'payment-recommendations', {
 	container: PaymentRecommendations,
-	path: 'page=wc-settings&tab=checkout',
+	path: 'wc-settings_checkout',
 } );

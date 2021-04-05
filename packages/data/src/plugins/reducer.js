@@ -15,6 +15,7 @@ const plugins = (
 		requesting: {},
 		errors: {},
 		jetpackConnectUrls: {},
+		recommended: {},
 	},
 	{
 		type,
@@ -28,6 +29,8 @@ const plugins = (
 		jetpackConnectUrl,
 		paypalOnboardingStatus,
 		replace,
+		recommendedType,
+		plugins: recommendedPlugins,
 	}
 ) => {
 	switch ( type ) {
@@ -106,6 +109,15 @@ const plugins = (
 			state = {
 				...state,
 				paypalOnboardingStatus,
+			};
+			break;
+		case TYPES.SET_RECOMMENDED_PLUGINS:
+			state = {
+				...state,
+				recommended: {
+					...state.recommended,
+					[ recommendedType ]: recommendedPlugins,
+				},
 			};
 			break;
 	}

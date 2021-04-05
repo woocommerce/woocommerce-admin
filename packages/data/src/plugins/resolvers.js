@@ -18,6 +18,7 @@ import {
 	updateIsJetpackConnected,
 	updateJetpackConnectUrl,
 	setPaypalOnboardingStatus,
+	setRecommendedPlugins,
 } from './actions';
 
 export function* getActivePlugins() {
@@ -139,4 +140,26 @@ function* setOnboardingStatusWithOptions() {
 					: false,
 		},
 	} );
+}
+
+const SUPPORTED_TYPES = [ 'payments' ];
+export function* getRecommendedPlugins( type ) {
+	if ( ! SUPPORTED_TYPES.includes( type ) ) {
+		return [];
+	}
+	yield setIsRequesting( 'getRecommendedPlugins', true );
+
+	try {
+		const url = WC_ADMIN_NAMESPACE + '/plugins/recommended-payment-plugins';
+		const results = yield apiFetch( {
+			path: url,
+			method: 'GET',
+		} );
+
+		yield setRecommendedPlugins( type, results );
+	} catch ( error ) {
+		yield setError( 'getRecommendedPlugins', error );
+	}
+
+	yield setIsRequesting( 'getRecommendedPlugins', false );
 }

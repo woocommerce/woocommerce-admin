@@ -8,6 +8,7 @@
 namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\PaymentPlugins;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 
@@ -84,6 +85,19 @@ class Plugins extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'activate_plugins' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/recommended-payment-plugins',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'recommended_payment_plugin' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
 			)
@@ -398,6 +412,27 @@ class Plugins extends \WC_REST_Data_Controller {
 				? __( 'Plugins were successfully activated.', 'woocommerce-admin' )
 				: __( 'There was a problem activating some of the requested plugins.', 'woocommerce-admin' ),
 		) );
+	}
+
+	/**
+	 * Return recommend payment plugins.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
+	 */
+	public function recommended_payment_plugin( $request ) {
+		// Default to marketing category (if no category set).
+		$all_plugins   = PaymentPlugins::get_instance()->get_recommended_plugins();
+		$valid_plugins = [];
+		$per_page      = $request->get_param( 'per_page' );
+
+		foreach ( $all_plugins as $plugin ) {
+			if ( ! PluginsHelper::is_plugin_installed( $plugin['plugin'] ) ) {
+				$valid_plugins[] = $plugin;
+			}
+		}
+
+		return rest_ensure_response( array_slice( $valid_plugins, 0, $per_page ) );
 	}
 
 	/**

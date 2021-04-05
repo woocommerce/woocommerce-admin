@@ -224,3 +224,11 @@ const formatErrorMessage = ( pluginErrors, actionType = 'install' ) => {
 		}
 	);
 };
+
+export function setRecommendedPlugins( type, plugins ) {
+	return {
+		type: TYPES.SET_RECOMMENDED_PLUGINS,
+		recommendedType: type,
+		plugins,
+	};
+}

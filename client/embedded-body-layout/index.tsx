@@ -1,14 +1,12 @@
 /**
  * External dependencies
  */
-import { Router, Route, Switch, useLocation } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import { Suspense } from '@wordpress/element';
-import {
-	useUser,
-    useOptionsHydration
-} from '@woocommerce/data';
+import { useUser, useOptionsHydration } from '@woocommerce/data';
 import { createBrowserHistory } from 'history';
 import { Spinner } from '@woocommerce/components';
+import { parse } from 'qs';
 
 /**
  * Internal dependencies
@@ -21,46 +19,40 @@ interface PrimaryLayoutProps {
 	page: EmbeddedPage;
 }
 
-const PrimaryLayout = ({ page }: PrimaryLayoutProps) => {
-	console.log(page);
+const PrimaryLayout = ( { page }: PrimaryLayoutProps ) => {
 	return (
 		<div
 			className="woocommerce-embedded-layout__primary"
 			id="woocommerce-embedded-layout__primary"
 		>
-			<Suspense fallback={ <Spinner /> }>
+			<Suspense fallback={ null }>
 				<page.container />
 			</Suspense>
 		</div>
 	);
-}
-
-const Test = () => {
-	const location = useLocation();
-	console.log(location);
-
-	return <div></div>
-}
+};
 
 const customHistory = createBrowserHistory();
-Object.defineProperty(customHistory, 'location', {
+Object.defineProperty( customHistory, 'location', {
 	get: () => {
-		const query = location.search.substring( 1 );
-		const pathname = query || '/';
+		const query = parse( location.search.substring( 1 ) ) as {
+			page: string;
+			tab: string;
+		};
+		const pathname = query.page + '_' + query.tab;
 
 		return {
 			...location,
 			pathname,
 		};
-	}
-});
+	},
+} );
 
 export const EmbeddedBodyLayout = () => {
-	useOptionsHydration(window.wcSettings.preloadOptions);
+	useOptionsHydration( window.wcSettings.preloadOptions );
 	const { currentUserCan } = useUser();
 
 	const pages = embeddedPageRegistry.getPages();
-	console.log(pages);
 
 	return (
 		<Router history={ customHistory }>
