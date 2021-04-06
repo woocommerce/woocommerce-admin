@@ -1,4 +1,4 @@
-# Unreleased
+# 6.0.0
 
 -   Change styling of `<ProductImage />`.
 -   Remove the `showCount` prop from `<SearchListItem>`. Count will always be displayed if any of those props is not undefined/null: `countLabel` and `item.count`.
@@ -11,6 +11,7 @@
 -   Deprecate use of `<Card>` in favor of the `<Card>` component in `@wordpress/components`.
 -   Fixing screen reader text being undefined for report `<Table>`
 -   Update `<SearchListControl />` to use checkbox and radio inputs.
+-   Fix <SelectControl /> so the onChange value type always matches the selected type. #6594
 
 ## Breaking changes
 
