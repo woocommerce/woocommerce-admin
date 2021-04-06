@@ -435,7 +435,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 			$name = null;
 		}
 
-		return wp_nonce_url( $url, $action, $name );
+		return add_query_arg( $name, wp_create_nonce( $action ), $url );
 	}
 
 	/**
