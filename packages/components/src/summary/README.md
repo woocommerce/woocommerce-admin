@@ -61,7 +61,7 @@ Name | Type | Default | Description
 `selected` | Boolean | `false` | A boolean used to show a highlight style on this number
 `value` | One of type: number, string | `null` | A string or number value to display - a string is allowed so we can accept currency formatting
 `onLinkClickCallback` | Function | `noop` | A function to be called after a SummaryNumber, rendered as a link, is clicked
-
+`details` | String | `null`| A string to display additional information at the bottom
 
 SummaryListPlaceholder
 ===
