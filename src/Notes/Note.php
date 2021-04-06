@@ -607,8 +607,8 @@ class Note extends \WC_Data {
 			'status'        => $status,
 			'primary'       => $primary,
 			'actioned_text' => $actioned_text,
-			'nonce_name'    => '',
-			'nonce_action'  => '',
+			'nonce_name'    => null,
+			'nonce_action'  => null,
 		);
 
 		$note_actions   = $this->get_prop( 'actions', 'edit' );

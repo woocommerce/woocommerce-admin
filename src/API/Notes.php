@@ -460,8 +460,8 @@ class Notes extends \WC_REST_CRUD_Controller {
 			$data['actions'][ $key ]->label  = stripslashes( $data['actions'][ $key ]->label );
 			$data['actions'][ $key ]->url    = $this->maybe_add_nonce_to_url(
 				$this->prepare_query_for_response( $data['actions'][ $key ]->query ),
-				$data['actions'][ $key ]->nonce_action,
-				$data['actions'][ $key ]->nonce_name
+				(string) $data['actions'][ $key ]->nonce_action,
+				(string) $data['actions'][ $key ]->nonce_name
 			);
 			$data['actions'][ $key ]->status = stripslashes( $data['actions'][ $key ]->status );
 		}
