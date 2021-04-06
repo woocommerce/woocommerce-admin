@@ -335,6 +335,11 @@ $border: $gray-200;
 		color: $gray-900;
 	}
 
+	.woocommerce-summary__item-details {
+		display: block;
+		color: $gray-700;
+	}
+
 	&.is-selected {
 		background: $studio-white;
 		box-shadow: inset 0 4px 0 var(--wp-admin-theme-color);

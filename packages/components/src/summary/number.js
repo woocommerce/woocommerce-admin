@@ -15,7 +15,7 @@ import { Text } from '@woocommerce/experimental';
 import Link from '../link';
 
 /**
- * A component to show a value, label, and an optional change percentage. Can also act as a link to a specific report focus.
+ * A component to show a value, label, and optionals details and change percentage. Can also act as a link to a specific report focus.
  *
  * @param {Object} props
  * @param {number} props.delta Change percentage. Float precision is rendered as given.
@@ -30,6 +30,7 @@ import Link from '../link';
  * @param {boolean} props.selected
  * @param {number|string} props.value
  * @param {Function} props.onLinkClickCallback
+ * @param {string} props.details
  * @return {Object} -
  */
 const SummaryNumber = ( {
@@ -45,6 +46,7 @@ const SummaryNumber = ( {
 	selected,
 	value,
 	onLinkClickCallback,
+	details,
 } ) => {
 	const liClasses = classnames( 'woocommerce-summary__item-container', {
 		'is-dropdown-button': onToggle,
@@ -137,6 +139,13 @@ const SummaryNumber = ( {
 						</div>
 					</Tooltip>
 				</div>
+
+				{ details ? (
+					<span className="woocommerce-summary__item-details">
+						<Text variant="body.small">{ details }</Text>
+					</span>
+				) : null }
+
 				{ onToggle ? (
 					<ChevronDownIcon
 						className="woocommerce-summary__toggle"
@@ -202,6 +211,10 @@ SummaryNumber.propTypes = {
 	 * A function to be called after a SummaryNumber, rendered as a link, is clicked.
 	 */
 	onLinkClickCallback: PropTypes.func,
+	/**
+	 * A string to display additional information at the bottom.
+	 */
+	details: PropTypes.string,
 };
 
 SummaryNumber.defaultProps = {
