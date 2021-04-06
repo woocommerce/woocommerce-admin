@@ -1,7 +1,6 @@
 name: 'Daily E2E Tests'
 
 on:
-   pull_request:
    schedule:
      - cron:  '0 0 * * *'
 
