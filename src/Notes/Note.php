@@ -634,16 +634,24 @@ class Note extends \WC_Data {
 	 * @param string $nonce_action The nonce action.
 	 * @param string $nonce_name The nonce Name. This is used as the paramater name in the resulting URL for the action.
 	 * @return void
+	 * @throws \Exception If note name cannot be found.
 	 */
 	public function add_nonce_to_action( string $note_action_name, string $nonce_action, string $nonce_name ) {
 		$actions   = $this->get_prop( 'actions', 'edit' );
 
+		$matching_action = null;
 		foreach ( $actions as $i => $action ) {
 			if ( $action->name === $note_action_name ) {
-				$actions[$i]->nonce_action = $nonce_action;
-				$actions[$i]->nonce_name   = $nonce_name;
+				$matching_action =& $actions[ $i ];
 			}
 		}
+
+		if ( empty( $matching_action ) ) {
+			throw new \Exception( sprintf( 'Could not find action %s in note %s', $note_action_name, $this->get_name() ) );
+		}
+
+		$matching_action->nonce_action = $nonce_action;
+		$matching_action->nonce_name   = $nonce_name;
 
 		$this->set_actions( $actions );
 	}
