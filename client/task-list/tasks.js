@@ -250,6 +250,7 @@ export function getAllTasks( {
 			type: 'setup',
 		},
 	];
+
 	return groupListOfObjectsBy(
 		applyFilters( 'woocommerce_admin_onboarding_task_list', tasks, query ),
 		'type',

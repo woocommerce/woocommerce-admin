@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
+import { Component, useState, useEffect } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import {
@@ -74,18 +74,28 @@ export class TaskDashboard extends Component {
 		}
 	};
 
-	getAllTasks() {
-		const {
-			activePlugins,
-			countryCode,
-			createNotice,
-			installAndActivatePlugins,
-			installedPlugins,
-			isJetpackConnected,
-			onboardingStatus,
-			profileItems,
-			query,
-		} = this.props;
+	getAllTasks( {
+		activePlugins,
+		countryCode,
+		createNotice,
+		installAndActivatePlugins,
+		installedPlugins,
+		isJetpackConnected,
+		onboardingStatus,
+		profileItems,
+		query,
+	} ) {
+		// const {
+		// 	activePlugins,
+		// 	countryCode,
+		// 	createNotice,
+		// 	installAndActivatePlugins,
+		// 	installedPlugins,
+		// 	isJetpackConnected,
+		// 	onboardingStatus,
+		// 	profileItems,
+		// 	query,
+		// } = this.props;
 
 		return getAllTasks( {
 			activePlugins,
@@ -142,17 +152,17 @@ export class TaskDashboard extends Component {
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
 					/>
 				) }
-				{ extensionTasks && ! isExtendedTaskListHidden && (
+				{
 					<TaskList
 						dismissedTasks={ dismissedTasks || [] }
 						isComplete={ isExtendedTaskListComplete }
 						name={ 'extended_task_list' }
 						query={ query }
-						tasks={ extensionTasks }
+						tasks={ extensionTasks || [] }
 						title={ __( 'Extensions setup', 'woocommerce-admin' ) }
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
 					/>
-				) }
+				}
 				{ isCartModalOpen && (
 					<CartModal
 						onClose={ () => this.toggleCartModal() }

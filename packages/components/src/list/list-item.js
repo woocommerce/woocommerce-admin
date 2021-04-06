@@ -3,6 +3,7 @@
  */
 import { ENTER } from '@wordpress/keycodes';
 import PropTypes from 'prop-types';
+import { CSSTransition } from 'react-transition-group';
 
 /**
  * Internal dependencies
@@ -42,6 +43,7 @@ function ListItem( props ) {
 		target,
 		listItemTag,
 	} = item;
+
 	const hasAction = typeof onClick === 'function' || href;
 	const InnerTag = href ? Link : 'div';
 
@@ -77,6 +79,52 @@ function ListItem( props ) {
 		</InnerTag>
 	);
 }
+
+// This experimental version of ListItem can be used to pass children
+// as content instead of using item.before,item.content and item.after.
+export const ExperimentalListItem = ( { title, ...otherProps } ) => {
+	const { onClick, href, className, children, key } = otherProps;
+
+	const hasAction = typeof onClick === 'function' || href;
+	const Tag = href ? Link : 'div';
+
+	const tagProps = {
+		...otherProps,
+		className: 'woocommerce-list__item-inner',
+		'aria-disabled': hasAction ? 'false' : null,
+		tabIndex: hasAction ? '0' : null,
+		role: hasAction ? 'menuitem' : null,
+		onKeyDown: ( e ) => ( hasAction ? handleKeyDown( e, onClick ) : null ),
+	};
+
+	return (
+		<CSSTransition
+			key={ key }
+			timeout={ 500 }
+			classNames={ `woocommerce-list__item ${ className || '' }` }
+		>
+			<li className={ hasAction ? 'has-action' : '' }>
+				<Tag { ...tagProps }>
+					<div className="woocommerce-list__item-text">
+						{ children }
+					</div>
+				</Tag>
+			</li>
+		</CSSTransition>
+	);
+};
+
+export const ExperimentalListItemBefore = ( { children } ) => {
+	return <div className="woocommerce-list__item-before">{ children }</div>;
+};
+
+export const ExperimentalListItemAfter = ( { children } ) => {
+	return <div className="woocommerce-list__item-after">{ children }</div>;
+};
+
+export const ExperimentalListItemTitle = ( { children } ) => {
+	return <span className="woocommerce-list__item-title">{ children }</span>;
+};
 
 ListItem.propTypes = {
 	/**

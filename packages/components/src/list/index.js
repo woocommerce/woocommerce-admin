@@ -8,7 +8,12 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 /**
  * Internal dependencies
  */
-import ListItem from './list-item';
+import ListItem, {
+	ExperimentalListItem,
+	ExperimentalListItemAfter,
+	ExperimentalListItemBefore,
+	ExperimentalListItemTitle,
+} from './list-item';
 
 /**
  * List component to display a list of items.
@@ -51,6 +56,20 @@ function List( props ) {
 		</TransitionGroup>
 	);
 }
+
+// An experimental version of List that supports children instead of passing items
+export const ExperimentalList = ( { children, className, ...otherProps } ) => {
+	return (
+		<TransitionGroup
+			component="ul"
+			className={ `woocommerce-list ${ className || '' }` }
+			role="menu"
+			{ ...otherProps }
+		>
+			{ children }
+		</TransitionGroup>
+	);
+};
 
 List.propTypes = {
 	/**
@@ -106,3 +125,10 @@ List.propTypes = {
 };
 
 export default List;
+
+export {
+	ExperimentalListItem,
+	ExperimentalListItemAfter,
+	ExperimentalListItemBefore,
+	ExperimentalListItemTitle,
+};

@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Icon, check } from '@wordpress/icons';
-import { List, EllipsisMenu, Badge } from '@woocommerce/components';
+import { ExperimentalList, EllipsisMenu, Badge } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import {
 	PLUGINS_STORE_NAME,
@@ -25,6 +25,7 @@ import { Text } from '@woocommerce/experimental';
 import { recordTaskViewEvent } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
 import sanitizeHTML from '../lib/sanitize-html';
+import { ExperimentalList } from '../../packages/components/src/list';
 
 export class TaskList extends Component {
 	componentDidMount() {
@@ -402,7 +403,8 @@ export class TaskList extends Component {
 									{ this.renderMenu( ! name ) }
 								</CardHeader>
 								<CardBody>
-									<List items={ listTasks } />
+									<ExperimentalList></ExperimentalList>
+									{ /* <List items={ listTasks } /> */ }
 								</CardBody>
 							</Card>
 						</>

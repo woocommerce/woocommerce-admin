@@ -62,7 +62,7 @@ export function getProductIdsForCart(
  *
  * @param {Object} profileItems Onboarding profile.
  * @param {Array} installedPlugins Installed plugins.
- * @return {Array} Objects with labeled/categorized product names and types.
+ * @return {Object} Objects with labeled/categorized product names and types.
  */
 export function getCategorizedOnboardingProducts(
 	profileItems,
