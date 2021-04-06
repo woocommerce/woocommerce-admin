@@ -22,7 +22,7 @@ own effort score survey, providing your own logging infrastructure.
 This creates a wrapper component around `CustomerEffortScore` which simply logs
 responses to the console:
 
-```
+```js
 import CustomerEffortScore from '@woocommerce/customer-effort-score';
 
 export function CustomerEffortScoreConsole( { label } ) {
@@ -54,7 +54,7 @@ export function CustomerEffortScoreConsole( { label } ) {
 
 Use this wrapper component in your code like this:
 
-```
+```js
 const MyComponent = function() {
     const [ ceses, setCeses ] = useState( [] );
 	
