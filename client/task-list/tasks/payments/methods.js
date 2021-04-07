@@ -9,6 +9,7 @@ import {
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
 import { Link } from '@woocommerce/components';
+import { addFilter, applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -617,18 +618,67 @@ export function getPaymentMethods( {
 	];
 
 	if ( window.wcAdminFeatures.wcpay ) {
-		const wcPayPaymentMethod = getWcPayPaymentMethod( {
-			wcPayIsConnected,
-			profileItems,
-			hasCbdIndustry,
-			options,
-			countryCode,
-			createNotice,
-			installAndActivatePlugins,
-		} );
+		const enableStepperFlow =
+			window.wcAdminFeatures[ 'wcpay/stepper-flow' ];
+		// TODO perform A/B test - see #1477
+		const useStepperFlow = true;
 
-		methods.unshift( wcPayPaymentMethod );
+		if ( enableStepperFlow && useStepperFlow ) {
+			// Get the steps configuration from the plugin
+			const stepsConfiguration = applyFilters(
+				'getStepsConfiguration-woocommerce-payments',
+				'woocommerce-admin',
+				[]
+			);
+			// TODO do something handwavy with the steps configuration - make
+			// it into a series of steps within a Stepper component.
+			console.log( { stepsConfiguration } );
+			// TODO then add it to the set of methods
+			// methods.unshift( method );
+		} else {
+			const wcPayPaymentMethod = getWcPayPaymentMethod( {
+				wcPayIsConnected,
+				profileItems,
+				hasCbdIndustry,
+				options,
+				countryCode,
+				createNotice,
+				installAndActivatePlugins,
+			} );
+
+			methods.unshift( wcPayPaymentMethod );
+		}
 	}
 
 	return methods.filter( ( method ) => method.visible );
 }
+
+// TODO This actually needs to live in WC Payments.
+// It allows the specification of a steps configuration, which gets translated
+// by WC Admin into a series of steps.
+addFilter(
+	'getStepsConfiguration-woocommerce-payments',
+	'woocommerce-admin',
+	() => {
+		return [
+			{
+				// This is a special step type that logs in or creates a
+				// wordpress.com account. This is a special case because
+				// a) it's complex and b) it would help if it was reusable
+				// across payment methods. We don't _have_ to implement it like
+				// this though.
+				key: 'log-in',
+				type: 'wordpress.com-auth',
+			},
+			{
+				key: 'verify-business-details',
+				label: __( 'Verify your business details', 'woocommerce-payments' ),
+				content: (
+					<>
+						<p>{ __( 'You\'ll need to confirm your identity and provide a bank account to enable deposits', 'woocommerce-payments' ) }</p>
+					</>
+				),
+			},
+		];
+	}
+);
