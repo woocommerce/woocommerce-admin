@@ -12,7 +12,7 @@ import { check } from '@wordpress/icons';
 import { Text } from '@woocommerce/experimental';
 import { __ } from '@wordpress/i18n';
 import { updateQueryString } from '@woocommerce/navigation';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 
@@ -52,7 +52,10 @@ export const TaskItem = ( props: TaskItemProps ): JSX.Element | null => {
 		} );
 
 	const { createNotice } = useDispatch( 'core/notices' );
-	const { updateOptions, getOption } = useDispatch( OPTIONS_STORE_NAME );
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { getOption } = useSelect( ( select ) => {
+		return select( OPTIONS_STORE_NAME );
+	} );
 
 	if ( ! visible ) {
 		return null;

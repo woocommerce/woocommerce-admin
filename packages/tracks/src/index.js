@@ -8,6 +8,32 @@ import debug from 'debug';
  */
 const tracksDebug = debug( 'wc-admin:tracks' );
 
+if (
+	process.env.NODE_ENV === 'development' &&
+	! window.wc.enableDebugTracking &&
+	window.wcTracks &&
+	window.wcTracks.recordEvent
+) {
+	// Wrap the wcTracks with a debugger for development testing, to see tracking
+	// events where window.wcTracks.recordEvent was called directly
+	window.wc.enableDebugTracking = () => {
+		const originalTracksMethod = window.wcTracks.recordEvent;
+
+		window.wcTracks.recordEvent = ( name, properties ) => {
+			tracksDebug( 'recordevent %s %o', 'wcadmin_' + name, properties, {
+				_tqk: window._tkq,
+				shouldRecord:
+					process.env.NODE_ENV !== 'development' &&
+					!! window._tkq &&
+					!! window.wcTracks &&
+					!! window.wcTracks.isEnabled,
+			} );
+
+			originalTracksMethod( name, properties );
+		};
+	};
+}
+
 /**
  * Record an event to Tracks
  *

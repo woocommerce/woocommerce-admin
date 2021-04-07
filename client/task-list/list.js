@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, cloneElement } from '@wordpress/element';
+import { Component, cloneElement, Children } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import classNames from 'classnames';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
@@ -25,7 +25,6 @@ import { Text } from '@woocommerce/experimental';
 import { recordTaskViewEvent } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
 import sanitizeHTML from '../lib/sanitize-html';
-import { ExperimentalList } from '../../packages/components/src/list';
 
 export class TaskList extends Component {
 	componentDidMount() {
@@ -79,11 +78,14 @@ export class TaskList extends Component {
 
 	getIncompleteTasks() {
 		const { dismissedTasks, tasks } = this.props;
-		return tasks.filter(
-			( task ) =>
-				task.visible &&
-				! task.completed &&
-				! dismissedTasks.includes( task.key )
+		return (
+			tasks ||
+			[].filter(
+				( task ) =>
+					task.visible &&
+					! task.completed &&
+					! dismissedTasks.includes( task.key )
+			)
 		);
 	}
 
@@ -269,7 +271,7 @@ export class TaskList extends Component {
 	getCurrentTask() {
 		const { query, tasks } = this.props;
 		const { task } = query;
-		const currentTask = tasks.find( ( s ) => s.key === task );
+		const currentTask = tasks || [].find( ( s ) => s.key === task );
 
 		if ( ! currentTask ) {
 			return null;
@@ -300,7 +302,7 @@ export class TaskList extends Component {
 	}
 
 	render() {
-		const { name, query, title: listTitle } = this.props;
+		const { name, query, title: listTitle, children } = this.props;
 		const { task: theTask } = query;
 		const currentTask = this.getCurrentTask();
 
@@ -308,110 +310,130 @@ export class TaskList extends Component {
 			return null;
 		}
 
-		const listTasks = this.getVisibleTasks().map( ( task ) => {
-			task.className = classNames(
-				task.completed ? 'is-complete' : null,
-				task.className
-			);
-			task.before = (
-				<div className="woocommerce-task__icon">
-					{ task.completed && <Icon icon={ check } /> }
-				</div>
-			);
+		// const listTasks = this.getVisibleTasks().map( ( task ) => {
+		// 	task.className = classNames(
+		// 		task.completed ? 'is-complete' : null,
+		// 		task.className
+		// 	);
+		// 	task.before = (
+		// 		<div className="woocommerce-task__icon">
+		// 			{ task.completed && <Icon icon={ check } /> }
+		// 		</div>
+		// 	);
 
-			task.title = (
-				<Text
-					as="div"
-					variant={ task.completed ? 'body.small' : 'button' }
-				>
-					{ task.title }
-					{ task.additionalInfo && (
-						<div
-							className="woocommerce-task__additional-info"
-							dangerouslySetInnerHTML={ sanitizeHTML(
-								task.additionalInfo
-							) }
-						></div>
-					) }
-					{ task.time && ! task.completed && (
-						<div className="woocommerce-task__estimated-time">
-							{ task.time }
-						</div>
-					) }
-				</Text>
-			);
+		// 	task.title = (
+		// 		<Text
+		// 			as="div"
+		// 			variant={ task.completed ? 'body.small' : 'button' }
+		// 		>
+		// 			{ task.title }
+		// 			{ task.additionalInfo && (
+		// 				<div
+		// 					className="woocommerce-task__additional-info"
+		// 					dangerouslySetInnerHTML={ sanitizeHTML(
+		// 						task.additionalInfo
+		// 					) }
+		// 				></div>
+		// 			) }
+		// 			{ task.time && ! task.completed && (
+		// 				<div className="woocommerce-task__estimated-time">
+		// 					{ task.time }
+		// 				</div>
+		// 			) }
+		// 		</Text>
+		// 	);
 
-			if ( ! task.completed && task.isDismissable ) {
-				task.after = (
-					<Button
-						data-testid={ `${ task.key }-dismiss-button` }
-						isTertiary
-						onClick={ ( event ) => {
-							event.stopPropagation();
-							this.dismissTask( task );
-						} }
-					>
-						{ __( 'Dismiss', 'woocommerce-admin' ) }
-					</Button>
-				);
-			}
+		// 	if ( ! task.completed && task.isDismissable ) {
+		// 		task.after = (
+		// 			<Button
+		// 				data-testid={ `${ task.key }-dismiss-button` }
+		// 				isTertiary
+		// 				onClick={ ( event ) => {
+		// 					event.stopPropagation();
+		// 					this.dismissTask( task );
+		// 				} }
+		// 			>
+		// 				{ __( 'Dismiss', 'woocommerce-admin' ) }
+		// 			</Button>
+		// 		);
+		// 	}
 
-			if ( ! task.onClick ) {
-				task.onClick = ( e ) => {
-					if ( e.target.nodeName === 'A' ) {
-						// This is a nested link, so don't activate this task.
-						return false;
-					}
+		// 	if ( ! task.onClick ) {
+		// 		task.onClick = ( e ) => {
+		// 			if ( e.target.nodeName === 'A' ) {
+		// 				// This is a nested link, so don't activate this task.
+		// 				return false;
+		// 			}
 
-					updateQueryString( { task: task.key } );
-				};
-			}
+		// 			updateQueryString( { task: task.key } );
+		// 		};
+		// 	}
 
-			return task;
-		} );
+		// 	return task;
+		// } );
 
-		if ( ! listTasks.length ) {
-			return (
-				<div className="woocommerce-task-dashboard__container"></div>
-			);
-		}
+		// if ( ! listTasks.length ) {
+		// 	return (
+		// 		<div className="woocommerce-task-dashboard__container"></div>
+		// 	);
+		// }
 
 		return (
-			<>
-				<div className="woocommerce-task-dashboard__container">
-					{ currentTask ? (
-						cloneElement( currentTask.container, {
-							query,
-						} )
-					) : (
-						<>
-							<Card
-								size="large"
-								className="woocommerce-task-card woocommerce-homescreen-card"
-							>
-								<CardHeader size="medium">
-									<div className="wooocommerce-task-card__header">
-										<Text variant="title.small">
-											{ listTitle }
-										</Text>
-										<Badge
-											count={
-												this.getIncompleteTasks().length
-											}
-										/>
-									</div>
-									{ this.renderMenu( ! name ) }
-								</CardHeader>
-								<CardBody>
-									<ExperimentalList></ExperimentalList>
-									{ /* <List items={ listTasks } /> */ }
-								</CardBody>
-							</Card>
-						</>
-					) }
-				</div>
-			</>
+			<div className="woocommerce-task-dashboard__container">
+				<Card
+					size="large"
+					className="woocommerce-task-card woocommerce-homescreen-card"
+				>
+					<CardHeader size="medium">
+						<div className="wooocommerce-task-card__header">
+							<Text variant="title.small">{ listTitle }</Text>
+							<Badge count={ this.getIncompleteTasks().length } />
+						</div>
+						{ this.renderMenu( ! name ) }
+					</CardHeader>
+					<CardBody>
+						<ExperimentalList>{ children }</ExperimentalList>
+					</CardBody>
+				</Card>
+			</div>
 		);
+
+		// return (
+		// 	<>
+		// 		<div className="woocommerce-task-dashboard__container">
+		// 			{ currentTask ? (
+		// 				cloneElement( currentTask.container, {
+		// 					query,
+		// 				} )
+		// 			) : (
+		// 				<>
+		// 					<Card
+		// 						size="large"
+		// 						className="woocommerce-task-card woocommerce-homescreen-card"
+		// 					>
+		// 						<CardHeader size="medium">
+		// 							<div className="wooocommerce-task-card__header">
+		// 								<Text variant="title.small">
+		// 									{ listTitle }
+		// 								</Text>
+		// 								<Badge
+		// 									count={
+		// 										this.getIncompleteTasks().length
+		// 									}
+		// 								/>
+		// 							</div>
+		// 							{ this.renderMenu( ! name ) }
+		// 						</CardHeader>
+		// 						<CardBody>
+		// 							<ExperimentalList></ExperimentalList>
+		// 							{ /* <List items={ listTasks } /> */ }
+		// 						</CardBody>
+		// 					</Card>
+		// 				</>
+		// 			) }
+		// 		</div>
+		// 	</>
+		// );
 	}
 }
 

@@ -21,6 +21,9 @@ import CartModal from '../dashboard/components/cart-modal';
 import { getAllTasks } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
 import TaskList from './list';
+import { StoreDetailsTaskItem } from './task-items/store-details';
+import { Products } from './tasks/products';
+import { ProductsTaskItem } from './task-items/products';
 
 export class TaskDashboard extends Component {
 	constructor( props ) {
@@ -133,26 +136,29 @@ export class TaskDashboard extends Component {
 			trackedCompletedTasks,
 		} = this.props;
 		const { isCartModalOpen } = this.state;
-		const allTasks = this.getAllTasks();
-		const { extension: extensionTasks, setup: setupTasks } = allTasks;
+		// const allTasks = this.getAllTasks();
+		// const { extension: extensionTasks, setup: setupTasks } = allTasks;
 		const { task } = query;
 
 		return (
 			<>
-				{ setupTasks && ( ! isSetupTaskListHidden || task ) && (
+				{ ( ! isSetupTaskListHidden || task ) && (
 					<TaskList
 						dismissedTasks={ dismissedTasks || [] }
 						isComplete={ isTaskListComplete }
 						query={ query }
-						tasks={ setupTasks }
+						tasks={ [] }
 						title={ __(
 							'Get ready to start selling',
 							'woocommerce-admin'
 						) }
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
-					/>
+					>
+						<StoreDetailsTaskItem />
+						<ProductsTaskItem />
+					</TaskList>
 				) }
-				{
+				{ /* {
 					<TaskList
 						dismissedTasks={ dismissedTasks || [] }
 						isComplete={ isExtendedTaskListComplete }
@@ -162,7 +168,7 @@ export class TaskDashboard extends Component {
 						title={ __( 'Extensions setup', 'woocommerce-admin' ) }
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
 					/>
-				}
+				} */ }
 				{ isCartModalOpen && (
 					<CartModal
 						onClose={ () => this.toggleCartModal() }

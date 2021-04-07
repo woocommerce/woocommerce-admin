@@ -3,7 +3,7 @@
  */
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /**
@@ -13,13 +13,18 @@ import { TaskItem } from './task-item';
 
 const TASK_KEY = 'store_details';
 
-export const StoreDetails = ( {
+export const StoreDetailsTaskItem = ( {
 	onTaskSelect,
 }: {
 	onTaskSelect: ( taskKey: string ) => void;
 } ): JSX.Element => {
-	const { getProfileItems } = useSelect( OPTIONS_STORE_NAME );
+	const { getProfileItems } = useSelect( ( select ) => {
+		return select( ONBOARDING_STORE_NAME );
+	} );
+
 	const { completed } = getProfileItems();
+
+	console.log( getProfileItems() );
 
 	return (
 		<TaskItem

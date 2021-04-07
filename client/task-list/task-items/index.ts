@@ -1,12 +1,10 @@
-import { JsxElement } from "typescript";
-
 export type TaskItemProps = {
-  key: string,
-  title: string,
-  container: ?JsxElement,
-  onClick: ,
-  completed: profilerCompleted,
-  visible: true,
-  time: string,
-  type: string,
+	key: string;
+	title: string;
+	container: JSX.Element;
+	onClick: () => void;
+	completed: boolean;
+	visible: true;
+	time: string;
+	type: string;
 };
