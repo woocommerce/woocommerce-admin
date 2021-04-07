@@ -7,7 +7,7 @@
 namespace Automattic\WooCommerce\Admin;
 
 /**
- * Contains backend logic for the Marketing feature.
+ * Contains backend logic for retrieving payment plugin recommendations.
  */
 class PaymentPlugins {
 
