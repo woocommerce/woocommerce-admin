@@ -47,7 +47,7 @@ class PaymentPlugins {
 		if ( false === $plugins ) {
 			include_once ABSPATH . '/wp-admin/includes/plugin-install.php';
 
-			$url     = 'https://gist.githubusercontent.com/louwie17/f5c0a1c57d3a9ead78fcf385782d8a05/raw/e086d3dadf46c4a3c92bd0fe1dc27097563f5639/recommended-payments.json'; // 'https://127.0.0.1/wp-json/wccom/marketplace-suggestions/1.0/payment-suggestions.json';
+			$url     = 'https://gist.githubusercontent.com/louwie17/f5c0a1c57d3a9ead78fcf385782d8a05/raw/dbe27de164c1ef215bbb43039a0f5dcd0ec6c5f7/recommended-payments.json'; // 'https://127.0.0.1/wp-json/wccom/marketplace-suggestions/1.0/payment-suggestions.json';
 			$request = wp_remote_get( $url );
 			$plugins = [];
 
@@ -55,22 +55,20 @@ class PaymentPlugins {
 				$plugins = json_decode( $request['body'], true );
 			}
 			foreach ( $plugins as $key => $plugin ) {
-				$api = plugins_api(
-					'plugin_information',
-					array(
-						'slug'   => $plugin['product'],
-						'fields' => array(
-							'sections'          => false,
-							'short_description' => true,
-							'icons'             => true,
-						),
-					)
-				);
-				if ( is_wp_error( $api ) ) {
-					continue;
-				}
-				if ( ! array_key_exists( 'shortDescription', $plugins[ $key ] ) ) {
-					$plugins[ $key ]['shortDescription'] = $api->short_description;
+				if ( ! array_key_exists( 'copy', $plugins[ $key ] ) ) {
+					$api = plugins_api(
+						'plugin_information',
+						array(
+							'slug'   => $plugin['product'],
+							'fields' => array(
+								'short_description' => true,
+							),
+						)
+					);
+					if ( is_wp_error( $api ) ) {
+						continue;
+					}
+					$plugins[ $key ]['copy'] = $api->short_description;
 				}
 			}
 

@@ -427,7 +427,7 @@ class Plugins extends \WC_REST_Data_Controller {
 		$per_page      = $request->get_param( 'per_page' );
 
 		foreach ( $all_plugins as $plugin ) {
-			if ( ! PluginsHelper::is_plugin_installed( $plugin['plugin'] ) ) {
+			if ( ! PluginsHelper::is_plugin_active( $plugin['product'] ) ) {
 				$valid_plugins[] = $plugin;
 			}
 		}

@@ -3,9 +3,8 @@
  */
 import { Router, Route, Switch } from 'react-router-dom';
 import { Suspense } from '@wordpress/element';
-import { useUser, useOptionsHydration } from '@woocommerce/data';
+import { useUser } from '@woocommerce/data';
 import { createBrowserHistory } from 'history';
-import { Spinner } from '@woocommerce/components';
 import { parse } from 'qs';
 
 /**
@@ -38,8 +37,12 @@ Object.defineProperty( customHistory, 'location', {
 		const query = parse( location.search.substring( 1 ) ) as {
 			page: string;
 			tab: string;
+			section?: string;
 		};
-		const pathname = query.page + '_' + query.tab;
+		let pathname = query.page + '_' + query.tab;
+		if ( query.section ) {
+			pathname += '_' + query.section;
+		}
 
 		return {
 			...location,
@@ -49,7 +52,6 @@ Object.defineProperty( customHistory, 'location', {
 } );
 
 export const EmbeddedBodyLayout = () => {
-	useOptionsHydration( window.wcSettings.preloadOptions );
 	const { currentUserCan } = useUser();
 
 	const pages = embeddedPageRegistry.getPages();

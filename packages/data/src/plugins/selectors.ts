@@ -58,10 +58,13 @@ export const getRecommendedPlugins = (
 
 export type Plugin = {
 	slug: string;
-	shortDescription: string;
+	copy: string;
 	product: string;
 	title: string;
+	icon: string;
 	'button-text': string;
+	'setup-link': string;
+	recommended?: boolean;
 };
 export type RecommendedTypes = 'payments';
 
