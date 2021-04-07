@@ -47,7 +47,7 @@ class PaymentPlugins {
 		if ( false === $plugins ) {
 			include_once ABSPATH . '/wp-admin/includes/plugin-install.php';
 
-			$url     = 'https://gist.githubusercontent.com/louwie17/f5c0a1c57d3a9ead78fcf385782d8a05/raw/dbe27de164c1ef215bbb43039a0f5dcd0ec6c5f7/recommended-payments.json'; // 'https://127.0.0.1/wp-json/wccom/marketplace-suggestions/1.0/payment-suggestions.json';
+			$url     = 'https://woocommerce.com/wp-json/wccom/marketplace-suggestions/1.0/payment-suggestions.json';
 			$request = wp_remote_get( $url );
 			$plugins = [];
 
