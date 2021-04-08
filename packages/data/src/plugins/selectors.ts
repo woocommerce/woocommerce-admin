@@ -2,7 +2,11 @@
  * Internal dependencies
  */
 import { WPDataSelector, WPDataSelectors } from '../types';
-import { activatePlugins } from './actions';
+import {
+	PluginsState,
+	RecommendedTypes,
+	SelectorKeysWithActions,
+} from './types';
 
 export const getActivePlugins = ( state: PluginsState ) => {
 	return state.active || [];
@@ -14,14 +18,14 @@ export const getInstalledPlugins = ( state: PluginsState ) => {
 
 export const isPluginsRequesting = (
 	state: PluginsState,
-	selector: keyof PluginSelectors
+	selector: SelectorKeysWithActions
 ) => {
 	return state.requesting[ selector ] || false;
 };
 
 export const getPluginsError = (
 	state: PluginsState,
-	selector: keyof PluginSelectors
+	selector: SelectorKeysWithActions
 ) => {
 	return state.errors[ selector ] || false;
 };
@@ -59,34 +63,9 @@ export const getRecommendedPlugins = (
 	return state.recommended[ type ];
 };
 
-export type Plugin = {
-	slug: string;
-	copy: string;
-	product: string;
-	title: string;
-	icon: string;
-	'button-text': string;
-	'setup-link': string;
-	recommended?: boolean;
-};
-export type RecommendedTypes = 'payments';
-
-export type PluginsState = {
-	active: string[];
-	installed: string[];
-	requesting: Record< keyof PluginSelectors, boolean >;
-	jetpackConnectUrls: Record< string, unknown >;
-	jetpackConnection: boolean;
-	recommended: Record< RecommendedTypes, Plugin[] >;
-	paypalOnboardingStatus?: unknown;
-	// TODO clarify what the error record's type is
-	errors: Record< string, unknown >;
-};
-
 // Types
 export type PluginSelectors = {
 	getActivePlugins: WPDataSelector< typeof getActivePlugins >;
-	activatePlugins: WPDataSelector< typeof activatePlugins >;
 	getInstalledPlugins: WPDataSelector< typeof getInstalledPlugins >;
 	getRecommendedPlugins: WPDataSelector< typeof getRecommendedPlugins >;
 } & WPDataSelectors;

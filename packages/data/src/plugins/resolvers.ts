@@ -20,12 +20,27 @@ import {
 	setPaypalOnboardingStatus,
 	setRecommendedPlugins,
 } from './actions';
+import { PaypalOnboardingStatus, RecommendedTypes } from './types';
+
+type PluginGetResponse = {
+	plugins: string[];
+} & Response;
+
+type JetpackConnectionResponse = {
+	isActive: boolean;
+} & Response;
+
+type ConnectJetpackResponse = {
+	slug: 'jetpack';
+	name: string;
+	connectAction: string;
+} & Response;
 
 export function* getActivePlugins() {
 	yield setIsRequesting( 'getActivePlugins', true );
 	try {
 		const url = WC_ADMIN_NAMESPACE + '/plugins/active';
-		const results = yield apiFetch( {
+		const results: PluginGetResponse = yield apiFetch( {
 			path: url,
 			method: 'GET',
 		} );
@@ -41,12 +56,12 @@ export function* getInstalledPlugins() {
 
 	try {
 		const url = WC_ADMIN_NAMESPACE + '/plugins/installed';
-		const results = yield apiFetch( {
+		const results: PluginGetResponse = yield apiFetch( {
 			path: url,
 			method: 'GET',
 		} );
 
-		yield updateInstalledPlugins( results, true );
+		yield updateInstalledPlugins( results.plugins, true );
 	} catch ( error ) {
 		yield setError( 'getInstalledPlugins', error );
 	}
@@ -57,7 +72,7 @@ export function* isJetpackConnected() {
 
 	try {
 		const url = JETPACK_NAMESPACE + '/connection';
-		const results = yield apiFetch( {
+		const results: JetpackConnectionResponse = yield apiFetch( {
 			path: url,
 			method: 'GET',
 		} );
@@ -70,7 +85,7 @@ export function* isJetpackConnected() {
 	yield setIsRequesting( 'isJetpackConnected', false );
 }
 
-export function* getJetpackConnectUrl( query ) {
+export function* getJetpackConnectUrl( query: { redirect_url: string } ) {
 	yield setIsRequesting( 'getJetpackConnectUrl', true );
 
 	try {
@@ -78,7 +93,7 @@ export function* getJetpackConnectUrl( query ) {
 			WC_ADMIN_NAMESPACE + '/plugins/connect-jetpack',
 			query
 		);
-		const results = yield apiFetch( {
+		const results: ConnectJetpackResponse = yield apiFetch( {
 			path: url,
 			method: 'GET',
 		} );
@@ -97,7 +112,7 @@ export function* getJetpackConnectUrl( query ) {
 export function* getPaypalOnboardingStatus() {
 	yield setIsRequesting( 'getPaypalOnboardingStatus', true );
 
-	const errorData = yield select(
+	const errorData: { data?: { status: number } } = yield select(
 		STORE_NAME,
 		'getPluginsError',
 		'getPaypalOnboardingStatus'
@@ -108,7 +123,7 @@ export function* getPaypalOnboardingStatus() {
 	} else {
 		try {
 			const url = PAYPAL_NAMESPACE + '/onboarding/get-status';
-			const results = yield apiFetch( {
+			const results: PaypalOnboardingStatus = yield apiFetch( {
 				path: url,
 				method: 'GET',
 			} );
@@ -124,26 +139,31 @@ export function* getPaypalOnboardingStatus() {
 }
 
 function* setOnboardingStatusWithOptions() {
-	const options = yield select(
+	const options: {
+		merchant_email_production: string;
+		merchant_id_production: string;
+		client_id_production: string;
+		client_secret_production: string;
+	} = yield select(
 		OPTIONS_STORE_NAME,
 		'getOption',
 		'woocommerce-ppcp-settings'
 	);
+	const onboarded =
+		options.merchant_email_production &&
+		options.merchant_id_production &&
+		options.client_id_production &&
+		options.client_secret_production;
 	yield setPaypalOnboardingStatus( {
 		production: {
-			onboarded:
-				options.merchant_email_production &&
-				options.merchant_id_production &&
-				options.client_id_production &&
-				options.client_secret_production
-					? true
-					: false,
+			state: onboarded ? 'onboarded' : 'unknown',
+			onboarded: onboarded ? true : false,
 		},
 	} );
 }
 
 const SUPPORTED_TYPES = [ 'payments' ];
-export function* getRecommendedPlugins( type ) {
+export function* getRecommendedPlugins( type: RecommendedTypes ) {
 	if ( ! SUPPORTED_TYPES.includes( type ) ) {
 		return [];
 	}
@@ -151,7 +171,7 @@ export function* getRecommendedPlugins( type ) {
 
 	try {
 		const url = WC_ADMIN_NAMESPACE + '/plugins/recommended-payment-plugins';
-		const results = yield apiFetch( {
+		const results: Plugin[] = yield apiFetch( {
 			path: url,
 			method: 'GET',
 		} );

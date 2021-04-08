@@ -26,7 +26,7 @@ export { withSettingsHydration } from './settings/with-settings-hydration';
 export { useSettings } from './settings/use-settings';
 
 export { PLUGINS_STORE_NAME } from './plugins';
-export type { Plugin } from './plugins/selectors';
+export type { Plugin } from './plugins/types';
 export { pluginNames } from './plugins/constants';
 export { withPluginsHydration } from './plugins/with-plugins-hydration';
 

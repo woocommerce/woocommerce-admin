@@ -7,9 +7,11 @@ import { concat } from 'lodash';
  * Internal dependencies
  */
 import TYPES from './action-types';
+import { Actions } from './actions';
+import { PluginsState } from './types';
 
 const plugins = (
-	state = {
+	state: PluginsState = {
 		active: [],
 		installed: [],
 		requesting: {},
@@ -31,13 +33,15 @@ const plugins = (
 		replace,
 		recommendedType,
 		plugins: recommendedPlugins,
-	}
+	}: Actions
 ) => {
 	switch ( type ) {
 		case TYPES.UPDATE_ACTIVE_PLUGINS:
 			state = {
 				...state,
-				active: replace ? active : concat( state.active, active ),
+				active: replace
+					? active
+					: ( concat( state.active, active ) as string[] ),
 				requesting: {
 					...state.requesting,
 					getActivePlugins: false,
@@ -55,11 +59,11 @@ const plugins = (
 				...state,
 				installed: replace
 					? installed
-					: concat( state.installed, installed ),
+					: ( concat( state.installed, installed ) as string[] ),
 				requesting: {
 					...state.requesting,
 					getInstalledPlugins: false,
-					installPlugin: false,
+					installPlugins: false,
 				},
 				errors: {
 					...state.errors,
@@ -100,7 +104,7 @@ const plugins = (
 			state = {
 				...state,
 				jetpackConnectUrls: {
-					...state.jetpackConnectUrl,
+					...state.jetpackConnectUrls,
 					[ redirectUrl ]: jetpackConnectUrl,
 				},
 			};

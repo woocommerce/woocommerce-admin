@@ -10,8 +10,34 @@ import { _n, sprintf } from '@wordpress/i18n';
 import { pluginNames, STORE_NAME } from './constants';
 import TYPES from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
+import { WPError } from '../types';
+import {
+	PaypalOnboardingStatus,
+	PluginNames,
+	SelectorKeysWithActions,
+} from './types';
 
-export function updateActivePlugins( active, replace = false ) {
+type PluginsResponse< PluginData > = {
+	data: PluginData;
+	errors: WPError< PluginNames >;
+	success: boolean;
+	message: string;
+} & Response;
+
+type InstallPluginsResponse = PluginsResponse< {
+	installed: string[];
+	results: Record< string, boolean >;
+} >;
+
+type ActivatePluginsResponse = PluginsResponse< {
+	activated: string[];
+	active: string[];
+} >;
+
+export function updateActivePlugins(
+	active: string[],
+	replace = false
+): { type: TYPES; active: string[]; replace?: boolean } {
 	return {
 		type: TYPES.UPDATE_ACTIVE_PLUGINS,
 		active,
@@ -19,7 +45,7 @@ export function updateActivePlugins( active, replace = false ) {
 	};
 }
 
-export function updateInstalledPlugins( installed, replace = false ) {
+export function updateInstalledPlugins( installed: string[], replace = false ) {
 	return {
 		type: TYPES.UPDATE_INSTALLED_PLUGINS,
 		installed,
@@ -27,7 +53,10 @@ export function updateInstalledPlugins( installed, replace = false ) {
 	};
 }
 
-export function setIsRequesting( selector, isRequesting ) {
+export function setIsRequesting(
+	selector: SelectorKeysWithActions,
+	isRequesting: boolean
+) {
 	return {
 		type: TYPES.SET_IS_REQUESTING,
 		selector,
@@ -35,7 +64,10 @@ export function setIsRequesting( selector, isRequesting ) {
 	};
 }
 
-export function setError( selector, error ) {
+export function setError(
+	selector: SelectorKeysWithActions,
+	error: Partial< Record< PluginNames, string[] > >
+) {
 	return {
 		type: TYPES.SET_ERROR,
 		selector,
@@ -43,14 +75,17 @@ export function setError( selector, error ) {
 	};
 }
 
-export function updateIsJetpackConnected( jetpackConnection ) {
+export function updateIsJetpackConnected( jetpackConnection: boolean ) {
 	return {
 		type: TYPES.UPDATE_JETPACK_CONNECTION,
 		jetpackConnection,
 	};
 }
 
-export function updateJetpackConnectUrl( redirectUrl, jetpackConnectUrl ) {
+export function updateJetpackConnectUrl(
+	redirectUrl: string,
+	jetpackConnectUrl: string
+) {
 	return {
 		type: TYPES.UPDATE_JETPACK_CONNECT_URL,
 		jetpackConnectUrl,
@@ -58,11 +93,11 @@ export function updateJetpackConnectUrl( redirectUrl, jetpackConnectUrl ) {
 	};
 }
 
-export function* installPlugins( plugins ) {
+export function* installPlugins( plugins: string[] ) {
 	yield setIsRequesting( 'installPlugins', true );
 
 	try {
-		const results = yield apiFetch( {
+		const results: InstallPluginsResponse = yield apiFetch( {
 			path: `${ WC_ADMIN_NAMESPACE }/plugins/install`,
 			method: 'POST',
 			data: { plugins: plugins.join( ',' ) },
@@ -85,11 +120,11 @@ export function* installPlugins( plugins ) {
 	}
 }
 
-export function* activatePlugins( plugins ) {
+export function* activatePlugins( plugins: string[] ) {
 	yield setIsRequesting( 'activatePlugins', true );
 
 	try {
-		const results = yield apiFetch( {
+		const results: ActivatePluginsResponse = yield apiFetch( {
 			path: `${ WC_ADMIN_NAMESPACE }/plugins/activate`,
 			method: 'POST',
 			data: { plugins: plugins.join( ',' ) },
@@ -112,10 +147,10 @@ export function* activatePlugins( plugins ) {
 	}
 }
 
-export function* installAndActivatePlugins( plugins ) {
+export function* installAndActivatePlugins( plugins: string[] ) {
 	try {
 		yield dispatch( STORE_NAME, 'installPlugins', plugins );
-		const activations = yield dispatch(
+		const activations: InstallPluginsResponse = yield dispatch(
 			STORE_NAME,
 			'activatePlugins',
 			plugins
@@ -126,15 +161,17 @@ export function* installAndActivatePlugins( plugins ) {
 	}
 }
 
-export const createErrorNotice = ( errorMessage ) => {
+export const createErrorNotice = ( errorMessage: string ) => {
 	return dispatch( 'core/notices', 'createNotice', errorMessage );
 };
 
-export function* connectToJetpack( getAdminLink ) {
-	const url = yield select( STORE_NAME, 'getJetpackConnectUrl', {
+export function* connectToJetpack(
+	getAdminLink: ( endpoint: string ) => string
+) {
+	const url: string = yield select( STORE_NAME, 'getJetpackConnectUrl', {
 		redirect_url: getAdminLink( 'admin.php?page=wc-admin' ),
 	} );
-	const error = yield select(
+	const error: string = yield select(
 		STORE_NAME,
 		'getPluginsError',
 		'getJetpackConnectUrl'
@@ -147,74 +184,91 @@ export function* connectToJetpack( getAdminLink ) {
 	}
 }
 
-export function* installJetpackAndConnect( errorAction, getAdminLink ) {
+export function* installJetpackAndConnect(
+	errorAction: ( errorMesage: string ) => void,
+	getAdminLink: ( endpoint: string ) => string
+) {
 	try {
 		yield dispatch( STORE_NAME, 'installPlugins', [ 'jetpack' ] );
 		yield dispatch( STORE_NAME, 'activatePlugins', [ 'jetpack' ] );
 
-		const url = yield dispatch(
+		const url: string = yield dispatch(
 			STORE_NAME,
 			'connectToJetpack',
 			getAdminLink
 		);
-		window.location = url;
+		window.location.href = url;
 	} catch ( error ) {
 		yield errorAction( error.message );
 	}
 }
 
 export function* connectToJetpackWithFailureRedirect(
-	failureRedirect,
-	errorAction,
-	getAdminLink
+	failureRedirect: string,
+	errorAction: ( errorMesage: string ) => void,
+	getAdminLink: ( endpoint: string ) => string
 ) {
 	try {
-		const url = yield dispatch(
+		const url: string = yield dispatch(
 			STORE_NAME,
 			'connectToJetpack',
 			getAdminLink
 		);
-		window.location = url;
+		window.location.href = url;
 	} catch ( error ) {
 		yield errorAction( error.message );
-		window.location = failureRedirect;
+		window.location.href = failureRedirect;
 	}
 }
 
-export function formatErrors( response ) {
-	if ( response.errors ) {
+function isWPError(
+	error: WPError< PluginNames > | string
+): error is WPError< PluginNames > {
+	return ( error as WPError ).errors !== undefined;
+}
+
+export function formatErrors(
+	response: WPError< PluginNames > | string
+): string {
+	if ( isWPError( response ) ) {
 		// Replace the slug with a plugin name if a constant exists.
-		Object.keys( response.errors ).forEach( ( plugin ) => {
-			response.errors[ plugin ] = response.errors[ plugin ].map(
-				( pluginError ) => {
-					return pluginNames[ plugin ]
-						? pluginError.replace(
-								`\`${ plugin }\``,
-								pluginNames[ plugin ]
-						  )
-						: pluginError;
-				}
-			);
-		} );
+		( Object.keys( response.errors ) as PluginNames[] ).forEach(
+			( plugin ) => {
+				response.errors[ plugin ] = response.errors[ plugin ].map(
+					( pluginError ) => {
+						return pluginNames[ plugin ]
+							? pluginError.replace(
+									`\`${ plugin }\``,
+									pluginNames[ plugin ]
+							  )
+							: pluginError;
+					}
+				);
+			}
+		);
 	}
-
-	return response;
+	return response as string;
 }
 
-export function setPaypalOnboardingStatus( status ) {
+export function setPaypalOnboardingStatus(
+	status: Partial< PaypalOnboardingStatus >
+) {
 	return {
 		type: TYPES.SET_PAYPAL_ONBOARDING_STATUS,
 		paypalOnboardingStatus: status,
 	};
 }
 
-const formatErrorMessage = ( pluginErrors, actionType = 'install' ) => {
+const formatErrorMessage = (
+	pluginErrors: Record< PluginNames, string[] >,
+	actionType = 'install'
+) => {
 	return sprintf(
 		/* translators: %(actionType): install or activate (the plugin). %(pluginName): a plugin slug (e.g. woocommerce-services). %(error): a single error message or in plural a comma separated error message list.*/
 		_n(
 			'Could not %(actionType)s %(pluginName)s plugin, %(error)s',
 			'Could not %(actionType)s the following plugins: %(pluginName)s with these Errors: %(error)s',
-			pluginErrors.length,
+			Object.keys( pluginErrors ).length,
 			'woocommerce-admin'
 		),
 		{
@@ -225,10 +279,23 @@ const formatErrorMessage = ( pluginErrors, actionType = 'install' ) => {
 	);
 };
 
-export function setRecommendedPlugins( type, plugins ) {
+export function setRecommendedPlugins( type: string, plugins: Plugin[] ) {
 	return {
 		type: TYPES.SET_RECOMMENDED_PLUGINS,
 		recommendedType: type,
 		plugins,
 	};
 }
+
+export type Actions = ReturnType< typeof updateActivePlugins > &
+	ReturnType< typeof updateInstalledPlugins > &
+	ReturnType< typeof setIsRequesting > &
+	ReturnType< typeof setError > &
+	ReturnType< typeof updateIsJetpackConnected > &
+	ReturnType< typeof updateJetpackConnectUrl > &
+	ReturnType< typeof installPlugins > &
+	ReturnType< typeof activatePlugins > &
+	ReturnType< typeof installAndActivatePlugins > &
+	ReturnType< typeof createErrorNotice > &
+	ReturnType< typeof setPaypalOnboardingStatus > &
+	ReturnType< typeof setRecommendedPlugins >;
