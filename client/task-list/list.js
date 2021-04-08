@@ -24,7 +24,6 @@ import { Text } from '@woocommerce/experimental';
  */
 import { recordTaskViewEvent } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
-import sanitizeHTML from '../lib/sanitize-html';
 
 export class TaskList extends Component {
 	componentDidMount() {

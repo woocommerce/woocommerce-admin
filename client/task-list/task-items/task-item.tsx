@@ -95,6 +95,8 @@ export const TaskItem = ( props: TaskItemProps ): JSX.Element | null => {
 		}
 	};
 
+	console.log( title, completed );
+
 	return (
 		<ExperimentalListItem
 			title={ title }

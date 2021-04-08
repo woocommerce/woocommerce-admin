@@ -103,12 +103,12 @@ export const ExperimentalListItem = ( { title, ...otherProps } ) => {
 			timeout={ 500 }
 			classNames={ `woocommerce-list__item ${ className || '' }` }
 		>
-			<li className={ hasAction ? 'has-action' : '' }>
-				<Tag { ...tagProps }>
-					<div className="woocommerce-list__item-text">
-						{ children }
-					</div>
-				</Tag>
+			<li
+				className={ `woocommerce-list__item ${
+					hasAction ? 'has-action' : ''
+				} ${ className || '' }` }
+			>
+				<Tag { ...tagProps }>{ children }</Tag>
 			</li>
 		</CSSTransition>
 	);
@@ -123,7 +123,11 @@ export const ExperimentalListItemAfter = ( { children } ) => {
 };
 
 export const ExperimentalListItemTitle = ( { children } ) => {
-	return <span className="woocommerce-list__item-title">{ children }</span>;
+	return (
+		<div className="woocommerce-list__item-text">
+			<span className="woocommerce-list__item-title">{ children }</span>
+		</div>
+	);
 };
 
 ListItem.propTypes = {
