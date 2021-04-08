@@ -54,7 +54,9 @@ jest.mock( '../../wc-admin-settings', () => ( {
 		.mockImplementation( ( link: string ) => 'https://test.ca/' + link ),
 } ) );
 jest.mock( '../../lib/notices', () => ( {
-	createNoticesFromResponse: jest.fn().mockImplementation( () => {} ),
+	createNoticesFromResponse: jest.fn().mockImplementation( () => {
+		// do nothing
+	} ),
 } ) );
 
 const baseSelectValues = {
