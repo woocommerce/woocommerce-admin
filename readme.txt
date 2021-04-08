@@ -84,7 +84,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
 - Fix: Event tracking for merchant email notes #6616
 - Fix: Check active plugins before getting the PayPal onboarding status #6625
-- Add: Optional children prop to SummaryNumber component #6748.
+- Dev: Add support for running php unit tests in PHP 8. #6678
+- Add: Optional children prop to SummaryNumber component #6748
 
 == 2.2.0 3/30/2021 ==
 
