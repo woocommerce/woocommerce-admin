@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import { pluginNames } from './constants';
 
 export type RecommendedTypes = 'payments';

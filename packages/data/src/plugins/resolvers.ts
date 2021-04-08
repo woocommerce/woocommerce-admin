@@ -109,6 +109,30 @@ export function* getJetpackConnectUrl( query: { redirect_url: string } ) {
 	yield setIsRequesting( 'getJetpackConnectUrl', false );
 }
 
+function* setOnboardingStatusWithOptions() {
+	const options: {
+		merchant_email_production: string;
+		merchant_id_production: string;
+		client_id_production: string;
+		client_secret_production: string;
+	} = yield select(
+		OPTIONS_STORE_NAME,
+		'getOption',
+		'woocommerce-ppcp-settings'
+	);
+	const onboarded =
+		options.merchant_email_production &&
+		options.merchant_id_production &&
+		options.client_id_production &&
+		options.client_secret_production;
+	yield setPaypalOnboardingStatus( {
+		production: {
+			state: onboarded ? 'onboarded' : 'unknown',
+			onboarded: onboarded ? true : false,
+		},
+	} );
+}
+
 export function* getPaypalOnboardingStatus() {
 	yield setIsRequesting( 'getPaypalOnboardingStatus', true );
 
@@ -136,30 +160,6 @@ export function* getPaypalOnboardingStatus() {
 	}
 
 	yield setIsRequesting( 'getPaypalOnboardingStatus', false );
-}
-
-function* setOnboardingStatusWithOptions() {
-	const options: {
-		merchant_email_production: string;
-		merchant_id_production: string;
-		client_id_production: string;
-		client_secret_production: string;
-	} = yield select(
-		OPTIONS_STORE_NAME,
-		'getOption',
-		'woocommerce-ppcp-settings'
-	);
-	const onboarded =
-		options.merchant_email_production &&
-		options.merchant_id_production &&
-		options.client_id_production &&
-		options.client_secret_production;
-	yield setPaypalOnboardingStatus( {
-		production: {
-			state: onboarded ? 'onboarded' : 'unknown',
-			onboarded: onboarded ? true : false,
-		},
-	} );
 }
 
 const SUPPORTED_TYPES = [ 'payments' ];

@@ -34,6 +34,55 @@ type ActivatePluginsResponse = PluginsResponse< {
 	active: string[];
 } >;
 
+function isWPError(
+	error: WPError< PluginNames > | string
+): error is WPError< PluginNames > {
+	return ( error as WPError ).errors !== undefined;
+}
+
+export function formatErrors(
+	response: WPError< PluginNames > | string
+): string {
+	if ( isWPError( response ) ) {
+		// Replace the slug with a plugin name if a constant exists.
+		( Object.keys( response.errors ) as PluginNames[] ).forEach(
+			( plugin ) => {
+				response.errors[ plugin ] = response.errors[ plugin ].map(
+					( pluginError ) => {
+						return pluginNames[ plugin ]
+							? pluginError.replace(
+									`\`${ plugin }\``,
+									pluginNames[ plugin ]
+							  )
+							: pluginError;
+					}
+				);
+			}
+		);
+	}
+	return response as string;
+}
+
+const formatErrorMessage = (
+	pluginErrors: Record< PluginNames, string[] >,
+	actionType = 'install'
+) => {
+	return sprintf(
+		/* translators: %(actionType): install or activate (the plugin). %(pluginName): a plugin slug (e.g. woocommerce-services). %(error): a single error message or in plural a comma separated error message list.*/
+		_n(
+			'Could not %(actionType)s %(pluginName)s plugin, %(error)s',
+			'Could not %(actionType)s the following plugins: %(pluginName)s with these Errors: %(error)s',
+			Object.keys( pluginErrors ).length,
+			'woocommerce-admin'
+		),
+		{
+			actionType,
+			pluginName: Object.keys( pluginErrors ).join( ', ' ),
+			error: Object.values( pluginErrors ).join( ', \n' ),
+		}
+	);
+};
+
 export function updateActivePlugins(
 	active: string[],
 	replace = false
@@ -221,35 +270,6 @@ export function* connectToJetpackWithFailureRedirect(
 	}
 }
 
-function isWPError(
-	error: WPError< PluginNames > | string
-): error is WPError< PluginNames > {
-	return ( error as WPError ).errors !== undefined;
-}
-
-export function formatErrors(
-	response: WPError< PluginNames > | string
-): string {
-	if ( isWPError( response ) ) {
-		// Replace the slug with a plugin name if a constant exists.
-		( Object.keys( response.errors ) as PluginNames[] ).forEach(
-			( plugin ) => {
-				response.errors[ plugin ] = response.errors[ plugin ].map(
-					( pluginError ) => {
-						return pluginNames[ plugin ]
-							? pluginError.replace(
-									`\`${ plugin }\``,
-									pluginNames[ plugin ]
-							  )
-							: pluginError;
-					}
-				);
-			}
-		);
-	}
-	return response as string;
-}
-
 export function setPaypalOnboardingStatus(
 	status: Partial< PaypalOnboardingStatus >
 ) {
@@ -258,26 +278,6 @@ export function setPaypalOnboardingStatus(
 		paypalOnboardingStatus: status,
 	};
 }
-
-const formatErrorMessage = (
-	pluginErrors: Record< PluginNames, string[] >,
-	actionType = 'install'
-) => {
-	return sprintf(
-		/* translators: %(actionType): install or activate (the plugin). %(pluginName): a plugin slug (e.g. woocommerce-services). %(error): a single error message or in plural a comma separated error message list.*/
-		_n(
-			'Could not %(actionType)s %(pluginName)s plugin, %(error)s',
-			'Could not %(actionType)s the following plugins: %(pluginName)s with these Errors: %(error)s',
-			Object.keys( pluginErrors ).length,
-			'woocommerce-admin'
-		),
-		{
-			actionType,
-			pluginName: Object.keys( pluginErrors ).join( ', ' ),
-			error: Object.values( pluginErrors ).join( ', \n' ),
-		}
-	);
-};
 
 export function setRecommendedPlugins( type: string, plugins: Plugin[] ) {
 	return {
