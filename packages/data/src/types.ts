@@ -14,11 +14,3 @@ export type WPDataSelector< T > = T extends (
 ) => infer R
 	? ( ...args: A ) => R
 	: T;
-
-export type Query = {
-	search?: string;
-	period: string;
-	compare: string;
-	after: string;
-	before: string;
-};
