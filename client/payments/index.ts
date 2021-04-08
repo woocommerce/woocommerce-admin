@@ -2,11 +2,11 @@
  * External dependencies
  */
 import { lazy } from '@wordpress/element';
-import { embeddedPageRegistry } from '~/embedded-body-layout/page-registry';
 
 /**
  * Internal dependencies
  */
+import { embeddedPageRegistry } from '../embedded-body-layout/page-registry';
 
 const PaymentRecommendations = lazy(
 	() =>

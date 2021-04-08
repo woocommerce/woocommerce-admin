@@ -101,7 +101,7 @@ const PaymentRecommendations = () => {
 		! isHidden &&
 		! isRequestingOptions &&
 		! loading &&
-		showMarketplaceSuggestion == 'yes' &&
+		showMarketplaceSuggestion === 'yes' &&
 		recommendedPlugins &&
 		recommendedPlugins.length > 0;
 

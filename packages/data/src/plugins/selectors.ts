@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import { WPDataSelector, WPDataSelectors } from '../types';
 import { activatePlugins } from './actions';
 
