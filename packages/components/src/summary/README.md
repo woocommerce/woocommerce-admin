@@ -42,7 +42,7 @@ Name | Type | Default | Description
 SummaryNumber
 ===
 
-A component to show a value, label, optionals change percentage and children node. Can also act as a link to a specific report focus.
+A component to show a value, label, and optionally a change percentage and children node. Can also act as a link to a specific report focus.
 
 ## Usage
 
