@@ -3,7 +3,8 @@ export type EmbeddedPage = {
 	path: string;
 	capability?: string;
 };
-class PageRegistry {
+
+export class PageRegistry {
 	private registry: Record< string, EmbeddedPage > = {};
 
 	registerPage( key: string, page: EmbeddedPage ) {
