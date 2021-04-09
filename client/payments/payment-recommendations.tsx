@@ -108,7 +108,7 @@ const PaymentRecommendations = () => {
 	useEffect( () => {
 		if ( shouldShowRecommendations && ! triggeredPageViewRef.current ) {
 			triggeredPageViewRef.current = true;
-			recordEvent( 'payments_recommendations_pageview', {} );
+			recordEvent( 'settings_payments_recommendations_pageview', {} );
 		}
 	}, [ shouldShowRecommendations ] );
 
