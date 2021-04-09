@@ -84,6 +84,7 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 		);
 		$note->set_content_data( (object) $content_data );
 		$note->save();
+		$note->set_image( '' );
 		$notification_email                          = new NotificationEmail( $note );
 		$notification_email->opened_tracking_url     = 'PHPUNIT_TEST_NOTE_EMAIL_TRACKING_URL';
 		$notification_email->trigger_note_action_url = 'PHPUNIT_TEST_NOTE_EMAIL_TRIGGER_ACTION_URL';
@@ -123,7 +124,7 @@ class WC_Tests_Email_Notes extends WC_Unit_Test_Case {
 		$note->set_content_data( (object) $content_data );
 		$notification_email = new NotificationEmail( $note );
 
-		$this->assertEmpty( MerchantEmailNotifications::get_notification_email_addresses( $note ) );
+		$this->assertEmpty( MerchantEmailNotifications::get_notification_recipients( $note ) );
 		$this->assertEmpty( $notification_email->get_template_filename( 'wrong_type' ) );
 	}
 }

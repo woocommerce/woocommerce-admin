@@ -2,9 +2,9 @@
 Contributors: woocommerce, automattic
 Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activity, notices, insights, stats, woo commerce, woocommerce
 Requires at least: 5.4.0
-Tested up to: 5.6.0
+Tested up to: 5.7.0
 Requires PHP: 7.0
-Stable tag: 2.2.0-dev
+Stable tag: 2.3.0-dev
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -75,7 +75,25 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: Retain persisted queries when navigating to Homescreen #6614
+- Update: Update choose niche note cta URL #6733
+- Fix: Update folded header style #6724
+- Fix: Fix unreleated variations showing up in the Products reports #6647
+- Tweak: Add tracking data for the preview site btn #6623
+- Tweak: Update WC Payments copy on the task list #6734
+- Tweak: Add check to see if value for contains is array, show warning if not. #6645
+- Fix: Event tracking for merchant email notes #6616
+- Fix: Check active plugins before getting the PayPal onboarding status #6625
+- Dev: Add support for running php unit tests in PHP 8. #6678
+- Fix: Remove no-reply from inbox notification emails #6644
+
+== 2.2.0 3/30/2021 ==
+
+- Fix: Check if features are currently being enabled #6688
+- Add: Next new novel navigation nudge note #6610
+- Fix: Fix the activity panel toggle not closing on click #6679
 - Tweak: Add default value for contains op #6622
+- Fix: Fix use of feature checks and remove deprecated method calls #6687
 - Dev: Close activity panel tabs by default and track #6566
 - Dev: Update undefined task name properties for help panel tracks #6565
 - Fix: Allow the manager role to query certain options #6577
@@ -131,13 +149,23 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Additional analytics tracking for the business details step. #6575
 - Add: Include tracking for mail poet installs in the selective bundle install #6603
 - Dev: Add script automation for gathering hooks and filters. #6454
+- Dev: Add TypeScript to CustomerFeedbackModal component. #6498
 - Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
 - Dev: Add TypeScript and page objects to the E2E test suite. #6582
 - Dev: Introduce Typescript to Navigation utils #6477
 - Add: Paystack payment provider to several african countries. #6579
 - Dev: Payments task: include Mercado Pago #6572
 - Dev: Ensure script asset.php files are included in builds #6635
-- Fix: Remove no-reply from inbox notification emails #6644
+- Fix: Show management links when the task list is complete (even if its not hidden). #6657
+- Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
+- Fix: Update the Mercado option used for enabling/disabling. #6677
+- Dev: Ensure production script asset names don't include .min suffix #6681
+- Fix: Improve AddFirstProduct email note contents. #6617
+- Fix: Missing margin between cards and viewport in setup wizard #6620
+
+== 2.1.4 3/29/2021  ==
+
+- Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
 
 == 2.1.3 3/14/2021  ==
 

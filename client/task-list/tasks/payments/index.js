@@ -416,7 +416,7 @@ export default compose(
 			'woocommerce_mollie_payments_settings',
 			'woocommerce_payubiz_settings',
 			'woocommerce_paystack_settings',
-			'woocommerce_mercadopago_settings',
+			'woocommerce_woo-mercado-pago-basic_settings',
 		];
 
 		const options = optionNames.reduce( ( result, name ) => {
@@ -426,7 +426,12 @@ export default compose(
 		const countryCode = getCountryCode(
 			generalSettings.woocommerce_default_country
 		);
-		const paypalOnboardingStatus = getPaypalOnboardingStatus();
+
+		const paypalOnboardingStatus = activePlugins.includes(
+			'woocommerce-paypal-payments'
+		)
+			? getPaypalOnboardingStatus()
+			: null;
 
 		const methods = getPaymentMethods( {
 			activePlugins,
