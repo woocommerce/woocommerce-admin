@@ -72,21 +72,20 @@ export function getPaymentRecommendationData( select: WCDataSelector ) {
 			SHOW_MARKETPLACE_SUGGESTION_OPTION,
 		] );
 
-	if (
+	const canNotDisplay =
 		isRequestingOptions ||
 		hidden ||
 		marketplaceSuggestions !== 'yes' ||
-		! countrySupported
-	) {
-		return {
-			displayable: false,
-		};
+		! countrySupported;
+	let plugins;
+	if ( ! canNotDisplay ) {
+		plugins = getRecommendedPlugins( 'payments' );
 	}
 
 	// don't get recommended plugins until it is displayable.
 	return {
-		displayable: true,
-		recommendedPlugins: getRecommendedPlugins( 'payments' ),
+		displayable: ! canNotDisplay,
+		recommendedPlugins: plugins,
 	};
 }
 
