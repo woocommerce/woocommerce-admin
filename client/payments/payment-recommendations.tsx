@@ -45,8 +45,50 @@ type SettingsSelector = WPDataSelectors & {
 };
 
 type OptionsSelector = WPDataSelectors & {
-	getOption: ( option: string ) => boolean;
+	getOption: ( option: string ) => boolean | string;
 };
+
+export function getPaymentRecommendationData( select: WCDataSelector ) {
+	const { getOption, isResolving: isResolvingOption } = select(
+		OPTIONS_STORE_NAME
+	) as OptionsSelector;
+	const { getSettings } = select( SETTINGS_STORE_NAME ) as SettingsSelector;
+	const { getRecommendedPlugins } = select( PLUGINS_STORE_NAME );
+	const { general: settings = {} } = getSettings( 'general' );
+	const marketplaceSuggestions = getOption(
+		SHOW_MARKETPLACE_SUGGESTION_OPTION
+	);
+
+	const hidden = getOption( DISMISS_OPTION );
+	const countryCode = settings.woocommerce_default_country
+		? getCountryCode( settings.woocommerce_default_country )
+		: null;
+	const countrySupported = countryCode
+		? isWCPaySupported( countryCode )
+		: false;
+	const isRequestingOptions =
+		isResolvingOption( 'getOption', [ DISMISS_OPTION ] ) ||
+		isResolvingOption( 'getOption', [
+			SHOW_MARKETPLACE_SUGGESTION_OPTION,
+		] );
+
+	if (
+		isRequestingOptions ||
+		hidden ||
+		marketplaceSuggestions !== 'yes' ||
+		! countrySupported
+	) {
+		return {
+			displayable: false,
+		};
+	}
+
+	// don't get recommended plugins until it is displayable.
+	return {
+		displayable: true,
+		recommendedPlugins: getRecommendedPlugins( 'payments' ),
+	};
+}
 
 const PaymentRecommendations = () => {
 	const [ installingPlugin, setInstallingPlugin ] = useState< string | null >(
@@ -54,56 +96,12 @@ const PaymentRecommendations = () => {
 	);
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
-	const {
-		recommendedPlugins,
-		loading,
-		country,
-		isHidden,
-		isRequestingOptions,
-		showMarketplaceSuggestion,
-	} = useSelect( ( select: WCDataSelector ) => {
-		const { getOption, isResolving: isResolvingOption } = select(
-			OPTIONS_STORE_NAME
-		) as OptionsSelector;
-		const { getSettings } = select(
-			SETTINGS_STORE_NAME
-		) as SettingsSelector;
-		const { general: settings = {} } = getSettings( 'general' );
-		const { getRecommendedPlugins, isResolving } = select(
-			PLUGINS_STORE_NAME
-		);
-		const isLoading = isResolving( 'getRecommendedPlugins', [
-			'payments',
-		] );
-		const plugins = getRecommendedPlugins( 'payments' );
-		return {
-			isHidden: getOption( DISMISS_OPTION ),
-			showMarketplaceSuggestion: getOption(
-				SHOW_MARKETPLACE_SUGGESTION_OPTION
-			),
-			isRequestingOptions:
-				isResolvingOption( 'getOption', [ DISMISS_OPTION ] ) ||
-				isResolvingOption( 'getOption', [
-					SHOW_MARKETPLACE_SUGGESTION_OPTION,
-				] ),
-			recommendedPlugins: plugins,
-			loading: isLoading,
-			country: settings.woocommerce_default_country
-				? settings.woocommerce_default_country
-				: null,
-		};
-	} );
-	const countryCode = getCountryCode( country );
+	const { displayable, recommendedPlugins } = useSelect(
+		getPaymentRecommendationData
+	);
 	const triggeredPageViewRef = useRef( false );
 	const shouldShowRecommendations =
-		country &&
-		isWCPaySupported( countryCode ) &&
-		! isHidden &&
-		! isRequestingOptions &&
-		! loading &&
-		showMarketplaceSuggestion === 'yes' &&
-		recommendedPlugins &&
-		recommendedPlugins.length > 0;
+		displayable && recommendedPlugins && recommendedPlugins.length > 0;
 
 	useEffect( () => {
 		if ( shouldShowRecommendations && ! triggeredPageViewRef.current ) {

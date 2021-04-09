@@ -83,7 +83,7 @@ export { EXPORT_STORE_NAME } from './export';
 
 export { IMPORT_STORE_NAME } from './import';
 
-type WCDataStoreName =
+export type WCDataStoreName =
 	| typeof REVIEWS_STORE_NAME
 	| typeof SETTINGS_STORE_NAME
 	| typeof PLUGINS_STORE_NAME
@@ -97,7 +97,7 @@ type WCDataStoreName =
 
 // As we add types to all the package selectors we can fill out these unknown types with real ones. See one
 // of the already typed selectors for an example of how you can do this.
-type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
+export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME
 	? WPDataSelectors
 	: T extends typeof SETTINGS_STORE_NAME
 	? WPDataSelectors
