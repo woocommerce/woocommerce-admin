@@ -425,10 +425,17 @@ class Plugins extends \WC_REST_Data_Controller {
 		$all_plugins   = PaymentPlugins::get_instance()->get_recommended_plugins();
 		$valid_plugins = [];
 		$per_page      = $request->get_param( 'per_page' );
+		$locale        = get_locale();
 
 		foreach ( $all_plugins as $plugin ) {
 			if ( ! PluginsHelper::is_plugin_active( $plugin['product'] ) ) {
-				$valid_plugins[] = $plugin;
+				if ( isset( $plugin['locale-data'] ) && isset( $plugin['locale-data'][ $locale ] ) ) {
+					$locale_plugin = array_merge( $plugin, $plugin['locale-data'][ $locale ] );
+					unset( $locale_plugin['locale-data'] );
+					$valid_plugins[] = $locale_plugin;
+				} else {
+					$valid_plugins[] = $plugin;
+				}
 			}
 		}
 

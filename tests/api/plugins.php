@@ -109,4 +109,133 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 'woocommerce_rest_invalid_plugins', $data['code'] );
 	}
+
+	/**
+	 * Test that installing a non-whitelisted plugin fails, but installs the whitelisted.
+	 */
+	public function test_install_non_allowed_plugins() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/install' );
+		$request->set_query_params(
+			array(
+				'plugins' => 'facebook-for-woocommerce,hello-dolly',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( false, $data['success'] );
+		$this->assertArrayHasKey( 'hello-dolly', $data['errors']->errors );
+		$this->assertEquals( array( 'facebook-for-woocommerce' ), $data['data']['installed'] );
+	}
+
+	/**
+	 * Test that activating a non-whitelisted plugin fails, but activates the whitelisted.
+	 */
+	public function test_activate_non_allowed_plugins() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/activate' );
+		$request->set_query_params(
+			array(
+				'plugins' => 'facebook-for-woocommerce,hello-dolly',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( false, $data['success'] );
+		$this->assertArrayHasKey( 'hello-dolly', $data['errors']->errors );
+		$this->assertEquals( array( 'facebook-for-woocommerce' ), $data['data']['activated'] );
+	}
+
+	/**
+	 * Test that recommended payment plugins are returned correctly.
+	 */
+	public function test_get_recommended_payment_plugins() {
+		wp_set_current_user( $this->user );
+		set_transient(
+			\Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT,
+			array(
+				array(
+					'product' => 'plugin',
+					'title'   => 'test',
+				),
+			)
+		);
+
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/recommended-payment-plugins' );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 1, count( $data ) );
+		$this->assertEquals( 'plugin', $data[0]['product'] );
+		delete_transient( \Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT );
+	}
+
+	/**
+	 * Test that recommended payment plugins with locale data.
+	 */
+	public function test_get_recommended_payment_plugins_with_locale() {
+		wp_set_current_user( $this->user );
+		add_filter( 'locale', array( $this, 'set_ca_locale' ) );
+		set_transient(
+			\Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT,
+			array(
+				array(
+					'product'     => 'plugin',
+					'title'       => 'test',
+					'locale-data' => array(
+						'en_CA' => array(
+							'title' => 'translated title',
+						),
+					),
+				),
+			)
+		);
+
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/recommended-payment-plugins' );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 1, count( $data ) );
+		$this->assertEquals( 'plugin', $data[0]['product'] );
+		$this->assertEquals( 'translated title', $data[0]['title'] );
+		$this->assertEquals( false, isset( $data[0]['locale-data'] ) );
+		delete_transient( \Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT );
+		remove_filter( 'locale', array( $this, 'set_ca_locale' ) );
+	}
+
+	/**
+	 * @return string locale
+	 */
+	public function set_ca_locale() {
+		return 'en_CA';
+	}
+
+	/**
+	 * Test that recommended payment plugins are not returned when active.
+	 */
+	public function test_get_recommended_payment_plugins_that_are_active() {
+		wp_set_current_user( $this->user );
+		update_option( 'active_plugins', array( 'facebook-for-woocommerce/facebook-for-woocommerce.php' ) );
+		set_transient(
+			\Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT,
+			array(
+				array(
+					'product' => 'facebook-for-woocommerce',
+					'title'   => 'test',
+				),
+			)
+		);
+
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/recommended-payment-plugins' );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 0, count( $data ) );
+		delete_transient( \Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT );
+		delete_option( 'active_plugins' );
+	}
 }
