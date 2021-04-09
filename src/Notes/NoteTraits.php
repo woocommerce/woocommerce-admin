@@ -34,8 +34,12 @@ trait NoteTraits {
 
 	/**
 	 * Check if the note has been previously added.
+	 *
+	 * @throws NotesDisabledException Throws exception when notes are disabled.
 	 */
 	public static function note_exists() {
+		self::check_notes_availability();
+
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
 		return ! empty( $note_ids );
@@ -45,8 +49,11 @@ trait NoteTraits {
 	 * Checks if a note can and should be added.
 	 *
 	 * @return bool
+	 * @throws NotesDisabledException Throws exception when notes are disabled.
 	 */
 	public static function can_be_added() {
+		self::check_notes_availability();
+
 		$note = self::get_note();
 
 		if ( ! $note instanceof Note && ! $note instanceof WC_Admin_Note ) {
@@ -69,8 +76,12 @@ trait NoteTraits {
 
 	/**
 	 * Add the note if it passes predefined conditions.
+	 *
+	 * @throws NotesDisabledException Throws exception when notes are disabled.
 	 */
 	public static function possibly_add_note() {
+		self::check_notes_availability();
+
 		$note = self::get_note();
 
 		if ( ! self::can_be_added() ) {
@@ -82,6 +93,8 @@ trait NoteTraits {
 
 	/**
 	 * Alias this method for backwards compatibility.
+	 *
+	 * @throws NotesDisabledException Throws exception when notes are disabled.
 	 */
 	public static function add_note() {
 		self::possibly_add_note();
@@ -91,8 +104,12 @@ trait NoteTraits {
 	 * Possibly delete the note, if it exists in the database. Note that this
 	 * is a hard delete, for where it doesn't make sense to soft delete or
 	 * action the note.
+	 *
+	 * @throws NotesDisabledException Throws exception when notes are disabled.
 	 */
 	public static function possibly_delete_note() {
+		self::check_notes_availability();
+
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
 
@@ -109,8 +126,11 @@ trait NoteTraits {
 	 * Get if the note has been actioned.
 	 *
 	 * @return bool
+	 * @throws NotesDisabledException Throws exception when notes are disabled.
 	 */
 	public static function has_note_been_actioned() {
+		self::check_notes_availability();
+
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
 
@@ -123,5 +143,19 @@ trait NoteTraits {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Throw a custom exception if notes are disabled.
+	 *
+	 * @throws NotesDisabledException Throws exception when notes are disabled.
+	 */
+	private static function check_notes_availability() {
+		if ( apply_filters( 'woocommerce_admin_disabled', false ) ) {
+			throw new NotesDisabledException(
+				'woocommerce_admin_notes_disabled',
+				__( 'Notes are unavailable because WooCommerce Admin is disabled.', 'woocommerce-admin' )
+			);
+		}
 	}
 }
