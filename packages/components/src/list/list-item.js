@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
  */
 import Link from '../link';
 
-export function handleKeyDown( event, onClick ): boolean | void {
+export function handleKeyDown( event, onClick ) {
 	if ( typeof onClick === 'function' && event.keyCode === ENTER ) {
 		onClick();
 	}
