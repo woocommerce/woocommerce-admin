@@ -124,8 +124,16 @@ export class TaskDashboard extends Component {
 		} = this.props;
 		const { isCartModalOpen } = this.state;
 		const allTasks = this.getAllTasks();
-		const { extension: extensionTasks, setup: setupTasks } = allTasks;
+		const { extension, setup: setupTasks } = allTasks;
 		const { task } = query;
+
+		const extensionTasks = extension.sort( ( a, b ) => {
+			if ( Boolean( a.completed ) === Boolean( b.completed ) ) {
+				return 0;
+			}
+
+			return a.completed ? 1 : -1;
+		} );
 
 		return (
 			<>

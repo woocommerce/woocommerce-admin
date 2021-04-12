@@ -106,6 +106,16 @@ describe( 'TaskDashboard and TaskList', () => {
 		time: '2 minute',
 		isDismissable: true,
 	};
+	const completedExtensionTask = {
+		key: 'extension2',
+		title: 'This completed task is an extension',
+		container: null,
+		completed: true,
+		visible: true,
+		time: '2 minutes',
+		isDismissable: true,
+		type: 'extension',
+	};
 
 	it( 'renders the "Get ready to start selling" and "Things to do next" tasks lists', async () => {
 		apiFetch.mockResolvedValue( {} );
@@ -554,5 +564,32 @@ describe( 'TaskDashboard and TaskList', () => {
 
 		fireEvent.click( getByText( 'Dismiss' ) );
 		expect( callback ).toHaveBeenCalledWith();
+	} );
+
+	it( 'sorts the extended task list tasks by completion status', () => {
+		apiFetch.mockResolvedValue( {} );
+		getAllTasks.mockReturnValue( {
+			extension: [ completedExtensionTask, ...tasks.extension ],
+		} );
+		const { queryAllByRole, queryByText } = render(
+			<TaskDashboard
+				dismissedTasks={ [] }
+				isSetupTaskListHidden={ true }
+				profileItems={ {} }
+				query={ {} }
+				updateOptions={ () => {} }
+			/>
+		);
+
+		expect( queryByText( EXTENDED_TASK_LIST_HEADING ) ).not.toBeNull();
+
+		const visibleTasks = queryAllByRole( 'menuitem' );
+		expect( visibleTasks ).toHaveLength( 2 );
+		expect( visibleTasks[ 0 ] ).toHaveTextContent(
+			'This task is an extension'
+		);
+		expect( visibleTasks[ 1 ] ).toHaveTextContent(
+			'This completed task is an extension'
+		);
 	} );
 } );
