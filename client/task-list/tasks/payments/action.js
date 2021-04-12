@@ -29,7 +29,7 @@ export const Action = ( {
 
 		if ( onSetupCallback ) {
 			setIsBusy( true );
-			await new Promise( onSetUp )
+			await new Promise( onSetupCallback )
 				.then( () => {
 					setIsBusy( false );
 				} )
