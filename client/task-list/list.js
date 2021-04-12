@@ -233,10 +233,13 @@ export class TaskList extends Component {
 			return;
 		}
 
-		const { profileItems } = this.props;
+		const { name = 'task_list', profileItems } = this.props;
+		const isCoreTaskList = name === 'task_list';
+		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
+
 		const tasks = this.getVisibleTasks();
 
-		recordEvent( 'tasklist_view', {
+		recordEvent( `${ taskListName }_view`, {
 			number_tasks: tasks.length,
 			store_connected: profileItems.wccom_connected,
 		} );
