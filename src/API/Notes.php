@@ -431,8 +431,8 @@ class Notes extends \WC_REST_CRUD_Controller {
 		}
 
 		if ( empty( $name ) ) {
-			// Allow wp_nonce_url to use a default paramater name.
-			$name = null;
+			// Default paramater name.
+			$name = '_wpnonce';
 		}
 
 		return add_query_arg( $name, wp_create_nonce( $action ), $url );
