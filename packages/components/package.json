@@ -58,7 +58,7 @@
 		"qs": "6.9.6",
 		"react-dates": "^17.2.0",
 		"react-router-dom": "5.2.0",
-		"react-transition-group": "4.4.1"
+		"react-transition-group": "^4.4.1"
 	},
 	"peerDependencies": {
 		"lodash": "^4.17.0"
