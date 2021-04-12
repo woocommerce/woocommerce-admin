@@ -299,7 +299,7 @@ export class TaskList extends Component {
 	}
 
 	render() {
-		const { name, query, title: listTitle } = this.props;
+		const { query, title: listTitle } = this.props;
 		const { task: theTask } = query;
 		const currentTask = this.getCurrentTask();
 
@@ -399,7 +399,7 @@ export class TaskList extends Component {
 											}
 										/>
 									</div>
-									{ this.renderMenu( ! name ) }
+									{ this.renderMenu() }
 								</CardHeader>
 								<CardBody>
 									<List items={ listTasks } />
