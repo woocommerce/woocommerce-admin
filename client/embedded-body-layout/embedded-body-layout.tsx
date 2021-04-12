@@ -5,7 +5,7 @@ import { Router, Route, Switch } from 'react-router-dom';
 import { Suspense } from '@wordpress/element';
 import { useUser } from '@woocommerce/data';
 import { createBrowserHistory } from 'history';
-import { parse } from 'qs';
+import QueryString, { parse } from 'qs';
 
 /**
  * Internal dependencies
@@ -31,17 +31,28 @@ const PrimaryLayout = ( { page }: PrimaryLayoutProps ) => {
 	);
 };
 
+type QueryParams = {
+	page: string;
+	tab: string;
+	section?: string;
+};
+
+function isWPPage(
+	params: QueryParams | QueryString.ParsedQs
+): params is QueryParams {
+	return ( params as QueryParams ).page !== undefined;
+}
+
 const customHistory = createBrowserHistory();
 Object.defineProperty( customHistory, 'location', {
 	get: () => {
-		const query = parse( location.search.substring( 1 ) ) as {
-			page: string;
-			tab: string;
-			section?: string;
-		};
-		let pathname = query.page + '_' + query.tab;
-		if ( query.section ) {
-			pathname += '_' + query.section;
+		const query = parse( location.search.substring( 1 ) );
+		let pathname = location.search;
+		if ( isWPPage( query ) ) {
+			pathname = `${ query.page }_${ query.tab }`;
+			if ( query.section ) {
+				pathname += `_${ query.section }`;
+			}
 		}
 
 		return {

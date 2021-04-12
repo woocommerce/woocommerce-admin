@@ -415,7 +415,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Return recommend payment plugins.
+	 * Return recommended payment plugins.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response

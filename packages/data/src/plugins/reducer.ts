@@ -6,12 +6,18 @@ import { concat } from 'lodash';
 /**
  * Internal dependencies
  */
-import TYPES from './action-types';
+import { ACTION_TYPES as TYPES } from './action-types';
 import { Actions } from './actions';
 import { PluginsState } from './types';
 
-const plugins = (
-	state: PluginsState = {
+type PluginReducer = {
+	< T extends Actions >(
+		state: PluginsState | undefined,
+		action: T
+	): PluginsState;
+};
+const plugins: PluginReducer = (
+	state = {
 		active: [],
 		installed: [],
 		requesting: {},
@@ -33,7 +39,7 @@ const plugins = (
 		replace,
 		recommendedType,
 		plugins: recommendedPlugins,
-	}: Actions
+	}
 ) => {
 	switch ( type ) {
 		case TYPES.UPDATE_ACTIVE_PLUGINS:

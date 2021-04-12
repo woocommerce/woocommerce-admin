@@ -6,18 +6,18 @@
  * Internal dependencies
  */
 import reducer from '../reducer';
-import TYPES from '../action-types';
+import { ACTION_TYPES as TYPES } from '../action-types';
 import { PluginsState } from '../types';
 import { Actions } from '../actions';
 
-const defaultState = {
+const defaultState: PluginsState = {
 	active: [],
 	installed: [],
 	requesting: {},
 	errors: {},
 	jetpackConnectUrls: {},
 	recommended: {},
-} as PluginsState;
+};
 
 describe( 'plugins reducer', () => {
 	it( 'should return a default state', () => {

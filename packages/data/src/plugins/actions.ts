@@ -8,7 +8,7 @@ import { _n, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { pluginNames, STORE_NAME } from './constants';
-import TYPES from './action-types';
+import { ACTION_TYPES as TYPES } from './action-types';
 import { WC_ADMIN_NAMESPACE } from '../constants';
 import { WPError } from '../types';
 import {

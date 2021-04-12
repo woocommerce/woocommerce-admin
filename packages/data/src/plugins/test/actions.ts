@@ -79,9 +79,7 @@ describe( 'installJetPackAndConnect', () => {
 	} );
 
 	it( 'redirects to the connect url if there are no errors', () => {
-		const installer = installJetpackAndConnect( ( val: string ) => {
-			// do nothing
-		}, getAdminLink );
+		const installer = installJetpackAndConnect( jest.fn(), getAdminLink );
 
 		// Run to yield any errors from getJetpackConnectUrl
 		installer.next();
@@ -98,9 +96,7 @@ describe( 'connectToJetpack', () => {
 	it( 'redirects to the failure url if there is an error', () => {
 		const connect = connectToJetpackWithFailureRedirect(
 			'https://example.com/failure',
-			() => {
-				// do nothing
-			},
+			jest.fn(),
 			getAdminLink
 		);
 
@@ -116,9 +112,7 @@ describe( 'connectToJetpack', () => {
 	it( 'redirects to the jetpack url if there is no error', () => {
 		const connect = connectToJetpackWithFailureRedirect(
 			'https://example.com/failure',
-			() => {
-				// do nothing
-			},
+			jest.fn(),
 			getAdminLink
 		);
 
