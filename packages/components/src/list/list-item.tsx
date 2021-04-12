@@ -9,13 +9,13 @@ import PropTypes from 'prop-types';
  */
 import Link from '../link';
 
-function handleKeyDown( event, onClick ) {
+export function handleKeyDown( event, onClick ): boolean | void {
 	if ( typeof onClick === 'function' && event.keyCode === ENTER ) {
 		onClick();
 	}
 }
 
-function getItemLinkType( item ) {
+export function getItemLinkType( item ) {
 	const { href, linkType } = item;
 
 	if ( linkType ) {
@@ -30,7 +30,7 @@ function getItemLinkType( item ) {
  *
  * @param {Object} props props for list item
  */
-function ListItem( props ) {
+function ListItem( props ): JSX.Element {
 	const { item } = props;
 	const {
 		before,

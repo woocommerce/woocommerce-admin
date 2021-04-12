@@ -4,52 +4,66 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import deprecated from '@wordpress/deprecated';
 
 /**
  * Internal dependencies
  */
 import ListItem from './list-item';
+import { ExperimentalList } from './experimental-list';
 
 /**
  * List component to display a list of items.
  *
  * @param {Object} props props for list
  */
-function List( props ) {
+function List( props ): JSX.Element {
 	const { className, items, children } = props;
 	const listClassName = classnames( 'woocommerce-list', className );
 
-	return (
-		<TransitionGroup component="ul" className={ listClassName } role="menu">
-			{ items.map( ( item, index ) => {
-				const { className: itemClasses, href, key, onClick } = item;
-				const hasAction = typeof onClick === 'function' || href;
-				const itemClassName = classnames(
-					'woocommerce-list__item',
-					itemClasses,
-					{
-						'has-action': hasAction,
-					}
-				);
+	if ( props.items ) {
+		deprecated( 'List.items prop', {
+			hint: 'Use `children` combined with `<ListItem>` instead.',
+		} );
 
-				return (
-					<CSSTransition
-						key={ key || index }
-						timeout={ 500 }
-						classNames="woocommerce-list__item"
-					>
-						<li className={ itemClassName }>
-							{ children ? (
-								children( item, index )
-							) : (
-								<ListItem item={ item } />
-							) }
-						</li>
-					</CSSTransition>
-				);
-			} ) }
-		</TransitionGroup>
-	);
+		return (
+			<TransitionGroup
+				component="ul"
+				className={ listClassName }
+				role="menu"
+			>
+				{ items.map( ( item, index ) => {
+					const { className: itemClasses, href, key, onClick } = item;
+					const hasAction = typeof onClick === 'function' || href;
+					const itemClassName = classnames(
+						'woocommerce-list__item',
+						itemClasses,
+						{
+							'has-action': hasAction,
+						}
+					);
+
+					return (
+						<CSSTransition
+							key={ key || index }
+							timeout={ 500 }
+							classNames="woocommerce-list__item"
+						>
+							<li className={ itemClassName }>
+								{ children ? (
+									children( item, index )
+								) : (
+									<ListItem item={ item } />
+								) }
+							</li>
+						</CSSTransition>
+					);
+				} ) }
+			</TransitionGroup>
+		);
+	}
+
+	return <ExperimentalList>{ children }</ExperimentalList>;
 }
 
 List.propTypes = {
@@ -102,7 +116,9 @@ List.propTypes = {
 			 */
 			key: PropTypes.string,
 		} )
-	).isRequired,
+	),
 };
 
 export default List;
+
+export { ExperimentalListItem } from './experimental-list-item';
