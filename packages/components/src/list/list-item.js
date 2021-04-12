@@ -30,7 +30,7 @@ export function getItemLinkType( item ) {
  *
  * @param {Object} props props for list item
  */
-function ListItem( props ): JSX.Element {
+function ListItem( props ) {
 	const { item } = props;
 	const {
 		before,

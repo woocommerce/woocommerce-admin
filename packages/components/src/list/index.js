@@ -17,7 +17,7 @@ import { ExperimentalList } from './experimental-list';
  *
  * @param {Object} props props for list
  */
-function List( props ): JSX.Element {
+function List( props ) {
 	const { className, items, children } = props;
 	const listClassName = classnames( 'woocommerce-list', className );
 
