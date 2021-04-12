@@ -4,10 +4,12 @@
 import {
 	DropdownMenu,
 	MenuGroup,
+	MenuItem,
 	MenuItemsChoice,
 } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
+import { check } from '@wordpress/icons';
 import { useUserPreferences, OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -40,17 +42,36 @@ const LAYOUTS = [
 ];
 
 export const DisplayOptions = () => {
-	const defaultHomescreenLayout = useSelect( ( select ) => {
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const displayOptions = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		return (
-			getOption( 'woocommerce_default_homepage_layout' ) ||
-			'single_column'
-		);
+		return {
+			defaultHomescreenLayout:
+				getOption( 'woocommerce_default_homepage_layout' ) ||
+				'single_column',
+			showExtensionTaskList:
+				getOption( 'woocommerce_extended_task_list_hidden' ) === 'no',
+		};
 	} );
+	const { defaultHomescreenLayout, showExtensionTaskList } = displayOptions;
 	const {
 		updateUserPreferences,
 		homepage_layout: layout,
 	} = useUserPreferences();
+
+	const toggleExtensionTaskList = () => {
+		const newValue = ! showExtensionTaskList;
+
+		recordEvent(
+			newValue
+				? 'wcadmin_extended_tasklist_show'
+				: 'wcadmin_extended_tasklist_hide'
+		);
+		updateOptions( {
+			woocommerce_extended_task_list_hidden: newValue ? 'no' : 'yes',
+		} );
+	};
+
 	return (
 		<DropdownMenu
 			icon={ <DisplayIcon /> }
@@ -66,24 +87,42 @@ export const DisplayOptions = () => {
 			} }
 		>
 			{ ( { onClose } ) => (
-				<MenuGroup
-					className="woocommerce-layout__homescreen-display-options"
-					label={ __( 'Layout', 'woocommerce-admin' ) }
-				>
-					<MenuItemsChoice
-						choices={ LAYOUTS }
-						onSelect={ ( newLayout ) => {
-							updateUserPreferences( {
-								homepage_layout: newLayout,
-							} );
-							onClose();
-							recordEvent( 'homescreen_display_option', {
-								display_option: newLayout,
-							} );
-						} }
-						value={ layout || defaultHomescreenLayout }
-					/>
-				</MenuGroup>
+				<>
+					<MenuGroup
+						className="woocommerce-layout__homescreen-display-options"
+						label={ __( 'Display', 'woocommerce-admin' ) }
+					>
+						<MenuItem
+							icon={ showExtensionTaskList && check }
+							isSelected={ showExtensionTaskList }
+							role="menuitemcheckbox"
+							onClick={ toggleExtensionTaskList }
+						>
+							{ __(
+								'Show things to do next',
+								'woocommerce-admin'
+							) }
+						</MenuItem>
+					</MenuGroup>
+					<MenuGroup
+						className="woocommerce-layout__homescreen-display-options"
+						label={ __( 'Layout', 'woocommerce-admin' ) }
+					>
+						<MenuItemsChoice
+							choices={ LAYOUTS }
+							onSelect={ ( newLayout ) => {
+								updateUserPreferences( {
+									homepage_layout: newLayout,
+								} );
+								onClose();
+								recordEvent( 'homescreen_display_option', {
+									display_option: newLayout,
+								} );
+							} }
+							value={ layout || defaultHomescreenLayout }
+						/>
+					</MenuGroup>
+				</>
 			) }
 		</DropdownMenu>
 	);

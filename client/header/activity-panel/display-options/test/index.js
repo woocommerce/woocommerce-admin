@@ -3,6 +3,7 @@
  */
 import { render, fireEvent } from '@testing-library/react';
 import { useUserPreferences } from '@woocommerce/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -17,6 +18,19 @@ jest.mock( '@woocommerce/data', () => ( {
 		.fn()
 		.mockReturnValue( { updateUserPreferences: jest.fn() } ),
 } ) );
+jest.mock( '@wordpress/data', () => {
+	// Require the original module to not be mocked...
+	const originalModule = jest.requireActual( '@wordpress/data' );
+
+	return {
+		__esModule: true, // Use it when dealing with esModules
+		...originalModule,
+		useDispatch: jest.fn().mockReturnValue( {} ),
+		useSelect: jest.fn().mockReturnValue( {
+			defaultHomescreenLayout: 'single_column',
+		} ),
+	};
+} );
 
 describe( 'Activity Panel - Homescreen Display Options', () => {
 	it( 'correctly tracks opening the options', () => {
@@ -58,6 +72,37 @@ describe( 'Activity Panel - Homescreen Display Options', () => {
 
 		expect( updateUserPreferences ).toHaveBeenCalledWith( {
 			homepage_layout: 'two_columns',
+		} );
+	} );
+
+	it( 'correctly toggles the extension task list', () => {
+		const updateOptions = jest.fn();
+		useSelect.mockImplementation( () => ( {
+			showExtensionTaskList: true,
+		} ) );
+		useDispatch.mockImplementation( () => ( {
+			updateOptions,
+		} ) );
+
+		const { getByText, getByRole } = render( <DisplayOptions /> );
+
+		fireEvent.click( getByRole( 'button', { name: 'Display options' } ) );
+
+		// Verify the task list is initially shown.
+		expect(
+			getByText( 'Show things to do next', { selector: 'button' } )
+		).toBeChecked();
+		// Toggle it off.
+		fireEvent.click(
+			getByText( 'Show things to do next', { selector: 'button' } )
+		);
+
+		expect( recordEvent ).toHaveBeenCalledWith(
+			'wcadmin_extended_tasklist_hide'
+		);
+
+		expect( updateOptions ).toHaveBeenCalledWith( {
+			woocommerce_extended_task_list_hidden: 'yes',
 		} );
 	} );
 } );
