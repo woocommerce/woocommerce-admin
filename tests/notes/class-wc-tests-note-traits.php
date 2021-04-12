@@ -23,13 +23,13 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 	const NOTE_NAME = 'Test note';
 
 	/**
+	 * @doesNotPerformAssertions
 	 * @dataProvider methods_causing_exception_if_wc_admin_is_disabled_provider
 	 * @dataProvider methods_never_causing_exception_provider
 	 *
 	 * @param callable $callback Tested NoteTraits method.
 	 */
 	public function test_no_exception_is_thrown_if_wc_admin_is_enabled( $callback ) {
-		$this->expectNotToPerformAssertions();
 		$callback();
 	}
 
@@ -46,13 +46,13 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 	}
 
 	/**
+	 * @doesNotPerformAssertions
 	 * @dataProvider methods_never_causing_exception_provider
 	 *
 	 * @param callable $callback Tested NoteTraits method.
 	 */
 	public function test_no_exception_is_thrown_if_wc_admin_is_disabled( $callback ) {
 		add_filter( 'woocommerce_admin_disabled', '__return_true' );
-		$this->expectNotToPerformAssertions();
 		$callback();
 		remove_filter( 'woocommerce_admin_disabled', '__return_true' );
 	}
