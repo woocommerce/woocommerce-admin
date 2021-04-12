@@ -211,7 +211,7 @@ export function getPaymentMethods( {
 			},
 		},
 		{
-			key: 'mercadopago',
+			key: 'woo-mercado-pago-basic',
 			title: __(
 				'Mercado Pago Checkout Pro & Custom',
 				'woocommerce-admin'
@@ -243,7 +243,7 @@ export function getPaymentMethods( {
 			optionName: 'woocommerce_woo-mercado-pago-basic_settings',
 		},
 		{
-			key: 'paypal',
+			key: 'ppcp-gateway',
 			title: __( 'PayPal Payments', 'woocommerce-admin' ),
 			content: (
 				<>
@@ -268,7 +268,7 @@ export function getPaymentMethods( {
 				: false,
 		},
 		{
-			key: 'klarna_checkout',
+			key: 'kco',
 			title: __( 'Klarna Checkout', 'woocommerce-admin' ),
 			content: __(
 				'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
@@ -327,7 +327,7 @@ export function getPaymentMethods( {
 			optionName: 'woocommerce_klarna_payments_settings',
 		},
 		{
-			key: 'mollie',
+			key: 'mollie_wc_gateway_creditcard',
 			title: __( 'Mollie Payments for WooCommerce', 'woocommerce-admin' ),
 			before: <MollieLogo />,
 			plugins: [ 'mollie-payments-for-woocommerce' ],
@@ -362,7 +362,7 @@ export function getPaymentMethods( {
 			optionName: 'woocommerce_mollie_payments_settings',
 		},
 		{
-			key: 'square',
+			key: 'square_credit_card',
 			title: __( 'Square', 'woocommerce-admin' ),
 			content: (
 				<>
@@ -580,7 +580,7 @@ export function getPaymentMethods( {
 		} );
 
 		methods.unshift( {
-			key: 'wcpay',
+			key: 'woocommerce_payments',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
 				<>

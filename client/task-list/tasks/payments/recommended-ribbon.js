@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 
-const localPartners = [ 'mercadopago' ];
+const localPartners = [ 'woo-mercado-pago-basic' ];
 
 export const RecommendedRibbon = ( { methodKey, isPill = false } ) => {
 	const classes = isPill

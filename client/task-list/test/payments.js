@@ -15,6 +15,9 @@ import { GenericPaymentStep } from '../tasks/payments/generic-payment-step';
 
 jest.mock( '@wordpress/api-fetch' );
 
+const mercadoMethodKey = 'woo-mercado-pago-basic';
+const mollieMethodKey = 'mollie_wc_gateway_creditcard';
+
 describe( 'TaskList > Payments', () => {
 	describe( 'Payments', () => {
 		const optionName = 'woocommerce_mollie_payments_settings';
@@ -65,9 +68,7 @@ describe( 'TaskList > Payments', () => {
 				params.countryCode = countryCode;
 				const methods = getPaymentMethods( params );
 				expect(
-					methods.some(
-						( method ) => method.key === 'klarna_checkout'
-					)
+					methods.some( ( method ) => method.key === 'kco' )
 				).toBe( true );
 			} );
 		} );
@@ -107,7 +108,7 @@ describe( 'TaskList > Payments', () => {
 				};
 
 				const mollieMethod = getPaymentMethods( mollieParams ).find(
-					( method ) => method.key === 'mollie'
+					( method ) => method.key === mollieMethodKey
 				);
 
 				expect( mollieMethod.isEnabled ).toBe( true );
@@ -133,8 +134,9 @@ describe( 'TaskList > Payments', () => {
 					} );
 
 					expect(
-						methods.filter( ( method ) => method.key === 'mollie' )
-							.length
+						methods.filter(
+							( method ) => method.key === mollieMethodKey
+						).length
 					).toBe( 1 );
 				} );
 			} );
@@ -145,7 +147,8 @@ describe( 'TaskList > Payments', () => {
 				getPaymentMethods( {
 					...params,
 					activePlugins: [ 'mollie-payments-for-woocommerce' ],
-				} ).find( ( method ) => method.key === 'mollie' ).isConfigured
+				} ).find( ( method ) => method.key === mollieMethodKey )
+					.isConfigured
 			).toBe( true );
 		} );
 
@@ -157,7 +160,7 @@ describe( 'TaskList > Payments', () => {
 						const methods = getPaymentMethods( params );
 						expect(
 							methods.some(
-								( method ) => method.key === 'mercadopago'
+								( method ) => method.key === mercadoMethodKey
 							)
 						).toBe( true );
 					}
@@ -177,7 +180,7 @@ describe( 'TaskList > Payments', () => {
 
 				const mercadoPagoMethod = getPaymentMethods(
 					mercadoPagoParams
-				).find( ( method ) => method.key === 'mercadopago' );
+				).find( ( method ) => method.key === mercadoMethodKey );
 
 				expect( mercadoPagoMethod.isEnabled ).toBe( true );
 			} );
@@ -188,7 +191,7 @@ describe( 'TaskList > Payments', () => {
 				getPaymentMethods( {
 					...params,
 					activePlugins: [ 'woocommerce-mercadopago' ],
-				} ).find( ( method ) => method.key === 'mercadopago' )
+				} ).find( ( method ) => method.key === mercadoMethodKey )
 					.isConfigured
 			).toBe( true );
 		} );
