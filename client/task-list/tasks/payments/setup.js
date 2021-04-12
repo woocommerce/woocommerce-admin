@@ -14,7 +14,7 @@ import { useSelect } from '@wordpress/data';
  */
 import { createNoticesFromResponse } from '~/lib/notices';
 
-export const Setup = ( { currentMethod, markConfigured, query } ) => {
+export const Setup = ( { method, markConfigured, query } ) => {
 	const { activePlugins } = useSelect( ( select ) => {
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
@@ -23,15 +23,15 @@ export const Setup = ( { currentMethod, markConfigured, query } ) => {
 		};
 	} );
 
-	const getInstallStep = useMemo( () => {
-		if ( ! currentMethod.plugins || ! currentMethod.plugins.length ) {
+	const installStep = useMemo( () => {
+		if ( ! method.plugins || ! method.plugins.length ) {
 			return;
 		}
 
-		const pluginsToInstall = currentMethod.plugins.filter(
-			( method ) => ! activePlugins.includes( method )
+		const pluginsToInstall = method.plugins.filter(
+			( m ) => ! activePlugins.includes( m )
 		);
-		const pluginNamesString = currentMethod.plugins
+		const pluginNamesString = method.plugins
 			.map( ( pluginSlug ) => pluginNames[ pluginSlug ] )
 			.join( ' ' + __( 'and', 'woocommerce-admin' ) + ' ' );
 
@@ -47,33 +47,33 @@ export const Setup = ( { currentMethod, markConfigured, query } ) => {
 					onComplete={ ( plugins, response ) => {
 						createNoticesFromResponse( response );
 						recordEvent( 'tasklist_payment_install_method', {
-							plugins: currentMethod.plugins,
+							plugins: method.plugins,
 						} );
 					} }
 					onError={ ( errors, response ) =>
 						createNoticesFromResponse( response )
 					}
 					autoInstall
-					pluginSlugs={ currentMethod.plugins }
+					pluginSlugs={ method.plugins }
 				/>
 			),
 			isComplete: ! pluginsToInstall.length,
 		};
-	}, [ activePlugins, currentMethod.plugins ] );
+	}, [ activePlugins, method.plugins ] );
 
-	if ( ! currentMethod.container ) {
+	if ( ! method.container ) {
 		return null;
 	}
 
 	return (
 		<Card className="woocommerce-task-payment-method woocommerce-task-card">
 			<CardBody>
-				{ cloneElement( currentMethod.container, {
-					methodConfig: currentMethod,
+				{ cloneElement( method.container, {
+					methodConfig: method,
 					query,
-					installStep: getInstallStep(),
+					installStep,
 					markConfigured,
-					hasCbdIndustry: currentMethod.hasCbdIndustry,
+					hasCbdIndustry: method.hasCbdIndustry,
 				} ) }
 			</CardBody>
 		</Card>

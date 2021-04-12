@@ -205,6 +205,7 @@ export const Payments = ( { query } ) => {
 			{ methods.map( ( method ) => {
 				const {
 					before,
+					container,
 					content,
 					isConfigured,
 					key,
@@ -251,6 +252,8 @@ export const Payments = ( { query } ) => {
 						<CardFooter isBorderless>
 							<Action
 								methodKey={ key }
+								hasSetup={ !! container }
+								isConfigured={ isConfigured }
 								isEnabled={ enabledMethods[ key ] }
 								isRecommended={ isRecommended }
 								isLoading={ loading }
