@@ -21,6 +21,9 @@ import { getAllTasks } from '../tasks';
 jest.mock( '@wordpress/api-fetch' );
 jest.mock( '../tasks' );
 
+const TASK_LIST_HEADING = 'Get ready to start selling';
+const EXTENDED_TASK_LIST_HEADING = 'Things to do next';
+
 describe( 'TaskDashboard and TaskList', () => {
 	afterEach( () => jest.clearAllMocks() );
 	const MockTask = () => {
@@ -104,7 +107,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		isDismissable: true,
 	};
 
-	it( 'renders the "Get ready to start selling" and "Extensions setup" tasks lists', async () => {
+	it( 'renders the "Get ready to start selling" and "Things to do next" tasks lists', async () => {
 		apiFetch.mockResolvedValue( {} );
 		getAllTasks.mockReturnValue( tasks );
 		const { container } = render(
@@ -118,12 +121,12 @@ describe( 'TaskDashboard and TaskList', () => {
 
 		// Wait for the setup task list to render.
 		expect(
-			await findByText( container, 'Get ready to start selling' )
+			await findByText( container, TASK_LIST_HEADING )
 		).toBeDefined();
 
 		// Wait for the extension task list to render.
 		expect(
-			await findByText( container, 'Extensions setup' )
+			await findByText( container, EXTENDED_TASK_LIST_HEADING )
 		).toBeDefined();
 	} );
 
@@ -185,9 +188,9 @@ describe( 'TaskDashboard and TaskList', () => {
 			/>
 		);
 
-		expect( queryByText( 'Get ready to start selling' ) ).toBeNull();
+		expect( queryByText( TASK_LIST_HEADING ) ).toBeNull();
 
-		expect( queryByText( 'Extensions setup' ) ).not.toBeNull();
+		expect( queryByText( EXTENDED_TASK_LIST_HEADING ) ).not.toBeNull();
 	} );
 
 	it( 'sets homescreen layout default when dismissed', () => {
@@ -251,7 +254,7 @@ describe( 'TaskDashboard and TaskList', () => {
 			/>
 		);
 
-		expect( queryByText( 'Get ready to start selling' ) ).toBeNull();
+		expect( queryByText( TASK_LIST_HEADING ) ).toBeNull();
 	} );
 
 	it( 'hides the extended task list if there are no visible tasks', () => {
@@ -270,7 +273,7 @@ describe( 'TaskDashboard and TaskList', () => {
 			/>
 		);
 
-		expect( queryByText( 'Extensions setup' ) ).toBeNull();
+		expect( queryByText( EXTENDED_TASK_LIST_HEADING ) ).toBeNull();
 	} );
 
 	it( 'sets setup tasks list as completed', () => {

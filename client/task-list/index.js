@@ -149,7 +149,7 @@ export class TaskDashboard extends Component {
 						name={ 'extended_task_list' }
 						query={ query }
 						tasks={ extensionTasks }
-						title={ __( 'Extensions setup', 'woocommerce-admin' ) }
+						title={ __( 'Things to do next', 'woocommerce-admin' ) }
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
 					/>
 				) }
