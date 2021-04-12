@@ -63,7 +63,7 @@ function List( props ) {
 		);
 	}
 
-	return <ExperimentalList>{ children }</ExperimentalList>;
+	return <ExperimentalList { ...props }>{ children }</ExperimentalList>;
 }
 
 List.propTypes = {

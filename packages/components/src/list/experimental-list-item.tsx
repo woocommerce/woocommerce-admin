@@ -6,7 +6,7 @@ import { CSSTransition } from 'react-transition-group';
 /**
  * Internal dependencies
  */
-import { handleKeyDown, getItemLinkType } from './list-item';
+import { handleKeyDown } from './list-item';
 
 type CSSTransitionProps = {
 	in: boolean;
@@ -20,7 +20,7 @@ type ListItemProps = {
 	// control whether to display padding on list item or not.
 	disableGutters: boolean;
 	className?: string;
-	// By default the List is a `nav`, which treats the list item as role `link`. To override this pass a different role.
+	// By default the List is a `nav`, which treats the list item as role `link` if `onClick` is passed. To override this pass a different role.
 	role?: 'menuitem' | 'link' | 'button';
 	// By default a div is rendered, but if you want the list item to behave as a different tag you can override it here.
 	component?: React.ElementType;
@@ -43,7 +43,7 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	// Everything else you might pass into an HTML element
 	...otherProps
 } ): JSX.Element => {
-	const defaultRole = otherProps.onClick && ! role ? 'link' : '';
+	const tagRole = role || ( otherProps.onClick && 'link' ) || '';
 	const TagName = component || 'div';
 
 	return (
@@ -56,12 +56,12 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 			onExited={ onExited }
 		>
 			<TagName
-				role={ defaultRole }
+				role={ tagRole }
 				{ ...otherProps }
 				className={ `woocommerce-list__item ${
 					otherProps.onClick ? 'has-action' : ''
 				} ${ className } ${ disableGutters ? '' : 'has-gutters' }` }
-				onKeyDown={ ( e ) =>
+				onKeyDown={ ( e: React.KeyboardEvent< HTMLElement > ) =>
 					otherProps.onClick
 						? handleKeyDown( e, otherProps.onClick )
 						: null
