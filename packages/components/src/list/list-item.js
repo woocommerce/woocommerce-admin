@@ -15,7 +15,7 @@ export function handleKeyDown( event, onClick ) {
 	}
 }
 
-export function getItemLinkType( item ) {
+function getItemLinkType( item ) {
 	const { href, linkType } = item;
 
 	if ( linkType ) {
