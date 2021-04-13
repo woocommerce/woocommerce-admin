@@ -68,6 +68,26 @@ describe( 'List', () => {
 				).toBeInTheDocument();
 			} );
 		} );
+
+		it( 'defaults to link role if onClick is passed and role is not overridden', () => {
+			const { getByRole } = render(
+				<ExperimentalListItem onClick={ () => {} }>
+					<div>Test</div>
+				</ExperimentalListItem>
+			);
+
+			expect( getByRole( 'link' ) ).toBeInTheDocument();
+		} );
+
+		it( 'does not affix a link role to the a component', () => {
+			const { queryByRole } = render(
+				<ExperimentalListItem component="a" onClick={ () => {} }>
+					<div>Test</div>
+				</ExperimentalListItem>
+			);
+
+			expect( queryByRole( 'link' ) ).not.toBeInTheDocument();
+		} );
 	} );
 
 	describe( 'Legacy List', () => {
