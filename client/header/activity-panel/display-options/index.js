@@ -93,6 +93,7 @@ export const DisplayOptions = () => {
 						label={ __( 'Display', 'woocommerce-admin' ) }
 					>
 						<MenuItem
+							className="woocommerce-layout__homescreen-extension-tasklist-toggle"
 							icon={ showExtensionTaskList && check }
 							isSelected={ showExtensionTaskList }
 							role="menuitemcheckbox"
