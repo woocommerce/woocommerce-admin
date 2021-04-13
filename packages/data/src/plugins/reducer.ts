@@ -19,9 +19,9 @@ const plugins = (
 		jetpackConnectUrls: {},
 		recommended: {},
 	},
-	payload: {} | Actions
+	payload?: Actions
 ): PluginsState => {
-	if ( 'type' in payload ) {
+	if ( payload && 'type' in payload ) {
 		switch ( payload.type ) {
 			case TYPES.UPDATE_ACTIVE_PLUGINS:
 				state = {

@@ -23,7 +23,6 @@ export const PaymentRecommendationsSlot = () => {
 				tab: string;
 				section?: string;
 			} ) => {
-				console.log( page, tab, section );
 				if (
 					page === 'wc-settings' &&
 					tab === 'checkout' &&
