@@ -21,30 +21,33 @@ export const ExperimentalList: React.FC< ListProps > = ( {
 			{ ...otherProps }
 		>
 			{ /* Wrapping all children in a CSS Transition means no invalid props are passed to children and that anything can be animated. */ }
-			{ Children.map( children, ( child ) => {
-				if ( isValidElement( child ) ) {
-					const {
-						onExited,
-						in: inTransition,
-						enter,
-						exit,
-						...remainingProps
-					} = child.props;
-					return (
-						<CSSTransition
-							timeout={ 500 }
-							onExited={ onExited }
-							in={ inTransition }
-							enter={ enter }
-							exit={ exit }
-						>
-							{ cloneElement( child, { ...remainingProps } ) }
-						</CSSTransition>
-					);
-				}
+			{
+				Children.map( children, ( child ) => {
+					if ( isValidElement( child ) ) {
+						const {
+							onExited,
+							in: inTransition,
+							enter,
+							exit,
+							...remainingProps
+						} = child.props;
+						return (
+							<CSSTransition
+								timeout={ 500 }
+								onExited={ onExited }
+								in={ inTransition }
+								enter={ enter }
+								exit={ exit }
+							>
+								{ cloneElement( child, { ...remainingProps } ) }
+							</CSSTransition>
+						);
+					}
 
-				return child;
-			} ) }
+					return child;
+					// TODO - create a less restrictive type definition for children of react-transition-group. React.Children.map seems incompatible with the type expected by `children`.
+				} ) as React.ReactElement[]
+			}
 		</TransitionGroup>
 	);
 };
