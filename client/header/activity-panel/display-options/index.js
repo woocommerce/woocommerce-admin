@@ -63,9 +63,7 @@ export const DisplayOptions = () => {
 		const newValue = ! showExtensionTaskList;
 
 		recordEvent(
-			newValue
-				? 'wcadmin_extended_tasklist_show'
-				: 'wcadmin_extended_tasklist_hide'
+			newValue ? 'extended_tasklist_show' : 'extended_tasklist_hide'
 		);
 		updateOptions( {
 			woocommerce_extended_task_list_hidden: newValue ? 'no' : 'yes',

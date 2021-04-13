@@ -97,9 +97,7 @@ describe( 'Activity Panel - Homescreen Display Options', () => {
 			getByText( 'Show things to do next', { selector: 'button' } )
 		);
 
-		expect( recordEvent ).toHaveBeenCalledWith(
-			'wcadmin_extended_tasklist_hide'
-		);
+		expect( recordEvent ).toHaveBeenCalledWith( 'extended_tasklist_hide' );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
 			woocommerce_extended_task_list_hidden: 'yes',
