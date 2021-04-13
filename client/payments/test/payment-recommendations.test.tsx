@@ -23,7 +23,6 @@ import { isWCPaySupported } from '../../task-list/tasks/payments/wcpay';
 import { getAdminLink } from '../../wc-admin-settings';
 import { createNoticesFromResponse } from '~/lib/notices';
 
-// jest.mock( '@woocommerce/data', () => ( {} ) );
 jest.mock( '@woocommerce/tracks', () => ( { recordEvent: jest.fn() } ) );
 
 jest.mock( '@wordpress/data', () => ( {

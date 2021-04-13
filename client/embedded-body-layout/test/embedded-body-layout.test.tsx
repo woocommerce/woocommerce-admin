@@ -2,30 +2,21 @@
  * External dependencies
  */
 import { render } from '@testing-library/react';
+import { Fill } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import { EmbeddedBodyLayout } from '../embedded-body-layout';
+import { PaymentRecommendationsSlot } from '../../payments';
 
 jest.mock( '@woocommerce/data', () => ( {
 	useUser: () => ( {
 		currentUserCan: jest.fn(),
 	} ),
 } ) );
-jest.mock( '../page-registry', () => ( {
-	embeddedPageRegistry: {
-		registerPage: jest.fn(),
-		getPages: () => {
-			return [
-				{ path: 'settings_test', container: () => <>settings_test</> },
-				{
-					path: 'settings_anothertest',
-					container: () => <>settings_anothertest</>,
-				},
-			];
-		},
-	},
+jest.mock( '../../payments', () => ( {
+	PaymentRecommendationsSlot: jest.fn(),
 } ) );
 
 const stubLocation = ( location: string ) => {
@@ -36,17 +27,33 @@ const stubLocation = ( location: string ) => {
 };
 
 describe( 'Embedded layout', () => {
-	it( 'should render the page with path correctly', async () => {
+	it( 'should render a fill component with matching name, and provide query params', async () => {
+		( PaymentRecommendationsSlot as jest.Mock ).mockReturnValue(
+			<Fill name="embedded-body-layout">
+				{ ( {
+					page,
+					tab,
+					section,
+				}: {
+					page: string;
+					tab: string;
+					section?: string;
+				} ) => (
+					<div>
+						payment_recommendations
+						<span>page:{ page }</span>
+						<span>tab:{ tab }</span>
+						<span>section:{ section || '' }</span>
+					</div>
+				) }
+			</Fill>
+		);
 		stubLocation( '?page=settings&tab=test' );
 		const { queryByText } = render( <EmbeddedBodyLayout /> );
 
-		expect( queryByText( 'settings_test' ) ).toBeInTheDocument();
-	} );
-
-	it( 'should not render the page if path does not match correctly', async () => {
-		stubLocation( '?page=settings&tab=test&section=section' );
-		const { queryByText } = render( <EmbeddedBodyLayout /> );
-
-		expect( await queryByText( 'settings_test' ) ).not.toBeInTheDocument();
+		expect( queryByText( 'payment_recommendations' ) ).toBeInTheDocument();
+		expect( queryByText( 'page:settings' ) ).toBeInTheDocument();
+		expect( queryByText( 'tab:test' ) ).toBeInTheDocument();
+		expect( queryByText( 'section:' ) ).toBeInTheDocument();
 	} );
 } );

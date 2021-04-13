@@ -1,35 +1,14 @@
 /**
  * External dependencies
  */
-import { Router, Route, Switch } from 'react-router-dom';
-import { Suspense } from '@wordpress/element';
-import { useUser } from '@woocommerce/data';
-import { createBrowserHistory } from 'history';
+import { Slot, SlotFillProvider } from '@wordpress/components';
 import QueryString, { parse } from 'qs';
 
 /**
  * Internal dependencies
  */
-import { EmbeddedPage, embeddedPageRegistry } from './page-registry';
-import '../payments';
+import { PaymentRecommendationsSlot } from '../payments';
 import './style.scss';
-
-interface PrimaryLayoutProps {
-	page: EmbeddedPage;
-}
-
-const PrimaryLayout = ( { page }: PrimaryLayoutProps ) => {
-	return (
-		<div
-			className="woocommerce-embedded-layout__primary"
-			id="woocommerce-embedded-layout__primary"
-		>
-			<Suspense fallback={ null }>
-				<page.container />
-			</Suspense>
-		</div>
-	);
-};
 
 type QueryParams = {
 	page: string;
@@ -43,52 +22,33 @@ function isWPPage(
 	return ( params as QueryParams ).page !== undefined;
 }
 
-const customHistory = createBrowserHistory();
-Object.defineProperty( customHistory, 'location', {
-	get: () => {
-		const query = parse( location.search.substring( 1 ) );
-		let pathname = location.search;
-		if ( isWPPage( query ) ) {
-			pathname = `${ query.page }_${ query.tab }`;
-			if ( query.section ) {
-				pathname += `_${ query.section }`;
-			}
-		}
-
-		return {
-			...location,
-			pathname,
-		};
-	},
-} );
-
+/**
+ * This component is appended to the bottom of the WooCommerce non-react pages (like settings).
+ * You can add a component by writing a Fill component from slot-fill with the `embedded-body-layout` name.
+ *
+ * Each Fill component receives QueryParams, consisting of a page, tab, and section string.
+ */
 export const EmbeddedBodyLayout = () => {
-	const { currentUserCan } = useUser();
-
-	const pages = embeddedPageRegistry.getPages();
+	const query = parse( location.search.substring( 1 ) );
+	let fillProps: QueryParams = { page: '', tab: '' };
+	if ( isWPPage( query ) ) {
+		fillProps = query;
+	}
 
 	return (
-		<Router history={ customHistory }>
-			<Switch>
-				{ pages
-					.filter(
-						( page ) =>
-							! page.capability ||
-							currentUserCan( page.capability )
-					)
-					.map( ( page ) => {
-						return (
-							<Route
-								key={ page.path }
-								path={ page.path }
-								exact
-								render={ ( props ) => (
-									<PrimaryLayout page={ page } { ...props } />
-								) }
-							/>
-						);
-					} ) }
-			</Switch>
-		</Router>
+		<SlotFillProvider>
+			<div
+				className="woocommerce-embedded-layout__primary"
+				id="woocommerce-embedded-layout__primary"
+			>
+				<Slot
+					name="embedded-body-layout"
+					fillProps={ {
+						...fillProps,
+					} }
+				></Slot>
+			</div>
+			<PaymentRecommendationsSlot />
+		</SlotFillProvider>
 	);
 };
