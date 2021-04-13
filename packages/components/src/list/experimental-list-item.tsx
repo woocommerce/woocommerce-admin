@@ -33,6 +33,7 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	className = '',
 	role,
 	component,
+	tabIndex,
 	// extract out the props that must be passed down from TransitionGroup
 	exit,
 	enter,
@@ -43,8 +44,10 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	// Everything else you might pass into an HTML element
 	...otherProps
 } ): JSX.Element => {
-	const tagRole = role || ( otherProps.onClick && 'link' ) || '';
+	const hasAction = !! otherProps.onClick;
+	const tagRole = role || ( component !== 'a' && hasAction && 'link' ) || '';
 	const TagName = component || 'div';
+	const tagTabIndex = tabIndex || ( hasAction ? '0' : null );
 
 	return (
 		<CSSTransition
@@ -56,15 +59,14 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 			onExited={ onExited }
 		>
 			<TagName
+				tabIndex={ tagTabIndex }
 				role={ tagRole }
 				{ ...otherProps }
 				className={ `woocommerce-list__item ${
 					otherProps.onClick ? 'has-action' : ''
 				} ${ className } ${ disableGutters ? '' : 'has-gutters' }` }
 				onKeyDown={ ( e: React.KeyboardEvent< HTMLElement > ) =>
-					otherProps.onClick
-						? handleKeyDown( e, otherProps.onClick )
-						: null
+					hasAction ? handleKeyDown( e, otherProps.onClick ) : null
 				}
 			>
 				{ children }
