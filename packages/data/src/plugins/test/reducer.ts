@@ -21,7 +21,7 @@ const defaultState: PluginsState = {
 
 describe( 'plugins reducer', () => {
 	it( 'should return a default state', () => {
-		const state = reducer( undefined, {} as Actions );
+		const state = reducer( undefined, {} );
 		expect( state ).toEqual( defaultState );
 		expect( state ).not.toBe( defaultState );
 	} );

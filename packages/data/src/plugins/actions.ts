@@ -86,7 +86,7 @@ const formatErrorMessage = (
 export function updateActivePlugins(
 	active: string[],
 	replace = false
-): { type: TYPES; active: string[]; replace?: boolean } {
+): { type: TYPES.UPDATE_ACTIVE_PLUGINS; active: string[]; replace?: boolean } {
 	return {
 		type: TYPES.UPDATE_ACTIVE_PLUGINS,
 		active,
@@ -94,7 +94,14 @@ export function updateActivePlugins(
 	};
 }
 
-export function updateInstalledPlugins( installed: string[], replace = false ) {
+export function updateInstalledPlugins(
+	installed: string[],
+	replace = false
+): {
+	type: TYPES.UPDATE_INSTALLED_PLUGINS;
+	installed: string[];
+	replace?: boolean;
+} {
 	return {
 		type: TYPES.UPDATE_INSTALLED_PLUGINS,
 		installed,
@@ -105,7 +112,11 @@ export function updateInstalledPlugins( installed: string[], replace = false ) {
 export function setIsRequesting(
 	selector: SelectorKeysWithActions,
 	isRequesting: boolean
-) {
+): {
+	type: TYPES.SET_IS_REQUESTING;
+	selector: SelectorKeysWithActions;
+	isRequesting: boolean;
+} {
 	return {
 		type: TYPES.SET_IS_REQUESTING,
 		selector,
@@ -116,7 +127,11 @@ export function setIsRequesting(
 export function setError(
 	selector: SelectorKeysWithActions,
 	error: Partial< Record< PluginNames, string[] > >
-) {
+): {
+	type: TYPES.SET_ERROR;
+	selector: SelectorKeysWithActions;
+	error: Partial< Record< PluginNames, string[] > >;
+} {
 	return {
 		type: TYPES.SET_ERROR,
 		selector,
@@ -124,7 +139,12 @@ export function setError(
 	};
 }
 
-export function updateIsJetpackConnected( jetpackConnection: boolean ) {
+export function updateIsJetpackConnected(
+	jetpackConnection: boolean
+): {
+	type: TYPES.UPDATE_JETPACK_CONNECTION;
+	jetpackConnection: boolean;
+} {
 	return {
 		type: TYPES.UPDATE_JETPACK_CONNECTION,
 		jetpackConnection,
@@ -134,7 +154,11 @@ export function updateIsJetpackConnected( jetpackConnection: boolean ) {
 export function updateJetpackConnectUrl(
 	redirectUrl: string,
 	jetpackConnectUrl: string
-) {
+): {
+	type: TYPES.UPDATE_JETPACK_CONNECT_URL;
+	redirectUrl: string;
+	jetpackConnectUrl: string;
+} {
 	return {
 		type: TYPES.UPDATE_JETPACK_CONNECT_URL,
 		jetpackConnectUrl,
@@ -272,14 +296,24 @@ export function* connectToJetpackWithFailureRedirect(
 
 export function setPaypalOnboardingStatus(
 	status: Partial< PaypalOnboardingStatus >
-) {
+): {
+	type: TYPES.SET_PAYPAL_ONBOARDING_STATUS;
+	paypalOnboardingStatus: Partial< PaypalOnboardingStatus >;
+} {
 	return {
 		type: TYPES.SET_PAYPAL_ONBOARDING_STATUS,
 		paypalOnboardingStatus: status,
 	};
 }
 
-export function setRecommendedPlugins( type: string, plugins: Plugin[] ) {
+export function setRecommendedPlugins(
+	type: string,
+	plugins: Plugin[]
+): {
+	type: TYPES.SET_RECOMMENDED_PLUGINS;
+	recommendedType: string;
+	plugins: Plugin[];
+} {
 	return {
 		type: TYPES.SET_RECOMMENDED_PLUGINS,
 		recommendedType: type,
@@ -287,15 +321,12 @@ export function setRecommendedPlugins( type: string, plugins: Plugin[] ) {
 	};
 }
 
-export type Actions = ReturnType< typeof updateActivePlugins > &
-	ReturnType< typeof updateInstalledPlugins > &
-	ReturnType< typeof setIsRequesting > &
-	ReturnType< typeof setError > &
-	ReturnType< typeof updateIsJetpackConnected > &
-	ReturnType< typeof updateJetpackConnectUrl > &
-	ReturnType< typeof installPlugins > &
-	ReturnType< typeof activatePlugins > &
-	ReturnType< typeof installAndActivatePlugins > &
-	ReturnType< typeof createErrorNotice > &
-	ReturnType< typeof setPaypalOnboardingStatus > &
-	ReturnType< typeof setRecommendedPlugins >;
+export type Actions =
+	| ReturnType< typeof updateActivePlugins >
+	| ReturnType< typeof updateInstalledPlugins >
+	| ReturnType< typeof setIsRequesting >
+	| ReturnType< typeof setError >
+	| ReturnType< typeof updateIsJetpackConnected >
+	| ReturnType< typeof updateJetpackConnectUrl >
+	| ReturnType< typeof setPaypalOnboardingStatus >
+	| ReturnType< typeof setRecommendedPlugins >;
