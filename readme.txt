@@ -261,7 +261,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == 2.0.2 25/05/2021 ==
 
 - Fix: Correct the Klarna slug #6440
-=======
 
 == 2.0.0 02/05/2021 ==
 

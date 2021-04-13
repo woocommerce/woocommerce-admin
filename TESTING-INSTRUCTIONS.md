@@ -760,7 +760,6 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 2. Go to `Analytics` > `Orders`
 3. Set the `Date Range` filter in order to cover the refunded order date.
 4. Verify that now the associated order number and the related products are visible.
-=======
 
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
