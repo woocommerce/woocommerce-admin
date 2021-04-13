@@ -9,6 +9,7 @@ import { withConsole } from '@storybook/addon-console';
  */
 import List from '../';
 import './style.scss';
+import { ExperimentalListItem } from '../experimental-list-item';
 
 function logItemClick( event ) {
 	const a = event.currentTarget;
@@ -62,6 +63,8 @@ export const Default = () => {
 	return <List items={ listItems } />;
 };
 
+Default.storyName = 'Default (deprecated)';
+
 export const BeforeAndAfter = () => {
 	const listItems = [
 		{
@@ -97,6 +100,8 @@ export const BeforeAndAfter = () => {
 
 	return <List items={ listItems } />;
 };
+
+BeforeAndAfter.storyName = 'Before and after (deprecated)';
 
 export const CustomStyleAndTags = () => {
 	const listItems = [
@@ -135,3 +140,24 @@ export const CustomStyleAndTags = () => {
 
 	return <List items={ listItems } className="storybook-custom-list" />;
 };
+
+CustomStyleAndTags.storyName = 'Custom style and tags (deprecated)';
+
+export const ExperimentalList = () => {
+	return (
+		<List>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+		</List>
+	);
+};
+
+ExperimentalList.storyName =
+	'Experimental (accepts `children` instead of `props.items`).';
