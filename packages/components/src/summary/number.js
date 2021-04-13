@@ -18,7 +18,7 @@ import Link from '../link';
  * A component to show a value, label, and optionally a change percentage and children node. Can also act as a link to a specific report focus.
  *
  * @param {Object} props
- * @param {Node} props.children
+ * @param {React.ReactNode} props.children
  * @param {number} props.delta Change percentage. Float precision is rendered as given.
  * @param {string} props.href
  * @param {string} props.hrefType
