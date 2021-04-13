@@ -9,7 +9,7 @@ import deprecated from '@wordpress/deprecated';
 /**
  * Internal dependencies
  */
-import ListItem from './list-item';
+import LegacyListItem from './list-item';
 import { ExperimentalList } from './experimental-list';
 
 /**
@@ -53,7 +53,7 @@ function List( props ) {
 								{ children ? (
 									children( item, index )
 								) : (
-									<ListItem item={ item } />
+									<LegacyListItem item={ item } />
 								) }
 							</li>
 						</CSSTransition>
@@ -121,4 +121,4 @@ List.propTypes = {
 
 export default List;
 
-export { ExperimentalListItem } from './experimental-list-item';
+export { ExperimentalListItem as ListItem } from './experimental-list-item';
