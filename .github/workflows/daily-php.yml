@@ -30,7 +30,7 @@ jobs:
               shell: bash
             - name: Run the PHP unit tests
               env:
-                  WP_VERSION: ${{ matrix.woocommerce }}
+                  WP_VERSION: ${{ matrix.wordpress }}
                   WC_VERSION: ${{ matrix.woocommerce }}
               run: npm run test:php
               shell: bash
