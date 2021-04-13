@@ -3,12 +3,12 @@
  */
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ExperimentalListItem } from '../experimental-list-item';
 
 /**
  * Internal dependencies
  */
 import List from '../index';
+import { ExperimentalListItem } from '../experimental-list-item';
 
 describe( 'List', () => {
 	describe( 'Experimental List', () => {
