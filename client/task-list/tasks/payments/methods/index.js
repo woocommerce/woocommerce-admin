@@ -56,6 +56,7 @@ export function getPaymentMethods( {
 } ) {
 	const {
 		stripeSupportedCountries = [],
+		wcPayIsConnected = false,
 		enabledPaymentGateways = [],
 	} = onboardingStatus;
 
@@ -551,8 +552,11 @@ export function getPaymentMethods( {
 			visible: isWCPaySupported( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
-			isConfigured: false,
-			isEnabled: false,
+			isConfigured: wcPayIsConnected,
+			isEnabled:
+				options.woocommerce_woocommerce_payments_settings &&
+				options.woocommerce_woocommerce_payments_settings.enabled ===
+					'yes',
 			optionName: 'woocommerce_woocommerce_payments_settings',
 			manageUrl: getPaymentsSettingsUrl( 'woocommerce_payments' ),
 		} );
