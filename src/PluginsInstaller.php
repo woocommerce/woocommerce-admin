@@ -74,5 +74,4 @@ class PluginsInstaller {
 		wp_safe_redirect( $url );
 		exit();
 	}
-
 }
