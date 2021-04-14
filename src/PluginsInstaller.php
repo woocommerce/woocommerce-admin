@@ -16,10 +16,16 @@ use Automattic\WooCommerce\Admin\API\Plugins;
  */
 class PluginsInstaller {
 	/**
+	 * Message option name.
+	 */
+	const MESSAGE_OPTION = 'woocommerce_admin_plugin_installer_message';
+
+	/**
 	 * Constructor
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'possibly_install_activate_plugins' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'display_message' ) );
 	}
 
 	/**
