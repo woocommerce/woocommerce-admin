@@ -209,6 +209,7 @@ export const Payments = ( { query } ) => {
 					content,
 					isConfigured,
 					key,
+					manageUrl,
 					title,
 					visible,
 					loading,
@@ -251,6 +252,7 @@ export const Payments = ( { query } ) => {
 						</CardBody>
 						<CardFooter isBorderless>
 							<Action
+								manageUrl={ manageUrl }
 								methodKey={ key }
 								hasSetup={ !! container }
 								isConfigured={ isConfigured }

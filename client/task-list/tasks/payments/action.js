@@ -13,6 +13,7 @@ export const Action = ( {
 	isEnabled = false,
 	isLoading = false,
 	isRecommended = false,
+	manageUrl = null,
 	markConfigured,
 	methodKey,
 	onSetUp = () => {},
@@ -62,6 +63,10 @@ export const Action = ( {
 	}
 
 	if ( ( hasSetup && isConfigured ) || ( ! hasSetup && isEnabled ) ) {
+		if ( ! manageUrl ) {
+			return null;
+		}
+
 		return (
 			<div>
 				<Button
