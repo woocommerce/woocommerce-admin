@@ -1094,8 +1094,11 @@ class Onboarding {
 		}
 
 		$onboarding_data = get_option( self::PROFILE_DATA_OPTION, array() );
-		// Don't make updates if the profiler is completed, but task list is potentially incomplete.
-		if ( isset( $onboarding_data['completed'] ) && $onboarding_data['completed'] ) {
+		// Don't make updates if the profiler is completed or skipped, but task list is potentially incomplete.
+		if (
+			( isset( $onboarding_data['completed'] ) && $onboarding_data['completed'] ) ||
+			( isset( $onboarding_data['skipped'] ) && $onboarding_data['skipped'] )
+		) {
 			return;
 		}
 
