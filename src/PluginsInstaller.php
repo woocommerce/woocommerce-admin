@@ -53,6 +53,7 @@ class PluginsInstaller {
 		}
 
 		self::display_results( $result );
+		self::redirect_to_referer();
 	}
 
 	/**
@@ -67,6 +68,19 @@ class PluginsInstaller {
 		}
 
 		// @todo Parse results to plugin names and messages to display in a notice.
+	}
+
+	/**
+	 * Redirect back to the referring page if one exists.
+	 */
+	public static function redirect_to_referer() {
+		if ( ! isset( $_SERVER['HTTP_REFERER'] ) ) {
+			return;
+		}
+
+		$referer = $_SERVER['HTTP_REFERER']; // phpcs:ignore sanitization ok.
+		wp_safe_redirect( $referer );
+		exit();
 	}
 
 }
