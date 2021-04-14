@@ -16,16 +16,10 @@ use Automattic\WooCommerce\Admin\API\Plugins;
  */
 class PluginsInstaller {
 	/**
-	 * Message option name.
-	 */
-	const MESSAGE_OPTION = 'woocommerce_admin_plugin_installer_message';
-
-	/**
 	 * Constructor
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'possibly_install_activate_plugins' ) );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'display_message' ) );
 	}
 
 	/**
@@ -58,42 +52,7 @@ class PluginsInstaller {
 				break;
 		}
 
-		self::cache_results( $install_result, $activate_result );
 		self::redirect_to_referer();
-	}
-
-	/**
-	 * Display the results of installation and activation on the page.
-	 *
-	 * @param array $install_result Result of installation.
-	 * @param array $activate_result Result of activation.
-	 */
-	public static function cache_results( $install_result, $activate_result ) {
-		if ( ! $install_result && ! $activate_result ) {
-			return;
-		}
-
-		$message = $activate_result ? $activate_result['message'] : $install_result['message'];
-
-		// Show install error message if one exists.
-		if ( $install_result && ! $install_result['success'] ) {
-			$message = $install_result['message'];
-		}
-
-		update_option( self::MESSAGE_OPTION, $message );
-	}
-
-	/**
-	 * Display the results of installation and activation on the page.
-	 */
-	public static function display_message() {
-		$message = get_option( self::MESSAGE_OPTION );
-
-		if ( ! $message ) {
-			return;
-		}
-
-		delete_option( self::MESSAGE_OPTION );
 	}
 
 	/**
