@@ -76,6 +76,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Dev: Add data source filter to remote inbox notification system #6794
+- Fix: Make pagination buttons height and width consistent #6725
 - Tweak: Add settings_section event prop for CES #6762
 - Fix: Retain persisted queries when navigating to Homescreen #6614
 - Update: Update choose niche note cta URL #6733
@@ -89,6 +90,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add support for running php unit tests in PHP 8. #6678
 - Fix: Remove no-reply from inbox notification emails #6644
 - Performance: Avoid updating customer info synchronously from the front end. #6765
+- Fix: Set up shipping costs task, redirect to shipping settings after completion. #6791
 
 == 2.2.0 3/30/2021 ==
 
