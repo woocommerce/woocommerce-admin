@@ -43,9 +43,7 @@ export const MercadoPago = ( { installStep, markConfigured } ) => {
 					content: (
 						<MercadoPagoCredentialsStep
 							countryCode={ countryCode }
-							onFinish={ () =>
-								markConfigured( 'woo-mercado-pago-basic' )
-							}
+							onFinish={ () => markConfigured( 'mercadopago' ) }
 						/>
 					),
 				},

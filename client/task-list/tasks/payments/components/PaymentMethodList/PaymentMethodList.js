@@ -38,6 +38,7 @@ export const PaymentMethodList = ( {
 				title,
 				visible,
 				loading,
+				manageUrl,
 			} = method;
 
 			if ( ! visible ) {
@@ -73,6 +74,7 @@ export const PaymentMethodList = ( {
 						</div>
 						<div className="woocommerce-task-payment__footer">
 							<Action
+								manageUrl={ manageUrl }
 								methodKey={ key }
 								hasSetup={ !! method.container }
 								isConfigured={ isConfigured }

@@ -3,6 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import {
+	getAdminLink,
 	getSetting,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
@@ -55,7 +56,6 @@ export function getPaymentMethods( {
 } ) {
 	const {
 		stripeSupportedCountries = [],
-		wcPayIsConnected = false,
 		enabledPaymentGateways = [],
 	} = onboardingStatus;
 
@@ -217,7 +217,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'stripe' ),
 		},
 		{
-			key: 'woo-mercado-pago-basic',
+			key: 'mercadopago',
 			title: __(
 				'Mercado Pago Checkout Pro & Custom',
 				'woocommerce-admin'
@@ -250,7 +250,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'woo-mercado-pago-basic' ),
 		},
 		{
-			key: 'ppcp-gateway',
+			key: 'paypal',
 			title: __( 'PayPal Payments', 'woocommerce-admin' ),
 			content: (
 				<>
@@ -276,7 +276,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'ppcp-gateway' ),
 		},
 		{
-			key: 'kco',
+			key: 'klarna_checkout',
 			title: __( 'Klarna Checkout', 'woocommerce-admin' ),
 			content: __(
 				'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.',
@@ -337,7 +337,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'klarna_payments' ),
 		},
 		{
-			key: 'mollie_wc_gateway_creditcard',
+			key: 'mollie',
 			title: __( 'Mollie Payments for WooCommerce', 'woocommerce-admin' ),
 			before: <MollieLogo />,
 			plugins: [ 'mollie-payments-for-woocommerce' ],
@@ -373,7 +373,7 @@ export function getPaymentMethods( {
 			manageUrl: getPaymentsSettingsUrl( 'mollie_wc_gateway_creditcard' ),
 		},
 		{
-			key: 'square_credit_card',
+			key: 'square',
 			title: __( 'Square', 'woocommerce-admin' ),
 			content: (
 				<>
@@ -529,7 +529,7 @@ export function getPaymentMethods( {
 
 	if ( window.wcAdminFeatures.wcpay ) {
 		methods.unshift( {
-			key: 'woocommerce_payments',
+			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
 				<>
@@ -551,11 +551,8 @@ export function getPaymentMethods( {
 			visible: isWCPaySupported( countryCode ) && ! hasCbdIndustry,
 			plugins: [ 'woocommerce-payments' ],
 			container: <WCPay />,
-			isConfigured: wcPayIsConnected,
-			isEnabled:
-				options.woocommerce_woocommerce_payments_settings &&
-				options.woocommerce_woocommerce_payments_settings.enabled ===
-					'yes',
+			isConfigured: false,
+			isEnabled: false,
 			optionName: 'woocommerce_woocommerce_payments_settings',
 			manageUrl: getPaymentsSettingsUrl( 'woocommerce_payments' ),
 		} );

@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button, Spinner } from '@wordpress/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { updateQueryString } from '@woocommerce/navigation';
 import { useState } from '@wordpress/element';
 import { recordEvent } from '@woocommerce/tracks';
@@ -14,6 +13,7 @@ export const Action = ( {
 	isEnabled = false,
 	isLoading = false,
 	isRecommended = false,
+	manageUrl = null,
 	markConfigured,
 	methodKey,
 	onSetUp = () => {},
@@ -21,6 +21,8 @@ export const Action = ( {
 	setupButtonText = __( 'Set up', 'woocommerce-admin' ),
 } ) => {
 	const [ isBusy, setIsBusy ] = useState( false );
+
+	const classes = 'woocommerce-task-payment__action';
 
 	if ( isLoading ) {
 		return <Spinner />;
@@ -51,6 +53,7 @@ export const Action = ( {
 		return (
 			<div>
 				<Button
+					className={ classes }
 					isPrimary={ isRecommended }
 					isSecondary={ ! isRecommended }
 					isBusy={ isBusy }
@@ -64,16 +67,18 @@ export const Action = ( {
 	}
 
 	if ( ( hasSetup && isConfigured ) || ( ! hasSetup && isEnabled ) ) {
+		if ( ! manageUrl ) {
+			return null;
+		}
+
 		return (
 			<div>
 				<Button
+					className={ classes }
 					isSecondary
-					href={ getAdminLink(
-						'admin.php?page=wc-settings&tab=checkout&section=' +
-							methodKey
-					) }
+					href={ manageUrl }
 					onClick={
-						methodKey === 'woocommerce_payments'
+						methodKey === 'wcpay'
 							? () => recordEvent( 'tasklist_payment_manage' )
 							: () => {}
 					}
@@ -85,7 +90,11 @@ export const Action = ( {
 	}
 
 	return (
-		<Button isSecondary onClick={ () => markConfigured( methodKey ) }>
+		<Button
+			className={ classes }
+			isSecondary
+			onClick={ () => markConfigured( methodKey ) }
+		>
 			{ __( 'Enable', 'woocommerce-admin' ) }
 		</Button>
 	);

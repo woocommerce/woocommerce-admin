@@ -19,9 +19,7 @@ class WCPay extends Component {
 					'woocommerce-admin'
 				)
 			);
-			markConfigured( 'woocommerce-payments', {
-				'wcpay-connection-success': '1',
-			} );
+			markConfigured( 'wcpay', { 'wcpay-connection-success': '1' } );
 		}
 	}
 

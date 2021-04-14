@@ -129,8 +129,8 @@ export const Payments = ( { query } ) => {
 	const recommendedMethod = useMemo( () => {
 		const method = methods.find(
 			( m ) =>
-				( m.key === 'woocommerce_payments' && m.visible ) ||
-				( m.key === 'woo-mercado-pago-basic' && m.visible )
+				( m.key === 'wcpay' && m.visible ) ||
+				( m.key === 'mercadopago' && m.visible )
 		);
 		if ( ! method ) {
 			return 'stripe';
@@ -204,13 +204,12 @@ export const Payments = ( { query } ) => {
 		methods,
 		( method ) =>
 			method.isEnabled &&
-			( method.key !== 'woocommerce_payments' ||
-				( method.key === 'woocommerce_payments' &&
-					method.isConfigured ) )
+			( method.key !== 'wcpay' ||
+				( method.key === 'wcpay' && method.isConfigured ) )
 	);
 
 	const wcPayIndex = additionalCardMethods.findIndex(
-		( m ) => m.key === 'woocommerce_payments'
+		( m ) => m.key === 'wcpay'
 	);
 
 	const wcPayMethod =
