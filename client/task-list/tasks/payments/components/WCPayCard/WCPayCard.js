@@ -22,34 +22,43 @@ import WCPayLogo from '../../images/wcpay-logo';
 import { Action } from '../Action';
 import './WCPayCard.scss';
 
-export const WCPayCard = ( { method } ) => {
-	const TosPrompt = () =>
-		interpolateComponents( {
-			mixedString: __(
-				'Upon clicking "Get started", you agree to the {{link}}Terms of service{{/link}}. Next we’ll ask you to share a few details about your business to create your account.',
-				'woocommerce-admin'
+const TosPrompt = () =>
+	interpolateComponents( {
+		mixedString: __(
+			'Upon clicking "Get started", you agree to the {{link}}Terms of service{{/link}}. Next we’ll ask you to share a few details about your business to create your account.',
+			'woocommerce-admin'
+		),
+		components: {
+			link: (
+				<Link
+					href={ 'https://wordpress.com/tos/' }
+					target="_blank"
+					type="external"
+				/>
 			),
-			components: {
-				link: (
-					<Link
-						href={ 'https://wordpress.com/tos/' }
-						target="_blank"
-						type="external"
-					/>
-				),
-			},
-		} );
+		},
+	} );
+
+export const WCPayCard = ( props ) => {
+	const {
+		key: methodKey,
+		isConfigured,
+		container,
+		isEnabled,
+		loading,
+		onClick,
+	} = props.method;
 
 	return (
 		<Card className="woocommerce-task-payment-wcpay">
 			<CardHeader as="h2">
 				<WCPayLogo />
-				{ ! method.isEnabled && (
+				{ ! isEnabled && (
 					<span className="woocommerce-task-payment__recommended-pill">
 						{ __( 'Recommended', 'woocommerce-admin' ) }
 					</span>
 				) }
-				{ method.isEnabled && (
+				{ isEnabled && (
 					<span className="woocommerce-task-payment__setup_required">
 						<NoticeOutlineIcon />
 						<Text variant="small">
@@ -84,20 +93,19 @@ export const WCPayCard = ( { method } ) => {
 					<TosPrompt />
 				</Text>
 				<Action
-					methodKey={ method.key }
-					hasSetup={ !! method.container }
-					isConfigured={ method.isConfigured }
-					isEnabled={ method.isEnabled }
+					methodKey={ methodKey }
+					hasSetup={ !! container }
+					isConfigured={ isConfigured }
+					isEnabled={ isEnabled }
 					isRecommended={ true }
-					isLoading={ method.loading }
+					isLoading={ loading }
 					onSetup={ () => {} }
-					onSetupCallback={ method.onClick }
+					onSetupCallback={ onClick }
 					setupButtonText={
-						method.isEnabled
+						isEnabled
 							? __( 'Finish setup', 'woocommerce-admin' )
 							: __( 'Get started', 'woocommerce-admin' )
 					}
-					notConfiguredPrimary={ true }
 				/>
 			</CardFooter>
 		</Card>
