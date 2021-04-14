@@ -127,13 +127,15 @@ export class TaskDashboard extends Component {
 		const { extension, setup: setupTasks } = allTasks;
 		const { task } = query;
 
-		const extensionTasks = extension.sort( ( a, b ) => {
-			if ( Boolean( a.completed ) === Boolean( b.completed ) ) {
-				return 0;
-			}
+		const extensionTasks =
+			Array.isArray( extension ) &&
+			extension.sort( ( a, b ) => {
+				if ( Boolean( a.completed ) === Boolean( b.completed ) ) {
+					return 0;
+				}
 
-			return a.completed ? 1 : -1;
-		} );
+				return a.completed ? 1 : -1;
+			} );
 
 		return (
 			<>
