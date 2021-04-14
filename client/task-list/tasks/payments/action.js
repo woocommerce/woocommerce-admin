@@ -21,6 +21,8 @@ export const Action = ( {
 } ) => {
 	const [ isBusy, setIsBusy ] = useState( false );
 
+	const classes = 'woocommerce-task-payment__action';
+
 	if ( isLoading ) {
 		return <Spinner />;
 	}
@@ -50,6 +52,7 @@ export const Action = ( {
 		return (
 			<div>
 				<Button
+					className={ classes }
 					isPrimary={ isRecommended }
 					isSecondary={ ! isRecommended }
 					isBusy={ isBusy }
@@ -70,6 +73,7 @@ export const Action = ( {
 		return (
 			<div>
 				<Button
+					className={ classes }
 					isSecondary
 					href={ getAdminLink(
 						'admin.php?page=wc-settings&tab=checkout&section=' +
@@ -83,7 +87,11 @@ export const Action = ( {
 	}
 
 	return (
-		<Button isSecondary onClick={ () => markConfigured( methodKey ) }>
+		<Button
+			className={ classes }
+			isSecondary
+			onClick={ () => markConfigured( methodKey ) }
+		>
 			{ __( 'Enable', 'woocommerce-admin' ) }
 		</Button>
 	);
