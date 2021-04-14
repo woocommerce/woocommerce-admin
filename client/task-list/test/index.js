@@ -8,8 +8,10 @@ import {
 	fireEvent,
 	queryByTestId,
 } from '@testing-library/react';
-import apiFetch from '@wordpress/api-fetch';
 import userEvent from '@testing-library/user-event';
+import apiFetch from '@wordpress/api-fetch';
+import { SlotFillProvider } from '@wordpress/components';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
@@ -17,9 +19,11 @@ import userEvent from '@testing-library/user-event';
 import { TaskDashboard } from '../index.js';
 import { TaskList } from '../list';
 import { getAllTasks } from '../tasks';
+import { DisplayOption } from '../../header/activity-panel/display-options';
 
 jest.mock( '@wordpress/api-fetch' );
 jest.mock( '../tasks' );
+jest.mock( '@woocommerce/tracks', () => ( { recordEvent: jest.fn() } ) );
 
 const TASK_LIST_HEADING = 'Get ready to start selling';
 const EXTENDED_TASK_LIST_HEADING = 'Things to do next';
@@ -591,5 +595,37 @@ describe( 'TaskDashboard and TaskList', () => {
 		expect( visibleTasks[ 1 ] ).toHaveTextContent(
 			'This completed task is an extension'
 		);
+	} );
+
+	it( 'correctly toggles the extension task list', () => {
+		const updateOptions = jest.fn();
+
+		const { getByText } = render(
+			<SlotFillProvider>
+				<DisplayOption.Slot />
+				<TaskDashboard
+					dismissedTasks={ [] }
+					isSetupTaskListHidden={ true }
+					profileItems={ {} }
+					query={ {} }
+					updateOptions={ updateOptions }
+				/>
+			</SlotFillProvider>
+		);
+
+		// Verify the task list is initially shown.
+		expect(
+			getByText( 'Show things to do next', { selector: 'button' } )
+		).toBeChecked();
+		// Toggle it off.
+		fireEvent.click(
+			getByText( 'Show things to do next', { selector: 'button' } )
+		);
+
+		expect( recordEvent ).toHaveBeenCalledWith( 'extended_tasklist_hide' );
+
+		expect( updateOptions ).toHaveBeenCalledWith( {
+			woocommerce_extended_task_list_hidden: 'yes',
+		} );
 	} );
 } );

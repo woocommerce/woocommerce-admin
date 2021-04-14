@@ -2,9 +2,11 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { MenuGroup, MenuItem } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
+import { check } from '@wordpress/icons';
 import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
@@ -21,6 +23,7 @@ import CartModal from '../dashboard/components/cart-modal';
 import { getAllTasks } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
 import TaskList from './list';
+import { DisplayOption } from '../header/activity-panel/display-options';
 
 export class TaskDashboard extends Component {
 	constructor( props ) {
@@ -28,6 +31,10 @@ export class TaskDashboard extends Component {
 		this.state = {
 			isCartModalOpen: false,
 		};
+
+		this.toggleExtensionTaskList = this.toggleExtensionTaskList.bind(
+			this
+		);
 	}
 	componentDidMount() {
 		document.body.classList.add( 'woocommerce-onboarding' );
@@ -72,6 +79,18 @@ export class TaskDashboard extends Component {
 		if ( ! this.isTaskCompleted( taskName ) ) {
 			this.updateTrackStartedCount( taskName, trackStartedCount + 1 );
 		}
+	};
+
+	toggleExtensionTaskList = () => {
+		const { isExtendedTaskListHidden, updateOptions } = this.props;
+		const newValue = ! isExtendedTaskListHidden;
+
+		recordEvent(
+			newValue ? 'extended_tasklist_hide' : 'extended_tasklist_show'
+		);
+		updateOptions( {
+			woocommerce_extended_task_list_hidden: newValue ? 'yes' : 'no',
+		} );
 	};
 
 	getAllTasks() {
@@ -152,6 +171,27 @@ export class TaskDashboard extends Component {
 						trackedCompletedTasks={ trackedCompletedTasks || [] }
 					/>
 				) }
+				{ extensionTasks && (
+					<DisplayOption>
+						<MenuGroup
+							className="woocommerce-layout__homescreen-display-options"
+							label={ __( 'Display', 'woocommerce-admin' ) }
+						>
+							<MenuItem
+								className="woocommerce-layout__homescreen-extension-tasklist-toggle"
+								icon={ ! isExtendedTaskListHidden && check }
+								isSelected={ ! isExtendedTaskListHidden }
+								role="menuitemcheckbox"
+								onClick={ this.toggleExtensionTaskList }
+							>
+								{ __(
+									'Show things to do next',
+									'woocommerce-admin'
+								) }
+							</MenuItem>
+						</MenuGroup>
+					</DisplayOption>
+				) }
 				{ extensionTasks && ! isExtendedTaskListHidden && (
 					<TaskList
 						dismissedTasks={ dismissedTasks || [] }
@@ -225,10 +265,12 @@ export default compose(
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
+		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
 
 		return {
 			createNotice,
 			installAndActivatePlugins,
+			updateOptions,
 		};
 	} )
 )( TaskDashboard );
