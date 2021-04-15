@@ -7,6 +7,7 @@
 
 use Automattic\WooCommerce\Admin\Notes\NotesDisabledException;
 use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\Notes;
 use Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
@@ -29,7 +30,7 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 	 *
 	 * @param callable $callback Tested NoteTraits method.
 	 */
-	public function test_no_exception_is_thrown_if_wc_admin_is_enabled( $callback ) {
+	public function test_no_exception_is_thrown_if_data_store_is_unavailable( $callback ) {
 		$callback();
 	}
 
@@ -39,10 +40,10 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 	 * @param callable $callback Tested NoteTraits method.
 	 */
 	public function test_exception_is_thrown_if_wc_admin_is_disabled( $callback ) {
-		add_filter( 'woocommerce_admin_disabled', '__return_true' );
+		add_filter( 'woocommerce_data_stores', '__return_empty_array' );
 		$this->expectException( NotesDisabledException::class );
 		$callback();
-		remove_filter( 'woocommerce_admin_disabled', '__return_true' );
+		remove_filter( 'woocommerce_data_stores', '__return_empty_array' );
 	}
 
 	/**
@@ -52,9 +53,9 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 	 * @param callable $callback Tested NoteTraits method.
 	 */
 	public function test_no_exception_is_thrown_if_wc_admin_is_disabled( $callback ) {
-		add_filter( 'woocommerce_admin_disabled', '__return_true' );
+		add_filter( 'woocommerce_data_stores', '__return_empty_array' );
 		$callback();
-		remove_filter( 'woocommerce_admin_disabled', '__return_true' );
+		remove_filter( 'woocommerce_data_stores', '__return_empty_array' );
 	}
 
 	/**
@@ -109,7 +110,7 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 
 	/**
 	 * Data provider providing methods that should not throw
-	 * an exception regardless of WC Admin being disabled.
+	 * an exception regardless of the data store being available.
 	 *
 	 * @return array[]
 	 */
