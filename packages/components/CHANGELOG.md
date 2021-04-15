@@ -1,7 +1,7 @@
 # Unreleased
 
 -   Add optional `children` prop to `<SummaryNumber>`.
--   Add `md5` and `dompurify` as dependencies.
+-   Add `@woocommerce/experimental`, `md5` and `dompurify` as dependencies.
 
 # 6.0.0
 
