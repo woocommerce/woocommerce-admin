@@ -40,10 +40,12 @@ class TransientNotices {
 	public static function add( $notice ) {
 		$queue = get_option( self::QUEUE_OPTION, array() );
 
-		$defaults    = array(
-			'status' => 'info',
+		$defaults               = array(
+			'status'  => 'info',
+			'options' => array(),
 		);
-		$notice_data = array_merge( $defaults, $notice );
+		$notice_data            = array_merge( $defaults, $notice );
+		$notice_data['options'] = (object) $notice_data['options'];
 
 		$queue[ $notice['id'] ] = $notice_data;
 		update_option( self::QUEUE_OPTION, $queue );
@@ -64,6 +66,12 @@ class TransientNotices {
 	 * Enqueue notices to be displayed on page load.
 	 */
 	public static function enqueue_notices() {
+		$notices = get_option( self::QUEUE_OPTION );
+
+		if ( empty( $notices ) ) {
+			return;
+		}
+
 		$script_assets_filename = Loader::get_script_asset_filename( 'transient-notices' );
 		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
 
@@ -75,8 +83,7 @@ class TransientNotices {
 			true
 		);
 
-		$notices = get_option( self::QUEUE_OPTION );
-		wp_localize_script( 'transient-notices', 'notices', $notices );
+		wp_localize_script( 'transient-notices', 'notices', array_values( $notices ) );
 		delete_option( self::QUEUE_OPTION );
 	}
 
