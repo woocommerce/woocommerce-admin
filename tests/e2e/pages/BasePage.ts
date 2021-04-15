@@ -128,7 +128,7 @@ export abstract class BasePage {
 		try {
 			await this.page.goto( fullUrl, {
 				waitUntil: 'networkidle0',
-				timeout: 2000,
+				timeout: 10000,
 			} );
 		} catch ( e ) {
 			throw new Error(

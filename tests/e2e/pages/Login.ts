@@ -26,7 +26,7 @@ export class Login extends BasePage {
 			this.page.click( 'input[type=submit]' ),
 			this.page.waitForNavigation( {
 				waitUntil: 'networkidle0',
-				timeout: 2000,
+				timeout: 10000,
 			} ),
 		] );
 	}
@@ -43,7 +43,7 @@ export class Login extends BasePage {
 
 		await page.goto( logoutLinks[ 0 ], {
 			waitUntil: 'networkidle0',
-			timeout: 2000,
+			timeout: 10000,
 		} );
 	}
 }
