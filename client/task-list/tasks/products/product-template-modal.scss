@@ -25,9 +25,6 @@ $border-color: $gray-100;
 				}
 				.components-radio-control__input {
 					margin-right: $gap;
-					width: 20px;
-					height: 20px;
-					margin-right: $gap;
 					&:checked::before {
 						box-sizing: border-box;
 					}
@@ -38,12 +35,14 @@ $border-color: $gray-100;
 			}
 		}
 	}
-	.woocommerce-list__item-label {
+	.woocommerce-product-template-modal__list-title {
 		color: $gray-900;
+		display: block;
 	}
-	.woocommerce-list__item-subtitle {
+	.woocommerce-product-template-modal__list-subtitle {
 		color: $gray-700;
 		margin-top: 4px;
+		display: block;
 	}
 }
 .woocommerce-product-template-modal__actions {

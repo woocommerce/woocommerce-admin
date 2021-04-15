@@ -104,12 +104,12 @@ export default function ProductTemplateModal( { onClose } ) {
 							return {
 								label: (
 									<>
-										<div className="woocommerce-list__item-label">
+										<span className="woocommerce-product-template-modal__list-title">
 											{ item.title }
-										</div>
-										<div className="woocommerce-list__item-subtitle">
+										</span>
+										<span className="woocommerce-product-template-modal__list-subtitle">
 											{ item.subtitle }
-										</div>
+										</span>
 									</>
 								),
 								value: item.key,
