@@ -1,13 +1,9 @@
 /**
  * External dependencies
  */
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	CardFooter,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Card, CardBody, CardHeader, CardFooter } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
+
 import interpolateComponents from 'interpolate-components';
 import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';

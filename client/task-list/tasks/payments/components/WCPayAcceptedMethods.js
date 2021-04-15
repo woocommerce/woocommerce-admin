@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __experimentalText as Text } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 import { __ } from '@wordpress/i18n';
 
 /**

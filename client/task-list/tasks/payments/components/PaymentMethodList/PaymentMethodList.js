@@ -9,8 +9,8 @@ import {
 	CardMedia,
 	CardHeader,
 	CardDivider,
-	__experimentalText as Text,
 } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -71,7 +71,7 @@ export const PaymentMethodList = ( {
 								as="h3"
 								className="woocommerce-task-payment__title"
 							>
-								{ title }{ ' ' }
+								{ title }
 								{ isEnabled && ! isConfigured && (
 									<SetupRequired />
 								) }

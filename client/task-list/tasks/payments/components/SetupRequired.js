@@ -3,7 +3,7 @@
  */
 import NoticeOutlineIcon from 'gridicons/dist/notice-outline';
 import { __ } from '@wordpress/i18n';
-import { __experimentalText as Text } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 
 export const SetupRequired = () => {
 	return (
