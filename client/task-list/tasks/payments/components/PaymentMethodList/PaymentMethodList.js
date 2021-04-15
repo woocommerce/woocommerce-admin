@@ -9,8 +9,8 @@ import {
 	CardMedia,
 	CardHeader,
 	CardDivider,
+	__experimentalText as Text,
 } from '@wordpress/components';
-import { H } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -67,12 +67,15 @@ export const PaymentMethodList = ( {
 						<CardMedia isBorderless>{ before }</CardMedia>
 						<div className="woocommerce-task-payment__description">
 							{ showRecommendedRibbon && <RecommendedRibbon /> }
-							<H className="woocommerce-task-payment__title">
+							<Text
+								as="h3"
+								className="woocommerce-task-payment__title"
+							>
 								{ title }{ ' ' }
 								{ isEnabled && ! isConfigured && (
 									<SetupRequired />
 								) }
-							</H>
+							</Text>
 							<div className="woocommerce-task-payment__content">
 								{ content }
 							</div>
