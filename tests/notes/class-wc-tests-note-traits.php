@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Tests\Notes
  */
 
-use Automattic\WooCommerce\Admin\Notes\NotesDisabledException;
+use Automattic\WooCommerce\Admin\Notes\NotesUnavailableException;
 use Automattic\WooCommerce\Admin\Notes\Note;
 use Automattic\WooCommerce\Admin\Notes\Notes;
 use Automattic\WooCommerce\Admin\Notes\NoteTraits;
@@ -41,7 +41,7 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 	 */
 	public function test_exception_is_thrown_if_wc_admin_is_disabled( $callback ) {
 		add_filter( 'woocommerce_data_stores', '__return_empty_array' );
-		$this->expectException( NotesDisabledException::class );
+		$this->expectException( NotesUnavailableException::class );
 		$callback();
 		remove_filter( 'woocommerce_data_stores', '__return_empty_array' );
 	}

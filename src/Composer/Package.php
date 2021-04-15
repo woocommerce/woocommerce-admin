@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Notes\DeactivatePlugin;
 use Automattic\WooCommerce\Admin\Notes\Notes;
-use Automattic\WooCommerce\Admin\Notes\NotesDisabledException;
+use Automattic\WooCommerce\Admin\Notes\NotesUnavailableException;
 use Automattic\WooCommerce\Admin\FeaturePlugin;
 
 /**
@@ -155,7 +155,7 @@ class Package {
 	private static function is_notes_initialized() {
 		try {
 			Notes::load_data_store();
-		} catch ( NotesDisabledException $e ) {
+		} catch ( NotesUnavailableException $e ) {
 			return false;
 		}
 		return true;

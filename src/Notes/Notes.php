@@ -410,13 +410,13 @@ class Notes {
 	 * This method catches that exception and throws a custom one instead.
 	 *
 	 * @return \WC_Data_Store The "admin-note" data store.
-	 * @throws NotesDisabledException Throws exception if data store loading fails.
+	 * @throws NotesUnavailableException Throws exception if data store loading fails.
 	 */
 	public static function load_data_store() {
 		try {
 			return \WC_Data_Store::load( 'admin-note' );
 		} catch ( \Exception $e ) {
-			throw new NotesDisabledException(
+			throw new NotesUnavailableException(
 				'woocommerce_admin_notes_disabled',
 				__( 'Notes are unavailable because WooCommerce Admin is disabled.', 'woocommerce-admin' )
 			);

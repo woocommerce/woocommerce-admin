@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Tests\Notes
  */
 
-use Automattic\WooCommerce\Admin\Notes\NotesDisabledException;
+use Automattic\WooCommerce\Admin\Notes\NotesUnavailableException;
 use Automattic\WooCommerce\Admin\Notes\Notes;
 
 /**
@@ -27,7 +27,7 @@ class WC_Tests_Notes extends WC_Unit_Test_Case {
 	 */
 	public function test_exception_is_thrown_if_data_store_does_not_exist() {
 		add_filter( 'woocommerce_data_stores', '__return_empty_array' );
-		$this->expectException( NotesDisabledException::class );
+		$this->expectException( NotesUnavailableException::class );
 		Notes::load_data_store();
 		remove_filter( 'woocommerce_data_stores', '__return_empty_array' );
 	}
