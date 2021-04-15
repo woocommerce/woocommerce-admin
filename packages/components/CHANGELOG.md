@@ -1,7 +1,10 @@
 # Unreleased
 
--   Add optional `children` prop to `<SummaryNumber>`.
--   Add `@woocommerce/experimental`, `md5` and `dompurify` as dependencies.
+# 6.1.0
+
+-   Make pagination buttons height and width consistent. #6725
+-   Add optional `children` prop to `<SummaryNumber>`. #6748
+-   Add `@woocommerce/experimental`, `md5` and `dompurify` as dependencies. #6804
 
 # 6.0.0
 
