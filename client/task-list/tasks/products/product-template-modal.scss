@@ -1,7 +1,9 @@
 $border-color: $gray-100;
 
 .woocommerce-product-template-modal {
-	min-width: 565px;
+	@include breakpoint( '>600px' ) {
+		min-width: 565px;
+	}
 
 	.woocommerce-product-template-modal__actions {
 		padding-top: $gap-large;
