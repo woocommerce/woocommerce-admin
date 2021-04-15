@@ -11,15 +11,15 @@ import {
 import interpolateComponents from 'interpolate-components';
 import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
-import NoticeOutlineIcon from 'gridicons/dist/notice-outline';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
-import WCPayAcceptedMethods from '../WCPayAcceptedMethods';
-import WCPayLogo from '../../images/wcpay-logo';
+import { WCPayAcceptedMethods } from '../WCPayAcceptedMethods';
+import { SetupRequired } from '../SetupRequired';
 import { Action } from '../Action';
+import WCPayLogo from '../../images/wcpay-logo';
 import './WCPayCard.scss';
 
 const TosPrompt = () =>
@@ -58,14 +58,7 @@ export const WCPayCard = ( props ) => {
 						{ __( 'Recommended', 'woocommerce-admin' ) }
 					</span>
 				) }
-				{ isEnabled && (
-					<span className="woocommerce-task-payment__setup_required">
-						<NoticeOutlineIcon />
-						<Text variant="small">
-							{ __( 'Setup required', 'woocommerce-admin' ) }
-						</Text>
-					</span>
-				) }
+				{ isEnabled && <SetupRequired /> }
 			</CardHeader>
 			<CardBody>
 				<Text className="woocommerce-task-payment-wcpay__description">

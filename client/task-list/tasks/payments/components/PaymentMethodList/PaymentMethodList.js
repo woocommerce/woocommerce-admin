@@ -18,6 +18,7 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import { Action } from '../Action';
 import { RecommendedRibbon } from '../RecommendedRibbon';
+import { SetupRequired } from '../SetupRequired';
 
 import './PaymentMethodList.scss';
 
@@ -33,6 +34,7 @@ export const PaymentMethodList = ( {
 			const {
 				before,
 				content,
+				isEnabled,
 				isConfigured,
 				key,
 				title,
@@ -66,7 +68,10 @@ export const PaymentMethodList = ( {
 						<div className="woocommerce-task-payment__description">
 							{ showRecommendedRibbon && <RecommendedRibbon /> }
 							<H className="woocommerce-task-payment__title">
-								{ title }
+								{ title }{ ' ' }
+								{ isEnabled && ! isConfigured && (
+									<SetupRequired />
+								) }
 							</H>
 							<div className="woocommerce-task-payment__content">
 								{ content }

@@ -18,7 +18,7 @@ import Discover from '../images/cards/discover.js';
 import JCB from '../images/cards/jcb.js';
 import UnionPay from '../images/cards/unionpay.js';
 
-export default () => (
+export const WCPayAcceptedMethods = () => (
 	<>
 		<Text as="h3" variant="label">
 			{ __( 'Accepted payment methods', 'woocommerce-admin' ) }
