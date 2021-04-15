@@ -18,7 +18,7 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import { WCPayAcceptedMethods } from '../WCPayAcceptedMethods';
 import { SetupRequired } from '../SetupRequired';
-import { Action } from '../Action';
+import { PaymentAction } from '../PaymentAction';
 import WCPayLogo from '../../images/wcpay-logo';
 import './WCPayCard.scss';
 
@@ -85,7 +85,7 @@ export const WCPayCard = ( props ) => {
 				<Text>
 					<TosPrompt />
 				</Text>
-				<Action
+				<PaymentAction
 					methodKey={ methodKey }
 					hasSetup={ !! container }
 					isConfigured={ isConfigured }

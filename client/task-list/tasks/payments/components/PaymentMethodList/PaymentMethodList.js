@@ -16,7 +16,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { Action } from '../Action';
+import { PaymentAction } from '../PaymentAction';
 import { RecommendedRibbon } from '../RecommendedRibbon';
 import { SetupRequired } from '../SetupRequired';
 
@@ -81,7 +81,7 @@ export const PaymentMethodList = ( {
 							</div>
 						</div>
 						<div className="woocommerce-task-payment__footer">
-							<Action
+							<PaymentAction
 								manageUrl={ manageUrl }
 								methodKey={ key }
 								hasSetup={ !! method.container }

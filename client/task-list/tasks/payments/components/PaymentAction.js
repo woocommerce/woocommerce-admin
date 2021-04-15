@@ -7,7 +7,7 @@ import { updateQueryString } from '@woocommerce/navigation';
 import { useState } from '@wordpress/element';
 import { recordEvent } from '@woocommerce/tracks';
 
-export const Action = ( {
+export const PaymentAction = ( {
 	hasSetup = false,
 	isConfigured = false,
 	isEnabled = false,

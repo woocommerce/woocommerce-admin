@@ -20,7 +20,7 @@ import { WCPayCard } from './components/WCPayCard';
 import { PaymentMethodList } from './components/PaymentMethodList';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
-import { Setup } from './components/Setup';
+import { PaymentSetup } from './components/PaymentSetup';
 import { sift } from '../../../utils';
 
 export const setMethodEnabledOption = async (
@@ -195,7 +195,10 @@ export const Payments = ( { query } ) => {
 
 	if ( currentMethod ) {
 		return (
-			<Setup method={ currentMethod } markConfigured={ markConfigured } />
+			<PaymentSetup
+				method={ currentMethod }
+				markConfigured={ markConfigured }
+			/>
 		);
 	}
 
