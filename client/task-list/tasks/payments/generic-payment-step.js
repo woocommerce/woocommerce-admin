@@ -131,8 +131,8 @@ export function GenericPaymentStep( {
 								isPrimary
 								isBusy={ isOptionsRequesting }
 								onClick={ ( event ) => {
-									handleSubmit( event );
 									recordConnectStartEvent( methodConfig.key );
+									handleSubmit( event );
 								} }
 							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }

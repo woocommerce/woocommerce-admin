@@ -113,8 +113,8 @@ class EWay extends Component {
 								isPrimary
 								isBusy={ isOptionsRequesting }
 								onClick={ ( event ) => {
-									handleSubmit( event );
 									recordConnectStartEvent( 'eway' );
+									handleSubmit( event );
 								} }
 							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }

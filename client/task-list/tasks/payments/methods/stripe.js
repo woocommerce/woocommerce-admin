@@ -246,8 +246,8 @@ class Stripe extends Component {
 								isPrimary
 								isBusy={ isOptionsUpdating }
 								onClick={ ( event ) => {
-									handleSubmit( event );
 									recordConnectStartEvent( 'stripe' );
+									handleSubmit( event );
 								} }
 							>
 								{ __( 'Proceed', 'woocommerce-admin' ) }
