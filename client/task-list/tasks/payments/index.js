@@ -199,7 +199,6 @@ export const Payments = ( { query } ) => {
 		);
 	}
 
-	// Group by enabled and configured and the rest
 	const [ enabledCardMethods, additionalCardMethods ] = sift(
 		methods,
 		( method ) => method.isEnabled && method.isConfigured
