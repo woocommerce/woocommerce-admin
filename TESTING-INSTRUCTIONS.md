@@ -11,6 +11,15 @@
 5. Navigate to Homescreen.
 6. Navigate back to previous Analytics Report.
 7. Ensure that the time period is _still_ what you set on step 2.
+### Refactor payments to allow management of methods #6786
+
+1. Do not select "CBD industry" as a store industry during onboarding.
+2. Make various payment methods visible by switching to different countries.
+3. Attempt to set up various payment methods.
+4. Make sure that after setup, a `Manage` link is shown that links to the payment method settings page.
+5. Check that simple methods like, cash delivery or bank transfer initially have an `Enable` option.
+
+### Fix varation bug with Products reports #6647
 
 ### Fix varation bug with Products reports #6647
 
@@ -41,6 +50,18 @@ In case the report shows "no data", please reimport historical data by following
 -   Open your browser console
 -   Choose payment methods
 -   See no error message
+
+### Set up shipping costs task, redirect to shipping settings after completion. #6791
+
+-   Create a new store, and finish the Onboarding flow
+-   Go to **WooCommerce > Home** and select the **Set up shipping costs** task, it should show the standard stepper
+-   Type some number in the 'Shipping cost' input
+-   Click the 'Rest of the world' toggle to toggle it on.
+-   Type some number in the 'Shipping cost' input box under the 'Rest of the world' label
+-   Finish the set up, but don't need to install the shipping label plugin
+-   Once on home screen the **Set up shipping costs** task should show as finished
+-   Click on the task again
+-   It should now redirect to the shipping settings page.
 
 ## 2.2.0
 
