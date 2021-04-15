@@ -199,13 +199,10 @@ export const Payments = ( { query } ) => {
 		);
 	}
 
-	// Group by enabled vs the rest, with exception for WCPay which must be configured as well
+	// Group by enabled and configured and the rest
 	const [ enabledCardMethods, additionalCardMethods ] = sift(
 		methods,
-		( method ) =>
-			method.isEnabled &&
-			( method.key !== 'wcpay' ||
-				( method.key === 'wcpay' && method.isConfigured ) )
+		( method ) => method.isEnabled && method.isConfigured
 	);
 
 	const wcPayIndex = additionalCardMethods.findIndex(

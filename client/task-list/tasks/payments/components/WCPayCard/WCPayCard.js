@@ -101,11 +101,7 @@ export const WCPayCard = ( props ) => {
 					isLoading={ loading }
 					onSetup={ () => {} }
 					onSetupCallback={ onClick }
-					setupButtonText={
-						isEnabled
-							? __( 'Finish setup', 'woocommerce-admin' )
-							: __( 'Get started', 'woocommerce-admin' )
-					}
+					setupButtonText={ __( 'Get started', 'woocommerce-admin' ) }
 				/>
 			</CardFooter>
 		</Card>
