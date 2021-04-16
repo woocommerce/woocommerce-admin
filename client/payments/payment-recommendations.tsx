@@ -29,9 +29,9 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import './payment-recommendations.scss';
 import { getCountryCode } from '../dashboard/utils';
-import { isWCPaySupported } from '../task-list/tasks/payments/wcpay';
 import { getAdminLink } from '../wc-admin-settings';
 import { createNoticesFromResponse } from '../lib/notices';
+import { isWCPaySupported } from '../task-list/tasks/payments/methods/wcpay';
 
 const SEE_MORE_LINK =
 	'https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/?utm_source=payments_recommendations';

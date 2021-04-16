@@ -19,7 +19,7 @@ import {
 import PaymentRecommendations, {
 	getPaymentRecommendationData,
 } from '../payment-recommendations';
-import { isWCPaySupported } from '../../task-list/tasks/payments/wcpay';
+import { isWCPaySupported } from '../../task-list/tasks/payments/methods/wcpay';
 import { getAdminLink } from '../../wc-admin-settings';
 import { createNoticesFromResponse } from '~/lib/notices';
 
