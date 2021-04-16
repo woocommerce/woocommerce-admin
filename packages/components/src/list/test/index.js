@@ -53,12 +53,9 @@ describe( 'List', () => {
 				expect( container ).toHaveTextContent( 'Test' );
 			} );
 
-			it( 'should allow overriding the wrapping element, and passing in arbitrary element props', () => {
+			it( 'should render an anchor by default', () => {
 				const { container } = render(
-					<ExperimentalListItem
-						component="a"
-						href="https://example.com"
-					>
+					<ExperimentalListItem href="https://example.com">
 						<div>Test</div>
 					</ExperimentalListItem>
 				);
@@ -69,24 +66,28 @@ describe( 'List', () => {
 			} );
 		} );
 
-		it( 'defaults to link role if onClick is passed and role is not overridden', () => {
-			const { getByRole } = render(
+		it( 'allows overriding the component type', () => {
+			const { container } = render(
+				<ExperimentalListItem component="div" onClick={ () => {} }>
+					<div>Test</div>
+				</ExperimentalListItem>
+			);
+
+			expect(
+				container.querySelector( 'div.woocommerce-list__item' )
+			).toBeInTheDocument();
+		} );
+
+		it( 'is tab-indexable by default', () => {
+			const { container } = render(
 				<ExperimentalListItem onClick={ () => {} }>
 					<div>Test</div>
 				</ExperimentalListItem>
 			);
 
-			expect( getByRole( 'link' ) ).toBeInTheDocument();
-		} );
-
-		it( 'does not affix a link role to the a component', () => {
-			const { queryByRole } = render(
-				<ExperimentalListItem component="a" onClick={ () => {} }>
-					<div>Test</div>
-				</ExperimentalListItem>
-			);
-
-			expect( queryByRole( 'link' ) ).not.toBeInTheDocument();
+			expect(
+				container.querySelector( "a[tabindex='0']" )
+			).toBeInTheDocument();
 		} );
 	} );
 
