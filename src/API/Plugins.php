@@ -422,21 +422,35 @@ class Plugins extends \WC_REST_Data_Controller {
 	 */
 	public function recommended_payment_plugin( $request ) {
 		// Default to marketing category (if no category set).
-		$all_plugins   = PaymentPlugins::get_instance()->get_recommended_plugins();
-		$valid_plugins = [];
-		$per_page      = $request->get_param( 'per_page' );
-		$locale        = get_locale();
+		$all_plugins        = PaymentPlugins::get_instance()->get_recommended_plugins();
+		$valid_plugins      = [];
+		$per_page           = $request->get_param( 'per_page' );
+		$locale             = get_locale();
+		$suggestion_locales = array(
+			'en_AU',
+			'en_CA',
+			'en_GB',
+			'en_NZ',
+			'en_US',
+			'en_ZA',
+		);
 
 		foreach ( $all_plugins as $plugin ) {
 			if ( ! PluginsHelper::is_plugin_active( $plugin['product'] ) ) {
 				if ( isset( $plugin['locale-data'] ) && isset( $plugin['locale-data'][ $locale ] ) ) {
 					$locale_plugin = array_merge( $plugin, $plugin['locale-data'][ $locale ] );
 					unset( $locale_plugin['locale-data'] );
-					$valid_plugins[] = $locale_plugin;
+					$valid_plugins[]      = $locale_plugin;
+					$suggestion_locales[] = $locale;
 				} else {
 					$valid_plugins[] = $plugin;
 				}
 			}
+		}
+
+		if ( ! in_array( $locale, $suggestion_locales, true ) ) {
+			// If not a supported locale we return an empty array.
+			return rest_ensure_response( array() );
 		}
 
 		return rest_ensure_response( array_slice( $valid_plugins, 0, $per_page ) );

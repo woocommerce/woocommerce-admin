@@ -179,7 +179,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 	 */
 	public function test_get_recommended_payment_plugins_with_locale() {
 		wp_set_current_user( $this->user );
-		add_filter( 'locale', array( $this, 'set_ca_locale' ) );
+		add_filter( 'locale', array( $this, 'set_france_locale' ) );
 		set_transient(
 			\Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT,
 			array(
@@ -187,7 +187,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 					'product'     => 'plugin',
 					'title'       => 'test',
 					'locale-data' => array(
-						'en_CA' => array(
+						'fr_FR' => array(
 							'title' => 'translated title',
 						),
 					),
@@ -204,14 +204,40 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 'translated title', $data[0]['title'] );
 		$this->assertEquals( false, isset( $data[0]['locale-data'] ) );
 		delete_transient( \Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT );
-		remove_filter( 'locale', array( $this, 'set_ca_locale' ) );
+		remove_filter( 'locale', array( $this, 'set_france_locale' ) );
+	}
+
+	/**
+	 * Test that recommended payment plugins with not default supported locale.
+	 */
+	public function test_get_recommended_payment_plugins_with_not_supported_locale() {
+		wp_set_current_user( $this->user );
+		add_filter( 'locale', array( $this, 'set_france_locale' ) );
+		set_transient(
+			\Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT,
+			array(
+				array(
+					'product' => 'plugin',
+					'title'   => 'test',
+				),
+			)
+		);
+
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/recommended-payment-plugins' );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		// Return nothing as default is only english locales.
+		$this->assertEquals( 0, count( $data ) );
+		delete_transient( \Automattic\WooCommerce\Admin\PaymentPlugins::RECOMMENDED_PLUGINS_TRANSIENT );
+		remove_filter( 'locale', array( $this, 'set_france_locale' ) );
 	}
 
 	/**
 	 * @return string locale
 	 */
-	public function set_ca_locale() {
-		return 'en_CA';
+	public function set_france_locale() {
+		return 'fr_FR';
 	}
 
 	/**
