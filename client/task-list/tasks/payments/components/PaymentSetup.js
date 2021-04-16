@@ -14,7 +14,12 @@ import { useSelect } from '@wordpress/data';
  */
 import { createNoticesFromResponse } from '~/lib/notices';
 
-export const PaymentSetup = ( { method, markConfigured, query } ) => {
+export const PaymentSetup = ( {
+	method,
+	markConfigured,
+	query,
+	recordConnectStartEvent,
+} ) => {
 	const { activePlugins } = useSelect( ( select ) => {
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
@@ -73,6 +78,7 @@ export const PaymentSetup = ( { method, markConfigured, query } ) => {
 					query,
 					installStep,
 					markConfigured,
+					recordConnectStartEvent,
 					hasCbdIndustry: method.hasCbdIndustry,
 				} ) }
 			</CardBody>
