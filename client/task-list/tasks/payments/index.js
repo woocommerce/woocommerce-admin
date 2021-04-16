@@ -138,18 +138,6 @@ export const Payments = ( { query } ) => {
 		return method.key;
 	}, [ methods ] );
 
-	// const recommendedMethod = useMemo( () => {
-	// 	const method = methods.find(
-	// 		( m ) =>
-	// 			( m.key === 'wcpay' && m.visible ) ||
-	// 			( m.key === 'mercadopago' && m.visible )
-	// 	);
-	// 	if ( ! method ) {
-	// 		return 'stripe';
-	// 	}
-	// 	return method.key;
-	// }, [ methods ] );
-
 	const markConfigured = async ( methodKey, queryParams = {} ) => {
 		const method = methods.find( ( option ) => option.key === methodKey );
 
@@ -200,10 +188,6 @@ export const Payments = ( { query } ) => {
 		if ( ! method ) {
 			throw `Current method ${ query.method } not found in available methods list`;
 		}
-
-		recordEvent( 'payments_task_stepper_view', {
-			payment_method: method.key,
-		} );
 
 		return method;
 	}, [ query ] );
