@@ -75,21 +75,31 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Update: Adding setup required icon for non-configured payment methods #6811
+- Update: UI updates to Payment Task screen #6766
+- Dev: Add data source filter to remote inbox notification system #6794
 - Fix: Make pagination buttons height and width consistent #6725
 - Tweak: Add settings_section event prop for CES #6762
 - Fix: Retain persisted queries when navigating to Homescreen #6614
 - Update: Update choose niche note cta URL #6733
 - Fix: Update folded header style #6724
+- Tweak: Refactor payments to allow management of methods #6786
 - Fix: Fix unreleated variations showing up in the Products reports #6647
 - Tweak: Add tracking data for the preview site btn #6623
 - Tweak: Update WC Payments copy on the task list #6734
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
+- Dev: Add A/A test #6669
 - Fix: Event tracking for merchant email notes #6616
 - Fix: Check active plugins before getting the PayPal onboarding status #6625
+- Dev: Add support for nonces in note actions #6726
 - Dev: Add support for running php unit tests in PHP 8. #6678
 - Fix: Remove no-reply from inbox notification emails #6644
 - Performance: Avoid updating customer info synchronously from the front end. #6765
 - Fix: Set up shipping costs task, redirect to shipping settings after completion. #6791
+- Add: Optional children prop to SummaryNumber component #6748
+- Fix: Onboarding logic on WooCommerce update to keep task list present. #6803
+- Fix: Load the page controller functions file first to prevent fatal errors when disabling WooCommerce Admin #6710
+- Fix: Pause inbox message "GivingFeedbackNotes" #6802
 - Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
 
 == 2.2.0 3/30/2021 ==

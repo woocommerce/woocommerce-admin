@@ -2,24 +2,22 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import interpolateComponents from 'interpolate-components';
 import {
 	getAdminLink,
 	getSetting,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
-import { Link } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import Bacs from './bacs';
-import BacsLogo from './images/bacs';
-import CodLogo from './images/cod';
-import WCPayLogo from './images/wcpay';
-import RazorpayLogo from './images/razorpay';
-import { MollieLogo } from './images/mollie';
-import { PayUIndiaLogo } from './images/payu-india';
+import BacsLogo from '../images/bacs';
+import CodLogo from '../images/cod';
+import WCPayLogo from '../images/wcpay';
+import RazorpayLogo from '../images/razorpay';
+import { MollieLogo } from '../images/mollie';
+import { PayUIndiaLogo } from '../images/payu-india';
 import Stripe from './stripe';
 import Square from './square';
 import {
@@ -35,9 +33,17 @@ import EWay from './eway';
 import Razorpay from './razorpay';
 import { Mollie } from './mollie';
 import { PayUIndia } from './payu-india';
-import { GenericPaymentStep } from './generic-payment-step';
+import { GenericPaymentStep } from '../generic-payment-step';
 
 const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
+
+const getPaymentsSettingsUrl = ( methodKey ) => {
+	return getAdminLink(
+		'admin.php?page=wc-settings&tab=checkout&section=' + methodKey
+	);
+};
+
+const methodDefaults = { isConfigured: true };
 
 export function getPaymentMethods( {
 	activePlugins,
@@ -98,6 +104,7 @@ export function getPaymentMethods( {
 				options.woocommerce_stripe_settings &&
 				options.woocommerce_stripe_settings.enabled === 'yes',
 			optionName: 'woocommerce_stripe_settings',
+			manageUrl: getPaymentsSettingsUrl( 'stripe' ),
 		},
 		{
 			key: 'paystack',
@@ -149,6 +156,7 @@ export function getPaymentMethods( {
 					},
 				};
 			},
+			manageUrl: getPaymentsSettingsUrl( 'paystack' ),
 		},
 		{
 			key: 'payfast',
@@ -209,6 +217,7 @@ export function getPaymentMethods( {
 					},
 				};
 			},
+			manageUrl: getPaymentsSettingsUrl( 'stripe' ),
 		},
 		{
 			key: 'mercadopago',
@@ -241,6 +250,7 @@ export function getPaymentMethods( {
 				options[ 'woocommerce_woo-mercado-pago-basic_settings' ]
 					.enabled === 'yes',
 			optionName: 'woocommerce_woo-mercado-pago-basic_settings',
+			manageUrl: getPaymentsSettingsUrl( 'woo-mercado-pago-basic' ),
 		},
 		{
 			key: 'paypal',
@@ -266,6 +276,7 @@ export function getPaymentMethods( {
 			loading: activePlugins.includes( PAYPAL_PLUGIN )
 				? loadingPaypalStatus
 				: false,
+			manageUrl: getPaymentsSettingsUrl( 'ppcp-gateway' ),
 		},
 		{
 			key: 'klarna_checkout',
@@ -290,6 +301,7 @@ export function getPaymentMethods( {
 				options.woocommerce_kco_settings &&
 				options.woocommerce_kco_settings.enabled === 'yes',
 			optionName: 'woocommerce_kco_settings',
+			manageUrl: getPaymentsSettingsUrl( 'kco' ),
 		},
 		{
 			key: 'klarna_payments',
@@ -325,6 +337,7 @@ export function getPaymentMethods( {
 				options.woocommerce_klarna_payments_settings &&
 				options.woocommerce_klarna_payments_settings.enabled === 'yes',
 			optionName: 'woocommerce_klarna_payments_settings',
+			manageUrl: getPaymentsSettingsUrl( 'klarna_payments' ),
 		},
 		{
 			key: 'mollie',
@@ -360,6 +373,7 @@ export function getPaymentMethods( {
 				options.woocommerce_mollie_payments_settings &&
 				options.woocommerce_mollie_payments_settings.enabled === 'yes',
 			optionName: 'woocommerce_mollie_payments_settings',
+			manageUrl: getPaymentsSettingsUrl( 'mollie_wc_gateway_creditcard' ),
 		},
 		{
 			key: 'square',
@@ -403,6 +417,7 @@ export function getPaymentMethods( {
 					'yes',
 			optionName: 'woocommerce_square_credit_card_settings',
 			hasCbdIndustry,
+			manageUrl: getPaymentsSettingsUrl( 'square_credit_card' ),
 		},
 		{
 			key: 'eway',
@@ -432,6 +447,7 @@ export function getPaymentMethods( {
 				options.woocommerce_eway_settings &&
 				options.woocommerce_eway_settings.enabled === 'yes',
 			optionName: 'woocommerce_eway_settings',
+			manageUrl: getPaymentsSettingsUrl( 'eway' ),
 		},
 		{
 			key: 'razorpay',
@@ -456,6 +472,7 @@ export function getPaymentMethods( {
 				options.woocommerce_razorpay_settings &&
 				options.woocommerce_razorpay_settings.enabled === 'yes',
 			optionName: 'woocommerce_razorpay_settings',
+			manageUrl: getPaymentsSettingsUrl( 'razorpay' ),
 		},
 		{
 			key: 'payubiz',
@@ -475,6 +492,7 @@ export function getPaymentMethods( {
 			isConfigured: activePlugins.includes( 'payu-india' ),
 			isEnabled: enabledPaymentGateways.includes( 'payubiz' ),
 			optionName: 'woocommerce_payubiz_settings',
+			manageUrl: getPaymentsSettingsUrl( 'payubiz' ),
 		},
 		{
 			key: 'cod',
@@ -489,6 +507,7 @@ export function getPaymentMethods( {
 				options.woocommerce_cod_settings &&
 				options.woocommerce_cod_settings.enabled === 'yes',
 			optionName: 'woocommerce_cod_settings',
+			manageUrl: getPaymentsSettingsUrl( 'cod' ),
 		},
 		{
 			key: 'bacs',
@@ -507,87 +526,20 @@ export function getPaymentMethods( {
 				options.woocommerce_bacs_settings &&
 				options.woocommerce_bacs_settings.enabled === 'yes',
 			optionName: 'woocommerce_bacs_settings',
+			manageUrl: getPaymentsSettingsUrl( 'bacs' ),
 		},
 	];
 
 	if ( window.wcAdminFeatures.wcpay ) {
-		const tosLink = (
-			<Link
-				href={ 'https://wordpress.com/tos/' }
-				target="_blank"
-				type="external"
-			/>
-		);
-
-		const tosPrompt = interpolateComponents( {
-			mixedString: __(
-				'By clicking "Set up," you agree to the {{link}}Terms of Service{{/link}}',
-				'woocommerce-admin'
-			),
-			components: {
-				link: tosLink,
-			},
-		} );
-
-		const wcPayDocLink = (
-			<Link
-				href={
-					'https://docs.woocommerce.com/document/payments/testing/dev-mode/'
-				}
-				target="_blank"
-				type="external"
-			/>
-		);
-
-		const wcPayDocPrompt = interpolateComponents( {
-			mixedString: __(
-				'Setting up a store for a client? {{link}}Start here{{/link}}',
-				'woocommerce-admin'
-			),
-			components: {
-				link: wcPayDocLink,
-			},
-		} );
-
-		const wcPaySettingsLink = (
-			<Link
-				href={ getAdminLink(
-					'admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments'
-				) }
-				type="wp-admin"
-			>
-				{ __( 'Settings', 'woocommerce-admin' ) }
-			</Link>
-		);
-		const wcPayFeesLink = (
-			<Link
-				href={
-					'https://docs.woocommerce.com/document/payments/faq/fees/'
-				}
-				target="_blank"
-				type="external"
-			/>
-		);
-
-		const wooPaymentsCopy = interpolateComponents( {
-			mixedString: __(
-				'Accept credit card payments the easy way! {{feesLink}}No setup fees. No monthly fees.{{/feesLink}}',
-				'woocommerce-admin'
-			),
-			components: {
-				feesLink: wcPayFeesLink,
-			},
-		} );
-
 		methods.unshift( {
 			key: 'wcpay',
 			title: __( 'WooCommerce Payments', 'woocommerce-admin' ),
 			content: (
 				<>
-					{ wooPaymentsCopy }
-					{ wcPayIsConnected && wcPaySettingsLink }
-					{ ! wcPayIsConnected && <p>{ tosPrompt }</p> }
-					{ profileItems.setup_client && <p>{ wcPayDocPrompt }</p> }
+					{ __(
+						'Manage transactions without leaving your WordPress Dashboard. Only with WooCommerce Payments.',
+						'woocommerce-admin'
+					) }
 					<WCPayUsageModal />
 				</>
 			),
@@ -608,8 +560,11 @@ export function getPaymentMethods( {
 				options.woocommerce_woocommerce_payments_settings.enabled ===
 					'yes',
 			optionName: 'woocommerce_woocommerce_payments_settings',
+			manageUrl: getPaymentsSettingsUrl( 'woocommerce_payments' ),
 		} );
 	}
 
-	return methods.filter( ( method ) => method.visible );
+	return methods
+		.filter( ( method ) => method.visible )
+		.map( ( method ) => ( { ...methodDefaults, ...method } ) );
 }
