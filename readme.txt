@@ -75,7 +75,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
-- Fix: Load the page controller functions file first to prevent fatal errors when disabling WooCommerce Admin #6710
+- Update: Adding setup required icon for non-configured payment methods #6811
+- Update: UI updates to Payment Task screen #6766
 - Dev: Add data source filter to remote inbox notification system #6794
 - Fix: Make pagination buttons height and width consistent #6725
 - Tweak: Add settings_section event prop for CES #6762
@@ -96,6 +97,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Set up shipping costs task, redirect to shipping settings after completion. #6791
 - Add: Optional children prop to SummaryNumber component #6748
 - Fix: Onboarding logic on WooCommerce update to keep task list present. #6803
+- Fix: Load the page controller functions file first to prevent fatal errors when disabling WooCommerce Admin #6710
 
 == 2.2.0 3/30/2021 ==
 
