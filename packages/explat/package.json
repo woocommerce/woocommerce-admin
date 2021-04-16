@@ -32,6 +32,5 @@
 	},
 	"devDependencies": {
 		"@types/cookie": "^0.4.0"
-	},
-	"private": true
+	}
 }
