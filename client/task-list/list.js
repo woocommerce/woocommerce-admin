@@ -24,6 +24,7 @@ import { Text } from '@woocommerce/experimental';
  */
 import { recordTaskViewEvent } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
+import { TaskItem } from './task-item';
 import sanitizeHTML from '../lib/sanitize-html';
 
 export class TaskList extends Component {
@@ -321,28 +322,6 @@ export class TaskList extends Component {
 				</div>
 			);
 
-			task.title = (
-				<Text
-					as="div"
-					variant={ task.completed ? 'body.small' : 'button' }
-				>
-					{ task.title }
-					{ task.additionalInfo && (
-						<div
-							className="woocommerce-task__additional-info"
-							dangerouslySetInnerHTML={ sanitizeHTML(
-								task.additionalInfo
-							) }
-						></div>
-					) }
-					{ task.time && ! task.completed && (
-						<div className="woocommerce-task__estimated-time">
-							{ task.time }
-						</div>
-					) }
-				</Text>
-			);
-
 			if ( ! task.completed && task.isDismissable ) {
 				task.after = (
 					<Button
@@ -405,7 +384,16 @@ export class TaskList extends Component {
 									{ this.renderMenu() }
 								</CardHeader>
 								<CardBody>
-									<List items={ listTasks } />
+									<List>
+										{ listTasks.map( ( task ) => (
+											<TaskItem
+												key={ task.key }
+												title={ task.title }
+												completed={ task.completed }
+												onClick={ task.onClick }
+											/>
+										) ) }
+									</List>
 								</CardBody>
 							</Card>
 						</>
