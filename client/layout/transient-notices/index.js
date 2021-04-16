@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { applyFilters } from '@wordpress/hooks';
 import classnames from 'classnames';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import PropTypes from 'prop-types';
@@ -14,6 +15,7 @@ import SnackbarList from './snackbar/list';
 import './style.scss';
 
 const QUEUE_OPTION = 'woocommerce_admin_transient_notices_queue';
+const QUEUED_NOTICE_FILTER = 'woocommerce_admin_queued_notice_filter';
 
 function TransientNotices( props ) {
 	const [ queueNotices, setQueuedNotices ] = useState(
@@ -44,7 +46,10 @@ function TransientNotices( props ) {
 	};
 
 	useEffect( () => {
-		queueNotices.forEach( ( notice ) => {
+		queueNotices.forEach( ( queuedNotice ) => {
+			const notice = applyFilters( QUEUED_NOTICE_FILTER, {
+				queuedNotice,
+			} );
 			createNotice( notice.status, notice.content, {
 				onDismiss: () => {
 					dequeueNotice( notice.id );
