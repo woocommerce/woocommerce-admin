@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { CSSTransition } from 'react-transition-group';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -16,7 +17,6 @@ type CSSTransitionProps = {
 };
 
 type ListItemProps = {
-	onClick?: () => void;
 	// control whether to display padding on list item or not.
 	disableGutters: boolean;
 	className?: string;
@@ -25,14 +25,13 @@ type ListItemProps = {
 	// By default a div is rendered, but if you want the list item to behave as a different tag you can override it here.
 	component?: React.ElementType;
 } & CSSTransitionProps &
-	React.HTMLAttributes< HTMLElement >;
+	React.AllHTMLAttributes< HTMLElement >;
 
 export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	children,
 	disableGutters = false,
 	className = '',
-	role,
-	component,
+	component = 'a',
 	tabIndex,
 	// extract out the props that must be passed down from TransitionGroup
 	exit,
@@ -44,10 +43,16 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	// Everything else you might pass into an HTML element
 	...otherProps
 } ): JSX.Element => {
-	const hasAction = !! otherProps.onClick;
-	const tagRole = role || ( component !== 'a' && hasAction && 'link' ) || '';
-	const TagName = component || 'div';
-	const tagTabIndex = tabIndex || ( hasAction ? '0' : null );
+	// for styling purposes only
+	const hasAction = !! otherProps?.onClick;
+
+	const Tag = component;
+	const tagTabIndex = tabIndex || '0';
+
+	const tagClasses = classnames( {
+		'has-action': hasAction,
+		'has-gutters': ! disableGutters,
+	} );
 
 	return (
 		<CSSTransition
@@ -58,19 +63,16 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 			enter={ enter }
 			onExited={ onExited }
 		>
-			<TagName
+			<Tag
 				tabIndex={ tagTabIndex }
-				role={ tagRole }
 				{ ...otherProps }
-				className={ `woocommerce-list__item ${
-					otherProps.onClick ? 'has-action' : ''
-				} ${ className } ${ disableGutters ? '' : 'has-gutters' }` }
+				className={ `woocommerce-list__item ${ tagClasses } ${ className }` }
 				onKeyDown={ ( e: React.KeyboardEvent< HTMLElement > ) =>
 					hasAction ? handleKeyDown( e, otherProps.onClick ) : null
 				}
 			>
 				{ children }
-			</TagName>
+			</Tag>
 		</CSSTransition>
 	);
 };
