@@ -2,8 +2,10 @@
  * External dependencies
  */
 import classnames from 'classnames';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -11,9 +13,17 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import SnackbarList from './snackbar/list';
 import './style.scss';
 
+const QUEUE_OPTION = 'woocommerce_admin_transient_notices_queue';
+
 function TransientNotices( props ) {
-	const { removeNotice: onRemove } = useDispatch( 'core/notices' );
+	const [ queueNotices, setQueuedNotices ] = useState(
+		window.wcQueuedNotices || []
+	);
+	const { createNotice, removeNotice: onRemove } = useDispatch(
+		'core/notices'
+	);
 	const { removeNotice: onRemove2 } = useDispatch( 'core/notices2' );
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const noticeData = useSelect( ( select ) => {
 		// NOTE: This uses core/notices2, if this file is copied back upstream
 		// to Gutenberg this needs to be changed back to just core/notices.
@@ -22,6 +32,27 @@ function TransientNotices( props ) {
 
 		return { notices, notices2 };
 	} );
+
+	const dequeueNotice = ( id ) => {
+		const remainingNotices = queueNotices.filter(
+			( notice ) => notice.id !== id
+		);
+		setQueuedNotices( remainingNotices );
+		updateOptions( {
+			[ QUEUE_OPTION ]: remainingNotices,
+		} );
+	};
+
+	useEffect( () => {
+		queueNotices.forEach( ( notice ) => {
+			createNotice( notice.status, notice.content, {
+				onDismiss: () => {
+					dequeueNotice( notice.id );
+				},
+				...( notice.options || {} ),
+			} );
+		} );
+	}, [] );
 
 	/**
 	 * Combines the two notices in the component vs in the useSelect, as we don't want to
