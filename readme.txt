@@ -75,6 +75,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: Use the store timezone to make time data requests #6632
+- Add: Add plugin installer to allow installation of plugins via URL #6805
 - Update: Adding setup required icon for non-configured payment methods #6811
 - Update: UI updates to Payment Task screen #6766
 - Dev: Add data source filter to remote inbox notification system #6794
@@ -101,6 +103,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Load the page controller functions file first to prevent fatal errors when disabling WooCommerce Admin #6710
 - Fix: Pause inbox message "GivingFeedbackNotes" #6802
 - Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
+- Fix: Missed DB version number updates causing unnecessary upgrades. #6818
+- Fix: Parsing bad JSON string data from user WooCommerce meta. #6819
 - Dev: Add event recording to start of gateway connections #6801
 
 == 2.2.0 3/30/2021 ==
