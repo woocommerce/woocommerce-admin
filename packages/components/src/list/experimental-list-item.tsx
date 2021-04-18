@@ -18,13 +18,13 @@ type CSSTransitionProps = {
 
 type ListItemProps = {
 	// control whether to display padding on list item or not.
-	disableGutters: boolean;
+	disableGutters?: boolean;
 	className?: string;
 	// By default the List is a `nav`, which treats the list item as role `link` if `onClick` is passed. To override this pass a different role.
 	role?: 'menuitem' | 'link' | 'button';
 	// By default a div is rendered, but if you want the list item to behave as a different tag you can override it here.
 	component?: React.ElementType;
-} & CSSTransitionProps &
+} & Partial< CSSTransitionProps > &
 	React.AllHTMLAttributes< HTMLElement >;
 
 export const ExperimentalListItem: React.FC< ListItemProps > = ( {
