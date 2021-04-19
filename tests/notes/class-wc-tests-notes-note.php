@@ -35,13 +35,15 @@ class WC_Tests_Notes_Note extends WC_Unit_Test_Case {
 	 * when it gets saved multiple times.
 	 */
 	public function test_note_correctly_sets_created_date_when_saved() {
+		update_option( 'timezone_string', 'America/Los_Angeles' );
 		// Create a new note.
 		$note = new Note();
 		$note->set_title( 'title2' );
 		$note->save();
 
 		// Load it via the data store.
-		$note                         = new Note( $note->get_id() );
+		$note = new Note( $note->get_id() );
+		$note->set_content( 'test' );
 		$date_created_from_first_save = $note->get_date_created()->format( 'Y-m-d H:i:s' );
 		// Save it again.
 		$note->save();
