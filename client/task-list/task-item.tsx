@@ -6,6 +6,8 @@ import { Icon, check } from '@wordpress/icons';
 import { Button } from '@wordpress/components';
 import { ListItem } from '@woocommerce/components';
 import { Text } from '@woocommerce/experimental';
+import { CSSTransition } from 'react-transition-group';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -21,6 +23,8 @@ type ListItemProps = {
 	onDismiss?: () => void;
 	additionalInfo?: string;
 	time: string;
+	content?: string;
+	expanded?: boolean;
 };
 
 export const TaskItem: React.FC< ListItemProps > = ( {
@@ -31,11 +35,16 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 	onClick,
 	additionalInfo,
 	time,
+	content,
+	expanded = false,
 } ) => {
+	const className = classnames( 'woocommerce-task-list__item', {
+		'is-complete': completed,
+	} );
 	return (
 		<ListItem
 			disableGutters={ false }
-			className="woocommerce-task-list__item"
+			className={ className }
 			onClick={ onClick }
 		>
 			<div className="woocommerce-task-list__item-before">
@@ -58,13 +67,22 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 								) }
 							></div>
 						) }
+						<CSSTransition
+							timeout={ 500 }
+							in={ expanded && content ? true : false }
+							unmountOnExit
+							classNames="woocommerce-task-list__item-content"
+						>
+							<div className="woocommerce-task-list__item-content">
+								{ content }
+							</div>
+						</CSSTransition>
 						{ time && ! completed && (
 							<div className="woocommerce-task__estimated-time">
 								{ time }
 							</div>
 						) }
 					</Text>
-					{ title }
 				</span>
 				<span className="woocommerce-task-list__item-content"></span>
 			</div>
