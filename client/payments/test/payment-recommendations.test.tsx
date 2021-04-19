@@ -54,7 +54,7 @@ jest.mock( '@woocommerce/components', () => ( {
 		</div>
 	),
 } ) );
-jest.mock( '../../task-list/tasks/payments/wcpay', () => ( {
+jest.mock( '../../task-list/tasks/payments/methods/wcpay', () => ( {
 	isWCPaySupported: jest.fn(),
 } ) );
 

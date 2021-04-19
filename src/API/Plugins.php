@@ -422,9 +422,10 @@ class Plugins extends \WC_REST_Data_Controller {
 	 */
 	public function recommended_payment_plugins( $request ) {
 		// Default to marketing category (if no category set).
-		$all_plugins        = PaymentPlugins::get_instance()->get_recommended_plugins();
-		$valid_plugins      = [];
-		$per_page           = $request->get_param( 'per_page' );
+		$all_plugins   = PaymentPlugins::get_instance()->get_recommended_plugins();
+		$valid_plugins = [];
+		$per_page      = $request->get_param( 'per_page' );
+		// We currently only support English suggestions, unless otherwise provided in locale-data.
 		$locale             = get_locale();
 		$suggestion_locales = array(
 			'en_AU',
