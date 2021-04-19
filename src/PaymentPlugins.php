@@ -45,13 +45,13 @@ class PaymentPlugins {
 		if ( ! self::allow_recommendations() ) {
 			return array();
 		}
-		$plugins = get_transient( self::RECOMMENDED_PLUGINS_TRANSIENT );
+		$plugins_data = get_transient( self::RECOMMENDED_PLUGINS_TRANSIENT );
 
-		if ( false === $plugins ) {
+		if ( false === $plugins_data ) {
 			include_once ABSPATH . '/wp-admin/includes/plugin-install.php';
 
 			$url     = 'https://woocommerce.com/wp-json/wccom/marketplace-suggestions/1.0/payment-suggestions.json';
-			$request = wp_remote_get( $url );
+			$request = wp_safe_remote_get( $url );
 			$plugins = [];
 
 			if ( ! is_wp_error( $request ) && 200 === $request['response']['code'] ) {
@@ -75,16 +75,21 @@ class PaymentPlugins {
 				}
 			}
 
+			$plugins_data = array(
+				'recommendations' => $plugins,
+				'updated'         => time(),
+			);
+
 			set_transient(
 				self::RECOMMENDED_PLUGINS_TRANSIENT,
-				$plugins,
+				$plugins_data,
 				// Expire transient in 15 minutes if remote get failed.
 				// Cache an empty result to avoid repeated failed requests.
 				empty( $plugins ) ? 900 : 3 * DAY_IN_SECONDS
 			);
 		}
 
-		return array_values( $plugins );
+		return array_values( $plugins_data['recommendations'] );
 	}
 
 	/**

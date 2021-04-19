@@ -96,7 +96,7 @@ class Plugins extends \WC_REST_Data_Controller {
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'recommended_payment_plugin' ),
+					'callback'            => array( $this, 'recommended_payment_plugins' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -420,7 +420,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
-	public function recommended_payment_plugin( $request ) {
+	public function recommended_payment_plugins( $request ) {
 		// Default to marketing category (if no category set).
 		$all_plugins        = PaymentPlugins::get_instance()->get_recommended_plugins();
 		$valid_plugins      = [];
