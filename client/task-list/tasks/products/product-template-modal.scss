@@ -27,6 +27,7 @@ $border-color: $gray-100;
 				}
 				.components-radio-control__input {
 					margin-right: $gap;
+					flex: none;
 					&:checked::before {
 						box-sizing: border-box;
 					}
