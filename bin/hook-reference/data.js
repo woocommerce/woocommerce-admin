@@ -53,12 +53,14 @@ const makeDocObjects = async ( path ) => {
 	const hooks = await prepareHooks( path );
 	return hooks.map( ( { description, tags, sourceFile } ) => {
 		const example = tags.find( ( tag ) => tag.tag === 'example' );
-		const hook = tags.find( ( tag ) => dataTypes.includes( tag.tag ) );
+		const tag = tags.find( ( tag ) => dataTypes.includes( tag.tag ) );
+
 		return {
 			description,
 			sourceFile,
-			name: hook ? hook.name : '',
+			name: tag ? tag.name : '',
 			example: example ? example.description : '',
+			type: tag.tag,
 		};
 	} );
 };
