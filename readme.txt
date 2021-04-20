@@ -269,6 +269,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: UI updates to Payment Task screen #6766
 - Update: Update payment gateway suggestions semantics to be more consistent #7130
 - Update: Adding setup required icon for non-configured payment methods #6811
+- Update: Add SlotFill support in hook reference script #6833
 
 == 2.2.6 5/7/2021 ==
 
