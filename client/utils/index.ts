@@ -1,18 +1,24 @@
+type UrlParams = Record< string, string | number > & {
+	page?: string;
+	path?: string;
+	post_type?: string;
+};
+
 /**
  * Get the URL params.
  *
  * @param {string} locationSearch - Querystring part of a URL, including the question mark (?).
  * @return {Object} - URL params.
  */
-export function getUrlParams( locationSearch ) {
+export function getUrlParams( locationSearch: string ): UrlParams {
 	if ( locationSearch ) {
 		return locationSearch
 			.substr( 1 )
 			.split( '&' )
-			.reduce( ( params, query ) => {
+			.reduce( ( params: UrlParams, query: string ) => {
 				const chunks = query.split( '=' );
 				const key = chunks[ 0 ];
-				let value = decodeURIComponent( chunks[ 1 ] );
+				let value: string | number = decodeURIComponent( chunks[ 1 ] );
 				value = isNaN( Number( value ) ) ? value : Number( value );
 				return ( params[ key ] = value ), params;
 			}, {} );
@@ -25,7 +31,7 @@ export function getUrlParams( locationSearch ) {
  *
  * @return {string} - Screen name.
  */
-export function getScreenName() {
+export function getScreenName(): string {
 	let screenName = '';
 	const { page, path, post_type: postType } = getUrlParams(
 		window.location.search
@@ -49,9 +55,12 @@ export function getScreenName() {
  *
  * @return {Array} - Array of two arrays, first including truthy values, and second including falsy.
  */
-export const sift = ( arr, partitioner ) =>
+export const sift = < T >(
+	arr: T[],
+	partitioner: ( curr: T ) => boolean
+): Array< T[] > =>
 	arr.reduce(
-		( all, curr ) => {
+		( all: Array< T[] >, curr: T ) => {
 			all[ !! partitioner( curr ) ? 0 : 1 ].push( curr );
 			return all;
 		},
