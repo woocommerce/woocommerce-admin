@@ -48,7 +48,12 @@ type OptionsSelector = WPDataSelectors & {
 	getOption: ( option: string ) => boolean | string;
 };
 
-export function getPaymentRecommendationData( select: WCDataSelector ) {
+export function getPaymentRecommendationData(
+	select: WCDataSelector
+): {
+	displayable: boolean;
+	recommendedPlugins?: Plugin[];
+} {
 	const { getOption, isResolving: isResolvingOption } = select(
 		OPTIONS_STORE_NAME
 	) as OptionsSelector;
@@ -72,24 +77,24 @@ export function getPaymentRecommendationData( select: WCDataSelector ) {
 			SHOW_MARKETPLACE_SUGGESTION_OPTION,
 		] );
 
-	const canNotDisplay =
-		isRequestingOptions ||
-		hidden ||
-		marketplaceSuggestions !== 'yes' ||
-		! countrySupported;
+	const displayable =
+		! isRequestingOptions &&
+		hidden !== 'yes' &&
+		marketplaceSuggestions === 'yes' &&
+		countrySupported;
 	let plugins;
-	if ( ! canNotDisplay ) {
+	if ( displayable ) {
+		// don't get recommended plugins until it is displayable.
 		plugins = getRecommendedPlugins( 'payments' );
 	}
 
-	// don't get recommended plugins until it is displayable.
 	return {
-		displayable: ! canNotDisplay,
+		displayable,
 		recommendedPlugins: plugins,
 	};
 }
 
-const PaymentRecommendations = () => {
+const PaymentRecommendations: React.FC = () => {
 	const [ installingPlugin, setInstallingPlugin ] = useState< string | null >(
 		null
 	);
@@ -116,7 +121,7 @@ const PaymentRecommendations = () => {
 	const dismissPaymentRecommendations = () => {
 		recordEvent( 'settings_payments_recommendations_dismiss', {} );
 		updateOptions( {
-			[ DISMISS_OPTION ]: true,
+			[ DISMISS_OPTION ]: 'yes',
 		} );
 	};
 
@@ -147,7 +152,11 @@ const PaymentRecommendations = () => {
 				title: (
 					<>
 						{ plugin.title }
-						{ plugin.recommended && <Pill>Recommended</Pill> }
+						{ plugin.recommended && (
+							<Pill>
+								{ __( 'Recommended', 'woocommerce-admin' ) }
+							</Pill>
+						) }
 					</>
 				),
 				content: decodeEntities( plugin.copy ),
@@ -156,7 +165,7 @@ const PaymentRecommendations = () => {
 						isSecondary
 						onClick={ () => setupPlugin( plugin ) }
 						isBusy={ installingPlugin === plugin.product }
-						disabled={ installingPlugin === plugin.product }
+						disabled={ !! installingPlugin }
 					>
 						{ plugin[ 'button-text' ] }
 					</Button>
@@ -183,7 +192,7 @@ const PaymentRecommendations = () => {
 						variant="caption"
 					>
 						{ __(
-							'We recommend adding one of the following payment extensions to your store',
+							'We recommend adding one of the following payment extensions to your store. The extension will be installed and activated for you when you click "Get started"',
 							'woocommerce-admin'
 						) }
 					</Text>
@@ -207,7 +216,7 @@ const PaymentRecommendations = () => {
 				<List items={ pluginsList } />
 			</CardBody>
 			<CardFooter>
-				<Button href={ SEE_MORE_LINK } isSecondary>
+				<Button href={ SEE_MORE_LINK } isTertiary>
 					{ __( 'See more options', 'woocommerce-admin' ) }
 				</Button>
 			</CardFooter>

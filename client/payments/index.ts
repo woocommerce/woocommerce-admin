@@ -1,1 +1,1 @@
-export * from './payment-recommendations-slot';
+export * from './payment-recommendations-wrapper';

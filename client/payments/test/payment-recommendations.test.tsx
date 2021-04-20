@@ -187,7 +187,8 @@ describe( 'Payment recommendations', () => {
 					country: 'US',
 					plugins: [ plugin ],
 					optionValues: {
-						woocommerce_setting_payments_recommendations_hidden: true,
+						woocommerce_setting_payments_recommendations_hidden:
+							'yes',
 					},
 				} )
 			);
@@ -203,7 +204,8 @@ describe( 'Payment recommendations', () => {
 					country: 'US',
 					plugins: [ plugin ],
 					optionValues: {
-						woocommerce_setting_payments_recommendations_hidden: false,
+						woocommerce_setting_payments_recommendations_hidden:
+							'no',
 						woocommerce_show_marketplace_suggestions: 'yes',
 					},
 				} )
