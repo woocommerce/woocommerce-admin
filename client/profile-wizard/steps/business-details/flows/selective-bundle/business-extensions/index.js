@@ -2,15 +2,13 @@
  * External dependencies
  */
 import { FormToggle } from '@wordpress/components';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { H } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import { extensionBenefits } from '../data/extension-benefits';
-
-const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
+import { imageUrl } from '../../../../../../utils';
 
 export const BusinessExtensions = ( {} ) => {
 	return (
@@ -21,10 +19,7 @@ export const BusinessExtensions = ( {} ) => {
 					key={ benefit.title }
 				>
 					<div className="woocommerce-profile-wizard__business-extension">
-						<img
-							src={ `${ wcAdminAssetUrl }${ benefit.icon }` }
-							alt=""
-						/>
+						<img src={ imageUrl( benefit.icon ) } alt="" />
 					</div>
 					<div className="woocommerce-profile-wizard__benefit-content">
 						<H className="woocommerce-profile-wizard__benefit-title">

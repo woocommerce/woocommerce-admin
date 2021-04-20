@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import {
 	getAdminLink,
-	getSetting,
 	WC_ASSET_URL as wcAssetUrl,
 } from '@woocommerce/wc-admin-settings';
 
@@ -34,8 +33,7 @@ import Razorpay from './razorpay';
 import { Mollie } from './mollie';
 import { PayUIndia } from './payu-india';
 import { GenericPaymentStep } from '../generic-payment-step';
-
-const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
+import { imageUrl } from '../../../../utils';
 
 const getPaymentsSettingsUrl = ( methodKey ) => {
 	return getAdminLink(
@@ -119,7 +117,7 @@ export function getPaymentMethods( {
 			),
 			before: (
 				<img
-					src={ wcAdminAssetUrl + 'onboarding/paystack.png' }
+					src={ imageUrl( 'onboarding/paystack.png' ) }
 					alt="Paystack logo"
 				/>
 			),
@@ -234,10 +232,7 @@ export function getPaymentMethods( {
 				</>
 			),
 			before: (
-				<img
-					src={ wcAdminAssetUrl + 'onboarding/mercadopago.png' }
-					alt=""
-				/>
+				<img src={ imageUrl( 'onboarding/mercadopago.png' ) } alt="" />
 			),
 			visible: [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
 				countryCode

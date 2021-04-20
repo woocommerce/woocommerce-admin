@@ -35,8 +35,7 @@ import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { platformOptions } from '../../data/platform-options';
 import { getRevenueOptions } from '../../data/revenue-options';
 import { getProductCountOptions } from '../../data/product-options';
-
-const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
+import { imageUrl } from '../../../../../utils';
 
 class BusinessDetails extends Component {
 	constructor( props ) {
@@ -333,10 +332,7 @@ class BusinessDetails extends Component {
 						key={ benefit.title }
 					>
 						<div className="woocommerce-profile-wizard__business-extension">
-							<img
-								src={ wcAdminAssetUrl + benefit.icon }
-								alt=""
-							/>
+							<img src={ imageUrl( benefit.icon ) } alt="" />
 						</div>
 						<div className="woocommerce-profile-wizard__benefit-content">
 							<H className="woocommerce-profile-wizard__benefit-title">

@@ -1,3 +1,9 @@
+/**
+ * External dependencies
+ */
+import { getSetting } from '@woocommerce/wc-admin-settings';
+const wcAdminAssetUrl: string = getSetting( 'wcAdminAssetUrl', '' );
+
 type UrlParams = Record< string, string | number > & {
 	page?: string;
 	path?: string;
@@ -66,3 +72,13 @@ export const sift = < T >(
 		},
 		[ [], [] ]
 	);
+
+/**
+ * Get an absolute URL to an image by path.
+ *
+ * @param {string} path - Image path/filename.
+ * @return {string} - Image URL.
+ */
+export function imageUrl( path: string ): string {
+	return wcAdminAssetUrl + path;
+}
