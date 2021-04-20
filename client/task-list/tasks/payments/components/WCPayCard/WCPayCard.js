@@ -15,7 +15,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { WCPayAcceptedMethods } from '../WCPayAcceptedMethods';
 import { SetupRequired } from '../SetupRequired';
 import { PaymentAction } from '../PaymentAction';
-import WCPayLogo from '../../images/wcpay-logo';
+import { imageUrl } from '../../../../../utils';
 import './WCPayCard.scss';
 
 const TosPrompt = () =>
@@ -48,7 +48,10 @@ export const WCPayCard = ( props ) => {
 	return (
 		<Card className="woocommerce-task-payment-wcpay">
 			<CardHeader as="h2">
-				<WCPayLogo />
+				<img
+					src={ imageUrl( 'onboarding/payments/wcpay-logo.svg' ) }
+					alt=""
+				/>
 				{ ! isEnabled && (
 					<span className="woocommerce-task-payment__recommended-pill">
 						{ __( 'Recommended', 'woocommerce-admin' ) }

@@ -11,12 +11,6 @@ import {
  * Internal dependencies
  */
 import Bacs from './bacs';
-import BacsLogo from '../images/bacs';
-import CodLogo from '../images/cod';
-import WCPayLogo from '../images/wcpay';
-import RazorpayLogo from '../images/razorpay';
-import { MollieLogo } from '../images/mollie';
-import { PayUIndiaLogo } from '../images/payu-india';
 import Stripe from './stripe';
 import Square from './square';
 import {
@@ -117,7 +111,7 @@ export function getPaymentMethods( {
 			),
 			before: (
 				<img
-					src={ imageUrl( 'onboarding/paystack.png' ) }
+					src={ imageUrl( 'onboarding/payments/paystack.png' ) }
 					alt="Paystack logo"
 				/>
 			),
@@ -232,7 +226,10 @@ export function getPaymentMethods( {
 				</>
 			),
 			before: (
-				<img src={ imageUrl( 'onboarding/mercadopago.png' ) } alt="" />
+				<img
+					src={ imageUrl( 'onboarding/payments/mercadopago.png' ) }
+					alt=""
+				/>
 			),
 			visible: [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
 				countryCode
@@ -337,7 +334,12 @@ export function getPaymentMethods( {
 		{
 			key: 'mollie',
 			title: __( 'Mollie Payments for WooCommerce', 'woocommerce-admin' ),
-			before: <MollieLogo />,
+			before: (
+				<img
+					src={ imageUrl( 'onboarding/payments/mollie.svg' ) }
+					alt=""
+				/>
+			),
 			plugins: [ 'mollie-payments-for-woocommerce' ],
 			isConfigured: activePlugins.includes(
 				'mollie-payments-for-woocommerce'
@@ -455,7 +457,12 @@ export function getPaymentMethods( {
 					) }
 				</>
 			),
-			before: <RazorpayLogo />,
+			before: (
+				<img
+					src={ imageUrl( 'onboarding/payments/razorpay.svg' ) }
+					alt=""
+				/>
+			),
 			visible: countryCode === 'IN' && ! hasCbdIndustry,
 			plugins: [ 'woo-razorpay' ],
 			container: <Razorpay />,
@@ -480,7 +487,12 @@ export function getPaymentMethods( {
 					) }
 				</>
 			),
-			before: <PayUIndiaLogo />,
+			before: (
+				<img
+					src={ imageUrl( 'onboarding/payments/payu-india.svg' ) }
+					alt=""
+				/>
+			),
 			visible: countryCode === 'IN' && ! hasCbdIndustry,
 			plugins: [ 'payu-india' ],
 			container: <PayUIndia />,
@@ -496,7 +508,9 @@ export function getPaymentMethods( {
 				'Take payments in cash upon delivery.',
 				'woocommerce-admin'
 			),
-			before: <CodLogo />,
+			before: (
+				<img src={ imageUrl( 'onboarding/payments/cod.svg' ) } alt="" />
+			),
 			visible: ! hasCbdIndustry,
 			isEnabled:
 				options.woocommerce_cod_settings &&
@@ -511,7 +525,12 @@ export function getPaymentMethods( {
 				'Take payments via bank transfer.',
 				'woocommerce-admin'
 			),
-			before: <BacsLogo />,
+			before: (
+				<img
+					src={ imageUrl( 'onboarding/payments/bacs.svg' ) }
+					alt=""
+				/>
+			),
 			visible: ! hasCbdIndustry,
 			container: <Bacs />,
 			isConfigured:
@@ -538,7 +557,12 @@ export function getPaymentMethods( {
 					<WCPayUsageModal />
 				</>
 			),
-			before: <WCPayLogo />,
+			before: (
+				<img
+					src={ imageUrl( 'onboarding/payments/wcpay.svg' ) }
+					alt=""
+				/>
+			),
 			onClick: ( resolve, reject ) => {
 				return installActivateAndConnectWcpay(
 					reject,
