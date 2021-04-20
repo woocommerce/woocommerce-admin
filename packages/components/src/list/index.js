@@ -21,49 +21,41 @@ function List( props ) {
 	const { className, items, children } = props;
 	const listClassName = classnames( 'woocommerce-list', className );
 
-	if ( props.items ) {
-		deprecated( 'List.items prop', {
-			hint: 'Use `children` combined with `<ListItem>` instead.',
-		} );
+	deprecated( 'Passing items to List props.items', {
+		hint: 'See ExperimentalList / ExperimentalListItem for the new API.',
+	} );
 
-		return (
-			<TransitionGroup
-				component="ul"
-				className={ listClassName }
-				role="menu"
-			>
-				{ items.map( ( item, index ) => {
-					const { className: itemClasses, href, key, onClick } = item;
-					const hasAction = typeof onClick === 'function' || href;
-					const itemClassName = classnames(
-						'woocommerce-list__item',
-						itemClasses,
-						{
-							'has-action': hasAction,
-						}
-					);
+	return (
+		<TransitionGroup component="ul" className={ listClassName } role="menu">
+			{ items.map( ( item, index ) => {
+				const { className: itemClasses, href, key, onClick } = item;
+				const hasAction = typeof onClick === 'function' || href;
+				const itemClassName = classnames(
+					'woocommerce-list__item',
+					itemClasses,
+					{
+						'has-action': hasAction,
+					}
+				);
 
-					return (
-						<CSSTransition
-							key={ key || index }
-							timeout={ 500 }
-							classNames="woocommerce-list__item"
-						>
-							<li className={ itemClassName }>
-								{ children ? (
-									children( item, index )
-								) : (
-									<LegacyListItem item={ item } />
-								) }
-							</li>
-						</CSSTransition>
-					);
-				} ) }
-			</TransitionGroup>
-		);
-	}
-
-	return <ExperimentalList { ...props }>{ children }</ExperimentalList>;
+				return (
+					<CSSTransition
+						key={ key || index }
+						timeout={ 500 }
+						classNames="woocommerce-list__item"
+					>
+						<li className={ itemClassName }>
+							{ children ? (
+								children( item, index )
+							) : (
+								<LegacyListItem item={ item } />
+							) }
+						</li>
+					</CSSTransition>
+				);
+			} ) }
+		</TransitionGroup>
+	);
 }
 
 List.propTypes = {
@@ -121,4 +113,5 @@ List.propTypes = {
 
 export default List;
 
-export { ExperimentalListItem as ListItem } from './experimental-list-item';
+export { ExperimentalListItem } from './experimental-list-item';
+export { ExperimentalList } from './experimental-list';

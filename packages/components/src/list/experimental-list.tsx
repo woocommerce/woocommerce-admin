@@ -10,7 +10,7 @@ type ListProps = {
 
 export const ExperimentalList: React.FC< ListProps > = ( {
 	children,
-	component = 'nav',
+	component = 'ul',
 	// Allow passing any other property overrides that are legal on an HTML element
 	...otherProps
 } ) => {
