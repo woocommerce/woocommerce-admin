@@ -17,6 +17,16 @@ async function getFilePaths( dir ) {
 	return files.reduce( ( a, f ) => a.concat( f ), [] );
 }
 
+async function getAllFilePaths( paths ) {
+	const allFiles = await Promise.all(
+		paths.map( async ( path ) => {
+			return await getFilePaths( path );
+		} )
+	);
+
+	return allFiles.reduce( ( a, f ) => a.concat( f ), [] );
+}
+
 const writeJSONFile = async ( data ) => {
 	const fileName = 'bin/hook-reference/data.json';
 	const stringifiedData = JSON.stringify( data, null, 4 );
@@ -33,7 +43,7 @@ const writeJSONFile = async ( data ) => {
 console.log( chalk.green( 'Preparing Hook Reference data file' ) );
 console.log( '\n' );
 
-getFilePaths( 'client' )
+getAllFilePaths( [ 'client', 'packages/navigation/src' ] )
 	.then( ( paths ) => createData( paths ) )
 	.then( ( data ) => writeJSONFile( data ) )
 	.catch( ( e ) => console.error( e ) );

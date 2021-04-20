@@ -9,7 +9,7 @@ module.exports = {
 		'@wordpress/valid-sprintf': 'warn',
 		'jsdoc/check-tag-names': [
 			'error',
-			{ definedTags: [ 'jest-environment', 'hook' ] },
+			{ definedTags: [ 'jest-environment', 'hook', 'slotFill' ] },
 		],
 		'import/no-extraneous-dependencies': 'warn',
 		'import/no-unresolved': 'warn',
