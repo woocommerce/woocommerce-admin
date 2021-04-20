@@ -192,7 +192,7 @@ const PaymentRecommendations: React.FC = () => {
 						variant="caption"
 					>
 						{ __(
-							'We recommend adding one of the following payment extensions to your store. The extension will be installed and activated for you when you click "Get started"',
+							'We recommend adding one of the following payment extensions to your store. The extension will be installed and activated for you when you click "Get started".',
 							'woocommerce-admin'
 						) }
 					</Text>

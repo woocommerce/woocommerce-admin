@@ -35,6 +35,13 @@
 		padding: 2px 8px;
 	}
 
+	@media (max-width: #{ ($break-mobile) }) {
+		.woocommerce-pill {
+			margin-top: 4px;
+			margin-bottom: 4px;
+		}
+	}
+
 	.components-card__footer {
 		padding: $gap $gap-large;
 	}
@@ -48,6 +55,15 @@
 	.woocommerce-list__item-enter-active {
 		opacity: 1;
 		transition: opacity 200ms;
+	}
+
+	.woocommerce-list__item-after .components-button {
+		margin-left: $gap-small;
+	}
+
+	.woocommerce-list__item-text,
+	.woocommerce-recommended-payments__header-heading {
+		max-width: 749px;
 	}
 }
 
