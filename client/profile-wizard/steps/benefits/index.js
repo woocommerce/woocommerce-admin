@@ -21,7 +21,7 @@ import { Text } from '@woocommerce/experimental';
  */
 import { Benefits } from './benefits';
 import { createNoticesFromResponse } from '../../../lib/notices';
-import Logo from './logo';
+import { imageUrl } from '../../../utils';
 
 export const BenefitsLayout = ( { goToNextStep } ) => {
 	const {
@@ -159,7 +159,10 @@ export const BenefitsLayout = ( { goToNextStep } ) => {
 	return (
 		<Card className="woocommerce-profile-wizard__benefits-card">
 			<CardBody justify="center">
-				<Logo />
+				<img
+					src={ imageUrl( 'onboarding/jetpack/logo.svg' ) }
+					alt={ __( 'WooCommerce + Jetpack', 'woocommerce-admin' ) }
+				/>
 				<div className="woocommerce-profile-wizard__step-header">
 					<Text variant="title.small" as="h2">
 						{ sprintf(

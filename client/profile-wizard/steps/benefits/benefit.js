@@ -6,7 +6,7 @@ import { H } from '@woocommerce/components';
 export const Benefit = ( { description, icon, title } ) => {
 	return (
 		<div className="woocommerce-profile-wizard__benefit-card" key={ title }>
-			{ icon }
+			<img src={ icon } alt="" />
 			<div className="woocommerce-profile-wizard__benefit-card-content">
 				<H className="woocommerce-profile-wizard__benefit-card-title">
 					{ title }

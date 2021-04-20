@@ -1,3 +1,4 @@
+// This needs to remain an inline SVG due to the use of a CSS class.
 export const AppIllustration = () => {
 	return (
 		<svg

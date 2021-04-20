@@ -7,10 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Benefit } from './benefit';
-import ManagementIcon from './images/management';
-import SalesTaxIcon from './images/sales_tax';
-import ShippingLabels from './images/shipping_labels';
-import SpeedIcon from './images/speed';
+import { imageUrl } from '../../../utils';
 
 export const Benefits = ( { isJetpackSetup = false, isWcsSetup = false } ) => {
 	return (
@@ -21,7 +18,7 @@ export const Benefits = ( { isJetpackSetup = false, isWcsSetup = false } ) => {
 						'Store management on the go',
 						'woocommerce-admin'
 					) }
-					icon={ <ManagementIcon /> }
+					icon={ imageUrl( 'onboarding/jetpack/management.svg' ) }
 					description={ __(
 						'Your store in your pocket. Manage orders, receive sales notifications, and more. Only with a Jetpack connection.',
 						'woocommerce-admin'
@@ -31,7 +28,7 @@ export const Benefits = ( { isJetpackSetup = false, isWcsSetup = false } ) => {
 			{ ( ! isWcsSetup || ! isJetpackSetup ) && (
 				<Benefit
 					title={ __( 'Automated sales taxes', 'woocommerce-admin' ) }
-					icon={ <SalesTaxIcon /> }
+					icon={ imageUrl( 'onboarding/jetpack/sales-tax.svg' ) }
 					description={ __(
 						'Ensure that the correct rate of tax is charged on all of your orders automatically, and print shipping labels at home.',
 						'woocommerce-admin'
@@ -44,7 +41,7 @@ export const Benefits = ( { isJetpackSetup = false, isWcsSetup = false } ) => {
 						'Improved speed & security',
 						'woocommerce-admin'
 					) }
-					icon={ <SpeedIcon /> }
+					icon={ imageUrl( 'onboarding/jetpack/speed.svg' ) }
 					description={ __(
 						'Automatically block brute force attacks and speed up your store using our powerful, global server network to cache images.',
 						'woocommerce-admin'
@@ -57,7 +54,9 @@ export const Benefits = ( { isJetpackSetup = false, isWcsSetup = false } ) => {
 						'Print shipping labels at home',
 						'woocommerce-admin'
 					) }
-					icon={ <ShippingLabels /> }
+					icon={ imageUrl(
+						'onboarding/jetpack/shipping-labels.svg'
+					) }
 					description={ __(
 						'Save time at the post office by printing shipping labels for your orders at home.',
 						'woocommerce-admin'
