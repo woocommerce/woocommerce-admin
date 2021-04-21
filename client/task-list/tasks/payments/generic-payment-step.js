@@ -11,9 +11,10 @@ import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 export function GenericPaymentStep( {
 	installStep,
 	markConfigured,
-	methodConfig,
+	method,
 	recordConnectStartEvent,
 } ) {
+	const { api_details_url: apiDetailsUrl, fields, key, title } = method;
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -24,8 +25,8 @@ export function GenericPaymentStep( {
 	} );
 
 	const getInitialConfigValues = () => {
-		if ( methodConfig && methodConfig.fields ) {
-			return methodConfig.fields.reduce( ( data, field ) => {
+		if ( fields ) {
+			return fields.reduce( ( data, field ) => {
 				return {
 					...data,
 					[ field.name ]: '',
@@ -35,17 +36,17 @@ export function GenericPaymentStep( {
 	};
 
 	const validate = ( values ) => {
-		if ( methodConfig && methodConfig.fields ) {
-			return methodConfig.fields.reduce( ( errors, field ) => {
+		if ( fields ) {
+			return fields.reduce( ( errors, field ) => {
 				if ( ! values[ field.name ] ) {
 					// Matches any word that is capitalized aside from abrevitions like ID.
-					const title = field.title.replace(
+					const label = field.label.replace(
 						/([A-Z][a-z]+)/,
 						( val ) => val.toLowerCase()
 					);
 					return {
 						...errors,
-						[ field.name ]: __( 'Please enter your ' ) + title,
+						[ field.name ]: __( 'Please enter your ' ) + label,
 					};
 				}
 				return errors;
@@ -57,9 +58,11 @@ export function GenericPaymentStep( {
 	const updateSettings = async ( values ) => {
 		// Because the GenericPaymentStep extension only works with the South African Rand
 		// currency, force the store to use it while setting the GenericPaymentStep settings
-		const options = methodConfig.getOptions
-			? methodConfig.getOptions( values )
-			: null;
+		// @todo These should be dynamically updated.
+		const options = false;
+		// const options = methodConfig.getOptions
+		// 	? methodConfig.getOptions( values )
+		// 	: null;
 		if ( ! options ) {
 			return;
 		}
@@ -68,11 +71,10 @@ export function GenericPaymentStep( {
 		} );
 
 		if ( update.success ) {
-			markConfigured( methodConfig.key );
+			markConfigured( key );
 			createNotice(
 				'success',
-				methodConfig.title +
-					__( ' connected successfully', 'woocommerce-admin' )
+				title + __( ' connected successfully', 'woocommerce-admin' )
 			);
 		} else {
 			createNotice(
@@ -94,14 +96,14 @@ export function GenericPaymentStep( {
 			components: {
 				link: (
 					<Link
-						href={ methodConfig.apiDetailsLink }
+						href={ apiDetailsUrl }
 						target="_blank"
 						type="external"
 					>
 						{ sprintf(
 							__( '%(title)s account', 'woocommerce-admin' ),
 							{
-								title: methodConfig.title,
+								title,
 							}
 						) }
 					</Link>
@@ -118,10 +120,10 @@ export function GenericPaymentStep( {
 				{ ( { getInputProps, handleSubmit } ) => {
 					return (
 						<>
-							{ ( methodConfig.fields || [] ).map( ( field ) => (
+							{ ( fields || [] ).map( ( field ) => (
 								<TextControl
 									key={ field.name }
-									label={ field.title }
+									label={ field.label }
 									required
 									{ ...getInputProps( field.name ) }
 								/>
@@ -131,7 +133,7 @@ export function GenericPaymentStep( {
 								isPrimary
 								isBusy={ isOptionsRequesting }
 								onClick={ ( event ) => {
-									recordConnectStartEvent( methodConfig.key );
+									recordConnectStartEvent( key );
 									handleSubmit( event );
 								} }
 							>
@@ -161,7 +163,7 @@ export function GenericPaymentStep( {
 							'woocommerce-admin'
 						),
 						{
-							title: methodConfig.title,
+							title,
 						}
 					),
 					content: renderConnectStep(),
