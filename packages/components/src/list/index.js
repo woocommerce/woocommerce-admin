@@ -10,7 +10,6 @@ import deprecated from '@wordpress/deprecated';
  * Internal dependencies
  */
 import LegacyListItem from './list-item';
-import { ExperimentalList } from './experimental-list';
 
 /**
  * List component to display a list of items.
@@ -21,8 +20,9 @@ function List( props ) {
 	const { className, items, children } = props;
 	const listClassName = classnames( 'woocommerce-list', className );
 
-	deprecated( 'Passing items to List props.items', {
-		hint: 'See ExperimentalList / ExperimentalListItem for the new API.',
+	deprecated( 'List with items prop is deprecated', {
+		hint:
+			'See ExperimentalList / ExperimentalListItem for the new API that will replace this component in future versions.',
 	} );
 
 	return (
