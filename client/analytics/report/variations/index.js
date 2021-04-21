@@ -42,7 +42,7 @@ const VariationsReport = ( props ) => {
 	} = props;
 
 	if ( isError ) {
-		return <ReportError isError />;
+		return <ReportError />;
 	}
 
 	const chartQuery = {
