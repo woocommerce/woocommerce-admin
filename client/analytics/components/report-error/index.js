@@ -41,8 +41,4 @@ ReportError.propTypes = {
 	className: PropTypes.string,
 };
 
-ReportError.defaultProps = {
-	className: '',
-};
-
 export default ReportError;
