@@ -2,129 +2,44 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
-import {
-	ONBOARDING_STORE_NAME,
-	OPTIONS_STORE_NAME,
-	PLUGINS_STORE_NAME,
-	SETTINGS_STORE_NAME,
-} from '@woocommerce/data';
+import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import { WCPayCard } from './components/WCPayCard';
 import { PaymentMethodList } from './components/PaymentMethodList';
-import { getCountryCode } from '../../../dashboard/utils';
-import { getPaymentMethods } from './methods';
 import { PaymentSetup } from './components/PaymentSetup';
 import { sift } from '../../../utils';
 
-export const setMethodEnabledOption = async (
-	optionName,
-	value,
-	{ clearTaskStatusCache, updateOptions, options }
-) => {
-	const methodOptions = options[ optionName ];
-
-	// Don't update the option if it already has the same value.
-	if ( methodOptions.enabled !== value ) {
-		await updateOptions( {
-			[ optionName ]: {
-				...methodOptions,
-				enabled: value,
-			},
-		} );
-
-		clearTaskStatusCache();
-	}
-};
-
 export const Payments = ( { query } ) => {
-	const { createNotice } = useDispatch( 'core/notices' );
-	const {
-		installAndActivatePlugins,
-		invalidateResolutionForStoreSelector: invalidatePluginStoreSelector,
-	} = useDispatch( PLUGINS_STORE_NAME );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
-	const {
-		invalidateResolution,
-		invalidateResolutionForStoreSelector,
-	} = useDispatch( ONBOARDING_STORE_NAME );
-
-	const { methods, options } = useSelect( ( select ) => {
-		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
-		const { getOption } = select( OPTIONS_STORE_NAME );
-		const {
-			getActivePlugins,
-			isJetpackConnected,
-			getPaypalOnboardingStatus,
-			hasFinishedResolution,
-		} = select( PLUGINS_STORE_NAME );
-		const { getSettings } = select( SETTINGS_STORE_NAME );
-		const { general: generalSettings = {} } = getSettings( 'general' );
-		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
-
-		const activePlugins = getActivePlugins();
-		const onboardingStatus = getTasksStatus();
-		const profileItems = getProfileItems();
-
-		const optionNames = [
-			'woocommerce_woocommerce_payments_settings',
-			'woocommerce_stripe_settings',
-			'woocommerce-ppcp-settings',
-			'woocommerce_ppcp-gateway_settings',
-			'woocommerce_payfast_settings',
-			'woocommerce_square_credit_card_settings',
-			'woocommerce_klarna_payments_settings',
-			'woocommerce_kco_settings',
-			'wc_square_refresh_tokens',
-			'woocommerce_cod_settings',
-			'woocommerce_bacs_settings',
-			'woocommerce_bacs_accounts',
-			'woocommerce_eway_settings',
-			'woocommerce_razorpay_settings',
-			'woocommerce_mollie_payments_settings',
-			'woocommerce_payubiz_settings',
-			'woocommerce_paystack_settings',
-			'woocommerce_woo-mercado-pago-basic_settings',
-		];
-
-		const retrievedOptions = optionNames.reduce( ( result, name ) => {
-			result[ name ] = getOption( name );
-			return result;
-		}, {} );
-		const countryCode = getCountryCode(
-			generalSettings.woocommerce_default_country
-		);
-
-		const paypalOnboardingStatus = activePlugins.includes(
-			'woocommerce-paypal-payments'
-		)
-			? getPaypalOnboardingStatus()
-			: null;
-
+	const { getOption } = useSelect( ( select ) => {
 		return {
-			methods: getPaymentMethods( {
-				activePlugins,
-				countryCode,
-				createNotice,
-				installAndActivatePlugins,
-				isJetpackConnected: isJetpackConnected(),
-				onboardingStatus,
-				options: retrievedOptions,
-				profileItems,
-				paypalOnboardingStatus,
-				loadingPaypalStatus:
-					! hasFinishedResolution( 'getPaypalOnboardingStatus' ) &&
-					! paypalOnboardingStatus,
-			} ),
-			options: retrievedOptions,
+			getOption: select( OPTIONS_STORE_NAME ).getOption,
 		};
 	} );
+
+	const [ methods, setMethods ] = useState( [] );
+	const [ isFetching, setIsFetching ] = useState( true );
+
+	useEffect( () => {
+		apiFetch( {
+			path: '/wc-admin/onboarding/payments',
+		} )
+			.then( ( results ) => {
+				setMethods( results );
+				setIsFetching( false );
+			} )
+			.catch( () => {
+				setIsFetching( false );
+			} );
+	}, [] );
 
 	const recommendedMethod = useMemo( () => {
 		const method = methods.find(
@@ -138,6 +53,26 @@ export const Payments = ( { query } ) => {
 		return method.key;
 	}, [ methods ] );
 
+	const enableMethod = ( optionName ) => {
+		if ( ! optionName ) {
+			return;
+		}
+
+		const currentValue = getOption( optionName );
+
+		if ( currentValue === 'yes' ) {
+			return;
+		}
+
+		// @tood This could be moved to a data store and/or REST API endpoint.
+		updateOptions( {
+			[ optionName ]: {
+				...currentValue,
+				enabled: 'yes',
+			},
+		} );
+	};
+
 	const markConfigured = async ( methodKey, queryParams = {} ) => {
 		const method = methods.find( ( option ) => option.key === methodKey );
 
@@ -150,18 +85,7 @@ export const Payments = ( { query } ) => {
 			[ methodKey ]: true,
 		} );
 
-		const clearTaskStatusCache = () => {
-			invalidateResolution( 'getProfileItems', [] );
-			invalidateResolution( 'getTasksStatus', [] );
-			invalidateResolutionForStoreSelector( 'getTasksStatus' );
-			invalidatePluginStoreSelector( 'getPaypalOnboardingStatus' );
-		};
-
-		await setMethodEnabledOption( method.optionName, 'yes', {
-			clearTaskStatusCache,
-			updateOptions,
-			options,
-		} );
+		enableMethod( method.optionName );
 
 		recordEvent( 'tasklist_payment_connect_method', {
 			payment_method: methodKey,
@@ -179,7 +103,7 @@ export const Payments = ( { query } ) => {
 	};
 
 	const currentMethod = useMemo( () => {
-		if ( ! query.method ) {
+		if ( ! query.method || isFetching ) {
 			return null;
 		}
 
@@ -190,7 +114,7 @@ export const Payments = ( { query } ) => {
 		}
 
 		return method;
-	}, [ query ] );
+	}, [ isFetching, query ] );
 
 	const [ enabledMethods, setEnabledMethods ] = useState(
 		methods.reduce( ( acc, method ) => {

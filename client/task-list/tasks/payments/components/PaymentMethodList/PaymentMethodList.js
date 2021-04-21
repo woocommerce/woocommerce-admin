@@ -32,18 +32,19 @@ export const PaymentMethodList = ( {
 		<CardHeader as="h2">{ heading }</CardHeader>
 		{ methods.map( ( method, index ) => {
 			const {
-				before,
+				image,
 				content,
-				isEnabled,
-				isConfigured,
+				fields,
+				is_enabled: isEnabled,
+				is_configured: isConfigured,
 				key,
 				title,
-				visible,
+				is_visible: isVisible,
 				loading,
-				manageUrl,
+				manage_url: manageUrl,
 			} = method;
 
-			if ( ! visible ) {
+			if ( ! isVisible ) {
 				return null;
 			}
 
@@ -64,7 +65,9 @@ export const PaymentMethodList = ( {
 						style={ { paddingLeft: 0, marginBottom: 0 } }
 						className={ classes }
 					>
-						<CardMedia isBorderless>{ before }</CardMedia>
+						<CardMedia isBorderless>
+							<img src={ image } alt={ title } />
+						</CardMedia>
 						<div className="woocommerce-task-payment__description">
 							{ showRecommendedRibbon && <RecommendedRibbon /> }
 							<Text
@@ -84,7 +87,7 @@ export const PaymentMethodList = ( {
 							<PaymentAction
 								manageUrl={ manageUrl }
 								methodKey={ key }
-								hasSetup={ !! method.container }
+								hasSetup={ !! fields.length }
 								isConfigured={ isConfigured }
 								isEnabled={ method.isEnabled }
 								isRecommended={ isRecommended }
