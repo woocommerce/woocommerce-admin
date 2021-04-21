@@ -7,6 +7,8 @@ namespace Automattic\WooCommerce\Admin\Features\RemotePaymentMethods;
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
+
 /**
  * Remote Payment Methods engine.
  * This goes through the specs and gets eligible payment methods.
@@ -36,12 +38,63 @@ class Init {
 		$specs = get_option( self::SPECS_OPTION_NAME );
 
 		// Fetch specs if they don't yet exist.
-		if ( false === $specs || 0 === count( $specs ) ) {
+		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
 			// We are running too early, need to poll data sources first.
 			$specs = DataSourcePoller::read_specs_from_data_sources();
+			$specs = self::localize( $specs );
 			update_option( self::SPECS_OPTION_NAME, $specs );
 		}
 
 		return $specs;
+	}
+
+	/**
+	 * Localize the provided method.
+	 *
+	 * @param array $specs The specs to localize.
+	 * @return array Localized specs.
+	 */
+	public static function localize( $specs ) {
+		$localized_specs = array();
+
+		foreach ( $specs as $spec ) {
+			if ( ! isset( $spec->locales ) ) {
+				continue;
+			}
+
+			$locale = SpecRunner::get_locale( $spec->locales );
+
+			// Skip specs where no matching locale is found.
+			if ( ! $locale ) {
+				continue;
+			}
+
+			$data = (object) array_merge( (array) $locale, (array) $spec );
+			unset( $data->locales );
+
+			$data->fields = array();
+
+			// Loop over and localize fields.
+			foreach ( $spec->fields as $field ) {
+				if ( ! isset( $field->locales ) ) {
+					continue;
+				}
+
+				$locale = SpecRunner::get_locale( $field->locales );
+
+				if ( ! $locale ) {
+					continue;
+				}
+
+				$field_data = (object) array_merge( (array) $field, (array) $locale );
+				unset( $field_data->locale );
+				unset( $field_data->locales );
+				$data->fields[] = $field_data;
+			}
+
+			$localized_specs[] = $data;
+		}
+
+		return $localized_specs;
 	}
 }
