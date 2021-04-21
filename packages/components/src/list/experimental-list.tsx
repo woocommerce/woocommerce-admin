@@ -4,13 +4,20 @@
 import { Children, cloneElement, isValidElement } from '@wordpress/element';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
+/**
+ * Internal dependencies
+ */
+import type { ListAnimation } from './experimental-list-item';
+
 type ListProps = {
 	component?: string;
+	animation?: ListAnimation;
 } & React.HTMLAttributes< HTMLElement >;
 
 export const ExperimentalList: React.FC< ListProps > = ( {
 	children,
 	component = 'ul',
+	animation = 'none',
 	// Allow passing any other property overrides that are legal on an HTML element
 	...otherProps
 } ) => {
@@ -31,6 +38,8 @@ export const ExperimentalList: React.FC< ListProps > = ( {
 							exit,
 							...remainingProps
 						} = child.props;
+						const animationProp =
+							remainingProps.animation || animation;
 						return (
 							<CSSTransition
 								timeout={ 500 }
@@ -39,7 +48,10 @@ export const ExperimentalList: React.FC< ListProps > = ( {
 								enter={ enter }
 								exit={ exit }
 							>
-								{ cloneElement( child, { ...remainingProps } ) }
+								{ cloneElement( child, {
+									animation: animationProp,
+									...remainingProps,
+								} ) }
 							</CSSTransition>
 						);
 					}

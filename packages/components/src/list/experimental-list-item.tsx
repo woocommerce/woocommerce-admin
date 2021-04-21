@@ -19,15 +19,19 @@ type CSSTransitionProps = {
 type ListItemProps = {
 	// control whether to display padding on list item or not.
 	disableGutters?: boolean;
+	animation?: ListAnimation;
 	className?: string;
 	// By default a div is rendered, but if you want the list item to behave as a different tag you can override it here.
 	component?: React.ElementType;
 } & Partial< CSSTransitionProps > &
 	React.AllHTMLAttributes< HTMLElement >;
 
+export type ListAnimation = 'slide-right' | 'none';
+
 export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	children,
 	disableGutters = false,
+	animation = 'none',
 	className = '',
 	component = 'li',
 	tabIndex = '0',
@@ -49,12 +53,13 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	const tagClasses = classnames( {
 		'has-action': hasAction,
 		'has-gutters': ! disableGutters,
+		'transitions-disabled': animation === 'none',
 	} );
 
 	return (
 		<CSSTransition
 			timeout={ 500 }
-			classNames={ `woocommerce-list__item` }
+			classNames="woocommerce-list__item"
 			in={ transitionIn }
 			exit={ exit }
 			enter={ enter }
