@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { List, EllipsisMenu, Badge } from '@woocommerce/components';
+import { ExperimentalList, EllipsisMenu, Badge } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -257,7 +257,7 @@ export const TaskList = ( {
 						{ renderMenu() }
 					</CardHeader>
 					<CardBody>
-						<List>
+						<ExperimentalList>
 							{ listTasks.map( ( task ) => (
 								<TaskItem
 									key={ task.key }
@@ -270,7 +270,7 @@ export const TaskList = ( {
 									time={ task.time }
 								/>
 							) ) }
-						</List>
+						</ExperimentalList>
 					</CardBody>
 				</Card>
 			</div>

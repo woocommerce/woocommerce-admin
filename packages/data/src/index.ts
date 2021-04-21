@@ -95,12 +95,6 @@ export type WCDataStoreName =
 	| typeof REPORTS_STORE_NAME
 	| typeof ITEMS_STORE_NAME;
 
-type PluginSelectors = WPDataSelectors & {
-	getActivePlugins: () => string[];
-	getInstalledPlugins: () => string[];
-	isJetpackConnected: () => boolean;
-};
-
 // As we add types to all the package selectors we can fill out these unknown types with real ones. See one
 // of the already typed selectors for an example of how you can do this.
 export type WCSelectorType< T > = T extends typeof REVIEWS_STORE_NAME

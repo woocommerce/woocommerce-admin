@@ -129,7 +129,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		}
 	};
 
-	toggleExtensionTaskList = () => {
+	const toggleExtensionTaskList = () => {
 		const newValue = ! isExtendedTaskListHidden;
 
 		recordEvent(

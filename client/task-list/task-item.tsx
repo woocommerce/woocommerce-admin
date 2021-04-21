@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Icon, check } from '@wordpress/icons';
 import { Button } from '@wordpress/components';
-import { ListItem } from '@woocommerce/components';
+import { ExperimentalListItem } from '@woocommerce/components';
 import { Text } from '@woocommerce/experimental';
 import { CSSTransition } from 'react-transition-group';
 import classnames from 'classnames';
@@ -42,10 +42,11 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 		'is-complete': completed,
 	} );
 	return (
-		<ListItem
+		<ExperimentalListItem
 			disableGutters={ false }
 			className={ className }
 			onClick={ onClick }
+			animation="slide-right"
 		>
 			<div className="woocommerce-task-list__item-before">
 				<div className="woocommerce-task__icon">
@@ -100,6 +101,6 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 					</Button>
 				</div>
 			) }
-		</ListItem>
+		</ExperimentalListItem>
 	);
 };
