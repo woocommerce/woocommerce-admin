@@ -15,4 +15,3 @@ Name | Type | Default | Description
 --- | --- | --- | ---
 `className` | String | ``''`` | Additional class name to style the component
 `isError` | Boolean | ``null`` | Boolean representing whether there was an error
-`isEmpty` | Boolean | ``null`` | Boolean representing whether the issue is that there is no data
