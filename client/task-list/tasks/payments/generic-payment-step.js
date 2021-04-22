@@ -56,16 +56,17 @@ export function GenericPaymentStep( {
 	};
 
 	const updateSettings = async ( values ) => {
-		// Because the GenericPaymentStep extension only works with the South African Rand
-		// currency, force the store to use it while setting the GenericPaymentStep settings
-		// @todo These should be dynamically updated.
-		const options = false;
-		// const options = methodConfig.getOptions
-		// 	? methodConfig.getOptions( values )
-		// 	: null;
-		if ( ! options ) {
+		const options = {};
+
+		fields.forEach( ( field ) => {
+			const optionName = field.option || field.name;
+			options[ optionName ] = values[ field.name ];
+		} );
+
+		if ( ! Object.keys( options ).length ) {
 			return;
 		}
+
 		const update = await updateOptions( {
 			...options,
 		} );
