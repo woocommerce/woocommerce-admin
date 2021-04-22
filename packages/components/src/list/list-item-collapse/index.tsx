@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { useState, Children, useCallback } from '@wordpress/element';
+import { Dashicon } from '@wordpress/components';
+import { useState, useCallback } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -19,6 +20,7 @@ export const ListItemCollapse: React.FC< ListItemCollapseProps > = ( {
 	collapsed = true,
 	hideText,
 	showText,
+	...otherProps
 } ): JSX.Element => {
 	// TODO - could use this to derive default text
 	// const collapsedItemCount = Children.count( children );
@@ -32,9 +34,11 @@ export const ListItemCollapse: React.FC< ListItemCollapseProps > = ( {
 		return (
 			<ExperimentalListItem
 				className="list-item-collapse"
+				{ ...otherProps }
 				onClick={ clickHandler }
 			>
 				<p>{ showText }</p>
+				<Dashicon />
 			</ExperimentalListItem>
 		);
 	}
@@ -45,6 +49,7 @@ export const ListItemCollapse: React.FC< ListItemCollapseProps > = ( {
 			<ExperimentalListItem
 				className="list-item-collapse"
 				onClick={ clickHandler }
+				{ ...otherProps }
 			>
 				<p>{ hideText }</p>
 			</ExperimentalListItem>
