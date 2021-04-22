@@ -1,4 +1,5 @@
 import { clearAndFillInput } from '@woocommerce/e2e-utils';
+import { takeScreenshotFor } from '@woocommerce/e2e-environment';
 import { getElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 
@@ -14,6 +15,7 @@ export class Login extends BasePage {
 			timeout: 15000,
 		} );
 		if ( ! user_login ) {
+			await takeScreenshotFor( 'login page failed' );
 			await this.navigate();
 		}
 
