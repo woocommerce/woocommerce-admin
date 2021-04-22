@@ -213,7 +213,8 @@ class Options extends \WC_REST_Data_Controller {
 			return $value;
 		}
 
-		$option_value = get_option( $option_indices[0], array() );
+		$option_name  = array_shift( $option_indices );
+		$option_value = get_option( $option_name, array() );
 		self::merge_values( $option_value, $option_indices, $value );
 
 		return $option_value;
