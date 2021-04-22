@@ -10,6 +10,13 @@ export class Login extends BasePage {
 	async login() {
 		await this.navigate();
 
+		const user_login = await this.page.waitForSelector( '#user_login', {
+			timeout: 15000,
+		} );
+		if ( ! user_login ) {
+			await this.navigate();
+		}
+
 		await getElementByText( 'label', 'Username or Email Address' );
 		await clearAndFillInput( '#user_login', ' ' );
 
