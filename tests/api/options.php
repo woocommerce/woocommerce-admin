@@ -89,4 +89,52 @@ class WC_Tests_API_Options extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 'Store notice updated.', get_option( 'woocommerce_demo_store_notice' ) );
 	}
+
+	/**
+	 * Test that options with nested properties can be updated.
+	 */
+	public function test_update_nested_options() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'woocommerce_admin_test_nested/level1a' => '1a' ) ) );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( array( 'level1a' => '1a' ), get_option( 'woocommerce_admin_test_nested' ) );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'woocommerce_admin_test_nested/level1b' => '1b' ) ) );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals(
+			array(
+				'level1a' => '1a',
+				'level1b' => '1b',
+			),
+			get_option( 'woocommerce_admin_test_nested' )
+		);
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'woocommerce_admin_test_nested/level1b/level2b' => '2b' ) ) );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals(
+			array(
+				'level1a' => '1a',
+				'level1b' => array(
+					'level2b' => '2b',
+				),
+			),
+			get_option( 'woocommerce_admin_test_nested' )
+		);
+	}
 }
