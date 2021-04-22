@@ -12,7 +12,7 @@ This option loads the report for the customer you have selected.
 
 ![Customers Report Single Customer View](images/analytics-customers-report-single-customer.png)
 
-### Advanced filters
+### Advanced Filters
 
 There are several filters available to the Customers Report:
 

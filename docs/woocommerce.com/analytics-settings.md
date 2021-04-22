@@ -1,4 +1,4 @@
-# Analytics settings
+# Analytics Settings
 
 WooCommerce Admin is pre-configured with default settings for WooCommerce Analytics. These settings are broken down into sections:
 
@@ -20,6 +20,6 @@ In this section, statuses that are **unchecked** are **included** in anayltics r
 
 WooCommerce Admin is pre-configured with a default date range of `Month to date`. This is the date range that will be used when loading the WooCommerce Dashboard or Analytics page from any non-WooCommerce Admin page. Any reports that support a date range will have a Date Range Picker to allow changing the date range for the report.
 
-### Reset defaults
+### Reset Defaults
 
 The `Reset defaults` button resets the settings to default values for all of the settings above the button. It has no effect on the data imported via `Import historical data`.

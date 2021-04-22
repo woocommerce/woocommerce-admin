@@ -12,7 +12,7 @@ When the Coupon report loads it includes all coupons for the selected date range
 
 For either filter, begin typing the name of the coupon. While you are typing the name of the coupon the filter will lookup coupon names that contain the string you have entered. 
 
-#### Single coupon
+#### Single Coupon
 
 This filter loads the report for the coupon you have selected.
 

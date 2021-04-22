@@ -2,13 +2,13 @@
 
 The Variations Report provides insight into the sales performance of each Product Variation on your store.
 
-### All variations View
+### All Variations View
 
 By default, the Variations Report displays the All variations view. All variations that have had sales in the specified date range will be shown.
 
 ![Variations Report All variations View](images/analytics-variations-report.png)
 
-### Single variation View
+### Single Variation View
 
 ![Variations Report Single variation Search](images/analytics-variations-report-single-variation-search.png)
 
@@ -26,7 +26,7 @@ By selecting "Comparison", you can search for multiple variations to display rep
 
 You can also use the checkboxes in the report table to select variations for comparison. Click "Compare" in the table header to compare the selected variations.
 
-### Advanced filters
+### Advanced Filters
 
 The advanced filters allow adding multiple filters to the report. These filters can be applied in two ways:
 

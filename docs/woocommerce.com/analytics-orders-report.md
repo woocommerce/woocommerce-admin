@@ -8,7 +8,7 @@ Refunded orders cannot be excluded from the orders report. Refunded orders have 
 
 ![Orders Report Overview](images/analytics-orders-report.png)
 
-### Advanced filters
+### Advanced Filters
 
 The advanced filters allow adding multiple filters to the report. These filters can be applied in two ways:
 

@@ -21,7 +21,7 @@ When the Category report loads it includes all categories for the selected date 
 
 For either filter, begin typing the name of the category. While you are typing the name of the category the filter will lookup category names that contain the string you have entered. 
 
-#### Single category
+#### Single Category
 
 This filter loads the report Categories report listing the products sold within that category.
 
