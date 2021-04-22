@@ -208,17 +208,39 @@ class Options extends \WC_REST_Data_Controller {
 	public static function get_option_value( $key, $value ) {
 		$option_indices = explode( '.', $key );
 
-		// Currently this only supports single level nested properties.
-		if ( count( $option_indices ) !== 2 ) {
+		// Return the value directly if not modifying a nested property.
+		if ( count( $option_indices ) === 1 ) {
 			return $value;
 		}
 
-		$current_value = get_option( $option_indices[0], array() );
-		$merged_value  = is_array( $current_value ) ? $current_value : array();
+		$option_value = get_option( $option_indices[0], array() );
+		self::merge_values( $option_value, $option_indices, $value );
 
-		$merged_value[ $option_indices[1] ] = $value;
+		return $option_value;
+	}
 
-		return $merged_value;
+	/**
+	 * Merge option values into a nested property given an option and indices.
+	 *
+	 * @param string $option_value Current option value.
+	 * @param array  $indices Indices of properties to access.
+	 * @param array  $index_value Value to assign to final nested index.
+	 */
+	public static function merge_values( &$option_value, $indices, $index_value ) {
+		if ( ! is_array( $option_value ) ) {
+			$option_value = array();
+		}
+
+		foreach ( $indices as $index ) {
+			// Create an empty array if the index is not an array.
+			if ( ! isset( $option_value[ $index ] ) || ! is_array( $option_value[ $index ] ) ) {
+				$option_value[ $index ] = array();
+			}
+
+			$option_value = &$option_value[ $index ];
+		}
+
+		$option_value = $index_value;
 	}
 
 	/**
