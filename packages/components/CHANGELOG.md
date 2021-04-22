@@ -1,3 +1,7 @@
+# Unreleased
+
+-   SelectControl: fix display of multiple selections without inline tags. #6862
+
 # 6.1.2
 
 -   Update dependencies.
