@@ -53,7 +53,8 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	const tagClasses = classnames( {
 		'has-action': hasAction,
 		'has-gutters': ! disableGutters,
-		'transitions-disabled': animation === 'none',
+		// since there is only one valid animation right now, any other value disables them.
+		'transitions-disabled': animation !== 'slide-right',
 	} );
 
 	return (

@@ -31,38 +31,31 @@ a.woocommerce-list__item {
 	}
 
 	// transitions
-	&.enter {
-		opacity: 0;
-		max-height: 0;
-		transform: translateX( 50% );
-	}
+	&:not( .transitions-disabled ) {
+		&.enter {
+			opacity: 0;
+			max-height: 0;
+			transform: translateX( 50% );
+		}
 
-	&.enter-active {
-		opacity: 1;
-		max-height: 100vh;
-		transform: translateX( 0% );
-		transition: opacity 500ms, transform 500ms, max-height 500ms;
-	}
+		&.enter-active {
+			opacity: 1;
+			max-height: 100vh;
+			transform: translateX( 0% );
+			transition: opacity 500ms, transform 500ms, max-height 500ms;
+		}
 
-	&.exit {
-		opacity: 1;
-		max-height: 100vh;
-		transform: translateX( 0% );
-	}
+		&.exit {
+			opacity: 1;
+			max-height: 100vh;
+			transform: translateX( 0% );
+		}
 
-	&.exit-active {
-		opacity: 0;
-		max-height: 0;
-		transform: translateX( 50% );
-		transition: opacity 500ms, transform 500ms, max-height 500ms;
-	}
-
-	&.transitions-disabled {
-		&.enter-active,
-		&.exit,
 		&.exit-active {
-			transition: none;
-			transform: none;
+			opacity: 0;
+			max-height: 0;
+			transform: translateX( 50% );
+			transition: opacity 500ms, transform 500ms, max-height 500ms;
 		}
 	}
 

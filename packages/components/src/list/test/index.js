@@ -1,3 +1,9 @@
+jest.mock( '../list-item', () => ( {
+	__esModule: true,
+	...jest.requireActual( '../list-item' ),
+	handleKeyDown: jest.fn(),
+} ) );
+
 /**
  * External dependencies
  */
@@ -7,26 +13,26 @@ import userEvent from '@testing-library/user-event';
 /**
  * Internal dependencies
  */
-import List from '../index';
-import { ExperimentalListItem } from '../experimental-list-item';
+import List, { ExperimentalList, ExperimentalListItem } from '../index';
+import { handleKeyDown } from '../list-item';
 
 describe( 'List', () => {
 	describe( 'Experimental List', () => {
-		it( 'should render the new List which defaults to a nav component if items are not passed in', () => {
+		it( 'should render the new List which defaults to a ul component if items are not passed in', () => {
 			const { container } = render(
-				<List>
+				<ExperimentalList>
 					<div>Test</div>
-				</List>
+				</ExperimentalList>
 			);
 
-			expect( container.querySelector( 'nav' ) ).toBeInTheDocument();
+			expect( container.querySelector( 'ul' ) ).toBeInTheDocument();
 		} );
 
 		it( 'should render children passed in', () => {
 			const { container } = render(
-				<List>
+				<ExperimentalList>
 					<div>Test</div>
-				</List>
+				</ExperimentalList>
 			);
 
 			expect( container ).toHaveTextContent( 'Test' );
@@ -34,12 +40,12 @@ describe( 'List', () => {
 
 		it( 'should allow overriding the wrapping element, and passing in arbitrary element props', () => {
 			const { container } = render(
-				<List component="ul" role="menu">
+				<ExperimentalList component="nav" role="menu">
 					<div>Test</div>
-				</List>
+				</ExperimentalList>
 			);
 
-			expect( container.querySelector( 'ul' ) ).toBeInTheDocument();
+			expect( container.querySelector( 'nav' ) ).toBeInTheDocument();
 		} );
 
 		describe( 'ExperimentalListItem', () => {
@@ -53,41 +59,101 @@ describe( 'List', () => {
 				expect( container ).toHaveTextContent( 'Test' );
 			} );
 
-			it( 'should render an anchor by default', () => {
+			it( 'allows disabling the gutter styling', () => {
 				const { container } = render(
-					<ExperimentalListItem href="https://example.com">
+					<ExperimentalListItem disableGutters>
 						<div>Test</div>
 					</ExperimentalListItem>
 				);
 
 				expect(
-					container.querySelector( "a[href='https://example.com']" )
+					container.querySelector( '.has-gutters' )
+				).not.toBeInTheDocument();
+			} );
+
+			it( 'allows overriding the component type', () => {
+				const { container } = render(
+					<ExperimentalListItem component="div" onClick={ () => {} }>
+						<div>Test</div>
+					</ExperimentalListItem>
+				);
+
+				expect(
+					container.querySelector( 'div.woocommerce-list__item' )
 				).toBeInTheDocument();
 			} );
-		} );
 
-		it( 'allows overriding the component type', () => {
-			const { container } = render(
-				<ExperimentalListItem component="div" onClick={ () => {} }>
-					<div>Test</div>
-				</ExperimentalListItem>
-			);
+			it( 'should disable animations by default and for unsupported values', () => {
+				// disabled by default
+				const { container, rerender } = render(
+					<ExperimentalListItem>
+						<div>Test</div>
+					</ExperimentalListItem>
+				);
 
-			expect(
-				container.querySelector( 'div.woocommerce-list__item' )
-			).toBeInTheDocument();
-		} );
+				expect(
+					container.querySelector( '.transitions-disabled' )
+				).toBeInTheDocument();
 
-		it( 'is tab-indexable by default', () => {
-			const { container } = render(
-				<ExperimentalListItem onClick={ () => {} }>
-					<div>Test</div>
-				</ExperimentalListItem>
-			);
+				// invalid value
+				rerender(
+					<ExperimentalListItem animation="bounce-up-and-down">
+						<div>Test</div>
+					</ExperimentalListItem>
+				);
 
-			expect(
-				container.querySelector( "a[tabindex='0']" )
-			).toBeInTheDocument();
+				expect(
+					container.querySelector( '.transitions-disabled' )
+				).toBeInTheDocument();
+			} );
+
+			it( 'should not disable animations if you provide a valid animation value', () => {
+				const { container } = render(
+					<ExperimentalListItem animation="slide-right">
+						<div>Test</div>
+					</ExperimentalListItem>
+				);
+
+				expect(
+					container.querySelector( '.transitions-disabled' )
+				).not.toBeInTheDocument();
+			} );
+
+			it( 'supports onClick on the list item, and handles keyboard events', () => {
+				const dummyOnClick = jest.fn();
+
+				const { container } = render(
+					<ExperimentalListItem onClick={ dummyOnClick }>
+						<div>Test</div>
+					</ExperimentalListItem>
+				);
+
+				const listItem = container.querySelector(
+					'.woocommerce-list__item'
+				);
+
+				userEvent.click( listItem );
+
+				// it doesn't actually matter what key you hit here while handleKeyDown is mocked.
+				userEvent.type( listItem, '{enter}' );
+
+				expect( handleKeyDown ).toHaveBeenCalled();
+				expect( dummyOnClick ).toHaveBeenCalled();
+			} );
+
+			it( 'is tab-indexable by default', () => {
+				const { container } = render(
+					<ExperimentalListItem onClick={ () => {} }>
+						<div>Test</div>
+					</ExperimentalListItem>
+				);
+
+				expect(
+					container.querySelector(
+						".woocommerce-list__item[tabindex='0']"
+					)
+				).toBeInTheDocument();
+			} );
 		} );
 	} );
 
