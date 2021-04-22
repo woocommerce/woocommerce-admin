@@ -179,10 +179,46 @@ class Options extends \WC_REST_Data_Controller {
 		}
 
 		foreach ( $params as $key => $value ) {
-			$updated[ $key ] = update_option( $key, $value );
+			$option_name     = self::get_option_name( $key );
+			$new_value       = self::get_option_value( $key, $value );
+			$updated[ $key ] = update_option( $option_name, $new_value );
 		}
 
 		return $updated;
+	}
+
+	/**
+	 * Get the option name.
+	 *
+	 * @param string $key Option name and any nested properties separated by `.`.
+	 * @return string Option name.
+	 */
+	public static function get_option_name( $key ) {
+		$option_indices = explode( '.', $key );
+		return $option_indices[0];
+	}
+
+	/**
+	 * Get the option value and merged nested properties.
+	 *
+	 * @param string $key Option name and any nested properties separated by `.`.
+	 * @param string $value Option value.
+	 * @return string Updated value.
+	 */
+	public static function get_option_value( $key, $value ) {
+		$option_indices = explode( '.', $key );
+
+		// Currently this only supports single level nested properties.
+		if ( count( $option_indices ) !== 2 ) {
+			return $value;
+		}
+
+		$current_value = get_option( $option_indices[0], array() );
+		$merged_value  = is_array( $current_value ) ? $current_value : array();
+
+		$merged_value[ $option_indices[1] ] = $value;
+
+		return $merged_value;
 	}
 
 	/**
