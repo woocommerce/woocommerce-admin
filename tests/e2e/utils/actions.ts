@@ -1,4 +1,6 @@
 import { ElementHandle } from 'puppeteer';
+import { getAppRoot } from '@woocommerce/e2e-environment';
+import path from 'path';
 
 /**
  * Wait for UI blocking to end.
@@ -114,6 +116,35 @@ const waitForElementByText = async (
 	return els;
 };
 
+/**
+ * NOTE: can be removed when e2e-environment is updated.
+ */
+const takeScreenshotFor = async ( message: string ) => {
+	const title = message.replace( /\.$/, '' );
+	const appPath: string = getAppRoot();
+	const savePath = path.resolve( appPath, 'tests/e2e/screenshots' );
+	const filePath = path.join(
+		savePath,
+		`${ title }.png`.replace( /[^a-z0-9.-]+/gi, '-' )
+	);
+
+	try {
+		await page.screenshot( {
+			path: filePath,
+			fullPage: true,
+		} );
+	} catch ( error ) {
+		return {
+			title: 'no screenshot',
+			filePath: '',
+		};
+	}
+	return {
+		title,
+		filePath,
+	};
+};
+
 export {
 	uiUnblocked,
 	verifyPublishAndTrash,
@@ -122,4 +153,5 @@ export {
 	getElementByText,
 	waitForElementByText,
 	hasClass,
+	takeScreenshotFor,
 };

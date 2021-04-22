@@ -1,6 +1,5 @@
 import { clearAndFillInput } from '@woocommerce/e2e-utils';
-import { takeScreenshotFor } from '@woocommerce/e2e-environment';
-import { getElementByText } from '../utils/actions';
+import { getElementByText, takeScreenshotFor } from '../utils/actions';
 import { BasePage } from './BasePage';
 
 const config = require( 'config' );
