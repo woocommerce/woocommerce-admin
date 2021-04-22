@@ -7,9 +7,8 @@ import { withConsole } from '@storybook/addon-console';
 /**
  * Internal dependencies
  */
-import List from '../';
+import List, { ExperimentalList, ExperimentalListItem } from '../';
 import './style.scss';
-import { ExperimentalListItem } from '../experimental-list-item';
 
 function logItemClick( event ) {
 	const a = event.currentTarget;
@@ -143,11 +142,11 @@ export const CustomStyleAndTags = () => {
 
 CustomStyleAndTags.storyName = 'Custom style and tags (deprecated)';
 
-export const ExperimentalList = () => {
+export const ExperimentalListExample = () => {
 	return (
-		<List>
-			<ExperimentalListItem onClick={ () => {} }>
-				<div>Any markup can go here.</div>
+		<ExperimentalList>
+			<ExperimentalListItem disableGutters onClick={ () => {} }>
+				<div>Without gutters no padding is added to the list item.</div>
 			</ExperimentalListItem>
 			<ExperimentalListItem onClick={ () => {} }>
 				<div>Any markup can go here.</div>
@@ -155,9 +154,11 @@ export const ExperimentalList = () => {
 			<ExperimentalListItem onClick={ () => {} }>
 				<div>Any markup can go here.</div>
 			</ExperimentalListItem>
-		</List>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+		</ExperimentalList>
 	);
 };
 
-ExperimentalList.storyName =
-	'Experimental (accepts `children` instead of `props.items`).';
+ExperimentalList.storyName = 'ExperimentalList / ExperimentalListItem.';
