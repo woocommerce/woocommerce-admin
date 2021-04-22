@@ -190,23 +190,23 @@ class Options extends \WC_REST_Data_Controller {
 	/**
 	 * Get the option name.
 	 *
-	 * @param string $key Option name and any nested properties separated by `.`.
+	 * @param string $key Option name and any nested properties separated by `/`.
 	 * @return string Option name.
 	 */
 	public static function get_option_name( $key ) {
-		$option_indices = explode( '.', $key );
+		$option_indices = explode( '/', $key );
 		return $option_indices[0];
 	}
 
 	/**
 	 * Get the option value and merged nested properties.
 	 *
-	 * @param string $key Option name and any nested properties separated by `.`.
+	 * @param string $key Option name and any nested properties separated by `/`.
 	 * @param string $value Option value.
 	 * @return string Updated value.
 	 */
 	public static function get_option_value( $key, $value ) {
-		$option_indices = explode( '.', $key );
+		$option_indices = explode( '/', $key );
 
 		// Return the value directly if not modifying a nested property.
 		if ( count( $option_indices ) === 1 ) {
