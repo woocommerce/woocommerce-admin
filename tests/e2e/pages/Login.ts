@@ -1,3 +1,4 @@
+import { errors } from 'puppeteer';
 import { clearAndFillInput } from '@woocommerce/e2e-utils';
 import { getElementByText, takeScreenshotFor } from '../utils/actions';
 import { BasePage } from './BasePage';
@@ -10,12 +11,18 @@ export class Login extends BasePage {
 	async login() {
 		await this.navigate();
 
-		const user_login = await this.page.waitForSelector( '#user_login', {
-			timeout: 15000,
-		} );
-		if ( ! user_login ) {
-			await takeScreenshotFor( 'login page failed' );
-			await this.navigate();
+		try {
+			await this.page.waitForSelector( '#user_login', {
+				timeout: 15000,
+			} );
+		} catch ( e ) {
+			const testName = expect.getState().currentTestName;
+			await takeScreenshotFor(
+				`${ testName ? testName + ' ' : '' }login page failed`
+			);
+			if ( e instanceof errors.TimeoutError ) {
+				await this.navigate();
+			}
 		}
 
 		await getElementByText( 'label', 'Username or Email Address' );

@@ -1,6 +1,7 @@
 import { ElementHandle } from 'puppeteer';
 import { getAppRoot } from '@woocommerce/e2e-environment';
 import path from 'path';
+import fs from 'fs';
 
 /**
  * Wait for UI blocking to end.
@@ -127,6 +128,10 @@ const takeScreenshotFor = async ( message: string ) => {
 		savePath,
 		`${ title }.png`.replace( /[^a-z0-9.-]+/gi, '-' )
 	);
+
+	if ( ! fs.existsSync( savePath ) ) {
+		fs.mkdirSync( savePath );
+	}
 
 	try {
 		await page.screenshot( {
