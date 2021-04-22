@@ -73,6 +73,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 2.2.2 4/28/2021 ==
+
+- Fix: Disable the continue btn on OBW when requested are being made #6838
+
 == 2.2.0 3/30/2021  ==
 
 - Fix: Check if features are currently being enabled #6688
