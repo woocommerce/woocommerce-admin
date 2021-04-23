@@ -38,14 +38,14 @@ describe( 'List', () => {
 			expect( container ).toHaveTextContent( 'Test' );
 		} );
 
-		it( 'should allow overriding the wrapping element, and passing in arbitrary element props', () => {
+		it( 'should allow overriding the list type, and passing in arbitrary element props', () => {
 			const { container } = render(
-				<ExperimentalList component="nav" role="menu">
+				<ExperimentalList listType="ol" role="menu">
 					<div>Test</div>
 				</ExperimentalList>
 			);
 
-			expect( container.querySelector( 'nav' ) ).toBeInTheDocument();
+			expect( container.querySelector( 'ol' ) ).toBeInTheDocument();
 		} );
 
 		describe( 'ExperimentalListItem', () => {
@@ -69,18 +69,6 @@ describe( 'List', () => {
 				expect(
 					container.querySelector( '.has-gutters' )
 				).not.toBeInTheDocument();
-			} );
-
-			it( 'allows overriding the component type', () => {
-				const { container } = render(
-					<ExperimentalListItem component="div" onClick={ () => {} }>
-						<div>Test</div>
-					</ExperimentalListItem>
-				);
-
-				expect(
-					container.querySelector( 'div.woocommerce-list__item' )
-				).toBeInTheDocument();
 			} );
 
 			it( 'should disable animations by default and for unsupported values', () => {
@@ -122,7 +110,7 @@ describe( 'List', () => {
 			it( 'supports onClick on the list item, and handles keyboard events', () => {
 				const dummyOnClick = jest.fn();
 
-				const { container } = render(
+				const { container, queryByRole } = render(
 					<ExperimentalListItem onClick={ dummyOnClick }>
 						<div>Test</div>
 					</ExperimentalListItem>
@@ -137,6 +125,8 @@ describe( 'List', () => {
 				// it doesn't actually matter what key you hit here while handleKeyDown is mocked.
 				userEvent.type( listItem, '{enter}' );
 
+				// TODO check that the button role was added.
+				expect( queryByRole( 'button' ) ).toBeInTheDocument();
 				expect( handleKeyDown ).toHaveBeenCalled();
 				expect( dummyOnClick ).toHaveBeenCalled();
 			} );

@@ -21,8 +21,6 @@ type ListItemProps = {
 	disableGutters?: boolean;
 	animation?: ListAnimation;
 	className?: string;
-	// By default a div is rendered, but if you want the list item to behave as a different tag you can override it here.
-	component?: React.ElementType;
 } & Partial< CSSTransitionProps > &
 	React.AllHTMLAttributes< HTMLElement >;
 
@@ -33,8 +31,7 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	disableGutters = false,
 	animation = 'none',
 	className = '',
-	component = 'li',
-	tabIndex = '0',
+	tabIndex = 0,
 	// extract out the props that must be passed down from TransitionGroup
 	exit,
 	enter,
@@ -48,7 +45,13 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	// for styling purposes only
 	const hasAction = !! otherProps?.onClick;
 
-	const Tag = component;
+	const roleProps = hasAction
+		? {
+				role: 'button',
+				onKeyDown: ( e: React.KeyboardEvent< HTMLElement > ) =>
+					handleKeyDown( e, otherProps.onClick ),
+		  }
+		: {};
 
 	const tagClasses = classnames( {
 		'has-action': hasAction,
@@ -66,16 +69,15 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 			enter={ enter }
 			onExited={ onExited }
 		>
-			<Tag
+			<li
 				tabIndex={ tabIndex }
+				// spread role props first, in case it is desired to override them
+				{ ...roleProps }
 				{ ...otherProps }
 				className={ `woocommerce-list__item ${ tagClasses } ${ className }` }
-				onKeyDown={ ( e: React.KeyboardEvent< HTMLElement > ) =>
-					hasAction ? handleKeyDown( e, otherProps.onClick ) : null
-				}
 			>
 				{ children }
-			</Tag>
+			</li>
 		</CSSTransition>
 	);
 };

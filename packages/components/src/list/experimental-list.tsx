@@ -9,21 +9,23 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
  */
 import type { ListAnimation } from './experimental-list-item';
 
+type ListType = 'ol' | 'ul';
+
 type ListProps = {
-	component?: string;
+	listType?: ListType;
 	animation?: ListAnimation;
 } & React.HTMLAttributes< HTMLElement >;
 
 export const ExperimentalList: React.FC< ListProps > = ( {
 	children,
-	component = 'ul',
+	listType = 'ul',
 	animation = 'none',
 	// Allow passing any other property overrides that are legal on an HTML element
 	...otherProps
 } ) => {
 	return (
 		<TransitionGroup
-			component={ component }
+			component={ listType }
 			className="woocommerce-list"
 			{ ...otherProps }
 		>
