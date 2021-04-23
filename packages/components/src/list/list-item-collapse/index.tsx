@@ -15,15 +15,13 @@ type ListItemCollapseProps = {
 	showText: string;
 } & React.HTMLAttributes< HTMLElement >;
 
-export const ListItemCollapse: React.FC< ListItemCollapseProps > = ( {
+export const ExperimentalListItemCollapse: React.FC< ListItemCollapseProps > = ( {
 	children,
 	collapsed = true,
 	hideText,
 	showText,
 	...otherProps
 } ): JSX.Element => {
-	// TODO - could use this to derive default text
-	// const collapsedItemCount = Children.count( children );
 	const [ isCollapsed, setCollapsed ] = useState( collapsed );
 
 	const clickHandler = useCallback( () => {
@@ -38,7 +36,11 @@ export const ListItemCollapse: React.FC< ListItemCollapseProps > = ( {
 				onClick={ clickHandler }
 			>
 				<p>{ showText }</p>
-				<Dashicon />
+
+				<Dashicon
+					className="list-item-collapse__icon"
+					icon="arrow-down-alt2"
+				/>
 			</ExperimentalListItem>
 		);
 	}
@@ -52,6 +54,11 @@ export const ListItemCollapse: React.FC< ListItemCollapseProps > = ( {
 				{ ...otherProps }
 			>
 				<p>{ hideText }</p>
+
+				<Dashicon
+					className="list-item-collapse__icon"
+					icon="arrow-up-alt2"
+				/>
 			</ExperimentalListItem>
 		</>
 	);

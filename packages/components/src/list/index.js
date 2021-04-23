@@ -115,4 +115,4 @@ export default List;
 
 export { ExperimentalListItem } from './experimental-list-item';
 export { ExperimentalList } from './experimental-list';
-export { ListItemCollapse } from './list-item-collapse';
+export { ExperimentalListItemCollapse } from './list-item-collapse';
