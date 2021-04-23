@@ -22,6 +22,7 @@ import CartModal from '../dashboard/components/cart-modal';
 import { getAllTasks } from './tasks';
 import { getCountryCode } from '../dashboard/utils';
 import TaskList from './list';
+import { DisplayOption } from '../header/activity-panel/display-options';
 import { TaskStep } from './task-step';
 
 const taskDashboardSelect = ( select ) => {
@@ -69,6 +70,7 @@ const taskDashboardSelect = ( select ) => {
 
 const TaskDashboard = ( { userPreferences, query } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
 	const {
 		trackedCompletedTasks,
