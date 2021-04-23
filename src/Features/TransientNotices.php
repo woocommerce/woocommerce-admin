@@ -25,6 +25,32 @@ class TransientNotices {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_notices' ) );
 	}
 
+
+	/**
+	 * Get all notices in the queue.
+	 *
+	 * @return array
+	 */
+	public static function get_queue() {
+		return get_option( self::QUEUE_OPTION, array() );
+	}
+
+	/**
+	 * Get a notice by ID.
+	 *
+	 * @param array $notice_id Notice of ID to get.
+	 * @return array|null
+	 */
+	public static function get( $notice_id ) {
+		$queue = self::get_queue();
+
+		if ( isset( $queue[ $notice_id ] ) ) {
+			return $queue[ $notice_id ];
+		}
+
+		return null;
+	}
+
 	/**
 	 * Add a notice to be shown.
 	 *
@@ -57,7 +83,7 @@ class TransientNotices {
 	 * @param array $notice_id Notice of ID to remove.
 	 */
 	public static function remove( $notice_id ) {
-		$queue = get_option( self::QUEUE_OPTION );
+		$queue = self::get_queue();
 		unset( $queue[ $notice_id ] );
 		update_option( self::QUEUE_OPTION, $queue );
 	}
@@ -66,7 +92,7 @@ class TransientNotices {
 	 * Enqueue notices to be displayed on page load.
 	 */
 	public static function enqueue_notices() {
-		$notices = get_option( self::QUEUE_OPTION );
+		$notices = self::get_queue();
 
 		if ( empty( $notices ) ) {
 			return;
