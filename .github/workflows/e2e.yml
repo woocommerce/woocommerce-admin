@@ -35,6 +35,7 @@ jobs:
                   composer require wp-cli/i18n-command
                   npm run build
                   npx wc-e2e docker:up
+                  sleep 10
                   npx wc-e2e test:e2e
             - name: Archive e2e test screenshots
               if: ${{ always() }}
