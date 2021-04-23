@@ -13,7 +13,7 @@ export class Login extends BasePage {
 
 		try {
 			await this.page.waitForSelector( '#user_login', {
-				timeout: 15000,
+				timeout: 20000,
 			} );
 		} catch ( e ) {
 			const testName = expect.getState().currentTestName;

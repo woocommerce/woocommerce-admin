@@ -43,3 +43,4 @@ jobs:
                   name: e2e-screenshots
                   path: tests/e2e/screenshots
                   if-no-files-found: ignore
+                  retention-days: 5
