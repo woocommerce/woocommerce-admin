@@ -36,6 +36,25 @@ class TransientNotices {
 	}
 
 	/**
+	 * Get all notices in the queue by a given user ID.
+	 *
+	 * @param int $user_id User ID.
+	 * @return array
+	 */
+	public static function get_queue_by_user( $user_id ) {
+		$notices = self::get_queue();
+
+		return array_filter(
+			$notices,
+			function( $notice ) use ( $user_id ) {
+				return ! isset( $notice['user_id'] ) ||
+					null === $notice['user_id'] ||
+					$user_id === $notice['user_id'];
+			}
+		);
+	}
+
+	/**
 	 * Get a notice by ID.
 	 *
 	 * @param array $notice_id Notice of ID to get.
@@ -57,6 +76,7 @@ class TransientNotices {
 	 * @param array $notice Notice.
 	 *    $notice = array(
 	 *      'id'      => (string) Unique ID for the notice. Required.
+	 *      'user_id' => (int|null) User ID to show the notice to.
 	 *      'status'  => (string) info|error|success
 	 *      'content' => (string) Content to be shown for the notice. Required.
 	 *      'options' => (array) Array of options to be passed to the notice component.
@@ -64,9 +84,10 @@ class TransientNotices {
 	 *    ).
 	 */
 	public static function add( $notice ) {
-		$queue = get_option( self::QUEUE_OPTION, array() );
+		$queue = self::get_queue();
 
 		$defaults               = array(
+			'user_id' => null,
 			'status'  => 'info',
 			'options' => array(),
 		);
@@ -92,7 +113,8 @@ class TransientNotices {
 	 * Enqueue notices to be displayed on page load.
 	 */
 	public static function enqueue_notices() {
-		$notices = self::get_queue();
+		$user_id = get_current_user_id();
+		$notices = self::get_queue_by_user( $user_id );
 
 		if ( empty( $notices ) ) {
 			return;

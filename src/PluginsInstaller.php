@@ -79,6 +79,7 @@ class PluginsInstaller {
 
 		TransientNotices::add(
 			array(
+				'user_id' => get_current_user_id(),
 				'id'      => 'plugin-installer-' . str_replace( ',', '-', $plugins ),
 				'status'  => 'success',
 				'content' => $message,
