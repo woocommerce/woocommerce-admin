@@ -47,9 +47,8 @@ function TransientNotices( props ) {
 
 	useEffect( () => {
 		queueNotices.forEach( ( queuedNotice ) => {
-			const notice = applyFilters( QUEUED_NOTICE_FILTER, {
-				queuedNotice,
-			} );
+			const notice = applyFilters( QUEUED_NOTICE_FILTER, queuedNotice );
+
 			createNotice( notice.status, notice.content, {
 				onDismiss: () => {
 					dequeueNotice( notice.id );
