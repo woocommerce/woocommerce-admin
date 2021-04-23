@@ -32,26 +32,26 @@ a.woocommerce-list__item {
 
 	// transitions
 	&:not(.transitions-disabled) {
-		&.enter {
+		&.woocommerce-list__item-enter {
 			opacity: 0;
 			max-height: 0;
 			transform: translateX(50%);
 		}
 
-		&.enter-active {
+		&.woocommerce-list__item-enter-active {
 			opacity: 1;
 			max-height: 100vh;
 			transform: translateX(0%);
 			transition: opacity 500ms, transform 500ms, max-height 500ms;
 		}
 
-		&.exit {
+		&.woocommerce-list__item-exit {
 			opacity: 1;
 			max-height: 100vh;
 			transform: translateX(0%);
 		}
 
-		&.exit-active {
+		&.woocommerce-list__item-exit-active {
 			opacity: 0;
 			max-height: 0;
 			transform: translateX(50%);
