@@ -22,7 +22,7 @@ function TransientNotices( props ) {
 		window.wcQueuedNotices || []
 	);
 	const { createNotice, removeNotice: onRemove } = useDispatch(
-		'core/notices'
+		'core/notices2'
 	);
 	const { removeNotice: onRemove2 } = useDispatch( 'core/notices2' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
