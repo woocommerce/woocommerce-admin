@@ -31,7 +31,6 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 	disableGutters = false,
 	animation = 'none',
 	className = '',
-	tabIndex = 0,
 	// extract out the props that must be passed down from TransitionGroup
 	exit,
 	enter,
@@ -50,6 +49,7 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 				role: 'button',
 				onKeyDown: ( e: React.KeyboardEvent< HTMLElement > ) =>
 					handleKeyDown( e, otherProps.onClick ),
+				tabIndex: 0,
 		  }
 		: {};
 
@@ -70,7 +70,6 @@ export const ExperimentalListItem: React.FC< ListItemProps > = ( {
 			onExited={ onExited }
 		>
 			<li
-				tabIndex={ tabIndex }
 				// spread role props first, in case it is desired to override them
 				{ ...roleProps }
 				{ ...otherProps }

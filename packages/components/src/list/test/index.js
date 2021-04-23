@@ -131,18 +131,18 @@ describe( 'List', () => {
 				expect( dummyOnClick ).toHaveBeenCalled();
 			} );
 
-			it( 'is tab-indexable by default', () => {
-				const { container } = render(
-					<ExperimentalListItem onClick={ () => {} }>
+			it( 'includes correct ARIA roles and a11y attributes when the item has an action', () => {
+				const clickHandler = jest.fn();
+				render(
+					<ExperimentalListItem onClick={ clickHandler }>
 						<div>Test</div>
 					</ExperimentalListItem>
 				);
 
-				expect(
-					container.querySelector(
-						".woocommerce-list__item[tabindex='0']"
-					)
-				).toBeInTheDocument();
+				const item = screen.getByRole( 'button' );
+				expect( item ).toBeInTheDocument();
+				expect( item ).toHaveAttribute( 'role', 'button' );
+				expect( item ).toHaveAttribute( 'tabindex', '0' );
 			} );
 		} );
 	} );
