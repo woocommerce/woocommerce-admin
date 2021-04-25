@@ -16,32 +16,6 @@ import productAutocompleter from '../../search/autocompleters/product';
 jest.mock( '../../search' );
 
 describe( 'FilterPicker', () => {
-	let config;
-	beforeEach( () => {
-		config = {
-			label: 'Show',
-			staticParams: [],
-			param: 'product_filter',
-			showFilters: () => true,
-			filters: [
-				{ label: 'All Products', value: 'all' },
-				{
-					component: 'Search',
-					value: 'select_product',
-					chartMode: 'item-comparison',
-					path: 'select_product',
-					settings: {
-						type: 'products',
-						param: 'products',
-						labels: {
-							placeholder: 'Type to search for a product',
-							button: 'Single Product',
-						},
-					},
-				},
-			],
-		};
-	} );
 	it( 'should render the example from the storybook', async () => {
 		// Jest and its JSDOM does not allow making extensive use of searchParams used by Basic example.
 		const path = '/story/woocommerce-admin-components-filterpicker--basic';
@@ -51,6 +25,33 @@ describe( 'FilterPicker', () => {
 		} ).not.toThrow();
 	} );
 	describe( "when a config is given with a filter with `component: 'Search'`", () => {
+		let config;
+		beforeEach( () => {
+			config = {
+				label: 'Show',
+				staticParams: [],
+				param: 'product_filter',
+				showFilters: () => true,
+				filters: [
+					{ label: 'All Products', value: 'all' },
+					{
+						component: 'Search',
+						value: 'select_product',
+						chartMode: 'item-comparison',
+						path: 'select_product',
+						settings: {
+							type: 'products',
+							param: 'products',
+							labels: {
+								placeholder: 'Type to search for a product',
+								button: 'Single Product',
+							},
+						},
+					},
+				],
+			};
+		} );
+
 		it( 'should render the Search component', async () => {
 			const path = '/foo/bar';
 
