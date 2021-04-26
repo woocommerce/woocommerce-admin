@@ -8,7 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features;
 
 use \Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\PageController;
-use \Automattic\WooCommerce\Admin\PluginsHelper;
+use Automattic\WooCommerce\Admin\WCAdminHelper;
 
 /**
  * Contains backend logic for the onboarding profile and checklist feature.
@@ -204,7 +204,6 @@ class Onboarding {
 	private function add_filters() {
 		// Rest API hooks need to run before is_admin() checks.
 		add_filter( 'woocommerce_rest_prepare_themes', array( $this, 'add_uploaded_theme_data' ) );
-		add_filter( 'woocommerce_admin_plugins_whitelist', array( $this, 'get_onboarding_allowed_plugins' ), 10, 2 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -636,7 +635,7 @@ class Onboarding {
 			return false;
 		}
 
-		return in_array( $current_page['path'], $allowed_paths );
+		return in_array( $current_page['path'], $allowed_paths, true );
 	}
 
 	/**
@@ -735,44 +734,6 @@ class Onboarding {
 		$options[] = 'general';
 
 		return $options;
-	}
-
-	/**
-	 * Gets an array of plugins that can be installed & activated via the onboarding wizard.
-	 *
-	 * @param array $plugins Array of plugin slugs to be allowed.
-	 *
-	 * @return array
-	 * @todo Handle edgecase of where installed plugins may have versioned folder names (i.e. `jetpack-main/jetpack.php`).
-	 */
-	public static function get_onboarding_allowed_plugins( $plugins ) {
-		$onboarding_plugins = apply_filters(
-			'woocommerce_admin_onboarding_plugins_whitelist',
-			array(
-				'facebook-for-woocommerce'            => 'facebook-for-woocommerce/facebook-for-woocommerce.php',
-				'mailchimp-for-woocommerce'           => 'mailchimp-for-woocommerce/mailchimp-woocommerce.php',
-				'creative-mail-by-constant-contact'   => 'creative-mail-by-constant-contact/creative-mail-plugin.php',
-				'kliken-marketing-for-google'         => 'kliken-marketing-for-google/kliken-marketing-for-google.php',
-				'jetpack'                             => 'jetpack/jetpack.php',
-				'woocommerce-services'                => 'woocommerce-services/woocommerce-services.php',
-				'woocommerce-gateway-stripe'          => 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php',
-				'woocommerce-paypal-payments'         => 'woocommerce-paypal-payments/woocommerce-paypal-payments.php',
-				'klarna-checkout-for-woocommerce'     => 'klarna-checkout-for-woocommerce/klarna-checkout-for-woocommerce.php',
-				'klarna-payments-for-woocommerce'     => 'klarna-payments-for-woocommerce/klarna-payments-for-woocommerce.php',
-				'woocommerce-square'                  => 'woocommerce-square/woocommerce-square.php',
-				'woocommerce-shipstation-integration' => 'woocommerce-shipstation-integration/woocommerce-shipstation.php',
-				'woocommerce-payfast-gateway'         => 'woocommerce-payfast-gateway/gateway-payfast.php',
-				'woo-paystack'                        => 'woo-paystack/woo-paystack.php',
-				'woocommerce-payments'                => 'woocommerce-payments/woocommerce-payments.php',
-				'woocommerce-gateway-eway'            => 'woocommerce-gateway-eway/woocommerce-gateway-eway.php',
-				'woo-razorpay'                        => 'woo-razorpay/woo-razorpay.php',
-				'mollie-payments-for-woocommerce'     => 'mollie-payments-for-woocommerce/mollie-payments-for-woocommerce.php',
-				'payu-india'                          => 'payu-india/index.php',
-				'mailpoet'                            => 'mailpoet/mailpoet.php',
-				'woocommerce-mercadopago'             => 'woocommerce-mercadopago/woocommerce-mercadopago.php',
-			)
-		);
-		return array_merge( $plugins, $onboarding_plugins );
 	}
 
 	/**
@@ -1094,13 +1055,19 @@ class Onboarding {
 		}
 
 		$onboarding_data = get_option( self::PROFILE_DATA_OPTION, array() );
-		// Don't make updates if the profiler is completed, but task list is potentially incomplete.
-		if ( isset( $onboarding_data['completed'] ) && $onboarding_data['completed'] ) {
+		// Don't make updates if the profiler is completed or skipped, but task list is potentially incomplete.
+		if (
+			( isset( $onboarding_data['completed'] ) && $onboarding_data['completed'] ) ||
+			( isset( $onboarding_data['skipped'] ) && $onboarding_data['skipped'] )
+		) {
 			return;
 		}
 
 		$onboarding_data['completed'] = true;
 		update_option( self::PROFILE_DATA_OPTION, $onboarding_data );
-		update_option( 'woocommerce_task_list_hidden', 'yes' );
+
+		if ( ! WCAdminHelper::is_wc_admin_active_for( DAY_IN_SECONDS ) ) {
+			update_option( 'woocommerce_task_list_hidden', 'yes' );
+		}
 	}
 }
