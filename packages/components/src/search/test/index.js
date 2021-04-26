@@ -47,7 +47,7 @@ describe( 'Search', () => {
 				// Emulate typing to render available options.
 				userEvent.type( getByRole( 'combobox' ), 'A' );
 				// Wait for async options procesing.
-				await delay( 500 );
+				await delay( 1000 );
 
 				expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
 			} );
@@ -77,7 +77,7 @@ describe( 'Search', () => {
 				// Emulate typing to render available options.
 				userEvent.type( getByRole( 'combobox' ), 'A' );
 				// Wait for async options procesing.
-				await delay( 500 );
+				await delay( 1000 );
 
 				expect( optionsSpy ).toBeCalledWith( 'A' );
 				expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
@@ -109,7 +109,7 @@ describe( 'Search', () => {
 				// Emulate typing to render available options.
 				userEvent.type( getByRole( 'combobox' ), 'A' );
 				// Wait for async options procesing.
-				await delay( 500 );
+				await delay( 1000 );
 
 				expect( optionsSpy ).toBeCalledWith( 'A' );
 				expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
