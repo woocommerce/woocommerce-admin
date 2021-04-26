@@ -3,7 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Card, CardBody } from '@wordpress/components';
-import { useEffect, useMemo } from '@wordpress/element';
+import { cloneElement, useEffect, useMemo } from '@wordpress/element';
 import { Plugins } from '@woocommerce/components';
 import { PLUGINS_STORE_NAME, pluginNames } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -13,11 +13,11 @@ import { useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { createNoticesFromResponse } from '~/lib/notices';
-import { GenericPaymentStep } from '../generic-payment-step';
 
 export const PaymentSetup = ( {
 	method,
 	markConfigured,
+	query,
 	recordConnectStartEvent,
 } ) => {
 	useEffect( () => {
@@ -72,15 +72,21 @@ export const PaymentSetup = ( {
 		};
 	}, [ activePlugins, method.plugins ] );
 
+	if ( ! method.container ) {
+		return null;
+	}
+
 	return (
 		<Card className="woocommerce-task-payment-method woocommerce-task-card">
 			<CardBody>
-				<GenericPaymentStep
-					method={ method }
-					installStep={ installStep }
-					markConfigured={ markConfigured }
-					recordConnectStartEvent={ recordConnectStartEvent }
-				/>
+				{ cloneElement( method.container, {
+					methodConfig: method,
+					query,
+					installStep,
+					markConfigured,
+					recordConnectStartEvent,
+					hasCbdIndustry: method.hasCbdIndustry,
+				} ) }
 			</CardBody>
 		</Card>
 	);
