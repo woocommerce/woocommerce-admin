@@ -103,7 +103,7 @@ export class Search extends Component {
 		return formattedOptions;
 	}
 
-	fetchOptions( previousOptions, query ) {
+	async fetchOptions( previousOptions, query ) {
 		if ( ! query ) {
 			return [];
 		}
@@ -111,16 +111,15 @@ export class Search extends Component {
 		const autocompleterOptions = this.getAutocompleter().options;
 
 		// Support arrays, sync- & async functions that returns an array.
-		const resolvedOptions = Promise.resolve(
+		const optionsResult =
 			typeof autocompleterOptions === 'function'
 				? autocompleterOptions( query )
-				: autocompleterOptions || []
-		);
-		return resolvedOptions.then( async ( response ) => {
-			const options = this.getFormattedOptions( response, query );
-			this.setState( { options } );
-			return options;
-		} );
+				: autocompleterOptions || [];
+		const resolvedOptions = await optionsResult;
+
+		const options = this.getFormattedOptions( resolvedOptions, query );
+		this.setState( { options } );
+		return options;
 	}
 
 	updateSelected( selected ) {
