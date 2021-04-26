@@ -28,7 +28,7 @@ trait NoteTraits {
 	/**
 	 * Check if the note has been previously added.
 	 *
-	 * @throws NotesUnavailableException Throws exception when notes are disabled.
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
 	 */
 	public static function note_exists() {
 		$data_store = Notes::load_data_store();
@@ -40,7 +40,7 @@ trait NoteTraits {
 	 * Checks if a note can and should be added.
 	 *
 	 * @return bool
-	 * @throws NotesUnavailableException Throws exception when notes are disabled.
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
 	 */
 	public static function can_be_added() {
 		$note = self::get_note();
@@ -66,7 +66,7 @@ trait NoteTraits {
 	/**
 	 * Add the note if it passes predefined conditions.
 	 *
-	 * @throws NotesUnavailableException Throws exception when notes are disabled.
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
 	 */
 	public static function possibly_add_note() {
 		$note = self::get_note();
@@ -81,7 +81,7 @@ trait NoteTraits {
 	/**
 	 * Alias this method for backwards compatibility.
 	 *
-	 * @throws NotesUnavailableException Throws exception when notes are disabled.
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
 	 */
 	public static function add_note() {
 		self::possibly_add_note();
@@ -92,7 +92,7 @@ trait NoteTraits {
 	 * is a hard delete, for where it doesn't make sense to soft delete or
 	 * action the note.
 	 *
-	 * @throws NotesUnavailableException Throws exception when notes are disabled.
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
 	 */
 	public static function possibly_delete_note() {
 		$data_store = Notes::load_data_store();
@@ -111,7 +111,7 @@ trait NoteTraits {
 	 * Get if the note has been actioned.
 	 *
 	 * @return bool
-	 * @throws NotesUnavailableException Throws exception when notes are disabled.
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
 	 */
 	public static function has_note_been_actioned() {
 		$data_store = Notes::load_data_store();

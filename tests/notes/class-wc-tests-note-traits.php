@@ -25,21 +25,21 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 
 	/**
 	 * @doesNotPerformAssertions
-	 * @dataProvider methods_causing_exception_if_wc_admin_is_disabled_provider
+	 * @dataProvider methods_causing_exception_if_data_store_cannot_be_loaded_provider
 	 * @dataProvider methods_never_causing_exception_provider
 	 *
 	 * @param callable $callback Tested NoteTraits method.
 	 */
-	public function test_no_exception_is_thrown_if_data_store_is_unavailable( $callback ) {
+	public function test_no_exception_is_thrown_if_data_store_can_be_loaded( $callback ) {
 		$callback();
 	}
 
 	/**
-	 * @dataProvider methods_causing_exception_if_wc_admin_is_disabled_provider
+	 * @dataProvider methods_causing_exception_if_data_store_cannot_be_loaded_provider
 	 *
 	 * @param callable $callback Tested NoteTraits method.
 	 */
-	public function test_exception_is_thrown_if_wc_admin_is_disabled( $callback ) {
+	public function test_exception_is_thrown_if_data_store_cannot_be_loaded( $callback ) {
 		add_filter( 'woocommerce_data_stores', '__return_empty_array' );
 		$this->expectException( NotesUnavailableException::class );
 		$callback();
@@ -52,7 +52,7 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 	 *
 	 * @param callable $callback Tested NoteTraits method.
 	 */
-	public function test_no_exception_is_thrown_if_wc_admin_is_disabled( $callback ) {
+	public function test_no_exception_is_thrown_even_if_data_store_cannot_be_loaded( $callback ) {
 		add_filter( 'woocommerce_data_stores', '__return_empty_array' );
 		$callback();
 		remove_filter( 'woocommerce_data_stores', '__return_empty_array' );
@@ -69,11 +69,11 @@ class WC_Tests_NoteTraits extends WC_Unit_Test_Case {
 
 	/**
 	 * Data provider providing methods that should throw an exception
-	 * only if WC Admin is disabled.
+	 * only if the "admin-note" data store cannot be loaded.
 	 *
 	 * @return array[]
 	 */
-	public function methods_causing_exception_if_wc_admin_is_disabled_provider() {
+	public function methods_causing_exception_if_data_store_cannot_be_loaded_provider() {
 		return array(
 			array(
 				function () {

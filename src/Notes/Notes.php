@@ -438,8 +438,8 @@ class Notes {
 	/**
 	 * Loads the data store.
 	 *
-	 * If WC Admin is active but disabled using the `woocommerce_admin_disabled`
-	 * filter, attempts to load the store will result in an exception.
+	 * If the "admin-note" data store is unavailable, attempts to load it
+	 * will result in an exception.
 	 * This method catches that exception and throws a custom one instead.
 	 *
 	 * @return \WC_Data_Store The "admin-note" data store.
@@ -450,8 +450,8 @@ class Notes {
 			return \WC_Data_Store::load( 'admin-note' );
 		} catch ( \Exception $e ) {
 			throw new NotesUnavailableException(
-				'woocommerce_admin_notes_disabled',
-				__( 'Notes are unavailable because WooCommerce Admin is disabled.', 'woocommerce-admin' )
+				'woocommerce_admin_notes_unavailable',
+				__( 'Notes are unavailable because the "admin-note" data store cannot be loaded.', 'woocommerce-admin' )
 			);
 		}
 	}
