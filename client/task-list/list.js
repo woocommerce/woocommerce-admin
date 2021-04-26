@@ -257,7 +257,7 @@ export const TaskList = ( {
 						{ renderMenu() }
 					</CardHeader>
 					<CardBody>
-						<ExperimentalList>
+						<ExperimentalList animation="slide-right">
 							{ listTasks.map( ( task ) => (
 								<TaskItem
 									key={ task.key }
