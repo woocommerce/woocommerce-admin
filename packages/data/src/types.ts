@@ -4,7 +4,7 @@
 export type WPDataSelectors = {
 	hasStartedResolution: ( selector: string, args?: string[] ) => boolean;
 	hasFinishedResolution: ( selector: string, args?: string[] ) => boolean;
-	isResolving: ( selector: string, args: string[] ) => boolean;
+	isResolving: < T = string[] >( selector: string, args: T ) => boolean;
 };
 
 export type WPDataActions = {
