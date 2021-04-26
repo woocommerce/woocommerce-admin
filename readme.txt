@@ -76,6 +76,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Fix: Autocompleter for custom Search in FilterPicker #6880
+- Dev: Fixed storybook build script #6875
 - Add: Add plugin installer to allow installation of plugins via URL #6805
 - Add: Optional children prop to SummaryNumber component #6748
 - Dev: Add data source filter to remote inbox notification system #6794
@@ -83,7 +84,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add support for nonces in note actions #6726
 - Dev: Add support for running php unit tests in PHP 8. #6678
 - Dev: Add event recording to start of gateway connections #6801
+- Dev: Update package-lock to fix versioning of local packages. #6843
 - Feature: Add recommended payment methods in payment settings. #6760
+- Fix: Disable the continue btn on OBW when requested are being made #6838
 - Fix: Event tracking for merchant email notes #6616
 - Fix: Use the store timezone to make time data requests #6632
 - Fix: Update the checked input radio button margin style #6701
@@ -95,11 +98,13 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Check active plugins before getting the PayPal onboarding status #6625
 - Fix: Remove no-reply from inbox notification emails #6644
 - Fix: Set up shipping costs task, redirect to shipping settings after completion. #6791
+- Fix: Remove Navigation's uneeded SlotFill context #6832
 - Fix: Onboarding logic on WooCommerce update to keep task list present. #6803
 - Fix: Pause inbox message “GivingFeedbackNotes” #6802
 - Fix: Missed DB version number updates causing unnecessary upgrades. #6818
 - Fix: Parsing bad JSON string data from user WooCommerce meta. #6819
 - Fix: Remove PayPal for India #6828
+- Fix: Report filters expecting specific ordering. #6847
 - Performance: Avoid updating customer info synchronously from the front end. #6765
 - Tweak: Add settings_section event prop for CES #6762
 - Tweak: Refactor payments to allow management of methods #6786
