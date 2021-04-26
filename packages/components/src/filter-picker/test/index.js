@@ -56,7 +56,7 @@ describe( 'FilterPicker', () => {
 			const path = '/foo/bar';
 
 			const { queryAllByRole } = render(
-				<FilterPicker path={ path } type="custom" config={ config } />
+				<FilterPicker path={ path } config={ config } />
 			);
 
 			// Emulate filter dropdown being opened.
@@ -80,7 +80,7 @@ describe( 'FilterPicker', () => {
 			customFilterSettings.autocompleter = productAutocompleter;
 
 			const { queryAllByRole } = render(
-				<FilterPicker path={ path } type="custom" config={ config } />
+				<FilterPicker path={ path } config={ config } />
 			);
 
 			// Emulate filter dropdown being opened.
