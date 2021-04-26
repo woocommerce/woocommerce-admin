@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { cloneElement, useRef, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { PLUGINS_STORE_NAME, WCDataSelector } from '@woocommerce/data';
@@ -37,15 +36,6 @@ export const TaskStep: React.FC< TaskStepProps > = ( {
 		}
 	);
 
-	useEffect( () => {
-		const { task } = query;
-		if ( prevTaskRef.current !== task ) {
-			window.document.documentElement.scrollTop = 0;
-		}
-		prevTaskRef.current = task;
-		recordTaskView();
-	}, [ query ] );
-
 	const recordTaskView = () => {
 		const { task: taskName } = query;
 
@@ -60,6 +50,15 @@ export const TaskStep: React.FC< TaskStepProps > = ( {
 			installedPlugins
 		);
 	};
+
+	useEffect( () => {
+		const { task } = query;
+		if ( prevTaskRef.current !== task ) {
+			window.document.documentElement.scrollTop = 0;
+		}
+		prevTaskRef.current = task;
+		recordTaskView();
+	}, [ query ] );
 
 	if ( ! taskContainer || ! query.task ) {
 		return null;
