@@ -1,5 +1,6 @@
 # Unreleased
 
+-   Make `Search` accept synchronous `autocompleter.options`. #6884
 -   Add new (experimental) list, and add depreciation notice for the current list. #6787
 
 # 6.1.2
