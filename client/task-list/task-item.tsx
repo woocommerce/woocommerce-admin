@@ -6,7 +6,6 @@ import { Icon, check } from '@wordpress/icons';
 import { Button } from '@wordpress/components';
 import { ExperimentalListItem } from '@woocommerce/components';
 import { Text } from '@woocommerce/experimental';
-import { CSSTransition } from 'react-transition-group';
 import classnames from 'classnames';
 
 /**
@@ -68,16 +67,11 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 								) }
 							></div>
 						) }
-						<CSSTransition
-							timeout={ 500 }
-							in={ expanded && content ? true : false }
-							unmountOnExit
-							classNames="woocommerce-task-list__item-content"
-						>
+						{ expanded && content && (
 							<div className="woocommerce-task-list__item-content">
 								{ content }
 							</div>
-						</CSSTransition>
+						) }
 						{ time && ! completed && (
 							<div className="woocommerce-task__estimated-time">
 								{ time }
