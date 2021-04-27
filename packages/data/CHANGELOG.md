@@ -1,6 +1,7 @@
 # Unreleased
 
 -   Fix parsing bad JSON string data in useUserPreferences hook. #6819
+-   Introduced the `woocommerce_user_data_fields` filter for adding custom meta keys.
 
 # 1.2.0
 
