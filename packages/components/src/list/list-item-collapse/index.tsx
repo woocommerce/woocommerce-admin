@@ -3,6 +3,7 @@
  */
 import { Dashicon } from '@wordpress/components';
 import { useState, useCallback } from '@wordpress/element';
+import { CSSTransition } from 'react-transition-group';
 
 /**
  * Internal dependencies
@@ -28,36 +29,27 @@ export const ExperimentalListItemCollapse: React.FC< ListItemCollapseProps > = (
 		setCollapsed( ! isCollapsed );
 	}, [ isCollapsed ] );
 
-	if ( isCollapsed ) {
-		return (
-			<ExperimentalListItem
-				className="list-item-collapse"
-				{ ...otherProps }
-				onClick={ clickHandler }
-			>
-				<p>{ showText }</p>
-
-				<Dashicon
-					className="list-item-collapse__icon"
-					icon="arrow-down-alt2"
-				/>
-			</ExperimentalListItem>
-		);
-	}
-
 	return (
 		<>
-			{ children }
+			<CSSTransition
+				timeout={ 500 }
+				in={ ! isCollapsed }
+				classNames="list-item-collapse"
+				mountOnEnter
+				unmountOnExit
+			>
+				<div>{ children }</div>
+			</CSSTransition>
 			<ExperimentalListItem
 				className="list-item-collapse"
 				onClick={ clickHandler }
 				{ ...otherProps }
 			>
-				<p>{ hideText }</p>
+				<p>{ isCollapsed ? showText : hideText }</p>
 
 				<Dashicon
 					className="list-item-collapse__icon"
-					icon="arrow-up-alt2"
+					icon={ isCollapsed ? 'arrow-down-alt2' : 'arrow-up-alt2' }
 				/>
 			</ExperimentalListItem>
 		</>

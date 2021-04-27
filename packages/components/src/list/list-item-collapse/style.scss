@@ -9,3 +9,21 @@
 		justify-content: flex-end;
 	}
 }
+
+.list-item-collapse-enter {
+	max-height: 0;
+}
+.list-item-collapse-enter-active {
+	max-height: 100vh;
+	transition: max-height 500ms ease-out;
+	overflow: hidden;
+}
+
+.list-item-collapse-exit {
+	max-height: 100vh;
+}
+.list-item-collapse-exit-active {
+	max-height: 0;
+	transition: max-height 500ms;
+	overflow: hidden;
+}

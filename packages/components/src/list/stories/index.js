@@ -7,7 +7,11 @@ import { withConsole } from '@storybook/addon-console';
 /**
  * Internal dependencies
  */
-import List, { ExperimentalList, ExperimentalListItem } from '../';
+import List, {
+	ExperimentalList,
+	ExperimentalListItem,
+	ExperimentalListItemCollapse,
+} from '../';
 import './style.scss';
 
 function logItemClick( event ) {
@@ -161,4 +165,34 @@ export const ExperimentalListExample = () => {
 	);
 };
 
-ExperimentalList.storyName = 'ExperimentalList / ExperimentalListItem.';
+ExperimentalListExample.storyName = 'ExperimentalList / ExperimentalListItem.';
+
+export const ExperimentalCollapsibleListExample = () => {
+	return (
+		<ExperimentalList>
+			<ExperimentalListItem disableGutters onClick={ () => {} }>
+				<div>Without gutters no padding is added to the list item.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItemCollapse
+				hideText="Show less"
+				showText="Show more items"
+			>
+				<ExperimentalListItem onClick={ () => {} }>
+					<div>Any markup can go here.</div>
+				</ExperimentalListItem>
+				<ExperimentalListItem onClick={ () => {} }>
+					<div>Any markup can go here.</div>
+				</ExperimentalListItem>
+				<ExperimentalListItem onClick={ () => {} }>
+					<div>Any markup can go here.</div>
+				</ExperimentalListItem>
+			</ExperimentalListItemCollapse>
+		</ExperimentalList>
+	);
+};
+
+ExperimentalCollapsibleListExample.storyName =
+	'ExperimentalList with ExperimentalCollapsibleListItem.';
