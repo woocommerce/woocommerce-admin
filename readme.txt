@@ -75,7 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
-- Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
+- Add: Consume remote payment methods on frontend #6867
 - Dev: Fixed storybook build script #6875
 - Add: Add plugin installer to allow installation of plugins via URL #6805
 - Add: Optional children prop to SummaryNumber component #6748
@@ -85,6 +85,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add support for running php unit tests in PHP 8. #6678
 - Dev: Add event recording to start of gateway connections #6801
 - Dev: Update package-lock to fix versioning of local packages. #6843
+- Dev: Use rule processing for remote payment methods #6830
+- Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
 - Feature: Add recommended payment methods in payment settings. #6760
 - Fix: Disable the continue btn on OBW when requested are being made #6838
 - Fix: Event tracking for merchant email notes #6616
@@ -105,6 +107,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Parsing bad JSON string data from user WooCommerce meta. #6819
 - Fix: Remove PayPal for India #6828
 - Fix: Report filters expecting specific ordering. #6847
+- Fix: Render bug with report comparison mode selections. #6862
+- Fix: Throw exception if the data store cannot be loaded when trying to use notes. #6771
+- Fix: Autocompleter for custom Search in FilterPicker #6880
+- Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Performance: Avoid updating customer info synchronously from the front end. #6765
 - Tweak: Add settings_section event prop for CES #6762
 - Tweak: Refactor payments to allow management of methods #6786
@@ -115,6 +121,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
+- Update: Task list component with new Experimental Task list. #6849
 
 == 2.2.0 3/30/2021 ==
 
