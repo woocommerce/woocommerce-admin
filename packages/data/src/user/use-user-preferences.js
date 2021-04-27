@@ -3,6 +3,7 @@
  */
 import { mapValues, pick } from 'lodash';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -49,7 +50,7 @@ async function updateUserPrefs(
 	// @todo Handle unresolved getCurrentUser() here.
 
 	// Whitelist our meta fields.
-	const userDataFields = [
+	const userDataFields = applyFilters( 'woocommerce_user_data_fields', [
 		'categories_report_columns',
 		'coupons_report_columns',
 		'customers_report_columns',
@@ -68,7 +69,7 @@ async function updateUserPrefs(
 		'android_app_banner_dismissed',
 		'task_list_tracked_started_tasks',
 		'help_panel_highlight_shown',
-	];
+	] );
 
 	// Prep valid fields for update.
 	const metaData = mapValues(
