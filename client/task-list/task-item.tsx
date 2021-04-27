@@ -4,8 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { Icon, check } from '@wordpress/icons';
 import { Button } from '@wordpress/components';
-import { ExperimentalListItem } from '@woocommerce/components';
 import { Text } from '@woocommerce/experimental';
+import { __experimentalListItem as ListItem } from '@woocommerce/components';
 import classnames from 'classnames';
 
 /**
@@ -14,19 +14,19 @@ import classnames from 'classnames';
 import './task-item.scss';
 import sanitizeHTML from '../lib/sanitize-html';
 
-type ListItemProps = {
+type TaskItemProps = {
 	title: string;
 	completed: boolean;
 	onClick: () => void;
 	isDismissable?: boolean;
 	onDismiss?: () => void;
 	additionalInfo?: string;
-	time: string;
+	time?: string;
 	content?: string;
 	expanded?: boolean;
 };
 
-export const TaskItem: React.FC< ListItemProps > = ( {
+export const TaskItem: React.FC< TaskItemProps > = ( {
 	completed,
 	title,
 	isDismissable,
@@ -41,7 +41,7 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 		'is-complete': completed,
 	} );
 	return (
-		<ExperimentalListItem
+		<ListItem
 			disableGutters={ false }
 			className={ className }
 			onClick={ onClick }
@@ -79,14 +79,15 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 						) }
 					</Text>
 				</span>
-				<span className="woocommerce-task-list__item-content"></span>
 			</div>
 			{ onDismiss && isDismissable && ! completed && (
 				<div className="woocommerce-task-list__item-after">
 					<Button
 						data-testid={ `dismiss-button` }
 						isTertiary
-						onClick={ ( event: React.MouseEvent ) => {
+						onClick={ (
+							event: React.MouseEvent | React.KeyboardEvent
+						) => {
 							event.stopPropagation();
 							onDismiss();
 						} }
@@ -95,6 +96,6 @@ export const TaskItem: React.FC< ListItemProps > = ( {
 					</Button>
 				</div>
 			) }
-		</ExperimentalListItem>
+		</ListItem>
 	);
 };
