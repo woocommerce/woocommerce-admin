@@ -7,13 +7,21 @@ jest.mock( '../list-item', () => ( {
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import {
+	render,
+	screen,
+	waitForElementToBeRemoved,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 /**
  * Internal dependencies
  */
-import List, { ExperimentalList, ExperimentalListItem } from '../index';
+import List, {
+	ExperimentalList,
+	ExperimentalListItem,
+	ExperimentalListItemCollapse,
+} from '../index';
 import { handleKeyDown } from '../list-item';
 
 describe( 'List', () => {
@@ -143,6 +151,75 @@ describe( 'List', () => {
 				expect( item ).toBeInTheDocument();
 				expect( item ).toHaveAttribute( 'role', 'button' );
 				expect( item ).toHaveAttribute( 'tabindex', '0' );
+			} );
+		} );
+
+		describe( 'ExperimentalListItemCollapse', () => {
+			it( 'should not render its children intially, but an extra list footer with show text', () => {
+				const { container } = render(
+					<ExperimentalListItemCollapse
+						hideText="Show less"
+						showText="Show more items"
+					>
+						<div>Test</div>
+					</ExperimentalListItemCollapse>
+				);
+
+				expect( container ).not.toHaveTextContent( 'Test' );
+				expect( container ).toHaveTextContent( 'Show more items' );
+			} );
+
+			it( 'should render list items when footer is clicked', () => {
+				const { container } = render(
+					<ExperimentalListItemCollapse
+						hideText="Show less"
+						showText="Show more items"
+					>
+						<div>Test</div>
+						<div>Test 2</div>
+					</ExperimentalListItemCollapse>
+				);
+
+				const listItem = container.querySelector(
+					'.list-item-collapse'
+				);
+
+				userEvent.click( listItem );
+				expect( container ).toHaveTextContent( 'Test' );
+				expect( container ).toHaveTextContent( 'Test 2' );
+				expect( container ).not.toHaveTextContent( 'Show more items' );
+				expect( container ).toHaveTextContent( 'Show less' );
+			} );
+
+			it( 'should correctly toggle the list', async () => {
+				const { container } = render(
+					<ExperimentalListItemCollapse
+						hideText="Show less"
+						showText="Show more items"
+					>
+						<div id="test">Test</div>
+						<div>Test 2</div>
+					</ExperimentalListItemCollapse>
+				);
+
+				let listItem = container.querySelector( '.list-item-collapse' );
+
+				userEvent.click( listItem );
+				expect( container ).toHaveTextContent( 'Test' );
+				expect( container ).toHaveTextContent( 'Test 2' );
+				expect( container ).not.toHaveTextContent( 'Show more items' );
+				expect( container ).toHaveTextContent( 'Show less' );
+
+				listItem = container.querySelector( '.list-item-collapse' );
+
+				userEvent.click( listItem );
+				await waitForElementToBeRemoved(
+					container.querySelector( '#test' )
+				);
+				expect( container ).not.toHaveTextContent( 'Test' );
+				expect( container ).not.toHaveTextContent( 'Test 2' );
+				expect( container ).toHaveTextContent( 'Show more items' );
+				expect( container ).not.toHaveTextContent( 'Show less' );
 			} );
 		} );
 	} );
