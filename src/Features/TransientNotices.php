@@ -120,9 +120,6 @@ class TransientNotices {
 			return;
 		}
 
-		$script_assets_filename = Loader::get_script_asset_filename( 'transient-notices' );
-		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
-
 		wp_localize_script( WC_ADMIN_APP, 'wcQueuedNotices', array_values( $notices ) );
 	}
 
