@@ -11,6 +11,13 @@ $foreground-color: var(--wp-admin-theme-color);
 		align-items: center;
 	}
 
+	.woocommerce-task-list__item-after {
+		margin-left: $gap;
+		display: flex;
+		align-items: center;
+		margin-left: auto;
+	}
+
 	.woocommerce-task-list__item-before .woocommerce-task__icon {
 		border-radius: 50%;
 		width: 32px;
