@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { mapValues, pick } from 'lodash';
+import { mapValues } from 'lodash';
 import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
@@ -49,16 +49,11 @@ async function updateUserPrefs(
 	// @todo Handle unresolved getCurrentUser() here.
 
 	// Prep fields for update.
-	const metaData = mapValues(
-		userPrefs,
-		JSON.stringify
-	);
+	const metaData = mapValues( userPrefs, JSON.stringify );
 
 	if ( Object.keys( metaData ).length === 0 ) {
 		return {
-			error: new Error(
-				'Invalid woocommerce_meta data for update.'
-			),
+			error: new Error( 'Invalid woocommerce_meta data for update.' ),
 			updatedUser: undefined,
 		};
 	}
