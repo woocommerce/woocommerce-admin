@@ -10,7 +10,7 @@ import { withConsole } from '@storybook/addon-console';
 import List, {
 	ExperimentalList,
 	ExperimentalListItem,
-	ExperimentalListItemCollapse,
+	ExperimentalCollapsibleList,
 } from '../';
 import './style.scss';
 
@@ -169,36 +169,35 @@ ExperimentalListExample.storyName = 'ExperimentalList / ExperimentalListItem.';
 
 export const ExperimentalCollapsibleListExample = () => {
 	return (
-		<ExperimentalList>
-			<ExperimentalListItem disableGutters onClick={ () => {} }>
-				<div>Without gutters no padding is added to the list item.</div>
+		<ExperimentalCollapsibleList
+			hideText="Show less"
+			showText="Show more items"
+			minChildrenToShow={ 2 }
+			onCollapse={ () => {
+				// eslint-disable-next-line no-console
+				console.log( 'collapsed' );
+			} }
+			onExpand={ () => {
+				// eslint-disable-next-line no-console
+				console.log( 'expanded' );
+			} }
+		>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
 			</ExperimentalListItem>
 			<ExperimentalListItem onClick={ () => {} }>
 				<div>Any markup can go here.</div>
 			</ExperimentalListItem>
-			<ExperimentalListItemCollapse
-				hideText="Show less"
-				showText="Show more items"
-				onCollapse={ () => {
-					// eslint-disable-next-line no-console
-					console.log( 'collapsed' );
-				} }
-				onExpand={ () => {
-					// eslint-disable-next-line no-console
-					console.log( 'expanded' );
-				} }
-			>
-				<ExperimentalListItem onClick={ () => {} }>
-					<div>Any markup can go here.</div>
-				</ExperimentalListItem>
-				<ExperimentalListItem onClick={ () => {} }>
-					<div>Any markup can go here.</div>
-				</ExperimentalListItem>
-				<ExperimentalListItem onClick={ () => {} }>
-					<div>Any markup can go here.</div>
-				</ExperimentalListItem>
-			</ExperimentalListItemCollapse>
-		</ExperimentalList>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+		</ExperimentalCollapsibleList>
 	);
 };
 

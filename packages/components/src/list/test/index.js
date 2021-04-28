@@ -20,7 +20,7 @@ import userEvent from '@testing-library/user-event';
 import List, {
 	ExperimentalList,
 	ExperimentalListItem,
-	ExperimentalListItemCollapse,
+	ExperimentalCollapsibleList,
 } from '../index';
 import { handleKeyDown } from '../list-item';
 
@@ -157,12 +157,12 @@ describe( 'List', () => {
 		describe( 'ExperimentalListItemCollapse', () => {
 			it( 'should not render its children intially, but an extra list footer with show text', () => {
 				const { container } = render(
-					<ExperimentalListItemCollapse
+					<ExperimentalCollapsibleList
 						hideText="Show less"
 						showText="Show more items"
 					>
 						<div>Test</div>
-					</ExperimentalListItemCollapse>
+					</ExperimentalCollapsibleList>
 				);
 
 				expect( container ).not.toHaveTextContent( 'Test' );
@@ -173,7 +173,7 @@ describe( 'List', () => {
 				const onExpand = jest.fn();
 				const onCollapse = jest.fn();
 				const { container } = render(
-					<ExperimentalListItemCollapse
+					<ExperimentalCollapsibleList
 						hideText="Show less"
 						showText="Show more items"
 						onExpand={ onExpand }
@@ -181,7 +181,7 @@ describe( 'List', () => {
 					>
 						<div>Test</div>
 						<div>Test 2</div>
-					</ExperimentalListItemCollapse>
+					</ExperimentalCollapsibleList>
 				);
 
 				const listItem = container.querySelector(
@@ -197,11 +197,48 @@ describe( 'List', () => {
 				expect( onCollapse ).not.toHaveBeenCalled();
 			} );
 
+			it( 'should render minimum children if minChildrenToShow is set and show the rest on expand', () => {
+				const onExpand = jest.fn();
+				const onCollapse = jest.fn();
+				const { container } = render(
+					<ExperimentalCollapsibleList
+						hideText="Show less"
+						showText="Show more items"
+						onExpand={ onExpand }
+						onCollapse={ onCollapse }
+						minChildrenToShow={ 2 }
+					>
+						<div>Test</div>
+						<div>Test 2</div>
+						<div>Test 3</div>
+						<div>Test 4</div>
+					</ExperimentalCollapsibleList>
+				);
+
+				expect( container ).toHaveTextContent( 'Test' );
+				expect( container ).toHaveTextContent( 'Test 2' );
+				expect( container ).not.toHaveTextContent( 'Test 3' );
+				expect( container ).not.toHaveTextContent( 'Test 4' );
+				const listItem = container.querySelector(
+					'.list-item-collapse'
+				);
+
+				userEvent.click( listItem );
+				expect( container ).toHaveTextContent( 'Test' );
+				expect( container ).toHaveTextContent( 'Test 2' );
+				expect( container ).toHaveTextContent( 'Test 3' );
+				expect( container ).toHaveTextContent( 'Test 4' );
+				expect( container ).not.toHaveTextContent( 'Show more items' );
+				expect( container ).toHaveTextContent( 'Show less' );
+				expect( onExpand ).toHaveBeenCalled();
+				expect( onCollapse ).not.toHaveBeenCalled();
+			} );
+
 			it( 'should correctly toggle the list', async () => {
 				const onExpand = jest.fn();
 				const onCollapse = jest.fn();
 				const { container } = render(
-					<ExperimentalListItemCollapse
+					<ExperimentalCollapsibleList
 						hideText="Show less"
 						showText="Show more items"
 						onExpand={ onExpand }
@@ -209,7 +246,7 @@ describe( 'List', () => {
 					>
 						<div id="test">Test</div>
 						<div>Test 2</div>
-					</ExperimentalListItemCollapse>
+					</ExperimentalCollapsibleList>
 				);
 
 				let listItem = container.querySelector( '.list-item-collapse' );
