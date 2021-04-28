@@ -73,6 +73,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 2.2.2 4/28/2021 ==
+
+- Tweak: Revert WCPay international support for bundled package #6901
+
 == 2.2.0 3/30/2021  ==
 
 - Fix: Check if features are currently being enabled #6688
