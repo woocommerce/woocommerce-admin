@@ -84,7 +84,7 @@ class Note extends \WC_Data {
 			$this->set_object_read( true );
 		}
 
-		$this->data_store = \WC_Data_Store::load( 'admin-note' );
+		$this->data_store = Notes::load_data_store();
 		if ( $this->get_id() > 0 ) {
 			$this->data_store->read( $this );
 		}
@@ -503,6 +503,9 @@ class Note extends \WC_Data {
 			$this->error( 'admin_note_invalid_data', __( 'The admin note date prop cannot be empty.', 'woocommerce-admin' ) );
 		}
 
+		if ( is_string( $date ) ) {
+			$date = wc_string_to_timestamp( $date );
+		}
 		$this->set_date_prop( 'date_created', $date );
 	}
 
@@ -512,6 +515,9 @@ class Note extends \WC_Data {
 	 * @param string|integer|null $date UTC timestamp, or ISO 8601 DateTime. If the DateTime string has no timezone or offset, WordPress site timezone will be assumed. Null if there is no date.
 	 */
 	public function set_date_reminder( $date ) {
+		if ( is_string( $date ) ) {
+			$date = wc_string_to_timestamp( $date );
+		}
 		$this->set_date_prop( 'date_reminder', $date );
 	}
 
