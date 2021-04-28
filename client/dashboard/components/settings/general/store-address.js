@@ -206,6 +206,7 @@ export function StoreAddress( props ) {
 				isSearchable
 				{ ...getInputProps( 'countryState' ) }
 				controlClassName={ getInputProps( 'countryState' ).className }
+				isDisabled={ true }
 			>
 				{ countryStateAutofill }
 			</SelectControl>
