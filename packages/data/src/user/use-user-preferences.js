@@ -3,7 +3,6 @@
  */
 import { mapValues, pick } from 'lodash';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
