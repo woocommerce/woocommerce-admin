@@ -75,27 +75,53 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
-- Fix: Get currency from CurrencyContext #6723
+- Add: Consume remote payment methods on frontend #6867
+- Add: Add plugin installer to allow installation of plugins via URL #6805
+- Add: Optional children prop to SummaryNumber component #6748
 - Dev: Add data source filter to remote inbox notification system #6794
+- Dev: Add A/A test #6669
+- Dev: Add support for nonces in note actions #6726
+- Dev: Add support for running php unit tests in PHP 8. #6678
+- Dev: Add event recording to start of gateway connections #6801
+- Dev: Update package-lock to fix versioning of local packages. #6843
+- Dev: Use rule processing for remote payment methods #6830
+- Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
+- Dev: Fixed storybook build script #6875
+- Feature: Add recommended payment methods in payment settings. #6760
+- Fix: Disable the continue btn on OBW when requested are being made #6838
+- Fix: Event tracking for merchant email notes #6616
+- Fix: Use the store timezone to make time data requests #6632
+- Fix: Update the checked input radio button margin style #6701
+- Fix: Convert date to timestamp before passing to set_date_prop to persist timezone #6795
 - Fix: Make pagination buttons height and width consistent #6725
-- Tweak: Add settings_section event prop for CES #6762
 - Fix: Retain persisted queries when navigating to Homescreen #6614
-- Update: Update choose niche note cta URL #6733
 - Fix: Update folded header style #6724
+- Fix: Unreleated variations showing up in the Products reports #6647
+- Fix: Check active plugins before getting the PayPal onboarding status #6625
+- Fix: Remove no-reply from inbox notification emails #6644
+- Fix: Set up shipping costs task, redirect to shipping settings after completion. #6791
+- Fix: Remove Navigation's uneeded SlotFill context #6832
+- Fix: Onboarding logic on WooCommerce update to keep task list present. #6803
+- Fix: Pause inbox message “GivingFeedbackNotes” #6802
+- Fix: Missed DB version number updates causing unnecessary upgrades. #6818
+- Fix: Parsing bad JSON string data from user WooCommerce meta. #6819
+- Fix: Remove PayPal for India #6828
+- Fix: Report filters expecting specific ordering. #6847
+- Fix: Render bug with report comparison mode selections. #6862
+- Fix: Throw exception if the data store cannot be loaded when trying to use notes. #6771
+- Fix: Autocompleter for custom Search in FilterPicker #6880
+- Fix: Get currency from CurrencyContext #6723
+- Performance: Avoid updating customer info synchronously from the front end. #6765
+- Tweak: Add settings_section event prop for CES #6762
 - Tweak: Refactor payments to allow management of methods #6786
-- Fix: Fix unreleated variations showing up in the Products reports #6647
-- Tweak: Add tracking data for the preview site btn #6623
+- Tweak: Add tracking data for the preview site button #6623
 - Tweak: Update WC Payments copy on the task list #6734
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
-- Dev: Add A/A test #6669
-- Fix: Event tracking for merchant email notes #6616
-- Fix: Check active plugins before getting the PayPal onboarding status #6625
-- Dev: Add support for running php unit tests in PHP 8. #6678
-- Fix: Remove no-reply from inbox notification emails #6644
-- Performance: Avoid updating customer info synchronously from the front end. #6765
-- Fix: Set up shipping costs task, redirect to shipping settings after completion. #6791
-- Add: Optional children prop to SummaryNumber component #6748
-- Fix: Onboarding logic on WooCommerce update to keep task list present. #6803
+- Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
+- Update: Update choose niche note cta URL #6733
+- Update: UI updates to Payment Task screen #6766
+- Update: Adding setup required icon for non-configured payment methods #6811
+- Update: Task list component with new Experimental Task list. #6849
 
 == 2.2.0 3/30/2021 ==
 
