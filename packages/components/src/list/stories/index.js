@@ -179,6 +179,14 @@ export const ExperimentalCollapsibleListExample = () => {
 			<ExperimentalListItemCollapse
 				hideText="Show less"
 				showText="Show more items"
+				onCollapse={ () => {
+					// eslint-disable-next-line no-console
+					console.log( 'collapsed' );
+				} }
+				onExpand={ () => {
+					// eslint-disable-next-line no-console
+					console.log( 'expanded' );
+				} }
 			>
 				<ExperimentalListItem onClick={ () => {} }>
 					<div>Any markup can go here.</div>

@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { Dashicon } from '@wordpress/components';
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, useEffect } from '@wordpress/element';
 import { CSSTransition } from 'react-transition-group';
 
 /**
@@ -14,6 +14,8 @@ type ListItemCollapseProps = {
 	collapsed?: boolean;
 	hideText: string;
 	showText: string;
+	onCollapse?: () => void;
+	onExpand?: () => void;
 } & React.HTMLAttributes< HTMLElement >;
 
 export const ExperimentalListItemCollapse: React.FC< ListItemCollapseProps > = ( {
@@ -21,12 +23,24 @@ export const ExperimentalListItemCollapse: React.FC< ListItemCollapseProps > = (
 	collapsed = true,
 	hideText,
 	showText,
+	onCollapse,
+	onExpand,
 	...otherProps
 } ): JSX.Element => {
 	const [ isCollapsed, setCollapsed ] = useState( collapsed );
 
+	const triggerCallbacks = ( newCollapseValue: boolean ) => {
+		if ( onCollapse && newCollapseValue ) {
+			onCollapse();
+		}
+		if ( onExpand && ! newCollapseValue ) {
+			onExpand();
+		}
+	};
+
 	const clickHandler = useCallback( () => {
 		setCollapsed( ! isCollapsed );
+		triggerCallbacks( ! isCollapsed );
 	}, [ isCollapsed ] );
 
 	return (
