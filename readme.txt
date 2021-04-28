@@ -117,6 +117,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
+- Dev: Removed allowed keys list for adding woocommerce_meta data. #6889
 
 == 2.2.0 3/30/2021 ==
 
