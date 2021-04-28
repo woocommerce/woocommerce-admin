@@ -77,6 +77,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 - Fix: Disable the continue btn on OBW when requested are being made #6838
 - Tweak: Store profiler - Changed MailPoet's title and description #6886
+- Tweak: Update PayU logo #6829
 
 == 2.2.0 3/30/2021  ==
 
