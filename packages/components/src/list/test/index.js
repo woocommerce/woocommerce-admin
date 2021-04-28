@@ -169,11 +169,15 @@ describe( 'List', () => {
 				expect( container ).toHaveTextContent( 'Show more items' );
 			} );
 
-			it( 'should render list items when footer is clicked', () => {
+			it( 'should render list items when footer is clicked and trigger onExpand', () => {
+				const onExpand = jest.fn();
+				const onCollapse = jest.fn();
 				const { container } = render(
 					<ExperimentalListItemCollapse
 						hideText="Show less"
 						showText="Show more items"
+						onExpand={ onExpand }
+						onCollapse={ onCollapse }
 					>
 						<div>Test</div>
 						<div>Test 2</div>
@@ -189,13 +193,19 @@ describe( 'List', () => {
 				expect( container ).toHaveTextContent( 'Test 2' );
 				expect( container ).not.toHaveTextContent( 'Show more items' );
 				expect( container ).toHaveTextContent( 'Show less' );
+				expect( onExpand ).toHaveBeenCalled();
+				expect( onCollapse ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should correctly toggle the list', async () => {
+				const onExpand = jest.fn();
+				const onCollapse = jest.fn();
 				const { container } = render(
 					<ExperimentalListItemCollapse
 						hideText="Show less"
 						showText="Show more items"
+						onExpand={ onExpand }
+						onCollapse={ onCollapse }
 					>
 						<div id="test">Test</div>
 						<div>Test 2</div>
@@ -220,6 +230,8 @@ describe( 'List', () => {
 				expect( container ).not.toHaveTextContent( 'Test 2' );
 				expect( container ).toHaveTextContent( 'Show more items' );
 				expect( container ).not.toHaveTextContent( 'Show less' );
+				expect( onExpand ).toHaveBeenCalledTimes( 1 );
+				expect( onCollapse ).toHaveBeenCalledTimes( 1 );
 			} );
 		} );
 	} );
