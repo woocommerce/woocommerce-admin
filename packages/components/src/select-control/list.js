@@ -139,6 +139,10 @@ class List extends Component {
 	}
 
 	componentDidMount() {
+		const { selectedIndex } = this.props;
+		if ( selectedIndex > -1 ) {
+			this.scrollToOption( selectedIndex );
+		}
 		this.toggleKeyEvents( true );
 	}
 
