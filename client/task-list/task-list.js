@@ -19,6 +19,7 @@ import { Text } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { TaskItem } from './task-item';
+import { TasksList } from './list';
 
 export const TaskList = ( {
 	query,
@@ -262,7 +263,13 @@ export const TaskList = ( {
 					</CardHeader>
 					<CardBody>
 						<List animation="slide-right">
-							{ listTasks.map( ( task ) => (
+							<TasksList
+								tasks={ listTasks }
+								collapsible={ name === 'extended_task_list' }
+								name={ name }
+								dismissTask={ ( task ) => dismissTask( task ) }
+							/>
+							{ /* { listTasks.map( ( task ) => (
 								<TaskItem
 									key={ task.key }
 									title={ task.title }
@@ -273,7 +280,7 @@ export const TaskList = ( {
 									onDismiss={ () => dismissTask( task ) }
 									time={ task.time }
 								/>
-							) ) }
+							) ) } */ }
 						</List>
 					</CardBody>
 				</Card>
