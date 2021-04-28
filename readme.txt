@@ -73,8 +73,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-== Unreleased ==
-
 == 2.3.0 T/B/D ==
 - Add: Add plugin installer to allow installation of plugins via URL #6805
 - Add: Optional children prop to SummaryNumber component #6748
@@ -111,7 +109,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
 
-== 2.2.0 3/30/2021 ==
+== 2.2.2 4/28/2021 ==
+
+- Fix: Disable the continue btn on OBW when requested are being made #6838
+- Tweak: Revert WCPay international support for bundled package #6901
+- Tweak: Store profiler - Changed MailPoet's title and description #6886
+- Tweak: Update PayU logo #6829
+
+== 2.2.0 3/30/2021  ==
 
 - Fix: Check if features are currently being enabled #6688
 - Add: Next new novel navigation nudge note #6610
