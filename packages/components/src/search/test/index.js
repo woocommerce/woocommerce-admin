@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 /**
@@ -47,9 +47,9 @@ describe( 'Search', () => {
 				// Emulate typing to render available options.
 				userEvent.type( getByRole( 'combobox' ), 'A' );
 				// Wait for async options procesing.
-				await delay( 1000 );
-
-				expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
+				await waitFor( () => {
+					expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
+				} );
 			} );
 
 			it( 'being a function that for the given query returns an array', async () => {
@@ -77,10 +77,10 @@ describe( 'Search', () => {
 				// Emulate typing to render available options.
 				userEvent.type( getByRole( 'combobox' ), 'A' );
 				// Wait for async options procesing.
-				await delay( 1000 );
-
-				expect( optionsSpy ).toBeCalledWith( 'A' );
-				expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
+				await waitFor( () => {
+					expect( optionsSpy ).toBeCalledWith( 'A' );
+					expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
+				} );
 			} );
 
 			it( 'being a function that for the given query returns a promise for an array', async () => {
@@ -109,10 +109,10 @@ describe( 'Search', () => {
 				// Emulate typing to render available options.
 				userEvent.type( getByRole( 'combobox' ), 'A' );
 				// Wait for async options procesing.
-				await delay( 1000 );
-
-				expect( optionsSpy ).toBeCalledWith( 'A' );
-				expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
+				await waitFor( () => {
+					expect( optionsSpy ).toBeCalledWith( 'A' );
+					expect( queryAllByRole( 'option' ) ).toHaveLength( 3 );
+				} );
 			} );
 		} );
 	} );
