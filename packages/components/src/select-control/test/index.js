@@ -260,6 +260,35 @@ describe( 'SelectControl', () => {
 			);
 		} );
 
+		describe( 'prop excludeSelectedOptions', () => {
+			it( 'should preserve selected option when focused', async () => {
+				const onChangeMock = jest.fn();
+				const { getByRole } = render(
+					<SelectControl
+						isSearchable
+						showAllOnFocus
+						selected={ options[ 2 ].key }
+						options={ options }
+						onSearch={ () => options }
+						onFilter={ () => options }
+						onChange={ onChangeMock }
+						excludeSelectedOptions={ false }
+					/>
+				);
+				getByRole( 'combobox' ).focus();
+				await waitFor( () =>
+					expect(
+						getByRole( 'option', { name: 'bar' } )
+					).toBeInTheDocument()
+				);
+				// In browser, the <Button> in <List> component is automatically "selected" when <Control> lost focus.
+				// I was not able to produce the same behaviour with unit test, but a click on the currently
+				// selected option should be sufficient to simulate the logic in this test.
+				userEvent.click( getByRole( 'option', { selected: true } ) );
+				expect( onChangeMock ).toHaveBeenCalledTimes( 0 );
+			} );
+		} );
+
 		describe( 'control onChange', () => {
 			it( 'should return array if selected is array and onChange triggered from control', () => {
 				const onChangeMock = jest.fn();
