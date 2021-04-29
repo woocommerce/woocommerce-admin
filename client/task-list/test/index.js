@@ -18,7 +18,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import TaskDashboard from '../';
-import { TaskList } from '../list';
+import { TaskList } from '../task-list';
 import { getAllTasks } from '../tasks';
 import { DisplayOption } from '../../header/activity-panel/display-options';
 

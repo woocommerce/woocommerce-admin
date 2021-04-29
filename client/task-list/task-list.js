@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -9,6 +9,7 @@ import {
 	EllipsisMenu,
 	Badge,
 	__experimentalList as List,
+	__experimentalCollapsibleList as CollapsibleList,
 } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
@@ -19,7 +20,6 @@ import { Text } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { TaskItem } from './task-item';
-import { TasksList } from './list';
 
 export const TaskList = ( {
 	query,
@@ -247,6 +247,23 @@ export const TaskList = ( {
 		return <div className="woocommerce-task-dashboard__container"></div>;
 	}
 
+	const expandLabel = sprintf(
+		/* translators: %i = number of hidden tasks */
+		__( 'Show %i more tasks.', 'woocommerce-admin' ),
+		listTasks.length - 2
+	);
+	const collapseLabel = __( 'Show less', 'woocommerce-admin' );
+	const ListComp = name === 'task_list' ? List : CollapsibleList;
+
+	const listProps =
+		name === 'task_list'
+			? {}
+			: {
+					collapseLabel,
+					expandLabel,
+					show: 2,
+			  };
+
 	return (
 		<>
 			<div className="woocommerce-task-dashboard__container">
@@ -262,14 +279,8 @@ export const TaskList = ( {
 						{ renderMenu() }
 					</CardHeader>
 					<CardBody>
-						<List animation="slide-right">
-							<TasksList
-								tasks={ listTasks }
-								collapsible={ name === 'extended_task_list' }
-								name={ name }
-								dismissTask={ ( task ) => dismissTask( task ) }
-							/>
-							{ /* { listTasks.map( ( task ) => (
+						<ListComp animation="slide-right" { ...listProps }>
+							{ listTasks.map( ( task ) => (
 								<TaskItem
 									key={ task.key }
 									title={ task.title }
@@ -280,8 +291,8 @@ export const TaskList = ( {
 									onDismiss={ () => dismissTask( task ) }
 									time={ task.time }
 								/>
-							) ) } */ }
-						</List>
+							) ) }
+						</ListComp>
 					</CardBody>
 				</Card>
 			</div>
