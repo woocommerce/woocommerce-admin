@@ -1,5 +1,7 @@
 # Unreleased
 
+-   SelectControl: automatically scroll to selected options when list is displayed. #6906
+-   SelectControl: fix focus de-focus unintended selecting option. #6906
 -   SelectControl: fix display of multiple selections without inline tags. #6862
 -   Add new (experimental) list, and add depreciation notice for the current list. #6787
 -   Force `<SearchListItem>` form elements id to be unique. #6871
