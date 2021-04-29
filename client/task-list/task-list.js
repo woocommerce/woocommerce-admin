@@ -262,6 +262,9 @@ export const TaskList = ( {
 					collapseLabel,
 					expandLabel,
 					show: 2,
+					onCollapse: () =>
+						recordEvent( 'extended_tasklist_collapse' ),
+					onExpand: () => recordEvent( 'extended_tasklist_expand' ),
 			  };
 
 	return (
