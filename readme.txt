@@ -87,6 +87,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
 - Dev: Fixed storybook build script #6875
+- Dev: Removed allowed keys list for adding woocommerce_meta data. #6889 🎉 @xristos3490
 - Feature: Add recommended payment methods in payment settings. #6760
 - Fix: Disable the continue btn on OBW when requested are being made #6838
 - Fix: Event tracking for merchant email notes #6616
@@ -118,11 +119,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Update WC Payments copy on the task list #6734
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
 - Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
+- Tweak: Update PayU logo #6829
+- Tweak: Store profiler - Changed MailPoet's title and description #6886
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
 - Update: Task list component with new Experimental Task list. #6849
 - Dev: Add disabled prop to SelectControl #6902
+- Update: Redirect to WC Home after setting up a payment method #6891
 
 == 2.2.0 3/30/2021 ==
 
