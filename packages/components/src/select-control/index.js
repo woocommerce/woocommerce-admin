@@ -399,7 +399,7 @@ SelectControl.propTypes = {
 	/**
 	 * Allow the select options to be disabled.
 	 */
-	isDisabled: PropTypes.bool,
+	disabled: PropTypes.bool,
 	/**
 	 * Exclude already selected options from the options list.
 	 */

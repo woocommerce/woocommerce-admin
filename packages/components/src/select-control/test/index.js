@@ -262,7 +262,7 @@ describe( 'SelectControl', () => {
 
 		it( 'disables the component', async () => {
 			const { getByRole } = render(
-				<SelectControl isDisabled options={ options } />
+				<SelectControl disabled options={ options } />
 			);
 
 			await waitFor( () =>
