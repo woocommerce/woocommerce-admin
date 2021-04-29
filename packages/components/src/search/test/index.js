@@ -15,7 +15,7 @@ const delay = ( timeout ) =>
 	new Promise( ( resolve ) => setTimeout( resolve, timeout ) );
 
 describe( 'Search', () => {
-	it( 'shows the free text search option', async () => {
+	it( 'shows the free text search option', () => {
 		const { getByRole, queryAllByRole } = render(
 			<Search type="products" allowFreeTextSearch />
 		);
