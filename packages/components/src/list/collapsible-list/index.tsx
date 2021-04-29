@@ -12,32 +12,62 @@ import { ExperimentalListItem } from '../experimental-list-item';
 import { ListProps, ExperimentalList } from '../experimental-list';
 
 type CollapsibleListProps = {
-	hideText: string;
-	showText: string;
+	collapseLabel: string;
+	expandLabel: string;
 	collapsed?: boolean;
-	minChildrenToShow?: number;
+	show?: number;
 	onCollapse?: () => void;
 	onExpand?: () => void;
 } & ListProps;
 
-const TASK_HEIGHT = 70;
+const FALLBACK_TASK_HEIGHT = 70;
 const defaultStyle = {
 	transition: `max-height 500ms ease-in-out`,
 	maxHeight: 0,
 	overflow: 'hidden',
 };
 
+function getContainerHeight(
+	childrenLength: number,
+	collapseContainer: HTMLDivElement | null
+) {
+	let containerHeight = 0;
+	if ( collapseContainer ) {
+		for ( const child of collapseContainer.children ) {
+			containerHeight += child.clientHeight;
+		}
+	}
+	if ( containerHeight === 0 ) {
+		containerHeight = childrenLength * FALLBACK_TASK_HEIGHT;
+	}
+	return containerHeight;
+}
+
 export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	children,
 	collapsed = true,
-	hideText,
-	showText,
-	minChildrenToShow = 0,
+	collapseLabel,
+	expandLabel,
+	show = 0,
 	onCollapse,
 	onExpand,
 	...listProps
 } ): JSX.Element => {
 	const [ isCollapsed, setCollapsed ] = useState( collapsed );
+	const [ containerHeight, setContainerHeight ] = useState( 0 );
+	const collapseContainerRef = useCallback(
+		( containerElement: HTMLDivElement ) => {
+			if ( containerElement ) {
+				setContainerHeight(
+					getContainerHeight(
+						Children.count( children ) - show,
+						containerElement
+					)
+				);
+			}
+		},
+		[ children ]
+	);
 
 	const triggerCallbacks = ( newCollapseValue: boolean ) => {
 		if ( onCollapse && newCollapseValue ) {
@@ -55,14 +85,14 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 
 	let shownChildren: React.ReactNode[] = [];
 	let hiddenChildren = Children.toArray( children );
-	if ( minChildrenToShow > 0 ) {
-		shownChildren = hiddenChildren.slice( 0, minChildrenToShow );
-		hiddenChildren = hiddenChildren.slice( minChildrenToShow );
+	if ( show > 0 ) {
+		shownChildren = hiddenChildren.slice( 0, show );
+		hiddenChildren = hiddenChildren.slice( show );
 	}
 
 	const transitionStyles = {
-		entered: { maxHeight: hiddenChildren.length * TASK_HEIGHT },
-		entering: { maxHeight: hiddenChildren.length * TASK_HEIGHT },
+		entered: { maxHeight: containerHeight },
+		entering: { maxHeight: containerHeight },
 		exiting: { maxHeight: 0 },
 		exited: { maxHeight: 0 },
 	};
@@ -73,13 +103,12 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 			<Transition
 				timeout={ 500 }
 				in={ ! isCollapsed }
-				// Fixes initial transition see: https://github.com/reactjs/react-transition-group/issues/223#issuecomment-334748429.
-				onEnter={ ( node: HTMLElement ) => node.offsetHeight }
 				mountOnEnter
 				unmountOnExit
 			>
 				{ ( state: 'entering' | 'entered' | 'exiting' | 'exited' ) => (
 					<div
+						ref={ collapseContainerRef }
 						style={ {
 							...defaultStyle,
 							...transitionStyles[ state ],
@@ -94,7 +123,7 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 					className="list-item-collapse"
 					onClick={ clickHandler }
 				>
-					<p>{ isCollapsed ? showText : hideText }</p>
+					<p>{ isCollapsed ? expandLabel : collapseLabel }</p>
 
 					<Dashicon
 						className="list-item-collapse__icon"

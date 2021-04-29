@@ -158,8 +158,8 @@ describe( 'List', () => {
 			it( 'should not render its children intially, but an extra list footer with show text', () => {
 				const { container } = render(
 					<ExperimentalCollapsibleList
-						hideText="Show less"
-						showText="Show more items"
+						collapseLabel="Show less"
+						expandLabel="Show more items"
 					>
 						<div>Test</div>
 					</ExperimentalCollapsibleList>
@@ -174,8 +174,8 @@ describe( 'List', () => {
 				const onCollapse = jest.fn();
 				const { container } = render(
 					<ExperimentalCollapsibleList
-						hideText="Show less"
-						showText="Show more items"
+						collapseLabel="Show less"
+						expandLabel="Show more items"
 						onExpand={ onExpand }
 						onCollapse={ onCollapse }
 					>
@@ -202,11 +202,11 @@ describe( 'List', () => {
 				const onCollapse = jest.fn();
 				const { container } = render(
 					<ExperimentalCollapsibleList
-						hideText="Show less"
-						showText="Show more items"
+						collapseLabel="Show less"
+						expandLabel="Show more items"
 						onExpand={ onExpand }
 						onCollapse={ onCollapse }
-						minChildrenToShow={ 2 }
+						show={ 2 }
 					>
 						<div>Test</div>
 						<div>Test 2</div>
@@ -239,8 +239,8 @@ describe( 'List', () => {
 				const onCollapse = jest.fn();
 				const { container } = render(
 					<ExperimentalCollapsibleList
-						hideText="Show less"
-						showText="Show more items"
+						collapseLabel="Show less"
+						expandLabel="Show more items"
 						onExpand={ onExpand }
 						onCollapse={ onCollapse }
 					>

@@ -170,9 +170,9 @@ ExperimentalListExample.storyName = 'ExperimentalList / ExperimentalListItem.';
 export const ExperimentalCollapsibleListExample = () => {
 	return (
 		<ExperimentalCollapsibleList
-			hideText="Show less"
-			showText="Show more items"
-			minChildrenToShow={ 2 }
+			collapseLabel="Show less"
+			expandLabel="Show more items"
+			show={ 2 }
 			onCollapse={ () => {
 				// eslint-disable-next-line no-console
 				console.log( 'collapsed' );
@@ -189,7 +189,13 @@ export const ExperimentalCollapsibleListExample = () => {
 				<div>Any markup can go here.</div>
 			</ExperimentalListItem>
 			<ExperimentalListItem onClick={ () => {} }>
-				<div>Any markup can go here.</div>
+				<div>
+					Any markup can go here.
+					<br />
+					Bigger task item
+					<br />
+					Another line
+				</div>
 			</ExperimentalListItem>
 			<ExperimentalListItem onClick={ () => {} }>
 				<div>Any markup can go here.</div>
