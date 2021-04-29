@@ -20,25 +20,18 @@ type CollapsibleListProps = {
 	onExpand?: () => void;
 } & ListProps;
 
-const FALLBACK_TASK_HEIGHT = 70;
 const defaultStyle = {
 	transition: `max-height 500ms ease-in-out`,
 	maxHeight: 0,
 	overflow: 'hidden',
 };
 
-function getContainerHeight(
-	childrenLength: number,
-	collapseContainer: HTMLDivElement | null
-) {
+function getContainerHeight( collapseContainer: HTMLDivElement | null ) {
 	let containerHeight = 0;
 	if ( collapseContainer ) {
 		for ( const child of collapseContainer.children ) {
 			containerHeight += child.clientHeight;
 		}
-	}
-	if ( containerHeight === 0 ) {
-		containerHeight = childrenLength * FALLBACK_TASK_HEIGHT;
 	}
 	return containerHeight;
 }
@@ -58,12 +51,7 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	const collapseContainerRef = useCallback(
 		( containerElement: HTMLDivElement ) => {
 			if ( containerElement ) {
-				setContainerHeight(
-					getContainerHeight(
-						Children.count( children ) - show,
-						containerElement
-					)
-				);
+				setContainerHeight( getContainerHeight( containerElement ) );
 			}
 		},
 		[ children ]
@@ -122,6 +110,7 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 				<ExperimentalListItem
 					className="list-item-collapse"
 					onClick={ clickHandler }
+					animation="none"
 				>
 					<p>{ isCollapsed ? expandLabel : collapseLabel }</p>
 
