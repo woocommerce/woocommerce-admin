@@ -264,3 +264,15 @@ export function getAllTasks( {
 		'extension'
 	);
 }
+
+export function taskSort( a, b ) {
+	if ( a.completed || b.completed ) {
+		return a.completed ? 1 : -1;
+	}
+	const aLevel = a.level || 'l1';
+	const bLevel = b.level || 'l1';
+	if ( aLevel === bLevel ) {
+		return 0;
+	}
+	return aLevel > bLevel ? -1 : 1;
+}
