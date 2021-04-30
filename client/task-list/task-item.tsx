@@ -44,7 +44,7 @@ const OptionalTaskTooltip: React.FC< {
 			'woocommerce-admin'
 		);
 	}
-	if ( level === 'l1' ) {
+	if ( tooltip === '' ) {
 		return children;
 	}
 	return <Tooltip text={ tooltip }>{ children }</Tooltip>;
