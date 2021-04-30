@@ -9,9 +9,11 @@ import {
 	PLUGINS_STORE_NAME,
 	pluginNames,
 } from '@woocommerce/data';
-import { Plugins, Stepper } from '@woocommerce/components';
+import { Plugins, Stepper, WooRemotePayment } from '@woocommerce/components';
+
 import { recordEvent } from '@woocommerce/tracks';
 import { useSelect } from '@wordpress/data';
+import { useSlot } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -25,6 +27,10 @@ export const PaymentMethod = ( {
 	recordConnectStartEvent,
 } ) => {
 	const { key, plugins, title } = method;
+	const slotId = `woocommerce_remote_payment_${ key }`;
+	const slot = useSlot( slotId );
+	const hasFills = Boolean( slot.fills && slot.fills.length );
+
 	useEffect( () => {
 		recordEvent( 'payments_task_stepper_view', {
 			payment_method: key,
@@ -102,19 +108,28 @@ export const PaymentMethod = ( {
 		};
 	}, [ title ] );
 
+	const DefaultStepper = () => (
+		<Stepper
+			isVertical
+			isPending={ ! installStep.isComplete || isOptionsRequesting }
+			currentStep={ installStep.isComplete ? 'connect' : 'install' }
+			steps={ [ installStep, connectStep ] }
+		/>
+	);
+
 	return (
 		<Card className="woocommerce-task-payment-method woocommerce-task-card">
 			<CardBody>
-				<Stepper
-					isVertical
-					isPending={
-						! installStep.isComplete || isOptionsRequesting
-					}
-					currentStep={
-						installStep.isComplete ? 'connect' : 'install'
-					}
-					steps={ [ installStep, connectStep ] }
-				/>
+				{ hasFills ? (
+					<WooRemotePayment.Slot
+						defaultStepper={ DefaultStepper }
+						defaultInstallStep={ installStep }
+						defaultConnectStep={ connectStep }
+						id={ key }
+					/>
+				) : (
+					<DefaultStepper />
+				) }
 			</CardBody>
 		</Card>
 	);

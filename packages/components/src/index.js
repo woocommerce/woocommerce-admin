@@ -69,3 +69,4 @@ export { default as useFilters } from './higher-order/use-filters';
 export { default as ViewMoreList } from './view-more-list';
 export { default as WebPreview } from './web-preview';
 export { Badge } from './badge';
+export { default as WooRemotePayment } from './woo-remote-payment';
