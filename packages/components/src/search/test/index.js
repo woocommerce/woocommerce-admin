@@ -9,7 +9,6 @@ import userEvent from '@testing-library/user-event';
  */
 import { Search } from '../index';
 import { computeSuggestionMatch } from '../autocompleters/utils';
-import productsAutocompleter from '../autocompleters/product';
 
 const delay = ( timeout ) =>
 	new Promise( ( resolve ) => setTimeout( resolve, timeout ) );
@@ -27,21 +26,32 @@ describe( 'Search', () => {
 	} );
 
 	describe( 'with `type="custom"`', () => {
+		let sampleOptions, sampleAutocompleter;
+		beforeEach( () => {
+			sampleOptions = [
+				{ name: 'Apple', id: 1 },
+				{ name: 'Orange', id: 2 },
+				{ name: 'Grapes', id: 3 },
+			];
+			sampleAutocompleter = {
+				options: sampleOptions,
+				getOptionIdentifier: ( fruit ) => fruit.id,
+				getOptionLabel: ( option ) => (
+					<nicer-label>{ option.name }</nicer-label>
+				),
+				getOptionKeywords: ( option ) => [ option.name ],
+				getOptionCompletion: ( attribute ) => ( {
+					key: attribute.id,
+					label: attribute.name,
+				} ),
+			};
+		} );
 		describe( 'renders options given in `autocompleter.options`', () => {
 			it( 'as a static array', async () => {
-				const customAutocompleter = {
-					...productsAutocompleter,
-					// Set the options as a static array.
-					options: [
-						{ name: 'Apple', id: 1 },
-						{ name: 'Orange', id: 2 },
-						{ name: 'Grapes', id: 3 },
-					],
-				};
 				const { getByRole, queryAllByRole } = render(
 					<Search
 						type="custom"
-						autocompleter={ customAutocompleter }
+						autocompleter={ sampleAutocompleter }
 					/>
 				);
 				// Emulate typing to render available options.
@@ -58,15 +68,11 @@ describe( 'Search', () => {
 					.mockName( 'autocompleter.options' );
 
 				const customAutocompleter = {
-					...productsAutocompleter,
+					...sampleAutocompleter,
 					// Set the options as a function that returns an array.
 					options: ( ...args ) => {
 						optionsSpy( ...args );
-						return [
-							{ name: 'Apple', id: 1 },
-							{ name: 'Orange', id: 2 },
-							{ name: 'Grapes', id: 3 },
-						];
+						return sampleOptions;
 					},
 				};
 
@@ -91,16 +97,12 @@ describe( 'Search', () => {
 					.mockName( 'autocompleter.options' );
 
 				const customAutocompleter = {
-					...productsAutocompleter,
+					...sampleAutocompleter,
 					// Set the options as a function that returns a promise for an array.
 					options: async ( ...args ) => {
 						optionsSpy( ...args );
 						await delay( 1 );
-						return [
-							{ name: 'Apple', id: 1 },
-							{ name: 'Orange', id: 2 },
-							{ name: 'Grapes', id: 3 },
-						];
+						return sampleOptions;
 					},
 				};
 
