@@ -130,6 +130,12 @@ In case the report shows "no data", please reimport historical data by following
 -   Click on the 3 dots of the card, click `Hide this`, it should make the card disappear, it should also not show on refresh.
     This can't be shown again unless the `woocommerce_show_marketplace_suggestions` option is deleted (through PHPMyAdmin or using `wp option delete woocommerce_show_marketplace_suggestions`).
 
+### Correct the left position of transient notices when the new nav is used #6914
+
+1. Enable new navigation, via Settings -> Advanced -> Features
+2. Go to Analytics -> Products, select "Single product", and select a product
+3. The CES notice should appear in the expected position.
+
 ## 2.2.0
 
 ### Fixed event tracking for merchant email notes #6616
