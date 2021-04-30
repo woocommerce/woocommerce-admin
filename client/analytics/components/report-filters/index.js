@@ -58,9 +58,11 @@ class ReportFilters extends Component {
 		if ( triggerCesFor.includes( filterName ) ) {
 			addCesSurveyForAnalytics();
 		}
+
 		recordEvent( 'analytics_filter', {
 			report,
 			filter: data.filter || 'all',
+			filter_variation: data[ 'filter-variations' ],
 		} );
 	}
 
