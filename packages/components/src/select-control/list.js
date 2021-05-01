@@ -116,9 +116,11 @@ class List extends Component {
 				return;
 
 			case TAB:
-				this.select( options[ selectedIndex ] );
-				setExpanded( false );
-				onSearch( null );
+				if ( selectedIndex > -1 ) {
+					this.select( options[ selectedIndex ] );
+					setExpanded( false );
+					onSearch( null );
+				}
 				break;
 
 			default:

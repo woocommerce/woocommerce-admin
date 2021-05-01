@@ -25,15 +25,10 @@ const initialState = { isExpanded: false, isFocused: false, query: '' };
 export class SelectControl extends Component {
 	constructor( props ) {
 		super( props );
-
-		const { selected, options } = props;
 		this.state = {
 			...initialState,
 			searchOptions: [],
-			selectedIndex:
-				selected && options?.length
-					? options.findIndex( ( option ) => option.key === selected )
-					: 0,
+			selectedIndex: -1,
 		};
 
 		this.bindNode = this.bindNode.bind( this );
@@ -249,7 +244,6 @@ export class SelectControl extends Component {
 			{
 				query,
 				isFocused: true,
-				selectedIndex: query?.length > 0 ? 0 : this.state.selectedIndex, // Only set to 0 if we're actually searching.
 				searchOptions,
 			},
 			() => {
@@ -284,8 +278,6 @@ export class SelectControl extends Component {
 
 			this.setState(
 				{
-					selectedIndex:
-						query?.length > 0 ? 0 : this.state.selectedIndex, // Only set to 0 if we're actually searching.
 					searchOptions,
 				},
 				() => {
