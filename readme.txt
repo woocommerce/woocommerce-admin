@@ -88,6 +88,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
 - Dev: Fixed storybook build script #6875
 - Dev: Removed allowed keys list for adding woocommerce_meta data. #6889 🎉 @xristos3490
+- Dev: Delete all products when running product import tests, unskip previously skipped test. #6905
 - Feature: Add recommended payment methods in payment settings. #6760
 - Fix: Disable the continue btn on OBW when requested are being made #6838
 - Fix: Event tracking for merchant email notes #6616
@@ -126,6 +127,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
 - Update: Task list component with new Experimental Task list. #6849
+- Dev: Add disabled prop to SelectControl #6902
 - Update: Redirect to WC Home after setting up a payment method #6891
 
 == 2.2.0 3/30/2021 ==
