@@ -25,10 +25,15 @@ const initialState = { isExpanded: false, isFocused: false, query: '' };
 export class SelectControl extends Component {
 	constructor( props ) {
 		super( props );
+
+		const { selected, options } = props;
 		this.state = {
 			...initialState,
 			searchOptions: [],
-			selectedIndex: -1,
+			selectedIndex:
+				selected && options?.length
+					? options.findIndex( ( option ) => option.key === selected )
+					: -1,
 		};
 
 		this.bindNode = this.bindNode.bind( this );

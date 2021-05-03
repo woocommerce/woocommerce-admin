@@ -201,6 +201,25 @@ describe( 'SelectControl', () => {
 		expect( getAllByRole( 'option' ) ).toHaveLength( 1 );
 	} );
 
+	it( 'should not automatically select first option on focus', async () => {
+		const onChangeMock = jest.fn();
+		const { getByRole, queryByRole } = render(
+			<SelectControl
+				isSearchable
+				showAllOnFocus
+				options={ options }
+				onSearch={ () => options }
+				onFilter={ () => options }
+				onChange={ onChangeMock }
+			/>
+		);
+		getByRole( 'combobox' ).focus();
+		await waitFor( () =>
+			expect( getByRole( 'option', { name: 'bar' } ) ).toBeInTheDocument()
+		);
+		expect( queryByRole( 'option', { selected: true } ) ).toBeNull();
+	} );
+
 	describe( 'selected value', () => {
 		it( 'should return an array if array', async () => {
 			const onChangeMock = jest.fn();
@@ -260,27 +279,33 @@ describe( 'SelectControl', () => {
 			);
 		} );
 
-		it( 'should not have a selected option on initial render', async () => {
-			const onChangeMock = jest.fn();
-			const { getByRole, queryByRole } = render(
-				<SelectControl
-					isSearchable
-					showAllOnFocus
-					selected={ options[ 2 ].key }
-					options={ options }
-					onSearch={ () => options }
-					onFilter={ () => options }
-					onChange={ onChangeMock }
-					excludeSelectedOptions={ false }
-				/>
-			);
-			getByRole( 'combobox' ).focus();
-			await waitFor( () =>
-				expect(
-					getByRole( 'option', { name: 'bar' } )
-				).toBeInTheDocument()
-			);
-			expect( queryByRole( 'option', { selected: true } ) ).toBeNull();
+		describe( 'prop excludeSelectedOptions', () => {
+			it( 'should preserve selected option when focused', async () => {
+				const onChangeMock = jest.fn();
+				const { getByRole } = render(
+					<SelectControl
+						isSearchable
+						showAllOnFocus
+						selected={ options[ 2 ].key }
+						options={ options }
+						onSearch={ () => options }
+						onFilter={ () => options }
+						onChange={ onChangeMock }
+						excludeSelectedOptions={ false }
+					/>
+				);
+				getByRole( 'combobox' ).focus();
+				await waitFor( () =>
+					expect(
+						getByRole( 'option', { name: 'bar' } )
+					).toBeInTheDocument()
+				);
+				// In browser, the <Button> in <List> component is automatically "selected" when <Control> lost focus.
+				// I was not able to produce the same behaviour with unit test, but a click on the currently
+				// selected option should be sufficient to simulate the logic in this test.
+				userEvent.click( getByRole( 'option', { selected: true } ) );
+				expect( onChangeMock ).toHaveBeenCalledTimes( 0 );
+			} );
 		} );
 
 		it( 'disables the component', async () => {
