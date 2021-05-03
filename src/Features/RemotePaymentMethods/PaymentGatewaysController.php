@@ -38,6 +38,8 @@ class PaymentGatewaysController {
 
 		$data['setup_fields'] = self::get_setup_fields( $gateway );
 
+		$data['settings_url'] = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . strtolower( $gateway->id ) );
+
 		$response->set_data( $data );
 
 		return $response;
