@@ -260,6 +260,16 @@ describe( 'SelectControl', () => {
 			);
 		} );
 
+		it( 'disables the component', async () => {
+			const { getByRole } = render(
+				<SelectControl disabled options={ options } />
+			);
+
+			await waitFor( () =>
+				expect( getByRole( 'combobox' ) ).toBeDisabled()
+			);
+		} );
+
 		describe( 'control onChange', () => {
 			it( 'should return array if selected is array and onChange triggered from control', () => {
 				const onChangeMock = jest.fn();
@@ -299,5 +309,19 @@ describe( 'SelectControl', () => {
 				expect( onChangeMock ).toHaveBeenCalledWith( '', '' );
 			} );
 		} );
+	} );
+
+	it( 'displays multiple selection not inline', async () => {
+		const { getByText } = render(
+			<SelectControl
+				isSearchable
+				options={ options }
+				selected={ [ options[ 1 ] ] }
+				multiple
+				inlineTags={ false }
+			/>
+		);
+
+		expect( getByText( options[ 1 ].label ) ).toBeInTheDocument();
 	} );
 } );
