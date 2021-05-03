@@ -6,12 +6,12 @@ import { taskSort } from '../tasks';
 describe( 'task sort', () => {
 	const list = [
 		{ key: 'comp', completed: true },
-		{ key: 'comp-l3', completed: true, level: 'l3' },
-		{ key: 'comp-l2', completed: true, level: 'l2' },
-		{ key: 'uncomp-l3', completed: false, level: 'l3' },
+		{ key: 'comp-l3', completed: true, level: 3 },
+		{ key: 'comp-l2', completed: true, level: 2 },
+		{ key: 'uncomp-l3', completed: false, level: 3 },
 		{ key: 'uncomp', completed: false },
-		{ key: 'uncomp-l2', completed: false, level: 'l2' },
-		{ key: 'uncomp-l1', completed: false, level: 'l1' },
+		{ key: 'uncomp-l2', completed: false, level: 2 },
+		{ key: 'uncomp-l1', completed: false, level: 1 },
 	];
 	it( 'should put all l3 levels at the top if not completed', () => {
 		const sorted = [ ...list ].sort( taskSort );

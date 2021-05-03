@@ -15,6 +15,8 @@ import classnames from 'classnames';
 import './task-item.scss';
 import sanitizeHTML from '../lib/sanitize-html';
 
+type TaskLevel = 1 | 2 | 3;
+
 type TaskItemProps = {
 	title: string;
 	completed: boolean;
@@ -25,20 +27,20 @@ type TaskItemProps = {
 	time?: string;
 	content?: string;
 	expanded?: boolean;
-	level?: 'l1' | 'l2' | 'l3';
+	level?: TaskLevel;
 };
 
 const OptionalTaskTooltip: React.FC< {
-	level: 'l1' | 'l2' | 'l3';
+	level: TaskLevel;
 	children: JSX.Element;
 } > = ( { level, children } ) => {
 	let tooltip = '';
-	if ( level === 'l2' ) {
+	if ( level === 2 ) {
 		tooltip = __(
 			'This task is required to set up your extension',
 			'woocommerce-admin'
 		);
-	} else if ( level === 'l3' ) {
+	} else if ( level === 3 ) {
 		tooltip = __(
 			'This task is required to keep your store running',
 			'woocommerce-admin'
@@ -60,24 +62,24 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	time,
 	content,
 	expanded = false,
-	level = 'l1',
+	level = 1,
 } ) => {
 	const className = classnames( 'woocommerce-task-list__item', {
 		'is-complete': completed,
-		'is-l2': level === 'l2' && ! completed,
-		'is-l3': level === 'l3' && ! completed,
+		'is-level-2': level === 2 && ! completed,
+		'is-level-3': level === 3 && ! completed,
 	} );
 
 	return (
 		<ListItem
-			disableGutters={ true }
+			disableGutters
 			className={ className }
 			onClick={ onClick }
 			animation="slide-right"
 		>
 			<OptionalTaskTooltip level={ level }>
 				<div className="woocommerce-task-list__item-before">
-					{ level === 'l3' && ! completed ? (
+					{ level === 3 && ! completed ? (
 						<NoticeOutline size={ 36 } />
 					) : (
 						<div className="woocommerce-task__icon">

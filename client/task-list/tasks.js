@@ -258,19 +258,23 @@ export function getAllTasks( {
 			type: 'setup',
 		},
 	];
-	return groupListOfObjectsBy(
-		applyFilters( 'woocommerce_admin_onboarding_task_list', tasks, query ),
-		'type',
-		'extension'
+	const filteredTasks = applyFilters(
+		'woocommerce_admin_onboarding_task_list',
+		tasks,
+		query
 	);
+	for ( const task of filteredTasks ) {
+		task.level = task.level ? parseInt( task.level, 10 ) : 1;
+	}
+	return groupListOfObjectsBy( filteredTasks, 'type', 'extension' );
 }
 
 export function taskSort( a, b ) {
 	if ( a.completed || b.completed ) {
 		return a.completed ? 1 : -1;
 	}
-	const aLevel = a.level || 'l1';
-	const bLevel = b.level || 'l1';
+	const aLevel = a.level || 1;
+	const bLevel = b.level || 1;
 	if ( aLevel === bLevel ) {
 		return 0;
 	}

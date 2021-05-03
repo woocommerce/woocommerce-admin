@@ -14,7 +14,7 @@ $task-alert-yellow: #f0b849;
 		background: transparent;
 	}
 
-	&.is-l3 {
+	&.is-level-3 {
 		&::before {
 			background-color: $alert-red;
 		}
@@ -23,7 +23,7 @@ $task-alert-yellow: #f0b849;
 		}
 	}
 
-	&.is-l2 {
+	&.is-level-2 {
 		&::before {
 			background-color: $task-alert-yellow;
 		}
