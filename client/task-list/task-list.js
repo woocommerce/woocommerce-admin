@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -249,7 +249,12 @@ export const TaskList = ( {
 
 	const expandLabel = sprintf(
 		/* translators: %i = number of hidden tasks */
-		__( 'Show %i more tasks.', 'woocommerce-admin' ),
+		_n(
+			'Show %i more task.',
+			'Show %i more tasks.',
+			listTasks.length - 2,
+			'woocommerce-admin'
+		),
 		listTasks.length - 2
 	);
 	const collapseLabel = __( 'Show less', 'woocommerce-admin' );
