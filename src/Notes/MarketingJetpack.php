@@ -83,7 +83,7 @@ class MarketingJetpack {
 		$note->add_action(
 			'jetpack-backup-woocommerce',
 			__( 'Get backups', 'woocommerce-admin' ),
-			esc_url( 'https://jetpack.com/upgrade/backup-woocommerce/' ), // TODO utm?
+			esc_url( 'https://jetpack.com/upgrade/backup-woocommerce/?utm_source=inbox&utm_medium=automattic_referred&utm_campaign=jp_backup_to_woo' ),
 			Note::E_WC_ADMIN_NOTE_ACTIONED
 		);
 		return $note;
