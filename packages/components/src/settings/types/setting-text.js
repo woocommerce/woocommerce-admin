@@ -1,24 +1,19 @@
 /**
- * External dependencies
- */
-import { useState } from '@wordpress/element';
-
-/**
  * Internal dependencies
  */
 import { TextControl } from '../../index';
 
-export const SettingText = ( { field } ) => {
-	const { id, label, value } = field;
-	const [ fieldValue, setFieldValue ] = useState( value );
+export const SettingText = ( { field, type = 'text', ...props } ) => {
+	const { id, label, description } = field;
 
 	return (
 		<TextControl
-			onChange={ setFieldValue }
+			type={ type }
+			title={ description }
 			key={ id }
-			value={ fieldValue }
 			label={ label }
 			required
+			{ ...props }
 		/>
 	);
 };

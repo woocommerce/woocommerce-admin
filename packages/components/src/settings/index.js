@@ -27,13 +27,14 @@ export const Settings = ( {
 	isBusy,
 	onSubmitCallback,
 	buttonLabel,
+	onButtonClickCallback,
 } ) => {
 	const getInitialConfigValues = () => {
 		if ( fields ) {
 			return fields.reduce( ( data, field ) => {
 				return {
 					...data,
-					[ field.id ]: '',
+					[ field.id ]: field.value,
 				};
 			}, {} );
 		}
@@ -45,12 +46,15 @@ export const Settings = ( {
 				if ( ! values[ field.id ] ) {
 					// Matches any word that is capitalized aside from abrevitions like ID.
 					const label = field.label.replace(
-						/([A-Z][a-z]+)/,
+						/([A-Z][a-z]+)/g,
 						( val ) => val.toLowerCase()
 					);
 					return {
 						...errors,
-						[ field.id ]: __( 'Please enter your ' ) + label,
+						[ field.id ]:
+							field.type === 'checkbox'
+								? __( 'This value is required ' )
+								: __( 'Please enter your ' ) + label,
 					};
 				}
 				return errors;
@@ -67,7 +71,7 @@ export const Settings = ( {
 		>
 			{ ( { getInputProps, handleSubmit } ) => {
 				return (
-					<>
+					<div className="woocommerce-component-settings">
 						{ ( fields || [] ).map( ( field ) => {
 							const Control = typeMap[ field.type ];
 							return (
@@ -84,11 +88,12 @@ export const Settings = ( {
 							isBusy={ isBusy }
 							onClick={ ( event ) => {
 								handleSubmit( event );
+								onButtonClickCallback();
 							} }
 						>
 							{ buttonLabel }
 						</Button>
-					</>
+					</div>
 				);
 			} }
 		</Form>
