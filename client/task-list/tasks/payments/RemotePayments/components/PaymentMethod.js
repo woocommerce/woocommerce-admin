@@ -27,8 +27,7 @@ export const PaymentMethod = ( {
 	recordConnectStartEvent,
 } ) => {
 	const { key, plugins, title } = method;
-	const slotId = `woocommerce_remote_payment_${ key }`;
-	const slot = useSlot( slotId );
+	const slot = useSlot( `woocommerce_remote_payment_${ key }` );
 	const hasFills = Boolean( slot.fills && slot.fills.length );
 
 	useEffect( () => {
@@ -108,12 +107,13 @@ export const PaymentMethod = ( {
 		};
 	}, [ title ] );
 
-	const DefaultStepper = () => (
+	const DefaultStepper = ( { ...props } ) => (
 		<Stepper
 			isVertical
 			isPending={ ! installStep.isComplete || isOptionsRequesting }
 			currentStep={ installStep.isComplete ? 'connect' : 'install' }
 			steps={ [ installStep, connectStep ] }
+			{ ...props }
 		/>
 	);
 

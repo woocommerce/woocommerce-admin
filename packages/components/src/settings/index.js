@@ -3,6 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
+import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -23,12 +25,31 @@ const typeMap = {
 };
 
 export const Settings = ( {
-	fields,
+	apiPath = '',
+	settingsTransformCallback = ( settings ) => settings,
 	isBusy,
 	onSubmitCallback,
 	buttonLabel,
 	onButtonClickCallback,
 } ) => {
+	const [ state, setState ] = useState( 'loading' );
+	const [ screenErrors, setScreenErrors ] = useState( [] );
+	const [ fields, setFields ] = useState( null );
+
+	useEffect( () => {
+		apiFetch( {
+			path: apiPath,
+		} )
+			.then( ( results ) => {
+				setFields( settingsTransformCallback( results.settings ) );
+				setState( 'loaded' );
+			} )
+			.catch( ( e ) => {
+				setState( 'error' );
+				setScreenErrors( [ ...screenErrors, e.message ] );
+			} );
+	}, [] );
+
 	const getInitialConfigValues = () => {
 		if ( fields ) {
 			return fields.reduce( ( data, field ) => {
@@ -63,10 +84,20 @@ export const Settings = ( {
 		return {};
 	};
 
+	if ( screenErrors.length ) {
+		return <p>{ JSON.stringify( screenErrors, null, 3 ) }</p>;
+	}
+
+	if ( state === 'loading' ) {
+		return <p>Loading...</p>;
+	}
+
 	return (
 		<Form
 			initialValues={ getInitialConfigValues() }
-			onSubmitCallback={ onSubmitCallback }
+			onSubmitCallback={ ( values ) => {
+				return onSubmitCallback( values, fields );
+			} }
 			validate={ validate }
 		>
 			{ ( { getInputProps, handleSubmit } ) => {

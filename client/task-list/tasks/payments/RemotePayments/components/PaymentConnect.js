@@ -4,10 +4,15 @@
 import { __, sprintf } from '@wordpress/i18n';
 import interpolateComponents from 'interpolate-components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Link, Settings } from '@woocommerce/components';
+import {
+	Link,
+	Settings,
+	WooRemotePaymentSettings,
+} from '@woocommerce/components';
+
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
+
+import { useSlot } from '@woocommerce/experimental';
 
 export const PaymentConnect = ( {
 	markConfigured,
@@ -22,6 +27,8 @@ export const PaymentConnect = ( {
 	} = method;
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
+	const slot = useSlot( `woocommerce_remote_payment_settings_${ key }` );
+	const hasFills = Boolean( slot.fills && slot.fills.length );
 
 	const isOptionsRequesting = useSelect( ( select ) => {
 		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
@@ -29,34 +36,7 @@ export const PaymentConnect = ( {
 		return isOptionsUpdating();
 	} );
 
-	const [ state, setState ] = useState( 'loading' );
-	const [ errors, setErrors ] = useState( [] );
-	const [ fields, setFields ] = useState( null );
-
-	useEffect( () => {
-		const essentialFields = fieldsConfig.map( ( field ) => field.name );
-
-		apiFetch( {
-			path: `/wc/v3/payment_gateways/${ key }/`,
-		} )
-			.then( ( results ) => {
-				setFields(
-					Object.keys( results.settings ).reduce( ( all, curr ) => {
-						if ( essentialFields.includes( curr ) ) {
-							all.push( results.settings[ curr ] );
-						}
-						return all;
-					}, [] )
-				);
-				setState( 'loaded' );
-			} )
-			.catch( ( e ) => {
-				setState( 'error' );
-				setErrors( [ ...errors, e.message ] );
-			} );
-	}, [] );
-
-	const updateSettings = async ( values ) => {
+	const updateSettings = async ( values, fields ) => {
 		const options = {};
 
 		fields.forEach( ( field ) => {
@@ -105,25 +85,45 @@ export const PaymentConnect = ( {
 		},
 	} );
 
-	if ( errors.length ) {
-		return <p>{ JSON.stringify( errors, null, 3 ) }</p>;
-	}
+	const DefaultSettings = ( { ...props } ) => (
+		<Settings
+			settingsTransformCallback={ ( settings ) => {
+				// This callback will be obsolete when we can derive essential fields from API
+				const essentialFields = fieldsConfig.map(
+					( field ) => field.name
+				);
 
-	if ( state !== 'loaded' ) {
-		return <p>Loading...</p>;
-	}
+				return Object.keys( settings ).reduce( ( all, curr ) => {
+					if ( essentialFields.includes( curr ) ) {
+						all.push( settings[ curr ] );
+					}
+					return all;
+				}, [] );
+			} }
+			apiPath={ `/wc/v3/payment_gateways/${ key }/` }
+			isBusy={ isOptionsRequesting }
+			onSubmitCallback={ updateSettings }
+			onButtonClickCallback={ () => recordConnectStartEvent( key ) }
+			buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
+			{ ...props }
+		/>
+	);
 
 	return (
 		<>
-			<Settings
-				fields={ fields }
-				isBusy={ isOptionsRequesting }
-				onSubmitCallback={ updateSettings }
-				onButtonClickCallback={ () => recordConnectStartEvent( key ) }
-				buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
-			/>
-
-			<p>{ helpText }</p>
+			{ hasFills ? (
+				<WooRemotePaymentSettings.Slot
+					defaultSettings={ DefaultSettings }
+					defaultUpdate={ updateSettings }
+					markConfigured={ () => markConfigured( key ) }
+					id={ key }
+				/>
+			) : (
+				<>
+					<DefaultSettings />
+					<p>{ helpText }</p>
+				</>
+			) }
 		</>
 	);
 };
