@@ -20,13 +20,23 @@ export const defaultState = {
 		theme: null,
 		wccom_connected: null,
 	},
+	paymentMethods: [],
 	requesting: {},
 	tasksStatus: {},
 };
 
 const onboarding = (
 	state = defaultState,
-	{ type, profileItems, replace, error, isRequesting, selector, tasksStatus }
+	{
+		type,
+		profileItems,
+		paymentMethods,
+		replace,
+		error,
+		isRequesting,
+		selector,
+		tasksStatus,
+	}
 ) => {
 	switch ( type ) {
 		case TYPES.SET_PROFILE_ITEMS:
@@ -56,6 +66,11 @@ const onboarding = (
 					...state.requesting,
 					[ selector ]: isRequesting,
 				},
+			};
+		case TYPES.SET_PAYMENT_METHODS:
+			return {
+				...state,
+				paymentMethods,
 			};
 		default:
 			return state;

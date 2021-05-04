@@ -40,6 +40,13 @@ export function setTasksStatus( tasksStatus ) {
 	};
 }
 
+export function setPaymentMethods( paymentMethods ) {
+	return {
+		type: TYPES.SET_PAYMENT_METHODS,
+		paymentMethods,
+	};
+}
+
 export function* updateProfileItems( items ) {
 	yield setIsRequesting( 'updateProfileItems', true );
 
