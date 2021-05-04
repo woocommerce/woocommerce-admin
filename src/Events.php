@@ -121,7 +121,6 @@ class Events {
 		EUVATNumber::possibly_add_note();
 		Marketing::possibly_add_note();
 		MarketingJetpack::possibly_add_note();
-		GivingFeedbackNotes::possibly_add_note();
 		StartDropshippingBusiness::possibly_add_note();
 		WooCommerceSubscriptions::possibly_add_note();
 		MigrateFromShopify::possibly_add_note();
