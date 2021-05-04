@@ -69,8 +69,8 @@ class BusinessDetails extends Component {
 						'creative-mail-by-constant-contact'
 				  )
 				: false,
-			'kliken-marketing-for-google': businessExtensions
-				? businessExtensions.includes( 'kliken-marketing-for-google' )
+			'google-listings-and-ads': businessExtensions
+				? businessExtensions.includes( 'google-listings-and-ads' )
 				: true,
 			mailpoet: businessExtensions
 				? businessExtensions.includes( 'mailpoet' )
@@ -82,7 +82,7 @@ class BusinessDetails extends Component {
 			'mailpoet',
 			'facebook-for-woocommerce',
 			'mailchimp-for-woocommerce',
-			'kliken-marketing-for-google',
+			'google-listings-and-ads',
 			'creative-mail-by-constant-contact',
 		];
 
