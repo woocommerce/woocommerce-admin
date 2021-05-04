@@ -7,7 +7,11 @@ import { withConsole } from '@storybook/addon-console';
 /**
  * Internal dependencies
  */
-import List from '../';
+import List, {
+	ExperimentalList,
+	ExperimentalListItem,
+	ExperimentalCollapsibleList,
+} from '../';
 import './style.scss';
 
 function logItemClick( event ) {
@@ -62,6 +66,8 @@ export const Default = () => {
 	return <List items={ listItems } />;
 };
 
+Default.storyName = 'Default (deprecated)';
+
 export const BeforeAndAfter = () => {
 	const listItems = [
 		{
@@ -97,6 +103,8 @@ export const BeforeAndAfter = () => {
 
 	return <List items={ listItems } />;
 };
+
+BeforeAndAfter.storyName = 'Before and after (deprecated)';
 
 export const CustomStyleAndTags = () => {
 	const listItems = [
@@ -135,3 +143,69 @@ export const CustomStyleAndTags = () => {
 
 	return <List items={ listItems } className="storybook-custom-list" />;
 };
+
+CustomStyleAndTags.storyName = 'Custom style and tags (deprecated)';
+
+export const ExperimentalListExample = () => {
+	return (
+		<ExperimentalList>
+			<ExperimentalListItem disableGutters onClick={ () => {} }>
+				<div>Without gutters no padding is added to the list item.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+		</ExperimentalList>
+	);
+};
+
+ExperimentalListExample.storyName = 'ExperimentalList / ExperimentalListItem.';
+
+export const ExperimentalCollapsibleListExample = () => {
+	return (
+		<ExperimentalCollapsibleList
+			collapseLabel="Show less"
+			expandLabel="Show more items"
+			show={ 2 }
+			onCollapse={ () => {
+				// eslint-disable-next-line no-console
+				console.log( 'collapsed' );
+			} }
+			onExpand={ () => {
+				// eslint-disable-next-line no-console
+				console.log( 'expanded' );
+			} }
+		>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>
+					Any markup can go here.
+					<br />
+					Bigger task item
+					<br />
+					Another line
+				</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+			<ExperimentalListItem onClick={ () => {} }>
+				<div>Any markup can go here.</div>
+			</ExperimentalListItem>
+		</ExperimentalCollapsibleList>
+	);
+};
+
+ExperimentalCollapsibleListExample.storyName =
+	'ExperimentalList with ExperimentalCollapsibleListItem.';

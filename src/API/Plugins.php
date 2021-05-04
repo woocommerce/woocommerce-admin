@@ -8,6 +8,7 @@
 namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\PaymentPlugins;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 
@@ -84,6 +85,19 @@ class Plugins extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'activate_plugins' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/recommended-payment-plugins',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'recommended_payment_plugins' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
 			)
@@ -204,8 +218,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array Plugin Status
 	 */
 	public function install_plugins( $request ) {
-		$allowed_plugins = self::get_allowed_plugins();
-		$plugins         = explode( ',', $request['plugins'] );
+		$plugins = explode( ',', $request['plugins'] );
 
 		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
@@ -218,25 +231,15 @@ class Plugins extends \WC_REST_Data_Controller {
 		include_once ABSPATH . '/wp-admin/includes/class-wp-upgrader.php';
 		include_once ABSPATH . '/wp-admin/includes/class-plugin-upgrader.php';
 
-		$existing_plugins  = get_plugins();
+		$existing_plugins  = PluginsHelper::get_installed_plugins_paths();
 		$installed_plugins = array();
 		$results           = array();
 		$errors            = new \WP_Error();
 
 		foreach ( $plugins as $plugin ) {
 			$slug = sanitize_key( $plugin );
-			$path = isset( $allowed_plugins[ $slug ] ) ? $allowed_plugins[ $slug ] : false;
 
-			if ( ! $path ) {
-				$errors->add(
-					$plugin,
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					sprintf( __( 'The requested plugin `%s` is not in the list of allowed plugins.', 'woocommerce-admin' ), $slug )
-				);
-				continue;
-			}
-
-			if ( in_array( $path, array_keys( $existing_plugins ), true ) ) {
+			if ( isset( $existing_plugins[ $slug ] ) ) {
 				$installed_plugins[] = $plugin;
 				continue;
 			}
@@ -319,24 +322,13 @@ class Plugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Gets an array of plugins that can be installed & activated.
-	 *
-	 * @return array
-	 */
-	public static function get_allowed_plugins() {
-		return apply_filters( 'woocommerce_admin_plugins_whitelist', array() );
-	}
-
-	/**
 	 * Returns a list of active plugins in API format.
 	 *
 	 * @return array Active plugins
 	 */
 	public static function active_plugins() {
-		$allowed = self::get_allowed_plugins();
-		$plugins = array_values( array_intersect( PluginsHelper::get_active_plugin_slugs(), array_keys( $allowed ) ) );
 		return( array(
-			'plugins' => array_values( $plugins ),
+			'plugins' => array_values( PluginsHelper::get_active_plugin_slugs() ),
 		) );
 	}
 	/**
@@ -367,7 +359,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array Plugin Status
 	 */
 	public function activate_plugins( $request ) {
-		$allowed_plugins   = self::get_allowed_plugins();
+		$plugin_paths      = PluginsHelper::get_installed_plugins_paths();
 		$plugins           = explode( ',', $request['plugins'] );
 		$errors            = new \WP_Error();
 		$activated_plugins = array();
@@ -383,18 +375,9 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		foreach ( $plugins as $plugin ) {
 			$slug = $plugin;
-			$path = isset( $allowed_plugins[ $slug ] ) ? $allowed_plugins[ $slug ] : false;
+			$path = isset( $plugin_paths[ $slug ] ) ? $plugin_paths[ $slug ] : false;
 
 			if ( ! $path ) {
-				$errors->add(
-					$plugin,
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					sprintf( __( 'The requested plugin `%s`. is not in the list of allowed plugins.', 'woocommerce-admin' ), $slug )
-				);
-				continue;
-			}
-
-			if ( ! PluginsHelper::is_plugin_installed( $path ) ) {
 				$errors->add(
 					$plugin,
 					/* translators: %s: plugin slug (example: woocommerce-services) */
@@ -429,6 +412,49 @@ class Plugins extends \WC_REST_Data_Controller {
 				? __( 'Plugins were successfully activated.', 'woocommerce-admin' )
 				: __( 'There was a problem activating some of the requested plugins.', 'woocommerce-admin' ),
 		) );
+	}
+
+	/**
+	 * Return recommended payment plugins.
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
+	 */
+	public function recommended_payment_plugins( $request ) {
+		// Default to marketing category (if no category set).
+		$all_plugins   = PaymentPlugins::get_instance()->get_recommended_plugins();
+		$valid_plugins = [];
+		$per_page      = $request->get_param( 'per_page' );
+		// We currently only support English suggestions, unless otherwise provided in locale-data.
+		$locale             = get_locale();
+		$suggestion_locales = array(
+			'en_AU',
+			'en_CA',
+			'en_GB',
+			'en_NZ',
+			'en_US',
+			'en_ZA',
+		);
+
+		foreach ( $all_plugins as $plugin ) {
+			if ( ! PluginsHelper::is_plugin_active( $plugin['product'] ) ) {
+				if ( isset( $plugin['locale-data'] ) && isset( $plugin['locale-data'][ $locale ] ) ) {
+					$locale_plugin = array_merge( $plugin, $plugin['locale-data'][ $locale ] );
+					unset( $locale_plugin['locale-data'] );
+					$valid_plugins[]      = $locale_plugin;
+					$suggestion_locales[] = $locale;
+				} else {
+					$valid_plugins[] = $plugin;
+				}
+			}
+		}
+
+		if ( ! in_array( $locale, $suggestion_locales, true ) ) {
+			// If not a supported locale we return an empty array.
+			return rest_ensure_response( array() );
+		}
+
+		return rest_ensure_response( array_slice( $valid_plugins, 0, $per_page ) );
 	}
 
 	/**

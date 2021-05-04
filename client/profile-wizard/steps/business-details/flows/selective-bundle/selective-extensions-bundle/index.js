@@ -22,7 +22,7 @@ import { AppIllustration } from '../app-illustration';
 import './style.scss';
 import { setAllPropsToValue } from '~/lib/collections';
 import { getCountryCode } from '~/dashboard/utils';
-import { isWCPaySupported } from '~/task-list/tasks/payments/wcpay';
+import { isWCPaySupported } from '~/task-list/tasks/payments/methods/wcpay';
 
 const generatePluginDescriptionWithLink = (
 	description,
@@ -437,6 +437,7 @@ export const SelectiveExtensionsBundle = ( {
 							onSubmit( values );
 						} }
 						isBusy={ isInstallingActivating }
+						disabled={ isInstallingActivating }
 						isPrimary
 					>
 						Continue

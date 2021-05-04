@@ -53,11 +53,7 @@ class MerchantEmailNotifications {
 			return;
 		}
 
-		// We need to set the current user for tracking reasons. And unset user after tracking.
-		wp_set_current_user( $user_id );
 		Notes::trigger_note_action( $note, $triggered_action );
-		wp_set_current_user( 0 );
-
 		$url = $triggered_action->query;
 
 		// We will use "wp_safe_redirect" when it's an internal redirect.
@@ -73,7 +69,7 @@ class MerchantEmailNotifications {
 	 * Send all the notifications type `email`.
 	 */
 	public static function run() {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = Notes::load_data_store();
 		$notes      = $data_store->get_notes(
 			array(
 				'type'   => array( Note::E_WC_ADMIN_NOTE_EMAIL ),

@@ -14,7 +14,6 @@ use \Automattic\WooCommerce\Admin\Notes\ChooseNiche;
 use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
 use \Automattic\WooCommerce\Admin\Notes\CustomizingProductCatalog;
 use Automattic\WooCommerce\Admin\Notes\FirstDownlaodableProduct;
-use \Automattic\WooCommerce\Admin\Notes\GivingFeedbackNotes;
 use \Automattic\WooCommerce\Admin\Notes\InsightFirstProductAndPayment;
 use \Automattic\WooCommerce\Admin\Notes\MobileApp;
 use \Automattic\WooCommerce\Admin\Notes\NewSalesRecord;

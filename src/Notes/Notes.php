@@ -34,7 +34,7 @@ class Notes {
 	 * @return array Array of arrays.
 	 */
 	public static function get_notes( $context = 'edit', $args = array() ) {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 		$raw_notes  = $data_store->get_notes( $args );
 		$notes      = array();
 		foreach ( (array) $raw_notes as $raw_note ) {
@@ -90,7 +90,7 @@ class Notes {
 	 * @return int
 	 */
 	public static function get_notes_count( $type = array(), $status = array() ) {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 		return $data_store->get_notes_count( $type, $status );
 	}
 
@@ -106,7 +106,7 @@ class Notes {
 			return;
 		}
 
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 
 		foreach ( $names as $name ) {
 			$note_ids = $data_store->get_notes_with_name( $name );
@@ -163,7 +163,7 @@ class Notes {
 	 * @return array Array of notes.
 	 */
 	public static function delete_all_notes() {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 		// Here we filter for the same params we are using to show the note list in client side.
 		$raw_notes = $data_store->get_notes(
 			array(
@@ -196,7 +196,7 @@ class Notes {
 	 * Clear note snooze status if the reminder date has been reached.
 	 */
 	public static function unsnooze_notes() {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 		$raw_notes  = $data_store->get_notes(
 			array(
 				'status' => array( Note::E_WC_ADMIN_NOTE_SNOOZED ),
@@ -247,7 +247,7 @@ class Notes {
 			return;
 		}
 
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 		$notes      = $data_store->get_notes(
 			array(
 				'type' => array( Note::E_WC_ADMIN_NOTE_MARKETING ),
@@ -266,7 +266,7 @@ class Notes {
 	 * Delete actioned survey notes.
 	 */
 	public static function possibly_delete_survey_notes() {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 		$notes      = $data_store->get_notes(
 			array(
 				'type'   => array( Note::E_WC_ADMIN_NOTE_SURVEY ),
@@ -290,7 +290,7 @@ class Notes {
 	 * @return string|bool The note status.
 	 */
 	public static function get_note_status( $note_name ) {
-		$data_store = \WC_Data_Store::load( 'admin-note' );
+		$data_store = self::load_data_store();
 		$note_ids   = $data_store->get_notes_with_name( $note_name );
 
 		if ( empty( $note_ids ) ) {
@@ -352,25 +352,58 @@ class Notes {
 
 		$note->save();
 
+		$event_params = array(
+			'note_name'    => $note->get_name(),
+			'note_type'    => $note->get_type(),
+			'note_title'   => $note->get_title(),
+			'note_content' => $note->get_content(),
+			'action_name'  => $triggered_action->name,
+			'action_label' => $triggered_action->label,
+			'screen'       => self::get_screen_name(),
+		);
+
 		if ( in_array( $note->get_type(), array( 'error', 'update' ), true ) ) {
-			$tracks_event = 'wcadmin_store_alert_action';
+			wc_admin_record_tracks_event( 'store_alert_action', $event_params );
 		} else {
-			$tracks_event = 'wcadmin_inbox_action_click';
+			self::record_tracks_event_without_cookies( 'inbox_action_click', $event_params );
 		}
 
-		wc_admin_record_tracks_event(
-			$tracks_event,
-			array(
-				'note_name'    => $note->get_name(),
-				'note_type'    => $note->get_type(),
-				'note_title'   => $note->get_title(),
-				'note_content' => $note->get_content(),
-				'action_name'  => $triggered_action->name,
-				'action_label' => $triggered_action->label,
-				'screen'       => self::get_screen_name(),
-			)
-		);
 		return $note;
+	}
+
+	/**
+	 * Record tracks event for a specific user.
+	 *
+	 * @param int    $user_id The user id we want to record for the event.
+	 * @param string $event_name Name of the event to record.
+	 * @param array  $params The params to send to the event recording.
+	 */
+	public static function record_tracks_event_with_user( $user_id, $event_name, $params ) {
+		// We save the current user id to set it back after the event recording.
+		$current_user_id = get_current_user_id();
+
+		wp_set_current_user( $user_id );
+		self::record_tracks_event_without_cookies( $event_name, $params );
+		wp_set_current_user( $current_user_id );
+
+	}
+
+	/**
+	 * Record tracks event without using cookies.
+	 *
+	 * @param string $event_name Name of the event to record.
+	 * @param array  $params The params to send to the event recording.
+	 */
+	private static function record_tracks_event_without_cookies( $event_name, $params ) {
+		// We save the cookie to set it back after the event recording.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$anon_id = isset( $_COOKIE['tk_ai'] ) ? $_COOKIE['tk_ai'] : null;
+
+		unset( $_COOKIE['tk_ai'] );
+		wc_admin_record_tracks_event( $event_name, $params );
+		if ( isset( $anon_id ) ) {
+			setcookie( 'tk_ai', $anon_id );
+		}
 	}
 
 	/**
@@ -400,5 +433,26 @@ class Notes {
 			$screen_name = $post;
 		}
 		return $screen_name;
+	}
+
+	/**
+	 * Loads the data store.
+	 *
+	 * If the "admin-note" data store is unavailable, attempts to load it
+	 * will result in an exception.
+	 * This method catches that exception and throws a custom one instead.
+	 *
+	 * @return \WC_Data_Store The "admin-note" data store.
+	 * @throws NotesUnavailableException Throws exception if data store loading fails.
+	 */
+	public static function load_data_store() {
+		try {
+			return \WC_Data_Store::load( 'admin-note' );
+		} catch ( \Exception $e ) {
+			throw new NotesUnavailableException(
+				'woocommerce_admin_notes_unavailable',
+				__( 'Notes are unavailable because the "admin-note" data store cannot be loaded.', 'woocommerce-admin' )
+			);
+		}
 	}
 }
