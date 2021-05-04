@@ -13,6 +13,9 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Suggest Jetpack Backup to Woo users.
+ *
+ * Note: This should probably live in the Jetpack plugin in the future.
+ * @see  https://developer.woocommerce.com/2020/10/16/using-the-admin-notes-inbox-in-woocommerce/
  */
 class MarketingJetpack {
 	/**
