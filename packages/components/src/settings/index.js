@@ -9,7 +9,7 @@ import { useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { Form } from '../index';
+import { Form, Spinner } from '../index';
 import {
 	SettingText,
 	SettingPassword,
@@ -33,7 +33,6 @@ export const Settings = ( {
 	onButtonClickCallback,
 } ) => {
 	const [ state, setState ] = useState( 'loading' );
-	const [ screenErrors, setScreenErrors ] = useState( [] );
 	const [ fields, setFields ] = useState( null );
 
 	useEffect( () => {
@@ -46,7 +45,9 @@ export const Settings = ( {
 			} )
 			.catch( ( e ) => {
 				setState( 'error' );
-				setScreenErrors( [ ...screenErrors, e.message ] );
+				/* eslint-disable no-console */
+				console.error( e );
+				/* eslint-enable no-console */
 			} );
 	}, [] );
 
@@ -84,12 +85,12 @@ export const Settings = ( {
 		return {};
 	};
 
-	if ( screenErrors.length ) {
-		return <p>{ JSON.stringify( screenErrors, null, 3 ) }</p>;
+	if ( state === 'error' ) {
+		return <p>{ __( 'There was an error loading the payment fields' ) }</p>;
 	}
 
 	if ( state === 'loading' ) {
-		return <p>Loading...</p>;
+		return <Spinner />;
 	}
 
 	return (
