@@ -2,18 +2,24 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { Button } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Form, Link, TextControl } from '@woocommerce/components';
+import { Link, Settings } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import apiFetch from '@wordpress/api-fetch';
+import { useEffect, useState } from '@wordpress/element';
 
 export const PaymentConnect = ( {
 	markConfigured,
 	method,
 	recordConnectStartEvent,
 } ) => {
-	const { api_details_url: apiDetailsUrl, fields, key, title } = method;
+	const {
+		api_details_url: apiDetailsUrl,
+		fields: fieldsConfig,
+		key,
+		title,
+	} = method;
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -23,36 +29,32 @@ export const PaymentConnect = ( {
 		return isOptionsUpdating();
 	} );
 
-	const getInitialConfigValues = () => {
-		if ( fields ) {
-			return fields.reduce( ( data, field ) => {
-				return {
-					...data,
-					[ field.name ]: '',
-				};
-			}, {} );
-		}
-	};
+	const [ state, setState ] = useState( 'loading' );
+	const [ errors, setErrors ] = useState( [] );
+	const [ fields, setFields ] = useState( null );
 
-	const validate = ( values ) => {
-		if ( fields ) {
-			return fields.reduce( ( errors, field ) => {
-				if ( ! values[ field.name ] ) {
-					// Matches any word that is capitalized aside from abrevitions like ID.
-					const label = field.label.replace(
-						/([A-Z][a-z]+)/,
-						( val ) => val.toLowerCase()
-					);
-					return {
-						...errors,
-						[ field.name ]: __( 'Please enter your ' ) + label,
-					};
-				}
-				return errors;
-			}, {} );
-		}
-		return {};
-	};
+	useEffect( () => {
+		const essentialFields = fieldsConfig.map( ( field ) => field.name );
+
+		apiFetch( {
+			path: `/wc/v3/payment_gateways/${ key }/`,
+		} )
+			.then( ( results ) => {
+				setFields(
+					Object.keys( results.settings ).reduce( ( all, curr ) => {
+						if ( essentialFields.includes( curr ) ) {
+							all.push( results.settings[ curr ] );
+						}
+						return all;
+					}, [] )
+				);
+				setState( 'loaded' );
+			} )
+			.catch( ( e ) => {
+				setState( 'error' );
+				setErrors( [ ...errors, e.message ] );
+			} );
+	}, [] );
 
 	const updateSettings = async ( values ) => {
 		const options = {};
@@ -103,39 +105,25 @@ export const PaymentConnect = ( {
 		},
 	} );
 
+	if ( errors.length ) {
+		return <p>{ JSON.stringify( errors, null, 3 ) }</p>;
+	}
+
+	if ( state !== 'loaded' ) {
+		return <p>Loading...</p>;
+	}
+
 	return (
-		<Form
-			initialValues={ getInitialConfigValues() }
-			onSubmitCallback={ updateSettings }
-			validate={ validate }
-		>
-			{ ( { getInputProps, handleSubmit } ) => {
-				return (
-					<>
-						{ ( fields || [] ).map( ( field ) => (
-							<TextControl
-								key={ field.name }
-								label={ field.label }
-								required
-								{ ...getInputProps( field.name ) }
-							/>
-						) ) }
+		<>
+			<Settings
+				fields={ fields }
+				isBusy={ isOptionsRequesting }
+				onSubmitCallback={ updateSettings }
+				onButtonClickCallback={ () => recordConnectStartEvent( key ) }
+				buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
+			/>
 
-						<Button
-							isPrimary
-							isBusy={ isOptionsRequesting }
-							onClick={ ( event ) => {
-								recordConnectStartEvent( key );
-								handleSubmit( event );
-							} }
-						>
-							{ __( 'Proceed', 'woocommerce-admin' ) }
-						</Button>
-
-						<p>{ helpText }</p>
-					</>
-				);
-			} }
-		</Form>
+			<p>{ helpText }</p>
+		</>
 	);
 };
