@@ -18,7 +18,6 @@ const google = (
 		<g id="a" clipPath="url(#b)">
 			<rect width="128" height="128" fill="#fff" />
 			<rect width="128" height="128" fill="#eee" />
-			<Path fill="#fff" d="M0 0h128v128H0z" />
 			<Path
 				fill-rule="evenodd"
 				clip-rule="evenodd"
