@@ -8,7 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features\RemotePaymentMethods;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
-use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\PaymentGateways;
+use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\PaymentGatewaysController;
 
 /**
  * Remote Payment Methods engine.
