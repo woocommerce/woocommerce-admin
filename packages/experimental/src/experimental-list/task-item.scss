@@ -3,7 +3,14 @@ $task-alert-yellow: #f0b849;
 
 .woocommerce-task-list__item {
 	position: relative;
-	padding-right: $gap-large;
+	display: grid;
+	grid-template-columns: 48px auto 24px;
+
+	// IE doesn't support `align-items` on grid container
+
+	& > * {
+		align-self: center;
+	}
 
 	&::before {
 		content: '';

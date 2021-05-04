@@ -5,6 +5,9 @@ import { __ } from '@wordpress/i18n';
 import { Icon, check } from '@wordpress/icons';
 import { Button, Tooltip } from '@wordpress/components';
 import NoticeOutline from 'gridicons/dist/notice-outline';
+import {
+	EllipsisMenu,
+} from '@woocommerce/components';
 import classnames from 'classnames';
 import { sanitize } from 'dompurify';
 
@@ -147,6 +150,19 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 				</Text>
 			</div>
 			{ onDismiss && isDismissable && ! completed && (
+				<EllipsisMenu
+					label={ __( 'Task List Options', 'woocommerce-admin' ) }
+					className="woocommerce-task-list__item-after"
+					renderContent={ () => (
+						<div className="woocommerce-task-card__section-controls">
+							<Button onClick={ () => onDismiss() }>
+								{ __( 'Dimiss', 'woocommerce-admin' ) }
+							</Button>
+						</div>
+					) }
+				/>
+			) }
+			{ /* { onDismiss && isDismissable && ! completed && (
 				<div className="woocommerce-task-list__item-after">
 					<Button
 						data-testid={ `dismiss-button` }
@@ -161,7 +177,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 						{ __( 'Dismiss', 'woocommerce-admin' ) }
 					</Button>
 				</div>
-			) }
+			) } */ }
 		</ListItem>
 	);
 };

@@ -29,7 +29,11 @@ class EllipsisMenu extends Component {
 			return (
 				<Button
 					className={ toggleClassname }
-					onClick={ onToggle }
+					onClick={ ( e ) => {
+						e.stopPropagation();
+						onToggle( e );
+					} }
+					icon="ellipsis"
 					title={ label }
 					aria-expanded={ isOpen }
 				>
