@@ -6,18 +6,18 @@ import { apiFetch } from '@wordpress/data-controls';
 /**
  * Internal dependencies
  */
-import { ACTION_TYPES as TYPES } from './action-types';
+import { ACTION_TYPES } from './action-types';
 import { API_NAMESPACE } from './constants';
 import { PaymentGateway, RestApiError, SelectorKeysWithActions } from './types';
 
 export function getPaymentGatewaysSuccess(
-	paymentGateways: Array< PaymentGateway >
+	paymentGateways: PaymentGateway[]
 ): {
-	type: TYPES.GET_PAYMENT_GATEWAYS_SUCESS;
-	paymentGateways: Array< PaymentGateway >;
+	type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_SUCCESS;
+	paymentGateways: PaymentGateway[];
 } {
 	return {
-		type: TYPES.GET_PAYMENT_GATEWAYS_SUCESS,
+		type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_SUCCESS,
 		paymentGateways,
 	};
 }
@@ -25,11 +25,11 @@ export function getPaymentGatewaysSuccess(
 export function setPaymentGateway(
 	paymentGateway: PaymentGateway
 ): {
-	type: TYPES.SET_PAYMENT_GATEWAY;
+	type: ACTION_TYPES.SET_PAYMENT_GATEWAY;
 	paymentGateway: PaymentGateway;
 } {
 	return {
-		type: TYPES.SET_PAYMENT_GATEWAY,
+		type: ACTION_TYPES.SET_PAYMENT_GATEWAY,
 		paymentGateway,
 	};
 }
@@ -38,12 +38,12 @@ export function setError(
 	selector: SelectorKeysWithActions,
 	error: RestApiError
 ): {
-	type: TYPES.SET_ERROR;
+	type: ACTION_TYPES.SET_ERROR;
 	selector: SelectorKeysWithActions;
 	error: RestApiError;
 } {
 	return {
-		type: TYPES.SET_ERROR,
+		type: ACTION_TYPES.SET_ERROR,
 		selector,
 		error,
 	};
@@ -53,12 +53,12 @@ export function setIsRequesting(
 	selector: SelectorKeysWithActions,
 	isRequesting: boolean
 ): {
-	type: TYPES.SET_IS_REQUESTING;
+	type: ACTION_TYPES.SET_IS_REQUESTING;
 	selector: SelectorKeysWithActions;
 	isRequesting: boolean;
 } {
 	return {
-		type: TYPES.SET_IS_REQUESTING,
+		type: ACTION_TYPES.SET_IS_REQUESTING,
 		selector,
 		isRequesting,
 	};

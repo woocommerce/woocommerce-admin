@@ -6,7 +6,7 @@
  * Internal dependencies
  */
 import reducer from '../reducer';
-import { ACTION_TYPES as TYPES } from '../action-types';
+import { ACTION_TYPES } from '../action-types';
 import { PluginsState } from '../types';
 import { paymentGatewaysStub } from './stub';
 
@@ -23,9 +23,9 @@ describe( 'plugins reducer', () => {
 		expect( state ).not.toBe( defaultState );
 	} );
 
-	it( 'should handle GET_PAYMENT_GATEWAYS_SUCESS', () => {
+	it( 'should handle GET_PAYMENT_GATEWAYS_SUCCESS', () => {
 		const state = reducer( defaultState, {
-			type: TYPES.GET_PAYMENT_GATEWAYS_SUCESS,
+			type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_SUCCESS,
 			paymentGateways: paymentGatewaysStub,
 		} );
 
@@ -44,7 +44,7 @@ describe( 'plugins reducer', () => {
 				paymentGateways: paymentGatewaysStub,
 			},
 			{
-				type: TYPES.UPDATE_PAYMENT_GATEWAY_SUCESS,
+				type: ACTION_TYPES.SET_PAYMENT_GATEWAY,
 				paymentGateway: updatedPaymentGateway,
 			}
 		);
@@ -57,7 +57,7 @@ describe( 'plugins reducer', () => {
 
 	it( 'should handle SET_IS_REQUESTING', () => {
 		const state = reducer( defaultState, {
-			type: TYPES.SET_IS_REQUESTING,
+			type: ACTION_TYPES.SET_IS_REQUESTING,
 			selector: 'updatePaymentGateway',
 			isRequesting: true,
 		} );
@@ -74,7 +74,7 @@ describe( 'plugins reducer', () => {
 			message: 'error message',
 		};
 		const state = reducer( defaultState, {
-			type: TYPES.SET_ERROR,
+			type: ACTION_TYPES.SET_ERROR,
 			selector: 'updatePaymentGateway',
 			error: restApiError,
 		} );

@@ -1,7 +1,12 @@
 /**
  * Internal dependencies
  */
-import { PaymentGateway, PluginsState } from './types';
+import {
+	PaymentGateway,
+	PluginsState,
+	WPDataSelector,
+	WPDataSelectors,
+} from './types';
 
 export function getPaymentGateway(
 	state: PluginsState,
@@ -24,3 +29,11 @@ export function isPaymentGatewayRequesting(
 ): boolean {
 	return state.requesting[ selector ] || false;
 }
+
+export type PaymentSelectors = {
+	getPaymentGateway: WPDataSelector< typeof getPaymentGateway >;
+	getPaymentGateways: WPDataSelector< typeof getPaymentGateways >;
+	isPaymentGatewayRequesting: WPDataSelector<
+		typeof isPaymentGatewayRequesting
+	>;
+} & WPDataSelectors;

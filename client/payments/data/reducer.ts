@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { ACTION_TYPES as TYPES } from './action-types';
+import { ACTION_TYPES } from './action-types';
 import { PluginsState } from './types';
 import { Actions } from './actions';
 
@@ -15,12 +15,12 @@ const reducer = (
 ): PluginsState => {
 	if ( payload && 'type' in payload ) {
 		switch ( payload.type ) {
-			case TYPES.GET_PAYMENT_GATEWAYS_SUCESS:
+			case ACTION_TYPES.GET_PAYMENT_GATEWAYS_SUCCESS:
 				return {
 					...state,
 					paymentGateways: payload.paymentGateways,
 				};
-			case TYPES.SET_PAYMENT_GATEWAY:
+			case ACTION_TYPES.SET_PAYMENT_GATEWAY:
 				const targetIndex = state.paymentGateways.findIndex(
 					( paymentGateway ) =>
 						paymentGateway.id === payload.paymentGateway.id
@@ -44,7 +44,7 @@ const reducer = (
 						...state.paymentGateways.slice( targetIndex + 1 ),
 					],
 				};
-			case TYPES.SET_ERROR:
+			case ACTION_TYPES.SET_ERROR:
 				return {
 					...state,
 					errors: {
@@ -56,7 +56,7 @@ const reducer = (
 						[ payload.selector ]: false,
 					},
 				};
-			case TYPES.SET_IS_REQUESTING:
+			case ACTION_TYPES.SET_IS_REQUESTING:
 				return {
 					...state,
 					requesting: {
