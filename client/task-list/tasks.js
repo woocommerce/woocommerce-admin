@@ -264,7 +264,7 @@ export function getAllTasks( {
 		query
 	);
 	for ( const task of filteredTasks ) {
-		task.level = task.level ? parseInt( task.level, 10 ) : 1;
+		task.level = task.level ? parseInt( task.level, 10 ) : 3;
 	}
 	return groupListOfObjectsBy( filteredTasks, 'type', 'extension' );
 }
@@ -273,10 +273,11 @@ export function taskSort( a, b ) {
 	if ( a.completed || b.completed ) {
 		return a.completed ? 1 : -1;
 	}
-	const aLevel = a.level || 1;
-	const bLevel = b.level || 1;
+	// Three is the lowest level.
+	const aLevel = a.level || 3;
+	const bLevel = b.level || 3;
 	if ( aLevel === bLevel ) {
 		return 0;
 	}
-	return aLevel > bLevel ? -1 : 1;
+	return aLevel > bLevel ? 1 : -1;
 }

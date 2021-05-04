@@ -6,7 +6,7 @@ import { taskSort } from '../tasks';
 describe( 'task sort', () => {
 	const list = [
 		{ key: 'comp', completed: true },
-		{ key: 'comp-l3', completed: true, level: 3 },
+		{ key: 'comp-l1', completed: true, level: 1 },
 		{ key: 'comp-l2', completed: true, level: 2 },
 		{ key: 'uncomp-l3', completed: false, level: 3 },
 		{ key: 'uncomp', completed: false },
@@ -15,10 +15,10 @@ describe( 'task sort', () => {
 	];
 	it( 'should put all l3 levels at the top if not completed', () => {
 		const sorted = [ ...list ].sort( taskSort );
-		expect( sorted[ 0 ].key ).toEqual( 'uncomp-l3' );
+		expect( sorted[ 0 ].key ).toEqual( 'uncomp-l1' );
 		expect( sorted[ 1 ].key ).toEqual( 'uncomp-l2' );
-		expect( sorted[ 2 ].key ).toEqual( 'uncomp' );
-		expect( sorted[ 3 ].key ).toEqual( 'uncomp-l1' );
+		expect( sorted[ 2 ].key ).toEqual( 'uncomp-l3' );
+		expect( sorted[ 3 ].key ).toEqual( 'uncomp' );
 	} );
 
 	it( 'should put all completed items at the bottom', () => {
