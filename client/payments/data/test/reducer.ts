@@ -33,7 +33,7 @@ describe( 'plugins reducer', () => {
 		expect( state.paymentGateways ).toBe( paymentGatewaysStub );
 	} );
 
-	it( 'should replace an existing payment gateway on UPDATE_PAYMENT_GATEWAY_SUCESS', () => {
+	it( 'should replace an existing payment gateway on SET_PAYMENT_GATEWAY', () => {
 		const updatedPaymentGateway = {
 			...paymentGatewaysStub[ 1 ],
 			description: 'update test',
