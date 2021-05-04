@@ -13,6 +13,7 @@ module.exports = [
 	'@woocommerce/navigation',
 	'@woocommerce/notices',
 	'@woocommerce/number',
+	'@woocommerce/task-dashboard',
 	'@woocommerce/tracks',
 	// wc-blocks packages
 	'@woocommerce/blocks-checkout',

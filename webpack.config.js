@@ -36,6 +36,7 @@ const wcAdminPackages = [
 	'notices',
 	'number',
 	'data',
+	'task-dashboard',
 	'tracks',
 ];
 

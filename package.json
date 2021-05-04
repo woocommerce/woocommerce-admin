@@ -179,6 +179,7 @@
 		"@woocommerce/navigation": "file:packages/navigation",
 		"@woocommerce/notices": "file:packages/notices",
 		"@woocommerce/number": "file:packages/number",
+		"@woocommerce/task-dashboard": "file:packages/task-dashboard",
 		"@woocommerce/tracks": "file:packages/tracks",
 		"@wordpress/babel-plugin-makepot": "2.1.3",
 		"@wordpress/babel-preset-default": "5.0.1",
