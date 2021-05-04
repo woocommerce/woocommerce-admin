@@ -149,7 +149,7 @@ class BusinessDetails extends Component {
 				'creative-mail-by-constant-contact'
 			),
 			install_google_ads: businessExtensions.includes(
-				'kliken-marketing-for-google'
+				'google-listing-and-ads'
 			),
 			install_extensions: installExtensions,
 		} );
