@@ -149,7 +149,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 			</div>
 			{ ( onDismiss || remindMeLater ) && ! completed && (
 				<EllipsisMenu
-					label={ __( 'Task List Options', 'woocommerce-admin' ) }
+					label={ __( 'Task Options', 'woocommerce-admin' ) }
 					className="woocommerce-task-list__item-after"
 					onToggle={ ( e: React.MouseEvent | React.KeyboardEvent ) =>
 						e.stopPropagation()
@@ -167,7 +167,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 										onDismiss();
 									} }
 								>
-									{ __( 'Dimiss', 'woocommerce-admin' ) }
+									{ __( 'Dismiss', 'woocommerce-admin' ) }
 								</Button>
 							) }
 							{ remindMeLater && (
@@ -191,22 +191,6 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					) }
 				/>
 			) }
-			{ /* { onDismiss && isDismissable && ! completed && (
-				<div className="woocommerce-task-list__item-after">
-					<Button
-						data-testid={ `dismiss-button` }
-						isTertiary
-						onClick={ (
-							event: React.MouseEvent | React.KeyboardEvent
-						) => {
-							event.stopPropagation();
-							onDismiss();
-						} }
-					>
-						{ __( 'Dismiss', 'woocommerce-admin' ) }
-					</Button>
-				</div>
-			) } */ }
 		</ListItem>
 	);
 };

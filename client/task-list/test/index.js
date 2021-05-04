@@ -7,6 +7,7 @@ import {
 	findByText,
 	fireEvent,
 	queryByTestId,
+	waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import apiFetch from '@wordpress/api-fetch';
@@ -151,6 +152,15 @@ describe( 'TaskDashboard and TaskList', () => {
 		isDismissable: true,
 		type: 'extension',
 	};
+	const defaultTaskListProps = {
+		name: 'task_list',
+		eventName: 'tasklist',
+		query: {},
+		dismissedTasks: [],
+		remindMeLaterTasks: {},
+		trackedCompletedTasks: shorterTasksList,
+		tasks: shorterTasksList,
+	};
 
 	it( 'renders the "Finish setup" and "Things to do next" tasks lists', async () => {
 		apiFetch.mockResolvedValue( {} );
@@ -262,16 +272,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		apiFetch.mockResolvedValue( {} );
 		const onHide = jest.fn();
 		const { getByRole } = render(
-			<TaskList
-				name="task_list"
-				eventName="tasklist"
-				dismissedTasks={ [] }
-				isComplete={ false }
-				query={ {} }
-				trackedCompletedTasks={ [] }
-				tasks={ tasks.setup }
-				onHide={ onHide }
-			/>
+			<TaskList { ...defaultTaskListProps } />
 		);
 
 		expect( onHide ).not.toHaveBeenCalled();
@@ -320,7 +321,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		getAllTasks.mockReturnValue( { setup: shorterTasksList } );
 
 		act( () => {
-			render( <TaskDashboard query={ {} } /> );
+			render( <TaskList { ...defaultTaskListProps } /> );
 		} );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
@@ -333,11 +334,11 @@ describe( 'TaskDashboard and TaskList', () => {
 		const { setup } = tasks;
 		const { queryByText } = render(
 			<TaskList
+				{ ...defaultTaskListProps }
 				name="task_list"
 				eventName="tasklist"
 				dismissedTasks={ [ 'optional', 'required', 'completed' ] }
 				isComplete={ false }
-				query={ {} }
 				trackedCompletedTasks={ [] }
 				tasks={ [ ...setup, notVisibleTask ] }
 			/>
@@ -351,11 +352,11 @@ describe( 'TaskDashboard and TaskList', () => {
 		const { extension } = tasks;
 		const { queryByText } = render(
 			<TaskList
+				{ ...defaultTaskListProps }
 				name="extended_task_list"
 				eventName="extended_tasklist"
 				dismissedTasks={ [ 'extension' ] }
 				isComplete={ false }
-				query={ {} }
 				trackedCompletedTasks={ [] }
 				tasks={ [ ...extension, notVisibleTask ] }
 			/>
@@ -375,7 +376,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		getAllTasks.mockReturnValue( { setup: shorterTasksList } );
 
 		act( () => {
-			render( <TaskDashboard query={ {} } /> );
+			render( <TaskList { ...defaultTaskListProps } /> );
 		} );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
@@ -388,11 +389,11 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					{ ...defaultTaskListProps }
 					name="extended_task_list"
 					eventName="extended_tasklist"
 					dismissedTasks={ [] }
 					isComplete={ false }
-					query={ {} }
 					trackedCompletedTasks={ [] }
 					tasks={ shorterTasksList }
 				/>
@@ -410,11 +411,9 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
-					name="task_list"
-					eventName="tasklist"
+					{ ...defaultTaskListProps }
 					dismissedTasks={ [ 'optional', 'required', 'completed' ] }
 					isComplete={ false }
-					query={ {} }
 					trackedCompletedTasks={ [] }
 					tasks={ setup }
 				/>
@@ -432,11 +431,11 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					{ ...defaultTaskListProps }
 					name="extended_task_list"
 					eventName="extended_tasklist"
 					dismissedTasks={ [ 'extension' ] }
 					isComplete={ false }
-					query={ {} }
 					trackedCompletedTasks={ [] }
 					tasks={ extension }
 				/>
@@ -454,12 +453,9 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
-					name="task_list"
-					eventName="tasklist"
+					{ ...defaultTaskListProps }
 					dismissedTasks={ [] }
 					isComplete={ true }
-					query={ {} }
-					trackedCompletedTasks={ shorterTasksList }
 					tasks={ [ ...setup ] }
 				/>
 			);
@@ -476,12 +472,11 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					{ ...defaultTaskListProps }
 					name="extended_task_list"
 					eventName="extended_tasklist"
 					dismissedTasks={ [] }
 					isComplete={ true }
-					query={ {} }
-					trackedCompletedTasks={ shorterTasksList }
 					tasks={ extension }
 				/>
 			);
@@ -498,10 +493,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
-					name="task_list"
-					eventName="tasklist"
+					{ ...defaultTaskListProps }
 					dismissedTasks={ [] }
-					query={ {} }
 					trackedCompletedTasks={ [] }
 					tasks={ [ ...setup, ...extension ] }
 				/>
@@ -519,10 +512,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
-					name="task_list"
-					eventName="tasklist"
-					dismissedTasks={ [] }
-					query={ {} }
+					{ ...defaultTaskListProps }
 					trackedCompletedTasks={ [ 'completed', 'extension' ] }
 					tasks={ [ ...setup, ...extension ] }
 				/>
@@ -540,10 +530,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
-					name="task_list"
-					eventName="tasklist"
-					dismissedTasks={ [] }
-					query={ {} }
+					{ ...defaultTaskListProps }
 					trackedCompletedTasks={ [ 'extension' ] }
 					tasks={ [ ...setup, ...extension ] }
 				/>
@@ -560,10 +547,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
-					name="task_list"
-					eventName="tasklist"
+					{ ...defaultTaskListProps }
 					dismissedTasks={ [ 'completed-1' ] }
-					query={ {} }
 					trackedCompletedTasks={ [] }
 					tasks={ shorterTasksList }
 				/>
@@ -575,21 +560,25 @@ describe( 'TaskDashboard and TaskList', () => {
 		} );
 	} );
 
-	it( 'dismisses a task', () => {
+	it( 'dismisses a task', async () => {
 		apiFetch.mockResolvedValue( {} );
 		const { extension } = tasks;
-		const { getByText } = render(
+		const { getByText, getByTitle } = render(
 			<TaskList
+				{ ...defaultTaskListProps }
 				name="extended_task_list"
 				eventName="extended_tasklist"
 				dismissedTasks={ [] }
 				isComplete={ false }
-				query={ {} }
 				trackedCompletedTasks={ [] }
 				tasks={ extension }
 			/>
 		);
 
+		fireEvent.click( getByTitle( 'Task Options' ) );
+		await waitFor( () => {
+			expect( getByText( 'Dismiss' ) ).toBeInTheDocument();
+		} );
 		fireEvent.click( getByText( 'Dismiss' ) );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
@@ -597,22 +586,25 @@ describe( 'TaskDashboard and TaskList', () => {
 		} );
 	} );
 
-	it( 'calls the "onDismiss" callback after dismissing a task', () => {
+	it( 'calls the "onDismiss" callback after dismissing a task', async () => {
 		apiFetch.mockResolvedValue( {} );
 		const callback = jest.fn();
 		const { extension } = tasks;
 		extension[ 0 ].onDismiss = callback;
-		const { getByText } = render(
+		const { getByText, getByTitle } = render(
 			<TaskList
-				dismissedTasks={ [] }
+				{ ...defaultTaskListProps }
 				isComplete={ false }
-				query={ {} }
 				trackedCompletedTasks={ [] }
 				tasks={ extension }
 				name={ 'extended_task_list' }
 			/>
 		);
 
+		fireEvent.click( getByTitle( 'Task Options' ) );
+		await waitFor( () => {
+			expect( getByText( 'Dismiss' ) ).toBeInTheDocument();
+		} );
 		fireEvent.click( getByText( 'Dismiss' ) );
 		expect( callback ).toHaveBeenCalledWith();
 	} );
