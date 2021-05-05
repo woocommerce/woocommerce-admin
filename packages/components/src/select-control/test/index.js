@@ -306,6 +306,43 @@ describe( 'SelectControl', () => {
 				userEvent.click( getByRole( 'option', { selected: true } ) );
 				expect( onChangeMock ).toHaveBeenCalledTimes( 0 );
 			} );
+
+			it( 'should reset selected option if searching', async () => {
+				const onChangeMock = jest.fn();
+				const { getByRole, queryByRole } = render(
+					<SelectControl
+						isSearchable
+						showAllOnFocus
+						selected={ options[ 2 ].key }
+						options={ options }
+						onSearch={ () => options }
+						onFilter={ () => options }
+						onChange={ onChangeMock }
+						excludeSelectedOptions={ false }
+					/>
+				);
+
+				getByRole( 'combobox' ).focus();
+				await waitFor( () =>
+					expect(
+						getByRole( 'option', { name: 'bar' } )
+					).toBeInTheDocument()
+				);
+
+				userEvent.click( getByRole( 'option', { name: 'bar' } ) );
+				userEvent.clear( getByRole( 'combobox' ) );
+				userEvent.type( getByRole( 'combobox' ), 'bar' );
+
+				await waitFor( () =>
+					expect(
+						getByRole( 'option', { name: 'bar' } )
+					).toBeInTheDocument()
+				);
+
+				expect(
+					queryByRole( 'option', { selected: true } )
+				).toBeNull();
+			} );
 		} );
 
 		it( 'disables the component', async () => {
@@ -371,5 +408,152 @@ describe( 'SelectControl', () => {
 		);
 
 		expect( getByText( options[ 1 ].label ) ).toBeInTheDocument();
+	} );
+
+	describe( 'keyboard interaction', () => {
+		it( 'pressing keydown on combobox should highlight first option', async () => {
+			const { getByRole } = render(
+				<SelectControl
+					options={ options }
+					onSearch={ () => options }
+					onFilter={ () => options }
+					selected={ null }
+				/>
+			);
+
+			getByRole( 'combobox' ).focus();
+			await waitFor( () =>
+				expect(
+					getByRole( 'option', { name: 'bar' } )
+				).toBeInTheDocument()
+			);
+
+			userEvent.type( getByRole( 'combobox' ), '{arrowdown}' );
+
+			expect(
+				getByRole( 'option', { selected: true } ).textContent
+			).toEqual( options[ 0 ].label );
+		} );
+
+		it( 'pressing keydown on combobox with selected should highlight the next option', async () => {
+			const { getByRole } = render(
+				<SelectControl
+					options={ options }
+					onSearch={ () => options }
+					onFilter={ () => options }
+					selected={ options[ 1 ].key }
+					excludeSelectedOptions={ false }
+				/>
+			);
+
+			getByRole( 'combobox' ).focus();
+			await waitFor( () =>
+				expect(
+					getByRole( 'option', { name: 'bar' } )
+				).toBeInTheDocument()
+			);
+
+			userEvent.type( getByRole( 'combobox' ), '{arrowdown}' );
+
+			expect(
+				getByRole( 'option', { selected: true } ).textContent
+			).toEqual( options[ 2 ].label );
+		} );
+
+		it( 'pressing keydown on combobox with selected last option should rotate to first option', async () => {
+			const { getByRole } = render(
+				<SelectControl
+					options={ options }
+					onSearch={ () => options }
+					onFilter={ () => options }
+					selected={ options[ options.length - 1 ].key }
+					excludeSelectedOptions={ false }
+				/>
+			);
+
+			getByRole( 'combobox' ).focus();
+			await waitFor( () =>
+				expect(
+					getByRole( 'option', { name: 'bar' } )
+				).toBeInTheDocument()
+			);
+
+			userEvent.type( getByRole( 'combobox' ), '{arrowdown}' );
+
+			expect(
+				getByRole( 'option', { selected: true } ).textContent
+			).toEqual( options[ 0 ].label );
+		} );
+
+		it( 'pressing keyup on combobox should highlight last option', async () => {
+			const { getByRole } = render(
+				<SelectControl
+					options={ options }
+					onSearch={ () => options }
+					onFilter={ () => options }
+					selected={ null }
+				/>
+			);
+
+			getByRole( 'combobox' ).focus();
+			await waitFor( () =>
+				expect(
+					getByRole( 'option', { name: 'bar' } )
+				).toBeInTheDocument()
+			);
+
+			userEvent.type( getByRole( 'combobox' ), '{arrowup}' );
+
+			expect(
+				getByRole( 'option', { selected: true } ).textContent
+			).toEqual( options[ options.length - 1 ].label );
+		} );
+
+		it( 'pressing tab on combobox should hide option list', async () => {
+			const { getByRole, queryByRole } = render(
+				<SelectControl
+					options={ options }
+					onSearch={ () => options }
+					onFilter={ () => options }
+					selected={ null }
+				/>
+			);
+
+			getByRole( 'combobox' ).focus();
+			await waitFor( () =>
+				expect(
+					getByRole( 'option', { name: 'bar' } )
+				).toBeInTheDocument()
+			);
+
+			userEvent.type( getByRole( 'combobox' ), '{tab}' );
+
+			expect( queryByRole( 'option', { selected: true } ) ).toBeNull();
+		} );
+
+		it( 'pressing enter should select highlighted option', async () => {
+			const onChangeMock = jest.fn();
+			const { getByRole } = render(
+				<SelectControl
+					options={ options }
+					onSearch={ () => options }
+					onFilter={ () => options }
+					selected={ null }
+					excludeSelectedOptions={ false }
+					onChange={ onChangeMock }
+				/>
+			);
+
+			getByRole( 'combobox' ).focus();
+			await waitFor( () =>
+				expect(
+					getByRole( 'option', { name: 'bar' } )
+				).toBeInTheDocument()
+			);
+
+			userEvent.type( getByRole( 'combobox' ), '{arrowdown}{enter}' );
+
+			expect( onChangeMock ).toHaveBeenCalled();
+		} );
 	} );
 } );

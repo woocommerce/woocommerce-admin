@@ -100,7 +100,9 @@ class List extends Component {
 				break;
 
 			case ENTER:
-				this.select( options[ selectedIndex ] );
+				if ( options[ selectedIndex ] ) {
+					this.select( options[ selectedIndex ] );
+				}
 				event.preventDefault();
 				event.stopPropagation();
 				break;
@@ -116,7 +118,7 @@ class List extends Component {
 				return;
 
 			case TAB:
-				if ( selectedIndex > -1 ) {
+				if ( options[ selectedIndex ] ) {
 					this.select( options[ selectedIndex ] );
 				}
 				setExpanded( false );
