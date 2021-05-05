@@ -126,16 +126,16 @@ export type ProfileItemsState = {
 export type FieldLocale = {
 	locale: string;
 	label: string;
-}
+};
 
 export type MethodFields = {
 	name: string;
 	option?: string;
 	label?: string;
 	locales?: FieldLocale[];
-	type?: string,
+	type?: string;
 	value?: string;
-}
+};
 
 export type PaymentMethodsState = {
 	locale: string;
@@ -143,9 +143,9 @@ export type PaymentMethodsState = {
 	content: string;
 	key: string;
 	image: string;
-	is_visible: boolean|RuleProcessor[];
+	is_visible: boolean | RuleProcessor[];
 	plugins: string[];
-	is_configured: boolean|RuleProcessor[];
+	is_configured: boolean | RuleProcessor[];
 	fields: MethodFields[];
 	api_details_url: string;
 	manage_url: string;

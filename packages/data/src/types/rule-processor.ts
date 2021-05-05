@@ -1,7 +1,7 @@
 export type RuleProcessor = {
 	type: RuleType;
-	value?: string|number|boolean;
-	default?: string|number|boolean;
+	value?: string | number | boolean;
+	default?: string | number | boolean;
 	index?: string;
 	operation?: RuleOperation;
 	status?: string;
