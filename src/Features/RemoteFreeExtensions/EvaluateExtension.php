@@ -28,7 +28,6 @@ class EvaluateExtension {
 			$method->is_visible = $is_visible;
 			// Return early if visibility does not pass.
 			if ( ! $is_visible ) {
-				$method->is_configured = false;
 				return $method;
 			}
 		}
