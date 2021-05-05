@@ -13,7 +13,7 @@ describe( 'task sort', () => {
 		{ key: 'uncomp-l2', completed: false, level: 2 },
 		{ key: 'uncomp-l1', completed: false, level: 1 },
 	];
-	it( 'should put all l3 levels at the top if not completed', () => {
+	it( 'should put all l1 levels at the top if not completed', () => {
 		const sorted = [ ...list ].sort( taskSort );
 		expect( sorted[ 0 ].key ).toEqual( 'uncomp-l1' );
 		expect( sorted[ 1 ].key ).toEqual( 'uncomp-l2' );

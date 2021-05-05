@@ -32,15 +32,16 @@ type TaskItemProps = {
 
 const OptionalTaskTooltip: React.FC< {
 	level: TaskLevel;
+	completed: boolean;
 	children: JSX.Element;
-} > = ( { level, children } ) => {
+} > = ( { level, completed, children } ) => {
 	let tooltip = '';
-	if ( level === 1 ) {
+	if ( level === 1 && ! completed ) {
 		tooltip = __(
 			'This task is required to keep your store running',
 			'woocommerce-admin'
 		);
-	} else if ( level === 2 ) {
+	} else if ( level === 2 && ! completed ) {
 		tooltip = __(
 			'This task is required to set up your extension',
 			'woocommerce-admin'
@@ -65,9 +66,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	level = 3,
 } ) => {
 	const className = classnames( 'woocommerce-task-list__item', {
-		'is-complete': completed,
-		'is-level-2': level === 2 && ! completed,
-		'is-level-1': level === 1 && ! completed,
+		complete: completed,
+		'level-2': level === 2 && ! completed,
+		'level-1': level === 1 && ! completed,
 	} );
 
 	return (
@@ -77,7 +78,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 			onClick={ onClick }
 			animation="slide-right"
 		>
-			<OptionalTaskTooltip level={ level }>
+			<OptionalTaskTooltip level={ level } completed={ completed }>
 				<div className="woocommerce-task-list__item-before">
 					{ level === 1 && ! completed ? (
 						<NoticeOutline size={ 36 } />
