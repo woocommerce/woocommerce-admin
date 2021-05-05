@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -86,7 +87,11 @@ export const Settings = ( {
 	};
 
 	if ( state === 'error' ) {
-		return <p>{ __( 'There was an error loading the payment fields' ) }</p>;
+		return (
+			<Text>
+				{ __( 'There was an error loading the payment fields' ) }
+			</Text>
+		);
 	}
 
 	if ( state === 'loading' ) {
