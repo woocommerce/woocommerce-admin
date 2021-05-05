@@ -94,12 +94,12 @@ fi
 output 2 "Starting release to GitHub..."
 echo
 
-# Create a release branch.
 BRANCH="build/${VERSION}"
-git checkout -b $BRANCH
-
 
 if [ ! $DRY_RUN ]; then
+  # Create a release branch.
+  git checkout -b $BRANCH
+
   warning "HIt official release"
   exit 1
   # Force add feature-config.php
@@ -130,7 +130,7 @@ fi
 
 if [ $DRY_RUN ]; then
   output 2 "Dry run of release finished, please delete $BRANCH branch."
-  return;
+  exit;
 fi
 # Create the new release.
 if [ $IS_PRE_RELEASE = true ]; then
