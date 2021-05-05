@@ -51,6 +51,11 @@ if [[ $1 == '' || $2 == '' ]]
     exit 1
 fi
 
+if [ $DRY_RUN ]; then
+  output 2 "Dry run of release finished, please delete $BRANCH branch."
+  return;
+fi
+
 printf "This script will build files and create a tag on GitHub based on your local branch."
 echo
 echo
@@ -114,11 +119,16 @@ git add .
 git commit -m "Adding /vendor directory to release" --no-verify
 
 # Push branch upstream
-git push origin $BRANCH
-
+if [ ! $DRY_RUN ]; then
+  git push origin $BRANCH
+fi
 # Create the zip archive
 ./bin/make-zip.sh $ZIP_FILE
 
+if [ $DRY_RUN ]; then
+  output 2 "Dry run of release finished, please delete $BRANCH branch."
+  return;
+fi
 # Create the new release.
 if [ $IS_PRE_RELEASE = true ]; then
 	hub release create -m $VERSION -m "Release of version $VERSION. See readme.txt for details." -t $BRANCH --prerelease "v${VERSION}" --attach "${ZIP_FILE}"

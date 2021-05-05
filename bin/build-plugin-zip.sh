@@ -40,6 +40,9 @@ warning () {
 }
 
 status "💃 Time to release WooCommerce Admin 🕺"
+if [ $DRY_RUN ]; then
+  warning "This is a dry run, nothing will be pushed up to Github"
+fi
 
 warning "Please enter the version number to tag, for example, 1.0.0: "
 read -r VERSION
