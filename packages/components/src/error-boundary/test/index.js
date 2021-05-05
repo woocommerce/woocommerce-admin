@@ -3,8 +3,6 @@
  */
 import React, { useEffect } from '@wordpress/element';
 import { render, screen } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
 
 /**
  * Internal dependencies
@@ -41,21 +39,19 @@ describe( 'ErrorBoundary', () => {
 	it( 'should return the error information on error', async () => {
 		const errorHandlerMock = jest.fn().mockReturnValue( null );
 		render(
-			<Router history={ createMemoryHistory() }>
-				<span>
-					<ErrorBoundary>
-						{ ( errorState ) =>
-							errorState.error ? (
-								errorHandlerMock( errorState )
-							) : (
-								<ComponentThrowingError>
-									Content
-								</ComponentThrowingError>
-							)
-						}
-					</ErrorBoundary>
-				</span>
-			</Router>
+			<span>
+				<ErrorBoundary>
+					{ ( errorState ) =>
+						errorState.error ? (
+							errorHandlerMock( errorState )
+						) : (
+							<ComponentThrowingError>
+								Content
+							</ComponentThrowingError>
+						)
+					}
+				</ErrorBoundary>
+			</span>
 		);
 
 		expect( screen.queryByText( 'Content' ) ).not.toBeInTheDocument();
