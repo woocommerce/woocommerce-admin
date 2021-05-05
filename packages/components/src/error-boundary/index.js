@@ -4,7 +4,11 @@
 import { Component } from '@wordpress/element';
 
 class ErrorBoundary extends Component {
-	state = { error: undefined, info: undefined };
+	constructor( props ) {
+		super( props );
+
+		this.state = { error: undefined, info: undefined };
+	}
 
 	componentDidCatch( error, info ) {
 		this.setState( {
