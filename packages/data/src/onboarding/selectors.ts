@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { WPDataSelectors } from '../types';
+import { WPDataSelectors, RuleProcessor } from '../types';
 
 export const getProfileItems = (
 	state: OnboardingState
@@ -150,50 +150,3 @@ export type PaymentMethodsState = {
 	api_details_url: string;
 	manage_url: string;
 };
-
-// TODO move out the following types
-export type RuleProcessor = {
-	type: RuleType;
-	value?: string|number|boolean;
-	default?: string|number|boolean;
-	index?: string;
-	operation?: Operation;
-	status?: string;
-	operand?: RuleProcessor;
-	operands?: RuleProcessor[] | RuleProcessor[][];
-	option_name?: string;
-	plugin?: string;
-	plugins?: string[];
-	publish_after?: string;
-};
-
-export type RuleType =
-	| 'plugins_activated'
-	| 'publish_after_time'
-	| 'publish_before_time'
-	| 'not'
-	| 'or'
-	| 'fail'
-	| 'pass'
-	| 'plugin_version'
-	| 'stored_state'
-	| 'order_count'
-	| 'wcadmin_active_for'
-	| 'product_count'
-	| 'onboarding_profile'
-	| 'is_ecommerce'
-	| 'base_location_country'
-	| 'base_location_state'
-	| 'note_status'
-	| 'option'
-	| 'wca_updated';
-
-export type Operation =
-	| '='
-	| '<'
-	| '<='
-	| '>'
-	| '>='
-	| '!='
-	| 'contains'
-	| '!contains';
