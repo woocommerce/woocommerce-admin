@@ -1,5 +1,6 @@
 # Unreleased
 
+-   Add new `ErrorBoundary` component. #-
 -   Make `Search` accept synchronous `autocompleter.options`. #6884
 -   Add new (experimental) collapsible list item to collapse list items. #6869
 -   SelectControl: fix display of multiple selections without inline tags. #6862
