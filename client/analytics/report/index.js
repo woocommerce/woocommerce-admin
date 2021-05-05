@@ -1,13 +1,14 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import { getQuery, getSearchWords } from '@woocommerce/navigation';
 import { searchItemsByString } from '@woocommerce/data';
+import { ErrorBoundary } from '@woocommerce/components';
 
 /**
  * Internal dependencies
@@ -34,51 +35,48 @@ const getReportParam = ( { params, path } ) => {
 	return params.report || path.replace( /^\/+/, '' );
 };
 
-class Report extends Component {
-	constructor() {
-		super( ...arguments );
-
-		this.state = {
-			hasError: false,
-		};
-	}
-
-	componentDidCatch( error ) {
-		this.setState( {
-			hasError: true,
-		} );
+const ErrorLogger = ( { error } ) => {
+	useEffect( () => {
 		/* eslint-disable no-console */
 		console.warn( error );
 		/* eslint-enable no-console */
+	}, [ error ] );
+
+	return null;
+};
+
+const ReportUi = ( props ) => {
+	const { isError } = props;
+
+	if ( isError ) {
+		return <ReportError isError />;
 	}
 
-	render() {
-		if ( this.state.hasError ) {
-			return null;
-		}
+	const reportParam = getReportParam( props );
 
-		const { isError } = this.props;
-
-		if ( isError ) {
-			return <ReportError isError />;
-		}
-
-		const reportParam = getReportParam( this.props );
-
-		const report = find( getReports(), { report: reportParam } );
-		if ( ! report ) {
-			return null;
-		}
-		const Container = report.component;
-		return (
-			<CurrencyContext.Provider
-				value={ getFilteredCurrencyInstance( getQuery() ) }
-			>
-				<Container { ...this.props } />
-			</CurrencyContext.Provider>
-		);
+	const report = find( getReports(), { report: reportParam } );
+	if ( ! report ) {
+		return null;
 	}
-}
+
+	const Container = report.component;
+
+	return (
+		<CurrencyContext.Provider
+			value={ getFilteredCurrencyInstance( getQuery() ) }
+		>
+			<Container { ...props } />
+		</CurrencyContext.Provider>
+	);
+};
+
+const Report = ( props ) => (
+	<ErrorBoundary>
+		{ ( { error } ) =>
+			error ? <ErrorLogger error={ error } /> : <ReportUi { ...props } />
+		}
+	</ErrorBoundary>
+);
 
 Report.propTypes = {
 	params: PropTypes.object.isRequired,
