@@ -8,11 +8,12 @@ import {
 	Link,
 	Settings,
 	WooRemotePaymentSettings,
+	Spinner,
 } from '@woocommerce/components';
-
+import apiFetch from '@wordpress/api-fetch';
+import { useEffect, useState } from '@wordpress/element';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-
-import { useSlot } from '@woocommerce/experimental';
+import { useSlot, Text } from '@woocommerce/experimental';
 
 export const PaymentConnect = ( {
 	markConfigured,
@@ -25,10 +26,38 @@ export const PaymentConnect = ( {
 		key,
 		title,
 	} = method;
+
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const slot = useSlot( `woocommerce_remote_payment_settings_${ key }` );
 	const hasFills = Boolean( slot.fills && slot.fills.length );
+	const [ state, setState ] = useState( 'loading' );
+	const [ fields, setFields ] = useState( null );
+
+	// This transform will be obsolete when we can derive essential fields from the API
+	const settingsTransform = ( settings ) => {
+		const essentialFields = fieldsConfig.map( ( field ) => field.name );
+
+		return Object.values( settings ).filter( ( setting ) =>
+			essentialFields.includes( setting.id )
+		);
+	};
+
+	useEffect( () => {
+		apiFetch( {
+			path: `/wc/v3/payment_gateways/${ key }/`,
+		} )
+			.then( ( results ) => {
+				setFields( settingsTransform( results.settings ) );
+				setState( 'loaded' );
+			} )
+			.catch( ( e ) => {
+				setState( 'error' );
+				/* eslint-disable no-console */
+				console.error( e );
+				/* eslint-enable no-console */
+			} );
+	}, [] );
 
 	const isOptionsRequesting = useSelect( ( select ) => {
 		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
@@ -36,7 +65,7 @@ export const PaymentConnect = ( {
 		return isOptionsUpdating();
 	} );
 
-	const updateSettings = async ( values, fields ) => {
+	const updateSettings = async ( values ) => {
 		const options = {};
 
 		fields.forEach( ( field ) => {
@@ -69,7 +98,7 @@ export const PaymentConnect = ( {
 		}
 	};
 
-	const validate = ( values, fields ) => {
+	const validate = ( values ) => {
 		if ( fields ) {
 			return fields.reduce( ( errors, field ) => {
 				if ( ! values[ field.id ] ) {
@@ -110,20 +139,7 @@ export const PaymentConnect = ( {
 
 	const DefaultSettings = ( { ...props } ) => (
 		<Settings
-			settingsTransformCallback={ ( settings ) => {
-				// This callback will be obsolete when we can derive essential fields from API
-				const essentialFields = fieldsConfig.map(
-					( field ) => field.name
-				);
-
-				return Object.keys( settings ).reduce( ( all, curr ) => {
-					if ( essentialFields.includes( curr ) ) {
-						all.push( settings[ curr ] );
-					}
-					return all;
-				}, [] );
-			} }
-			apiPath={ `/wc/v3/payment_gateways/${ key }/` }
+			settings={ fields }
 			isBusy={ isOptionsRequesting }
 			onSubmitCallback={ updateSettings }
 			onButtonClickCallback={ () => recordConnectStartEvent( key ) }
@@ -132,6 +148,18 @@ export const PaymentConnect = ( {
 			{ ...props }
 		/>
 	);
+
+	if ( state === 'error' ) {
+		return (
+			<Text>
+				{ __( 'There was an error loading the payment fields' ) }
+			</Text>
+		);
+	}
+
+	if ( state === 'loading' ) {
+		return <Spinner />;
+	}
 
 	return (
 		<>

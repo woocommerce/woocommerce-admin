@@ -1,16 +1,12 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
-import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
-import { Form, Spinner } from '../index';
+import { Form } from '../index';
 import {
 	SettingText,
 	SettingPassword,
@@ -26,32 +22,17 @@ const typeMap = {
 };
 
 export const Settings = ( {
-	apiPath = '',
-	settingsTransformCallback = ( settings ) => settings,
+	settings = [],
 	isBusy,
-	onSubmitCallback,
-	buttonLabel,
-	onButtonClickCallback,
+	onSubmitCallback = () => {},
+	onButtonClickCallback = () => {},
+	onChangeCallback = () => {},
 	validate = () => {},
+	buttonLabel,
 } ) => {
-	const [ state, setState ] = useState( 'loading' );
-	const [ fields, setFields ] = useState( null );
-
-	useEffect( () => {
-		apiFetch( {
-			path: apiPath,
-		} )
-			.then( ( results ) => {
-				setFields( settingsTransformCallback( results.settings ) );
-				setState( 'loaded' );
-			} )
-			.catch( ( e ) => {
-				setState( 'error' );
-				/* eslint-disable no-console */
-				console.error( e );
-				/* eslint-enable no-console */
-			} );
-	}, [] );
+	// Support accepting fields in the format provided by the API (object), but transform to Array
+	const fields =
+		settings instanceof Array ? settings : Object.values( settings );
 
 	const getInitialConfigValues = () => {
 		if ( fields ) {
@@ -64,30 +45,17 @@ export const Settings = ( {
 		}
 	};
 
-	if ( state === 'error' ) {
-		return (
-			<Text>
-				{ __( 'There was an error loading the payment fields' ) }
-			</Text>
-		);
-	}
-
-	if ( state === 'loading' ) {
-		return <Spinner />;
-	}
-
 	return (
 		<Form
 			initialValues={ getInitialConfigValues() }
-			onSubmitCallback={ ( values ) => {
-				return onSubmitCallback( values, fields );
-			} }
-			validate={ ( values ) => validate( values, fields ) }
+			onChangeCallback={ onChangeCallback }
+			onSubmitCallback={ onSubmitCallback }
+			validate={ validate }
 		>
 			{ ( { getInputProps, handleSubmit } ) => {
 				return (
 					<div className="woocommerce-component-settings">
-						{ ( fields || [] ).map( ( field ) => {
+						{ fields.map( ( field ) => {
 							const Control = typeMap[ field.type ];
 							return (
 								<Control
