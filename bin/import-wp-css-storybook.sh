@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-STORYBOOK_WORDPRESS_DIR=$DIR/../storybook/wordpress;
-STORY_BOOK_CSS_PATH=$DIR/../storybook/wordpress/css;
-TMP_DIR=$DIR/../storybook/wordpress/tmp;
+STORYBOOK_WORDPRESS_DIR="$DIR/../storybook/wordpress";
+STORY_BOOK_CSS_PATH="$DIR/../storybook/wordpress/css";
+TMP_DIR="$DIR/../storybook/wordpress/tmp";
 ARCHIVE_CSS_PATH="wordpress/wp-admin/css";
 ARCHIVE_IMG_PATH="wordpress/wp-admin/images";
 
