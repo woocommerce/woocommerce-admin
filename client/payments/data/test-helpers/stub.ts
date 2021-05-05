@@ -1,4 +1,9 @@
-export const paymentGatewaysStub = [
+/**
+ * Internal dependencies
+ */
+import { PaymentGateway } from './../types';
+
+export const paymentGatewaysStub: PaymentGateway[] = [
 	{
 		id: 'bacs',
 		title: 'direct bank',
