@@ -67,7 +67,7 @@ const onboarding = (
 					[ selector ]: isRequesting,
 				},
 			};
-		case TYPES.SET_PAYMENT_METHODS:
+		case TYPES.GET_PAYMENT_METHODS_SUCCESS:
 			return {
 				...state,
 				paymentMethods,

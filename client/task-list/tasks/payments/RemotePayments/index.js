@@ -21,13 +21,13 @@ export const RemotePayments = ( { query } ) => {
 	const {
 		getOption,
 		getPaymentMethodRecommendations,
-		isFetching,
+		isResolving,
 	} = useSelect( ( select ) => {
 		return {
 			getOption: select( OPTIONS_STORE_NAME ).getOption,
 			getPaymentMethodRecommendations: select( ONBOARDING_STORE_NAME )
 				.getPaymentMethodRecommendations,
-			isFetching: select( ONBOARDING_STORE_NAME ).hasFinishedResolution(
+			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
 				'getPaymentMethodRecommendations'
 			),
 		};
@@ -67,11 +67,24 @@ export const RemotePayments = ( { query } ) => {
 		} );
 	};
 
-	const [ enabledMethods, setEnabledMethods ] = useState(
+	const getInitiallyEnabledMethods = () =>
 		methods.reduce( ( acc, method ) => {
 			acc[ method.key ] = method.isEnabled;
 			return acc;
-		}, {} )
+		}, {} );
+
+	const [ enabledMethods, setEnabledMethods ] = useState(
+		getInitiallyEnabledMethods()
+	);
+
+	// Keeps enabledMethods up to date with methods fetched from API.
+	useMemo(
+		() =>
+			setEnabledMethods( {
+				...getInitiallyEnabledMethods(),
+				...enabledMethods,
+			} ),
+		[ methods ]
 	);
 
 	const markConfigured = async ( methodKey, queryParams = {} ) => {
@@ -104,7 +117,7 @@ export const RemotePayments = ( { query } ) => {
 	};
 
 	const currentMethod = useMemo( () => {
-		if ( ! query.method || isFetching ) {
+		if ( ! query.method || isResolving ) {
 			return null;
 		}
 
@@ -115,7 +128,7 @@ export const RemotePayments = ( { query } ) => {
 		}
 
 		return method;
-	}, [ isFetching, query, methods ] );
+	}, [ isResolving, query, methods ] );
 
 	if ( currentMethod ) {
 		return (

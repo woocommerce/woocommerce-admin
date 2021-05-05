@@ -47,13 +47,13 @@ describe( 'plugins reducer', () => {
 		expect( state.profileItems.propertyName ).toBe( 'value' );
 	} );
 
-	it( 'should handle SET_PAYMENT_METHODS', () => {
+	it( 'should handle GET_PAYMENT_METHODS_SUCCESS', () => {
 		const state = reducer(
 			{
 				paymentMethods: [ { previousItem: 'value' } ],
 			},
 			{
-				type: TYPES.SET_PAYMENT_METHODS,
+				type: TYPES.GET_PAYMENT_METHODS_SUCCESS,
 				paymentMethods: [ { newItem: 'changed' } ],
 			}
 		);

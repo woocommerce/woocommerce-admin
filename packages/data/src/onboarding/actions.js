@@ -42,7 +42,7 @@ export function setTasksStatus( tasksStatus ) {
 
 export function setPaymentMethods( paymentMethods ) {
 	return {
-		type: TYPES.SET_PAYMENT_METHODS,
+		type: TYPES.GET_PAYMENT_METHODS_SUCCESS,
 		paymentMethods,
 	};
 }
