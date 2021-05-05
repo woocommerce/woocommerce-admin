@@ -20,20 +20,20 @@ describe( 'ErrorBoundary', () => {
 		return children;
 	};
 
-	const onError = ( e ) => {
+	const handleError = ( e ) => {
 		e.preventDefault();
 	};
 
 	// trying to silence console errors, since the output of this component can be noisy and cannot be avoided.
 	beforeEach( () => {
-		window.addEventListener( 'error', onError );
+		window.addEventListener( 'error', handleError );
 		jest.spyOn( console, 'error' );
 		// eslint-disable-next-line no-console
 		console.error.mockImplementation( () => {} );
 	} );
 
 	afterEach( () => {
-		window.removeEventListener( 'error', onError );
+		window.removeEventListener( 'error', handleError );
 		// eslint-disable-next-line no-console
 		console.error.mockRestore();
 	} );
