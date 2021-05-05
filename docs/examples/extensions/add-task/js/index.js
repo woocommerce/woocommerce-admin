@@ -5,12 +5,10 @@
 import { __ } from '@wordpress/i18n';
 import { addFilter } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
-
-/**
- * WooCommerce dependencies
- */
 import { Card, CardBody } from '@wordpress/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
+import { WooTaskItem } from '@woocommerce/task-dashboard';
+import { registerPlugin } from '@wordpress/plugins';
 
 /* global addTaskData */
 const markTaskComplete = () => {
@@ -85,7 +83,10 @@ addFilter(
 				container: <Task />,
 				completed: addTaskData.isComplete,
 				visible: true,
-				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
+				additionalInfo: __(
+					'Additional info here',
+					'woocommerce-admin'
+				),
 				time: __( '2 minutes', 'woocommerce-admin' ),
 				isDismissable: true,
 				onDismiss: () => console.log( 'The task was dismissed' ),
@@ -93,3 +94,8 @@ addFilter(
 		];
 	}
 );
+
+registerPlugin( 'woocommerce-admin-add-task', {
+	scope: 'woocommerce-admin',
+	render: () => <WooTaskItem list="task_list">Testing!</WooTaskItem>,
+} );

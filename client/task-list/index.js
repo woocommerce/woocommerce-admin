@@ -206,6 +206,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		<>
 			{ setupTasks && ( ! isSetupTaskListHidden || task ) && (
 				<TaskList
+					name={ 'task_list' }
 					dismissedTasks={ dismissedTasks || [] }
 					isComplete={ isTaskListComplete }
 					query={ query }

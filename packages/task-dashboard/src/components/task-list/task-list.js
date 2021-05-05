@@ -20,6 +20,7 @@ import { Text } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { TaskItem } from './task-item';
+import { WooTaskItem } from './';
 
 export const TaskList = ( {
 	query,
@@ -300,6 +301,13 @@ export const TaskList = ( {
 									time={ task.time }
 								/>
 							) ) }
+							<WooTaskItem.Slot name={ name }>
+								{ ( { fills } ) =>
+									fills.filter(
+										( fill ) => fill.list === name
+									)
+								}
+							</WooTaskItem.Slot>
 						</ListComp>
 					</CardBody>
 				</Card>
