@@ -8,7 +8,7 @@
 import reducer from '../reducer';
 import { ACTION_TYPES } from '../action-types';
 import { PluginsState } from '../types';
-import { paymentGatewaysStub } from './stub';
+import { paymentGatewaysStub } from '../test-helpers/stub';
 
 const defaultState: PluginsState = {
 	paymentGateways: [],
