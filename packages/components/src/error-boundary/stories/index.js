@@ -4,7 +4,7 @@
 import { useCallback, useEffect, useState } from '@wordpress/element';
 import { ErrorBoundary } from '@woocommerce/components';
 import { createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
+import { Router, useLocation } from 'react-router-dom';
 
 const ErrorThrowerComponent = () => {
 	const [ hasError, setHasError ] = useState( false );
@@ -24,11 +24,48 @@ const ErrorThrowerComponent = () => {
 };
 
 export const Basic = () => {
+	return (
+		<ErrorBoundary>
+			{ ( errorState ) =>
+				errorState.error ? (
+					<div>
+						<p>This is what has been thrown:</p>
+						<pre>
+							Error message:
+							{ JSON.stringify(
+								errorState.error.message,
+								null,
+								2
+							) }
+						</pre>
+						<pre>
+							Error info:
+							{ JSON.stringify( errorState.info, null, 2 ) }
+						</pre>
+					</div>
+				) : (
+					<ErrorThrowerComponent />
+				)
+			}
+		</ErrorBoundary>
+	);
+};
+
+const ErrorBoundaryRouter = ( { children } ) => {
+	const location = useLocation();
+
+	// this demoes what to do when the component is rendered within the context of a route, so that `ErrorBoundary` state resets on route change.
+	return (
+		<ErrorBoundary key={ location.pathname }>{ children }</ErrorBoundary>
+	);
+};
+
+export const WithinRouterContext = () => {
 	const history = createMemoryHistory();
 
 	return (
 		<Router history={ history }>
-			<ErrorBoundary>
+			<ErrorBoundaryRouter>
 				{ ( errorState ) =>
 					errorState.error ? (
 						<div>
@@ -57,7 +94,7 @@ export const Basic = () => {
 						<ErrorThrowerComponent />
 					)
 				}
-			</ErrorBoundary>
+			</ErrorBoundaryRouter>
 		</Router>
 	);
 };

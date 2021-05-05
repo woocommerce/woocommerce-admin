@@ -12,14 +12,8 @@ import { Router } from 'react-router-dom';
 import ErrorBoundary from '..';
 
 describe( 'ErrorBoundary', () => {
-	let timesErrorHasBeenThrownCount = 0;
-	const ComponentThrowingError = ( { children = null } ) => {
+	const ComponentThrowingError = ( { children } ) => {
 		useEffect( () => {
-			if ( timesErrorHasBeenThrownCount >= 1 ) {
-				return;
-			}
-
-			timesErrorHasBeenThrownCount += 1;
 			throw new Error( 'Some error message' );
 		} );
 
@@ -32,7 +26,6 @@ describe( 'ErrorBoundary', () => {
 
 	// trying to silence console errors, since the output of this component can be noisy and cannot be avoided.
 	beforeEach( () => {
-		timesErrorHasBeenThrownCount = 0;
 		window.addEventListener( 'error', onError );
 		jest.spyOn( console, 'error' );
 		// eslint-disable-next-line no-console
@@ -70,43 +63,5 @@ describe( 'ErrorBoundary', () => {
 			error: expect.any( Error ),
 			info: expect.anything(),
 		} );
-	} );
-
-	it( 'removes the previous error information when the location changes', async () => {
-		const errorHandlerMock = jest.fn().mockReturnValue( null );
-		const history = createMemoryHistory();
-		render(
-			<Router history={ history }>
-				<span>
-					<ErrorBoundary>
-						{ ( errorState ) =>
-							errorState.error ? (
-								errorHandlerMock( errorState )
-							) : (
-								<ComponentThrowingError>
-									No more errors!
-								</ComponentThrowingError>
-							)
-						}
-					</ErrorBoundary>
-				</span>
-			</Router>
-		);
-
-		expect(
-			screen.queryByText( 'No more errors!' )
-		).not.toBeInTheDocument();
-		expect( errorHandlerMock ).toHaveBeenCalledWith( {
-			error: expect.any( Error ),
-			info: expect.anything(),
-		} );
-
-		errorHandlerMock.mockClear();
-		history.push( '/another-route' );
-
-		expect(
-			await screen.findByText( 'No more errors!' )
-		).toBeInTheDocument();
-		expect( errorHandlerMock ).not.toHaveBeenCalled();
 	} );
 } );

@@ -18,6 +18,27 @@ When an error is caught, the consumer of this component can decide to render a f
 </ErrorBoundary>
 ```
 
+You can also use it within the context of `react-router`. You just need to reset its internal state on route change:
+
+```jsx
+const ErrorBoundaryRouter = ( { children } ) => {
+	const location = useLocation();
+
+	// by setting the `key` prop tied to the route's path, you can reset the component's internal state when the URL changes.
+	return (
+		<ErrorBoundary key={ location.pathname }>
+          { ( { error } ) =>
+            error ? (
+              error.message
+            ) : (
+              <ComponentTreeThatMightBeThrowingAnError />
+            )
+          }
+        </ErrorBoundary>
+	);
+};
+```
+
 ### Props
 
 Name | Type | Default | Description
