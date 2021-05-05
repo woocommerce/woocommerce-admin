@@ -139,7 +139,7 @@ export const PaymentConnect = ( {
 
 	const DefaultSettings = ( { ...props } ) => (
 		<Settings
-			settings={ fields }
+			fields={ fields }
 			isBusy={ isOptionsRequesting }
 			onSubmitCallback={ updateSettings }
 			onButtonClickCallback={ () => recordConnectStartEvent( key ) }

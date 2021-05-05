@@ -22,7 +22,7 @@ const typeMap = {
 };
 
 export const Settings = ( {
-	settings = [],
+	fields: baseFields = [],
 	isBusy,
 	onSubmitCallback = () => {},
 	onButtonClickCallback = () => {},
@@ -32,7 +32,7 @@ export const Settings = ( {
 } ) => {
 	// Support accepting fields in the format provided by the API (object), but transform to Array
 	const fields =
-		settings instanceof Array ? settings : Object.values( settings );
+		baseFields instanceof Array ? baseFields : Object.values( baseFields );
 
 	const getInitialConfigValues = () => {
 		if ( fields ) {
