@@ -41,7 +41,7 @@ warning () {
 
 status "💃 Time to release WooCommerce Admin 🕺"
 if [ $DRY_RUN ]; then
-  warning "This is a dry run, nothing will be pushed up to Github"
+  warning "This is a dry run, nothing will be pushed up to Github, it will only generate the two zips"
 fi
 
 warning "Please enter the version number to tag, for example, 1.0.0: "
@@ -137,4 +137,11 @@ if [ $IS_CUSTOM_BUILD = false ]; then
 	./bin/github-deploy.sh ${CORE_TAG} ${ZIP_FILE}
 fi
 
+if [ $DRY_RUN ]; then
+  output 2 "Dry run successfully finished."
+  echo
+  echo "Generated $PLUGIN_ZIP_FILE for the woocommerce-admin plugin build"
+  echo "Generated $ZIP_FILE for the woocommerce-admin core build"
+  exit;
+fi
 success "Done. You've built WooCommerce Admin! 🎉 "

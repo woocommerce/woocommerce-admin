@@ -51,10 +51,6 @@ if [[ $1 == '' || $2 == '' ]]
     exit 1
 fi
 
-if [ $DRY_RUN ]; then
-  output 2 "Dry run of release finished, please delete the current $BRANCH when it is finished."
-  return;
-fi
 
 printf "This script will build files and create a tag on GitHub based on your local branch."
 echo
@@ -64,6 +60,9 @@ echo
 echo
 printf "The /dist/ directory will also be pushed to the tagged release."
 echo
+if [ $DRY_RUN ]; then
+  output 2 "This is a dry run, only the zip will be generated."
+fi
 echo
 echo "Before proceeding:"
 echo " • Ensure you have checked out the branch you wish to release"
@@ -100,8 +99,6 @@ if [ ! $DRY_RUN ]; then
   # Create a release branch.
   git checkout -b $BRANCH
 
-  warning "HIt official release"
-  exit 1
   # Force add feature-config.php
   git add includes/feature-config.php --force
   git add .
@@ -129,7 +126,6 @@ fi
 ./bin/make-zip.sh $ZIP_FILE
 
 if [ $DRY_RUN ]; then
-  output 2 "Dry run of release finished, please delete $BRANCH branch."
   exit;
 fi
 # Create the new release.
