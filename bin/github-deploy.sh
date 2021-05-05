@@ -52,7 +52,7 @@ if [[ $1 == '' || $2 == '' ]]
 fi
 
 if [ $DRY_RUN ]; then
-  output 2 "Dry run of release finished, please delete $BRANCH branch."
+  output 2 "Dry run of release finished, please delete the current $BRANCH when it is finished."
   return;
 fi
 
@@ -98,28 +98,31 @@ echo
 BRANCH="build/${VERSION}"
 git checkout -b $BRANCH
 
-# Force add feature-config.php
-git add includes/feature-config.php --force
-git add .
-git commit -m "Adding feature-config.php directory to release" --no-verify
 
-# Force add language files
-git add languages/woocommerce-admin.pot --force
-git add .
-git commit -m "Adding translations to release" --no-verify
-
-# Force add build directory and commit.
-git add dist/. --force
-git add .
-git commit -m "Adding /dist directory to release" --no-verify
-
-# Force add vendor directory and commit.
-git add vendor/. --force
-git add .
-git commit -m "Adding /vendor directory to release" --no-verify
+if [ ! $DRY_RUN ]; then
+  warning "HIt official release"
+  exit 1
+  # Force add feature-config.php
+  git add includes/feature-config.php --force
+  git add .
+  git commit -m "Adding feature-config.php directory to release" --no-verify
+  
+  # Force add language files
+  git add languages/woocommerce-admin.pot --force
+  git add .
+  git commit -m "Adding translations to release" --no-verify
+  
+  # Force add build directory and commit.
+  git add dist/. --force
+  git add .
+  git commit -m "Adding /dist directory to release" --no-verify
+  
+  # Force add vendor directory and commit.
+  git add vendor/. --force
+  git add .
+  git commit -m "Adding /vendor directory to release" --no-verify
 
 # Push branch upstream
-if [ ! $DRY_RUN ]; then
   git push origin $BRANCH
 fi
 # Create the zip archive
