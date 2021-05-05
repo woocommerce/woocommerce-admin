@@ -32,6 +32,7 @@ export const Settings = ( {
 	onSubmitCallback,
 	buttonLabel,
 	onButtonClickCallback,
+	validate = () => {},
 } ) => {
 	const [ state, setState ] = useState( 'loading' );
 	const [ fields, setFields ] = useState( null );
@@ -63,29 +64,6 @@ export const Settings = ( {
 		}
 	};
 
-	const validate = ( values ) => {
-		if ( fields ) {
-			return fields.reduce( ( errors, field ) => {
-				if ( ! values[ field.id ] ) {
-					// Matches any word that is capitalized aside from abrevitions like ID.
-					const label = field.label.replace(
-						/([A-Z][a-z]+)/g,
-						( val ) => val.toLowerCase()
-					);
-					return {
-						...errors,
-						[ field.id ]:
-							field.type === 'checkbox'
-								? __( 'This value is required ' )
-								: __( 'Please enter your ' ) + label,
-					};
-				}
-				return errors;
-			}, {} );
-		}
-		return {};
-	};
-
 	if ( state === 'error' ) {
 		return (
 			<Text>
@@ -104,7 +82,7 @@ export const Settings = ( {
 			onSubmitCallback={ ( values ) => {
 				return onSubmitCallback( values, fields );
 			} }
-			validate={ validate }
+			validate={ ( values ) => validate( values, fields ) }
 		>
 			{ ( { getInputProps, handleSubmit } ) => {
 				return (

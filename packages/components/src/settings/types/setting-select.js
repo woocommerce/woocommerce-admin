@@ -32,7 +32,6 @@ export const SettingSelect = ( { field, ...props } ) => {
 			label={ label }
 			key={ id }
 			options={ transformedOptions }
-			required
 			{ ...props }
 		/>
 	);

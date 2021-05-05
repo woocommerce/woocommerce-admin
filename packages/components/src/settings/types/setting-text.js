@@ -12,7 +12,6 @@ export const SettingText = ( { field, type = 'text', ...props } ) => {
 			title={ description }
 			key={ id }
 			label={ label }
-			required
 			{ ...props }
 		/>
 	);

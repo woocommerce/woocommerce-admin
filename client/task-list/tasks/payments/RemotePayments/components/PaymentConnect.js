@@ -69,6 +69,29 @@ export const PaymentConnect = ( {
 		}
 	};
 
+	const validate = ( values, fields ) => {
+		if ( fields ) {
+			return fields.reduce( ( errors, field ) => {
+				if ( ! values[ field.id ] ) {
+					// Matches any word that is capitalized aside from abrevitions like ID.
+					const label = field.label.replace(
+						/([A-Z][a-z]+)/g,
+						( val ) => val.toLowerCase()
+					);
+					return {
+						...errors,
+						[ field.id ]:
+							field.type === 'checkbox'
+								? __( 'This value is required ' )
+								: __( 'Please enter your ' ) + label,
+					};
+				}
+				return errors;
+			}, {} );
+		}
+		return {};
+	};
+
 	const helpText = interpolateComponents( {
 		mixedString: __(
 			'Your API details can be obtained from your {{link/}}',
@@ -105,6 +128,7 @@ export const PaymentConnect = ( {
 			onSubmitCallback={ updateSettings }
 			onButtonClickCallback={ () => recordConnectStartEvent( key ) }
 			buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
+			validate={ validate }
 			{ ...props }
 		/>
 	);
