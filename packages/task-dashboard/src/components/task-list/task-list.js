@@ -290,7 +290,8 @@ export const TaskList = ( {
 					<CardBody>
 						<ListComp animation="slide-right" { ...listProps }>
 							{ listTasks.map( ( task ) => (
-								<TaskItem
+								<WooTaskItem
+									list={ name }
 									key={ task.key }
 									title={ task.title }
 									completed={ task.completed }
@@ -301,13 +302,7 @@ export const TaskList = ( {
 									time={ task.time }
 								/>
 							) ) }
-							<WooTaskItem.Slot name={ name }>
-								{ ( { fills } ) =>
-									fills.filter(
-										( fill ) => fill.list === name
-									)
-								}
-							</WooTaskItem.Slot>
+							<WooTaskItem.Slot name={ name } />
 						</ListComp>
 					</CardBody>
 				</Card>

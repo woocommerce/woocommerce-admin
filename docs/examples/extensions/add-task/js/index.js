@@ -97,5 +97,18 @@ addFilter(
 
 registerPlugin( 'woocommerce-admin-add-task', {
 	scope: 'woocommerce-admin',
-	render: () => <WooTaskItem list="task_list">Testing!</WooTaskItem>,
+	render: () => (
+		<WooTaskItem
+			list="task_list"
+			key="example2"
+			title={ __( 'SlotFill Example', 'plugin-domain' ) }
+			content={ __( 'This is an example task.', 'plugin-domain' ) }
+			completed={ addTaskData.completed }
+			visible
+			additionalInfo={ __( 'Additional info here', 'plugin-domain' ) }
+			time={ __( '2 minutes', 'plugin-domain' ) }
+			isDismissable
+			onDismiss={ () => console.log( 'The task was dismissed' ) }
+		/>
+	),
 } );
