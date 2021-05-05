@@ -29,7 +29,7 @@ describe( 'ErrorBoundary', () => {
 		window.addEventListener( 'error', handleError );
 		jest.spyOn( console, 'error' );
 		// eslint-disable-next-line no-console
-		console.error.mockImplementation( () => {} );
+		console.error.mockImplementation( () => undefined );
 	} );
 
 	afterEach( () => {
