@@ -25,9 +25,9 @@ const typeMap = {
 export const SettingsForm = ( {
 	fields: baseFields = [],
 	isBusy,
-	onSubmitCallback = () => {},
-	onButtonClickCallback = () => {},
-	onChangeCallback = () => {},
+	onSubmit = () => {},
+	onButtonClick = () => {},
+	onChange = () => {},
 	validate = () => {},
 	buttonLabel,
 } ) => {
@@ -50,8 +50,8 @@ export const SettingsForm = ( {
 	return (
 		<Form
 			initialValues={ getInitialConfigValues() }
-			onChangeCallback={ onChangeCallback }
-			onSubmitCallback={ onSubmitCallback }
+			onChangeCallback={ onChange }
+			onSubmitCallback={ onSubmit }
 			validate={ validate }
 		>
 			{ ( { getInputProps, handleSubmit } ) => {
@@ -82,7 +82,7 @@ export const SettingsForm = ( {
 							isBusy={ isBusy }
 							onClick={ ( event ) => {
 								handleSubmit( event );
-								onButtonClickCallback();
+								onButtonClick();
 							} }
 						>
 							{ buttonLabel }
