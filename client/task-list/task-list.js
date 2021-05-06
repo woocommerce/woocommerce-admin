@@ -156,7 +156,9 @@ export const TaskList = ( {
 			],
 		} );
 
-		recordEvent( 'tasklist_dismiss_task', { task_name: key } );
+		const isCoreTaskList = name === 'task_list';
+		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
+		recordEvent( `${ taskListName }_dismiss_task`, { task_name: key } );
 
 		updateOptions( {
 			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
