@@ -81,6 +81,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add support for nonces in note actions #6726
 - Dev: Add support for running php unit tests in PHP 8. #6678
 - Dev: Add event recording to start of gateway connections #6801
+- Dev: Do a git clean before the core release. #6945
 - Feature: Add recommended payment methods in payment settings. #6760
 - Fix: Disable the continue btn on OBW when requested are being made #6838
 - Fix: Event tracking for merchant email notes #6616
