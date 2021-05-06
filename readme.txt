@@ -73,8 +73,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-== 2.2.2 4/28/2021 ==
+== 2.2.3 5/6/2021 ==
+- Dev: Do a git clean before the core release. #6945
 
+== 2.2.2 4/28/2021 ==
 - Fix: Disable the continue btn on OBW when requested are being made #6838
 - Tweak: Revert WCPay international support for bundled package #6901
 - Tweak: Store profiler - Changed MailPoet's title and description #6886
