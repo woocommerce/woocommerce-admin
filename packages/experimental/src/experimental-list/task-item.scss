@@ -3,6 +3,7 @@ $task-alert-yellow: #f0b849;
 
 .woocommerce-task-list__item {
 	position: relative;
+	padding-right: $gap-large;
 
 	&::before {
 		content: '';
@@ -54,6 +55,12 @@ $task-alert-yellow: #f0b849;
 			padding: 1px $gap-smaller;
 			margin-left: $gap-smaller;
 		}
+	}
+
+	.woocommerce-task-list__item-content,
+	.woocommerce-task__estimated-time,
+	.woocommerce-task-list__item-action {
+		margin-top: $gap-smaller;
 	}
 
 	.woocommerce-task-list__item-after {

@@ -35,6 +35,7 @@ type TaskItemProps = {
 	content?: string;
 	expanded?: boolean;
 	level?: TaskLevel;
+	action?: string;
 };
 
 const OptionalTaskTooltip: React.FC< {
@@ -71,19 +72,22 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	content,
 	expanded = false,
 	level = 3,
+	action,
 } ) => {
 	const className = classnames( 'woocommerce-task-list__item', {
 		complete: completed,
 		'level-2': level === 2 && ! completed,
 		'level-1': level === 1 && ! completed,
 	} );
+	// If an action (label) is supplied, the onClick handler is attached to a button, not the entire item.
+	const conditionalItemProps = action ? {} : { onClick };
 
 	return (
 		<ListItem
 			disableGutters
 			className={ className }
-			onClick={ onClick }
 			animation="slide-right"
+			{ ...conditionalItemProps }
 		>
 			<OptionalTaskTooltip level={ level } completed={ completed }>
 				<div className="woocommerce-task-list__item-before">
@@ -97,32 +101,43 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 				</div>
 			</OptionalTaskTooltip>
 			<div className="woocommerce-task-list__item-text">
-				<span className="woocommerce-task-list__item-title">
-					<Text
-						as="div"
-						variant={ completed ? 'body.small' : 'button' }
-					>
+				<Text as="div" variant={ completed ? 'body.small' : 'button' }>
+					<span className="woocommerce-task-list__item-title">
 						{ title }
-						{ additionalInfo && (
-							<div
-								className="woocommerce-task__additional-info"
-								dangerouslySetInnerHTML={ sanitizeHTML(
-									additionalInfo
-								) }
-							></div>
-						) }
-						{ expanded && content && (
-							<div className="woocommerce-task-list__item-content">
-								{ content }
-							</div>
-						) }
-						{ time && ! completed && (
-							<div className="woocommerce-task__estimated-time">
-								{ time }
-							</div>
-						) }
-					</Text>
-				</span>
+					</span>
+					{ additionalInfo && (
+						<div
+							className="woocommerce-task__additional-info"
+							dangerouslySetInnerHTML={ sanitizeHTML(
+								additionalInfo
+							) }
+						></div>
+					) }
+					{ expanded && content && (
+						<div className="woocommerce-task-list__item-content">
+							{ content }
+						</div>
+					) }
+					{ expanded && content && action && (
+						<Button
+							className="woocommerce-task-list__item-action"
+							isPrimary
+							onClick={ (
+								event: React.MouseEvent | React.KeyboardEvent
+							) => {
+								event.stopPropagation();
+								onClick();
+							} }
+						>
+							{ action }
+						</Button>
+					) }
+					{ time && ! completed && (
+						<div className="woocommerce-task__estimated-time">
+							{ time }
+						</div>
+					) }
+				</Text>
 			</div>
 			{ onDismiss && isDismissable && ! completed && (
 				<div className="woocommerce-task-list__item-after">

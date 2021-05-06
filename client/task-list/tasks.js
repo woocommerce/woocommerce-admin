@@ -155,6 +155,12 @@ export function getAllTasks( {
 				'Get paid with WooCommerce Payments',
 				'woocommerce-admin'
 			),
+			content: __(
+				"You're only one step away from getting paid. Verify your business details to start managing transactions with WooCommerce Payments.",
+				'woocommerce-admin'
+			),
+			action: __( 'Finish setup', 'woocommmerce-admin' ),
+			expanded: true,
 			container: <Fragment />,
 			completed: wcPayIsConnected,
 			onClick: async ( e ) => {
