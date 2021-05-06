@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu, Badge } from '@woocommerce/components';
@@ -52,6 +52,8 @@ export const TaskList = ( {
 		possiblyCompleteTaskList();
 		possiblyTrackCompletedTasks();
 	}, [ query ] );
+
+	const [ currentTask, setCurrentTask ] = useState( false );
 
 	const possiblyCompleteTaskList = () => {
 		const taskListVariableName = `woocommerce_${ name }_complete`;
@@ -289,11 +291,16 @@ export const TaskList = ( {
 									title={ task.title }
 									completed={ task.completed }
 									content={ task.content }
+									onClick={
+										task.completed
+											? task.onClick
+											: () => setCurrentTask( task.key )
+									}
 									isDismissable={ task.isDismissable }
 									onDismiss={ () => dismissTask( task ) }
 									time={ task.time }
 									level={ task.level }
-									expanded
+									expanded={ currentTask === task.key }
 									action={ task.onClick }
 									actionLabel={ task.action }
 								/>
