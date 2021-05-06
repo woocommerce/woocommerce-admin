@@ -5,10 +5,14 @@ import { CSSTransition } from 'react-transition-group';
 import { ENTER } from '@wordpress/keycodes';
 import classnames from 'classnames';
 
-
-function handleKeyDown( event: React.KeyboardEvent<HTMLElement>, onClick?: React.MouseEventHandler<HTMLElement> | React.KeyboardEventHandler<HTMLElement> ) {
+function handleKeyDown(
+	event: React.KeyboardEvent< HTMLElement >,
+	onClick?:
+		| React.MouseEventHandler< HTMLElement >
+		| React.KeyboardEventHandler< HTMLElement >
+) {
 	if ( typeof onClick === 'function' && event.keyCode === ENTER ) {
-		(onClick as React.KeyboardEventHandler<HTMLElement>)( event );
+		( onClick as React.KeyboardEventHandler< HTMLElement > )( event );
 	}
 }
 
