@@ -19,9 +19,10 @@ const typeMap = {
 	password: SettingPassword,
 	checkbox: SettingCheckbox,
 	select: SettingSelect,
+	default: SettingText,
 };
 
-export const Settings = ( {
+export const SettingsForm = ( {
 	fields: baseFields = [],
 	isBusy,
 	onSubmitCallback = () => {},
@@ -36,12 +37,13 @@ export const Settings = ( {
 
 	const getInitialConfigValues = () => {
 		if ( fields ) {
-			return fields.reduce( ( data, field ) => {
-				return {
+			return fields.reduce(
+				( data, field ) => ( {
 					...data,
 					[ field.id ]: field.value,
-				};
-			}, {} );
+				} ),
+				{}
+			);
 		}
 	};
 
@@ -56,7 +58,16 @@ export const Settings = ( {
 				return (
 					<div className="woocommerce-component-settings">
 						{ fields.map( ( field ) => {
-							const Control = typeMap[ field.type ];
+							if ( field.type && ! ( field.type in typeMap ) ) {
+								/* eslint-disable no-console */
+								console.warn(
+									`Field type of ${ field.type } not current supported in SettingsForm component`
+								);
+								/* eslint-enable no-console */
+								return null;
+							}
+
+							const Control = typeMap[ field.type || 'default' ];
 							return (
 								<Control
 									key={ field.id }

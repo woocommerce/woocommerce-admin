@@ -28,7 +28,7 @@ export const PaymentMethod = ( {
 } ) => {
 	const { key, plugins, title } = method;
 	const slot = useSlot( `woocommerce_remote_payment_${ key }` );
-	const hasFills = Boolean( slot.fills && slot.fills.length );
+	const hasFills = Boolean( slot?.fills?.length );
 
 	useEffect( () => {
 		recordEvent( 'payments_task_stepper_view', {
@@ -107,7 +107,7 @@ export const PaymentMethod = ( {
 		};
 	}, [ title ] );
 
-	const DefaultStepper = ( { ...props } ) => (
+	const DefaultStepper = ( props ) => (
 		<Stepper
 			isVertical
 			isPending={ ! installStep.isComplete || isOptionsRequesting }

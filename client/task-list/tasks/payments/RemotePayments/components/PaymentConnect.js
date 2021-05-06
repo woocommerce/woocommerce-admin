@@ -6,7 +6,7 @@ import interpolateComponents from 'interpolate-components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	Link,
-	Settings,
+	SettingsForm,
 	WooRemotePaymentSettings,
 	Spinner,
 } from '@woocommerce/components';
@@ -30,7 +30,7 @@ export const PaymentConnect = ( {
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const slot = useSlot( `woocommerce_remote_payment_settings_${ key }` );
-	const hasFills = Boolean( slot.fills && slot.fills.length );
+	const hasFills = Boolean( slot?.fills?.length );
 	const [ state, setState ] = useState( 'loading' );
 	const [ fields, setFields ] = useState( null );
 
@@ -137,8 +137,8 @@ export const PaymentConnect = ( {
 		},
 	} );
 
-	const DefaultSettings = ( { ...props } ) => (
-		<Settings
+	const DefaultSettings = ( props ) => (
+		<SettingsForm
 			fields={ fields }
 			isBusy={ isOptionsRequesting }
 			onSubmitCallback={ updateSettings }
@@ -152,7 +152,10 @@ export const PaymentConnect = ( {
 	if ( state === 'error' ) {
 		return (
 			<Text>
-				{ __( 'There was an error loading the payment fields' ) }
+				{
+					( __( 'There was an error loading the payment fields' ),
+					'woocommerce-admin' )
+				}
 			</Text>
 		);
 	}
@@ -167,6 +170,7 @@ export const PaymentConnect = ( {
 				<WooRemotePaymentSettings.Slot
 					defaultSettings={ DefaultSettings }
 					defaultUpdate={ updateSettings }
+					defaultFields={ fields }
 					markConfigured={ () => markConfigured( key ) }
 					id={ key }
 				/>
