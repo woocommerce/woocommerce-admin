@@ -289,13 +289,13 @@ export const TaskList = ( {
 									title={ task.title }
 									completed={ task.completed }
 									content={ task.content }
-									onClick={ task.onClick }
 									isDismissable={ task.isDismissable }
 									onDismiss={ () => dismissTask( task ) }
 									time={ task.time }
 									level={ task.level }
-									expanded={ task.expanded }
-									action={ task.action }
+									expanded
+									action={ task.onClick }
+									actionLabel={ task.action }
 								/>
 							) ) }
 						</ListComp>

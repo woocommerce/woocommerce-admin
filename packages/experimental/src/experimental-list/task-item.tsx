@@ -27,15 +27,16 @@ type TaskLevel = 1 | 2 | 3;
 type TaskItemProps = {
 	title: string;
 	completed: boolean;
-	onClick: ( event?: React.MouseEvent | React.KeyboardEvent ) => void;
+	onClick?: () => void;
 	isDismissable?: boolean;
 	onDismiss?: () => void;
 	additionalInfo?: string;
 	time?: string;
-	content?: string;
+	content: string;
 	expanded?: boolean;
 	level?: TaskLevel;
-	action?: string;
+	action: ( event?: React.MouseEvent | React.KeyboardEvent ) => void;
+	actionLabel?: string;
 };
 
 const OptionalTaskTooltip: React.FC< {
@@ -73,21 +74,20 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	expanded = false,
 	level = 3,
 	action,
+	actionLabel,
 } ) => {
 	const className = classnames( 'woocommerce-task-list__item', {
 		complete: completed,
 		'level-2': level === 2 && ! completed,
 		'level-1': level === 1 && ! completed,
 	} );
-	// If an action (label) is supplied, the onClick handler is attached to a button, not the entire item.
-	const conditionalItemProps = action ? {} : { onClick };
 
 	return (
 		<ListItem
 			disableGutters
 			className={ className }
+			onClick={ onClick }
 			animation="slide-right"
-			{ ...conditionalItemProps }
 		>
 			<OptionalTaskTooltip level={ level } completed={ completed }>
 				<div className="woocommerce-task-list__item-before">
@@ -113,12 +113,12 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 							) }
 						></div>
 					) }
-					{ expanded && content && (
+					{ expanded && (
 						<div className="woocommerce-task-list__item-content">
 							{ content }
 						</div>
 					) }
-					{ expanded && content && action && (
+					{ expanded && ! completed && (
 						<Button
 							className="woocommerce-task-list__item-action"
 							isPrimary
@@ -126,13 +126,13 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 								event: React.MouseEvent | React.KeyboardEvent
 							) => {
 								event.stopPropagation();
-								onClick( event );
+								action( event );
 							} }
 						>
-							{ action }
+							{ actionLabel || title }
 						</Button>
 					) }
-					{ time && ! completed && (
+					{ time && (
 						<div className="woocommerce-task__estimated-time">
 							{ time }
 						</div>

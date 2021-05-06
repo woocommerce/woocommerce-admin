@@ -94,7 +94,8 @@ $task-alert-yellow: #f0b849;
 			color: $gray-700;
 		}
 
-		.woocommerce-task-list__item-content {
+		.woocommerce-task-list__item-content,
+		.woocommerce-task__estimated-time {
 			display: none;
 		}
 	}
