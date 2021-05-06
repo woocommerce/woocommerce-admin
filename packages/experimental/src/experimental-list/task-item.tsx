@@ -27,7 +27,7 @@ type TaskLevel = 1 | 2 | 3;
 type TaskItemProps = {
 	title: string;
 	completed: boolean;
-	onClick: () => void;
+	onClick: ( event?: React.MouseEvent | React.KeyboardEvent ) => void;
 	isDismissable?: boolean;
 	onDismiss?: () => void;
 	additionalInfo?: string;
@@ -126,7 +126,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 								event: React.MouseEvent | React.KeyboardEvent
 							) => {
 								event.stopPropagation();
-								onClick();
+								onClick( event );
 							} }
 						>
 							{ action }
