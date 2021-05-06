@@ -5,10 +5,7 @@
  * @package WooCommerce\Admin\Tests\RemoteInboxNotifications
  */
 
-use Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers\ArrayColumn;
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers\ArrayKeys;
-use Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers\ArraySearch;
-use Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers\DotNotation;
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\TransformerService;
 
 /**

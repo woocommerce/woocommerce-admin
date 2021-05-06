@@ -19,8 +19,8 @@ class WC_Tests_RemoteInboxNotifications_Transformers_DotNotation extends WC_Unit
 	 * @expectedException InvalidArgumentException
 	 */
 	public function test_it_throws_exception_when_required_argument_is_missing() {
-		$arguments = (object) array();
-		new DotNotation( $arguments );
+		$dot_notation = new DotNotation();
+		$dot_notation->transform( array() );
 	}
 
 	/**
@@ -28,11 +28,11 @@ class WC_Tests_RemoteInboxNotifications_Transformers_DotNotation extends WC_Unit
 	 */
 	public function test_it_can_get_value_by_index() {
 		$arguments    = (object) array( 'path' => '0' );
-		$dot_notation = new DotNotation( $arguments );
+		$dot_notation = new DotNotation();
 		$item         = array( 'name' => 'test' );
 		$items        = array( $item );
 
-		$result = $dot_notation->transform( $items );
+		$result = $dot_notation->transform( $items, $arguments );
 		$this->assertEquals( $result, $item );
 	}
 
@@ -48,8 +48,8 @@ class WC_Tests_RemoteInboxNotifications_Transformers_DotNotation extends WC_Unit
 			),
 		);
 
-		$dot_notation = new DotNotation( $arguments );
-		$result       = $dot_notation->transform( $items );
+		$dot_notation = new DotNotation();
+		$result       = $dot_notation->transform( $items, $arguments );
 		$this->assertEquals( 'nice!', $result );
 	}
 }

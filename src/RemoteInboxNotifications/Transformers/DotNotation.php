@@ -12,39 +12,28 @@ use stdClass;
  * @package Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers
  */
 class DotNotation implements  TransformerInterface {
-	/**
-	 * Path for the searching array value.
-	 *
-	 * @var string array path
-	 */
-	private $path;
 
-	/**
-	 * DotNotation constructor.
-	 *
-	 * @param stdClass|null $arguments arguments.
-	 * @throws InvalidArgumentException Throws when one of the requried arguments is missing.
-	 */
-	public function __construct( stdClass $arguments = null ) {
-		if ( ! isset( $arguments->path ) ) {
-			throw new InvalidArgumentException( "Dot: Missing required argument 'path'" );
-		}
-		$this->path = $arguments->path;
-	}
 	/**
 	 * Find given path from the given value.
 	 *
-	 * @param mixed $value a value to transform.
+	 * @param mixed         $value a value to transform.
+	 * @param stdClass|null $arguments required argument 'path'.
+	 *
+	 * @throws InvalidArgumentException Throws when the required 'path' is missing.
 	 *
 	 * @return mixed
 	 */
-	public function transform( $value ) {
+	public function transform( $value, stdclass $arguments = null ) {
+		if ( ! isset( $arguments->path ) ) {
+			throw new InvalidArgumentException( "DotNotation: Missing required argument 'path'" );
+		}
+
 		if ( is_object( $value ) ) {
 			// if the value is an object, convert it to an array.
 			$value = json_decode( wp_json_encode( $value ), true );
 		}
 
-		return $this->get( $value, $this->path );
+		return $this->get( $value, $arguments->path );
 	}
 
 	/**

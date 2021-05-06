@@ -13,34 +13,21 @@ use stdClass;
  */
 class ArraySearch implements TransformerInterface {
 	/**
-	 * A value to search in the array.
+	 * Search a given value in the array.
 	 *
-	 * @var string $value a value to search.
-	 */
-	private $value;
-
-	/**
-	 * ArraySearch constructor.
+	 * @param mixed         $value a value to transform.
+	 * @param stdClass|null $arguments required argument 'value'.
 	 *
-	 * @param stdClass|null $arguments required arguments.
-	 * @throws InvalidArgumentException Throws when one of the requried arguments is missing.
+	 * @throws InvalidArgumentException Throws when the required 'value' is missing.
+	 *
+	 * @return mixed|null
 	 */
-	public function __construct( stdClass $arguments = null ) {
+	public function transform( $value, stdClass $arguments = null ) {
 		if ( ! isset( $arguments->value ) ) {
 			throw new InvalidArgumentException( "ArraySearch: Missing required argument 'value'" );
 		}
 
-		$this->value = $arguments->value;
-	}
-	/**
-	 * Search a given value in the array.
-	 *
-	 * @param mixed $value a value to transform.
-	 *
-	 * @return mixed|null
-	 */
-	public function transform( $value ) {
-		$key = array_search( $this->value, $value, true );
+		$key = array_search( $arguments->value, $value, true );
 		if ( false !== $key ) {
 			return $value[ $key ];
 		}

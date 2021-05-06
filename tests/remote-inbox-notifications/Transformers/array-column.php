@@ -18,8 +18,8 @@ class WC_Tests_RemoteInboxNotifications_Transformers_ArrayColumn extends WC_Unit
 	 * @expectedException InvalidArgumentException
 	 */
 	public function test_it_throws_exception_when_required_argument_is_missing() {
-		$arguments = (object) array();
-		new ArrayColumn( $arguments );
+		$array_column = new ArrayColumn();
+		$array_column->transform( array() );
 	}
 
 	/**
@@ -39,8 +39,8 @@ class WC_Tests_RemoteInboxNotifications_Transformers_ArrayColumn extends WC_Unit
 		);
 
 		$arguments    = (object) array( 'key' => 'name' );
-		$array_column = new ArrayColumn( $arguments );
-		$result       = $array_column->transform( $items );
+		$array_column = new ArrayColumn();
+		$result       = $array_column->transform( $items, $arguments );
 		$expected     = array( 'mothra', 'gezora', 'ghidorah' );
 		$this->assertEquals( $expected, $result );
 	}

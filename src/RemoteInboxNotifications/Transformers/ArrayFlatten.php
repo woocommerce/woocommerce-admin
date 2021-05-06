@@ -3,7 +3,6 @@
 namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers;
 
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\TransformerInterface;
-use InvalidArgumentException;
 use stdClass;
 
 /**
@@ -13,19 +12,14 @@ use stdClass;
  */
 class ArrayFlatten implements TransformerInterface {
 	/**
-	 * ArrayFlatten constructor.
-	 *
-	 * @param stdClass|null $arguments required arguments.
-	 */
-	public function __construct( stdClass $arguments = null ) {}
-	/**
 	 * Search a given value in the array.
 	 *
-	 * @param mixed $value a value to transform.
+	 * @param mixed         $value a value to transform.
+	 * @param stdClass|null $arguments arguments.
 	 *
 	 * @return mixed|null
 	 */
-	public function transform( $value ) {
+	public function transform( $value, stdClass $arguments = null ) {
 		if ( ! is_array( $value ) ) {
 			return null;
 		}

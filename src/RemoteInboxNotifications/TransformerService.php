@@ -16,12 +16,11 @@ class TransformerService {
 	/**
 	 * Create a transformer object by name.
 	 *
-	 * @param string        $name name of the transformer.
-	 * @param stdClass|null $arguments required arguments.
+	 * @param string $name name of the transformer.
 	 *
 	 * @return TransformerInterface|null
 	 */
-	public static function create_transformer( $name, stdClass $arguments = null ) {
+	public static function create_transformer( $name ) {
 		$camel_cased = lcfirst( str_replace( ' ', '', ucwords( str_replace( '_', ' ', $name ) ) ) );
 
 		$classname = __NAMESPACE__ . '\\Transformers\\' . $camel_cased;
@@ -29,7 +28,7 @@ class TransformerService {
 			return null;
 		}
 
-		return new $classname( $arguments );
+		return new $classname();
 	}
 
 	/**
@@ -51,12 +50,12 @@ class TransformerService {
 				$transformer_config->arguments = null;
 			}
 
-			$transformer = self::create_transformer( $transformer_config->use, $transformer_config->arguments );
+			$transformer = self::create_transformer( $transformer_config->use );
 			if ( null === $transformer ) {
 				throw new InvalidArgumentException( "Unable to find a transformer by name: {$transformer_config->use}" );
 			}
 
-			$transformed_value = $transformer->transform( $target_value );
+			$transformed_value = $transformer->transform( $target_value, $transformer_config->arguments );
 			// if the transformer returns null, then return the previously transformed value.
 			if ( null === $transformed_value ) {
 				return $target_value;
