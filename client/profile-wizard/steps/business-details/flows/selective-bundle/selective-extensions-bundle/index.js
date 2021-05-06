@@ -53,9 +53,72 @@ const generatePluginDescriptionWithLink = (
 	} );
 };
 
-const installableExtensions = [
+const data = [
 	{
-		title: __( 'Get the basics', 'woocommerce-admin' ),
+		key: 'woocommerce-payments',
+		section: 'primary',
+		locales: [
+			{
+				locale: 'en_US',
+				title: 'WooCommerce Payments',
+				description:
+					'Accept credit cards with {{link}}WooCommerce Payments{{/link}}',
+			},
+		],
+		is_visible: true,
+	},
+	{
+		key: 'facebook-for-woocommerce',
+		section: 'secondary',
+		locales: [
+			{
+				locale: 'en_US',
+				title: 'Facebook',
+				description: 'Market with {{link}}Facebook{{/link}}',
+			},
+		],
+		is_visible: true,
+	},
+];
+
+const primaryTitle = __( 'Get the basics', 'woocommerce-admin' );
+const secondaryTitle = __( 'Grow your store', 'woocommerce-admin' );
+
+const transformRemoteExtensions = ( extensionData, localeValue ) => {
+	return extensionData.reduce(
+		( result, extension ) => {
+			const localeData =
+				extension.locales.find(
+					( locale ) => locale.locale === localeValue
+				) ||
+				extension.locales.find(
+					( locale ) => locale.locale === 'en_US'
+				);
+			const transformedExtension = {
+				title: localeData.title,
+				slug: extension.key,
+				description: generatePluginDescriptionWithLink(
+					localeData.description,
+					extension.key
+				),
+				isVisible: () => true, // For now
+			};
+			const sectionIndex = extension.section === 'primary' ? 0 : 1;
+			result[ sectionIndex ].plugins.push( transformedExtension );
+			return result;
+		},
+		[
+			{ title: primaryTitle, plugins: [] },
+			{ title: secondaryTitle, plugins: [] },
+		]
+	);
+};
+
+const installableExtensions = transformRemoteExtensions( data, 'en_US' );
+
+const _installableExtensions = [
+	{
+		title: primaryTitle,
 		plugins: [
 			{
 				slug: 'woocommerce-payments',
@@ -139,7 +202,7 @@ const installableExtensions = [
 		],
 	},
 	{
-		title: 'Grow your store',
+		title: secondaryTitle,
 		plugins: [
 			{
 				slug: 'mailpoet',
