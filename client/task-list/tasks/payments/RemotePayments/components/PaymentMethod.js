@@ -26,7 +26,12 @@ export const PaymentMethod = ( {
 	method,
 	recordConnectStartEvent,
 } ) => {
-	const { key, plugins, title } = method;
+	const {
+		key,
+		plugins,
+		title,
+		post_install_script: postInstallScript,
+	} = method;
 	const slot = useSlot( `woocommerce_remote_payment_${ key }` );
 	const hasFills = Boolean( slot?.fills?.length );
 
@@ -76,6 +81,12 @@ export const PaymentMethod = ( {
 						recordEvent( 'tasklist_payment_install_method', {
 							plugins,
 						} );
+
+						if ( postInstallScript ) {
+							const script = document.createElement( 'script' );
+							script.src = `${ window.location.origin }/${ postInstallScript }`;
+							document.body.append( script );
+						}
 					} }
 					onError={ ( errors, response ) =>
 						createNoticesFromResponse( response )

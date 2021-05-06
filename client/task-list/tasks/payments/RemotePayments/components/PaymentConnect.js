@@ -54,7 +54,10 @@ export const PaymentConnect = ( {
 			.catch( ( e ) => {
 				setState( 'error' );
 				/* eslint-disable no-console */
-				console.error( e );
+				console.error(
+					`Error fetching information for payment gateway ${ key }`,
+					e.message
+				);
 				/* eslint-enable no-console */
 			} );
 	}, [] );
