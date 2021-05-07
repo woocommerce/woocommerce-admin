@@ -84,7 +84,7 @@ export const PaymentMethod = ( {
 
 						if ( postInstallScript ) {
 							const script = document.createElement( 'script' );
-							script.src = `${ window.location.origin }/${ postInstallScript }`;
+							script.src = postInstallScript;
 							document.body.append( script );
 						}
 					} }

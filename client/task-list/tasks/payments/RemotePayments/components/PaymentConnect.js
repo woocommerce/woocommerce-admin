@@ -43,6 +43,7 @@ export const PaymentConnect = ( {
 		);
 	};
 
+	// TODO: Will soon be replaced with the payments data store implemented in #6918
 	useEffect( () => {
 		apiFetch( {
 			path: `/wc/v3/payment_gateways/${ key }/`,
