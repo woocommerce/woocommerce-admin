@@ -73,6 +73,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 2.2.4 5/7/2021 ==
+- Dev: Fix a bug where trying to load an asset registry causes a crash. #6951
+
 == 2.2.3 5/6/2021 ==
 - Dev: Do a git clean before the core release. #6945
 
