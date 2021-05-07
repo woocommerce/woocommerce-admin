@@ -704,4 +704,86 @@ describe( 'TaskDashboard and TaskList', () => {
 		expect( queryByText( 'This is the required task content' ) ).toBeNull();
 		expect( queryByText( 'CTA (required)' ) ).toBeNull();
 	} );
+
+	describe( 'getVisibleTasks', () => {
+		it( 'should filter out tasks that are not visible', async () => {
+			apiFetch.mockResolvedValue( {} );
+			const { extension } = tasks;
+			const { queryByText } = render(
+				<TaskList
+					{ ...defaultTaskListProps }
+					isComplete={ false }
+					trackedCompletedTasks={ [] }
+					tasks={ [ ...extension, notVisibleTask ] }
+					name={ 'extended_task_list' }
+				/>
+			);
+
+			expect( queryByText( extension[ 0 ].title ) ).toBeInTheDocument();
+			expect(
+				queryByText( notVisibleTask.title )
+			).not.toBeInTheDocument();
+		} );
+
+		it( 'should filter out dismissed tasks', async () => {
+			apiFetch.mockResolvedValue( {} );
+			const { extension, setup } = tasks;
+			const { queryByText } = render(
+				<TaskList
+					{ ...defaultTaskListProps }
+					isComplete={ false }
+					trackedCompletedTasks={ [] }
+					dismissedTasks={ [ extension[ 0 ].key ] }
+					tasks={ [ ...extension, ...setup ] }
+					name={ 'extended_task_list' }
+				/>
+			);
+
+			expect(
+				queryByText( extension[ 0 ].title )
+			).not.toBeInTheDocument();
+		} );
+
+		it( 'should filter out tasks that are postponed using remind me later', async () => {
+			apiFetch.mockResolvedValue( {} );
+			const { extension, setup } = tasks;
+			const timestamp = Date.now();
+			const { queryByText } = render(
+				<TaskList
+					{ ...defaultTaskListProps }
+					isComplete={ false }
+					trackedCompletedTasks={ [] }
+					remindMeLaterTasks={ {
+						[ extension[ 0 ].key ]: timestamp + 1000 * 60 * 60,
+					} }
+					tasks={ [ ...extension, ...setup ] }
+					name={ 'extended_task_list' }
+				/>
+			);
+
+			expect(
+				queryByText( extension[ 0 ].title )
+			).not.toBeInTheDocument();
+		} );
+
+		it( 'should include tasks that had been postponed, but are past the snooze timestamp now', async () => {
+			apiFetch.mockResolvedValue( {} );
+			const { extension, setup } = tasks;
+			const timestamp = Date.now();
+			const { queryByText } = render(
+				<TaskList
+					{ ...defaultTaskListProps }
+					isComplete={ false }
+					trackedCompletedTasks={ [] }
+					remindMeLaterTasks={ {
+						[ extension[ 0 ].key ]: timestamp - 1000 * 60,
+					} }
+					tasks={ [ ...extension, ...setup ] }
+					name={ 'extended_task_list' }
+				/>
+			);
+
+			expect( queryByText( extension[ 0 ].title ) ).toBeInTheDocument();
+		} );
+	} );
 } );

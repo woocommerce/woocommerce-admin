@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 /**
  * Internal dependencies
@@ -42,7 +43,7 @@ describe( 'EllipsisMenu', () => {
 			/>
 		);
 
-		fireEvent.click( getByTitle( 'foo' ) );
+		userEvent.click( getByTitle( 'foo' ) );
 		expect( onClickMock ).toHaveBeenCalledTimes( 1 );
 	} );
 
@@ -54,7 +55,7 @@ describe( 'EllipsisMenu', () => {
 			/>
 		);
 
-		fireEvent.click( getByTitle( 'foo' ) );
+		userEvent.click( getByTitle( 'foo' ) );
 		expect( getByText( 'content' ) ).toBeInTheDocument();
 	} );
 } );

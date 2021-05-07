@@ -172,11 +172,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 							) }
 							{ remindMeLater && (
 								<Button
-									onClick={ (
-										e:
-											| React.MouseEvent
-											| React.KeyboardEvent
-									) => {
+									onClick={ ( e: React.MouseEvent ) => {
 										e.stopPropagation();
 										remindMeLater();
 									} }
