@@ -13,13 +13,12 @@ use Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers\ArrayColu
  */
 class WC_Tests_RemoteInboxNotifications_Transformers_ArrayColumn extends WC_Unit_Test_Case {
 	/**
-	 * Test it throw InvalidArgumentException when required argument is missing.
-	 *
-	 * @expectedException InvalidArgumentException
+	 * Test validate method returns false when 'key' argument is missing
 	 */
-	public function test_it_throws_exception_when_required_argument_is_missing() {
+	public function test_validate_returns_false_when_key_argument_is_missing() {
 		$array_column = new ArrayColumn();
-		$array_column->transform( array() );
+		$result       = $array_column->validate( (object) array() );
+		$this->assertFalse( false, $result );
 	}
 
 	/**

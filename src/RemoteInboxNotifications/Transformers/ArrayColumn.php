@@ -23,10 +23,21 @@ class ArrayColumn implements TransformerInterface {
 	 * @return mixed
 	 */
 	public function transform( $value, stdClass $arguments = null ) {
+		return array_column( $value, $arguments->key );
+	}
+
+	/**
+	 * Validate Transformer arguments.
+	 *
+	 * @param stdClass|null $arguments arguments to validate.
+	 *
+	 * @return mixed
+	 */
+	public function validate( stdClass $arguments = null ) {
 		if ( ! isset( $arguments->key ) ) {
-			throw new InvalidArgumentException( "ArrayColumn: Missing required argument 'key'" );
+			return false;
 		}
 
-		return array_column( $value, $arguments->key );
+		return true;
 	}
 }

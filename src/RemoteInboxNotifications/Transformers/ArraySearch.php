@@ -23,15 +23,26 @@ class ArraySearch implements TransformerInterface {
 	 * @return mixed|null
 	 */
 	public function transform( $value, stdClass $arguments = null ) {
-		if ( ! isset( $arguments->value ) ) {
-			throw new InvalidArgumentException( "ArraySearch: Missing required argument 'value'" );
-		}
-
 		$key = array_search( $arguments->value, $value, true );
 		if ( false !== $key ) {
 			return $value[ $key ];
 		}
 
 		return null;
+	}
+
+	/**
+	 * Validate Transformer arguments.
+	 *
+	 * @param stdClass|null $arguments arguments to validate.
+	 *
+	 * @return mixed
+	 */
+	public function validate( stdClass $arguments = null ) {
+		if ( ! isset( $arguments->value ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }

@@ -14,13 +14,12 @@ use Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers\DotNotati
 class WC_Tests_RemoteInboxNotifications_Transformers_DotNotation extends WC_Unit_Test_Case {
 
 	/**
-	 * Test it throw InvalidArgumentException when required argument is missing
-	 *
-	 * @expectedException InvalidArgumentException
+	 * Test validate method returns false when 'path' argument is missing
 	 */
-	public function test_it_throws_exception_when_required_argument_is_missing() {
-		$dot_notation = new DotNotation();
-		$dot_notation->transform( array() );
+	public function test_validate_returns_false_when_path_argument_is_missing() {
+		$array_column = new DotNotation();
+		$result       = $array_column->validate( (object) array() );
+		$this->assertFalse( false, $result );
 	}
 
 	/**

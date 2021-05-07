@@ -72,6 +72,13 @@ class OptionRuleProcessor implements RuleProcessorInterface {
 			return false;
 		}
 
+		foreach ( $rule->transformers as $transform_args ) {
+			$transformer = TransformerService::create_transformer( $transform_args->use );
+			if ( ! $transformer->validate( $transform_args->arguments ) ) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 }

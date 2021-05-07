@@ -22,4 +22,15 @@ class ArrayValues implements TransformerInterface {
 	public function transform( $value, stdClass $arguments = null ) {
 		return array_values( $value );
 	}
+
+	/**
+	 * Validate Transformer arguments.
+	 *
+	 * @param stdClass|null $arguments arguments to validate.
+	 *
+	 * @return mixed
+	 */
+	public function validate( stdClass $arguments = null ) {
+		return true;
+	}
 }

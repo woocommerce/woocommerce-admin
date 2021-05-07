@@ -44,7 +44,7 @@ This uses PHP's built-in `array_column` to select values by a given array key.
 
 Arguments:
 
-|name|descriont|
+|name|description|
 |----|---------|
 | key | array key name |
 
@@ -97,7 +97,7 @@ Definition:
 This uses PHP's built-in `array_search` to search a value in an array.
 
 Arguments:
-|name|descriont|
+|name|description|
 |----|---------|
 | value | a value to search in the given array |
 
