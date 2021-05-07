@@ -73,6 +73,9 @@ export const RemotePayments = ( { query } ) => {
 			return acc;
 		}, {} );
 
+	// TODO: Ideally when payments data store is merged https://github.com/woocommerce/woocommerce-admin/pull/6918
+	// we can utilize it for keeping track of enabled payment methods and optimistically update that
+	// store when enabling methods.
 	const [ enabledMethods, setEnabledMethods ] = useState(
 		getInitiallyEnabledMethods()
 	);
