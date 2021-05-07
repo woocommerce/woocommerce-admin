@@ -106,23 +106,23 @@ fi
 git checkout -b $BRANCH
 
 # Force add feature-config.php
-git add includes/feature-config.php --force
-git add .
+git add includes/feature-config.php --force $DRY_RUN_ARG
+git add . $DRY_RUN_ARG
 git commit -m "Adding feature-config.php directory to release" --no-verify $DRY_RUN_ARG
   
 # Force add language files
-git add languages/woocommerce-admin.pot --force
-git add .
+git add languages/woocommerce-admin.pot --force $DRY_RUN_ARG
+git add . $DRY_RUN_ARG
 git commit -m "Adding translations to release" --no-verify $DRY_RUN_ARG
   
 # Force add build directory and commit.
-git add dist/. --force
-git add .
+git add dist/. --force $DRY_RUN_ARG
+git add . $DRY_RUN_ARG
 git commit -m "Adding /dist directory to release" --no-verify $DRY_RUN_ARG
   
 # Force add vendor directory and commit.
-git add vendor/. --force
-git add .
+git add vendor/. --force $DRY_RUN_ARG
+git add . $DRY_RUN_ARG
 git commit -m "Adding /vendor directory to release" --no-verify $DRY_RUN_ARG
 
 # Push branch upstream
