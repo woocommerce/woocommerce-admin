@@ -14,6 +14,7 @@ import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
 import { pluginNames } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -53,34 +54,6 @@ const generatePluginDescriptionWithLink = (
 	} );
 };
 
-const data = [
-	{
-		key: 'woocommerce-payments',
-		section: 'primary',
-		locales: [
-			{
-				locale: 'en_US',
-				title: 'WooCommerce Payments',
-				description:
-					'Accept credit cards with {{link}}WooCommerce Payments{{/link}}',
-			},
-		],
-		is_visible: true,
-	},
-	{
-		key: 'facebook-for-woocommerce',
-		section: 'secondary',
-		locales: [
-			{
-				locale: 'en_US',
-				title: 'Facebook',
-				description: 'Market with {{link}}Facebook{{/link}}',
-			},
-		],
-		is_visible: true,
-	},
-];
-
 const primaryTitle = __( 'Get the basics', 'woocommerce-admin' );
 const secondaryTitle = __( 'Grow your store', 'woocommerce-admin' );
 
@@ -114,9 +87,7 @@ const transformRemoteExtensions = ( extensionData, localeValue ) => {
 	);
 };
 
-const installableExtensions = transformRemoteExtensions( data, 'en_US' );
-
-const _installableExtensions = [
+const installableExtensionsData = [
 	{
 		title: primaryTitle,
 		plugins: [
@@ -382,6 +353,27 @@ const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 	);
 };
 
+const createInitialValues = ( extensions, country, industry, productTypes ) => {
+	return extensions.reduce(
+		( acc, curr ) => {
+			const plugins = getVisiblePlugins(
+				curr.plugins,
+				country,
+				industry,
+				productTypes
+			).reduce( ( pluginAcc, { slug } ) => {
+				return { ...pluginAcc, [ slug ]: true };
+			}, {} );
+
+			return {
+				...acc,
+				...plugins,
+			};
+		},
+		{ install_extensions: true }
+	);
+};
+
 export const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
@@ -390,29 +382,51 @@ export const SelectiveExtensionsBundle = ( {
 	productTypes,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
-	const [ values, setValues ] = useState( {} );
+	const [ values, setValues ] = useState( { install_extensions: true } );
+	const [ installableExtensions, setInstallableExtensions ] = useState( [
+		{ title: primaryTitle, plugins: [] },
+		{ title: secondaryTitle, plugins: [] },
+	] );
+	const [ isFetching, setIsFetching ] = useState( true );
 
 	useEffect( () => {
-		const initialValues = installableExtensions.reduce(
-			( acc, curr ) => {
-				const plugins = getVisiblePlugins(
-					curr.plugins,
-					country,
-					industry,
-					productTypes
-				).reduce( ( pluginAcc, { slug } ) => {
-					return { ...pluginAcc, [ slug ]: true };
-				}, {} );
-
-				return {
-					...acc,
-					...plugins,
-				};
-			},
-			{ install_extensions: true }
-		);
-		setValues( initialValues );
-	}, [ country ] );
+		if (
+			window.wcAdminFeatures &&
+			window.wcAdminFeatures[ 'remote-extensions-list' ] === true // and check opted in
+		) {
+			apiFetch( {
+				path: '/wc-admin/onboarding/free-extensions',
+			} )
+				.then( ( results ) => {
+					const transformedExtensions = transformRemoteExtensions(
+						results,
+						'en_US'
+					);
+					const initialValues = createInitialValues(
+						transformedExtensions,
+						country,
+						industry,
+						productTypes
+					);
+					setInstallableExtensions( transformedExtensions );
+					setValues( initialValues );
+					setIsFetching( false );
+				} )
+				.catch( () => {
+					setIsFetching( false );
+				} );
+		} else {
+			const initialValues = createInitialValues(
+				installableExtensions,
+				country,
+				industry,
+				productTypes
+			);
+			setInstallableExtensions( installableExtensionsData );
+			setValues( initialValues );
+			setIsFetching( false );
+		}
+	}, [] );
 
 	const getCheckboxChangeHandler = ( slug ) => {
 		return ( checked ) => {
