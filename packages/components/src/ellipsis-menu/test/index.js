@@ -10,16 +10,6 @@ import userEvent from '@testing-library/user-event';
 import EllipsisMenu from '../';
 
 describe( 'EllipsisMenu', () => {
-	it( 'renders correctly', () => {
-		const { container } = render(
-			<EllipsisMenu
-				label={ 'foo' }
-				renderContent={ () => <div>content</div> }
-			/>
-		);
-		expect( container ).toMatchSnapshot();
-	} );
-
 	it( 'adds the passed in classname', () => {
 		const { container } = render(
 			<EllipsisMenu
