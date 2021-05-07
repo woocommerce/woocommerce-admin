@@ -8,6 +8,7 @@
 namespace Automattic\WooCommerce\Admin\Notes;
 
 use Automattic\Jetpack\Constants;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -15,17 +16,14 @@ defined( 'ABSPATH' ) || exit;
  * Suggest Jetpack Backup to Woo users.
  *
  * Note: This should probably live in the Jetpack plugin in the future.
+ *
  * @see  https://developer.woocommerce.com/2020/10/16/using-the-admin-notes-inbox-in-woocommerce/
  */
 class MarketingJetpack {
-	/**
-	 * Note traits.
-	 */
+	// Shared Note Traits.
 	use NoteTraits;
 
-	/**
-	 * Name of the note for use in the database.
-	 */
+	// Name of the note for use in the database.
 	const NOTE_NAME = 'wc-admin-marketing-jetpack-backup';
 
 	/**
@@ -33,13 +31,15 @@ class MarketingJetpack {
 	 */
 	public static function possibly_add_note() {
 		/**
-		 * Check if Jetpack is active.
+		 * Check if Jetpack is installed.
 		 */
-		if ( ! in_array( 'jetpack/jetpack.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+		$installed_plugins = PluginsHelper::get_installed_plugin_slugs();
+		if ( ! in_array( 'jetpack', $installed_plugins, true ) ) {
 			return;
 		}
 
-		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || ! self::can_be_added() ) {
+		// Check other requirements.
+		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || ! self::can_be_added() || self::has_backups() ) {
 			return;
 		}
 
@@ -74,7 +74,7 @@ class MarketingJetpack {
 	 */
 	public static function get_note() {
 		$note = new Note();
-		$note->set_title( __( 'TEST Protect your WooCommerce Store with Jetpack Backup.', 'woocommerce-admin' ) );
+		$note->set_title( __( 'Protect your WooCommerce Store with Jetpack Backup.', 'woocommerce-admin' ) );
 		$note->set_content( __( 'Store downtime means lost sales. One-click restores get you back online quickly if something goes wrong.', 'woocommerce-admin' ) );
 		$note->set_type( Note::E_WC_ADMIN_NOTE_MARKETING );
 		$note->set_name( self::NOTE_NAME );
@@ -90,12 +90,15 @@ class MarketingJetpack {
 	}
 
 	/**
-	 * Check if Jetpack Backups are installed.
+	 * Check if the Jetpack Backups module is active.
+	 *
+	 * @return boolean  Whether or not the Backups module is active.
 	 */
 	protected static function has_backups() {
-		// Jetpack::is_module_active( 'backup' );!
-		$products = get_option( 'jetpack_site_products', array() );
-		// TODO
+		if ( \Jetpack::is_module_active( 'backup' ) ) {
+			return true;
+		}
+
 		return false;
 	}
 
