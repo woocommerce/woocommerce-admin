@@ -100,6 +100,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Missed DB version number updates causing unnecessary upgrades. #6818
 - Fix: Parsing bad JSON string data from user WooCommerce meta. #6819
 - Fix: Remove PayPal for India #6828
+- Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
 - Performance: Avoid updating customer info synchronously from the front end. #6765
 - Tweak: Add settings_section event prop for CES #6762
 - Tweak: Refactor payments to allow management of methods #6786
