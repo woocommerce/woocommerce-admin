@@ -73,6 +73,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== 2.2.6 5/7/2021 ==
+- Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
+
 == 2.2.5 5/7/2021 ==
 - Fix: Calling of get_script_asset_filename with extra parameter #6955
 

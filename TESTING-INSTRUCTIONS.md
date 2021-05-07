@@ -1,5 +1,12 @@
 # Testing instructions
 
+## 2.2.6
+
+### Fix an issue with OBW when wc-pay and Jetpack are both being installed. #6957
+
+- Complete the OBW until you get to the business details step.
+- Deselect "Add recommended business features to my site", and select only Jetpack and WooCommerce Payments for installation.
+- The plugins should be installed and activated correctly, and you should be able to continue in the flow.
 ## 2.2.2
 
 ### Disable the continue btn when plugins are being installed/activated #6838

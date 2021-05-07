@@ -91,6 +91,8 @@ class Onboarding {
 			10,
 			2
 		);
+		add_action( 'woocommerce_admin_plugins_pre_activate', array( $this, 'activate_and_install_jetpack_ahead_of_wcpay' ) );
+		add_action( 'woocommerce_admin_plugins_pre_install', array( $this, 'activate_and_install_jetpack_ahead_of_wcpay' ) );
 
 		// Always hook into Jetpack connection even if outside of admin.
 		add_action( 'jetpack_site_registered', array( $this, 'set_woocommerce_setup_jetpack_opted_in' ) );
@@ -636,7 +638,7 @@ class Onboarding {
 			return false;
 		}
 
-		return in_array( $current_page['path'], $allowed_paths );
+		return in_array( $current_page['path'], $allowed_paths, true );
 	}
 
 	/**
@@ -1102,5 +1104,24 @@ class Onboarding {
 		$onboarding_data['completed'] = true;
 		update_option( self::PROFILE_DATA_OPTION, $onboarding_data );
 		update_option( 'woocommerce_task_list_hidden', 'yes' );
+	}
+
+	/**
+	 * Ensure that Jetpack gets installed and activated ahead of WooCommerce Payments
+	 * if both are being installed/activated at the same time.
+	 *
+	 * See: https://github.com/Automattic/woocommerce-payments/issues/1663
+	 * See: https://github.com/Automattic/jetpack/issues/19624
+	 *
+	 * @param array $plugins A list of plugins to install or activate.
+	 *
+	 * @return array
+	 */
+	public static function activate_and_install_jetpack_ahead_of_wcpay( $plugins ) {
+		if ( in_array( 'jetpack', $plugins, true ) && in_array( 'woocommerce-payments', $plugins, true ) ) {
+			array_unshift( $plugins, 'jetpack' );
+			$plugins = array_unique( $plugins );
+		}
+		return $plugins;
 	}
 }
