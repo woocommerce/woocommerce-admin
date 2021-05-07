@@ -8,9 +8,10 @@ import { Link } from '@woocommerce/components';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
-import { pluginNames } from '@woocommerce/data';
+import { pluginNames, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import apiFetch from '@wordpress/api-fetch';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -378,22 +379,30 @@ export const SelectiveExtensionsBundle = ( {
 	);
 	const [ isFetching, setIsFetching ] = useState( true );
 
-	const setLocalInstallableExtensions = () => {
-		const initialValues = createInitialValues(
-			installableExtensionsData,
-			country,
-			industry,
-			productTypes
-		);
-		setInstallableExtensions( installableExtensionsData );
-		setValues( initialValues );
-		setIsFetching( false );
-	};
+	const allowMarketplaceSuggestions = useSelect( ( select ) =>
+		select( SETTINGS_STORE_NAME ).getSetting(
+			'wc_admin',
+			'allowMarketplaceSuggestions'
+		)
+	);
 
 	useEffect( () => {
+		const setLocalInstallableExtensions = () => {
+			const initialValues = createInitialValues(
+				installableExtensionsData,
+				country,
+				industry,
+				productTypes
+			);
+			setInstallableExtensions( installableExtensionsData );
+			setValues( initialValues );
+			setIsFetching( false );
+		};
+
 		if (
 			window.wcAdminFeatures &&
-			window.wcAdminFeatures[ 'remote-extensions-list' ] === false // and check opted in
+			window.wcAdminFeatures[ 'remote-extensions-list' ] === true &&
+			allowMarketplaceSuggestions
 		) {
 			apiFetch( {
 				path: '/wc-admin/onboarding/free-extensions',
@@ -418,9 +427,10 @@ export const SelectiveExtensionsBundle = ( {
 					setLocalInstallableExtensions();
 				} );
 		} else {
+			// Use local config
 			setLocalInstallableExtensions();
 		}
-	} );
+	}, [ country, industry, productTypes ] );
 
 	const getCheckboxChangeHandler = ( slug ) => {
 		return ( checked ) => {
