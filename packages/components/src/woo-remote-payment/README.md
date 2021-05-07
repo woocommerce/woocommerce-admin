@@ -1,4 +1,4 @@
-# WooRemotePayment
+# WooRemotePayment Slot & Fill
 
 A Slotfill component that will replace the <Stepper /> involved in the installation for a gateway via the payment task.
 
@@ -6,14 +6,26 @@ A Slotfill component that will replace the <Stepper /> involved in the installat
 
 ```jsx
 <WooRemotePayment id={ key }>
-  <p>Fill Content</p>
+  {({defaultStepper: DefaultStepper}) => <p>Fill Content</p>}
 </WooRemotePayment>
 
 <WooRemotePayment.Slot id={ key } />
 ```
 
-### Props
+### WooRemotePayment (fill)
 
-| Name | Type   | Default   | Description                                                                            |
-| ---- | ------ | --------- | -------------------------------------------------------------------------------------- |
-| `id` | String | undefined | The identifier of the Slot. This should be unique, and the same for both fill and slot |
+This is the fill component. You must provide the `id` prop to identify the slot that this will occupy. If you provide a function as the child of your fill (as shown above), you will receive some helper props to assist in creating your fill:
+
+| Name                 | Type      | Description                                                                                          |
+| -------------------- | --------- | ---------------------------------------------------------------------------------------------------- |
+| `defaultStepper`     | Component | The default instance of the <Stepper> component. Any provided props will override the given defaults |
+| `defaultInstallStep` | Object    | The object that describes the default step configuration for installation of the gateway             |
+| `defaultConnectStep` | Object    | The object that describes the default step configuration for configuration of the gateway            |
+
+### WooRemotePayment.Slot (slot)
+
+This is the slot component, and will not be used as frequently. It must also receive the required `id` prop that will be identical to the fill `id`.
+
+| Name        | Type   | Description                                                                        |
+| ----------- | ------ | ---------------------------------------------------------------------------------- |
+| `fillProps` | Object | The props that will be provided to the fills, by default these are described above |

@@ -1,23 +1,14 @@
 /**
  * External dependencies
  */
-import { Children, cloneElement } from '@wordpress/element';
 import { Slot, Fill } from '@wordpress/components';
 
-const WooRemotePayment = ( { children, id } ) => {
-	return (
-		<Fill name={ 'woocommerce_remote_payment_' + id }>{ children }</Fill>
-	);
-};
+const WooRemotePayment = ( { id, ...props } ) => (
+	<Fill name={ 'woocommerce_remote_payment_' + id } { ...props } />
+);
 
-WooRemotePayment.Slot = ( { id, ...props } ) => {
-	return (
-		<Slot name={ 'woocommerce_remote_payment_' + id }>
-			{ ( fills ) =>
-				Children.map( fills, ( fill ) => cloneElement( fill, props ) )
-			}
-		</Slot>
-	);
-};
+WooRemotePayment.Slot = ( { id, fillProps } ) => (
+	<Slot name={ 'woocommerce_remote_payment_' + id } fillProps={ fillProps } />
+);
 
 export default WooRemotePayment;

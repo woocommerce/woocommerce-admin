@@ -102,26 +102,23 @@ export const PaymentConnect = ( {
 	};
 
 	const validate = ( values ) => {
-		if ( fields ) {
-			return fields.reduce( ( errors, field ) => {
-				if ( ! values[ field.id ] ) {
-					// Matches any word that is capitalized aside from abrevitions like ID.
-					const label = field.label.replace(
-						/([A-Z][a-z]+)/g,
-						( val ) => val.toLowerCase()
-					);
-					return {
-						...errors,
-						[ field.id ]:
-							field.type === 'checkbox'
-								? __( 'This value is required ' )
-								: __( 'Please enter your ' ) + label,
-					};
-				}
-				return errors;
-			}, {} );
+		const errors = {};
+		const getField = ( fieldId ) =>
+			fields.find( ( field ) => field.id === fieldId );
+
+		for ( const [ valueKey, value ] of Object.entries( values ) ) {
+			const field = getField( valueKey );
+			// Matches any word that is capitalized aside from abrevitions like ID.
+			const label = field.label.replace( /([A-Z][a-z]+)/g, ( val ) =>
+				val.toLowerCase()
+			);
+
+			if ( ! value ) {
+				errors[ valueKey ] = `Please enter your ${ label }`;
+			}
 		}
-		return {};
+
+		return errors;
 	};
 
 	const helpText = interpolateComponents( {
@@ -144,8 +141,8 @@ export const PaymentConnect = ( {
 		<SettingsForm
 			fields={ fields }
 			isBusy={ isOptionsRequesting }
-			onSubmitCallback={ updateSettings }
-			onButtonClickCallback={ () => recordConnectStartEvent( key ) }
+			onSubmit={ updateSettings }
+			onButtonClick={ () => recordConnectStartEvent( key ) }
 			buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
 			validate={ validate }
 			{ ...props }
@@ -171,10 +168,12 @@ export const PaymentConnect = ( {
 		<>
 			{ hasFills ? (
 				<WooRemotePaymentSettings.Slot
-					defaultSettings={ DefaultSettings }
-					defaultUpdate={ updateSettings }
-					defaultFields={ fields }
-					markConfigured={ () => markConfigured( key ) }
+					fillProps={ {
+						defaultSettings: DefaultSettings,
+						defaultSubmit: updateSettings,
+						defaultFields: fields,
+						markConfigured: () => markConfigured( key ),
+					} }
 					id={ key }
 				/>
 			) : (

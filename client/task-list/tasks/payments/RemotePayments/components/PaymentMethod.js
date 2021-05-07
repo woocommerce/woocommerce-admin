@@ -133,9 +133,11 @@ export const PaymentMethod = ( {
 			<CardBody>
 				{ hasFills ? (
 					<WooRemotePayment.Slot
-						defaultStepper={ DefaultStepper }
-						defaultInstallStep={ installStep }
-						defaultConnectStep={ connectStep }
+						fillProps={ {
+							defaultStepper: DefaultStepper,
+							defaultInstallStep: installStep,
+							defaultConnectStep: connectStep,
+						} }
 						id={ key }
 					/>
 				) : (
