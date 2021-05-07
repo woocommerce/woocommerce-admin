@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { Button } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -24,12 +25,12 @@ const typeMap = {
 
 export const SettingsForm = ( {
 	fields: baseFields = [],
-	isBusy,
+	isBusy = false,
 	onSubmit = () => {},
 	onButtonClick = () => {},
 	onChange = () => {},
-	validate = () => {},
-	buttonLabel,
+	validate = () => ( {} ),
+	buttonLabel = __( 'Proceed', 'woocommerce-admin' ),
 } ) => {
 	// Support accepting fields in the format provided by the API (object), but transform to Array
 	const fields =

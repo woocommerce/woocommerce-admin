@@ -20,7 +20,7 @@ const transformOptions = ( options ) => {
 };
 
 export const SettingSelect = ( { field, ...props } ) => {
-	const { description, id, label, options } = field;
+	const { description, id, label, options = {} } = field;
 
 	const transformedOptions = useMemo( () => transformOptions( options ), [
 		options,
