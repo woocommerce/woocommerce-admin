@@ -220,6 +220,12 @@ class Plugins extends \WC_REST_Data_Controller {
 	public function install_plugins( $request ) {
 		$plugins = explode( ',', $request['plugins'] );
 
+		// If both Jetpack and WooCommerce Payments are being installed, Jetpack must be installed first.
+		if ( in_array( 'jetpack', $plugins, true ) && in_array( 'woocommerce-payments', $plugins, true ) ) {
+			array_unshift( $plugins, 'jetpack' );
+			$plugins = array_unique( $plugins );
+		}
+
 		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
 			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
@@ -372,6 +378,12 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		// the mollie-payments-for-woocommerce plugin calls `WP_Filesystem()` during it's activation hook, which crashes without this include.
 		require_once ABSPATH . 'wp-admin/includes/file.php';
+
+		// If both Jetpack and WooCommerce Payments are being activated, Jetpack must be activated first.
+		if ( in_array( 'jetpack', $plugins, true ) && in_array( 'woocommerce-payments', $plugins, true ) ) {
+			array_unshift( $plugins, 'jetpack' );
+			$plugins = array_unique( $plugins );
+		}
 
 		foreach ( $plugins as $plugin ) {
 			$slug = $plugin;
