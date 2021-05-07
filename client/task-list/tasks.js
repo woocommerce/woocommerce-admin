@@ -212,7 +212,10 @@ export function getAllTasks( {
 		{
 			key: 'payments',
 			title: __( 'Set up payments', 'woocommerce-admin' ),
-			content: __( '', 'woocommerce-admin' ),
+			content: __(
+				'Simplify transactions with WooCommerce Payments, and you can also add Stripe, PayPal, or other payment options to your store.',
+				'woocommerce-admin'
+			),
 			container: <Payments />,
 			completed: hasPaymentGateway,
 			onClick: () => {
