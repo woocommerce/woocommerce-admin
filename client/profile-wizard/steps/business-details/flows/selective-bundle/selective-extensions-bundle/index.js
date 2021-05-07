@@ -2,12 +2,8 @@
  * External dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
-import {
-	Button,
-	Card,
-	CheckboxControl,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Button, Card, CheckboxControl, Spinner } from '@wordpress/components';
+import { Text } from '@woocommerce/experimental';
 import { Link } from '@woocommerce/components';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
@@ -56,36 +52,10 @@ const generatePluginDescriptionWithLink = (
 
 const primaryTitle = __( 'Get the basics', 'woocommerce-admin' );
 const secondaryTitle = __( 'Grow your store', 'woocommerce-admin' );
-
-const transformRemoteExtensions = ( extensionData, localeValue ) => {
-	return extensionData.reduce(
-		( result, extension ) => {
-			const localeData =
-				extension.locales.find(
-					( locale ) => locale.locale === localeValue
-				) ||
-				extension.locales.find(
-					( locale ) => locale.locale === 'en_US'
-				);
-			const transformedExtension = {
-				title: localeData.title,
-				slug: extension.key,
-				description: generatePluginDescriptionWithLink(
-					localeData.description,
-					extension.key
-				),
-				isVisible: () => true, // For now
-			};
-			const sectionIndex = extension.section === 'primary' ? 0 : 1;
-			result[ sectionIndex ].plugins.push( transformedExtension );
-			return result;
-		},
-		[
-			{ title: primaryTitle, plugins: [] },
-			{ title: secondaryTitle, plugins: [] },
-		]
-	);
-};
+const initialInstallableExtensions = [
+	{ title: primaryTitle, plugins: [] },
+	{ title: secondaryTitle, plugins: [] },
+];
 
 const installableExtensionsData = [
 	{
@@ -353,25 +323,45 @@ const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 	);
 };
 
-const createInitialValues = ( extensions, country, industry, productTypes ) => {
-	return extensions.reduce(
-		( acc, curr ) => {
-			const plugins = getVisiblePlugins(
-				curr.plugins,
-				country,
-				industry,
-				productTypes
-			).reduce( ( pluginAcc, { slug } ) => {
-				return { ...pluginAcc, [ slug ]: true };
-			}, {} );
+const transformRemoteExtensions = ( extensionData, localeValue ) => {
+	return extensionData.reduce( ( result, extension ) => {
+		const localeData =
+			extension.locales.find(
+				( locale ) => locale.locale === localeValue
+			) ||
+			extension.locales.find( ( locale ) => locale.locale === 'en_US' );
+		const transformedExtension = {
+			title: localeData.title,
+			slug: extension.key,
+			description: generatePluginDescriptionWithLink(
+				localeData.description,
+				extension.key
+			),
+			isVisible: () => true,
+		};
+		const sectionIndex = extension.section === 'primary' ? 0 : 1;
+		result[ sectionIndex ].plugins.push( transformedExtension );
+		return result;
+	}, initialInstallableExtensions );
+};
 
-			return {
-				...acc,
-				...plugins,
-			};
-		},
-		{ install_extensions: true }
-	);
+const baseValues = { install_extensions: true };
+const createInitialValues = ( extensions, country, industry, productTypes ) => {
+	return extensions.reduce( ( acc, curr ) => {
+		const plugins = getVisiblePlugins(
+			curr.plugins,
+			country,
+			industry,
+			productTypes
+		).reduce( ( pluginAcc, { slug } ) => {
+			return { ...pluginAcc, [ slug ]: true };
+		}, {} );
+
+		return {
+			...acc,
+			...plugins,
+		};
+	}, baseValues );
 };
 
 export const SelectiveExtensionsBundle = ( {
@@ -382,17 +372,28 @@ export const SelectiveExtensionsBundle = ( {
 	productTypes,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
-	const [ values, setValues ] = useState( { install_extensions: true } );
-	const [ installableExtensions, setInstallableExtensions ] = useState( [
-		{ title: primaryTitle, plugins: [] },
-		{ title: secondaryTitle, plugins: [] },
-	] );
+	const [ values, setValues ] = useState( baseValues );
+	const [ installableExtensions, setInstallableExtensions ] = useState(
+		initialInstallableExtensions
+	);
 	const [ isFetching, setIsFetching ] = useState( true );
+
+	const setLocalInstallableExtensions = () => {
+		const initialValues = createInitialValues(
+			installableExtensionsData,
+			country,
+			industry,
+			productTypes
+		);
+		setInstallableExtensions( installableExtensionsData );
+		setValues( initialValues );
+		setIsFetching( false );
+	};
 
 	useEffect( () => {
 		if (
 			window.wcAdminFeatures &&
-			window.wcAdminFeatures[ 'remote-extensions-list' ] === true // and check opted in
+			window.wcAdminFeatures[ 'remote-extensions-list' ] === false // and check opted in
 		) {
 			apiFetch( {
 				path: '/wc-admin/onboarding/free-extensions',
@@ -413,20 +414,13 @@ export const SelectiveExtensionsBundle = ( {
 					setIsFetching( false );
 				} )
 				.catch( () => {
-					setIsFetching( false );
+					// An error has occurred, default to local config
+					setLocalInstallableExtensions();
 				} );
 		} else {
-			const initialValues = createInitialValues(
-				installableExtensions,
-				country,
-				industry,
-				productTypes
-			);
-			setInstallableExtensions( installableExtensionsData );
-			setValues( initialValues );
-			setIsFetching( false );
+			setLocalInstallableExtensions();
 		}
-	}, [] );
+	} );
 
 	const getCheckboxChangeHandler = ( slug ) => {
 		return ( checked ) => {
@@ -497,21 +491,25 @@ export const SelectiveExtensionsBundle = ( {
 								<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
 									{ title }
 								</div>
-								{ getVisiblePlugins(
-									plugins,
-									country,
-									industry,
-									productTypes
-								).map( ( { description, slug } ) => (
-									<BundleExtensionCheckbox
-										key={ slug }
-										description={ description }
-										isChecked={ values[ slug ] }
-										onChange={ getCheckboxChangeHandler(
-											slug
-										) }
-									/>
-								) ) }
+								{ isFetching ? (
+									<Spinner />
+								) : (
+									getVisiblePlugins(
+										plugins,
+										country,
+										industry,
+										productTypes
+									).map( ( { description, slug } ) => (
+										<BundleExtensionCheckbox
+											key={ slug }
+											description={ description }
+											isChecked={ values[ slug ] }
+											onChange={ getCheckboxChangeHandler(
+												slug
+											) }
+										/>
+									) )
+								) }
 							</div>
 						) ) }
 				</div>
