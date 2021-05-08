@@ -3,6 +3,7 @@
  */
 import { cloneElement, Component } from '@wordpress/element';
 import PropTypes from 'prop-types';
+import deprecated from '@wordpress/deprecated';
 
 /**
  * A form component to handle form state and provide input helper props.
@@ -47,7 +48,19 @@ class Form extends Component {
 				this.validate( () => {
 					// onChange keeps track of validity, so needs to
 					// happen after setting the error state.
-					this.props.onChange(
+					const { onChange, onChangeCallback } = this.props;
+					const callback = onChangeCallback
+						? onChangeCallback
+						: onChange;
+
+					if ( onChangeCallback ) {
+						deprecated( 'onChangeCallback', {
+							version: '5.1.2',
+							alternative: 'onChange',
+							plugin: '@woocommerce/components',
+						} );
+					}
+					callback(
 						{ name, value },
 						this.state.values,
 						! Object.keys( this.state.errors || {} ).length
@@ -148,6 +161,12 @@ Form.propTypes = {
 	onSubmitCallback: PropTypes.func,
 	/**
 	 * Function to call when a value changes in the form.
+	 *
+	 * @deprecated
+	 */
+	onChangeCallback: PropTypes.func,
+	/**
+	 * Function to call when a value changes in the form.
 	 */
 	onChange: PropTypes.func,
 	/**
@@ -161,6 +180,7 @@ Form.defaultProps = {
 	errors: {},
 	initialValues: {},
 	onSubmitCallback: () => {},
+	onChangeCallback: null,
 	onChange: () => {},
 	touched: {},
 	validate: () => {},
