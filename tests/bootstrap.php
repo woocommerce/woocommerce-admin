@@ -165,6 +165,7 @@ class WC_Admin_Unit_Tests_Bootstrap {
 		foreach ( $config->features as $feature => $bool ) {
 			$flags[ $feature ] = $bool;
 		}
+
 		return $flags;
 	}
 

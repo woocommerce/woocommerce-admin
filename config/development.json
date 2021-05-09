@@ -6,6 +6,7 @@
 		"analytics-dashboard/customizable": true,
 		"coupons": true,
 		"customer-effort-score-tracks": true,
+		"embedded-apps": true,
 		"homescreen": true,
 		"marketing": true,
 		"minified-js": true,
