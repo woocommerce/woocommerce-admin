@@ -26,6 +26,16 @@ trait NoteTraits {
 	}
 
 	/**
+	 * Test if WooCommerce Admin has been active within a pre-defined range.
+	 *
+	 * @param string $range range available in WC_ADMIN_STORE_AGE_RANGES.
+	 * @return bool Whether or not WooCommerce admin has been active within the range.
+	 */
+	public static function is_wc_admin_active_in_date_range( $range ) {
+		return WCAdminHelper::is_wc_admin_active_in_date_range( $range );
+	}
+
+	/**
 	 * Check if the note has been previously added.
 	 *
 	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
