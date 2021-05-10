@@ -25,7 +25,6 @@
 		"build:feature-config": "php bin/generate-feature-config.php",
 		"build:packages": "node ./bin/packages/build.js",
 		"build:release": "./bin/build-plugin-zip.sh",
-		"build:release-dryrun": "DRY_RUN=1 ./bin/build-plugin-zip.sh",
 		"clean": "rimraf ./dist ./packages/*/build ./packages/*/build-module ./packages/*/build-style",
 		"predev": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
 		"dev": "cross-env WC_ADMIN_PHASE=development npm run build:feature-config && cross-env WC_ADMIN_PHASE=development npm run build:packages && cross-env WC_ADMIN_PHASE=development webpack",
