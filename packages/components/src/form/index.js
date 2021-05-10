@@ -49,9 +49,7 @@ class Form extends Component {
 					// onChange keeps track of validity, so needs to
 					// happen after setting the error state.
 					const { onChange, onChangeCallback } = this.props;
-					const callback = onChangeCallback
-						? onChangeCallback
-						: onChange;
+					const callback = onChange ? onChange : onChangeCallback;
 
 					if ( onChangeCallback ) {
 						deprecated( 'onChangeCallback', {
@@ -166,6 +164,10 @@ Form.propTypes = {
 	 * Object key:value pair list of all initial field values.
 	 */
 	initialValues: PropTypes.object.isRequired,
+	/**
+	 * This prop helps determine whether or not a field has received focus
+	 */
+	touched: PropTypes.object,
 	/**
 	 * Function to call when a form is submitted with valid fields.
 	 *
