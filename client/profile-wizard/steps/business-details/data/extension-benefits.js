@@ -6,10 +6,10 @@ import { __ } from '@wordpress/i18n';
 export const extensionBenefits = [
 	{
 		slug: 'mailpoet',
-		title: __( 'Email Marketing by WooCommerce', 'woocommerce-admin' ),
+		title: __( 'MailPoet', 'woocommerce-admin' ),
 		icon: 'onboarding/mailpoet.png',
 		description: __(
-			'The default all-in-one solution for WooCommerce email. Powered by MailPoet.',
+			'The default all-in-one solution for WooCommerce email.',
 			'woocommerce-admin'
 		),
 	},
@@ -23,9 +23,9 @@ export const extensionBenefits = [
 		),
 	},
 	{
-		slug: 'kliken-marketing-for-google',
+		slug: 'google-listings-and-ads',
 		title: __(
-			'Drive traffic to your store with Google Ads & Marketing by Kliken',
+			'Drive traffic to your store with Google Listings and Ads',
 			'woocommerce-admin'
 		),
 		icon: 'onboarding/g-shopping.png',

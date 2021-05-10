@@ -104,7 +104,7 @@ class BusinessDetails extends Component {
 			install_mailpoet: extensionInstallationOptions.mailpoet,
 			install_jetpack: extensionInstallationOptions.jetpack,
 			install_google_ads:
-				extensionInstallationOptions[ 'kliken-marketing-for-google' ],
+				extensionInstallationOptions[ 'google-listings-and-ads' ],
 			install_facebook:
 				extensionInstallationOptions[ 'facebook-for-woocommerce' ],
 			install_wcpay:
@@ -250,7 +250,7 @@ class BusinessDetails extends Component {
 			hasInstallActivateError,
 		} = this.props;
 
-		const { getCurrencyConfig } = this.context;
+		const { formatAmount, getCurrencyConfig } = this.context;
 
 		const productCountOptions = getProductCountOptions(
 			getCurrencyConfig()
@@ -330,7 +330,8 @@ class BusinessDetails extends Component {
 											options={ getRevenueOptions(
 												getCurrencyConfig(),
 												this.props.settings
-													.woocommerce_default_country
+													.woocommerce_default_country,
+												formatAmount
 											) }
 											required
 											{ ...getInputProps( 'revenue' ) }

@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+### Exclude WC Shipping for store that are only offering downloadable products #6917
+
+1. Start OBW and enter an address that is in the US.
+2. Choose "food and drink" from the Industry 
+3. Choose "Downloads" from the Product Types step.
+4. When you get to the Business Details step, expand "Add recommended business features to my site" by clicking the down arrow.
+5. Note that "WooCommerce Shipping" is not listed.
+
+### Redirect users to WooCommerce Home after setting up a payment method #6891
+
+1. Navigate to WooCommerce -> Home and choose "Choose payment methods".
+2. Click one of the payment methods and go through the setup process.
+3. You should be redirected to WooCommerce Home with a notice when you are done.
+
+### Disable the continue btn when plugins are being installed/activated #6838
+
+1. In OBW fill out store details with a USA address
+2. Click Continue and select Fashion, apparel, and accessories,
+3. Click Continue, and select Physical products, and continue.
+4. The business details tab should show a Business details tab, and a Free features tab (disabled at first)
+5. Select 1-10 for the first dropdown, and No for the second, and click Continue.
+6. Make sure the "Add recommended business features to my site is ticked
+7. Click Continue, before the page redirects click Continue again
+8. Confirm no error has been recorded in your browser console.
+
 ### Remove PayPal for India #6828
 
 -   Setup a new store and set your country to `India`.
@@ -32,7 +57,9 @@
 1. Visit any admin page with the params `plugin_action` (`install`, `activate`, or `install-activate`) and `plugins` (list of comma separated plugins). `wp-admin/admin.php?page=wc-admin&plugin_action=install&plugins=jetpack`
 2. If visiting this URL from a link, make sure you are sent back to the referer.
 3. Check that the plugins provided are installed, activated, or both depending on your query.
+
 ### Update the checked input radio button margin style #6701
+
 1. Go to Home.
 2. Click on 'Add my products'.
 3. Select 'Start with a template'.
@@ -112,6 +139,12 @@ In case the report shows "no data", please reimport historical data by following
 -   Go to the payments setting screen again, the card should be displayed.
 -   Click on the 3 dots of the card, click `Hide this`, it should make the card disappear, it should also not show on refresh.
     This can't be shown again unless the `woocommerce_show_marketplace_suggestions` option is deleted (through PHPMyAdmin or using `wp option delete woocommerce_show_marketplace_suggestions`).
+
+### Fix an issue with OBW when wc-pay and Jetpack are both being installed. #6957
+
+- Complete the OBW until you get to the business details step.
+- Deselect "Add recommended business features to my site", and select only Jetpack and WooCommerce Payments for installation.
+- The plugins should be installed and activated correctly, and you should be able to continue in the flow.
 
 ## 2.2.0
 
@@ -404,7 +437,7 @@ add_filter( 'woocommerce_admin_status_tabs', function ( array $tabs ) {
 -   Under `Free features` tab, verify that the displayed extensions are:
 
 ```
-Mailpoet
+MailPoet
 Facebook
 Google Ads
 Mailchimp
@@ -424,7 +457,7 @@ Creative Mail
 -   Verify that the displayed extensions are:
 
 ```
-Mailpoet
+MailPoet
 Facebook
 Google Ads
 Mailchimp

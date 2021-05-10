@@ -85,12 +85,19 @@ const installableExtensions = [
 					'shipping'
 				),
 				isVisible: ( countryCode, industry, productTypes ) => {
-					return (
-						countryCode === 'US' ||
+					// Exclude the WooCommerce Shipping mention if the user is not in the US.
+					// Exclude the WooCommerce Shipping mention if the user is in the US but
+					// only selected digital products in the Product Types step.
+					if (
+						countryCode !== 'US' ||
 						( countryCode === 'US' &&
 							productTypes.length === 1 &&
 							productTypes[ 0 ] === 'downloads' )
-					);
+					) {
+						return false;
+					}
+
+					return true;
 				},
 			},
 			{
@@ -138,7 +145,7 @@ const installableExtensions = [
 				slug: 'mailpoet',
 				description: generatePluginDescriptionWithLink(
 					__(
-						'Level up your email marketing with {{link}}Mailpoet{{/link}}',
+						'Level up your email marketing with {{link}}MailPoet{{/link}}',
 						'woocommerce-admin'
 					),
 					'mailpoet',
@@ -156,13 +163,13 @@ const installableExtensions = [
 				),
 			},
 			{
-				slug: 'kliken-marketing-for-google',
+				slug: 'google-listings-and-ads',
 				description: generatePluginDescriptionWithLink(
 					__(
-						'Drive sales with {{link}}Google Ads{{/link}}',
+						'Drive sales with {{link}}Google Listings and Ads{{/link}}',
 						'woocommerce-admin'
 					),
-					'google-ads-and-marketing'
+					'google-listings-and-ads'
 				),
 			},
 			{
@@ -437,6 +444,7 @@ export const SelectiveExtensionsBundle = ( {
 							onSubmit( values );
 						} }
 						isBusy={ isInstallingActivating }
+						disabled={ isInstallingActivating }
 						isPrimary
 					>
 						Continue

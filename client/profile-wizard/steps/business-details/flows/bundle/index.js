@@ -69,8 +69,8 @@ class BusinessDetails extends Component {
 						'creative-mail-by-constant-contact'
 				  )
 				: false,
-			'kliken-marketing-for-google': businessExtensions
-				? businessExtensions.includes( 'kliken-marketing-for-google' )
+			'google-listings-and-ads': businessExtensions
+				? businessExtensions.includes( 'google-listings-and-ads' )
 				: true,
 			mailpoet: businessExtensions
 				? businessExtensions.includes( 'mailpoet' )
@@ -82,7 +82,7 @@ class BusinessDetails extends Component {
 			'mailpoet',
 			'facebook-for-woocommerce',
 			'mailchimp-for-woocommerce',
-			'kliken-marketing-for-google',
+			'google-listings-and-ads',
 			'creative-mail-by-constant-contact',
 		];
 
@@ -149,7 +149,7 @@ class BusinessDetails extends Component {
 				'creative-mail-by-constant-contact'
 			),
 			install_google_ads: businessExtensions.includes(
-				'kliken-marketing-for-google'
+				'google-listing-and-ads'
 			),
 			install_extensions: installExtensions,
 		} );
@@ -363,7 +363,7 @@ class BusinessDetails extends Component {
 			hasInstallActivateError,
 			isUpdatingProfileItems,
 		} = this.props;
-		const { getCurrencyConfig } = this.context;
+		const { formatAmount, getCurrencyConfig } = this.context;
 
 		const productCountOptions = getProductCountOptions(
 			getCurrencyConfig()
@@ -371,7 +371,8 @@ class BusinessDetails extends Component {
 
 		const revenueOptions = getRevenueOptions(
 			getCurrencyConfig(),
-			this.props.settings.woocommerce_default_country
+			this.props.settings.woocommerce_default_country,
+			formatAmount
 		);
 
 		return (
