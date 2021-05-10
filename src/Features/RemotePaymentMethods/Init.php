@@ -57,11 +57,17 @@ class Init {
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
 			if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
 				return self::get_default_specs();
-			} else {
-				$specs = DataSourcePoller::read_specs_from_data_sources();
-				$specs = self::localize( $specs );
-				set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
 			}
+
+			$specs = DataSourcePoller::read_specs_from_data_sources();
+
+			// Fall back to default specs if polling failed.
+			if ( ! $specs ) {
+				return self::get_default_specs();
+			}
+
+			$specs = self::localize( $specs );
+			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
 		}
 
 		return $specs;
