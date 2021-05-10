@@ -97,12 +97,23 @@ class Form extends Component {
 
 	async handleSubmit() {
 		const { values } = this.state;
+		const { onSubmitCallback, onSubmit } = this.props;
 		const touched = {};
 		Object.keys( values ).map( ( name ) => ( touched[ name ] = true ) );
 		this.setState( { touched } );
 
 		if ( await this.isValidForm() ) {
-			this.props.onSubmitCallback( values );
+			const callback = onSubmitCallback ? onSubmitCallback : onSubmit;
+
+			if ( onSubmitCallback ) {
+				deprecated( 'onSubmitCallback', {
+					version: '5.1.2',
+					alternative: 'onSubmit',
+					plugin: '@woocommerce/components',
+				} );
+			}
+
+			callback( values );
 		}
 	}
 
@@ -157,8 +168,14 @@ Form.propTypes = {
 	initialValues: PropTypes.object.isRequired,
 	/**
 	 * Function to call when a form is submitted with valid fields.
+	 *
+	 * @deprecated
 	 */
 	onSubmitCallback: PropTypes.func,
+	/**
+	 * Function to call when a form is submitted with valid fields.
+	 */
+	onSubmit: PropTypes.func,
 	/**
 	 * Function to call when a value changes in the form.
 	 *
@@ -179,7 +196,8 @@ Form.propTypes = {
 Form.defaultProps = {
 	errors: {},
 	initialValues: {},
-	onSubmitCallback: () => {},
+	onSubmitCallback: null,
+	onSubmit: () => {},
 	onChangeCallback: null,
 	onChange: () => {},
 	touched: {},

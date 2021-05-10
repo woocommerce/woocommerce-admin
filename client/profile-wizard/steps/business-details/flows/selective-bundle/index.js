@@ -261,7 +261,7 @@ class BusinessDetails extends Component {
 				initialValues={
 					this.state.savedValues || this.props.initialValues
 				}
-				onSubmitCallback={ ( values ) => {
+				onSubmit={ ( values ) => {
 					this.setState( {
 						savedValues: values,
 						currentTab: 'free-features',
