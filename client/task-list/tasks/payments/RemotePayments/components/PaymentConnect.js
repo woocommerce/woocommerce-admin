@@ -106,7 +106,7 @@ export const PaymentConnect = ( {
 	return (
 		<Form
 			initialValues={ getInitialConfigValues() }
-			onSubmitCallback={ updateSettings }
+			onSubmit={ updateSettings }
 			validate={ validate }
 		>
 			{ ( { getInputProps, handleSubmit } ) => {
