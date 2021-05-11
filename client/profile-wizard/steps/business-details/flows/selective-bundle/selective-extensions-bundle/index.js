@@ -325,25 +325,30 @@ const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 };
 
 const transformRemoteExtensions = ( extensionData, localeValue ) => {
-	return extensionData.reduce( ( result, extension ) => {
-		const localeData =
-			extension.locales.find(
-				( locale ) => locale.locale === localeValue
-			) ||
-			extension.locales.find( ( locale ) => locale.locale === 'en_US' );
-		const transformedExtension = {
-			title: localeData.title,
-			slug: extension.key,
-			description: generatePluginDescriptionWithLink(
-				localeData.description,
-				extension.key
-			),
-			isVisible: () => true,
-		};
-		const sectionIndex = extension.section === 'primary' ? 0 : 1;
-		result[ sectionIndex ].plugins.push( transformedExtension );
-		return result;
-	}, initialInstallableExtensions );
+	return extensionData.reduce(
+		( result, extension ) => {
+			const localeData =
+				extension.locales.find(
+					( locale ) => locale.locale === localeValue
+				) ||
+				extension.locales.find(
+					( locale ) => locale.locale === 'en_US'
+				);
+			const transformedExtension = {
+				title: localeData.title,
+				slug: extension.key,
+				description: generatePluginDescriptionWithLink(
+					localeData.description,
+					extension.key
+				),
+				isVisible: () => true,
+			};
+			const sectionIndex = extension.section === 'primary' ? 0 : 1;
+			result[ sectionIndex ].plugins.push( transformedExtension );
+			return result;
+		},
+		[ ...initialInstallableExtensions ]
+	);
 };
 
 const baseValues = { install_extensions: true };
