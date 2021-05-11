@@ -1,12 +1,11 @@
 /**
  * External dependencies
  */
-const MiniCssExtractPlugin = require( '@automattic/mini-css-extract-plugin-with-rtl' );
-const { get } = require( 'lodash' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const path = require( 'path' );
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
-const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
-const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
+const RtlCssPlugin = require( 'rtlcss-webpack-plugin' );
+const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
@@ -78,16 +77,10 @@ const webpackConfig = {
 		chunkFilename: `chunks/[name]${ suffix }.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
-		libraryTarget: 'this',
-		jsonpFunction: '__wcAdmin_webpackJsonp',
+		libraryTarget: 'window',
 	},
 	module: {
 		rules: [
-			{
-				parser: {
-					amd: false,
-				},
-			},
 			{
 				test: /\.(t|j)sx?$/,
 				exclude: [
@@ -165,10 +158,10 @@ const webpackConfig = {
 	},
 	plugins: [
 		new ForkTsCheckerWebpackPlugin(),
-		new FixStyleOnlyEntriesPlugin(),
+		new RemoveEmptyScriptsPlugin(),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
-				const entryName = get( data, [ 'chunk', 'name' ] );
+				const entryName = data && data.chunk && data.chunk.name;
 				if ( entryName ) {
 					return entryName.replace( /-([a-z])/g, ( match, letter ) =>
 						letter.toUpperCase()
@@ -177,24 +170,19 @@ const webpackConfig = {
 				return outputPath;
 			},
 		} ),
-		new WebpackRTLPlugin( {
-			minify: {
-				safe: true,
-			},
-		} ),
+		new RtlCssPlugin( '[name].rtl.css' ),
 		new MiniCssExtractPlugin( {
 			filename: './[name]/style.css',
 			chunkFilename: './chunks/[id].style.css',
-			rtlEnabled: true,
 		} ),
-		new CopyWebpackPlugin(
-			wcAdminPackages.map( ( packageName ) => ( {
+		new CopyWebpackPlugin( {
+			patterns: wcAdminPackages.map( ( packageName ) => ( {
 				from: `./packages/${ packageName }/build-style/*.css`,
-				to: `./${ packageName }/`,
-				flatten: true,
+				to: `./${ packageName }/[name][ext]`,
 				transform: ( content ) => content,
-			} ) )
-		),
+				noErrorOnMissing: true,
+			} ) ),
+		} ),
 		new WooCommerceDependencyExtractionWebpackPlugin(),
 		new MomentTimezoneDataPlugin( {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
@@ -215,9 +203,6 @@ const webpackConfig = {
 		splitChunks: {
 			name: false,
 		},
-	},
-	node: {
-		crypto: 'empty',
 	},
 };
 
