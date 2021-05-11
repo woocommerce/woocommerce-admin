@@ -1,6 +1,7 @@
-# Unreleased
+# 1.1.0
 
--   Export component ExperimentalList and ExperimentalListItem as List and ListItem.
+-   Add collapsible list item component. #6869
+-   Add new list component. #6787
 
 # 1.0.0
 

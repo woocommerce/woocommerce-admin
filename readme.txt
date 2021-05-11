@@ -92,6 +92,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Delete all products when running product import tests, unskip previously skipped test. #6905
 - Dev: Add payment method selector to onboarding store #6921
 - Dev: Add disabled prop to SelectControl #6902
+- Dev: Add filter variation to tracks data in products analytics. #6913
 - Enhancement: Add recommended payment methods in payment settings. #6760
 - Enhancement: Add expand/collapse to extendable task list. #6910
 - Enhancement: Add task hierarchy support to extended task list. #6916
@@ -131,7 +132,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
 - Update: Task list component with new Experimental Task list. #6849
+- Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
+- Update: Replace marketing extension - Google Listings and Ads. #6939
 
 == 2.2.6 5/7/2021 ==
 
