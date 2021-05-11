@@ -133,6 +133,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Task list component with new Experimental Task list. #6849
 - Update: Redirect to WC Home after setting up a payment method #6891
 
+== 2.2.6 5/7/2021 ==
+
+- Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
+
 == 2.2.5 5/7/2021 ==
 
 - Fix: Calling of get_script_asset_filename with extra parameter #6955
@@ -140,7 +144,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == 2.2.4 5/7/2021 ==
 
 - Dev: Fix a bug where trying to load an asset registry causes a crash. #6951
-- Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
 
 == 2.2.3 5/6/2021 ==
 
