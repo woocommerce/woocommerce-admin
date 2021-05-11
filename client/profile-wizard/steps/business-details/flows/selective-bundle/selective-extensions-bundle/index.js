@@ -324,21 +324,13 @@ const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 	);
 };
 
-const transformRemoteExtensions = ( extensionData, localeValue ) => {
+const transformRemoteExtensions = ( extensionData ) => {
 	return extensionData.reduce(
 		( result, extension ) => {
-			const localeData =
-				extension.locales.find(
-					( locale ) => locale.locale === localeValue
-				) ||
-				extension.locales.find(
-					( locale ) => locale.locale === 'en_US'
-				);
 			const transformedExtension = {
-				title: localeData.title,
 				slug: extension.key,
 				description: generatePluginDescriptionWithLink(
-					localeData.description,
+					extension.description,
 					extension.key
 				),
 				isVisible: () => true,
@@ -414,8 +406,7 @@ export const SelectiveExtensionsBundle = ( {
 			} )
 				.then( ( results ) => {
 					const transformedExtensions = transformRemoteExtensions(
-						results,
-						'en_US'
+						results
 					);
 					const initialValues = createInitialValues(
 						transformedExtensions,
