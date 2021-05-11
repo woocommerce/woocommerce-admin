@@ -53,10 +53,6 @@ const generatePluginDescriptionWithLink = (
 
 const primaryTitle = __( 'Get the basics', 'woocommerce-admin' );
 const secondaryTitle = __( 'Grow your store', 'woocommerce-admin' );
-const initialInstallableExtensions = [
-	{ title: primaryTitle, plugins: [] },
-	{ title: secondaryTitle, plugins: [] },
-];
 
 const installableExtensionsData = [
 	{
@@ -339,7 +335,10 @@ const transformRemoteExtensions = ( extensionData ) => {
 			result[ sectionIndex ].plugins.push( transformedExtension );
 			return result;
 		},
-		[ ...initialInstallableExtensions ]
+		[
+			{ title: primaryTitle, plugins: [] },
+			{ title: secondaryTitle, plugins: [] },
+		]
 	);
 };
 
@@ -371,9 +370,10 @@ export const SelectiveExtensionsBundle = ( {
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( baseValues );
-	const [ installableExtensions, setInstallableExtensions ] = useState(
-		initialInstallableExtensions
-	);
+	const [ installableExtensions, setInstallableExtensions ] = useState( [
+		{ title: primaryTitle, plugins: [] },
+		{ title: secondaryTitle, plugins: [] },
+	] );
 	const [ isFetching, setIsFetching ] = useState( true );
 
 	const allowMarketplaceSuggestions = useSelect( ( select ) =>
@@ -426,7 +426,7 @@ export const SelectiveExtensionsBundle = ( {
 			// Use local config
 			setLocalInstallableExtensions();
 		}
-	}, [ country, industry, productTypes ] );
+	}, [ country, industry, productTypes, allowMarketplaceSuggestions ] );
 
 	const getCheckboxChangeHandler = ( slug ) => {
 		return ( checked ) => {
