@@ -241,7 +241,6 @@
 		"style-loader": "0.23.1",
 		"stylelint": "9.10.1",
 		"stylelint-config-wordpress": "13.1.0",
-		"terser-webpack-plugin": "5.1.1",
 		"url-loader": "1.1.2",
 		"webpack": "5.37.0",
 		"webpack-bundle-analyzer": "4.4.1",

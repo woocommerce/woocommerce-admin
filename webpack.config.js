@@ -9,7 +9,6 @@ const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
-const TerserPlugin = require( 'terser-webpack-plugin' );
 const UnminifyWebpackPlugin = require( './unminify' );
 const AsyncChunkSrcVersionParameterPlugin = require( './chunk-src-version-param' );
 const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
@@ -199,7 +198,6 @@ const webpackConfig = {
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
-		minimizer: [ new TerserPlugin() ],
 		splitChunks: {
 			name: false,
 		},
