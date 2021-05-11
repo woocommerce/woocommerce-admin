@@ -3,7 +3,17 @@
  */
 import { CheckboxControl } from '@wordpress/components';
 
-export const SettingCheckbox = ( { field, ...props } ) => {
+/**
+ * Internal dependencies
+ */
+import { Field } from '../types';
+
+export const SettingCheckbox = ( {
+	field,
+	...props
+}: {
+	field: Field;
+} ): JSX.Element => {
 	const { label, id, description } = field;
 
 	return (

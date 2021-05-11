@@ -13,7 +13,33 @@ import {
 	SettingPassword,
 	SettingCheckbox,
 	SettingSelect,
-} from './types';
+} from './setting-types';
+
+import { StringToString, Field } from './types';
+
+interface SettingsFormProps {
+	fields: Field[] | { [ key: string ]: Field };
+	validate: ( values: StringToString ) => StringToString;
+	isBusy?: boolean;
+	onSubmit?: ( values: StringToString | void ) => void;
+	onButtonClick?: () => void;
+	onChange?: (
+		value: StringToString,
+		values: StringToString,
+		result: boolean
+	) => void;
+	buttonLabel?: string;
+}
+
+interface GetInputPropsReturn {
+	value: string;
+	checked: boolean;
+	selected: string;
+	onChange: ( name: string ) => void;
+	onBlur: () => void;
+	className: string | null;
+	help: string | null;
+}
 
 const typeMap = {
 	text: SettingText,
@@ -31,7 +57,7 @@ export const SettingsForm = ( {
 	onChange = () => {},
 	validate = () => ( {} ),
 	buttonLabel = __( 'Proceed', 'woocommerce-admin' ),
-} ) => {
+}: SettingsFormProps ): JSX.Element => {
 	// Support accepting fields in the format provided by the API (object), but transform to Array
 	const fields =
 		baseFields instanceof Array ? baseFields : Object.values( baseFields );
@@ -55,7 +81,13 @@ export const SettingsForm = ( {
 			onSubmitCallback={ onSubmit }
 			validate={ validate }
 		>
-			{ ( { getInputProps, handleSubmit } ) => {
+			{ ( {
+				getInputProps,
+				handleSubmit,
+			}: {
+				getInputProps: ( name: string ) => GetInputPropsReturn;
+				handleSubmit: () => void;
+			} ) => {
 				return (
 					<div className="woocommerce-component-settings">
 						{ fields.map( ( field ) => {
@@ -81,8 +113,8 @@ export const SettingsForm = ( {
 						<Button
 							isPrimary
 							isBusy={ isBusy }
-							onClick={ ( event ) => {
-								handleSubmit( event );
+							onClick={ () => {
+								handleSubmit();
 								onButtonClick();
 							} }
 						>
