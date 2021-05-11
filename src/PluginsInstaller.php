@@ -70,11 +70,10 @@ class PluginsInstaller {
 			return;
 		}
 
-		$message = $activate_result ? $activate_result['message'] : $install_result['message'];
-
-		// Show install error message if one exists.
-		if ( $install_result && ! $install_result['success'] ) {
-			$message = $install_result['message'];
+		if ( is_wp_error( $install_result ) || is_wp_error( $activate_result ) ) {
+			$message = $activate_result ? $activate_result->get_error_message() : $install_result->get_error_message();
+		} else {
+			$message = $activate_result ? $activate_result['message'] : $install_result['message'];
 		}
 
 		TransientNotices::add(
