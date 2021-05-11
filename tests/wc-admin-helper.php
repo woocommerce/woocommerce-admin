@@ -8,9 +8,9 @@
 use \Automattic\WooCommerce\Admin\WCAdminHelper;
 
 /**
- * WC_Admin_Tests_Plugin_Helper Class
+ * WC_Admin_Tests_Admin_Helper Class
  *
- * @package WooCommerce\Admin\Tests\PluginHelper
+ * @package WooCommerce\Admin\Tests\WCAdminHelper
  */
 class WC_Admin_Tests_Admin_Helper extends WP_UnitTestCase {
 
@@ -26,7 +26,7 @@ class WC_Admin_Tests_Admin_Helper extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test wc_admin_active_for one hour
+	 * Test wc_admin_active_for 7 days
 	 */
 	public function test_is_wc_admin_active_for_7_days() {
 		update_option( WCAdminHelper::WC_ADMIN_TIMESTAMP_OPTION, time() - ( HOUR_IN_SECONDS * 10 ) );
@@ -37,7 +37,7 @@ class WC_Admin_Tests_Admin_Helper extends WP_UnitTestCase {
 
 	/**
 	 * @dataProvider range_provider
-	 * Test wc_admin_active_in_date_range 1 week if 1 day old
+	 * Test wc_admin_active_in_date_range with data provided from range_provider.
 	 *
 	 * @param number  $store_age age in seconds of store.
 	 * @param string  $range expected store range.
@@ -52,7 +52,7 @@ class WC_Admin_Tests_Admin_Helper extends WP_UnitTestCase {
 	}
 
 	/**
-	 * @return array[]
+	 * @return array[] list of range options.
 	 */
 	public function range_provider() {
 		return array(
