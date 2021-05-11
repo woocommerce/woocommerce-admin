@@ -8,8 +8,8 @@ const RtlCssPlugin = require( 'rtlcss-webpack-plugin' );
 const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
+const UnminifiedWebpackPlugin = require( 'unminified-webpack-plugin' );
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
-const UnminifyWebpackPlugin = require( './unminify' );
 const AsyncChunkSrcVersionParameterPlugin = require( './chunk-src-version-param' );
 const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
 const WooCommerceDependencyExtractionWebpackPlugin = require( './packages/dependency-extraction-webpack-plugin/src/index' );
@@ -190,11 +190,7 @@ const webpackConfig = {
 		// Partially replace with __webpack_get_script_filename__ in app once using Webpack 5.x.
 		// The CSS chunk portion will need to remain, as it originates in MiniCssExtractPlugin.
 		new AsyncChunkSrcVersionParameterPlugin(),
-		WC_ADMIN_PHASE !== 'core' &&
-			new UnminifyWebpackPlugin( {
-				test: /\.js($|\?)/i,
-				mainEntry: 'app/index.min.js',
-			} ),
+		WC_ADMIN_PHASE !== 'core' && new UnminifiedWebpackPlugin(),
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
