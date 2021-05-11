@@ -22,7 +22,7 @@ class TransientNotices {
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_notices' ) );
+		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 	}
 
 
@@ -110,17 +110,15 @@ class TransientNotices {
 	}
 
 	/**
-	 * Enqueue notices to be displayed on page load.
+	 * Preload options to prime state of the application.
+	 *
+	 * @param array $options Array of options to preload.
+	 * @return array
 	 */
-	public static function enqueue_notices() {
-		$user_id = get_current_user_id();
-		$notices = self::get_queue_by_user( $user_id );
+	public function preload_options( $options ) {
+		$options[] = self::QUEUE_OPTION;
 
-		if ( empty( $notices ) ) {
-			return;
-		}
-
-		wp_localize_script( WC_ADMIN_APP, 'wcQueuedNotices', array_values( $notices ) );
+		return $options;
 	}
 
 }
