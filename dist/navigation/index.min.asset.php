@@ -1,0 +1,1 @@
+<?php return array('dependencies' => array('lodash', 'wc-experimental', 'wp-components', 'wp-element', 'wp-hooks', 'wp-url'), 'version' => '81dc2174adbc40cdbd8f2e4a3a0063ac');
