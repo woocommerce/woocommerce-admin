@@ -81,7 +81,6 @@ export const SettingsForm = ( {
 				return (
 					<div className="woocommerce-component-settings">
 						{ fields.map( ( field ) => {
-							console.log( field );
 							if ( field.type && ! ( field.type in typeMap ) ) {
 								/* eslint-disable no-console */
 								console.warn(

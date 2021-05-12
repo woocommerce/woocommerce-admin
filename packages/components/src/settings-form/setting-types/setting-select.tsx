@@ -31,7 +31,6 @@ const transformOptions = ( options: StringToString ) => {
 
 export const SettingSelect = ( {
 	field,
-	key,
 	...props
 }: ControlProps ): JSX.Element => {
 	const { description, label, options = {} } = field;
@@ -45,7 +44,6 @@ export const SettingSelect = ( {
 		<SelectControl
 			title={ description }
 			label={ label }
-			key={ key }
 			options={ transformedOptions }
 			{ ...props }
 		/>

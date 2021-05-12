@@ -28,6 +28,5 @@ export interface GetInputPropsReturn {
 }
 
 export interface ControlProps extends GetInputPropsReturn {
-	key: string;
 	field: Field;
 }

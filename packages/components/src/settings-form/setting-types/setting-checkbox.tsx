@@ -10,14 +10,13 @@ import { ControlProps } from '../types';
 
 export const SettingCheckbox = ( {
 	field,
-	key,
+	onChange,
 }: ControlProps ): JSX.Element => {
-	const { label, description } = field;
+	const { label, description, id } = field;
 
 	return (
 		<CheckboxControl
-			onChange={ () => {} }
-			key={ key }
+			onChange={ () => onChange( id ) }
 			title={ description }
 			label={ label }
 		/>
