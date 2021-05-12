@@ -84,6 +84,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Note date range logic for GivingFeedback, and InsightFirstSale note. #6969
 - Add: Add transient notices feature #6809
 - Add: Add transformers in remote inbox notifications #6948
+- Add: Get post install scripts from gateway and enqueue in client #6967
+- Dev: Add data source filter to remote inbox notification system #6794
+- Dev: Add A/A test #6669
+- Dev: Add support for nonces in note actions #6726
+- Dev: Add support for running php unit tests in PHP 8. #6678
+- Dev: Add event recording to start of gateway connections #6801
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
