@@ -54,6 +54,7 @@ const generatePluginDescriptionWithLink = (
 const installableExtensionsData = [
 	{
 		title: __( 'Get the basics', 'woocommerce-admin' ),
+		key: 'basics',
 		plugins: [
 			{
 				slug: 'woocommerce-payments',
@@ -138,6 +139,7 @@ const installableExtensionsData = [
 	},
 	{
 		title: __( 'Grow your store', 'woocommerce-admin' ),
+		key: 'grow',
 		plugins: [
 			{
 				slug: 'mailpoet',
@@ -366,8 +368,7 @@ export const SelectiveExtensionsBundle = ( {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( baseValues );
 	const [ installableExtensions, setInstallableExtensions ] = useState( [
-		{ title: '', plugins: [] },
-		{ title: '', plugins: [] },
+		{ key: 'spinner', plugins: [] },
 	] );
 	const [ isFetching, setIsFetching ] = useState( true );
 
@@ -487,32 +488,34 @@ export const SelectiveExtensionsBundle = ( {
 						/>
 					</div>
 					{ showExtensions &&
-						installableExtensions.map( ( { plugins, title } ) => (
-							<div key={ title }>
-								<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
-									{ title }
+						installableExtensions.map(
+							( { plugins, title, key } ) => (
+								<div key={ key }>
+									<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
+										{ title }
+									</div>
+									{ isFetching ? (
+										<Spinner />
+									) : (
+										getVisiblePlugins(
+											plugins,
+											country,
+											industry,
+											productTypes
+										).map( ( { description, slug } ) => (
+											<BundleExtensionCheckbox
+												key={ slug }
+												description={ description }
+												isChecked={ values[ slug ] }
+												onChange={ getCheckboxChangeHandler(
+													slug
+												) }
+											/>
+										) )
+									) }
 								</div>
-								{ isFetching ? (
-									<Spinner />
-								) : (
-									getVisiblePlugins(
-										plugins,
-										country,
-										industry,
-										productTypes
-									).map( ( { description, slug } ) => (
-										<BundleExtensionCheckbox
-											key={ slug }
-											description={ description }
-											isChecked={ values[ slug ] }
-											onChange={ getCheckboxChangeHandler(
-												slug
-											) }
-										/>
-									) )
-								) }
-							</div>
-						) ) }
+							)
+						) }
 				</div>
 				<div className="woocommerce-profile-wizard__business-details__free-features__action">
 					<Button
