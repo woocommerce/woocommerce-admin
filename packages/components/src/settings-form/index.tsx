@@ -48,7 +48,6 @@ export const SettingsForm = ( {
 	validate = () => ( {} ),
 	buttonLabel = __( 'Proceed', 'woocommerce-admin' ),
 }: SettingsFormProps ): JSX.Element => {
-	console.info( 'fields', baseFields );
 	// Support accepting fields in the format provided by the API (object), but transform to Array
 	const fields =
 		baseFields instanceof Array ? baseFields : Object.values( baseFields );
