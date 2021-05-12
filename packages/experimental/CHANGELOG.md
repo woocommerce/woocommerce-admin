@@ -1,3 +1,7 @@
+# Unreleased
+
+-   Add task item component.
+
 # 1.1.0
 
 -   Add collapsible list item component. #6869
