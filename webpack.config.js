@@ -1,10 +1,10 @@
 /**
  * External dependencies
  */
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const path = require( 'path' );
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
-const RtlCssPlugin = require( 'rtlcss-webpack-plugin' );
+const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
+const MiniCssExtractPlugin = require( '@automattic/mini-css-extract-plugin-with-rtl' );
 const RemoveEmptyScriptsPlugin = require( 'webpack-remove-empty-scripts' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
@@ -169,10 +169,15 @@ const webpackConfig = {
 				return outputPath;
 			},
 		} ),
-		new RtlCssPlugin( '[name].rtl.css' ),
+		new WebpackRTLPlugin( {
+			minify: {
+				safe: true,
+			},
+		} ),
 		new MiniCssExtractPlugin( {
 			filename: './[name]/style.css',
 			chunkFilename: './chunks/[id].style.css',
+			rtlEnabled: true,
 		} ),
 		new CopyWebpackPlugin( {
 			patterns: wcAdminPackages.map( ( packageName ) => ( {

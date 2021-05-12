@@ -132,6 +132,7 @@
 	},
 	"devDependencies": {
 		"@automattic/color-studio": "2.5.0",
+		"@automattic/mini-css-extract-plugin-with-rtl": "^0.8.0",
 		"@babel/cli": "7.13.16",
 		"@babel/core": "7.14.0",
 		"@babel/plugin-proposal-class-properties": "7.13.0",
@@ -235,8 +236,6 @@
 		"recast": "0.20.4",
 		"replace": "1.2.0",
 		"rimraf": "3.0.2",
-		"rtlcss": "2.5.0",
-		"rtlcss-webpack-plugin": "^4.0.6",
 		"sass-loader": "8.0.2",
 		"style-loader": "0.23.1",
 		"stylelint": "9.10.1",
@@ -247,7 +246,8 @@
 		"webpack-bundle-analyzer": "4.4.1",
 		"webpack-cli": "4.7.0",
 		"webpack-fix-style-only-entries": "0.6.1",
-		"webpack-remove-empty-scripts": "^0.7.1"
+		"webpack-remove-empty-scripts": "^0.7.1",
+		"webpack-rtl-plugin": "^2.0.0"
 	},
 	"engines": {
 		"node": ">=8.0.0",
