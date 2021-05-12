@@ -1,0 +1,46 @@
+.woocommerce-layout__activity-panel-content {
+	.woocommerce-inbox-message,
+	.woocommerce-abbreviated-cards__element {
+		margin: 0;
+		border: 1px solid $gray-200;
+	}
+
+	.woocommerce-abbreviated-cards {
+		margin-top: $gap-large;
+
+		&__element a {
+			text-decoration: none;
+			box-shadow: inset 0 -1px 0 $gray-100;
+			display: flex;
+			flex-direction: row;
+
+			h3 {
+				color: var(--wp-admin-theme-color);
+			}
+
+			span {
+				color: $gray-700;
+			}
+		}
+
+		&__icon {
+			display: flex;
+			align-items: center;
+			padding: $gap $gap-large;
+			svg {
+				fill: var(--wp-admin-theme-color);
+			}
+		}
+
+		&__message {
+			padding: $gap-small $gap-large $gap-small 0;
+		}
+
+		.woocommerce-pill {
+			color: $alert-red;
+			border-color: $alert-red;
+			margin-top: 5px;
+			padding: $gap-smallest / 2 $gap-smaller;
+		}
+	}
+}
