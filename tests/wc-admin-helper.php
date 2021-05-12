@@ -68,8 +68,8 @@ class WC_Admin_Tests_Admin_Helper extends WP_UnitTestCase {
 		return array(
 			'1 day old store within week?'             => array( DAY_IN_SECONDS, 'week-1', true ),
 			'10 day old store not within week?'        => array( 10 * DAY_IN_SECONDS, 'week-1', false ),
-			'10 day old store within 1-4 weeks?'       => array( 10 * DAY_IN_SECONDS, 'week-2-4', true ),
-			'1 day old store not within 1-4 weeks?'    => array( DAY_IN_SECONDS, 'week-2-4', false ),
+			'10 day old store within 1-4 weeks?'       => array( 10 * DAY_IN_SECONDS, 'week-1-4', true ),
+			'1 day old store not within 1-4 weeks?'    => array( DAY_IN_SECONDS, 'week-1-4', false ),
 			'2 month old store within 1-3 months?'     => array( 2 * MONTH_IN_SECONDS, 'month-1-3', true ),
 			'5 month old store not within 1-3 months?' => array( 5 * MONTH_IN_SECONDS, 'month-1-3', false ),
 			'5 month old store within 3-6 months?'     => array( 5 * MONTH_IN_SECONDS, 'month-3-6', true ),
