@@ -51,12 +51,9 @@ const generatePluginDescriptionWithLink = (
 	} );
 };
 
-const primaryTitle = __( 'Get the basics', 'woocommerce-admin' );
-const secondaryTitle = __( 'Grow your store', 'woocommerce-admin' );
-
 const installableExtensionsData = [
 	{
-		title: primaryTitle,
+		title: __( 'Get the basics', 'woocommerce-admin' ),
 		plugins: [
 			{
 				slug: 'woocommerce-payments',
@@ -140,7 +137,7 @@ const installableExtensionsData = [
 		],
 	},
 	{
-		title: secondaryTitle,
+		title: __( 'Grow your store', 'woocommerce-admin' ),
 		plugins: [
 			{
 				slug: 'mailpoet',
@@ -321,25 +318,23 @@ const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 };
 
 const transformRemoteExtensions = ( extensionData ) => {
-	return extensionData.reduce(
-		( result, extension ) => {
-			const transformedExtension = {
-				slug: extension.key,
+	return extensionData.map( ( section ) => {
+		const plugins = section.plugins.map( ( plugin ) => {
+			return {
+				...plugin,
 				description: generatePluginDescriptionWithLink(
-					extension.description,
-					extension.key
+					plugin.description,
+					plugin.key
 				),
+				slug: plugin.key,
 				isVisible: () => true,
 			};
-			const sectionIndex = extension.section === 'primary' ? 0 : 1;
-			result[ sectionIndex ].plugins.push( transformedExtension );
-			return result;
-		},
-		[
-			{ title: primaryTitle, plugins: [] },
-			{ title: secondaryTitle, plugins: [] },
-		]
-	);
+		} );
+		return {
+			...section,
+			plugins,
+		};
+	} );
 };
 
 const baseValues = { install_extensions: true };
@@ -371,8 +366,8 @@ export const SelectiveExtensionsBundle = ( {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( baseValues );
 	const [ installableExtensions, setInstallableExtensions ] = useState( [
-		{ title: primaryTitle, plugins: [] },
-		{ title: secondaryTitle, plugins: [] },
+		{ title: '', plugins: [] },
+		{ title: '', plugins: [] },
 	] );
 	const [ isFetching, setIsFetching ] = useState( true );
 
