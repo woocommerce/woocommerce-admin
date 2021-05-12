@@ -23,9 +23,9 @@ class WCAdminHelper {
 			'start' => 0,
 			'end'   => WEEK_IN_SECONDS,
 		),
-		'week-2-4'  => array(
+		'week-1-4'  => array(
 			'start' => WEEK_IN_SECONDS,
-			'end'   => MONTH_IN_SECONDS,
+			'end'   => WEEK_IN_SECONDS * 4,
 		),
 		'month-1-3' => array(
 			'start' => MONTH_IN_SECONDS,
@@ -73,9 +73,19 @@ class WCAdminHelper {
 	 * Test if WooCommerce Admin has been active within a pre-defined range.
 	 *
 	 * @param string $range range available in WC_ADMIN_STORE_AGE_RANGES.
+	 * @throws \InvalidArgumentException Throws exception when invalid $range is passed in.
 	 * @return bool Whether or not WooCommerce admin has been active within the range.
 	 */
 	public static function is_wc_admin_active_in_date_range( $range ) {
+		if ( ! array_key_exists( $range, self::WC_ADMIN_STORE_AGE_RANGES ) ) {
+			throw new \InvalidArgumentException(
+				sprintf(
+					'"%s" range is not supported, use one of: %s',
+					$range,
+					implode( ', ', array_keys( self::WC_ADMIN_STORE_AGE_RANGES ) )
+				)
+			);
+		}
 		$wc_admin_active_for = self::get_wcadmin_active_for_in_seconds();
 
 		$range_data = self::WC_ADMIN_STORE_AGE_RANGES[ $range ];

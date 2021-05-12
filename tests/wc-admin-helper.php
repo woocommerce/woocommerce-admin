@@ -36,6 +36,16 @@ class WC_Admin_Tests_Admin_Helper extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test wc_admin_active_in_date_range with invalid range
+	 */
+	public function test_is_wc_admin_active_in_date_range_with_invalid_range() {
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( '"random-range" range is not supported, use one of: week-1, week-2-4, month-1-3, month-3-6, month-6+' );
+
+		WCAdminHelper::is_wc_admin_active_in_date_range( 'random-range' );
+	}
+
+	/**
 	 * @dataProvider range_provider
 	 * Test wc_admin_active_in_date_range with data provided from range_provider.
 	 *
