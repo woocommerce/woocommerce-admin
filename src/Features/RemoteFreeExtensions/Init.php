@@ -55,7 +55,13 @@ class Init {
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
 			// We are running too early, need to poll data sources first.
 			$specs = DataSourcePoller::read_specs_from_data_sources();
+			// Localize top level.
 			$specs = self::localize( $specs );
+			// Localize plugins.
+			foreach ( $specs as $spec ) {
+				$spec->plugins = self::localize( $spec->plugins );
+			}
+
 			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
 		}
 
@@ -85,8 +91,6 @@ class Init {
 
 			$data = (object) array_merge( (array) $locale, (array) $spec );
 			unset( $data->locales );
-
-			$data->fields = array();
 
 			$localized_specs[] = $data;
 		}
