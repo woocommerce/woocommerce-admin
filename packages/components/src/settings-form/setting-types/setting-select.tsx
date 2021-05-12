@@ -7,7 +7,7 @@ import { useMemo } from '@wordpress/element';
  * Internal dependencies
  */
 import { SelectControl } from '../../index';
-import { Field, StringToString } from '../types';
+import { ControlProps, StringToString } from '../types';
 
 interface SelectControlOption {
 	key: string;
@@ -16,23 +16,25 @@ interface SelectControlOption {
 }
 
 const transformOptions = ( options: StringToString ) => {
-	return Object.keys( options ).reduce( ( all, curr ) => {
-		all.push( {
-			key: curr,
-			label: options[ curr ],
-			value: { id: curr },
-		} );
-		return all;
-	}, [] as SelectControlOption[] );
+	return Object.keys( options ).reduce(
+		( all: SelectControlOption[], curr ) => {
+			all.push( {
+				key: curr,
+				label: options[ curr ],
+				value: { id: curr },
+			} );
+			return all;
+		},
+		[]
+	);
 };
 
 export const SettingSelect = ( {
 	field,
+	key,
 	...props
-}: {
-	field: Field;
-} ): JSX.Element => {
-	const { description, id, label, options = {} } = field;
+}: ControlProps ): JSX.Element => {
+	const { description, label, options = {} } = field;
 
 	const transformedOptions: SelectControlOption[] = useMemo(
 		() => transformOptions( options ),
@@ -43,7 +45,7 @@ export const SettingSelect = ( {
 		<SelectControl
 			title={ description }
 			label={ label }
-			key={ id }
+			key={ key }
 			options={ transformedOptions }
 			{ ...props }
 		/>

@@ -16,3 +16,18 @@ export interface Field {
 	value?: string;
 	placeholder?: string;
 }
+
+export interface GetInputPropsReturn {
+	value: string;
+	checked: boolean;
+	selected: string;
+	onChange: ( name: string ) => void;
+	onBlur: () => void;
+	className: string | null;
+	help: string | null;
+}
+
+export interface ControlProps extends GetInputPropsReturn {
+	key: string;
+	field: Field;
+}

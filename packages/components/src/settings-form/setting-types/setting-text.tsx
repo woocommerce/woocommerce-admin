@@ -2,23 +2,21 @@
  * Internal dependencies
  */
 import { TextControl } from '../../index';
-import { Field } from '../types';
+import { ControlProps } from '../types';
 
 export const SettingText = ( {
 	field,
 	type = 'text',
+	key,
 	...props
-}: {
-	field: Field;
-	type: 'text' | 'password';
-} ): JSX.Element => {
-	const { id, label, description } = field;
+}: ControlProps & { type?: string } ): JSX.Element => {
+	const { label, description } = field;
 
 	return (
 		<TextControl
 			type={ type }
 			title={ description }
-			key={ id }
+			key={ key }
 			label={ label }
 			{ ...props }
 		/>

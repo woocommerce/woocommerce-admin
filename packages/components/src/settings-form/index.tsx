@@ -15,7 +15,7 @@ import {
 	SettingSelect,
 } from './setting-types';
 
-import { StringToString, Field } from './types';
+import { StringToString, Field, GetInputPropsReturn } from './types';
 
 interface SettingsFormProps {
 	fields: Field[] | { [ key: string ]: Field };
@@ -25,20 +25,10 @@ interface SettingsFormProps {
 	onButtonClick?: () => void;
 	onChange?: (
 		value: StringToString,
-		values: StringToString,
+		values: StringToString[],
 		result: boolean
 	) => void;
 	buttonLabel?: string;
-}
-
-interface GetInputPropsReturn {
-	value: string;
-	checked: boolean;
-	selected: string;
-	onChange: ( name: string ) => void;
-	onBlur: () => void;
-	className: string | null;
-	help: string | null;
 }
 
 const typeMap = {
@@ -58,6 +48,7 @@ export const SettingsForm = ( {
 	validate = () => ( {} ),
 	buttonLabel = __( 'Proceed', 'woocommerce-admin' ),
 }: SettingsFormProps ): JSX.Element => {
+	console.info( 'fields', baseFields );
 	// Support accepting fields in the format provided by the API (object), but transform to Array
 	const fields =
 		baseFields instanceof Array ? baseFields : Object.values( baseFields );
@@ -91,6 +82,7 @@ export const SettingsForm = ( {
 				return (
 					<div className="woocommerce-component-settings">
 						{ fields.map( ( field ) => {
+							console.log( field );
 							if ( field.type && ! ( field.type in typeMap ) ) {
 								/* eslint-disable no-console */
 								console.warn(
