@@ -44,7 +44,7 @@ describe( 'plugins reducer', () => {
 				paymentGateways: paymentGatewaysStub,
 			},
 			{
-				type: ACTION_TYPES.SET_PAYMENT_GATEWAY,
+				type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS,
 				paymentGateway: updatedPaymentGateway,
 			}
 		);

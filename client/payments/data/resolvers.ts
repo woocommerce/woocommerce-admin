@@ -8,7 +8,7 @@ import { apiFetch } from '@wordpress/data-controls';
  */
 import {
 	getPaymentGatewaysSuccess,
-	setPaymentGateway,
+	updatePaymentGatewaySuccess,
 	setError,
 	setIsRequesting,
 } from './actions';
@@ -40,7 +40,7 @@ export function* getPaymentGateway( id: string ) {
 
 		if ( response && response.id ) {
 			yield setIsRequesting( 'getPaymentGateway', false );
-			yield setPaymentGateway( response );
+			yield updatePaymentGatewaySuccess( response );
 			return response;
 		}
 	} catch ( e ) {

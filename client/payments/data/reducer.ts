@@ -20,7 +20,7 @@ const reducer = (
 					...state,
 					paymentGateways: payload.paymentGateways,
 				};
-			case ACTION_TYPES.SET_PAYMENT_GATEWAY:
+			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS:
 				const targetIndex = state.paymentGateways.findIndex(
 					( paymentGateway ) =>
 						paymentGateway.id === payload.paymentGateway.id

@@ -22,14 +22,14 @@ export function getPaymentGatewaysSuccess(
 	};
 }
 
-export function setPaymentGateway(
+export function updatePaymentGatewaySuccess(
 	paymentGateway: PaymentGateway
 ): {
-	type: ACTION_TYPES.SET_PAYMENT_GATEWAY;
+	type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS;
 	paymentGateway: PaymentGateway;
 } {
 	return {
-		type: ACTION_TYPES.SET_PAYMENT_GATEWAY,
+		type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS,
 		paymentGateway,
 	};
 }
@@ -79,7 +79,7 @@ export function* updatePaymentGateway(
 
 		if ( response && response.id === id ) {
 			// Update the already loaded payment gateway list with the new data
-			yield setPaymentGateway( response );
+			yield updatePaymentGatewaySuccess( response );
 			return response;
 		}
 	} catch ( e ) {
@@ -89,7 +89,7 @@ export function* updatePaymentGateway(
 
 export type Actions =
 	| ReturnType< typeof updatePaymentGateway >
-	| ReturnType< typeof setPaymentGateway >
+	| ReturnType< typeof updatePaymentGatewaySuccess >
 	| ReturnType< typeof getPaymentGatewaysSuccess >
 	| ReturnType< typeof setError >
 	| ReturnType< typeof setIsRequesting >;
