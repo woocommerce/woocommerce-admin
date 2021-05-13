@@ -7,32 +7,25 @@ import { useMemo } from '@wordpress/element';
  * Internal dependencies
  */
 import { SelectControl } from '../../index';
-import { ControlProps, StringToString } from '../types';
+import { ControlProps } from '../types';
 
-interface SelectControlOption {
+type SelectControlOption = {
 	key: string;
 	label: string;
 	value: { id: string };
-}
-
-const transformOptions = ( options: StringToString ) => {
-	return Object.keys( options ).reduce(
-		( all: SelectControlOption[], curr ) => {
-			all.push( {
-				key: curr,
-				label: options[ curr ],
-				value: { id: curr },
-			} );
-			return all;
-		},
-		[]
-	);
 };
 
-export const SettingSelect = ( {
+const transformOptions = ( options: Record< string, string > ) =>
+	Object.entries( options ).map( ( [ key, value ] ) => ( {
+		key,
+		label: value,
+		value: { id: key },
+	} ) );
+
+export const SelectField: React.FC< ControlProps > = ( {
 	field,
 	...props
-}: ControlProps ): JSX.Element => {
+} ) => {
 	const { description, label, options = {} } = field;
 
 	const transformedOptions: SelectControlOption[] = useMemo(

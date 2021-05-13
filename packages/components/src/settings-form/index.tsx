@@ -9,34 +9,34 @@ import { __ } from '@wordpress/i18n';
  */
 import { Form } from '../index';
 import {
-	SettingText,
-	SettingPassword,
-	SettingCheckbox,
-	SettingSelect,
-} from './setting-types';
+	TextField,
+	PasswordField,
+	CheckboxField,
+	SelectField,
+} from './field-types';
 
-import { StringToString, Field, GetInputPropsReturn } from './types';
+import { Field, FormInputProps } from './types';
 
-interface SettingsFormProps {
+type SettingsFormProps = {
 	fields: Field[] | { [ key: string ]: Field };
-	validate: ( values: StringToString ) => StringToString;
+	validate: ( values: Record< string, string > ) => Record< string, string >;
 	isBusy?: boolean;
-	onSubmit?: ( values: StringToString | void ) => void;
+	onSubmit?: ( values: Record< string, string > ) => void;
 	onButtonClick?: () => void;
 	onChange?: (
-		value: StringToString,
-		values: StringToString[],
+		value: Record< string, string >,
+		values: Record< string, string >[],
 		result: boolean
 	) => void;
 	buttonLabel?: string;
-}
+};
 
-const typeMap = {
-	text: SettingText,
-	password: SettingPassword,
-	checkbox: SettingCheckbox,
-	select: SettingSelect,
-	default: SettingText,
+const fieldTypeMap = {
+	text: TextField,
+	password: PasswordField,
+	checkbox: CheckboxField,
+	select: SelectField,
+	default: TextField,
 };
 
 export const SettingsForm: React.FC< SettingsFormProps > = ( {
@@ -75,13 +75,16 @@ export const SettingsForm: React.FC< SettingsFormProps > = ( {
 				getInputProps,
 				handleSubmit,
 			}: {
-				getInputProps: ( name: string ) => GetInputPropsReturn;
+				getInputProps: ( name: string ) => FormInputProps;
 				handleSubmit: () => void;
 			} ) => {
 				return (
 					<div className="woocommerce-component-settings">
 						{ fields.map( ( field ) => {
-							if ( field.type && ! ( field.type in typeMap ) ) {
+							if (
+								field.type &&
+								! ( field.type in fieldTypeMap )
+							) {
 								/* eslint-disable no-console */
 								console.warn(
 									`Field type of ${ field.type } not current supported in SettingsForm component`
@@ -90,7 +93,8 @@ export const SettingsForm: React.FC< SettingsFormProps > = ( {
 								return null;
 							}
 
-							const Control = typeMap[ field.type || 'default' ];
+							const Control =
+								fieldTypeMap[ field.type || 'default' ];
 							return (
 								<Control
 									key={ field.id }

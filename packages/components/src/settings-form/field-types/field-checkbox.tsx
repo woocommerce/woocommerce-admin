@@ -8,10 +8,10 @@ import { CheckboxControl } from '@wordpress/components';
  */
 import { ControlProps } from '../types';
 
-export const SettingCheckbox = ( {
+export const CheckboxField: React.FC< ControlProps > = ( {
 	field,
 	onChange,
-}: ControlProps ): JSX.Element => {
+} ) => {
 	const { label, description, id } = field;
 
 	return (

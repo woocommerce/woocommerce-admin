@@ -4,11 +4,11 @@
 import { TextControl } from '../../index';
 import { ControlProps } from '../types';
 
-export const SettingText = ( {
+export const TextField: React.FC< ControlProps & { type?: string } > = ( {
 	field,
 	type = 'text',
 	...props
-}: ControlProps & { type?: string } ): JSX.Element => {
+} ) => {
 	const { label, description } = field;
 
 	return (

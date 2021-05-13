@@ -1,8 +1,4 @@
-export interface StringToString {
-	[ key: string ]: string;
-}
-
-export interface Field {
+export type Field = {
 	id: string;
 	type: 'text' | 'password' | 'checkbox' | 'select';
 	title: string;
@@ -11,22 +7,18 @@ export interface Field {
 	default?: string;
 	class?: string;
 	css?: string;
-	options?: StringToString;
+	options?: Record< string, string >;
 	tip?: string;
 	value?: string;
 	placeholder?: string;
-}
+};
 
-export interface GetInputPropsReturn {
-	value: string;
-	checked: boolean;
+export type FormInputProps = React.InputHTMLAttributes< HTMLInputElement > & {
 	selected: string;
 	onChange: ( name: string ) => void;
-	onBlur: () => void;
-	className: string | null;
 	help: string | null;
-}
+};
 
-export interface ControlProps extends GetInputPropsReturn {
+export type ControlProps = FormInputProps & {
 	field: Field;
-}
+};
