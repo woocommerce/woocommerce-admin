@@ -10,6 +10,10 @@ import { __ } from '@wordpress/i18n';
  */
 import { Bell } from './icons/bell';
 
+const ORDER_PANEL_ID = 'orders-panel';
+const REVIEWS_PANEL_ID = 'reviews-panel';
+const STOCK_PANEL_ID = 'stock-panel';
+
 export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
 	{
 		name: 'thingsToDoNext',
@@ -17,7 +21,7 @@ export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
 		title: __( 'Things to do next', 'woocommerce-admin' ),
 		/* translators: Things the user has to do */
 		content: __( 'You have %s new things to do', 'woocommerce-admin' ),
-		href: '/wp-admin/admin.php?page=wc-admin',
+		href: 'admin.php?page=wc-admin',
 	},
 	{
 		name: 'ordersToProcess',
@@ -25,7 +29,7 @@ export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
 		title: __( 'Orders to fulfill', 'woocommerce-admin' ),
 		/* translators: Number of orders the user has to fulfill */
 		content: __( 'You have %s orders to fulfill', 'woocommerce-admin' ),
-		href: '/wp-admin/admin.php?page=wc-admin',
+		href: `admin.php?page=wc-admin&opened_panel=${ ORDER_PANEL_ID }`,
 	},
 	{
 		name: 'reviewsToModerate',
@@ -33,7 +37,7 @@ export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
 		title: __( 'Reviews to moderate', 'woocommerce-admin' ),
 		/* translators: Number of reviews the user has to moderate */
 		content: __( 'You have %s reviews to moderate', 'woocommerce-admin' ),
-		href: '/wp-admin/admin.php?page=wc-admin',
+		href: `admin.php?page=wc-admin&opened_panel=${ REVIEWS_PANEL_ID }`,
 	},
 	{
 		name: 'stockNotices',
@@ -43,6 +47,6 @@ export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
 			'You have inventory to review and update',
 			'woocommerce-admin'
 		),
-		href: '/wp-admin/admin.php?page=wc-admin',
+		href: `admin.php?page=wc-admin&opened_panel=${ STOCK_PANEL_ID }`,
 	},
 ] );

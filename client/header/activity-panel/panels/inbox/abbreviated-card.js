@@ -24,7 +24,7 @@ export const AbbreviatedCard = ( { content, critical, icon, href, title } ) => {
 	return (
 		<Card className="woocommerce-abbreviated-cards__element">
 			<CardBody size={ null }>
-				<Link href={ href } type="wc-admin">
+				<Link href={ href } type="wp-admin">
 					<div className="woocommerce-abbreviated-cards__icon">
 						<Icon icon={ icon } />
 					</div>
