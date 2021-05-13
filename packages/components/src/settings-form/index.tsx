@@ -52,17 +52,17 @@ export const SettingsForm: React.FC< SettingsFormProps > = ( {
 	const fields =
 		baseFields instanceof Array ? baseFields : Object.values( baseFields );
 
-	const getInitialConfigValues = () => {
-		if ( fields ) {
-			return fields.reduce(
-				( data, field ) => ( {
-					...data,
-					[ field.id ]: field.value,
-				} ),
-				{}
-			);
-		}
-	};
+	const getInitialConfigValues = () =>
+		fields.reduce(
+			( data, field ) => ( {
+				...data,
+				[ field.id ]:
+					field.type === 'checkbox'
+						? field.value === 'yes'
+						: field.value,
+			} ),
+			{}
+		);
 
 	return (
 		<Form

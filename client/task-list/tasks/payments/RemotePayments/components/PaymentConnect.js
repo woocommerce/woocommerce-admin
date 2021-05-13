@@ -107,15 +107,15 @@ export const PaymentConnect = ( {
 		const getField = ( fieldId ) =>
 			fields.find( ( field ) => field.id === fieldId );
 
-		for ( const [ valueKey, value ] of Object.entries( values ) ) {
-			const field = getField( valueKey );
+		for ( const [ fieldKey, value ] of Object.entries( values ) ) {
+			const field = getField( fieldKey );
 			// Matches any word that is capitalized aside from abrevitions like ID.
 			const label = field.label.replace( /([A-Z][a-z]+)/g, ( val ) =>
 				val.toLowerCase()
 			);
 
-			if ( ! value ) {
-				errors[ valueKey ] = `Please enter your ${ label }`;
+			if ( ! ( value || field.type === 'checkbox' ) ) {
+				errors[ fieldKey ] = `Please enter your ${ label }`;
 			}
 		}
 

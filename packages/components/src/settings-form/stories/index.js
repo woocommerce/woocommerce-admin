@@ -48,8 +48,8 @@ const fields = [
 		label: 'Checkbox style',
 		description: 'This is an example checkbox field.',
 		type: 'checkbox',
-		value: 'yes',
-		default: 'yes',
+		value: 'no',
+		default: 'no',
 		tip: 'This is an example checkbox field.',
 		placeholder: '',
 	},
@@ -64,11 +64,8 @@ const validate = ( values ) => {
 	for ( const [ key, value ] of Object.entries( values ) ) {
 		const field = getField( key );
 
-		if ( ! value ) {
-			errors[ key ] =
-				field.type === 'checkbox'
-					? 'This is required'
-					: `Please enter your ${ field.label.toLowerCase() }`;
+		if ( ! ( value || field.type === 'checkbox' ) ) {
+			errors[ key ] = `Please enter your ${ field.label.toLowerCase() }`;
 		}
 	}
 
