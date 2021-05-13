@@ -51,7 +51,7 @@ export default {
 					<Title />
 					<Subtitle />
 					<Description
-						markdown={ `[depreciated] and will be replaced by
+						markdown={ `[deprecated] and will be replaced by
 						<a
 							data-sb-kind="woocommerce-admin-experimental-list"
 							data-sb-story="default"
