@@ -73,7 +73,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
-== 2.3.0 T/B/D ==
+== 2.3.0 5/13/2021 ==
 - Add: Add plugin installer to allow installation of plugins via URL #6805
 - Add: Optional children prop to SummaryNumber component #6748
 - Dev: Add data source filter to remote inbox notification system #6794
@@ -116,6 +116,22 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
+
+== 2.2.6 5/7/2021 ==
+
+- Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
+
+== 2.2.5 5/7/2021 ==
+
+- Fix: Calling of get_script_asset_filename with extra parameter #6955
+
+== 2.2.4 5/7/2021 ==
+
+- Dev: Fix a bug where trying to load an asset registry causes a crash. #6951
+
+== 2.2.3 5/6/2021 ==
+
+- Dev: Do a git clean before the core release. #6945
 
 == 2.2.2 4/28/2021 ==
 
