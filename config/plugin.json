@@ -13,10 +13,12 @@
 		"navigation": true,
 		"onboarding": true,
 		"remote-inbox-notifications": true,
+		"remote-extensions-list": false,
 		"remote-payment-methods": false,
 		"settings": false,
 		"shipping-label-banner": true,
 		"store-alerts": true,
+		"transient-notices": true,
 		"wcpay": true,
 		"wcpay/support-international-countries": true
 	}

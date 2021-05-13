@@ -112,6 +112,3 @@ List.propTypes = {
 };
 
 export default List;
-
-export { ExperimentalListItem } from './experimental-list-item';
-export { ExperimentalList } from './experimental-list';

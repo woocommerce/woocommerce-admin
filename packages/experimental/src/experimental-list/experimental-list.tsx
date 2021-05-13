@@ -11,7 +11,7 @@ import type { ListAnimation } from './experimental-list-item';
 
 type ListType = 'ol' | 'ul';
 
-type ListProps = {
+export type ListProps = {
 	listType?: ListType;
 	animation?: ListAnimation;
 } & React.HTMLAttributes< HTMLElement >;
@@ -26,7 +26,7 @@ export const ExperimentalList: React.FC< ListProps > = ( {
 	return (
 		<TransitionGroup
 			component={ listType }
-			className="woocommerce-list"
+			className="woocommerce-experimental-list"
 			{ ...otherProps }
 		>
 			{ /* Wrapping all children in a CSS Transition means no invalid props are passed to children and that anything can be animated. */ }
