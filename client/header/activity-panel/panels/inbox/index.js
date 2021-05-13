@@ -12,32 +12,23 @@ import { AbbreviatedCard } from './abbreviated-card';
 import { cards } from './cards';
 
 export const InboxPanel = ( { notifications } ) => {
-	const getNotificationDataByName = ( name ) => {
-		return notifications.find(
-			( notificationData ) => notificationData.name === name
-		);
+	const getCardByName = ( name ) => {
+		return cards.find( ( card ) => card.name === name );
 	};
-
-	const hasAnyAbbreviatedCards = () => {
-		return notifications.find( ( { count } ) => count > 0 );
-	};
+	const hasNotifications = notifications.length > 0;
 
 	return (
 		<div>
-			{ hasAnyAbbreviatedCards() && (
+			{ hasNotifications && (
 				<div className="woocommerce-abbreviated-cards">
-					{ cards.map( ( { content, href, icon, name, title } ) => {
-						const {
-							critical = 0,
-							count,
-						} = getNotificationDataByName( name );
-						if ( count === 0 ) {
-							return null;
-						}
+					{ notifications.map( ( { count, critical, name } ) => {
+						const { content, href, icon, title } = getCardByName(
+							name
+						);
 						return (
 							<AbbreviatedCard
 								content={ sprintf( content, count ) }
-								critical={ critical }
+								critical={ critical ?? 0 }
 								icon={ icon }
 								href={ href }
 								key={ name }
