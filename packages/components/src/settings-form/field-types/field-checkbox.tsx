@@ -11,14 +11,16 @@ import { ControlProps } from '../types';
 export const CheckboxField: React.FC< ControlProps > = ( {
 	field,
 	onChange,
+	...props
 } ) => {
-	const { label, description, id } = field;
+	const { label, description } = field;
 
 	return (
 		<CheckboxControl
-			onChange={ () => onChange( id ) }
+			onChange={ ( val ) => onChange( val ) }
 			title={ description }
 			label={ label }
+			{ ...props }
 		/>
 	);
 };

@@ -14,9 +14,7 @@ export type Field = {
 };
 
 export type FormInputProps = React.InputHTMLAttributes< HTMLInputElement > & {
-	selected: string;
-	onChange: ( name: string ) => void;
-	help: string | null;
+	onChange: ( value: string | boolean ) => void;
 };
 
 export type ControlProps = FormInputProps & {
