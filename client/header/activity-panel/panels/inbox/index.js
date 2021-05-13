@@ -14,12 +14,12 @@ import { cards } from './cards';
 export const InboxPanel = ( { notifications } ) => {
 	const getNotificationDataByName = ( name ) => {
 		return notifications.find(
-			( notificationData ) => notificationData.card === name
+			( notificationData ) => notificationData.name === name
 		);
 	};
 
 	const hasAnyAbbreviatedCards = () => {
-		return notifications.find( ( { warnings } ) => warnings > 0 );
+		return notifications.find( ( { count } ) => count > 0 );
 	};
 
 	return (
@@ -29,14 +29,14 @@ export const InboxPanel = ( { notifications } ) => {
 					{ cards.map( ( { content, href, icon, name, title } ) => {
 						const {
 							critical = 0,
-							warnings,
+							count,
 						} = getNotificationDataByName( name );
-						if ( warnings === 0 ) {
+						if ( count === 0 ) {
 							return null;
 						}
 						return (
 							<AbbreviatedCard
-								content={ sprintf( content, warnings ) }
+								content={ sprintf( content, count ) }
 								critical={ critical }
 								icon={ icon }
 								href={ href }

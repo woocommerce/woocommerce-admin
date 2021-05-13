@@ -120,23 +120,23 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 
 		const notificationsData = [
 			{
-				card: 'thingsToDoNext',
-				warnings:
+				name: 'thingsToDoNext',
+				count:
 					getIncompleteTasksCount( thingsToDoNext, dismissedTasks ) +
 					storeAlertsCount,
 				critical: storeAlertsCount,
 			},
 			{
-				card: 'ordersToProcess',
-				warnings: countUnreadOrders,
+				name: 'ordersToProcess',
+				count: countUnreadOrders,
 			},
 			{
-				card: 'reviewsToModerate',
-				warnings: countUnapprovedReviews,
+				name: 'reviewsToModerate',
+				count: countUnapprovedReviews,
 			},
 			{
-				card: 'stockNotices',
-				warnings: countLowStockProducts,
+				name: 'stockNotices',
+				count: countLowStockProducts,
 			},
 		];
 
