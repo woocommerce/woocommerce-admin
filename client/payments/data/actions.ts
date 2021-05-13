@@ -10,6 +10,14 @@ import { ACTION_TYPES } from './action-types';
 import { API_NAMESPACE } from './constants';
 import { PaymentGateway, RestApiError, SelectorKeysWithActions } from './types';
 
+export function getPaymentGatewaysRequest(): {
+	type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_REQUEST;
+} {
+	return {
+		type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_REQUEST,
+	};
+}
+
 export function getPaymentGatewaysSuccess(
 	paymentGateways: PaymentGateway[]
 ): {
@@ -22,45 +30,69 @@ export function getPaymentGatewaysSuccess(
 	};
 }
 
-export function updatePaymentGatewaySuccess(
-	paymentGateway: PaymentGateway
-): {
-	type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS;
-	paymentGateway: PaymentGateway;
-} {
-	return {
-		type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS,
-		paymentGateway,
-	};
-}
-
-export function setError(
-	selector: SelectorKeysWithActions,
+export function getPaymentGatewaysError(
 	error: RestApiError
 ): {
-	type: ACTION_TYPES.SET_ERROR;
-	selector: SelectorKeysWithActions;
+	type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_ERROR;
 	error: RestApiError;
 } {
 	return {
-		type: ACTION_TYPES.SET_ERROR,
-		selector,
+		type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_ERROR,
 		error,
 	};
 }
 
-export function setIsRequesting(
-	selector: SelectorKeysWithActions,
-	isRequesting: boolean
-): {
-	type: ACTION_TYPES.SET_IS_REQUESTING;
-	selector: SelectorKeysWithActions;
-	isRequesting: boolean;
+export function getPaymentGatewayRequest(): {
+	type: ACTION_TYPES.GET_PAYMENT_GATEWAY_REQUEST;
 } {
 	return {
-		type: ACTION_TYPES.SET_IS_REQUESTING,
+		type: ACTION_TYPES.GET_PAYMENT_GATEWAY_REQUEST,
+	};
+}
+
+export function getPaymentGatewayError(
+	error: RestApiError
+): {
+	type: ACTION_TYPES.GET_PAYMENT_GATEWAY_ERROR;
+	error: RestApiError;
+} {
+	return {
+		type: ACTION_TYPES.GET_PAYMENT_GATEWAY_ERROR,
+		error,
+	};
+}
+
+export function updatePaymentGatewaySuccess(
+	paymentGateway: PaymentGateway,
+	selector: 'updatePaymentGateway' | 'getPaymentGateway'
+): {
+	type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS;
+	paymentGateway: PaymentGateway;
+	selector: 'updatePaymentGateway' | 'getPaymentGateway';
+} {
+	return {
+		type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS,
+		paymentGateway,
 		selector,
-		isRequesting,
+	};
+}
+export function updatePaymentGatewayRequest(): {
+	type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_REQUEST;
+} {
+	return {
+		type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_REQUEST,
+	};
+}
+
+export function updatePaymentGatewayError(
+	error: RestApiError
+): {
+	type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_ERROR;
+	error: RestApiError;
+} {
+	return {
+		type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_ERROR,
+		error,
 	};
 }
 
@@ -68,9 +100,8 @@ export function* updatePaymentGateway(
 	id: string,
 	data: Partial< PaymentGateway >
 ) {
-	yield setIsRequesting( 'updatePaymentGateway', true );
-
 	try {
+		yield updatePaymentGatewayRequest();
 		const response: PaymentGateway = yield apiFetch( {
 			method: 'PUT',
 			path: API_NAMESPACE + '/payment_gateways/' + id,
@@ -79,17 +110,25 @@ export function* updatePaymentGateway(
 
 		if ( response && response.id === id ) {
 			// Update the already loaded payment gateway list with the new data
-			yield updatePaymentGatewaySuccess( response );
+			yield updatePaymentGatewaySuccess(
+				response,
+				'updatePaymentGateway'
+			);
 			return response;
 		}
 	} catch ( e ) {
-		yield setError( 'updatePaymentGateway', e );
+		yield updatePaymentGatewayError( e );
 	}
 }
 
 export type Actions =
 	| ReturnType< typeof updatePaymentGateway >
+	| ReturnType< typeof updatePaymentGatewayRequest >
 	| ReturnType< typeof updatePaymentGatewaySuccess >
+	| ReturnType< typeof getPaymentGatewaysRequest >
 	| ReturnType< typeof getPaymentGatewaysSuccess >
-	| ReturnType< typeof setError >
-	| ReturnType< typeof setIsRequesting >;
+	| ReturnType< typeof getPaymentGatewaysError >
+	| ReturnType< typeof getPaymentGatewayRequest >
+	| ReturnType< typeof getPaymentGatewayError >
+	| ReturnType< typeof updatePaymentGatewayRequest >
+	| ReturnType< typeof updatePaymentGatewayError >;

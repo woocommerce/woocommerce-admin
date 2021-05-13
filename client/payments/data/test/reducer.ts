@@ -16,11 +16,73 @@ const defaultState: PluginsState = {
 	errors: {},
 };
 
+const restApiError = {
+	code: 'error code',
+	data: {
+		status: 400,
+	},
+	message: 'error message',
+};
+
 describe( 'plugins reducer', () => {
 	it( 'should return a default state', () => {
 		const state = reducer( undefined );
 		expect( state ).toEqual( defaultState );
 		expect( state ).not.toBe( defaultState );
+	} );
+
+	it( 'should handle GET_PAYMENT_GATEWAY_REQUEST', () => {
+		const state = reducer( defaultState, {
+			type: ACTION_TYPES.GET_PAYMENT_GATEWAY_REQUEST,
+		} );
+
+		expect( state.requesting.getPaymentGateway ).toBe( true );
+	} );
+
+	it( 'should handle GET_PAYMENT_GATEWAYS_REQUEST', () => {
+		const state = reducer( defaultState, {
+			type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_REQUEST,
+		} );
+
+		expect( state.requesting.getPaymentGateways ).toBe( true );
+	} );
+
+	it( 'should handle UPDATE_PAYMENT_GATEWAY_REQUEST', () => {
+		const state = reducer( defaultState, {
+			type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_REQUEST,
+		} );
+
+		expect( state.requesting.updatePaymentGateway ).toBe( true );
+	} );
+
+	it( 'should handle GET_PAYMENT_GATEWAYS_ERROR', () => {
+		const state = reducer( defaultState, {
+			type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_ERROR,
+			error: restApiError,
+		} );
+
+		expect( state.errors.getPaymentGateways ).toBe( restApiError );
+		expect( state.requesting.getPaymentGateways ).toBe( false );
+	} );
+
+	it( 'should handle GET_PAYMENT_GATEWAY_ERROR', () => {
+		const state = reducer( defaultState, {
+			type: ACTION_TYPES.GET_PAYMENT_GATEWAY_ERROR,
+			error: restApiError,
+		} );
+
+		expect( state.errors.getPaymentGateway ).toBe( restApiError );
+		expect( state.requesting.getPaymentGateway ).toBe( false );
+	} );
+
+	it( 'should handle UPDATE_PAYMENT_GATEWAY_ERROR', () => {
+		const state = reducer( defaultState, {
+			type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_ERROR,
+			error: restApiError,
+		} );
+
+		expect( state.errors.updatePaymentGateway ).toBe( restApiError );
+		expect( state.requesting.updatePaymentGateway ).toBe( false );
 	} );
 
 	it( 'should handle GET_PAYMENT_GATEWAYS_SUCCESS', () => {
@@ -33,7 +95,7 @@ describe( 'plugins reducer', () => {
 		expect( state.paymentGateways ).toBe( paymentGatewaysStub );
 	} );
 
-	it( 'should replace an existing payment gateway on SET_PAYMENT_GATEWAY', () => {
+	it( 'should replace an existing payment gateway on UPDATE_PAYMENT_GATEWAY_SUCCESS', () => {
 		const updatedPaymentGateway = {
 			...paymentGatewaysStub[ 1 ],
 			description: 'update test',
@@ -46,6 +108,7 @@ describe( 'plugins reducer', () => {
 			{
 				type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS,
 				paymentGateway: updatedPaymentGateway,
+				selector: 'updatePaymentGateway',
 			}
 		);
 
@@ -53,33 +116,5 @@ describe( 'plugins reducer', () => {
 			paymentGatewaysStub[ 1 ].id
 		);
 		expect( state.paymentGateways[ 1 ].description ).toBe( 'update test' );
-	} );
-
-	it( 'should handle SET_IS_REQUESTING', () => {
-		const state = reducer( defaultState, {
-			type: ACTION_TYPES.SET_IS_REQUESTING,
-			selector: 'updatePaymentGateway',
-			isRequesting: true,
-		} );
-
-		expect( state.requesting.updatePaymentGateway ).toBe( true );
-	} );
-
-	it( 'should handle SET_ERROR', () => {
-		const restApiError = {
-			code: 'error code',
-			data: {
-				status: 400,
-			},
-			message: 'error message',
-		};
-		const state = reducer( defaultState, {
-			type: ACTION_TYPES.SET_ERROR,
-			selector: 'updatePaymentGateway',
-			error: restApiError,
-		} );
-
-		expect( state.errors.updatePaymentGateway ).toBe( restApiError );
-		expect( state.requesting.updatePaymentGateway ).toBe( false );
 	} );
 } );

@@ -15,10 +15,62 @@ const reducer = (
 ): PluginsState => {
 	if ( payload && 'type' in payload ) {
 		switch ( payload.type ) {
+			case ACTION_TYPES.GET_PAYMENT_GATEWAYS_REQUEST:
+				return {
+					...state,
+					requesting: {
+						...state.requesting,
+						getPaymentGateways: true,
+					},
+				};
+			case ACTION_TYPES.GET_PAYMENT_GATEWAY_REQUEST:
+				return {
+					...state,
+					requesting: {
+						...state.requesting,
+						getPaymentGateway: true,
+					},
+				};
 			case ACTION_TYPES.GET_PAYMENT_GATEWAYS_SUCCESS:
 				return {
 					...state,
 					paymentGateways: payload.paymentGateways,
+					requesting: {
+						...state.requesting,
+						getPaymentGateways: false,
+					},
+				};
+			case ACTION_TYPES.GET_PAYMENT_GATEWAYS_ERROR:
+				return {
+					...state,
+					errors: {
+						...state.errors,
+						getPaymentGateways: payload.error,
+					},
+					requesting: {
+						...state.requesting,
+						getPaymentGateways: false,
+					},
+				};
+			case ACTION_TYPES.GET_PAYMENT_GATEWAY_ERROR:
+				return {
+					...state,
+					errors: {
+						...state.errors,
+						getPaymentGateway: payload.error,
+					},
+					requesting: {
+						...state.requesting,
+						getPaymentGateway: false,
+					},
+				};
+			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_REQUEST:
+				return {
+					...state,
+					requesting: {
+						...state.requesting,
+						updatePaymentGateway: true,
+					},
 				};
 			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS:
 				const targetIndex = state.paymentGateways.findIndex(
@@ -33,6 +85,10 @@ const reducer = (
 							...state.paymentGateways,
 							payload.paymentGateway,
 						],
+						requesting: {
+							...state.requesting,
+							[ payload.selector ]: false,
+						},
 					};
 				}
 
@@ -43,25 +99,22 @@ const reducer = (
 						payload.paymentGateway,
 						...state.paymentGateways.slice( targetIndex + 1 ),
 					],
-				};
-			case ACTION_TYPES.SET_ERROR:
-				return {
-					...state,
-					errors: {
-						...state.errors,
-						[ payload.selector ]: payload.error,
-					},
 					requesting: {
 						...state.requesting,
 						[ payload.selector ]: false,
 					},
 				};
-			case ACTION_TYPES.SET_IS_REQUESTING:
+
+			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_ERROR:
 				return {
 					...state,
+					errors: {
+						...state.errors,
+						updatePaymentGateway: payload.error,
+					},
 					requesting: {
 						...state.requesting,
-						[ payload.selector ]: true,
+						updatePaymentGateway: false,
 					},
 				};
 		}

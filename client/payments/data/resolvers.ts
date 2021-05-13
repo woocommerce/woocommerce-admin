@@ -9,29 +9,30 @@ import { apiFetch } from '@wordpress/data-controls';
 import {
 	getPaymentGatewaysSuccess,
 	updatePaymentGatewaySuccess,
-	setError,
-	setIsRequesting,
+	getPaymentGatewaysError,
+	getPaymentGatewayError,
+	getPaymentGatewayRequest,
+	getPaymentGatewaysRequest,
 } from './actions';
 
 import { API_NAMESPACE } from './constants';
 import { PaymentGateway } from './types';
 
 export function* getPaymentGateways() {
-	yield setIsRequesting( 'getPaymentGateways', true );
+	yield getPaymentGatewaysRequest();
 
 	try {
 		const response: Array< PaymentGateway > = yield apiFetch( {
 			path: API_NAMESPACE + '/payment_gateways',
 		} );
-		yield setIsRequesting( 'getPaymentGateways', false );
 		yield getPaymentGatewaysSuccess( response );
 	} catch ( e ) {
-		yield setError( 'getPaymentGateways', e );
+		yield getPaymentGatewaysError( e );
 	}
 }
 
 export function* getPaymentGateway( id: string ) {
-	yield setIsRequesting( 'getPaymentGateway', true );
+	yield getPaymentGatewayRequest();
 
 	try {
 		const response: PaymentGateway = yield apiFetch( {
@@ -39,11 +40,10 @@ export function* getPaymentGateway( id: string ) {
 		} );
 
 		if ( response && response.id ) {
-			yield setIsRequesting( 'getPaymentGateway', false );
-			yield updatePaymentGatewaySuccess( response );
+			yield updatePaymentGatewaySuccess( response, 'getPaymentGateway' );
 			return response;
 		}
 	} catch ( e ) {
-		yield setError( 'getPaymentGateway', e );
+		yield getPaymentGatewayError( e );
 	}
 }
