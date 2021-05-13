@@ -28,7 +28,7 @@ export const InboxPanel = ( { notifications } ) => {
 				<div className="woocommerce-abbreviated-cards">
 					{ cards.map( ( { content, href, icon, name, title } ) => {
 						const {
-							critical,
+							critical = 0,
 							warnings,
 						} = getNotificationDataByName( name );
 						if ( warnings === 0 ) {

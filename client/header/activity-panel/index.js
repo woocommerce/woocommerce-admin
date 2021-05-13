@@ -14,12 +14,15 @@ import {
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { H, Section } from '@woocommerce/components';
 import {
-	OPTIONS_STORE_NAME,
-	useUser,
+	NOTES_STORE_NAME,
 	ONBOARDING_STORE_NAME,
+	OPTIONS_STORE_NAME,
+	QUERY_DEFAULTS,
+	useUser,
 } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -32,15 +35,19 @@ import { SetupProgress } from './setup-progress';
 import { DisplayOptions } from './display-options';
 import { HighlightTooltip } from './highlight-tooltip';
 import { Panel } from './panel';
+import {
+	getLowStockCount,
+	getOrderStatuses,
+	getUnreadOrders,
+} from '../../homescreen/activity-panel/orders/utils';
+import { getUnapprovedReviews } from '../../homescreen/activity-panel/reviews/utils';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
 );
 
 const InboxPanel = lazy( () =>
-	import(
-		/* webpackChunkName: "activity-panels-inbox" */ '../../inbox-panel'
-	)
+	import( /* webpackChunkName: "activity-panels-help" */ './panels/inbox' )
 );
 
 export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
@@ -65,7 +72,27 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		return trackData;
 	};
 
+	const getIncompleteTasksCount = ( tasks, dismissedTasks ) => {
+		if ( ! tasks ) {
+			return 0;
+		}
+		return tasks.filter(
+			( task ) =>
+				task.visible &&
+				! task.completed &&
+				! dismissedTasks.includes( task.key )
+		).length;
+	};
+
+	const ALERTS_QUERY = {
+		page: 1,
+		per_page: QUERY_DEFAULTS.pageSize,
+		type: 'error,update',
+		status: 'unactioned',
+	};
+
 	const {
+		notifications,
 		hasUnreadNotes,
 		requestingTaskListOptions,
 		setupTaskListComplete,
@@ -74,9 +101,48 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		previewSiteBtnTrackData,
 	} = useSelect( ( select ) => {
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+		const { getNotes } = select( NOTES_STORE_NAME );
+		const orderStatuses = getOrderStatuses( select );
+		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
+		const countLowStockProducts = getLowStockCount( select );
+		const countUnapprovedReviews = getUnapprovedReviews( select );
+		const storeAlerts = getNotes( ALERTS_QUERY );
+		const thingsToDoNext = applyFilters(
+			'woocommerce_admin_onboarding_task_list',
+			[],
+			query
+		);
+		const dismissedTasks = getOption(
+			'woocommerce_task_list_dismissed_tasks'
+		);
+
+		const storeAlertsCount = storeAlerts.length || 0;
+
+		const notificationsData = [
+			{
+				card: 'thingsToDoNext',
+				warnings:
+					getIncompleteTasksCount( thingsToDoNext, dismissedTasks ) +
+					storeAlertsCount,
+				critical: storeAlertsCount,
+			},
+			{
+				card: 'ordersToProcess',
+				warnings: countUnreadOrders,
+			},
+			{
+				card: 'reviewsToModerate',
+				warnings: countUnapprovedReviews,
+			},
+			{
+				card: 'stockNotices',
+				warnings: countLowStockProducts,
+			},
+		];
 
 		return {
 			hasUnreadNotes: getUnreadNotes( select ),
+			notifications: notificationsData,
 			requestingTaskListOptions:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
@@ -225,7 +291,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 
 		switch ( tab ) {
 			case 'inbox':
-				return <InboxPanel />;
+				return <InboxPanel notifications={ notifications } />;
 			case 'help':
 				return <HelpPanel taskName={ task } />;
 			default:
