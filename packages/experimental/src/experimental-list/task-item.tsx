@@ -90,6 +90,8 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 		'level-1': level === 1 && ! completed,
 	} );
 
+	const showEllipsisMenu = ( onDismiss || remindMeLater ) && ! completed;
+
 	return (
 		<ListItem
 			disableGutters
@@ -147,7 +149,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					) }
 				</Text>
 			</div>
-			{ ( onDismiss || remindMeLater ) && ! completed && (
+			{ showEllipsisMenu && (
 				<EllipsisMenu
 					label={ __( 'Task Options', 'woocommerce-admin' ) }
 					className="woocommerce-task-list__item-after"
