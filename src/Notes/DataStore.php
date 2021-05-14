@@ -393,7 +393,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		if ( isset( $args[ $key ] ) ) {
 			foreach ( $args[ $key ] as $args_type ) {
 				$args_type = trim( $args_type );
-				$allowed   = is_null( $allowed_types ) ? true : in_array( $args_type, $allowed_types, true );
+				$allowed   = is_null( $allowed_types ) || in_array( $args_type, $allowed_types, true );
 				if ( $allowed ) {
 					$arg_array[] = sprintf( "'%s'", esc_sql( $args_type ) );
 				}
