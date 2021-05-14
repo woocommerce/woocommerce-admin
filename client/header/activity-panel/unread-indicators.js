@@ -73,7 +73,7 @@ export function getLowStockCount() {
 	return getSetting( 'lowStockCount', 0 );
 }
 
-const getIncompleteTasksCount = ( tasks, dismissedTasks ) => {
+function getIncompleteTasksCount( tasks, dismissedTasks ) {
 	if ( ! tasks ) {
 		return 0;
 	}
@@ -83,24 +83,22 @@ const getIncompleteTasksCount = ( tasks, dismissedTasks ) => {
 			! task.completed &&
 			! dismissedTasks.includes( task.key )
 	).length;
-};
+}
 
-function getAbbreviatedNotifications( select, query ) {
+function getAbbreviatedNotifications( select ) {
 	const { getOption } = select( OPTIONS_STORE_NAME );
 	const { getNotes } = select( NOTES_STORE_NAME );
+	const storeAlerts = getNotes( ALERTS_QUERY );
+	const thingsToDoNext = applyFilters(
+		'woocommerce_admin_onboarding_task_list',
+		[]
+	);
+	const dismissedTasks = getOption( 'woocommerce_task_list_dismissed_tasks' );
+	const storeAlertsCount = storeAlerts.length ?? 0;
 	const orderStatuses = getOrderStatuses( select );
 	const countUnreadOrders = getUnreadOrders( select, orderStatuses );
 	const countLowStockProducts = getLowStockProducts( select );
 	const countUnapprovedReviews = getUnapprovedReviews( select );
-	const storeAlerts = getNotes( ALERTS_QUERY );
-	const thingsToDoNext = applyFilters(
-		'woocommerce_admin_onboarding_task_list',
-		[],
-		query
-	);
-	const dismissedTasks = getOption( 'woocommerce_task_list_dismissed_tasks' );
-	const storeAlertsCount = storeAlerts.length ?? 0;
-
 	const notifications = [
 		{
 			name: 'thingsToDoNext',
@@ -125,12 +123,23 @@ function getAbbreviatedNotifications( select, query ) {
 
 	return applyFilters(
 		'woocommerce_admin_abbreviated_notifications',
-		notifications,
-		query
+		notifications
 	);
 }
 
-export function getUnreadNotifications( select, query = {} ) {
-	const notifications = getAbbreviatedNotifications( select, query );
-	return notifications.filter( ( { count } ) => count > 0 );
+export function getUnreadNotifications(
+	select,
+	setupTaskListHidden,
+	extendedTaskListHidden
+) {
+	if ( ! setupTaskListHidden && extendedTaskListHidden ) {
+		return [];
+	}
+	const notifications = getAbbreviatedNotifications( select );
+	return notifications.filter( ( { count, name } ) => {
+		const isVisible = setupTaskListHidden
+			? ! extendedTaskListHidden || name !== 'thingsToDoNext'
+			: ! extendedTaskListHidden && name === 'thingsToDoNext';
+		return count > 0 && isVisible;
+	} );
 }

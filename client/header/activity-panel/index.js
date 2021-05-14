@@ -73,9 +73,17 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		previewSiteBtnTrackData,
 	} = useSelect( ( select ) => {
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+		const isSetupTaskListHidden =
+			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
+		const extendedTaskListHidden =
+			getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes';
 		return {
 			hasUnreadNotes: getUnreadNotes( select ),
-			unreadNotifications: getUnreadNotifications( select, query ),
+			unreadNotifications: getUnreadNotifications(
+				select,
+				isSetupTaskListHidden,
+				extendedTaskListHidden
+			),
 			requestingTaskListOptions:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
@@ -83,8 +91,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 				isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] ),
 			setupTaskListComplete:
 				getOption( 'woocommerce_task_list_complete' ) === 'yes',
-			setupTaskListHidden:
-				getOption( 'woocommerce_task_list_hidden' ) === 'yes',
+			setupTaskListHidden: isSetupTaskListHidden,
 			trackedCompletedTasks:
 				getOption( 'woocommerce_task_list_tracked_completed_tasks' ) ||
 				[],
