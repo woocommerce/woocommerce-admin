@@ -136,6 +136,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
 - Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
+- Tweak: Store profiler - Changed MailPoet's title and description #6990
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
 - Update: Adding setup required icon for non-configured payment methods #6811
