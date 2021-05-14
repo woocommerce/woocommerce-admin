@@ -8,30 +8,31 @@ import { sprintf } from '@wordpress/i18n';
  */
 import './inbox.scss';
 import NotesPanel from '../../../../inbox-panel';
-import { AbbreviatedCard } from './abbreviated-card';
-import { cards } from './cards';
+import { AbbreviatedPanel } from './abbreviated-panel';
+import { panels } from './panels';
 
 export const InboxPanel = ( { notifications } ) => {
-	const getCardByName = ( name ) => {
-		return cards.find( ( card ) => card.name === name );
+	const getPanelByName = ( name ) => {
+		return panels.find( ( panel ) => panel.name === name );
 	};
 	const hasNotifications = notifications.length > 0;
 
 	return (
 		<div>
 			{ hasNotifications && (
-				<div className="woocommerce-abbreviated-cards">
+				<div className="woocommerce-abbreviated-panels">
 					{ notifications.map( ( { count, critical, name } ) => {
-						const { content, href, icon, title } = getCardByName(
+						const { content, href, icon, title } = getPanelByName(
 							name
 						);
 						return (
-							<AbbreviatedCard
+							<AbbreviatedPanel
 								content={ sprintf( content, count ) }
 								critical={ critical ?? 0 }
 								icon={ icon }
 								href={ href }
 								key={ name }
+								name={ name }
 								title={ title }
 							/>
 						);

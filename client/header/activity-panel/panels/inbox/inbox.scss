@@ -1,11 +1,11 @@
 .woocommerce-layout__activity-panel-content {
 	.woocommerce-inbox-message,
-	.woocommerce-abbreviated-cards__element {
+	.woocommerce-abbreviated-panels__element {
 		margin: 0;
 		border: 1px solid $gray-200;
 	}
 
-	.woocommerce-abbreviated-cards {
+	.woocommerce-abbreviated-panels {
 		margin-top: $gap-large;
 
 		&__element a {
