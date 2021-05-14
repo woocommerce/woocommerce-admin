@@ -21,9 +21,6 @@ export const AbbreviatedPanel = ( {
 		} );
 	};
 	const addCriticalAlert = () => {
-		if ( critical === 0 ) {
-			return;
-		}
 		return (
 			<div>
 				<span
