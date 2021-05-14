@@ -75,14 +75,14 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
 		const isSetupTaskListHidden =
 			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
-		const extendedTaskListHidden =
+		const isExtendedTaskListHidden =
 			getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes';
 		return {
 			hasUnreadNotes: getUnreadNotes( select ),
 			unreadNotifications: getUnreadNotifications(
 				select,
 				isSetupTaskListHidden,
-				extendedTaskListHidden
+				isExtendedTaskListHidden
 			),
 			requestingTaskListOptions:
 				isResolving( 'getOption', [
