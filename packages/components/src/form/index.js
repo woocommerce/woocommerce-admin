@@ -101,7 +101,7 @@ class Form extends Component {
 		this.setState( { touched } );
 
 		if ( await this.isValidForm() ) {
-			const callback = onSubmitCallback ? onSubmitCallback : onSubmit;
+			const callback = onSubmit ? onSubmit : onSubmitCallback;
 
 			if ( onSubmitCallback ) {
 				deprecated( 'onSubmitCallback', {
