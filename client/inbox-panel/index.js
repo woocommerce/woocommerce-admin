@@ -10,16 +10,21 @@ import {
 	useUserPreferences,
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useDispatch } from '@wordpress/data';
+import { recordEvent } from '@woocommerce/tracks';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import {
+	InboxNote,
+	InboxDismissConfirmationModal,
+	InboxNotePlaceholder,
+} from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
 import { ActivityCard } from '../header/activity-panel/activity-card';
-import InboxNotePlaceholder from './placeholder';
-import InboxNoteCard from './card';
 import { hasValidNotes } from './utils';
+import { getScreenName } from '../utils';
 
 const renderEmptyCard = () => (
 	<ActivityCard
@@ -35,7 +40,22 @@ const renderEmptyCard = () => (
 	</ActivityCard>
 );
 
-const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
+const onBodyLinkClick = ( note, innerLink ) => {
+	recordEvent( 'inbox_action_click', {
+		note_name: note.name,
+		note_title: note.title,
+		note_content_inner_link: innerLink,
+	} );
+};
+
+const renderNotes = ( {
+	hasNotes,
+	isBatchUpdating,
+	lastRead,
+	notes,
+	onDismiss,
+	onNoteActionClick,
+} ) => {
 	if ( isBatchUpdating ) {
 		return;
 	}
@@ -43,6 +63,17 @@ const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 	if ( ! hasNotes ) {
 		return renderEmptyCard();
 	}
+
+	const screen = getScreenName();
+	const onNoteVisible = ( note ) => {
+		recordEvent( 'inbox_note_view', {
+			note_content: note.content,
+			note_name: note.name,
+			note_title: note.title,
+			note_type: note.type,
+			screen,
+		} );
+	};
 
 	const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
@@ -59,10 +90,14 @@ const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 						timeout={ 500 }
 						classNames="woocommerce-inbox-message"
 					>
-						<InboxNoteCard
+						<InboxNote
 							key={ noteId }
 							note={ note }
 							lastRead={ lastRead }
+							onDismiss={ onDismiss }
+							onNoteActionClick={ onNoteActionClick }
+							onBodyLinkClick={ onBodyLinkClick }
+							onNoteVisible={ onNoteVisible }
 						/>
 					</CSSTransition>
 				);
@@ -72,9 +107,18 @@ const renderNotes = ( { hasNotes, isBatchUpdating, lastRead, notes } ) => {
 };
 
 const InboxPanel = ( props ) => {
+	const { createNotice } = useDispatch( 'core/notices' );
+	const {
+		batchUpdateNotes,
+		removeAllNotes,
+		removeNote,
+		updateNote,
+		triggerNoteAction,
+	} = useDispatch( NOTES_STORE_NAME );
 	const { isError, isResolving, isBatchUpdating, notes } = props;
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
+	const [ dismiss, setDismiss ] = useState();
 
 	useEffect( () => {
 		const mountTime = Date.now();
@@ -84,6 +128,103 @@ const InboxPanel = ( props ) => {
 		};
 		updateUserPreferences( userDataFields );
 	}, [] );
+
+	const onDismiss = ( note, type ) => {
+		setDismiss( { note, type } );
+	};
+
+	const closeDismissModal = ( confirmed = false ) => {
+		const noteNameDismissAll = dismiss.type === 'all' ? true : false;
+		const screen = getScreenName();
+
+		recordEvent( 'inbox_action_dismiss', {
+			note_name: dismiss.note.name,
+			note_title: dismiss.note.title,
+			note_name_dismiss_all: noteNameDismissAll,
+			note_name_dismiss_confirmation: confirmed,
+			screen,
+		} );
+
+		if ( confirmed ) {
+			const noteId = dismiss.note.id;
+			if ( noteId ) {
+				removeNote( noteId )
+					.then( () => {
+						createNotice(
+							'success',
+							__( 'Message dismissed', 'woocommerce-admin' ),
+							{
+								actions: [
+									{
+										label: __(
+											'Undo',
+											'woocommerce-admin'
+										),
+										onClick: () => {
+											updateNote( noteId, {
+												is_deleted: 0,
+											} );
+										},
+									},
+								],
+							}
+						);
+					} )
+					.catch( () => {
+						createNotice(
+							'error',
+							__(
+								'Message could not be dismissed',
+								'woocommerce-admin'
+							)
+						);
+					} );
+			} else {
+				removeAllNotes()
+					.then( ( notes ) => {
+						createNotice(
+							'success',
+							__( 'All messages dismissed', 'woocommerce-admin' ),
+							{
+								actions: [
+									{
+										label: __(
+											'Undo',
+											'woocommerce-admin'
+										),
+										onClick: () => {
+											batchUpdateNotes(
+												notes.map(
+													( note ) => note.id
+												),
+												{
+													is_deleted: 0,
+												}
+											);
+										},
+									},
+								],
+							}
+						);
+					} )
+					.catch( () => {
+						createNotice(
+							'error',
+							__(
+								'Message could not be dismissed',
+								'woocommerce-admin'
+							)
+						);
+					} );
+			}
+		}
+
+		setDismiss( undefined );
+	};
+
+	const onNoteActionClick = ( note, action ) => {
+		triggerNoteAction( note.id, action.id );
+	};
 
 	if ( isError ) {
 		const title = __(
@@ -126,8 +267,16 @@ const InboxPanel = ( props ) => {
 							isBatchUpdating,
 							lastRead,
 							notes,
+							onDismiss,
+							onNoteActionClick,
 						} ) }
 				</Section>
+				{ dismiss && (
+					<InboxDismissConfirmationModal
+						onClose={ closeDismissModal }
+						onDismiss={ () => closeDismissModal( true ) }
+					/>
+				) }
 			</div>
 		</>
 	);
