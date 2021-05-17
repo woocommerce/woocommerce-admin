@@ -18,13 +18,15 @@ export const InboxPanel = ( { notifications } ) => {
 	const hasNotifications = notifications.length > 0;
 
 	return (
-		<div>
+		<div className="woocommerce-notification-panels">
 			{ hasNotifications && (
 				<div className="woocommerce-abbreviated-panels">
 					{ notifications.map( ( { count, critical, name } ) => {
-						const { content, href, icon, title } = getPanelByName(
-							name
-						);
+						const panel = getPanelByName( name );
+						if ( ! panel ) {
+							return null;
+						}
+						const { content, href, icon, title } = panel;
 						return (
 							<AbbreviatedPanel
 								content={ sprintf( content, count ) }
