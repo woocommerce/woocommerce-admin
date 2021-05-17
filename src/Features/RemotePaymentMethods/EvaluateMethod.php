@@ -24,7 +24,7 @@ class EvaluateMethod {
 		$method         = (object) $spec;
 
 		if ( isset( $method->is_visible ) ) {
-			$is_visible         = $rule_evaluator->evaluate( (object) $method->is_visible );
+			$is_visible         = $rule_evaluator->evaluate( $method->is_visible );
 			$method->is_visible = $is_visible;
 		}
 
