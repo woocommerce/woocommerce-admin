@@ -124,21 +124,32 @@ export const PaymentConnect = ( {
 		return errors;
 	};
 
-	const helpText = interpolateComponents( {
-		mixedString: __(
-			'Your API details can be obtained from your {{link/}}',
-			'woocommerce-admin'
-		),
-		components: {
-			link: (
-				<Link href={ apiDetailsUrl } target="_blank" type="external">
-					{ sprintf( __( '%(title)s account', 'woocommerce-admin' ), {
-						title,
-					} ) }
-				</Link>
-			),
-		},
-	} );
+	const helpText = apiDetailsUrl && (
+		<p>
+			{ interpolateComponents( {
+				mixedString: __(
+					'Your API details can be obtained from your {{link/}}',
+					'woocommerce-admin'
+				),
+				components: {
+					link: (
+						<Link
+							href={ apiDetailsUrl }
+							target="_blank"
+							type="external"
+						>
+							{ sprintf(
+								__( '%(title)s account', 'woocommerce-admin' ),
+								{
+									title,
+								}
+							) }
+						</Link>
+					),
+				},
+			} ) }
+		</p>
+	);
 
 	const DefaultForm = ( props ) => (
 		<DynamicForm
@@ -154,10 +165,10 @@ export const PaymentConnect = ( {
 	if ( state === 'error' ) {
 		return (
 			<Text>
-				{
-					( __( 'There was an error loading the payment fields' ),
-					'woocommerce-admin' )
-				}
+				{ __(
+					'There was an error loading the payment fields',
+					'woocommerce-admin'
+				) }
 			</Text>
 		);
 	}
@@ -181,7 +192,7 @@ export const PaymentConnect = ( {
 			) : (
 				<>
 					<DefaultForm />
-					<p>{ helpText }</p>
+					{ helpText }
 				</>
 			) }
 		</>
