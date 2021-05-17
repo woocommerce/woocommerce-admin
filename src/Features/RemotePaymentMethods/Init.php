@@ -80,13 +80,13 @@ class Init {
 	 */
 	public static function get_default_specs() {
 		return array(
-			(object) array(
+			array(
 				'key'        => 'payfast',
 				'title'      => __( 'PayFast', 'woocommerce-admin' ),
 				'content'    => __( 'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.  Selecting this extension will configure your store to use South African rands as the selected currency.', 'woocommerce-admin' ),
 				'image'      => __( 'https =>//www.payfast.co.za/assets/images/payfast_logo_colour.svg', 'woocommerce-admin' ),
 				'plugins'    => array( 'woocommerce-payfast-gateway' ),
-				'is_visible' => (object) array(
+				'is_visible' => array(
 					'type'      => 'base_location_country',
 					'value'     => 'ZA',
 					'operation' => '=',
