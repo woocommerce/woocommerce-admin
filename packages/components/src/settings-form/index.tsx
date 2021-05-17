@@ -22,13 +22,12 @@ type SettingsFormProps = {
 	validate: ( values: Record< string, string > ) => Record< string, string >;
 	isBusy?: boolean;
 	onSubmit?: ( values: Record< string, string > ) => void;
-	onButtonClick?: () => void;
 	onChange?: (
 		value: Record< string, string >,
 		values: Record< string, string >[],
 		result: boolean
 	) => void;
-	buttonLabel?: string;
+	submitLabel?: string;
 };
 
 const fieldTypeMap = {
@@ -43,10 +42,9 @@ export const SettingsForm: React.FC< SettingsFormProps > = ( {
 	fields: baseFields = [],
 	isBusy = false,
 	onSubmit = () => {},
-	onButtonClick = () => {},
 	onChange = () => {},
 	validate = () => ( {} ),
-	buttonLabel = __( 'Proceed', 'woocommerce-admin' ),
+	submitLabel = __( 'Proceed', 'woocommerce-admin' ),
 } ) => {
 	// Support accepting fields in the format provided by the API (object), but transform to Array
 	const fields =
@@ -109,10 +107,9 @@ export const SettingsForm: React.FC< SettingsFormProps > = ( {
 							isBusy={ isBusy }
 							onClick={ () => {
 								handleSubmit();
-								onButtonClick();
 							} }
 						>
-							{ buttonLabel }
+							{ submitLabel }
 						</Button>
 					</div>
 				);

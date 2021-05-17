@@ -70,6 +70,8 @@ export const PaymentConnect = ( {
 	} );
 
 	const updateSettings = async ( values ) => {
+		recordConnectStartEvent( key );
+
 		const options = {};
 
 		fields.forEach( ( field ) => {
@@ -143,7 +145,6 @@ export const PaymentConnect = ( {
 			fields={ fields }
 			isBusy={ isOptionsRequesting }
 			onSubmit={ updateSettings }
-			onButtonClick={ () => recordConnectStartEvent( key ) }
 			buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
 			validate={ validate }
 			{ ...props }
