@@ -13,24 +13,22 @@ const initialValues = { firstName: '' };
 		setSubmitted( values );
 	} }
 	isBusy={ false }
-	onButtonClick={ () => {} }
 	onChange={ () => {} }
 	validate={ () => ( {} ) }
-	buttonLabel="Submit"
+	submitLabel="Submit"
 />;
 ```
 
 ### Props
 
-| Name            | Type     | Default   | Description                                                                                                                                                             |
-| --------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fields`        | {} or [] | []        | An object to describe the structure and types of all fields, matching the structure returned by the [Settings API](https://docs.woocommerce.com/document/settings-api/) |
-| `isBusy`        | Boolean  | false     | Boolean indicating busy state of submit button                                                                                                                          |
-| `onButtonClick` | Function | `noop`    | Callback function executed when submit button is clicked (in addition to form submission)                                                                               |
-| `onSubmit`      | Function | `noop`    | Function to call when a form is submitted with valid fields                                                                                                             |
-| `onChange`      | Function | `noop`    | Function to call when any values on the form are changed                                                                                                                |
-| `validate`      | Function | `noop`    | A function that is passed a list of all values and should return an `errors` object with error response                                                                 |
-| `buttonLabel`   | String   | "Proceed" | Label for submit button.                                                                                                                                                |
+| Name          | Type     | Default   | Description                                                                                                                                                             |
+| ------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fields`      | {} or [] | []        | An object to describe the structure and types of all fields, matching the structure returned by the [Settings API](https://docs.woocommerce.com/document/settings-api/) |
+| `isBusy`      | Boolean  | false     | Boolean indicating busy state of submit button                                                                                                                          |
+| `onSubmit`    | Function | `noop`    | Function to call when a form is submitted with valid fields                                                                                                             |
+| `onChange`    | Function | `noop`    | Function to call when any values on the form are changed                                                                                                                |
+| `validate`    | Function | `noop`    | A function that is passed a list of all values and should return an `errors` object with error response                                                                 |
+| `submitLabel` | String   | "Proceed" | Label for submit button.                                                                                                                                                |
 
 ### Fields structure
 

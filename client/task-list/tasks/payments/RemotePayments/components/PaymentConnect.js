@@ -145,7 +145,7 @@ export const PaymentConnect = ( {
 			fields={ fields }
 			isBusy={ isOptionsRequesting }
 			onSubmit={ updateSettings }
-			buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
+			submitLabel={ __( 'Proceed', 'woocommerce-admin' ) }
 			validate={ validate }
 			{ ...props }
 		/>
