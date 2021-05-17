@@ -21,6 +21,11 @@ export const AbbreviatedPanel = ( {
 		} );
 	};
 	const addCriticalAlert = () => {
+		/* translators: Number of critical alerts */
+		const criticalAlertText =
+			critical > 1
+				? __( '%d critical alerts', 'woocommerce-admin' )
+				: __( '%d critical alert', 'woocommerce-admin' );
 		return (
 			<div>
 				<span
@@ -28,11 +33,7 @@ export const AbbreviatedPanel = ( {
 						'woocommerce-abbreviated-panel__critical-alert'
 					}
 				>
-					{ sprintf(
-						/* translators: Number of critical alerts */
-						__( '%d critical alert', 'woocommerce-admin' ),
-						critical
-					) }
+					{ sprintf( criticalAlertText, critical ) }
 				</span>
 			</div>
 		);
