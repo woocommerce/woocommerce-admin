@@ -8,13 +8,13 @@ import { useState } from '@wordpress/element';
 type ConfirmationModalProps = {
 	onClose: () => void;
 	onDismiss: () => void;
-	label?: string;
+	buttonLabel?: string;
 };
 
 const InboxDismissConfirmationModal: React.FC< ConfirmationModalProps > = ( {
 	onClose,
 	onDismiss,
-	label = __( "Yes, I'm sure", 'woocommerce-admin' ),
+	buttonLabel = __( "Yes, I'm sure", 'woocommerce-admin' ),
 } ) => {
 	const [ inAction, setInAction ] = useState( false );
 
@@ -44,7 +44,7 @@ const InboxDismissConfirmationModal: React.FC< ConfirmationModalProps > = ( {
 							onDismiss();
 						} }
 					>
-						{ label }
+						{ buttonLabel }
 					</Button>
 				</div>
 			</div>

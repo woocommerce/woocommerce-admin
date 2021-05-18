@@ -13,7 +13,7 @@ import { sanitize } from 'dompurify';
 /**
  * Internal dependencies
  */
-import InboxNoteAction from './action';
+import InboxNoteActionButton from './action';
 
 const ALLOWED_TAGS = [ 'a', 'b', 'em', 'i', 'strong', 'p', 'br' ];
 const ALLOWED_ATTR = [ 'target', 'href', 'rel', 'name', 'download' ];
@@ -24,7 +24,7 @@ const sanitizeHTML = ( html: string ) => {
 	};
 };
 
-export type InboxNoteAction = {
+type InboxNoteAction = {
 	id: number;
 	url: string;
 	label: string;
@@ -32,7 +32,7 @@ export type InboxNoteAction = {
 	actioned_text?: boolean;
 };
 
-export type InboxNote = {
+type InboxNote = {
 	id: number;
 	status: string;
 	title: string;
@@ -60,7 +60,7 @@ const DropdownWithPopoverProps = Dropdown as React.ComponentType<
 	Dropdown.Props & { popoverProps: Omit< Popover.Props, 'children' > }
 >;
 
-const InboxNote: React.FC< InboxNoteProps > = ( {
+const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 	note,
 	lastRead,
 	onDismiss,
@@ -198,7 +198,7 @@ const InboxNote: React.FC< InboxNoteProps > = ( {
 		return (
 			<>
 				{ noteActions.map( ( action, index ) => (
-					<InboxNoteAction
+					<InboxNoteActionButton
 						key={ index }
 						label={ action.label }
 						href={
@@ -289,4 +289,4 @@ const InboxNote: React.FC< InboxNoteProps > = ( {
 	);
 };
 
-export { InboxNote };
+export { InboxNoteCard, InboxNote, InboxNoteAction };

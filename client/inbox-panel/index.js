@@ -3,18 +3,17 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import { EmptyContent, Section } from '@woocommerce/components';
 import {
 	NOTES_STORE_NAME,
 	useUserPreferences,
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
-import { withSelect, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import {
-	InboxNote,
+	InboxNoteCard,
 	InboxDismissConfirmationModal,
 	InboxNotePlaceholder,
 } from '@woocommerce/experimental';
@@ -25,6 +24,7 @@ import {
 import { ActivityCard } from '../header/activity-panel/activity-card';
 import { hasValidNotes } from './utils';
 import { getScreenName } from '../utils';
+import './index.scss';
 
 const renderEmptyCard = () => (
 	<ActivityCard
@@ -90,7 +90,7 @@ const renderNotes = ( {
 						timeout={ 500 }
 						classNames="woocommerce-inbox-message"
 					>
-						<InboxNote
+						<InboxNoteCard
 							key={ noteId }
 							note={ note }
 							lastRead={ lastRead }
@@ -106,7 +106,30 @@ const renderNotes = ( {
 	);
 };
 
-const InboxPanel = ( props ) => {
+const INBOX_QUERY = {
+	page: 1,
+	per_page: QUERY_DEFAULTS.pageSize,
+	status: 'unactioned',
+	type: QUERY_DEFAULTS.noteTypes,
+	orderby: 'date',
+	order: 'desc',
+	_fields: [
+		'id',
+		'name',
+		'title',
+		'content',
+		'type',
+		'status',
+		'actions',
+		'date_created',
+		'date_created_gmt',
+		'layout',
+		'image',
+		'is_deleted',
+	],
+};
+
+const InboxPanel = () => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const {
 		batchUpdateNotes,
@@ -115,7 +138,25 @@ const InboxPanel = ( props ) => {
 		updateNote,
 		triggerNoteAction,
 	} = useDispatch( NOTES_STORE_NAME );
-	const { isError, isResolving, isBatchUpdating, notes } = props;
+	const { isError, isResolvingNotes, isBatchUpdating, notes } = useSelect(
+		( select ) => {
+			const {
+				getNotes,
+				getNotesError,
+				isResolving,
+				isNotesRequesting,
+			} = select( NOTES_STORE_NAME );
+
+			return {
+				notes: getNotes( INBOX_QUERY ),
+				isError: Boolean(
+					getNotesError( 'getNotes', [ INBOX_QUERY ] )
+				),
+				isResolvingNotes: isResolving( 'getNotes', [ INBOX_QUERY ] ),
+				isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
+			};
+		}
+	);
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
 	const [ dismiss, setDismiss ] = useState();
@@ -181,7 +222,7 @@ const InboxPanel = ( props ) => {
 					} );
 			} else {
 				removeAllNotes()
-					.then( ( notes ) => {
+					.then( ( notesRemoved ) => {
 						createNotice(
 							'success',
 							__( 'All messages dismissed', 'woocommerce-admin' ),
@@ -194,7 +235,7 @@ const InboxPanel = ( props ) => {
 										),
 										onClick: () => {
 											batchUpdateNotes(
-												notes.map(
+												notesRemoved.map(
 													( note ) => note.id
 												),
 												{
@@ -254,13 +295,13 @@ const InboxPanel = ( props ) => {
 	return (
 		<>
 			<div className="woocommerce-homepage-notes-wrapper">
-				{ ( isResolving || isBatchUpdating ) && (
+				{ ( isResolvingNotes || isBatchUpdating ) && (
 					<Section>
 						<InboxNotePlaceholder className="banner message-is-unread" />
 					</Section>
 				) }
 				<Section>
-					{ ! isResolving &&
+					{ ! isResolvingNotes &&
 						! isBatchUpdating &&
 						renderNotes( {
 							hasNotes,
@@ -282,43 +323,4 @@ const InboxPanel = ( props ) => {
 	);
 };
 
-const INBOX_QUERY = {
-	page: 1,
-	per_page: QUERY_DEFAULTS.pageSize,
-	status: 'unactioned',
-	type: QUERY_DEFAULTS.noteTypes,
-	orderby: 'date',
-	order: 'desc',
-	_fields: [
-		'id',
-		'name',
-		'title',
-		'content',
-		'type',
-		'status',
-		'actions',
-		'date_created',
-		'date_created_gmt',
-		'layout',
-		'image',
-		'is_deleted',
-	],
-};
-
-export default compose(
-	withSelect( ( select ) => {
-		const {
-			getNotes,
-			getNotesError,
-			isResolving,
-			isNotesRequesting,
-		} = select( NOTES_STORE_NAME );
-
-		return {
-			notes: getNotes( INBOX_QUERY ),
-			isError: Boolean( getNotesError( 'getNotes', [ INBOX_QUERY ] ) ),
-			isResolving: isResolving( 'getNotes', [ INBOX_QUERY ] ),
-			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
-		};
-	} )
-)( InboxPanel );
+export default InboxPanel;
