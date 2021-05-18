@@ -97,7 +97,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add filter variation to tracks data in products analytics. #6913
 - Dev: Offload remote inbox notifications engine run using action-scheduler. #6995
 - Dev: Add source param support for notes query. #6979
-- Enhancement: Add recommended payment methods in payment settings. #6760
 - Enhancement: Add expand/collapse to extendable task list. #6910
 - Enhancement: Add task hierarchy support to extended task list. #6916
 - Fix: Remove Navigation's uneeded SlotFill context #6832
