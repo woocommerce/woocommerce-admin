@@ -188,7 +188,7 @@ const InboxPanel = () => {
 
 		if ( confirmed ) {
 			const noteId = dismiss.note.id;
-			if ( noteId ) {
+			if ( noteId && ! noteNameDismissAll ) {
 				removeNote( noteId )
 					.then( () => {
 						createNotice(
