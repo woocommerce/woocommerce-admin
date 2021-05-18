@@ -7,7 +7,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	Link,
 	DynamicForm,
-	WooRemotePaymentSettings,
+	WooRemotePaymentForm,
 	Spinner,
 } from '@woocommerce/components';
 import apiFetch from '@wordpress/api-fetch';
@@ -29,7 +29,7 @@ export const PaymentConnect = ( {
 
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
-	const slot = useSlot( `woocommerce_remote_payment_settings_${ key }` );
+	const slot = useSlot( `woocommerce_remote_payment_form_${ key }` );
 	const hasFills = Boolean( slot?.fills?.length );
 	const [ state, setState ] = useState( 'loading' );
 	const [ fields, setFields ] = useState( null );
@@ -169,7 +169,7 @@ export const PaymentConnect = ( {
 	return (
 		<>
 			{ hasFills ? (
-				<WooRemotePaymentSettings.Slot
+				<WooRemotePaymentForm.Slot
 					fillProps={ {
 						defaultForm: DefaultForm,
 						defaultSubmit: updateSettings,
