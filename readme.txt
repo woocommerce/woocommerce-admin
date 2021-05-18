@@ -85,6 +85,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Add transient notices feature #6809
 - Add: Add transformers in remote inbox notifications #6948
 - Add: Get post install scripts from gateway and enqueue in client #6967
+- Add: Free extension list powered by remote config #6952
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
@@ -107,6 +108,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Exclude WC Shipping for store that are only offering downloadable products #6917
 - Fix: SelectControl focus and de-focus bug #6906
 - Fix: Multiple preload tag output bug. #6998
+- Fix: Call existing filters for leaderboards in analytics. #6626
+- Fix: Set target to blank for the external links #6999
 - Fix style regression with the Chart header. #7002
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Update: Task list component with new Experimental Task list. #6849
