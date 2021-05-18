@@ -8,7 +8,7 @@ import { apiFetch } from '@wordpress/data-controls';
  */
 import { ACTION_TYPES } from './action-types';
 import { API_NAMESPACE } from './constants';
-import { PaymentGateway, RestApiError, SelectorKeysWithActions } from './types';
+import { PaymentGateway, RestApiError } from './types';
 
 export function getPaymentGatewaysRequest(): {
 	type: ACTION_TYPES.GET_PAYMENT_GATEWAYS_REQUEST;
@@ -62,18 +62,27 @@ export function getPaymentGatewayError(
 	};
 }
 
+export function getPaymentGatewaySuccess(
+	paymentGateway: PaymentGateway
+): {
+	type: ACTION_TYPES.GET_PAYMENT_GATEWAY_SUCCESS;
+	paymentGateway: PaymentGateway;
+} {
+	return {
+		type: ACTION_TYPES.GET_PAYMENT_GATEWAY_SUCCESS,
+		paymentGateway,
+	};
+}
+
 export function updatePaymentGatewaySuccess(
-	paymentGateway: PaymentGateway,
-	selector: 'updatePaymentGateway' | 'getPaymentGateway'
+	paymentGateway: PaymentGateway
 ): {
 	type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS;
 	paymentGateway: PaymentGateway;
-	selector: 'updatePaymentGateway' | 'getPaymentGateway';
 } {
 	return {
 		type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS,
 		paymentGateway,
-		selector,
 	};
 }
 export function updatePaymentGatewayRequest(): {
@@ -110,10 +119,7 @@ export function* updatePaymentGateway(
 
 		if ( response && response.id === id ) {
 			// Update the already loaded payment gateway list with the new data
-			yield updatePaymentGatewaySuccess(
-				response,
-				'updatePaymentGateway'
-			);
+			yield updatePaymentGatewaySuccess( response );
 			return response;
 		}
 	} catch ( e ) {
@@ -129,6 +135,7 @@ export type Actions =
 	| ReturnType< typeof getPaymentGatewaysSuccess >
 	| ReturnType< typeof getPaymentGatewaysError >
 	| ReturnType< typeof getPaymentGatewayRequest >
+	| ReturnType< typeof getPaymentGatewaySuccess >
 	| ReturnType< typeof getPaymentGatewayError >
 	| ReturnType< typeof updatePaymentGatewayRequest >
 	| ReturnType< typeof updatePaymentGatewayError >;

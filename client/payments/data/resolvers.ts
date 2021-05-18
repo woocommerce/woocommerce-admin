@@ -8,7 +8,7 @@ import { apiFetch } from '@wordpress/data-controls';
  */
 import {
 	getPaymentGatewaysSuccess,
-	updatePaymentGatewaySuccess,
+	getPaymentGatewaySuccess,
 	getPaymentGatewaysError,
 	getPaymentGatewayError,
 	getPaymentGatewayRequest,
@@ -40,7 +40,8 @@ export function* getPaymentGateway( id: string ) {
 		} );
 
 		if ( response && response.id ) {
-			yield updatePaymentGatewaySuccess( response, 'getPaymentGateway' );
+			yield getPaymentGatewaySuccess( response );
+			// yield updatePaymentGatewaySuccess( response, 'getPaymentGateway' );
 			return response;
 		}
 	} catch ( e ) {

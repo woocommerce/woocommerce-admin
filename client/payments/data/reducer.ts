@@ -2,8 +2,42 @@
  * Internal dependencies
  */
 import { ACTION_TYPES } from './action-types';
-import { PluginsState } from './types';
+import { PluginsState, SelectorKeysWithActions, PaymentGateway } from './types';
 import { Actions } from './actions';
+
+function updatePaymentGatewayList(
+	state: PluginsState,
+	paymentGateway: PaymentGateway,
+	selector: SelectorKeysWithActions
+): PluginsState {
+	const targetIndex = state.paymentGateways.findIndex(
+		( gateway ) => gateway.id === paymentGateway.id
+	);
+
+	if ( targetIndex === -1 ) {
+		return {
+			...state,
+			paymentGateways: [ ...state.paymentGateways, paymentGateway ],
+			requesting: {
+				...state.requesting,
+				[ selector ]: false,
+			},
+		};
+	}
+
+	return {
+		...state,
+		paymentGateways: [
+			...state.paymentGateways.slice( 0, targetIndex ),
+			paymentGateway,
+			...state.paymentGateways.slice( targetIndex + 1 ),
+		],
+		requesting: {
+			...state.requesting,
+			[ selector ]: false,
+		},
+	};
+}
 
 const reducer = (
 	state: PluginsState = {
@@ -73,37 +107,17 @@ const reducer = (
 					},
 				};
 			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS:
-				const targetIndex = state.paymentGateways.findIndex(
-					( paymentGateway ) =>
-						paymentGateway.id === payload.paymentGateway.id
+				return updatePaymentGatewayList(
+					state,
+					payload.paymentGateway,
+					'updatePaymentGateway'
 				);
-
-				if ( targetIndex === -1 ) {
-					return {
-						...state,
-						paymentGateways: [
-							...state.paymentGateways,
-							payload.paymentGateway,
-						],
-						requesting: {
-							...state.requesting,
-							[ payload.selector ]: false,
-						},
-					};
-				}
-
-				return {
-					...state,
-					paymentGateways: [
-						...state.paymentGateways.slice( 0, targetIndex ),
-						payload.paymentGateway,
-						...state.paymentGateways.slice( targetIndex + 1 ),
-					],
-					requesting: {
-						...state.requesting,
-						[ payload.selector ]: false,
-					},
-				};
+			case ACTION_TYPES.GET_PAYMENT_GATEWAY_SUCCESS:
+				return updatePaymentGatewayList(
+					state,
+					payload.paymentGateway,
+					'getPaymentGateway'
+				);
 
 			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_ERROR:
 				return {
