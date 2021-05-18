@@ -18,4 +18,8 @@ module.exports = {
 		'@storybook/addon-actions',
 		'@storybook/addon-links',
 	],
+
+	typescript: {
+		reactDocgen: 'react-docgen-typescript',
+	},
 };

@@ -2,19 +2,20 @@
  * External dependencies
  */
 import { withConsole } from '@storybook/addon-console';
+import { Meta, Story } from '@storybook/react';
 /**
  * Internal dependencies
  */
-import { List, ListItem, CollapsibleList } from '../../';
+import { List, ListItem, CollapsibleList } from '../..';
 import './style.scss';
 
 export default {
 	title: 'WooCommerce Admin/experimental/List',
 	component: List,
 	decorators: [ ( storyFn, context ) => withConsole()( storyFn )( context ) ],
-};
+} as Meta;
 
-export const Default = () => {
+export const Default: Story = () => {
 	return (
 		<List>
 			<ListItem disableGutters onClick={ () => {} }>
@@ -35,7 +36,7 @@ export const Default = () => {
 
 Default.storyName = 'List / ListItem.';
 
-export const CollapsibleListExample = () => {
+export const CollapsibleListExample: Story = () => {
 	return (
 		<CollapsibleList
 			collapseLabel="Show less"
