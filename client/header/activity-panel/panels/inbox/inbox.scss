@@ -1,12 +1,15 @@
 .woocommerce-layout__activity-panel-content {
 	.woocommerce-inbox-message,
-	.woocommerce-abbreviated-panel {
-		margin: 0;
-		border: 1px solid $gray-200;
+	.woocommerce-notification-panels > div {
+		margin-top: $gap-large;
 	}
 
 	.woocommerce-abbreviated-panels {
-		margin-top: $gap-large;
+		border-top: 1px solid $gray-200;
+		& > div {
+			border: none;
+			margin-bottom: 0;
+		}
 
 		.woocommerce-abbreviated-panel {
 			a {
@@ -14,6 +17,7 @@
 				box-shadow: inset 0 -1px 0 $gray-100;
 				display: flex;
 				flex-direction: row;
+				border-bottom: 1px solid $gray-200;
 
 				h3 {
 					color: var(--wp-admin-theme-color);
@@ -21,7 +25,6 @@
 				p,
 				div {
 					color: $gray-700;
-					margin-top: $gap-smallest;
 				}
 			}
 
@@ -36,6 +39,9 @@
 
 			&__message {
 				padding: $gap-small $gap-large $gap-small 0;
+				& > :not(:first-child) {
+					margin-top: $gap-smallest;
+				}
 			}
 
 			&__critical-alert {
