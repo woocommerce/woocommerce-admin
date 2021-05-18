@@ -1,5 +1,6 @@
-# Unreleased
+# 6.2.0
 
+-   Fix `autocompleter` for custom Search in `CompareFilter` #6911
 -   SelectControl: automatically scroll to selected options when list is displayed. #6906
 -   SelectControl: no longer auto selects on rendering list. #6906
 -   Make `Search` accept synchronous `autocompleter.options`. #6884
@@ -9,6 +10,7 @@
 -   Add `controlId` and `name` props to `<SearchListItem>`. #6871
 -   Minor styling tweaks and fixes to `<SearchListcontrol>`. #6871
 -   Fix `autocompleter` for custom Search in `FilterPicker` #6880
+-   Remove `woocommerce/experimental` dependency. #6986
 
 # 6.1.2
 
