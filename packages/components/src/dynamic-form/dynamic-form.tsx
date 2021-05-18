@@ -17,7 +17,7 @@ import {
 
 import { Field, FormInputProps } from './types';
 
-type SettingsFormProps = {
+type DynamicFormProps = {
 	fields: Field[] | { [ key: string ]: Field };
 	validate: ( values: Record< string, string > ) => Record< string, string >;
 	isBusy?: boolean;
@@ -38,7 +38,7 @@ const fieldTypeMap = {
 	default: TextField,
 };
 
-export const SettingsForm: React.FC< SettingsFormProps > = ( {
+export const DynamicForm: React.FC< DynamicFormProps > = ( {
 	fields: baseFields = [],
 	isBusy = false,
 	onSubmit = () => {},
@@ -77,7 +77,7 @@ export const SettingsForm: React.FC< SettingsFormProps > = ( {
 				handleSubmit: () => void;
 			} ) => {
 				return (
-					<div className="woocommerce-component-settings">
+					<div className="woocommerce-component_dynamic-form">
 						{ fields.map( ( field ) => {
 							if (
 								field.type &&
@@ -85,7 +85,7 @@ export const SettingsForm: React.FC< SettingsFormProps > = ( {
 							) {
 								/* eslint-disable no-console */
 								console.warn(
-									`Field type of ${ field.type } not current supported in SettingsForm component`
+									`Field type of ${ field.type } not current supported in DynamicForm component`
 								);
 								/* eslint-enable no-console */
 								return null;

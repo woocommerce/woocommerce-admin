@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { SettingsForm } from '@woocommerce/components';
+import { DynamicForm } from '@woocommerce/components';
 import { useState } from '@wordpress/element';
 
 const fields = [
@@ -72,11 +72,11 @@ const validate = ( values ) => {
 	return errors;
 };
 
-const SettingsExample = () => {
+const DynamicExample = () => {
 	const [ submitted, setSubmitted ] = useState( null );
 	return (
 		<>
-			<SettingsForm
+			<DynamicForm
 				fields={ fields }
 				onSubmit={ ( values ) => setSubmitted( values ) }
 				validate={ validate }
@@ -87,9 +87,9 @@ const SettingsExample = () => {
 	);
 };
 
-export const Basic = () => <SettingsExample />;
+export const Basic = () => <DynamicExample />;
 
 export default {
-	title: 'WooCommerce Admin/components/SettingsForm',
-	component: SettingsForm,
+	title: 'WooCommerce Admin/components/DynamicForm',
+	component: DynamicForm,
 };

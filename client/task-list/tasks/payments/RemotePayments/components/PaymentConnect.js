@@ -6,7 +6,7 @@ import interpolateComponents from 'interpolate-components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	Link,
-	SettingsForm,
+	DynamicForm,
 	WooRemotePaymentSettings,
 	Spinner,
 } from '@woocommerce/components';
@@ -140,8 +140,8 @@ export const PaymentConnect = ( {
 		},
 	} );
 
-	const DefaultSettings = ( props ) => (
-		<SettingsForm
+	const DefaultForm = ( props ) => (
+		<DynamicForm
 			fields={ fields }
 			isBusy={ isOptionsRequesting }
 			onSubmit={ updateSettings }
@@ -171,7 +171,7 @@ export const PaymentConnect = ( {
 			{ hasFills ? (
 				<WooRemotePaymentSettings.Slot
 					fillProps={ {
-						defaultSettings: DefaultSettings,
+						defaultForm: DefaultForm,
 						defaultSubmit: updateSettings,
 						defaultFields: fields,
 						markConfigured: () => markConfigured( key ),
@@ -180,7 +180,7 @@ export const PaymentConnect = ( {
 				/>
 			) : (
 				<>
-					<DefaultSettings />
+					<DefaultForm />
 					<p>{ helpText }</p>
 				</>
 			) }

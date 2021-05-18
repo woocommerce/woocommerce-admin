@@ -1,4 +1,4 @@
-# SettingsForm
+# DynamicForm
 
 A component to handle form state and provide input helper props.
 
@@ -7,7 +7,7 @@ A component to handle form state and provide input helper props.
 ```jsx
 const initialValues = { firstName: '' };
 
-<SettingsForm
+<DynamicForm
 	fields={ fields }
 	onSubmit={ ( values ) => {
 		setSubmitted( values );
