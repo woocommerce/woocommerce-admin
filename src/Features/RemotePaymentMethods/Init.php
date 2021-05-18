@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features\RemotePaymentMethods;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
+use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\PaymentGatewaysController;
 
 /**
  * Remote Payment Methods engine.
@@ -21,6 +22,7 @@ class Init {
 	 */
 	public function __construct() {
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
+		PaymentGatewaysController::init();
 	}
 
 	/**
@@ -53,13 +55,44 @@ class Init {
 
 		// Fetch specs if they don't yet exist.
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
-			// We are running too early, need to poll data sources first.
+			if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+				return self::get_default_specs();
+			}
+
 			$specs = DataSourcePoller::read_specs_from_data_sources();
+
+			// Fall back to default specs if polling failed.
+			if ( ! $specs ) {
+				return self::get_default_specs();
+			}
+
 			$specs = self::localize( $specs );
 			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
 		}
 
 		return $specs;
+	}
+
+	/**
+	 * Get default specs.
+	 *
+	 * @return array Default specs.
+	 */
+	public static function get_default_specs() {
+		return array(
+			(object) array(
+				'key'        => 'payfast',
+				'title'      => __( 'PayFast', 'woocommerce-admin' ),
+				'content'    => __( 'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.  Selecting this extension will configure your store to use South African rands as the selected currency.', 'woocommerce-admin' ),
+				'image'      => __( 'https =>//www.payfast.co.za/assets/images/payfast_logo_colour.svg', 'woocommerce-admin' ),
+				'plugins'    => array( 'woocommerce-payfast-gateway' ),
+				'is_visible' => (object) array(
+					'type'      => 'base_location_country',
+					'value'     => 'ZA',
+					'operation' => '=',
+				),
+			),
+		);
 	}
 
 	/**
