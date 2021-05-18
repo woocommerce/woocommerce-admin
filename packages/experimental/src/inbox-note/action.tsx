@@ -25,16 +25,16 @@ const InboxNoteAction: React.FC< InboxNoteActionProps > = ( {
 
 	const handleActionClick: React.MouseEventHandler = ( event ) => {
 		const target: EventTarget = event.target;
-		const href = target instanceof HTMLBaseElement ? target.href : '';
-		let inAction = true;
+		const targetHref = target instanceof HTMLBaseElement ? target.href : '';
+		let isActionable = true;
 
-		if ( href.length && ! href.startsWith( adminUrl ) ) {
+		if ( targetHref.length && ! targetHref.startsWith( adminUrl ) ) {
 			event.preventDefault();
-			inAction = false; // link buttons shouldn't be "busy".
-			window.open( href, '_blank' );
+			isActionable = false; // link buttons shouldn't be "busy".
+			window.open( targetHref, '_blank' );
 		}
 
-		setInAction( inAction );
+		setInAction( isActionable );
 		onClick();
 	};
 

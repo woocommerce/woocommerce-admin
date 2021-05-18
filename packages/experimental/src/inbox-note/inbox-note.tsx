@@ -86,7 +86,9 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 	// Trigger a view Tracks event when the note is seen.
 	const onVisible = ( isVisible: boolean ) => {
 		if ( isVisible && ! hasBeenSeen.current ) {
-			onNoteVisible && onNoteVisible( note );
+			if ( onNoteVisible ) {
+				onNoteVisible( note );
+			}
 
 			hasBeenSeen.current = true;
 		}
@@ -123,7 +125,9 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		type: 'note' | 'all',
 		onToggle: () => void
 	) => {
-		onDismiss && onDismiss( note, type );
+		if ( onDismiss ) {
+			onDismiss( note, type );
+		}
 		onToggle();
 	};
 
@@ -184,7 +188,18 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		);
 	};
 
-	const renderActions = ( note: InboxNote ) => {
+	const onActionClicked = ( action: InboxNoteAction ) => {
+		if ( onNoteActionClick ) {
+			onNoteActionClick( note, action );
+		}
+		if ( ! action.actioned_text ) {
+			return;
+		}
+
+		setClickedActionText( action.actioned_text );
+	};
+
+	const renderActions = () => {
 		const { actions: noteActions, id: noteId } = note;
 
 		if ( !! clickedActionText ) {
@@ -211,15 +226,6 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 				) ) }
 			</>
 		);
-	};
-
-	const onActionClicked = ( action: InboxNoteAction ) => {
-		onNoteActionClick && onNoteActionClick( note, action );
-		if ( ! action.actioned_text ) {
-			return;
-		}
-
-		setClickedActionText( action.actioned_text );
 	};
 
 	const {
@@ -269,6 +275,7 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 							{ title }
 						</H>
 						<Section className="woocommerce-inbox-message__text">
+							{ /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */ }
 							<span
 								dangerouslySetInnerHTML={ sanitizeHTML(
 									content
@@ -277,10 +284,11 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 									handleBodyClick( event )
 								}
 							/>
+							{ /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */ }
 						</Section>
 					</div>
 					<div className="woocommerce-inbox-message__actions">
-						{ renderActions( note ) }
+						{ renderActions() }
 						{ renderDismissButton() }
 					</div>
 				</div>
