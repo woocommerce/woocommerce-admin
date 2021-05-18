@@ -44,6 +44,16 @@ class Loader {
 	protected static $required_capability = null;
 
 	/**
+	 * An array of dependencies that have been preloaded (to avoid duplicates).
+	 *
+	 * @var array
+	 */
+	protected $preloaded_dependencies = array(
+		'script' => array(),
+		'style'  => array(),
+	);
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -62,7 +72,7 @@ class Loader {
 		add_action( 'init', array( __CLASS__, 'define_tables' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), 15 );
 		// Old settings injection.
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'add_component_settings' ) );
 		// New settings injection.
@@ -244,15 +254,30 @@ class Loader {
 	}
 
 	/**
-	 * Gets a script asset filename
+	 * Gets a script asset registry filename. The asset registry lists dependencies for the given script.
 	 *
+	 * @param  string $script_path_name Path to where the script asset registry is contained.
 	 * @param  string $file File name (without extension).
 	 * @return string complete asset filename.
+	 *
+	 * @throws \Exception Throws an exception when a readable asset registry file cannot be found.
 	 */
-	public static function get_script_asset_filename( $file ) {
-		$minification_suffix = Features::exists( 'minified-js' ) ? '.min' : '';
+	public static function get_script_asset_filename( $script_path_name, $file ) {
+		$minification_supported = Features::exists( 'minified-js' );
+		$script_min_filename    = $file . '.min.asset.php';
+		$script_nonmin_filename = $file . '.asset.php';
+		$script_asset_path      = WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . $script_path_name . '/';
 
-		return $file . $minification_suffix . '.asset.php';
+		// Check minification is supported first, to avoid multiple is_readable checks when minification is
+		// not supported.
+		if ( $minification_supported && is_readable( $script_asset_path . $script_min_filename ) ) {
+			return $script_min_filename;
+		} elseif ( is_readable( $script_asset_path . $script_nonmin_filename ) ) {
+			return $script_nonmin_filename;
+		} else {
+			// could not find an asset file, throw an error.
+			throw new \Exception( 'Could not find asset registry for ' . $script_path_name );
+		}
 	}
 
 	/**
@@ -369,20 +394,26 @@ class Loader {
 		);
 
 		foreach ( $scripts as $script ) {
-			$script_path_name       = isset( $scripts_map[ $script ] ) ? $scripts_map[ $script ] : str_replace( 'wc-', '', $script );
-			$script_assets_filename = self::get_script_asset_filename( 'index' );
-			$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . $script_path_name . '/' . $script_assets_filename;
+			$script_path_name = isset( $scripts_map[ $script ] ) ? $scripts_map[ $script ] : str_replace( 'wc-', '', $script );
 
-			wp_register_script(
-				$script,
-				self::get_url( $script_path_name . '/index', 'js' ),
-				$script_assets ['dependencies'],
-				$js_file_version,
-				true
-			);
+			try {
+				$script_assets_filename = self::get_script_asset_filename( $script_path_name, 'index' );
+				$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . $script_path_name . '/' . $script_assets_filename;
 
-			if ( in_array( $script, $translated_scripts, true ) ) {
-				wp_set_script_translations( $script, 'woocommerce-admin' );
+				wp_register_script(
+					$script,
+					self::get_url( $script_path_name . '/index', 'js' ),
+					$script_assets ['dependencies'],
+					$js_file_version,
+					true
+				);
+
+				if ( in_array( $script, $translated_scripts, true ) ) {
+					wp_set_script_translations( $script, 'woocommerce-admin' );
+				}
+			} catch ( \Exception $e ) {
+				// Avoid crashing WordPress if an asset file could not be loaded.
+				wc_caught_exception( $e, __CLASS__ . '::' . __FUNCTION__, $script_path_name );
 			}
 		}
 
@@ -410,6 +441,14 @@ class Loader {
 		);
 		wp_style_add_data( 'wc-customer-effort-score', 'rtl', 'replace' );
 
+		wp_register_style(
+			'wc-experimental',
+			self::get_url( 'experimental/style', 'css' ),
+			array(),
+			$css_file_version
+		);
+		wp_style_add_data( 'wc-experimental', 'rtl', 'replace' );
+
 		wp_localize_script(
 			WC_ADMIN_APP,
 			'wcAdminAssets',
@@ -425,7 +464,7 @@ class Loader {
 		wp_register_style(
 			WC_ADMIN_APP,
 			self::get_url( "app/style{$rtl}", 'css' ),
-			array( 'wc-components', 'wc-customer-effort-score', 'wp-components' ),
+			array( 'wc-components', 'wc-customer-effort-score', 'wp-components', 'wc-experimental' ),
 			$css_file_version
 		);
 
@@ -647,7 +686,7 @@ class Loader {
 	/**
 	 * Loads the required scripts on the correct pages.
 	 */
-	public static function load_scripts() {
+	public function load_scripts() {
 		if ( ! self::is_admin_or_embed_page() ) {
 			return;
 		}
@@ -671,7 +710,7 @@ class Loader {
 		}
 
 		// Preload our assets.
-		self::output_header_preload_tags();
+		$this->output_header_preload_tags();
 	}
 
 	/**
@@ -684,10 +723,18 @@ class Loader {
 	 * @param string        $type Dependency type - 'script' or 'style'.
 	 * @param array         $allowlist Optional. List of allowed dependency handles.
 	 */
-	public static function maybe_output_preload_link_tag( $dependency, $type, $allowlist = array() ) {
-		if ( ! empty( $allowlist ) && ! in_array( $dependency->handle, $allowlist, true ) ) {
+	public function maybe_output_preload_link_tag( $dependency, $type, $allowlist = array() ) {
+		if (
+			(
+				! empty( $allowlist ) &&
+				! in_array( $dependency->handle, $allowlist, true )
+			) ||
+			in_array( $dependency->handle, $this->preloaded_dependencies[ $type ], true )
+		) {
 			return;
 		}
+
+		$this->preloaded_dependencies[ $type ][] = $dependency->handle;
 
 		$source = $dependency->ver ? add_query_arg( 'ver', $dependency->ver, $dependency->src ) : $dependency->src;
 
@@ -703,7 +750,7 @@ class Loader {
 	 * @param string $type Dependency type - 'script' or 'style'.
 	 * @param array  $allowlist Optional. List of allowed dependency handles.
 	 */
-	public static function output_header_preload_tags_for_type( $type, $allowlist = array() ) {
+	public function output_header_preload_tags_for_type( $type, $allowlist = array() ) {
 		if ( 'script' === $type ) {
 			$dependencies_of_type = wp_scripts();
 		} elseif ( 'style' === $type ) {
@@ -724,11 +771,11 @@ class Loader {
 				$sub_dependency = $dependencies_of_type->query( $sub_dependency_handle, 'registered' );
 
 				if ( $sub_dependency ) {
-					self::maybe_output_preload_link_tag( $sub_dependency, $type, $allowlist );
+					$this->maybe_output_preload_link_tag( $sub_dependency, $type, $allowlist );
 				}
 			}
 
-			self::maybe_output_preload_link_tag( $dependency, $type, $allowlist );
+			$this->maybe_output_preload_link_tag( $dependency, $type, $allowlist );
 		}
 	}
 
@@ -737,7 +784,7 @@ class Loader {
 	 *
 	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
 	 */
-	public static function output_header_preload_tags() {
+	public function output_header_preload_tags() {
 		$wc_admin_scripts = array(
 			WC_ADMIN_APP,
 			'wc-components',
@@ -752,10 +799,10 @@ class Loader {
 		);
 
 		// Preload styles.
-		self::output_header_preload_tags_for_type( 'style', $wc_admin_styles );
+		$this->output_header_preload_tags_for_type( 'style', $wc_admin_styles );
 
 		// Preload scripts.
-		self::output_header_preload_tags_for_type( 'script', $wc_admin_scripts );
+		$this->output_header_preload_tags_for_type( 'script', $wc_admin_scripts );
 	}
 
 	/**

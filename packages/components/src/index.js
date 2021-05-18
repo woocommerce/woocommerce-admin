@@ -25,13 +25,7 @@ export { default as Gravatar } from './gravatar';
 export { H, Section } from './section';
 export { default as ImageUpload } from './image-upload';
 export { default as Link } from './link';
-export {
-	default as List,
-	ExperimentalList as __experimentalList,
-	ExperimentalListItem as __experimentalListItem,
-	ExperimentalListItemCollapse as __experimentalListItemCollapse,
-	ExperimentalCollapsibleList as __experimentalCollapsibleList,
-} from './list';
+export { default as List } from './list';
 export { default as MenuItem } from './ellipsis-menu/menu-item';
 export { default as MenuTitle } from './ellipsis-menu/menu-title';
 export { default as OrderStatus } from './order-status';
@@ -69,3 +63,6 @@ export { default as useFilters } from './higher-order/use-filters';
 export { default as ViewMoreList } from './view-more-list';
 export { default as WebPreview } from './web-preview';
 export { Badge } from './badge';
+export { default as WooRemotePayment } from './woo-remote-payment';
+export { default as WooRemotePaymentSettings } from './woo-remote-payment-settings';
+export { SettingsForm } from './settings-form';
