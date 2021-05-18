@@ -5,6 +5,7 @@ import React, { useEffect, useState } from '@wordpress/element';
 import { Button, Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { recordEvent } from '@woocommerce/tracks';
+import GridiconCrossIcon from 'gridicons/dist/cross-small';
 
 /**
  * Internal dependencies
@@ -45,7 +46,7 @@ export const MobileAppBanner = ( { onInstall, onDismiss } ) => {
 		return (
 			<div className="woocommerce-mobile-app-banner">
 				<Icon
-					icon="no-alt"
+					icon={ GridiconCrossIcon }
 					data-testid="dismiss-btn"
 					onClick={ () => {
 						onDismiss();
