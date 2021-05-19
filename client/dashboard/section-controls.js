@@ -2,8 +2,8 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Icon, TextControl } from '@wordpress/components';
-import { trash } from '@wordpress/icons';
+import { TextControl } from '@wordpress/components';
+import { trash, Icon } from '@wordpress/icons';
 import arrowUp from 'gridicons/dist/chevron-up';
 import arrowDown from 'gridicons/dist/chevron-down';
 import { Component, Fragment } from '@wordpress/element';
