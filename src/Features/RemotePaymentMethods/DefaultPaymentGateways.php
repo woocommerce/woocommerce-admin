@@ -20,16 +20,6 @@ class DefaultPaymentGateways {
 	 * @return array Default specs.
 	 */
 	public static function get_all() {
-		$stripe_countries       = OnboardingTasks::get_stripe_supported_countries();
-		$stripe_countries_rules = array();
-		foreach ( $stripe_countries as $country ) {
-			$stripe_countries_rules[] = (object) array(
-				'type'      => 'base_location_country',
-				'value'     => $country,
-				'operation' => '=',
-			);
-		}
-
 		return array(
 			array(
 				'key'        => 'payfast',
@@ -58,10 +48,7 @@ class DefaultPaymentGateways {
 				'image'      => WC()->plugin_url() . '/assets/images/stripe.png',
 				'plugins'    => array( 'woocommerce-gateway-stripe' ),
 				'is_visible' => array(
-					(object) array(
-						'type'     => 'or',
-						'operands' => $stripe_countries_rules,
-					),
+					self::get_rules_for_countries( OnboardingTasks::get_stripe_supported_countries() ),
 					(object) array(
 						'type'        => 'option',
 						'option_name' => 'woocommerce_onboarding_profile',
@@ -70,6 +57,45 @@ class DefaultPaymentGateways {
 					),
 				),
 			),
+			array(
+				'key'        => 'paystack',
+				'title'      => __( 'Paystack', 'woocommerce-admin' ),
+				'content'    => __( 'Paystack helps African merchants accept one-time and recurring payments online with a modern, safe, and secure payment gateway.', 'woocommerce-admin' ),
+				'image'      => plugins_url( 'images/onboarding/paystack.png', WC_ADMIN_PLUGIN_FILE ),
+				'plugins'    => array( 'woo-paystack' ),
+				'is_visible' => array(
+					self::get_rules_for_countries( array( 'ZA', 'GH', 'NG' ) ),
+					(object) array(
+						'type'        => 'option',
+						'option_name' => 'woocommerce_onboarding_profile',
+						'value'       => 'cbd-other-hemp-derived-products',
+						'operation'   => '!contains',
+					),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Get rules that match the store base location to one of the provided countries.
+	 *
+	 * @param array $countries Array of countries to match.
+	 * @return object Rules to match.
+	 */
+	public function get_rules_for_countries( $countries ) {
+		$rules = array();
+
+		foreach ( $countries as $country ) {
+			$rules[] = (object) array(
+				'type'      => 'base_location_country',
+				'value'     => $country,
+				'operation' => '=',
+			);
+		}
+
+		return (object) array(
+			'type'     => 'or',
+			'operands' => $rules,
 		);
 	}
 
