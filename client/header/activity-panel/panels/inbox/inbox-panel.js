@@ -9,23 +9,23 @@ import { sprintf } from '@wordpress/i18n';
 import './inbox.scss';
 import NotesPanel from '../../../../inbox-panel';
 import { AbbreviatedCard } from './abbreviated-card';
-import { panels } from './panels';
+import { cards } from './cards';
 
 export const InboxPanel = ( { notifications } ) => {
 	const getCardByName = ( name ) => {
-		return panels.find( ( panel ) => panel.name === name );
+		return cards.find( ( card ) => card.name === name );
 	};
 
 	return (
 		<div className="woocommerce-notification-panels">
 			{ notifications.length > 0 && (
-				<div className="woocommerce-abbreviated-panels">
+				<div className="woocommerce-abbreviated-cards">
 					{ notifications.map( ( { count, critical, name } ) => {
-						const panel = getCardByName( name );
-						if ( ! panel ) {
+						const card = getCardByName( name );
+						if ( ! card ) {
 							return null;
 						}
-						const { content, href, icon, title } = panel;
+						const { content, href, icon, title } = card;
 						return (
 							<AbbreviatedCard
 								content={ sprintf( content, count ) }

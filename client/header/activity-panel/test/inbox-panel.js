@@ -6,14 +6,14 @@ import { render } from '@testing-library/react';
 /**
  * Internal dependencies
  */
-import { InboxPanel } from '../panels/inbox';
+import { InboxPanel } from '../panels/inbox/inbox-panel';
 
 jest.mock( '../../../inbox-panel', () =>
 	jest.fn().mockImplementation( () => <div>Moked notes panel</div> )
 );
 
-jest.mock( '../panels/inbox/panels', () => ( {
-	panels: [
+jest.mock( '../panels/inbox/cards', () => ( {
+	cards: [
 		{
 			name: 'notification-1',
 			icon: 'icon-1',
@@ -56,7 +56,7 @@ const notifications = [
 ];
 
 describe( 'Inbox', () => {
-	it( 'shows all the abbreviated panels', () => {
+	it( 'shows all the abbreviated cards', () => {
 		const { getByText } = render(
 			<InboxPanel notifications={ notifications } />
 		);
@@ -79,7 +79,7 @@ describe( 'Inbox', () => {
 		expect( queryByText( 'Panel 1' ) ).toBeNull();
 		expect( queryByText( 'Moked notes panel' ) ).not.toBeNull();
 	} );
-	it( 'does not fail when there is no panel for the notifications', () => {
+	it( 'does not fail when there is no card for the notifications', () => {
 		const newTestNotification = {
 			name: 'new-notification',
 			count: 4,

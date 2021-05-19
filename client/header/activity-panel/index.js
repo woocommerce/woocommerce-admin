@@ -38,7 +38,9 @@ const HelpPanel = lazy( () =>
 );
 
 const InboxPanel = lazy( () =>
-	import( /* webpackChunkName: "activity-panels-help" */ './panels/inbox' )
+	import(
+		/* webpackChunkName: "activity-panels-help" */ './panels/inbox/inbox-panel'
+	)
 );
 
 export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
