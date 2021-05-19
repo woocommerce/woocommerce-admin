@@ -66,7 +66,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	};
 
 	const {
-		hasUnreadNotes,
+		hasUnreadNotifications,
 		unreadNotifications = [],
 		requestingTaskListOptions,
 		setupTaskListComplete,
@@ -86,7 +86,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		);
 
 		return {
-			hasUnreadNotes:
+			hasUnreadNotifications:
 				getUnreadNotes( select ) || unreadNotificationList.length > 0,
 			unreadNotifications: unreadNotificationList,
 			requestingTaskListOptions:
@@ -158,7 +158,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			name: 'inbox',
 			title: __( 'Inbox', 'woocommerce-admin' ),
 			icon: <Icon icon={ inboxIcon } />,
-			unread: hasUnreadNotes,
+			unread: hasUnreadNotifications,
 			visible:
 				( isEmbedded || ! isHomescreen() ) && ! isPerformingSetupTask(),
 		};
