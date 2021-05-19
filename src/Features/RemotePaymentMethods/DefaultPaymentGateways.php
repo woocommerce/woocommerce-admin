@@ -65,6 +65,22 @@ class DefaultPaymentGateways {
 				'plugins'    => array( 'woo-paystack' ),
 				'is_visible' => array(
 					self::get_rules_for_countries( array( 'ZA', 'GH', 'NG' ) ),
+					(object) array(
+						'type'        => 'option',
+						'option_name' => 'woocommerce_onboarding_profile',
+						'value'       => 'cbd-other-hemp-derived-products',
+						'operation'   => '!contains',
+					),
+				),
+			),
+			array(
+				'key'        => 'paystack',
+				'title'      => __( 'Paystack', 'woocommerce-admin' ),
+				'content'    => __( 'Paystack helps African merchants accept one-time and recurring payments online with a modern, safe, and secure payment gateway.', 'woocommerce-admin' ),
+				'image'      => plugins_url( 'images/onboarding/paystack.png', WC_ADMIN_PLUGIN_FILE ),
+				'plugins'    => array( 'woo-paystack' ),
+				'is_visible' => array(
+					self::get_rules_for_countries( array( 'ZA', 'GH', 'NG' ) ),
 					self::get_rules_for_cbd( false ),
 				),
 			),
