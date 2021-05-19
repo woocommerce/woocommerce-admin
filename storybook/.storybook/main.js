@@ -1,10 +1,12 @@
+const webpackOverride = require( '../webpack.config' );
+
 module.exports = {
 	stories: [
 		// WooCommerce Admin / @woocommerce/components components
-		'../packages/components/src/**/stories/*.js',
+		'../../packages/components/src/**/stories/*.@(js|ts|tsx)',
 		// WooCommerce Admin / @woocommerce/experimental components
-		'../packages/experimental/src/**/stories/*.js',
-		'../client/**/stories/*.js',
+		'../../packages/experimental/src/**/stories/*.@(js|ts|tsx)',
+		'../../client/**/stories/*.js',
 	],
 	addons: [
 		{
@@ -22,4 +24,6 @@ module.exports = {
 	typescript: {
 		reactDocgen: 'react-docgen-typescript',
 	},
+
+	webpackFinal: webpackOverride,
 };

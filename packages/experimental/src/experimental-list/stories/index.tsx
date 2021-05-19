@@ -7,6 +7,7 @@ import { Meta, Story } from '@storybook/react';
  * Internal dependencies
  */
 import { List, ListItem, CollapsibleList } from '../..';
+import { ListProps } from '../experimental-list';
 import './style.scss';
 
 export default {
@@ -14,6 +15,25 @@ export default {
 	component: List,
 	decorators: [ ( storyFn, context ) => withConsole()( storyFn )( context ) ],
 } as Meta;
+
+const Template: Story< ListProps > = ( args ) => (
+	<List { ...args }>
+		<ListItem disableGutters onClick={ () => {} }>
+			<div>Without gutters no padding is added to the list item.</div>
+		</ListItem>
+		<ListItem onClick={ () => {} }>
+			<div>Any markup can go here.</div>
+		</ListItem>
+		<ListItem onClick={ () => {} }>
+			<div>Any markup can go here.</div>
+		</ListItem>
+		<ListItem onClick={ () => {} }>
+			<div>Any markup can go here.</div>
+		</ListItem>
+	</List>
+);
+
+export const Primary = Template.bind( { onClick: () => {} } );
 
 export const Default: Story = () => {
 	return (
