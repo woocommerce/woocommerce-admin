@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
@@ -19,6 +20,7 @@ export const PaymentConnect = ( {
 } ) => {
 	const {
 		key,
+		oauth_connection_url: oAuthConnectionUrl,
 		setup_help_text: helpText,
 		required_settings_keys: settingKeys,
 		settings,
@@ -117,7 +119,13 @@ export const PaymentConnect = ( {
 				/>
 			) : (
 				<>
-					<DefaultForm />
+					{ oAuthConnectionUrl ? (
+						<Button isPrimary href={ oAuthConnectionUrl }>
+							{ __( 'Connect', 'woocommerce-admin' ) }
+						</Button>
+					) : (
+						<DefaultForm />
+					) }
 					{ helpText && (
 						<p
 							dangerouslySetInnerHTML={ sanitizeHTML( helpText ) }
