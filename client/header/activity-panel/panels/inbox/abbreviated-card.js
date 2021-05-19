@@ -7,7 +7,7 @@ import { Text } from '@woocommerce/experimental';
 import { Link } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 
-export const AbbreviatedPanel = ( {
+export const AbbreviatedCard = ( {
 	content,
 	critical,
 	icon,
@@ -15,7 +15,7 @@ export const AbbreviatedPanel = ( {
 	name,
 	title,
 } ) => {
-	const trackAbbreviatedPanelClick = () => {
+	const trackAbbreviatedCardClick = () => {
 		recordEvent( 'activity_panel_click', {
 			task: name,
 		} );
@@ -29,9 +29,7 @@ export const AbbreviatedPanel = ( {
 		return (
 			<div>
 				<span
-					className={
-						'woocommerce-abbreviated-panel__critical-alert'
-					}
+					className={ 'woocommerce-abbreviated-card__critical-alert' }
 				>
 					{ sprintf( criticalAlertText, critical ) }
 				</span>
@@ -39,17 +37,17 @@ export const AbbreviatedPanel = ( {
 		);
 	};
 	return (
-		<Card className="woocommerce-abbreviated-panel">
+		<Card className="woocommerce-abbreviated-card">
 			<CardBody size={ null }>
 				<Link
 					href={ href }
-					onClick={ trackAbbreviatedPanelClick }
+					onClick={ trackAbbreviatedCardClick }
 					type="wp-admin"
 				>
-					<div className="woocommerce-abbreviated-panel__icon">
+					<div className="woocommerce-abbreviated-card__icon">
 						<Icon icon={ icon } />
 					</div>
-					<div className="woocommerce-abbreviated-panel__message">
+					<div className="woocommerce-abbreviated-card__message">
 						<Text as="h3">{ title }</Text>
 						<Text>{ content }</Text>
 						{ critical > 0 && addCriticalAlert() }

@@ -8,11 +8,11 @@ import { sprintf } from '@wordpress/i18n';
  */
 import './inbox.scss';
 import NotesPanel from '../../../../inbox-panel';
-import { AbbreviatedPanel } from './abbreviated-panel';
+import { AbbreviatedCard } from './abbreviated-card';
 import { panels } from './panels';
 
 export const InboxPanel = ( { notifications } ) => {
-	const getPanelByName = ( name ) => {
+	const getCardByName = ( name ) => {
 		return panels.find( ( panel ) => panel.name === name );
 	};
 
@@ -21,13 +21,13 @@ export const InboxPanel = ( { notifications } ) => {
 			{ notifications.length > 0 && (
 				<div className="woocommerce-abbreviated-panels">
 					{ notifications.map( ( { count, critical, name } ) => {
-						const panel = getPanelByName( name );
+						const panel = getCardByName( name );
 						if ( ! panel ) {
 							return null;
 						}
 						const { content, href, icon, title } = panel;
 						return (
-							<AbbreviatedPanel
+							<AbbreviatedCard
 								content={ sprintf( content, count ) }
 								critical={ critical ?? 0 }
 								icon={ icon }
