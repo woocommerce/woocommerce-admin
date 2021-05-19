@@ -88,9 +88,9 @@ export const PaymentMethodList = ( {
 							<PaymentAction
 								manageUrl={ manageUrl }
 								methodKey={ key }
-								hasSetup={
-									!! plugins.length || !! fields.length
-								}
+								hasSetup={ Boolean(
+									plugins.length || fields.length
+								) }
 								isConfigured={ isConfigured }
 								isEnabled={ method.isEnabled }
 								isRecommended={ isRecommended }
