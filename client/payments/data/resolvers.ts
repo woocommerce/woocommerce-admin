@@ -41,7 +41,6 @@ export function* getPaymentGateway( id: string ) {
 
 		if ( response && response.id ) {
 			yield getPaymentGatewaySuccess( response );
-			// yield updatePaymentGatewaySuccess( response, 'getPaymentGateway' );
 			return response;
 		}
 	} catch ( e ) {

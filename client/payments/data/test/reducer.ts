@@ -108,7 +108,6 @@ describe( 'plugins reducer', () => {
 			{
 				type: ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS,
 				paymentGateway: updatedPaymentGateway,
-				selector: 'updatePaymentGateway',
 			}
 		);
 
