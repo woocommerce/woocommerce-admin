@@ -73,7 +73,52 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+== Unreleased ==
+
+- Fix: Autocompleter for custom Search in CompareFilter #6911
+- Dev: Converting <SettingsForm /> component to TypeScript. #6981
+- Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
+- Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
+- Add: Consume remote payment methods on frontend #6867
+- Add: Extend payment gateways REST endpoint #6919
+- Add: Add remote payment gateway recommendations initial docs #6962
+- Add: Note date range logic for GivingFeedback, and InsightFirstSale note. #6969
+- Add: Add transient notices feature #6809
+- Add: Add transformers in remote inbox notifications #6948
+- Add: Get post install scripts from gateway and enqueue in client #6967
+- Add: Free extension list powered by remote config #6952
+- Dev: Update package-lock to fix versioning of local packages. #6843
+- Dev: Use rule processing for remote payment methods #6830
+- Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
+- Dev: Fixed storybook build script #6875
+- Dev: Removed allowed keys list for adding woocommerce_meta data. #6889 🎉 @xristos3490
+- Dev: Delete all products when running product import tests, unskip previously skipped test. #6905
+- Dev: Add payment method selector to onboarding store #6921
+- Dev: Add disabled prop to SelectControl #6902
+- Dev: Add filter variation to tracks data in products analytics. #6913
+- Dev: Add source param support for notes query. #6979
+- Enhancement: Add expand/collapse to extendable task list. #6910
+- Enhancement: Add task hierarchy support to extended task list. #6916
+- Fix: Remove Navigation's uneeded SlotFill context #6832
+- Fix: Report filters expecting specific ordering. #6847
+- Fix: Render bug with report comparison mode selections. #6862
+- Fix: Throw exception if the data store cannot be loaded when trying to use notes. #6771
+- Fix: Autocompleter for custom Search in FilterPicker #6880
+- Fix: Get currency from CurrencyContext #6723
+- Fix: Correct the left position of transient notices when the new nav is used. #6914
+- Fix: Exclude WC Shipping for store that are only offering downloadable products #6917
+- Fix: SelectControl focus and de-focus bug #6906
+- Fix: Multiple preload tag output bug. #6998
+- Fix: Call existing filters for leaderboards in analytics. #6626
+- Fix: Set target to blank for the external links #6999
+- Tweak: Only fetch remote payment gateway recommendations when opted in #6964
+- Tweak: Store profiler - Changed MailPoet's title and description #6990
+- Update: Task list component with new Experimental Task list. #6849
+- Update: Experimental task list import to the experimental package. #6950
+- Update: Redirect to WC Home after setting up a payment method #6891
+
 == 2.3.1 5/24/2021 ==
+- Tweak: Store profiler - Changed MailPoet's title and description #6990
 
 == 2.3.0 5/13/2021 ==
 - Add: Add plugin installer to allow installation of plugins via URL #6805
@@ -114,6 +159,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
 - Tweak: Update PayU logo #6829
 - Tweak: Store profiler - Changed MailPoet's title and description #6886
+- Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Update: Replace marketing extension - Google Listings and Ads. #6939
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
