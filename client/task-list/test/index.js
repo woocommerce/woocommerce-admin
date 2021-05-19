@@ -39,7 +39,7 @@ jest.mock( '@wordpress/data', () => ( {
 	useDispatch: jest.fn(),
 } ) );
 
-const TASK_LIST_HEADING = 'Get ready to start selling';
+const TASK_LIST_HEADING = 'Finish setup';
 const EXTENDED_TASK_LIST_HEADING = 'Things to do next';
 
 describe( 'TaskDashboard and TaskList', () => {
