@@ -1,67 +1,35 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
-import interpolateComponents from 'interpolate-components';
+import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
-import {
-	Link,
-	DynamicForm,
-	WooRemotePaymentForm,
-	Spinner,
-} from '@woocommerce/components';
-import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
+import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-import { useSlot, Text } from '@woocommerce/experimental';
+import { useSlot } from '@woocommerce/experimental';
+
+/**
+ * Internal dependencies
+ */
+import sanitizeHTML from '~/lib/sanitize-html';
 
 export const PaymentConnect = ( {
 	markConfigured,
-	method,
+	paymentGateway,
 	recordConnectStartEvent,
 } ) => {
 	const {
-		api_details_url: apiDetailsUrl,
-		fields: fieldsConfig,
 		key,
+		setup_help_text: helpText,
+		required_settings_keys: settingKeys,
+		settings,
 		title,
-	} = method;
+	} = paymentGateway;
 
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const slot = useSlot( `woocommerce_remote_payment_form_${ key }` );
 	const hasFills = Boolean( slot?.fills?.length );
-	const [ state, setState ] = useState( 'loading' );
-	const [ fields, setFields ] = useState( null );
-
-	// This transform will be obsolete when we can derive essential fields from the API
-	const settingsTransform = ( settings ) => {
-		const essentialFields = fieldsConfig.map( ( field ) => field.name );
-
-		return Object.values( settings ).filter( ( setting ) =>
-			essentialFields.includes( setting.id )
-		);
-	};
-
-	// TODO: Will soon be replaced with the payments data store implemented in #6918
-	useEffect( () => {
-		apiFetch( {
-			path: `/wc/v3/payment_gateways/${ key }/`,
-		} )
-			.then( ( results ) => {
-				setFields( settingsTransform( results.settings ) );
-				setState( 'loaded' );
-			} )
-			.catch( ( e ) => {
-				setState( 'error' );
-				/* eslint-disable no-console */
-				console.error(
-					`Error fetching information for payment gateway ${ key }`,
-					e.message
-				);
-				/* eslint-enable no-console */
-			} );
-	}, [] );
+	const fields = settingKeys.map( ( settingKey ) => settings[ settingKey ] );
 
 	const isOptionsRequesting = useSelect( ( select ) => {
 		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
@@ -124,33 +92,6 @@ export const PaymentConnect = ( {
 		return errors;
 	};
 
-	const helpText = apiDetailsUrl && (
-		<p>
-			{ interpolateComponents( {
-				mixedString: __(
-					'Your API details can be obtained from your {{link/}}',
-					'woocommerce-admin'
-				),
-				components: {
-					link: (
-						<Link
-							href={ apiDetailsUrl }
-							target="_blank"
-							type="external"
-						>
-							{ sprintf(
-								__( '%(title)s account', 'woocommerce-admin' ),
-								{
-									title,
-								}
-							) }
-						</Link>
-					),
-				},
-			} ) }
-		</p>
-	);
-
 	const DefaultForm = ( props ) => (
 		<DynamicForm
 			fields={ fields }
@@ -161,21 +102,6 @@ export const PaymentConnect = ( {
 			{ ...props }
 		/>
 	);
-
-	if ( state === 'error' ) {
-		return (
-			<Text>
-				{ __(
-					'There was an error loading the payment fields',
-					'woocommerce-admin'
-				) }
-			</Text>
-		);
-	}
-
-	if ( state === 'loading' ) {
-		return <Spinner />;
-	}
 
 	return (
 		<>
@@ -192,7 +118,11 @@ export const PaymentConnect = ( {
 			) : (
 				<>
 					<DefaultForm />
-					{ helpText }
+					{ helpText && (
+						<p
+							dangerouslySetInnerHTML={ sanitizeHTML( helpText ) }
+						/>
+					) }
 				</>
 			) }
 		</>
