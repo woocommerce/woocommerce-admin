@@ -4,7 +4,12 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
+import {
+	DynamicForm,
+	Link,
+	WooRemotePaymentForm,
+} from '@woocommerce/components';
+import interpolateComponents from 'interpolate-components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { useSlot } from '@woocommerce/experimental';
 
@@ -24,6 +29,7 @@ export const PaymentConnect = ( {
 		setup_help_text: helpText,
 		required_settings_keys: settingKeys,
 		settings,
+		settings_url: settingsUrl,
 		title,
 	} = paymentGateway;
 
@@ -31,7 +37,9 @@ export const PaymentConnect = ( {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const slot = useSlot( `woocommerce_remote_payment_form_${ key }` );
 	const hasFills = Boolean( slot?.fills?.length );
-	const fields = settingKeys.map( ( settingKey ) => settings[ settingKey ] );
+	const fields = settingKeys
+		? settingKeys.map( ( settingKey ) => settings[ settingKey ] )
+		: [];
 
 	const isOptionsRequesting = useSelect( ( select ) => {
 		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
@@ -105,34 +113,61 @@ export const PaymentConnect = ( {
 		/>
 	);
 
+	if ( hasFills ) {
+		return (
+			<WooRemotePaymentForm.Slot
+				fillProps={ {
+					defaultForm: DefaultForm,
+					defaultSubmit: updateSettings,
+					defaultFields: fields,
+					markConfigured: () => markConfigured( key ),
+				} }
+				id={ key }
+			/>
+		);
+	}
+
+	if ( oAuthConnectionUrl ) {
+		const tosText = interpolateComponents( {
+			mixedString: __(
+				'By clicking "Connect," you agree to the {{tosLink}}Terms of Service{{/tosLink}}.',
+				'woocommerce-admin'
+			),
+			components: {
+				tosLink: (
+					<Link
+						href="https://wordpress.com/tos"
+						target="_blank"
+						type="external"
+					/>
+				),
+			},
+		} );
+
+		return (
+			<>
+				<Button isPrimary href={ oAuthConnectionUrl }>
+					{ __( 'Connect', 'woocommerce-admin' ) }
+				</Button>
+				<p>{ tosText }</p>
+			</>
+		);
+	}
+
+	if ( fields.length ) {
+		return (
+			<>
+				<DefaultForm />
+				{ helpText && (
+					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
+				) }
+			</>
+		);
+	}
+
 	return (
-		<>
-			{ hasFills ? (
-				<WooRemotePaymentForm.Slot
-					fillProps={ {
-						defaultForm: DefaultForm,
-						defaultSubmit: updateSettings,
-						defaultFields: fields,
-						markConfigured: () => markConfigured( key ),
-					} }
-					id={ key }
-				/>
-			) : (
-				<>
-					{ oAuthConnectionUrl ? (
-						<Button isPrimary href={ oAuthConnectionUrl }>
-							{ __( 'Connect', 'woocommerce-admin' ) }
-						</Button>
-					) : (
-						<DefaultForm />
-					) }
-					{ helpText && (
-						<p
-							dangerouslySetInnerHTML={ sanitizeHTML( helpText ) }
-						/>
-					) }
-				</>
-			) }
-		</>
+		<Button isPrimary href={ settingsUrl }>
+			{ __( 'Manage', 'woocommerce-admin' ) }
+		</Button>
 	);
 };
