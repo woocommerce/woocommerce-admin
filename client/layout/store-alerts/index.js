@@ -9,7 +9,6 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
-	Dashicon,
 	SelectControl,
 } from '@wordpress/components';
 import classnames from 'classnames';
@@ -210,9 +209,6 @@ export class StoreAlerts extends Component {
 			<Card className={ className } size={ null }>
 				<CardHeader isBorderless>
 					<Text variant="title.medium" as="h2">
-						{ alert.icon && (
-							<Dashicon key="icon" icon={ alert.icon } />
-						) }
 						{ alert.title }
 					</Text>
 					{ numberOfAlerts > 1 && (
