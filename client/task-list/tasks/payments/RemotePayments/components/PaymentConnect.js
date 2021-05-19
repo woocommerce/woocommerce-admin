@@ -4,12 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import {
-	DynamicForm,
-	Link,
-	WooRemotePaymentForm,
-} from '@woocommerce/components';
-import interpolateComponents from 'interpolate-components';
+import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { useSlot } from '@woocommerce/experimental';
 
@@ -128,28 +123,14 @@ export const PaymentConnect = ( {
 	}
 
 	if ( oAuthConnectionUrl ) {
-		const tosText = interpolateComponents( {
-			mixedString: __(
-				'By clicking "Connect," you agree to the {{tosLink}}Terms of Service{{/tosLink}}.',
-				'woocommerce-admin'
-			),
-			components: {
-				tosLink: (
-					<Link
-						href="https://wordpress.com/tos"
-						target="_blank"
-						type="external"
-					/>
-				),
-			},
-		} );
-
 		return (
 			<>
 				<Button isPrimary href={ oAuthConnectionUrl }>
 					{ __( 'Connect', 'woocommerce-admin' ) }
 				</Button>
-				<p>{ tosText }</p>
+				{ helpText && (
+					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
+				) }
 			</>
 		);
 	}
