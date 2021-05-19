@@ -77,13 +77,16 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
 		const isExtendedTaskListHidden =
 			getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes';
+		const unreadNotificationList = getUnreadNotifications(
+			select,
+			isSetupTaskListHidden,
+			isExtendedTaskListHidden
+		);
+
 		return {
-			hasUnreadNotes: getUnreadNotes( select ),
-			unreadNotifications: getUnreadNotifications(
-				select,
-				isSetupTaskListHidden,
-				isExtendedTaskListHidden
-			),
+			hasUnreadNotes:
+				getUnreadNotes( select ) || unreadNotificationList.length > 0,
+			unreadNotifications: unreadNotificationList,
 			requestingTaskListOptions:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
@@ -153,7 +156,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			name: 'inbox',
 			title: __( 'Inbox', 'woocommerce-admin' ),
 			icon: <Icon icon={ inboxIcon } />,
-			unread: hasUnreadNotes || unreadNotifications.length > 0,
+			unread: hasUnreadNotes,
 			visible:
 				( isEmbedded || ! isHomescreen() ) && ! isPerformingSetupTask(),
 		};
