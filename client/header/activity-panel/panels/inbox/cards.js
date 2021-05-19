@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { Bell } from './icons/bell';
 
+const EXTENDED_TASK_LIST_ID = 'extended_task_list';
 const ORDER_PANEL_ID = 'orders-panel';
 const REVIEWS_PANEL_ID = 'reviews-panel';
 const STOCK_PANEL_ID = 'stock-panel';
@@ -21,7 +22,7 @@ export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
 		title: __( 'Things to do next', 'woocommerce-admin' ),
 		/* translators: Things the user has to do */
 		content: __( 'You have %s new things to do', 'woocommerce-admin' ),
-		href: 'admin.php?page=wc-admin',
+		href: `admin.php?page=wc-admin#${ EXTENDED_TASK_LIST_ID }`,
 	},
 	{
 		name: 'ordersToProcess',

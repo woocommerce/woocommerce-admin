@@ -48,6 +48,7 @@ export const TaskList = ( {
 		};
 	} );
 
+	const taskListRef = useRef( null );
 	const prevQueryRef = useRef( query );
 	useEffect( () => {
 		recordTaskListView();
@@ -64,6 +65,7 @@ export const TaskList = ( {
 
 		possiblyCompleteTaskList();
 		possiblyTrackCompletedTasks();
+		possiblyScrollToTaskList();
 	}, [ query ] );
 
 	const nowTimestamp = Date.now();
@@ -89,6 +91,15 @@ export const TaskList = ( {
 	const [ currentTask, setCurrentTask ] = useState(
 		incompleteTasks[ 0 ]?.key
 	);
+
+	const possiblyScrollToTaskList = () => {
+		const urlReference = window.location.hash.substr( 1 );
+		if ( urlReference === name ) {
+			taskListRef.current.scrollIntoView( {
+				behavior: 'smooth',
+			} );
+		}
+	};
 
 	const possiblyCompleteTaskList = () => {
 		const taskListVariableName = `woocommerce_${ name }_complete`;
@@ -324,7 +335,10 @@ export const TaskList = ( {
 
 	return (
 		<>
-			<div className="woocommerce-task-dashboard__container">
+			<div
+				ref={ taskListRef }
+				className="woocommerce-task-dashboard__container"
+			>
 				<Card
 					size="large"
 					className="woocommerce-task-card woocommerce-homescreen-card"
