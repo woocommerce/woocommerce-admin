@@ -221,7 +221,10 @@ export class StoreAlerts extends Component {
 									'woocommerce-admin'
 								) }
 							>
-								<Icon icon={ chevronLeft } />
+								<Icon
+									icon={ chevronLeft }
+									className="arrow-left-icon"
+								/>
 							</Button>
 							<span
 								className="woocommerce-store-alerts__pagination-label"
@@ -255,7 +258,10 @@ export class StoreAlerts extends Component {
 									'woocommerce-admin'
 								) }
 							>
-								<Icon icon={ chevronRight } />
+								<Icon
+									icon={ chevronRight }
+									className="arrow-right-icon"
+								/>
 							</Button>
 						</div>
 					) }
