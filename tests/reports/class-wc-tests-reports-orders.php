@@ -174,4 +174,45 @@ class WC_Tests_Reports_Orders extends WC_Unit_Test_Case {
 		$data_2 = $data_store->get_data( $args );
 		$this->assertEquals( $expected, $data_2->data[0]['extended_info']['products'] );
 	}
+
+	/**
+	 * Test that excluding specific coupons doesn't exclude orders without coupons.
+	 * See: https://github.com/woocommerce/woocommerce-admin/issues/6824.
+	 */
+	public function test_coupon_exclusion_includes_orders_without_coupons() {
+		WC_Helper_Reports::reset_stats_dbs();
+
+		$coupon = WC_Helper_Coupon::create_coupon( 'coupon_1' );
+		$coupon->set_amount( 2 );
+		$coupon->save();
+
+		$simple_product = new WC_Product_Simple();
+		$simple_product->set_name( 'Simple Product' );
+		$simple_product->set_regular_price( 25 );
+		$simple_product->save();
+
+		$order = WC_Helper_Order::create_order( 1, $simple_product );
+		$order->set_total( 25 );
+		$order->set_status( 'completed' );
+		$order->apply_coupon( $coupon );
+		$order->calculate_totals();
+		$order->save();
+
+		$order_2 = WC_Helper_Order::create_order( 1, $simple_product );
+		$order_2->set_total( 25 );
+		$order_2->set_status( 'completed' );
+		$order_2->save();
+
+		WC_Helper_Queue::run_all_pending();
+
+		$data_store = new OrdersDataStore();
+		$data       = $data_store->get_data(
+			array(
+				'coupon_excludes' => array( $coupon->get_id() ),
+			)
+		);
+
+		$this->assertEquals( 1, $data->total );
+		$this->assertEquals( $order_2->get_id(), $data->data[0]['order_id'] );
+	}
 }
