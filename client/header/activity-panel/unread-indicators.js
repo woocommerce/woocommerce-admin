@@ -96,9 +96,6 @@ function getAbbreviatedNotifications( select ) {
 	const dismissedTasks = getOption( 'woocommerce_task_list_dismissed_tasks' );
 	const storeAlertsCount = storeAlerts.length ?? 0;
 	const orderStatuses = getOrderStatuses( select );
-	const countUnreadOrders = getUnreadOrders( select, orderStatuses );
-	const countLowStockProducts = getLowStockProducts( select );
-	const countUnapprovedReviews = getUnapprovedReviews( select );
 	const notifications = [
 		{
 			name: 'thingsToDoNext',
@@ -109,15 +106,15 @@ function getAbbreviatedNotifications( select ) {
 		},
 		{
 			name: 'ordersToProcess',
-			count: countUnreadOrders,
+			count: getUnreadOrders( select, orderStatuses ),
 		},
 		{
 			name: 'reviewsToModerate',
-			count: countUnapprovedReviews,
+			count: getUnapprovedReviews( select ),
 		},
 		{
 			name: 'stockNotices',
-			count: countLowStockProducts,
+			count: getLowStockProducts( select ),
 		},
 	];
 
