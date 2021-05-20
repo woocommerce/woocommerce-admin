@@ -39,12 +39,12 @@ export const PaymentConnect = ( {
 		: [];
 
 	const { isUpdating } = useSelect( ( select ) => {
-		const { isPaymentGatewayRequesting } = select(
+		const { isPaymentGatewayUpdating } = select(
 			PAYMENT_GATEWAYS_STORE_NAME
 		);
 
 		return {
-			isUpdating: isPaymentGatewayRequesting( 'updatePaymentGateway' ),
+			isUpdating: isPaymentGatewayUpdating(),
 		};
 	} );
 

@@ -23,7 +23,7 @@ export type PaymentGateway = {
 
 export type PluginsState = {
 	paymentGateways: PaymentGateway[];
-	requesting: Record< string, boolean >;
+	isUpdating: boolean;
 	errors: Record< string, RestApiError >;
 };
 
