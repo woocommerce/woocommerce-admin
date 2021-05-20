@@ -66,6 +66,14 @@ module.exports = ( storybookConfig ) => {
 				from: path.resolve( __dirname, 'wordpress/css' ),
 				to: 'wordpress/css',
 			},
+			{
+				from: path.resolve(
+					__dirname,
+					`../packages/components/build-style/*.css`
+				),
+				to: `./component-css`,
+				flatten: true,
+			},
 		] )
 	);
 
