@@ -198,6 +198,8 @@ class WC_Tests_Reports_Orders extends WC_Unit_Test_Case {
 		$order->calculate_totals();
 		$order->save();
 
+		WC_Helper_Queue::run_all_pending();
+
 		$order_2 = WC_Helper_Order::create_order( 1, $simple_product );
 		$order_2->set_total( 25 );
 		$order_2->set_status( 'completed' );
