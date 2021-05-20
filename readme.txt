@@ -75,6 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: `@woocommerce/navigation.getIdsFromQuery` support for `0` as a valid id. #7028
 - Fix: Autocompleter for custom Search in CompareFilter #6911
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
