@@ -198,6 +198,10 @@ describe( 'getIdsFromQuery', () => {
 		it( 'should return an array of them', () => {
 			expect( getIdsFromQuery( '77,8,-1' ) ).toEqual( [ 77, 8, -1 ] );
 		} );
+		it( 'should consider `0` a valid id', () => {
+			expect( getIdsFromQuery( '0' ) ).toEqual( [ 0 ] );
+			expect( getIdsFromQuery( '77,0,1' ) ).toEqual( [ 77, 0, 1 ] );
+		} );
 		it( 'should map floats to integers', () => {
 			expect( getIdsFromQuery( '77,8.54' ) ).toEqual( [ 77, 8 ] );
 		} );

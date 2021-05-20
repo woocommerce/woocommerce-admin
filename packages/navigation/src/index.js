@@ -94,7 +94,7 @@ export function getIdsFromQuery( queryString = '' ) {
 		queryString
 			.split( ',' )
 			.map( ( id ) => parseInt( id, 10 ) )
-			.filter( Boolean )
+			.filter( ( id ) => ! isNaN( id ) )
 	);
 }
 
