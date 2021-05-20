@@ -87,7 +87,7 @@ describe( 'Header', () => {
 		).not.toBeEmptyDOMElement();
 
 		expect(
-			queryByText( 'Choose payment methods' )
+			queryByText( 'Set up payments' )
 		).not.toBeEmptyDOMElement();
 	} );
 
