@@ -3,7 +3,7 @@
  */
 import { addQueryArgs } from '@wordpress/url';
 import { parse } from 'qs';
-import { pick, uniq } from 'lodash';
+import { pick } from 'lodash';
 import { applyFilters } from '@wordpress/hooks';
 import { Slot, Fill } from '@wordpress/components';
 
@@ -90,12 +90,14 @@ export const getScreenFromPath = ( path = getPath() ) => {
  * @return {Array} List of IDs converted to numbers.
  */
 export function getIdsFromQuery( queryString = '' ) {
-	return uniq(
-		queryString
-			.split( ',' )
-			.map( ( id ) => parseInt( id, 10 ) )
-			.filter( ( id ) => ! isNaN( id ) )
-	);
+	return [
+		...new Set( // Return only unique ids.
+			queryString
+				.split( ',' )
+				.map( ( id ) => parseInt( id, 10 ) )
+				.filter( ( id ) => ! isNaN( id ) )
+		),
+	];
 }
 
 /**
