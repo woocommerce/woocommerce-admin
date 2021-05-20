@@ -4,6 +4,7 @@
 import {
 	PaymentGateway,
 	PluginsState,
+	RestApiError,
 	WPDataSelector,
 	WPDataSelectors,
 } from './types';
@@ -21,6 +22,13 @@ export function getPaymentGateways(
 	state: PluginsState
 ): Array< PaymentGateway > {
 	return state.paymentGateways;
+}
+
+export function getPaymentGatewayError(
+	state: PluginsState,
+	selector: string
+): RestApiError | null {
+	return state.errors[ selector ] || null;
 }
 
 export function isPaymentGatewayRequesting(
