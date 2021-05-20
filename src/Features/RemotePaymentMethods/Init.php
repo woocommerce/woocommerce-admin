@@ -8,6 +8,8 @@ namespace Automattic\WooCommerce\Admin\Features\RemotePaymentMethods;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
+use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\DefaultPaymentGateways;
+use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\PaymentGatewaysController;
 
 /**
  * Remote Payment Methods engine.
@@ -21,6 +23,7 @@ class Init {
 	 */
 	public function __construct() {
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
+		PaymentGatewaysController::init();
 	}
 
 	/**
@@ -53,8 +56,17 @@ class Init {
 
 		// Fetch specs if they don't yet exist.
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
-			// We are running too early, need to poll data sources first.
+			if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+				return DefaultPaymentGateways::get_all();
+			}
+
 			$specs = DataSourcePoller::read_specs_from_data_sources();
+
+			// Fall back to default specs if polling failed.
+			if ( ! $specs ) {
+				return DefaultPaymentGateways::get_all();
+			}
+
 			$specs = self::localize( $specs );
 			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
 		}

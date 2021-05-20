@@ -120,7 +120,7 @@ export const RemotePayments = ( { query } ) => {
 	};
 
 	const currentMethod = useMemo( () => {
-		if ( ! query.method || isResolving ) {
+		if ( ! query.method || isResolving || ! methods.length ) {
 			return null;
 		}
 

@@ -1,21 +1,40 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import interpolateComponents from 'interpolate-components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { Form, Link, TextControl } from '@woocommerce/components';
+import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { useSlot } from '@woocommerce/experimental';
+
+/**
+ * Internal dependencies
+ */
+import sanitizeHTML from '~/lib/sanitize-html';
 
 export const PaymentConnect = ( {
 	markConfigured,
-	method,
+	paymentGateway,
 	recordConnectStartEvent,
 } ) => {
-	const { api_details_url: apiDetailsUrl, fields, key, title } = method;
+	const {
+		key,
+		oauth_connection_url: oAuthConnectionUrl,
+		setup_help_text: helpText,
+		required_settings_keys: settingKeys,
+		settings,
+		settings_url: settingsUrl,
+		title,
+	} = paymentGateway;
+
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
+	const slot = useSlot( `woocommerce_remote_payment_form_${ key }` );
+	const hasFills = Boolean( slot?.fills?.length );
+	const fields = settingKeys
+		? settingKeys.map( ( settingKey ) => settings[ settingKey ] )
+		: [];
 
 	const isOptionsRequesting = useSelect( ( select ) => {
 		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
@@ -23,38 +42,9 @@ export const PaymentConnect = ( {
 		return isOptionsUpdating();
 	} );
 
-	const getInitialConfigValues = () => {
-		if ( fields ) {
-			return fields.reduce( ( data, field ) => {
-				return {
-					...data,
-					[ field.name ]: '',
-				};
-			}, {} );
-		}
-	};
-
-	const validate = ( values ) => {
-		if ( fields ) {
-			return fields.reduce( ( errors, field ) => {
-				if ( ! values[ field.name ] ) {
-					// Matches any word that is capitalized aside from abrevitions like ID.
-					const label = field.label.replace(
-						/([A-Z][a-z]+)/,
-						( val ) => val.toLowerCase()
-					);
-					return {
-						...errors,
-						[ field.name ]: __( 'Please enter your ' ) + label,
-					};
-				}
-				return errors;
-			}, {} );
-		}
-		return {};
-	};
-
 	const updateSettings = async ( values ) => {
+		recordConnectStartEvent( key );
+
 		const options = {};
 
 		fields.forEach( ( field ) => {
@@ -87,55 +77,78 @@ export const PaymentConnect = ( {
 		}
 	};
 
-	const helpText = interpolateComponents( {
-		mixedString: __(
-			'Your API details can be obtained from your {{link/}}',
-			'woocommerce-admin'
-		),
-		components: {
-			link: (
-				<Link href={ apiDetailsUrl } target="_blank" type="external">
-					{ sprintf( __( '%(title)s account', 'woocommerce-admin' ), {
-						title,
-					} ) }
-				</Link>
-			),
-		},
-	} );
+	const validate = ( values ) => {
+		const errors = {};
+		const getField = ( fieldId ) =>
+			fields.find( ( field ) => field.id === fieldId );
+
+		for ( const [ fieldKey, value ] of Object.entries( values ) ) {
+			const field = getField( fieldKey );
+			// Matches any word that is capitalized aside from abrevitions like ID.
+			const label = field.label.replace( /([A-Z][a-z]+)/g, ( val ) =>
+				val.toLowerCase()
+			);
+
+			if ( ! ( value || field.type === 'checkbox' ) ) {
+				errors[ fieldKey ] = `Please enter your ${ label }`;
+			}
+		}
+
+		return errors;
+	};
+
+	const DefaultForm = ( props ) => (
+		<DynamicForm
+			fields={ fields }
+			isBusy={ isOptionsRequesting }
+			onSubmit={ updateSettings }
+			submitLabel={ __( 'Proceed', 'woocommerce-admin' ) }
+			validate={ validate }
+			{ ...props }
+		/>
+	);
+
+	if ( hasFills ) {
+		return (
+			<WooRemotePaymentForm.Slot
+				fillProps={ {
+					defaultForm: DefaultForm,
+					defaultSubmit: updateSettings,
+					defaultFields: fields,
+					markConfigured: () => markConfigured( key ),
+				} }
+				id={ key }
+			/>
+		);
+	}
+
+	if ( oAuthConnectionUrl ) {
+		return (
+			<>
+				<Button isPrimary href={ oAuthConnectionUrl }>
+					{ __( 'Connect', 'woocommerce-admin' ) }
+				</Button>
+				{ helpText && (
+					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
+				) }
+			</>
+		);
+	}
+
+	if ( fields.length ) {
+		return (
+			<>
+				<DefaultForm />
+				{ helpText && (
+					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
+				) }
+			</>
+		);
+	}
 
 	return (
-		<Form
-			initialValues={ getInitialConfigValues() }
-			onSubmitCallback={ updateSettings }
-			validate={ validate }
-		>
-			{ ( { getInputProps, handleSubmit } ) => {
-				return (
-					<>
-						{ ( fields || [] ).map( ( field ) => (
-							<TextControl
-								key={ field.name }
-								label={ field.label }
-								required
-								{ ...getInputProps( field.name ) }
-							/>
-						) ) }
-
-						<Button
-							isPrimary
-							isBusy={ isOptionsRequesting }
-							onClick={ ( event ) => {
-								recordConnectStartEvent( key );
-								handleSubmit( event );
-							} }
-						>
-							{ __( 'Proceed', 'woocommerce-admin' ) }
-						</Button>
-
-						<p>{ helpText }</p>
-					</>
-				);
-			} }
-		</Form>
+		<Button isPrimary href={ settingsUrl }>
+			{ __( 'Manage', 'woocommerce-admin' ) }
+		</Button>
 	);
 };
