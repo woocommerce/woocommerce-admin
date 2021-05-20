@@ -6,18 +6,18 @@ use Automattic\WooCommerce\Admin\RemoteInboxNotifications\TransformerInterface;
 use stdClass;
 
 /**
- * Count elements in Countable or Array.
+ * Count elements in Array.
  *
  * @package Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers
  */
 class Count implements TransformerInterface {
 	/**
-	 *  Count elements in Countable or Array.
+	 *  Count elements in Array.
 	 *
-	 * @param mixed         $value a value to transform.
+	 * @param array         $value an array to count.
 	 * @param stdClass|null $arguments arguments.
 	 *
-	 * @return mixed
+	 * @return number
 	 */
 	public function transform( $value, stdClass $arguments = null ) {
 		return count( $value );
