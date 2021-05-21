@@ -98,6 +98,11 @@ class DataStore extends VariationsDataStore implements DataStoreInterface {
 			}
 			// Add WHEREs for matching attributes.
 			$where_subquery = array_merge( $where_subquery, $attribute_subqueries['where'] );
+
+			// Exclude any other products in the same order that don't match the attribute filters.
+			$products_from_clause .= " JOIN {$order_item_meta_table} as variationidmatch ON variationidmatch.meta_value = {$order_product_lookup_table}.variation_id";
+			$products_from_clause .= " AND variationidmatch.meta_key = '_variation_id' AND orderitemmeta1.order_item_id = variationidmatch.order_item_id";
+
 		}
 
 		if ( 0 < count( $where_subquery ) ) {

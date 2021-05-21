@@ -162,10 +162,16 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			if ( ! $order_status_filter ) {
 				$this->subquery->add_sql_clause( 'join', "JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
 			}
+
 			// Add JOINs for matching attributes.
 			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
 				$this->subquery->add_sql_clause( 'join', $attribute_join );
 			}
+
+			// Exclude any other products in the same order that don't match the attribute filters.
+			$this->subquery->add_sql_clause( 'join', "JOIN {$order_item_meta_table} as variationidmatch ON variationidmatch.meta_value = {$order_product_lookup_table}.variation_id" );
+			$this->subquery->add_sql_clause( 'join', "AND variationidmatch.meta_key = '_variation_id' AND orderitemmeta1.order_item_id = variationidmatch.order_item_id" );
+
 			// Add WHEREs for matching attributes.
 			$where_subquery = array_merge( $where_subquery, $attribute_subqueries['where'] );
 		}
