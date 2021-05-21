@@ -144,6 +144,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
 - Fix: Bug with Orders Report coupon exclusion filter. #7021
 - Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
+- Fix: Attribute filter bug with "any X" variations. #7046
 - Fix: Notices not dissapearing. #7077
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
