@@ -112,6 +112,36 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	}
 
 	/**
+	 * Generate a subquery for order_item_id based on the attribute filters.
+	 *
+	 * @param array $query_args Query arguments supplied by the user.
+	 * @return string
+	 */
+	protected function get_order_item_by_attribute_subquery( $query_args ) {
+		$order_product_lookup_table = self::get_db_table_name();
+		$attribute_subqueries       = $this->get_attribute_subqueries( $query_args, $order_product_lookup_table );
+
+		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
+			// Perform a subquery for DISTINCT order items that match our attribute filters.
+			$attr_subquery = new SqlQuery( $this->context . '_attribute_subquery' );
+			$attr_subquery->add_sql_clause( 'select', "DISTINCT {$order_product_lookup_table}.order_item_id" );
+			$attr_subquery->add_sql_clause( 'from', $order_product_lookup_table );
+			$attr_subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id != 0" );
+
+			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
+				$attr_subquery->add_sql_clause( 'join', $attribute_join );
+			}
+
+			$operator = $this->get_match_operator( $query_args );
+			$attr_subquery->add_sql_clause( 'where', 'AND (' . implode( " {$operator} ", $attribute_subqueries['where'] ) . ')' );
+
+			return "AND {$order_product_lookup_table}.order_item_id IN ({$attr_subquery->get_query_statement()})";
+		}
+
+		return false;
+	}
+
+	/**
 	 * Updates the database query with parameters used for Products report: categories and order status.
 	 *
 	 * @param array $query_args Query arguments supplied by the user.
@@ -156,24 +186,15 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->subquery->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
 		}
 
-		$attribute_subqueries = $this->get_attribute_subqueries( $query_args, $order_product_lookup_table );
-		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
+		$attribute_order_items_subquery = $this->get_order_item_by_attribute_subquery( $query_args );
+		if ( $attribute_order_items_subquery ) {
 			// JOIN on product lookup if we haven't already.
 			if ( ! $order_status_filter ) {
 				$this->subquery->add_sql_clause( 'join', "JOIN {$order_product_lookup_table} ON {$order_stats_lookup_table}.order_id = {$order_product_lookup_table}.order_id" );
 			}
 
-			// Add JOINs for matching attributes.
-			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
-				$this->subquery->add_sql_clause( 'join', $attribute_join );
-			}
-
-			// Exclude any other products in the same order that don't match the attribute filters.
-			$this->subquery->add_sql_clause( 'join', "JOIN {$order_item_meta_table} as variationidmatch ON variationidmatch.meta_value = {$order_product_lookup_table}.variation_id" );
-			$this->subquery->add_sql_clause( 'join', "AND variationidmatch.meta_key = '_variation_id' AND orderitemmeta1.order_item_id = variationidmatch.order_item_id" );
-
-			// Add WHEREs for matching attributes.
-			$where_subquery = array_merge( $where_subquery, $attribute_subqueries['where'] );
+			// Add subquery for matching attributes to WHERE.
+			$this->subquery->add_sql_clause( 'where', $attribute_order_items_subquery );
 		}
 
 		if ( 0 < count( $where_subquery ) ) {

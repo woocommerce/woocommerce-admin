@@ -86,23 +86,15 @@ class DataStore extends VariationsDataStore implements DataStoreInterface {
 			$products_where_clause .= " AND ( {$order_status_filter} )";
 		}
 
-		$attribute_subqueries = $this->get_attribute_subqueries( $query_args, $order_product_lookup_table );
-		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
+		$attribute_order_items_subquery = $this->get_order_item_by_attribute_subquery( $query_args );
+		if ( $attribute_order_items_subquery ) {
 			// JOIN on product lookup if we haven't already.
 			if ( ! $order_status_filter ) {
 				$products_from_clause .= " JOIN {$wpdb->prefix}wc_order_stats ON {$order_product_lookup_table}.order_id = {$wpdb->prefix}wc_order_stats.order_id";
 			}
-			// Add JOINs for matching attributes.
-			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
-				$products_from_clause .= ' ' . $attribute_join;
-			}
-			// Add WHEREs for matching attributes.
-			$where_subquery = array_merge( $where_subquery, $attribute_subqueries['where'] );
 
-			// Exclude any other products in the same order that don't match the attribute filters.
-			$products_from_clause .= " JOIN {$order_item_meta_table} as variationidmatch ON variationidmatch.meta_value = {$order_product_lookup_table}.variation_id";
-			$products_from_clause .= " AND variationidmatch.meta_key = '_variation_id' AND orderitemmeta1.order_item_id = variationidmatch.order_item_id";
-
+			// Add subquery for matching attributes to WHERE.
+			$products_where_clause .= $attribute_order_items_subquery;
 		}
 
 		if ( 0 < count( $where_subquery ) ) {
