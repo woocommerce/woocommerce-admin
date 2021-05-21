@@ -120,6 +120,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		global $wpdb;
 		$order_product_lookup_table = self::get_db_table_name();
 		$order_stats_lookup_table   = $wpdb->prefix . 'wc_order_stats';
+		$order_item_meta_table      = $wpdb->prefix . 'woocommerce_order_itemmeta';
 		$where_subquery             = array();
 
 		$this->add_time_period_sql_params( $query_args, $order_product_lookup_table );
@@ -155,7 +156,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->subquery->add_sql_clause( 'where', "AND ( {$order_status_filter} )" );
 		}
 
-		$attribute_subqueries = $this->get_attribute_subqueries( $query_args );
+		$attribute_subqueries = $this->get_attribute_subqueries( $query_args, $order_product_lookup_table );
 		if ( $attribute_subqueries['join'] && $attribute_subqueries['where'] ) {
 			// JOIN on product lookup if we haven't already.
 			if ( ! $order_status_filter ) {
@@ -335,11 +336,13 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 				$variations_query = $this->get_query_statement();
 			} else {
+				/* phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
 				$db_records_count = (int) $wpdb->get_var(
 					"SELECT COUNT(*) FROM (
 						{$this->subquery->get_query_statement()}
 					) AS tt"
-				); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+				);
+				/* phpcs:enable */
 
 				$total_results = $db_records_count;
 				$total_pages   = (int) ceil( $db_records_count / $params['per_page'] );
@@ -355,10 +358,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$variations_query = $this->subquery->get_query_statement();
 			}
 
+			/* phpcs:disable WordPress.DB.PreparedSQL.NotPrepared */
 			$product_data = $wpdb->get_results(
 				$variations_query,
 				ARRAY_A
-			); // WPCS: cache ok, DB call ok, unprepared SQL ok.
+			);
+			/* phpcs:enable */
 
 			if ( null === $product_data ) {
 				return $data;
