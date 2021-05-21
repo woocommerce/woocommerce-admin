@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.7.0
 Requires PHP: 7.0
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -72,6 +72,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+
+== 2.3.1 5/24/2021 ==
 
 == 2.3.0 5/13/2021 ==
 - Add: Add plugin installer to allow installation of plugins via URL #6805
