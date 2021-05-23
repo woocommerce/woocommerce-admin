@@ -47,6 +47,7 @@
 			"target-directory": "bin/composer"
 		},
         "changelogger": {
+			"changelog": "./changelog.txt",
         	"formatter": "WCAdmin",
 			"versioning": "wordpress",
         	"changes-dir": "./changelogs",
