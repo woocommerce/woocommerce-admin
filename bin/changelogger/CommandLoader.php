@@ -22,7 +22,7 @@ class CommandLoader implements CommandLoaderInterface {
 	 * @return string Class name.
 	 */
 	private function get_class_name( $name ) {
-		if (array_key_exists($name, $this->commands)) {
+		if ( array_key_exists( $name, $this->commands ) ) {
 			return $this->commands[$name];
 		}
 

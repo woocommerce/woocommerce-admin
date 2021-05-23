@@ -2,11 +2,6 @@
 
 == Unreleased ==
 
-== 1.0.0 05/23/2021 ==
-
-- Fix: this is another test
-- : this is a test
-
 == 2.2.0 3/30/2021 ==
 
 - Fix: Check if features are currently being enabled #6688
