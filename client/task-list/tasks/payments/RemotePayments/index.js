@@ -16,7 +16,7 @@ import { useMemo, useCallback } from '@wordpress/element';
  * Internal dependencies
  */
 import { WCPayCard } from '../components/WCPayCard';
-import { PaymentMethodList } from './components/PaymentMethodList';
+import { RecommendedPaymentGatewayList } from './components/RecommendedPaymentGatewayList';
 import { PaymentMethod } from './components/PaymentMethod';
 
 const RECOMMENDED_GATEWAY_KEYS = [ 'wcpay', 'mercadopago', 'stripe' ];
@@ -158,20 +158,22 @@ export const RemotePayments = ( { query } ) => {
 			{ !! wcPayGateway && <WCPayCard method={ wcPayGateway } /> }
 
 			{ !! enabledPaymentGatewayRecommendations.size && (
-				<PaymentMethodList
+				<RecommendedPaymentGatewayList
 					recommendedMethod={ recommendedMethod }
 					heading={ __( 'Enabled payment methods', 'wc-admin' ) }
-					methods={ Array.from(
+					installedPaymentGateways={ installedPaymentGateways }
+					recommendedPaymentGateways={ Array.from(
 						enabledPaymentGatewayRecommendations.values()
 					) }
 				/>
 			) }
 
 			{ !! additionalPaymentGatewayRecommendations.size && (
-				<PaymentMethodList
+				<RecommendedPaymentGatewayList
 					recommendedMethod={ recommendedMethod }
 					heading={ __( 'Additional payment methods', 'wc-admin' ) }
-					methods={ Array.from(
+					installedPaymentGateways={ installedPaymentGateways }
+					recommendedPaymentGateways={ Array.from(
 						additionalPaymentGatewayRecommendations.values()
 					) }
 					markConfigured={ markConfigured }
