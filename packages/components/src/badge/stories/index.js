@@ -1,8 +1,12 @@
 /**
  * External dependencies
  */
-import { Badge } from '@woocommerce/components';
 import { Card, CardBody } from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
+import { Badge } from '../';
 
 export const Basic = () => (
 	<Card>

@@ -1,8 +1,12 @@
 /**
  * External dependencies
  */
-import { AnimationSlider } from '@woocommerce/components';
 import { Component } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
+import AnimationSlider from '../';
 
 class BasicExample extends Component {
 	constructor() {
