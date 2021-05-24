@@ -114,6 +114,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Store profiler - Changed MailPoet's title and description #6990
+- Tweak: Adjust WC Pay supported countries #7048
 - Update: Task list component with new Experimental Task list. #6849
 - Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
