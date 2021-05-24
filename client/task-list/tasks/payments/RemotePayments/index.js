@@ -4,9 +4,13 @@
 import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
-import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME, PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
+import {
+	OPTIONS_STORE_NAME,
+	ONBOARDING_STORE_NAME,
+	PAYMENT_GATEWAYS_STORE_NAME,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useMemo, useState, useCallback } from '@wordpress/element';
+import { useMemo, useCallback } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -14,44 +18,60 @@ import { useMemo, useState, useCallback } from '@wordpress/element';
 import { WCPayCard } from '../components/WCPayCard';
 import { PaymentMethodList } from './components/PaymentMethodList';
 import { PaymentMethod } from './components/PaymentMethod';
-import { sift } from '../../../../utils';
+
+const RECOMMENDED_GATEWAY_KEYS = [ 'wcpay', 'mercadopago', 'stripe' ];
 
 export const RemotePayments = ( { query } ) => {
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const {
+		additionalPaymentGatewayRecommendations,
+		enabledPaymentGatewayRecommendations,
 		getOption,
 		installedPaymentGateways,
 		paymentGatewayRecommendations,
 		isResolving,
 	} = useSelect( ( select ) => {
-		const paymentGateways = select(
-			PAYMENT_GATEWAYS_STORE_NAME
-		).getPaymentGateways();
+		const paymentGateways = select( PAYMENT_GATEWAYS_STORE_NAME )
+			.getPaymentGateways()
+			.reduce( ( map, gateway ) => {
+				map[ gateway.id ] = gateway;
+				return map;
+			}, {} );
+
+		const enabled = new Map();
+		const additional = new Map();
+		const recommendations = select( ONBOARDING_STORE_NAME )
+			.getPaymentMethodRecommendations()
+			.reduce( ( map, gateway ) => {
+				map.set( gateway.key, gateway );
+				if ( paymentGateways[ gateway.key ] ) {
+					enabled.set( gateway.key, gateway );
+				} else {
+					additional.set( gateway.key, gateway );
+				}
+				return map;
+			}, new Map() );
 
 		return {
+			additionalPaymentGatewayRecommendations: additional,
+			enabledPaymentGatewayRecommendations: enabled,
 			getOption: select( OPTIONS_STORE_NAME ).getOption,
-			installedPaymentGateways: paymentGateways.reduce( (acc, curr ) => {
-				acc[ curr.id ] = curr;
-				return acc;
-			}, {} ),
+			installedPaymentGateways: paymentGateways,
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
 				'getPaymentMethodRecommendations'
 			),
-			paymentGatewayRecommendations: select( ONBOARDING_STORE_NAME )
-				.getPaymentMethodRecommendations(),
+			paymentGatewayRecommendations: recommendations,
 		};
 	} );
 
 	const recommendedMethod = useMemo( () => {
-		const method = paymentGatewayRecommendations.find(
-			( m ) =>
-				( m.key === 'wcpay' && m.visible ) ||
-				( m.key === 'mercadopago' && m.visible )
-		);
-		if ( ! method ) {
-			return 'stripe';
+		for ( const key in RECOMMENDED_GATEWAY_KEYS ) {
+			const gateway = paymentGatewayRecommendations.get( key );
+			if ( gateway && gateway.visible ) {
+				return gateway;
+			}
 		}
-		return method.key;
+		return null;
 	}, [ paymentGatewayRecommendations ] );
 
 	const enablePaymentGateway = ( optionName ) => {
@@ -75,24 +95,15 @@ export const RemotePayments = ( { query } ) => {
 	};
 
 	const markConfigured = useCallback(
-		async ( methodKey, queryParams = {} ) => {
-			const method = paymentGatewayRecommendations.find(
-				( option ) => option.key === methodKey
-			);
-
-			if ( ! method ) {
-				throw `Method ${ methodKey } not found in available methods list`;
+		async ( paymentGatewayKey, queryParams = {} ) => {
+			if ( ! paymentGatewayRecommendations.get( paymentGatewayKey ) ) {
+				throw `Method ${ paymentGatewayKey } not found in available methods list`;
 			}
 
-			setEnabledMethods( {
-				...enabledMethods,
-				[ methodKey ]: true,
-			} );
-
-			enablePaymentGateway( method.optionName );
+			enablePaymentGateway( paymentGatewayKey );
 
 			recordEvent( 'tasklist_payment_connect_method', {
-				payment_method: methodKey,
+				payment_method: paymentGatewayKey,
 			} );
 
 			getHistory().push(
@@ -108,61 +119,60 @@ export const RemotePayments = ( { query } ) => {
 		} );
 	}, [] );
 
-	const currentMethod = useMemo( () => {
-		if ( ! query.method || isResolving || ! paymentGatewayRecommendations.length ) {
+	const currentPaymentGateway = useMemo( () => {
+		if (
+			! query.method ||
+			isResolving ||
+			! paymentGatewayRecommendations.size
+		) {
 			return null;
 		}
 
-		const method = paymentGatewayRecommendations.find( ( m ) => m.key === query.method );
+		const gateway = paymentGatewayRecommendations.get( query.method );
 
-		if ( ! method ) {
+		if ( ! gateway ) {
 			throw `Current method ${ query.method } not found in available methods list`;
 		}
 
-		return method;
+		return gateway;
 	}, [ isResolving, query, paymentGatewayRecommendations ] );
 
-	if ( currentMethod ) {
+	if ( currentPaymentGateway ) {
 		return (
 			<PaymentMethod
-				method={ currentMethod }
+				method={ currentPaymentGateway }
 				markConfigured={ markConfigured }
 				recordConnectStartEvent={ recordConnectStartEvent }
 			/>
 		);
 	}
 
-	const [ enabledPaymentGateways, additionalPaymentGateways ] = sift(
-		paymentGatewayRecommendations,
-		( gateway ) => installedPaymentGateways[ gateway.key ] && installedPaymentGateways[ gateway.key ].enabled
-	);
-
-	const wcPayIndex = additionalPaymentGateways.findIndex(
-		( m ) => m.key === 'wcpay'
-	);
-
-	const wcPayMethod =
-		wcPayIndex === -1
-			? null
-			: additionalPaymentGateways.splice( wcPayIndex, 1 );
+	const wcPayGateway = additionalPaymentGatewayRecommendations.get( 'wcpay' );
+	if ( wcPayGateway ) {
+		additionalPaymentGatewayRecommendations.delete( 'wcpay' );
+	}
 
 	return (
 		<div className="woocommerce-task-payments">
-			{ !! wcPayMethod && <WCPayCard method={ wcPayMethod[ 0 ] } /> }
+			{ !! wcPayGateway && <WCPayCard method={ wcPayGateway } /> }
 
-			{ !! enabledPaymentGateways.length && (
+			{ !! enabledPaymentGatewayRecommendations.size && (
 				<PaymentMethodList
 					recommendedMethod={ recommendedMethod }
 					heading={ __( 'Enabled payment methods', 'wc-admin' ) }
-					methods={ enabledPaymentGateways }
+					methods={ Array.from(
+						enabledPaymentGatewayRecommendations.values()
+					) }
 				/>
 			) }
 
-			{ !! additionalPaymentGateways.length && (
+			{ !! additionalPaymentGatewayRecommendations.size && (
 				<PaymentMethodList
 					recommendedMethod={ recommendedMethod }
 					heading={ __( 'Additional payment methods', 'wc-admin' ) }
-					methods={ additionalPaymentGateways }
+					methods={ Array.from(
+						additionalPaymentGatewayRecommendations.values()
+					) }
 					markConfigured={ markConfigured }
 				/>
 			) }
