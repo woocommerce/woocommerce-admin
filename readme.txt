@@ -74,8 +74,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Changelog ==
 
 == Unreleased ==
-
+- Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
+- Dev: Converting <SettingsForm /> component to TypeScript. #6981
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Add: Consume remote payment methods on frontend #6867
@@ -86,6 +87,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Add transformers in remote inbox notifications #6948
 - Add: Get post install scripts from gateway and enqueue in client #6967
 - Add: Free extension list powered by remote config #6952
+- Add: Add PayPal to fallback payment gateways #7001
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
@@ -111,10 +113,15 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Call existing filters for leaderboards in analytics. #6626
 - Fix: Set target to blank for the external links #6999
 - Fix style regression with the Chart header. #7002
+- Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
+- Tweak: Setup checklist copy revert. #7015
+- Tweak: Store profiler - Changed MailPoet's title and description #6990
+- Tweak: Adjust WC Pay supported countries #7048
 - Update: Task list component with new Experimental Task list. #6849
 - Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
+- Update: Payment recommendation screen transition and add external link icon. #7022
 
 == 2.3.0 5/13/2021 ==
 - Add: Add plugin installer to allow installation of plugins via URL #6805
@@ -148,6 +155,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Update WC Payments copy on the task list #6734
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
 - Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
+- Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Update: Replace marketing extension - Google Listings and Ads. #6939
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
