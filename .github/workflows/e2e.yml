@@ -25,7 +25,7 @@ jobs:
                   node-version: '14'
             - name: Build and run E2E Tests
               env:
-                  WP_VERSION: latest
+                  WP_VERSION: 5.7.1
                   WC_E2E_SCREENSHOTS: 1
                   E2E_SLACK_CHANNEL: ${{ secrets.E2E_SLACK_CHANNEL }}
                   E2E_SLACK_TOKEN: ${{ secrets.E2E_SLACK_TOKEN }}
