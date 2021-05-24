@@ -22,11 +22,11 @@ import { PaymentMethod } from './components/PaymentMethod';
 const RECOMMENDED_GATEWAY_KEYS = [ 'wcpay', 'mercadopago', 'stripe' ];
 
 export const RemotePayments = ( { query } ) => {
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const {
 		additionalPaymentGatewayRecommendations,
 		enabledPaymentGatewayRecommendations,
-		getOption,
+		getPaymentGateway,
 		installedPaymentGateways,
 		paymentGatewayRecommendations,
 		isResolving,
@@ -44,7 +44,10 @@ export const RemotePayments = ( { query } ) => {
 			.getPaymentMethodRecommendations()
 			.reduce( ( map, gateway ) => {
 				map.set( gateway.key, gateway );
-				if ( paymentGateways[ gateway.key ] ) {
+				if (
+					paymentGateways[ gateway.key ] &&
+					paymentGateways[ gateway.key ].enabled
+				) {
 					enabled.set( gateway.key, gateway );
 				} else {
 					additional.set( gateway.key, gateway );
@@ -55,6 +58,8 @@ export const RemotePayments = ( { query } ) => {
 		return {
 			additionalPaymentGatewayRecommendations: additional,
 			enabledPaymentGatewayRecommendations: enabled,
+			getPaymentGateway: select( PAYMENT_GATEWAYS_STORE_NAME )
+				.getPaymentGateway,
 			getOption: select( OPTIONS_STORE_NAME ).getOption,
 			installedPaymentGateways: paymentGateways,
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
@@ -74,23 +79,19 @@ export const RemotePayments = ( { query } ) => {
 		return null;
 	}, [ paymentGatewayRecommendations ] );
 
-	const enablePaymentGateway = ( optionName ) => {
-		if ( ! optionName ) {
+	const enablePaymentGateway = ( paymentGatewayKey ) => {
+		if ( ! paymentGatewayKey ) {
 			return;
 		}
 
-		const currentValue = getOption( optionName );
+		const gateway = getPaymentGateway( paymentGatewayKey );
 
-		if ( currentValue === 'yes' ) {
+		if ( ! gateway || gateway.enabled ) {
 			return;
 		}
 
-		// @tood This could be moved to a data store and/or REST API endpoint.
-		updateOptions( {
-			[ optionName ]: {
-				...currentValue,
-				enabled: 'yes',
-			},
+		updatePaymentGateway( paymentGatewayKey, {
+			enabled: true,
 		} );
 	};
 
