@@ -61,7 +61,5 @@ class AddCommand extends Command {
 		file_put_contents( $this->config['segment_file_dir'] . '/' . $segment_filename, $content );
 
 		$output->writeln( "\n". $segment_filename . ' has been created. Please fill out your testing instructions.' );
-
-		return self::OK_EXIT;
 	}
 }

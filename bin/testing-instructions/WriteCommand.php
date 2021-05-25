@@ -46,7 +46,7 @@ class WriteCommand extends Command {
 		$contents = $this->mergeSegmentFiles();
 
 		$pattern = '/^## Unreleased((?:(?!^##).)+)/ms';
-		$replacement = "## Unreleased\n\n## {$version}\n\n" . $contents . "\n\n";
+		$replacement = "## Unreleased\n## {$version}\n\n" . $contents . "\n\n";
 
 		$readme = file_get_contents( $file );
 		$new_contents = preg_replace( $pattern, $replacement, $readme );
@@ -57,18 +57,36 @@ class WriteCommand extends Command {
 
 		file_put_contents( $file, $new_contents );
 
-		return self::OK_EXIT;
+		$this->deleteSegments();
+
+		$output->writeln( "Index file has been updated with version {$version}." );
 	}
 
+	/**
+	 * Merge segment files into a single string.
+	 *
+	 * @return string
+	 */
 	protected function mergeSegmentFiles() {
 		$segment_dir = $this->config['segment_file_dir'];
 		$files = glob( $segment_dir . '/*.md' );
 		$contents = '';
 		foreach ( $files as $file ) {
 			$content = file_get_contents($file);
-			$contents = "\n{$content}";
+			$contents .= "\n{$content}";
 		}
 
 		return $contents;
+	}
+
+	/**
+	 * Delete segment files.
+	 */
+	protected function deleteSegments() {
+		$segment_dir = $this->config['segment_file_dir'];
+		$files = glob( $segment_dir . '/*.md' );
+		foreach ( $files as $file ) {
+			unlink($file);
+		}
 	}
 }
