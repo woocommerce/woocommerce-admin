@@ -76,6 +76,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Fix: `@woocommerce/navigation.getIdsFromQuery` support for `0` as a valid id. #7028
+- Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
@@ -89,6 +90,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Get post install scripts from gateway and enqueue in client #6967
 - Add: Free extension list powered by remote config #6952
 - Add: Add PayPal to fallback payment gateways #7001
+- Add: Add a data store for WC Payments REST APIs #6918
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
@@ -101,6 +103,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add source param support for notes query. #6979
 - Enhancement: Add expand/collapse to extendable task list. #6910
 - Enhancement: Add task hierarchy support to extended task list. #6916
+- Fix: Rule Processing Transformer to handle dotNotation default value #7009
 - Fix: Remove Navigation's uneeded SlotFill context #6832
 - Fix: Report filters expecting specific ordering. #6847
 - Fix: Render bug with report comparison mode selections. #6862
@@ -113,11 +116,18 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Multiple preload tag output bug. #6998
 - Fix: Call existing filters for leaderboards in analytics. #6626
 - Fix: Set target to blank for the external links #6999
+- Fix style regression with the Chart header. #7002
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
-- Tweak: Store profiler - Changed MailPoet's title and description #6990
+- Tweak: Setup checklist copy revert. #7015
 - Update: Task list component with new Experimental Task list. #6849
 - Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
+
+== 2.3.1 5/24/2021 ==
+- Tweak: Store profiler - Changed MailPoet's title and description #6990
+- Update: Payment recommendation screen transition and add external link icon. #7022
+- Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
+- Tweak: Adjust WC Pay supported countries #7048
 
 == 2.3.0 5/13/2021 ==
 - Add: Add plugin installer to allow installation of plugins via URL #6805

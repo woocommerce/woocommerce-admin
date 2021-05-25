@@ -6,30 +6,21 @@ use Automattic\WooCommerce\Admin\RemoteInboxNotifications\TransformerInterface;
 use stdClass;
 
 /**
- * Flatten nested array.
+ * Count elements in Array.
  *
  * @package Automattic\WooCommerce\Admin\RemoteInboxNotifications\Transformers
  */
-class ArrayFlatten implements TransformerInterface {
+class Count implements TransformerInterface {
 	/**
-	 * Search a given value in the array.
+	 *  Count elements in Array.
 	 *
-	 * @param mixed         $value a value to transform.
+	 * @param array         $value an array to count.
 	 * @param stdClass|null $arguments arguments.
-	 * @param string|null   $default default value.
 	 *
-	 * @return mixed|null
+	 * @return number
 	 */
-	public function transform( $value, stdClass $arguments = null, $default = null ) {
-		$return = array();
-		array_walk_recursive(
-			$value,
-			function( $item ) use ( &$return ) {
-				$return[] = $item;
-			}
-		);
-
-		return $return;
+	public function transform( $value, stdClass $arguments = null ) {
+		return count( $value );
 	}
 
 	/**
