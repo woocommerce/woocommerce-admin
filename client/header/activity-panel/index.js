@@ -39,7 +39,7 @@ const HelpPanel = lazy( () =>
 
 const InboxPanel = lazy( () =>
 	import(
-		/* webpackChunkName: "activity-panels-help" */ './panels/inbox/inbox-panel'
+		/* webpackChunkName: "activity-panels-inbox" */ './panels/inbox/inbox-panel'
 	)
 );
 
