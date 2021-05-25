@@ -119,10 +119,7 @@ function getAbbreviatedNotifications( select, query ) {
 		},
 	];
 
-	return applyFilters(
-		'woocommerce_admin_abbreviated_notifications',
-		notifications
-	);
+	return notifications;
 }
 
 export function getUnreadNotifications(
