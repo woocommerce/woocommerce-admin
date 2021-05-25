@@ -37,11 +37,6 @@ export type RestApiError = {
 	message: string;
 };
 
-export type SelectorKeysWithActions =
-	| 'getPaymentGateways'
-	| 'getPaymentGateway'
-	| 'updatePaymentGateway';
-
 // Type for the basic selectors built into @wordpress/data, note these
 // types define the interface for the public selectors, so state is not an
 // argument.

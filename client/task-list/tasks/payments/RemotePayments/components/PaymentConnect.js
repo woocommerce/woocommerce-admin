@@ -48,7 +48,7 @@ export const PaymentConnect = ( {
 		};
 	} );
 
-	const handleSubmit = async ( values ) => {
+	const handleSubmit = ( values ) => {
 		recordConnectStartEvent( id );
 
 		updatePaymentGateway( id, {

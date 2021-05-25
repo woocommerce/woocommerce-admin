@@ -45,12 +45,12 @@ export const PaymentMethod = ( {
 		paymentGateway,
 	} = useSelect( ( select ) => {
 		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const { getPaymentGateway, isResolving } = select(
 			PAYMENT_GATEWAYS_STORE_NAME
 		);
+		const activePlugins = select( PLUGINS_STORE_NAME ).getActivePlugins();
 		const pluginsToInstall = plugins.filter(
-			( m ) => ! getActivePlugins().includes( m )
+			( m ) => ! activePlugins.includes( m )
 		);
 
 		return {

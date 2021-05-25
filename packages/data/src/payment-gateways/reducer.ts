@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import { ACTION_TYPES } from './action-types';
-import { PluginsState, SelectorKeysWithActions, PaymentGateway } from './types';
+import { PluginsState, PaymentGateway } from './types';
 import { Actions } from './actions';
 
 function updatePaymentGatewayList(

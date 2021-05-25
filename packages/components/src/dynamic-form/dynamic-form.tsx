@@ -65,7 +65,7 @@ export const DynamicForm: React.FC< DynamicFormProps > = ( {
 	return (
 		<Form
 			initialValues={ getInitialConfigValues() }
-			onChangeCallback={ onChange }
+			onChange={ onChange }
 			onSubmit={ onSubmit }
 			validate={ validate }
 		>
