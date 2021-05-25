@@ -65,12 +65,7 @@ class DefaultPaymentGateways {
 				'plugins'    => array( 'woo-paystack' ),
 				'is_visible' => array(
 					self::get_rules_for_countries( array( 'ZA', 'GH', 'NG' ) ),
-					(object) array(
-						'type'        => 'option',
-						'option_name' => 'woocommerce_onboarding_profile',
-						'value'       => 'cbd-other-hemp-derived-products',
-						'operation'   => '!contains',
-					),
+					self::get_rules_for_cbd( false ),
 				),
 			),
 		);
@@ -82,7 +77,7 @@ class DefaultPaymentGateways {
 	 * @param array $countries Array of countries to match.
 	 * @return object Rules to match.
 	 */
-	public function get_rules_for_countries( $countries ) {
+	public static function get_rules_for_countries( $countries ) {
 		$rules = array();
 
 		foreach ( $countries as $country ) {
@@ -96,6 +91,36 @@ class DefaultPaymentGateways {
 		return (object) array(
 			'type'     => 'or',
 			'operands' => $rules,
+		);
+	}
+
+	/**
+	 * Get default rules for CBD based on given argument.
+	 *
+	 * @param bool $should_have Whether or not the store should have CBD as an industry (true) or not (false).
+	 * @return array Rules to match.
+	 */
+	public static function get_rules_for_cbd( $should_have ) {
+		return (object) array(
+			'type'         => 'option',
+			'transformers' => array(
+				(object) array(
+					'use'       => 'dot_notation',
+					'arguments' => (object) array(
+						'path' => 'industry',
+					),
+				),
+				(object) array(
+					'use'       => 'array_column',
+					'arguments' => (object) array(
+						'key' => 'slug',
+					),
+				),
+			),
+			'option_name'  => 'woocommerce_onboarding_profile',
+			'operation'    => $should_have ? 'contains' : '!contains',
+			'value'        => 'cbd-other-hemp-derived-products',
+			'default'      => array(),
 		);
 	}
 
