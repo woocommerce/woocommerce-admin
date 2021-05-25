@@ -15,7 +15,6 @@ const RECOMMENDED_GATEWAY_KEYS = [ 'wcpay', 'mercadopago', 'stripe' ];
 
 export const RecommendedPaymentGatewayList = ( {
 	heading,
-	installedPaymentGateways,
 	recommendedPaymentGateways,
 	markConfigured,
 } ) => {
@@ -33,21 +32,16 @@ export const RecommendedPaymentGatewayList = ( {
 		<Card>
 			<CardHeader as="h2">{ heading }</CardHeader>
 			{ Array.from( recommendedPaymentGateways.values() ).map(
-				( method, index ) => {
-					const { key } = method;
+				( paymentGateway, index ) => {
+					const { key } = paymentGateway;
 					return (
 						<RecommendedPaymentGatewayListItem
 							hasDivider={ index !== 0 }
-							installedPaymentGateways={
-								installedPaymentGateways
-							}
 							key={ key }
 							markConfigured={ markConfigured }
-							paymentGateway={ method }
+							paymentGateway={ paymentGateway }
 							isRecommended={ recommendedMethod === key }
-							recommendedPaymentGateways={
-								recommendedPaymentGateways
-							}
+							recommendedPaymentGatewayKeys={ recommendedPaymentGateways.keys() }
 						/>
 					);
 				}

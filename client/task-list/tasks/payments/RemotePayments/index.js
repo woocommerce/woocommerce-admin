@@ -168,7 +168,6 @@ export const RemotePayments = ( { query } ) => {
 			{ !! enabledPaymentGatewayRecommendations.size && (
 				<RecommendedPaymentGatewayList
 					heading={ __( 'Enabled payment methods', 'wc-admin' ) }
-					installedPaymentGateways={ installedPaymentGateways }
 					recommendedPaymentGateways={
 						enabledPaymentGatewayRecommendations
 					}
@@ -178,7 +177,6 @@ export const RemotePayments = ( { query } ) => {
 			{ !! additionalPaymentGatewayRecommendations.size && (
 				<RecommendedPaymentGatewayList
 					heading={ __( 'Additional payment methods', 'wc-admin' ) }
-					installedPaymentGateways={ installedPaymentGateways }
 					recommendedPaymentGateways={
 						additionalPaymentGatewayRecommendations
 					}

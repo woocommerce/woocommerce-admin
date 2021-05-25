@@ -4,8 +4,10 @@
 import classnames from 'classnames';
 import { Fragment } from '@wordpress/element';
 import { CardBody, CardMedia, CardDivider } from '@wordpress/components';
-import { Text, useSlot } from '@woocommerce/experimental';
+import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { Text, useSlot } from '@woocommerce/experimental';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -18,11 +20,10 @@ import './RecommendedPaymentGatewayList.scss';
 
 export const RecommendedPaymentGatewayListItem = ( {
 	hasDivider = true,
-	installedPaymentGateways,
 	isRecommended,
 	paymentGateway,
 	markConfigured,
-	recommendedPaymentGateways,
+	recommendedPaymentGatewayKeys,
 } ) => {
 	const {
 		image,
@@ -36,17 +37,22 @@ export const RecommendedPaymentGatewayListItem = ( {
 
 	const slot = useSlot( `woocommerce_remote_payment_${ key }` );
 
+	const installedPaymentGateway = useSelect( ( select ) => {
+		return (
+			select( PAYMENT_GATEWAYS_STORE_NAME ).getPaymentGateway( key ) || {}
+		);
+	} );
+
 	if ( ! isVisible ) {
 		return null;
 	}
 
-	const installedPaymentGateway = installedPaymentGateways[ key ];
 	const {
 		enabled: isEnabled = false,
 		needs_setup: needsSetup = false,
 		required_settings_keys: requiredSettingsKeys = [],
 		settings_url: manageUrl,
-	} = installedPaymentGateway || {};
+	} = installedPaymentGateway;
 
 	const isConfigured = ! needsSetup;
 	const hasFills = Boolean( slot?.fills?.length );
@@ -94,9 +100,7 @@ export const RecommendedPaymentGatewayListItem = ( {
 						markConfigured={ markConfigured }
 						onSetup={ () =>
 							recordEvent( 'tasklist_payment_setup', {
-								options: recommendedPaymentGateways.map(
-									( option ) => option.key
-								),
+								options: recommendedPaymentGatewayKeys,
 								selected: key,
 							} )
 						}
