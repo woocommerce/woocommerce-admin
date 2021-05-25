@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { sprintf } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
+import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -16,6 +17,32 @@ export const InboxPanel = ( { notifications } ) => {
 		return cards.find( ( card ) => card.name === name );
 	};
 
+	const addCriticalAlert = ( critical ) => {
+		/* translators: Number of critical alerts */
+		const criticalAlertText =
+			critical > 1
+				? __( '%d critical alerts', 'woocommerce-admin' )
+				: __( '%d critical alert', 'woocommerce-admin' );
+		return (
+			<span className={ 'woocommerce-abbreviated-card__critical-alert' }>
+				{ sprintf( criticalAlertText, critical ) }
+			</span>
+		);
+	};
+
+	const getContentToShow = ( content, count, critical = 0 ) => {
+		const text = sprintf( content, count );
+		if ( critical ) {
+			return (
+				<div>
+					<Text> { text } </Text>
+					{ addCriticalAlert( critical ) }
+				</div>
+			);
+		}
+		return text;
+	};
+
 	return (
 		<div className="woocommerce-notification-panels">
 			{ notifications.length > 0 && (
@@ -28,8 +55,11 @@ export const InboxPanel = ( { notifications } ) => {
 						const { content, href, icon, title } = card;
 						return (
 							<AbbreviatedCard
-								content={ sprintf( content, count ) }
-								critical={ critical ?? 0 }
+								content={ getContentToShow(
+									content,
+									count,
+									critical
+								) }
 								icon={ icon }
 								href={ href }
 								key={ name }
