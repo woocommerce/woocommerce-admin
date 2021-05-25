@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { ElementHandle } from 'puppeteer';
+import { request } from 'http';
 
 /**
  * Internal dependencies
@@ -187,13 +188,32 @@ const deactivateAndDeleteExtension = async ( extension: string ) => {
 
 /**
  * Reset WooCommerce using "WooCommerce Reset" plugin.
+ *
+ * Uses the native http.request to avoid adding dependencies.
  */
 const resetWooCommerceState = async () => {
-	await page.evaluate( () => {
-		window.wp.apiRequest( {
-			path: '/woocommerce-reset/v1/state',
-			method: 'DELETE',
+	const options = {
+		host: 'localhost',
+		port: '8084',
+		path: '/?rest_route=/woocommerce-reset/v1/state',
+		method: 'DELETE',
+	};
+
+	return new Promise( ( resolve, reject ) => {
+		const req = request( options );
+
+		req.on( 'response', ( res ) => {
+			if ( res.statusCode !== 200 ) {
+				reject( new Error( 'HTTP response status not 200' ) );
+			}
+			resolve( res );
 		} );
+
+		req.on( 'error', ( err ) => {
+			reject( err );
+		} );
+
+		req.end();
 	} );
 };
 
