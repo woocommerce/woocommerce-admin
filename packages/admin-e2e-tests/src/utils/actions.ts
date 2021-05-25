@@ -186,6 +186,18 @@ const deactivateAndDeleteExtension = async ( extension: string ) => {
 	await deleteExtension?.click();
 };
 
+/**
+ * Reset WooCommerce using "WooCommerce Reset" plugin.
+ */
+const resetWooCommerceState = async () => {
+	await page.evaluate( () => {
+		window.wp.apiRequest( {
+			path: '/woocommerce-reset/v1/state',
+			method: 'DELETE',
+		} );
+	} );
+};
+
 const addReviewToProduct = async ( productId: number, productName: string ) => {
 	// we need a guest user
 	const login = new Login( page );
@@ -229,4 +241,5 @@ export {
 	waitForTimeout,
 	deactivateAndDeleteExtension,
 	addReviewToProduct,
+	resetWooCommerceState,
 };
