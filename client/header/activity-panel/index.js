@@ -82,7 +82,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		const unreadNotificationList = getUnreadNotifications(
 			select,
 			isSetupTaskListHidden,
-			isExtendedTaskListHidden
+			isExtendedTaskListHidden,
+			query
 		);
 
 		return {

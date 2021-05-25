@@ -85,13 +85,14 @@ function getIncompleteTasksCount( tasks, dismissedTasks ) {
 	).length;
 }
 
-function getAbbreviatedNotifications( select ) {
+function getAbbreviatedNotifications( select, query ) {
 	const { getOption } = select( OPTIONS_STORE_NAME );
 	const { getNotes } = select( NOTES_STORE_NAME );
 	const storeAlerts = getNotes( ALERTS_QUERY );
 	const thingsToDoNext = applyFilters(
 		'woocommerce_admin_onboarding_task_list',
-		[]
+		[],
+		query
 	);
 	const dismissedTasks = getOption( 'woocommerce_task_list_dismissed_tasks' );
 	const storeAlertsCount = storeAlerts.length ?? 0;
@@ -127,12 +128,13 @@ function getAbbreviatedNotifications( select ) {
 export function getUnreadNotifications(
 	select,
 	setupTaskListHidden,
-	extendedTaskListHidden
+	extendedTaskListHidden,
+	query
 ) {
 	if ( ! setupTaskListHidden && extendedTaskListHidden ) {
 		return [];
 	}
-	const notifications = getAbbreviatedNotifications( select );
+	const notifications = getAbbreviatedNotifications( select, query );
 	return notifications.filter( ( { count, name } ) => {
 		const isVisible = setupTaskListHidden
 			? ! extendedTaskListHidden || name !== 'thingsToDoNext'
