@@ -14,7 +14,7 @@ class WC_Tests_RemoteInboxNotifications_Transformers_ArrayCount extends WC_Unit_
 	/**
 	 * Test it returns array count.
 	 */
-	public function test_it_returns_array_values() {
+	public function test_it_returns_array_count() {
 		$items        = array( 'one', 'two', 'three', 'four' );
 		$array_values = new Count();
 		$result       = $array_values->transform( $items );
