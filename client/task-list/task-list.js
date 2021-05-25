@@ -53,7 +53,24 @@ export const TaskList = ( {
 		possiblyTrackCompletedTasks();
 	}, [ query ] );
 
-	const [ currentTask, setCurrentTask ] = useState( false );
+	const visibleTasks = tasks.filter(
+		( task ) => task.visible && ! dismissedTasks.includes( task.key )
+	);
+
+	const completedTaskKeys = visibleTasks
+		.filter( ( task ) => task.completed )
+		.map( ( task ) => task.key );
+
+	const incompleteTasks = tasks.filter(
+		( task ) =>
+			task.visible &&
+			! task.completed &&
+			! dismissedTasks.includes( task.key )
+	);
+
+	const [ currentTask, setCurrentTask ] = useState(
+		incompleteTasks[ 0 ]?.key
+	);
 
 	const possiblyCompleteTaskList = () => {
 		const taskListVariableName = `woocommerce_${ name }_complete`;
@@ -66,8 +83,8 @@ export const TaskList = ( {
 		}
 
 		if (
-			( ! getIncompleteTasks().length && ! isComplete ) ||
-			( getIncompleteTasks().length && isComplete )
+			( ! incompleteTasks.length && ! isComplete ) ||
+			( incompleteTasks.length && isComplete )
 		) {
 			updateOptions( {
 				...taskListToComplete,
@@ -75,26 +92,11 @@ export const TaskList = ( {
 		}
 	};
 
-	const getCompletedTaskKeys = () => {
-		return getVisibleTasks()
-			.filter( ( task ) => task.completed )
-			.map( ( task ) => task.key );
-	};
-
-	const getIncompleteTasks = () => {
-		return tasks.filter(
-			( task ) =>
-				task.visible &&
-				! task.completed &&
-				! dismissedTasks.includes( task.key )
-		);
-	};
-
 	const getTrackedIncompletedTasks = (
 		partialCompletedTasks,
 		allTrackedTask
 	) => {
-		return getVisibleTasks()
+		return visibleTasks
 			.filter(
 				( task ) =>
 					allTrackedTask.includes( task.key ) &&
@@ -104,7 +106,6 @@ export const TaskList = ( {
 	};
 
 	const possiblyTrackCompletedTasks = () => {
-		const completedTaskKeys = getCompletedTaskKeys();
 		const trackedCompletedTasks = getTrackedCompletedTasks(
 			completedTaskKeys,
 			totalTrackedCompletedTasks
@@ -162,12 +163,6 @@ export const TaskList = ( {
 		} );
 	};
 
-	const getVisibleTasks = () => {
-		return tasks.filter(
-			( task ) => task.visible && ! dismissedTasks.includes( task.key )
-		);
-	};
-
 	const recordTaskListView = () => {
 		if ( query.task ) {
 			return;
@@ -175,8 +170,6 @@ export const TaskList = ( {
 
 		const isCoreTaskList = name === 'task_list';
 		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
-
-		const visibleTasks = getVisibleTasks();
 
 		recordEvent( `${ taskListName }_view`, {
 			number_tasks: visibleTasks.length,
@@ -198,8 +191,8 @@ export const TaskList = ( {
 
 		recordEvent( `${ taskListName }_completed`, {
 			action,
-			completed_task_count: getCompletedTaskKeys().length,
-			incomplete_task_count: getIncompleteTasks().length,
+			completed_task_count: completedTaskKeys.length,
+			incomplete_task_count: incompleteTasks.length,
 		} );
 		updateOptions( {
 			...updateOptionsParams,
@@ -225,7 +218,7 @@ export const TaskList = ( {
 		);
 	};
 
-	const listTasks = getVisibleTasks().map( ( task ) => {
+	const listTasks = visibleTasks.map( ( task ) => {
 		if ( ! task.onClick ) {
 			task.onClick = ( e ) => {
 				if ( e.target.nodeName === 'A' ) {
@@ -279,7 +272,7 @@ export const TaskList = ( {
 					<CardHeader size="medium">
 						<div className="wooocommerce-task-card__header">
 							<Text variant="title.small">{ listTitle }</Text>
-							<Badge count={ getIncompleteTasks().length } />
+							<Badge count={ incompleteTasks.length } />
 						</div>
 						{ renderMenu() }
 					</CardHeader>
