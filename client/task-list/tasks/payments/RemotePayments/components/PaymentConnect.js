@@ -1,105 +1,79 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
-import interpolateComponents from 'interpolate-components';
+import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import {
-	Link,
-	SettingsForm,
-	WooRemotePaymentSettings,
-	Spinner,
-} from '@woocommerce/components';
-import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-import { useSlot, Text } from '@woocommerce/experimental';
+import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
+import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
+import { useSlot } from '@woocommerce/experimental';
+
+/**
+ * Internal dependencies
+ */
+import sanitizeHTML from '~/lib/sanitize-html';
 
 export const PaymentConnect = ( {
 	markConfigured,
-	method,
+	paymentGateway,
 	recordConnectStartEvent,
 } ) => {
 	const {
-		api_details_url: apiDetailsUrl,
-		fields: fieldsConfig,
-		key,
+		id,
+		oauth_connection_url: oAuthConnectionUrl,
+		setup_help_text: setupHelpText,
+		required_settings_keys: settingKeys,
+		settings,
+		settings_url: settingsUrl,
 		title,
-	} = method;
+	} = paymentGateway;
 
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
-	const slot = useSlot( `woocommerce_remote_payment_settings_${ key }` );
+	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
+	const slot = useSlot( `woocommerce_remote_payment_form_${ id }` );
 	const hasFills = Boolean( slot?.fills?.length );
-	const [ state, setState ] = useState( 'loading' );
-	const [ fields, setFields ] = useState( null );
+	const fields = settingKeys
+		? settingKeys
+				.map( ( settingKey ) => settings[ settingKey ] )
+				.filter( Boolean )
+		: [];
 
-	// This transform will be obsolete when we can derive essential fields from the API
-	const settingsTransform = ( settings ) => {
-		const essentialFields = fieldsConfig.map( ( field ) => field.name );
-
-		return Object.values( settings ).filter( ( setting ) =>
-			essentialFields.includes( setting.id )
+	const { isUpdating } = useSelect( ( select ) => {
+		const { isPaymentGatewayUpdating } = select(
+			PAYMENT_GATEWAYS_STORE_NAME
 		);
-	};
 
-	// TODO: Will soon be replaced with the payments data store implemented in #6918
-	useEffect( () => {
-		apiFetch( {
-			path: `/wc/v3/payment_gateways/${ key }/`,
-		} )
-			.then( ( results ) => {
-				setFields( settingsTransform( results.settings ) );
-				setState( 'loaded' );
-			} )
-			.catch( ( e ) => {
-				setState( 'error' );
-				/* eslint-disable no-console */
-				console.error(
-					`Error fetching information for payment gateway ${ key }`,
-					e.message
-				);
-				/* eslint-enable no-console */
-			} );
-	}, [] );
-
-	const isOptionsRequesting = useSelect( ( select ) => {
-		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
-
-		return isOptionsUpdating();
+		return {
+			isUpdating: isPaymentGatewayUpdating(),
+		};
 	} );
 
-	const updateSettings = async ( values ) => {
-		const options = {};
+	const handleSubmit = ( values ) => {
+		recordConnectStartEvent( id );
 
-		fields.forEach( ( field ) => {
-			const optionName = field.option || field.name;
-			options[ optionName ] = values[ field.name ];
-		} );
-
-		if ( ! Object.keys( options ).length ) {
-			return;
-		}
-
-		const update = await updateOptions( {
-			...options,
-		} );
-
-		if ( update.success ) {
-			markConfigured( key );
-			createNotice(
-				'success',
-				title + __( ' connected successfully', 'woocommerce-admin' )
-			);
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your payment settings',
-					'woocommerce-admin'
-				)
-			);
-		}
+		updatePaymentGateway( id, {
+			enabled: true,
+			settings: values,
+		} )
+			.then( ( result ) => {
+				if ( result && result.id === id ) {
+					markConfigured( id );
+					createNotice(
+						'success',
+						title +
+							__( ' connected successfully', 'woocommerce-admin' )
+					);
+				}
+			} )
+			.catch( () => {
+				createNotice(
+					'error',
+					__(
+						'There was a problem saving your payment settings',
+						'woocommerce-admin'
+					)
+				);
+			} );
 	};
 
 	const validate = ( values ) => {
@@ -107,82 +81,75 @@ export const PaymentConnect = ( {
 		const getField = ( fieldId ) =>
 			fields.find( ( field ) => field.id === fieldId );
 
-		for ( const [ valueKey, value ] of Object.entries( values ) ) {
-			const field = getField( valueKey );
+		for ( const [ fieldKey, value ] of Object.entries( values ) ) {
+			const field = getField( fieldKey );
 			// Matches any word that is capitalized aside from abrevitions like ID.
 			const label = field.label.replace( /([A-Z][a-z]+)/g, ( val ) =>
 				val.toLowerCase()
 			);
 
-			if ( ! value ) {
-				errors[ valueKey ] = `Please enter your ${ label }`;
+			if ( ! ( value || field.type === 'checkbox' ) ) {
+				errors[ fieldKey ] = `Please enter your ${ label }`;
 			}
 		}
 
 		return errors;
 	};
 
-	const helpText = interpolateComponents( {
-		mixedString: __(
-			'Your API details can be obtained from your {{link/}}',
-			'woocommerce-admin'
-		),
-		components: {
-			link: (
-				<Link href={ apiDetailsUrl } target="_blank" type="external">
-					{ sprintf( __( '%(title)s account', 'woocommerce-admin' ), {
-						title,
-					} ) }
-				</Link>
-			),
-		},
-	} );
-
-	const DefaultSettings = ( props ) => (
-		<SettingsForm
+	const helpText = setupHelpText && (
+		<p dangerouslySetInnerHTML={ sanitizeHTML( setupHelpText ) } />
+	);
+	const DefaultForm = ( props ) => (
+		<DynamicForm
 			fields={ fields }
-			isBusy={ isOptionsRequesting }
-			onSubmit={ updateSettings }
-			onButtonClick={ () => recordConnectStartEvent( key ) }
-			buttonLabel={ __( 'Proceed', 'woocommerce-admin' ) }
+			isBusy={ isUpdating }
+			onSubmit={ handleSubmit }
+			submitLabel={ __( 'Proceed', 'woocommerce-admin' ) }
 			validate={ validate }
 			{ ...props }
 		/>
 	);
 
-	if ( state === 'error' ) {
+	if ( hasFills ) {
 		return (
-			<Text>
-				{
-					( __( 'There was an error loading the payment fields' ),
-					'woocommerce-admin' )
-				}
-			</Text>
+			<WooRemotePaymentForm.Slot
+				fillProps={ {
+					defaultForm: DefaultForm,
+					defaultSubmit: handleSubmit,
+					defaultFields: fields,
+					markConfigured: () => markConfigured( id ),
+				} }
+				id={ id }
+			/>
 		);
 	}
 
-	if ( state === 'loading' ) {
-		return <Spinner />;
+	if ( oAuthConnectionUrl ) {
+		return (
+			<>
+				{ helpText }
+				<Button isPrimary href={ oAuthConnectionUrl }>
+					{ __( 'Connect', 'woocommerce-admin' ) }
+				</Button>
+			</>
+		);
+	}
+
+	if ( fields.length ) {
+		return (
+			<>
+				{ helpText }
+				<DefaultForm />
+			</>
+		);
 	}
 
 	return (
 		<>
-			{ hasFills ? (
-				<WooRemotePaymentSettings.Slot
-					fillProps={ {
-						defaultSettings: DefaultSettings,
-						defaultSubmit: updateSettings,
-						defaultFields: fields,
-						markConfigured: () => markConfigured( key ),
-					} }
-					id={ key }
-				/>
-			) : (
-				<>
-					<DefaultSettings />
-					<p>{ helpText }</p>
-				</>
-			) }
+			{ helpText }
+			<Button isPrimary href={ settingsUrl }>
+				{ __( 'Manage', 'woocommerce-admin' ) }
+			</Button>
 		</>
 	);
 };

@@ -41,6 +41,10 @@ class OptionRuleProcessor implements RuleProcessorInterface {
 			$option_value = array();
 		}
 
+		if ( isset( $rule->transformers ) && is_array( $rule->transformers ) ) {
+			$option_value = TransformerService::apply( $option_value, $rule->transformers, $rule->default );
+		}
+
 		return ComparisonOperation::compare(
 			$option_value,
 			$rule->value,
@@ -66,6 +70,15 @@ class OptionRuleProcessor implements RuleProcessorInterface {
 
 		if ( ! isset( $rule->operation ) ) {
 			return false;
+		}
+
+		if ( isset( $rule->transformers ) && is_array( $rule->transformers ) ) {
+			foreach ( $rule->transformers as $transform_args ) {
+				$transformer = TransformerService::create_transformer( $transform_args->use );
+				if ( ! $transformer->validate( $transform_args->arguments ) ) {
+					return false;
+				}
+			}
 		}
 
 		return true;
