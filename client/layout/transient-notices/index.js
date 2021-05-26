@@ -19,7 +19,7 @@ const QUEUED_NOTICE_FILTER = 'woocommerce_admin_queued_notice_filter';
 
 function TransientNotices( props ) {
 	const { createNotice, removeNotice: onRemove } = useDispatch(
-		'core/notices2'
+		'core/notices'
 	);
 	const { removeNotice: onRemove2 } = useDispatch( 'core/notices2' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
