@@ -3084,7 +3084,7 @@ a.woocommerce-list__item {
   background: #f0f0f0;
   color: #757575;
   display: flex;
-  height: calc( 			16px + 1.1375rem + 1px + ( 32px + 1.1375rem + 1px ) * var( --number-of-rows ) 		);
+  height: calc(16px + 1.1375rem + 1px + ( 32px + 1.1375rem + 1px ) * var(--number-of-rows));
   justify-content: center;
   padding: 16px;
   text-align: center;
