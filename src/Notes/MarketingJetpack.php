@@ -23,10 +23,14 @@ class MarketingJetpack {
 	// Shared Note Traits.
 	use NoteTraits;
 
-	// Name of the note for use in the database.
+	/**
+	 * Name of the note for use in the database.
+	 */
 	const NOTE_NAME = 'wc-admin-marketing-jetpack-backup';
 
-	// Product IDs that include Backup
+	/**
+	 * Product IDs that include Backup.
+	 */
 	const BACKUP_IDS = [
 		2010,
 		2011,
@@ -57,7 +61,6 @@ class MarketingJetpack {
 		if ( ! in_array( 'jetpack', $installed_plugins, true ) ) {
 			return;
 		}
-
 
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
@@ -116,20 +119,18 @@ class MarketingJetpack {
 	 * @return boolean  Whether or not this blog has backups.
 	 */
 	protected static function has_backups() {
-		$products = get_option( 'jetpack_site_products' );
-
-		if ( empty( $products ) ) {
-			return false;
-		}
-
 		$product_ids = [];
-		foreach ( $products as $product ) {
-			$product_ids[] = $product['product_id'];
-		}
 
 		$plan = get_option( 'jetpack_active_plan' );
 		if ( ! empty( $plan ) ) {
 			$product_ids[] = $plan['product_id'];
+		}
+
+		$products = get_option( 'jetpack_site_products' );
+		if ( ! empty( $products ) ) {
+			foreach ( $products as $product ) {
+				$product_ids[] = $product['product_id'];
+			}
 		}
 
 		return (bool) array_intersect( self::BACKUP_IDS, $product_ids );
