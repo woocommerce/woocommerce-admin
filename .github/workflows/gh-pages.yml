@@ -18,7 +18,7 @@ jobs:
               run: |
                   npm i
                   npm run build
-                  npx build-storybook -o ./docs/components/storybook
+                  npm run docs
 
             - name: Deploy docs
               uses: peaceiris/actions-gh-pages@v3

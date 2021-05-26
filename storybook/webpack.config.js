@@ -2,9 +2,6 @@
  * External dependencies
  */
 const path = require( 'path' );
-const postcssPlugins = require( '@wordpress/postcss-plugins-preset' );
-const MiniCssExtractPlugin = require( '@automattic/mini-css-extract-plugin-with-rtl' );
-const WebpackRTLPlugin = require( 'webpack-rtl-plugin' );
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
 
 /**
@@ -25,14 +22,7 @@ const wcAdminPackages = [
 ];
 
 module.exports = ( storybookConfig ) => {
-	storybookConfig.module.rules.push(
-		{
-			test: /\/stories\/.+\.js$/,
-			loaders: [ require.resolve( '@storybook/source-loader' ) ],
-			enforce: 'pre',
-		},
-		...wcAdminWebpackConfig.module.rules
-	);
+	storybookConfig.module.rules.push( ...wcAdminWebpackConfig.module.rules );
 
 	storybookConfig.resolve.alias = wcAdminWebpackConfig.resolve.alias;
 

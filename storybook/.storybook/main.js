@@ -3,18 +3,14 @@ const webpackOverride = require( '../webpack.config' );
 module.exports = {
 	stories: [
 		// WooCommerce Admin / @woocommerce/components components
-		'../../packages/components/src/**/stories/*.@(js|ts|tsx)',
+		'../../packages/components/src/**/stories/*.@(js|tsx)',
 		// WooCommerce Admin / @woocommerce/experimental components
-		'../../packages/experimental/src/**/stories/*.@(js|ts|tsx)',
+		'../../packages/experimental/src/**/stories/*.@(js|tsx)',
 		'../../client/**/stories/*.js',
 	],
 	addons: [
-		{
-			name: '@storybook/addon-docs',
-			options: { configureJSX: true },
-		},
+		'@storybook/addon-docs',
 		'@storybook/addon-knobs',
-		'@storybook/addon-storysource',
 		'@storybook/addon-viewport',
 		'@storybook/addon-a11y',
 		'@storybook/addon-actions',

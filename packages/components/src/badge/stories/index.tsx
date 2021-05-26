@@ -2,19 +2,26 @@
  * External dependencies
  */
 import { Card, CardBody } from '@wordpress/components';
+import { Story } from '@storybook/react';
 
 /**
  * Internal dependencies
  */
-import { Badge } from '../';
+import { Badge, BadgeProps } from '../';
 
-export const Basic = () => (
+const Template: Story< BadgeProps > = ( args ) => (
 	<Card>
 		<CardBody>
-			<Badge count={ 15 } />
+			<Badge { ...args } />
 		</CardBody>
 	</Card>
 );
+
+export const Primary = Template.bind( {} );
+
+Primary.args = {
+	count: 15,
+};
 
 export default {
 	title: 'WooCommerce Admin/components/Badge',
