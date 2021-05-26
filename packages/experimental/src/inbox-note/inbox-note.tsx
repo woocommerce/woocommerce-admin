@@ -212,9 +212,9 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 
 		return (
 			<>
-				{ noteActions.map( ( action, index ) => (
+				{ noteActions.map( ( action ) => (
 					<InboxNoteActionButton
-						key={ index }
+						key={ action.id }
 						label={ action.label }
 						href={
 							action && action.url && action.url.length

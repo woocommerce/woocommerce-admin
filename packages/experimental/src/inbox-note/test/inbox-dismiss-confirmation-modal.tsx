@@ -10,7 +10,7 @@ import userEvent from '@testing-library/user-event';
 import { InboxDismissConfirmationModal } from '../inbox-dismiss-confirmation-modal';
 
 describe( 'InboxDismissConfirmationModal', () => {
-	it( 'should render with default button label - Yes, Iam sure', () => {
+	it( "should render with default button label - Yes, I'am sure", () => {
 		const { queryByText } = render(
 			<InboxDismissConfirmationModal
 				onClose={ jest.fn() }

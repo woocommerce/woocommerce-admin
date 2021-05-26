@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, _n } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
 import { EmptyContent, Section } from '@woocommerce/components';
 import {
@@ -174,7 +174,7 @@ const InboxPanel = () => {
 		setDismiss( { note, type } );
 	};
 
-	const closeDismissModal = ( confirmed = false ) => {
+	const closeDismissModal = async ( confirmed = false ) => {
 		const noteNameDismissAll = dismiss.type === 'all' ? true : false;
 		const screen = getScreenName();
 
@@ -188,79 +188,59 @@ const InboxPanel = () => {
 
 		if ( confirmed ) {
 			const noteId = dismiss.note.id;
-			if ( noteId && ! noteNameDismissAll ) {
-				removeNote( noteId )
-					.then( () => {
-						createNotice(
-							'success',
-							__( 'Message dismissed', 'woocommerce-admin' ),
+			const removeAll = ! noteId || noteNameDismissAll;
+			try {
+				let notesRemoved = [];
+				if ( removeAll ) {
+					notesRemoved = await removeAllNotes();
+				} else {
+					const noteRemoved = await removeNote( noteId );
+					notesRemoved = [ noteRemoved ];
+				}
+				setDismiss( undefined );
+				createNotice(
+					'success',
+					notesRemoved.length > 1
+						? __( 'All messages dismissed', 'woocommerce-admin' )
+						: __( 'Message dismissed', 'woocommerce-admin' ),
+					{
+						actions: [
 							{
-								actions: [
-									{
-										label: __(
-											'Undo',
-											'woocommerce-admin'
-										),
-										onClick: () => {
-											updateNote( noteId, {
+								label: __( 'Undo', 'woocommerce-admin' ),
+								onClick: () => {
+									if ( notesRemoved.length > 1 ) {
+										batchUpdateNotes(
+											notesRemoved.map(
+												( note ) => note.id
+											),
+											{
 												is_deleted: 0,
-											} );
-										},
-									},
-								],
-							}
-						);
-					} )
-					.catch( () => {
-						createNotice(
-							'error',
-							__(
-								'Message could not be dismissed',
-								'woocommerce-admin'
-							)
-						);
-					} );
-			} else {
-				removeAllNotes()
-					.then( ( notesRemoved ) => {
-						createNotice(
-							'success',
-							__( 'All messages dismissed', 'woocommerce-admin' ),
-							{
-								actions: [
-									{
-										label: __(
-											'Undo',
-											'woocommerce-admin'
-										),
-										onClick: () => {
-											batchUpdateNotes(
-												notesRemoved.map(
-													( note ) => note.id
-												),
-												{
-													is_deleted: 0,
-												}
-											);
-										},
-									},
-								],
-							}
-						);
-					} )
-					.catch( () => {
-						createNotice(
-							'error',
-							__(
-								'Message could not be dismissed',
-								'woocommerce-admin'
-							)
-						);
-					} );
+											}
+										);
+									} else {
+										updateNote( noteId, {
+											is_deleted: 0,
+										} );
+									}
+								},
+							},
+						],
+					}
+				);
+			} catch ( e ) {
+				const numberOfNotes = removeAll ? notes.length : 1;
+				createNotice(
+					'error',
+					_n(
+						'Message could not be dismissed',
+						'Messages could not be dismissed',
+						numberOfNotes,
+						'woocommerce-admin'
+					)
+				);
+				setDismiss( undefined );
 			}
 		}
-
-		setDismiss( undefined );
 	};
 
 	const onNoteActionClick = ( note, action ) => {
