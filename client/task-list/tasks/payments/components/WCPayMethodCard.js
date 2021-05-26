@@ -7,11 +7,10 @@ import {
 	WCPayCardFooter,
 	WCPayCardBody,
 	SetupRequired,
-	RecommendedRibbon,
 } from '@woocommerce/tasks';
 import { __ } from '@wordpress/i18n';
 import { Text } from '@woocommerce/experimental';
-import { Link } from '@woocommerce/components';
+import { Link, Pill } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 import interpolateComponents from 'interpolate-components';
 
@@ -71,7 +70,11 @@ const CardHeader = ( { isEnabled } ) => (
 		headerComponent={
 			isEnabled
 				? SetupRequired
-				: () => <RecommendedRibbon isPill={ true } />
+				: () => (
+						<Pill>
+							{ __( 'Recommended', 'woocommerce-admin' ) }
+						</Pill>
+				  )
 		}
 	/>
 );
