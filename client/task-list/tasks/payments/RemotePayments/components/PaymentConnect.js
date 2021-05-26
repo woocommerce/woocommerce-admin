@@ -21,7 +21,7 @@ export const PaymentConnect = ( {
 	const {
 		key,
 		oauth_connection_url: oAuthConnectionUrl,
-		setup_help_text: helpText,
+		setup_help_text: setupHelpText,
 		required_settings_keys: settingKeys,
 		settings,
 		settings_url: settingsUrl,
@@ -33,7 +33,9 @@ export const PaymentConnect = ( {
 	const slot = useSlot( `woocommerce_remote_payment_form_${ key }` );
 	const hasFills = Boolean( slot?.fills?.length );
 	const fields = settingKeys
-		? settingKeys.map( ( settingKey ) => settings[ settingKey ] )
+		? settingKeys
+				.map( ( settingKey ) => settings[ settingKey ] )
+				.filter( Boolean )
 		: [];
 
 	const isOptionsRequesting = useSelect( ( select ) => {
@@ -97,6 +99,9 @@ export const PaymentConnect = ( {
 		return errors;
 	};
 
+	const helpText = setupHelpText && (
+		<p dangerouslySetInnerHTML={ sanitizeHTML( setupHelpText ) } />
+	);
 	const DefaultForm = ( props ) => (
 		<DynamicForm
 			fields={ fields }
@@ -125,12 +130,10 @@ export const PaymentConnect = ( {
 	if ( oAuthConnectionUrl ) {
 		return (
 			<>
+				{ helpText }
 				<Button isPrimary href={ oAuthConnectionUrl }>
 					{ __( 'Connect', 'woocommerce-admin' ) }
 				</Button>
-				{ helpText && (
-					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
-				) }
 			</>
 		);
 	}
@@ -138,17 +141,18 @@ export const PaymentConnect = ( {
 	if ( fields.length ) {
 		return (
 			<>
+				{ helpText }
 				<DefaultForm />
-				{ helpText && (
-					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
-				) }
 			</>
 		);
 	}
 
 	return (
-		<Button isPrimary href={ settingsUrl }>
-			{ __( 'Manage', 'woocommerce-admin' ) }
-		</Button>
+		<>
+			{ helpText }
+			<Button isPrimary href={ settingsUrl }>
+				{ __( 'Manage', 'woocommerce-admin' ) }
+			</Button>
+		</>
 	);
 };
