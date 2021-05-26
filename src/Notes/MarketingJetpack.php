@@ -26,6 +26,26 @@ class MarketingJetpack {
 	// Name of the note for use in the database.
 	const NOTE_NAME = 'wc-admin-marketing-jetpack-backup';
 
+	// Product IDs that include Backup
+	const BACKUP_IDS = [
+		2010,
+		2011,
+		2012,
+		2013,
+		2014,
+		2015,
+		2100,
+		2101,
+		2102,
+		2103,
+		2005,
+		2006,
+		2000,
+		2003,
+		2001,
+		2004,
+	];
+
 	/**
 	 * Maybe add a note on Jetpack Backups for Jetpack sites older than a week without Backups.
 	 */
@@ -38,10 +58,6 @@ class MarketingJetpack {
 			return;
 		}
 
-		// Check other requirements.
-		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || ! self::can_be_added() || self::has_backups() ) {
-			return;
-		}
 
 		$data_store = \WC_Data_Store::load( 'admin-note' );
 
@@ -61,6 +77,11 @@ class MarketingJetpack {
 				$note->save();
 			}
 
+			return;
+		}
+
+		// Check requirements.
+		if ( ! self::wc_admin_active_for( WEEK_IN_SECONDS ) || ! self::can_be_added() || self::has_backups() ) {
 			return;
 		}
 
@@ -90,16 +111,28 @@ class MarketingJetpack {
 	}
 
 	/**
-	 * Check if the Jetpack Backups module is active.
+	 * Check if this blog already has a Jetpack Backups product.
 	 *
-	 * @return boolean  Whether or not the Backups module is active.
+	 * @return boolean  Whether or not this blog has backups.
 	 */
 	protected static function has_backups() {
-		if ( \Jetpack::is_module_active( 'backup' ) ) {
-			return true;
+		$products = get_option( 'jetpack_site_products' );
+
+		if ( empty( $products ) ) {
+			return false;
 		}
 
-		return false;
+		$product_ids = [];
+		foreach ( $products as $product ) {
+			$product_ids[] = $product['product_id'];
+		}
+
+		$plan = get_option( 'jetpack_active_plan' );
+		if ( ! empty( $plan ) ) {
+			$product_ids[] = $plan['product_id'];
+		}
+
+		return (bool) array_intersect( self::BACKUP_IDS, $product_ids );
 	}
 
 }
