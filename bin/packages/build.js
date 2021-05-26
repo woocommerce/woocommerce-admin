@@ -136,6 +136,7 @@ async function buildScssFile( styleFile ) {
 		file: styleFile,
 		includePaths: [
 			path.resolve( __dirname, '../../client/stylesheets/abstracts' ),
+			path.resolve( __dirname, '../../node_modules' ),
 		],
 		data:
 			[ 'colors', 'variables', 'breakpoints', 'mixins' ]
