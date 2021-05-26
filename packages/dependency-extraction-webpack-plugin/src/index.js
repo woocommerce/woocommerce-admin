@@ -25,7 +25,7 @@ const wooRequestToExternal = ( request, excludedExternals ) => {
 			settings: [ 'wc', 'wcSettings' ],
 		};
 
-		if ( ( excludedExternals || [] ).includes( handle ) ) {
+		if ( ( excludedExternals || [] ).includes( request ) ) {
 			return;
 		}
 
@@ -69,7 +69,7 @@ class DependencyExtractionWebpackPlugin extends WPDependencyExtractionWebpackPlu
 		) {
 			externalRequest = wooRequestToExternal(
 				request,
-				this.options.excludedExternals || []
+				this.options.bundledPackages || []
 			);
 		}
 

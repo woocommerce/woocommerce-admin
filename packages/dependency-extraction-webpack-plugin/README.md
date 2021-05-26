@@ -42,17 +42,17 @@ An object can be passed to the constructor to customize the behavior, for exampl
 module.exports = {
 	plugins: [
 		new WooCommerceDependencyExtractionWebpackPlugin( {
-			excludedExternals: [ 'components' ],
+			bundledPackages: [ '@woocommerce/components' ],
 		} ),
 	],
 };
 ```
 
-##### `excludedExternals`
+##### `bundledPackages`
 
 -   Type: array
 -   Default: []
 
-A list of potential WooCommerce excluded packages, this will include the excluded package within the bundle.
+A list of potential WooCommerce excluded packages, this will include the excluded package within the bundle (example above).
 
 For more supported options see the original [dependency extraction plugin](https://github.com/WordPress/gutenberg/blob/trunk/packages/dependency-extraction-webpack-plugin/README.md#options).
