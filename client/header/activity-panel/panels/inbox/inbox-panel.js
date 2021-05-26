@@ -3,16 +3,22 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@woocommerce/experimental';
+import { recordEvent } from '@woocommerce/tracks';
+import { AbbreviatedCard } from '@woocommerce/components';
 
 /**
  * Internal dependencies
  */
 import './inbox.scss';
 import NotesPanel from '../../../../inbox-panel';
-import { AbbreviatedCard } from './abbreviated-card';
 import { cards } from './cards';
 
 export const InboxPanel = ( { notifications } ) => {
+	const trackAbbreviatedCardClick = ( name ) => {
+		recordEvent( 'activity_panel_click', {
+			task: name,
+		} );
+	};
 	const getCardByName = ( name ) => {
 		return cards.find( ( card ) => card.name === name );
 	};
@@ -24,29 +30,20 @@ export const InboxPanel = ( { notifications } ) => {
 				? __( '%d critical alerts', 'woocommerce-admin' )
 				: __( '%d critical alert', 'woocommerce-admin' );
 		return (
-			<span className={ 'woocommerce-abbreviated-card__critical-alert' }>
+			<span
+				className={
+					'woocommerce-abbreviated-notification__critical-alert'
+				}
+			>
 				{ sprintf( criticalAlertText, critical ) }
 			</span>
 		);
 	};
 
-	const getContentToShow = ( content, count, critical = 0 ) => {
-		const text = sprintf( content, count );
-		if ( critical ) {
-			return (
-				<div>
-					<Text> { text } </Text>
-					{ addCriticalAlert( critical ) }
-				</div>
-			);
-		}
-		return text;
-	};
-
 	return (
 		<div className="woocommerce-notification-panels">
 			{ notifications.length > 0 && (
-				<div className="woocommerce-abbreviated-cards">
+				<div className="woocommerce-abbreviated-notifications">
 					{ notifications.map( ( { count, critical, name } ) => {
 						const card = getCardByName( name );
 						if ( ! card ) {
@@ -55,17 +52,18 @@ export const InboxPanel = ( { notifications } ) => {
 						const { content, href, icon, title } = card;
 						return (
 							<AbbreviatedCard
-								content={ getContentToShow(
-									content,
-									count,
-									critical
-								) }
+								className="woocommerce-abbreviated-notification"
 								icon={ icon }
 								href={ href }
 								key={ name }
-								name={ name }
-								title={ title }
-							/>
+								onClick={ () =>
+									trackAbbreviatedCardClick( name )
+								}
+							>
+								<Text as="h3">{ title }</Text>
+								<Text>{ sprintf( content, count ) }</Text>
+								{ critical && addCriticalAlert( critical ) }
+							</AbbreviatedCard>
 						);
 					} ) }
 				</div>
