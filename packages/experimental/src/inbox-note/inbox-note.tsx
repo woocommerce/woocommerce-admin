@@ -14,6 +14,7 @@ import { sanitize } from 'dompurify';
  * Internal dependencies
  */
 import InboxNoteActionButton from './action';
+import { useCallbackOnLinkClick } from './use-callback-on-link-click';
 
 const ALLOWED_TAGS = [ 'a', 'b', 'em', 'i', 'strong', 'p', 'br' ];
 const ALLOWED_ATTR = [ 'target', 'href', 'rel', 'name', 'download' ];
@@ -71,17 +72,11 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 	const [ clickedActionText, setClickedActionText ] = useState( false );
 	const hasBeenSeen = useRef( false );
 	const toggleButtonRef = useRef< HTMLButtonElement >( null );
-
-	const handleBodyClick = ( event: {
-		target: EventTarget | HTMLBaseElement;
-	} ) => {
-		if ( 'href' in event.target ) {
-			const innerLink = event.target.href;
-			if ( innerLink && onBodyLinkClick ) {
-				onBodyLinkClick( note, innerLink );
-			}
+	const linkCallbackRef = useCallbackOnLinkClick( ( innerLink ) => {
+		if ( onBodyLinkClick ) {
+			onBodyLinkClick( note, innerLink );
 		}
-	};
+	} );
 
 	// Trigger a view Tracks event when the note is seen.
 	const onVisible = ( isVisible: boolean ) => {
@@ -275,16 +270,12 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 							{ title }
 						</H>
 						<Section className="woocommerce-inbox-message__text">
-							{ /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */ }
 							<span
 								dangerouslySetInnerHTML={ sanitizeHTML(
 									content
 								) }
-								onClick={ ( event ) =>
-									handleBodyClick( event )
-								}
+								ref={ linkCallbackRef }
 							/>
-							{ /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */ }
 						</Section>
 					</div>
 					<div className="woocommerce-inbox-message__actions">
