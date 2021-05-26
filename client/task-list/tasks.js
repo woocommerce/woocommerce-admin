@@ -94,10 +94,11 @@ export function getAllTasks( {
 		businessExtensions || []
 	).includes( 'woocommerce-payments' );
 
-	let purchaseAndInstallText = __(
+	let purchaseAndInstallTitle = __(
 		'Add paid extensions to my store',
 		'woocommerce-admin'
 	);
+	let purchaseAndInstallContent;
 
 	if ( uniqueItemsList.length === 1 ) {
 		const { name: itemName } = uniqueItemsList[ 0 ];
@@ -105,7 +106,26 @@ export function getAllTasks( {
 			'Add %s to my store',
 			'woocommerce-admin'
 		);
-		purchaseAndInstallText = sprintf( purchaseAndInstallFormat, itemName );
+		purchaseAndInstallTitle = sprintf( purchaseAndInstallFormat, itemName );
+		purchaseAndInstallContent = products.find(
+			( { label } ) => label === itemName
+		)?.description;
+	} else {
+		const uniqueProductNames = uniqueItemsList.map( ( { name } ) => name );
+		const lastProduct = uniqueProductNames.pop();
+		let firstProducts = uniqueProductNames.join( ', ' );
+		if ( uniqueProductNames.length > 1 ) {
+			firstProducts += ',';
+		}
+		/* translators: %1$s: list of product names comma separated, %2%s the last product name */
+		purchaseAndInstallContent = sprintf(
+			__(
+				'Good choice! You chose to add %1$s and %2$s to your store.',
+				'woocommerce-admin'
+			),
+			firstProducts,
+			lastProduct
+		);
 	}
 
 	const tasks = [
@@ -129,9 +149,10 @@ export function getAllTasks( {
 		},
 		{
 			key: 'purchase',
-			title: purchaseAndInstallText,
-			content: __( '', 'woocommerce-admin' ),
+			title: purchaseAndInstallTitle,
+			content: purchaseAndInstallContent,
 			container: null,
+			action: __( 'Purchase & install now', 'woocommerce-admin' ),
 			onClick: () => {
 				onTaskSelect( 'purchase' );
 				return remainingProducts.length ? toggleCartModal() : null;
