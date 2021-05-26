@@ -14,7 +14,7 @@ const glob = require( 'glob' );
 const babel = require( '@babel/core' );
 const chalk = require( 'chalk' );
 const mkdirp = require( 'mkdirp' );
-const sass = require( 'node-sass' );
+const sass = require( 'sass' );
 const postcss = require( 'postcss' );
 const rimraf = require( 'rimraf' );
 
