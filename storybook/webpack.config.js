@@ -52,13 +52,6 @@ module.exports = ( storybookConfig ) => {
 		'node_modules',
 	];
 
-	// storybookConfig.plugins.push(
-	// 	new MiniCssExtractPlugin( {
-	// 		filename: '[name].css',
-	// 	} ),
-	// 	new WebpackRTLPlugin()
-	// );
-
 	storybookConfig.plugins.push(
 		...wcAdminWebpackConfig.plugins,
 		new CopyWebpackPlugin( [
