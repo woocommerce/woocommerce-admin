@@ -74,12 +74,12 @@ const reducer = (
 			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_SUCCESS:
 				return updatePaymentGatewayList(
 					state,
-					payload.paymentGateway,
+					payload.paymentGateway
 				);
 			case ACTION_TYPES.GET_PAYMENT_GATEWAY_SUCCESS:
 				return updatePaymentGatewayList(
 					state,
-					payload.paymentGateway,
+					payload.paymentGateway
 				);
 
 			case ACTION_TYPES.UPDATE_PAYMENT_GATEWAY_ERROR:

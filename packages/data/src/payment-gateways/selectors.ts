@@ -31,16 +31,12 @@ export function getPaymentGatewayError(
 	return state.errors[ selector ] || null;
 }
 
-export function isPaymentGatewayUpdating(
-	state: PluginsState,
-): boolean {
+export function isPaymentGatewayUpdating( state: PluginsState ): boolean {
 	return state.isUpdating || false;
 }
 
 export type PaymentSelectors = {
 	getPaymentGateway: WPDataSelector< typeof getPaymentGateway >;
 	getPaymentGateways: WPDataSelector< typeof getPaymentGateways >;
-	isPaymentGatewayUpdating: WPDataSelector<
-		typeof isPaymentGatewayUpdating
-	>;
+	isPaymentGatewayUpdating: WPDataSelector< typeof isPaymentGatewayUpdating >;
 } & WPDataSelectors;
