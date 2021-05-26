@@ -36,9 +36,7 @@
 		color: $gray-700;
 		display: flex;
 
-		height: calc(
-			#{$header-row-height} + ( #{$row-height} ) * var( --number-of-rows )
-		);
+		height: calc(#{$header-row-height} + ( #{$row-height} ) * var(--number-of-rows));
 		justify-content: center;
 		padding: $gap;
 		text-align: center;
@@ -117,12 +115,12 @@
 
 	&::after {
 		right: 0;
-		background: linear-gradient( 90deg, rgba( $white, 0 ), $white );
+		background: linear-gradient(90deg, rgba($white, 0), $white);
 	}
 
 	&::before {
 		left: 0;
-		background: linear-gradient( 90deg, $white, rgba( $white, 0 ) );
+		background: linear-gradient(90deg, $white, rgba($white, 0));
 	}
 
 	&.is-scrollable-right::after,
@@ -176,7 +174,7 @@
 		width: 80%;
 	}
 
-	&:not( .is-left-aligned ) {
+	&:not(.is-left-aligned) {
 		text-align: right;
 
 		button {
