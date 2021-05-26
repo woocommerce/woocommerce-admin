@@ -299,7 +299,7 @@ export function getAllTasks( {
 			key: 'appearance',
 			title: __( 'Personalize my store', 'woocommerce-admin' ),
 			content: __(
-				'Add your logo, create a homepage, and start designing your storefront.',
+				'Add your logo, create a homepage, and start designing your store.',
 				'woocommerce-admin'
 			),
 			container: <Appearance />,
