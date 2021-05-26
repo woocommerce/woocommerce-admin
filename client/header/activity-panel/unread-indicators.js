@@ -30,13 +30,6 @@ const UNREAD_NOTES_QUERY = {
 	order: 'desc',
 };
 
-const ALERTS_QUERY = {
-	page: 1,
-	per_page: QUERY_DEFAULTS.pageSize,
-	type: 'error,update',
-	status: 'unactioned',
-};
-
 export function getUnreadNotes( select ) {
 	const { getNotes, getNotesError, isResolving } = select( NOTES_STORE_NAME );
 
@@ -87,23 +80,17 @@ function getIncompleteTasksCount( tasks, dismissedTasks ) {
 
 function getAbbreviatedNotifications( select, query ) {
 	const { getOption } = select( OPTIONS_STORE_NAME );
-	const { getNotes } = select( NOTES_STORE_NAME );
-	const storeAlerts = getNotes( ALERTS_QUERY );
 	const thingsToDoNext = applyFilters(
 		'woocommerce_admin_onboarding_task_list',
 		[],
 		query
 	);
 	const dismissedTasks = getOption( 'woocommerce_task_list_dismissed_tasks' );
-	const storeAlertsCount = storeAlerts.length ?? 0;
 	const orderStatuses = getOrderStatuses( select );
 	const notifications = [
 		{
 			name: 'thingsToDoNext',
-			count:
-				getIncompleteTasksCount( thingsToDoNext, dismissedTasks ) +
-				storeAlertsCount,
-			critical: storeAlertsCount,
+			count: getIncompleteTasksCount( thingsToDoNext, dismissedTasks ),
 		},
 		{
 			name: 'ordersToProcess',

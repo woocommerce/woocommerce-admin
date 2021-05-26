@@ -42,7 +42,6 @@ const notifications = [
 	{
 		name: 'notification-1',
 		count: 2,
-		critical: 1,
 	},
 	{
 		name: 'notification-2',
@@ -51,7 +50,6 @@ const notifications = [
 	{
 		name: 'notification-3',
 		count: 20,
-		critical: 19,
 	},
 ];
 
@@ -64,14 +62,6 @@ describe( 'Inbox', () => {
 		expect( getByText( 'Panel 1' ) ).toBeDefined();
 		expect( getByText( 'Panel 2' ) ).toBeDefined();
 		expect( getByText( 'Panel 3' ) ).toBeDefined();
-	} );
-	it( 'shows critical alerts', () => {
-		const { getByText } = render(
-			<InboxPanel notifications={ notifications } />
-		);
-
-		expect( getByText( '1 critical alert' ) ).toBeDefined();
-		expect( getByText( '19 critical alerts' ) ).toBeDefined();
 	} );
 	it( 'shows the notes panel only when there are no notifications', () => {
 		const { queryByText } = render( <InboxPanel notifications={ [] } /> );

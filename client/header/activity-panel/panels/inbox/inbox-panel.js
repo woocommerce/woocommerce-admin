@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { sprintf } from '@wordpress/i18n';
 import { Text } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
 import { AbbreviatedCard } from '@woocommerce/components';
@@ -23,28 +23,11 @@ export const InboxPanel = ( { notifications } ) => {
 		return cards.find( ( card ) => card.name === name );
 	};
 
-	const addCriticalAlert = ( critical ) => {
-		/* translators: Number of critical alerts */
-		const criticalAlertText =
-			critical > 1
-				? __( '%d critical alerts', 'woocommerce-admin' )
-				: __( '%d critical alert', 'woocommerce-admin' );
-		return (
-			<span
-				className={
-					'woocommerce-abbreviated-notification__critical-alert'
-				}
-			>
-				{ sprintf( criticalAlertText, critical ) }
-			</span>
-		);
-	};
-
 	return (
 		<div className="woocommerce-notification-panels">
 			{ notifications.length > 0 && (
 				<div className="woocommerce-abbreviated-notifications">
-					{ notifications.map( ( { count, critical, name } ) => {
+					{ notifications.map( ( { count, name } ) => {
 						const card = getCardByName( name );
 						if ( ! card ) {
 							return null;
@@ -62,7 +45,6 @@ export const InboxPanel = ( { notifications } ) => {
 							>
 								<Text as="h3">{ title }</Text>
 								<Text>{ sprintf( content, count ) }</Text>
-								{ critical && addCriticalAlert( critical ) }
 							</AbbreviatedCard>
 						);
 					} ) }
