@@ -140,17 +140,16 @@ export function getAllTasks( {
 		! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
 		automatedTaxSupportedCountries.includes( countryCode );
 
+	const canUseAutomatedTaxes =
+		hasCompleteAddress && woocommerceServicesActive && isTaxJarSupported;
+
 	let taxAction = __( "Let's go", 'woocommerce-admin' );
 	let taxContent = __(
 		'Set your store location and configure tax rate settings.',
 		'woocommerce-admin'
 	);
 
-	if (
-		hasCompleteAddress &&
-		woocommerceServicesActive &&
-		isTaxJarSupported
-	) {
+	if ( canUseAutomatedTaxes ) {
 		taxAction = __( 'Yes please', 'woocommerce-admin' );
 		taxContent = __(
 			'Good news! WooCommerce Services and Jetpack can automate your sales tax calculations for you.',
@@ -286,9 +285,16 @@ export function getAllTasks( {
 			content: taxContent,
 			container: <Tax />,
 			action: taxAction,
-			onClick: () => {
+			onClick: ( e, args = {} ) => {
+				// The expanded item CTA allows us to enable
+				// automated taxes for eligible stores.
+				// Note: this will be initially part of an A/B test.
+				const { isExpanded } = args;
 				onTaskSelect( 'tax' );
-				updateQueryString( { task: 'tax' } );
+				updateQueryString( {
+					task: 'tax',
+					auto: canUseAutomatedTaxes && isExpanded,
+				} );
 			},
 			completed: isTaxComplete,
 			visible: true,
