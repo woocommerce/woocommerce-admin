@@ -59,6 +59,17 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
+				'key'        => 'klarna',
+				'title'      => __( 'Klarna', 'woocommerce-admin' ),
+				'content'    => __( 'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.', 'woocommerce-admin' ),
+				'image'      => WC()->plugin_url() . '/assets/images/klarna-black.png',
+				'plugins'    => array( 'klarna-checkout-for-woocommerce' ),
+				'is_visible' => array(
+					self::get_rules_for_countries( array( 'SE', 'FI', 'NO' ) ),
+					self::get_rules_for_cbd( false ),
+				),
+			),
+			array(
 				'key'        => 'woo-mercado-pago-custom',
 				'title'      => __( 'Mercado Pago Checkout Pro & Custom', 'woocommerce-admin' ),
 				'content'    => __( 'Accept credit and debit cards, offline (cash or bank transfer) and logged-in payments with money in Mercado Pago. Safe and secure payments with the leading payment processor in LATAM.', 'woocommerce-admin' ),
