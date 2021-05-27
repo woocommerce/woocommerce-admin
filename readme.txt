@@ -92,6 +92,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Add PayPal to fallback payment gateways #7001
 - Add: Add a data store for WC Payments REST APIs #6918
 - Add: Add Paystack as fallback gateway #7025
+- Add: Add COD method to default payment gateway recommendations #7057
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
@@ -101,6 +102,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add payment method selector to onboarding store #6921
 - Dev: Add disabled prop to SelectControl #6902
 - Dev: Add filter variation to tracks data in products analytics. #6913
+- Dev: Offload remote inbox notifications engine run using action-scheduler. #6995
 - Dev: Add source param support for notes query. #6979
 - Dev: Remove the use of Dashicons and replace with @wordpress/icons or gridicons. #7020
 - Enhancement: Add expand/collapse to extendable task list. #6910
@@ -119,6 +121,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Call existing filters for leaderboards in analytics. #6626
 - Fix: Set target to blank for the external links #6999
 - Fix style regression with the Chart header. #7002
+- Fix styling of the advanced filter operator selection. #7005
 - Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
@@ -126,6 +129,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
 - Dev: Remove react-docgen docs in favor of Storybook #7055
+- Update: Hook up payments gateway data store #7038
 
 == 2.3.1 5/24/2021 ==
 - Tweak: Store profiler - Changed MailPoet's title and description #6990
