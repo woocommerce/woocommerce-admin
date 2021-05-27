@@ -155,6 +155,7 @@ export const RemotePayments = ( { query } ) => {
 	const wcPayGateway = additionalPaymentGatewayRecommendations.get(
 		'woocommerce_payments'
 	);
+
 	if ( wcPayGateway ) {
 		additionalPaymentGatewayRecommendations.delete(
 			'woocommerce_payments'
@@ -163,7 +164,15 @@ export const RemotePayments = ( { query } ) => {
 
 	return (
 		<div className="woocommerce-task-payments">
-			{ !! wcPayGateway && <WCPayMethodCard method={ wcPayGateway } /> }
+			{ !! wcPayGateway && (
+				<WCPayMethodCard
+					isEnabled={
+						'woocommerce_payments' in installedPaymentGateways &&
+						installedPaymentGateways.woocommerce_payments.enabled
+					}
+					method={ wcPayGateway }
+				/>
+			) }
 
 			{ !! enabledPaymentGatewayRecommendations.size && (
 				<RecommendedPaymentGatewayList

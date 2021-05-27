@@ -38,7 +38,8 @@ const TosPrompt = () =>
 	} );
 
 const ButtonComponent = ( {
-	method: { key: methodKey, isConfigured, isEnabled, loading, onClick },
+	method: { id: methodKey, isConfigured, loading, onClick },
+	isEnabled,
 } ) => (
 	<PaymentAction
 		methodKey={ methodKey }
@@ -54,49 +55,41 @@ const ButtonComponent = ( {
 	/>
 );
 
-const CardBody = () => (
-	<WCPayCardBody
-		description={ __(
-			'Try the new way to get paid. Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments. ',
-			'woocommerce-admin'
-		) }
-		linkOnClick={ () => {
-			recordEvent( 'tasklist_payment_learn_more' );
-		} }
-	/>
-);
-const CardHeader = ( { isEnabled } ) => (
-	<WCPayCardHeader
-		headerComponent={
-			isEnabled
-				? SetupRequired
-				: () => (
-						<Pill>
-							{ __( 'Recommended', 'woocommerce-admin' ) }
-						</Pill>
-				  )
-		}
-	/>
-);
-const CardFooter = ( { method } ) => (
-	<WCPayCardFooter
-		buttonComponent={ () => <ButtonComponent method={ method } /> }
-		tosComponent={ () => (
-			<Text>
-				<TosPrompt />
-			</Text>
-		) }
-	/>
-);
-
-export const WCPayMethodCard = ( { method } ) => {
-	const { isEnabled } = method;
+export const WCPayMethodCard = ( { method, isEnabled } ) => {
+	const { description } = method;
 
 	return (
 		<WCPayCard>
-			<CardHeader isEnabled={ isEnabled } />
-			<CardBody />
-			<CardFooter method={ method } />
+			<WCPayCardHeader
+				headerComponent={
+					isEnabled
+						? SetupRequired
+						: () => (
+								<Pill>
+									{ __( 'Recommended', 'woocommerce-admin' ) }
+								</Pill>
+						  )
+				}
+			/>
+			<WCPayCardBody
+				description={ description }
+				linkOnClick={ () => {
+					recordEvent( 'tasklist_payment_learn_more' );
+				} }
+			/>
+			<WCPayCardFooter
+				buttonComponent={ () => (
+					<ButtonComponent
+						isEnabled={ isEnabled }
+						method={ method }
+					/>
+				) }
+				tosComponent={ () => (
+					<Text>
+						<TosPrompt />
+					</Text>
+				) }
+			/>
 		</WCPayCard>
 	);
 };
