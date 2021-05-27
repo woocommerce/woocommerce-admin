@@ -16,11 +16,11 @@ import WCPayLogo from '../../images/wcpay-logo';
 export const WCPayCardHeader = ( {
 	logoWidth = 196,
 	logoHeight = 41,
-	headerComponent: HeaderComponent,
+	children,
 } ) => (
 	<CardHeader as="h2">
 		<WCPayLogo width={ logoWidth } height={ logoHeight } />
-		{ HeaderComponent && <HeaderComponent /> }
+		{ children }
 	</CardHeader>
 );
 

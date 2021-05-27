@@ -60,17 +60,14 @@ export const WCPayMethodCard = ( { method, isEnabled } ) => {
 
 	return (
 		<WCPayCard>
-			<WCPayCardHeader
-				headerComponent={
-					isEnabled
-						? SetupRequired
-						: () => (
-								<Pill>
-									{ __( 'Recommended', 'woocommerce-admin' ) }
-								</Pill>
-						  )
-				}
-			/>
+			<WCPayCardHeader>
+				{ isEnabled ? (
+					<SetupRequired />
+				) : (
+					<Pill>{ __( 'Recommended', 'woocommerce-admin' ) }</Pill>
+				) }
+			</WCPayCardHeader>
+
 			<WCPayCardBody
 				description={ description }
 				linkOnClick={ () => {
