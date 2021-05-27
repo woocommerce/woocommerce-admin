@@ -25,12 +25,12 @@ import './wordpress/css/site-icon.min.css';
 import './wordpress/css/l10n.min.css';
 import './wordpress/css/site-health.min.css';
 
-import './style.scss';
-
 addDecorator( withA11y );
 addDecorator( withKnobs );
 addDecorator( ( Story ) => (
-	<div className="woocommerce-layout woocommerce-page">
-		<Story />
+	<div id="wpwrap">
+		<div className="woocommerce-layout woocommerce-page">
+			<Story />
+		</div>
 	</div>
 ) );

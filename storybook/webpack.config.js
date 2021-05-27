@@ -57,6 +57,14 @@ module.exports = ( storybookConfig ) => {
 				to: `./component-css`,
 				flatten: true,
 			},
+			{
+				from: path.resolve(
+					__dirname,
+					`../packages/experimental/build-style/*.css`
+				),
+				to: `./experimental-css`,
+				flatten: true,
+			},
 		] )
 	);
 
