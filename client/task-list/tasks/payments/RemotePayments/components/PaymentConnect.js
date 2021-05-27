@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
-import { OPTIONS_STORE_NAME } from '@woocommerce/data';
+import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
 import { useSlot } from '@woocommerce/experimental';
 
 /**
@@ -19,62 +19,61 @@ export const PaymentConnect = ( {
 	recordConnectStartEvent,
 } ) => {
 	const {
-		key,
+		id,
 		oauth_connection_url: oAuthConnectionUrl,
-		setup_help_text: helpText,
+		setup_help_text: setupHelpText,
 		required_settings_keys: settingKeys,
 		settings,
 		settings_url: settingsUrl,
 		title,
 	} = paymentGateway;
 
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
-	const slot = useSlot( `woocommerce_remote_payment_form_${ key }` );
+	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
+	const slot = useSlot( `woocommerce_remote_payment_form_${ id }` );
 	const hasFills = Boolean( slot?.fills?.length );
 	const fields = settingKeys
-		? settingKeys.map( ( settingKey ) => settings[ settingKey ] )
+		? settingKeys
+				.map( ( settingKey ) => settings[ settingKey ] )
+				.filter( Boolean )
 		: [];
 
-	const isOptionsRequesting = useSelect( ( select ) => {
-		const { isOptionsUpdating } = select( OPTIONS_STORE_NAME );
+	const { isUpdating } = useSelect( ( select ) => {
+		const { isPaymentGatewayUpdating } = select(
+			PAYMENT_GATEWAYS_STORE_NAME
+		);
 
-		return isOptionsUpdating();
+		return {
+			isUpdating: isPaymentGatewayUpdating(),
+		};
 	} );
 
-	const updateSettings = async ( values ) => {
-		recordConnectStartEvent( key );
+	const handleSubmit = ( values ) => {
+		recordConnectStartEvent( id );
 
-		const options = {};
-
-		fields.forEach( ( field ) => {
-			const optionName = field.option || field.name;
-			options[ optionName ] = values[ field.name ];
-		} );
-
-		if ( ! Object.keys( options ).length ) {
-			return;
-		}
-
-		const update = await updateOptions( {
-			...options,
-		} );
-
-		if ( update.success ) {
-			markConfigured( key );
-			createNotice(
-				'success',
-				title + __( ' connected successfully', 'woocommerce-admin' )
-			);
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your payment settings',
-					'woocommerce-admin'
-				)
-			);
-		}
+		updatePaymentGateway( id, {
+			enabled: true,
+			settings: values,
+		} )
+			.then( ( result ) => {
+				if ( result && result.id === id ) {
+					markConfigured( id );
+					createNotice(
+						'success',
+						title +
+							__( ' connected successfully', 'woocommerce-admin' )
+					);
+				}
+			} )
+			.catch( () => {
+				createNotice(
+					'error',
+					__(
+						'There was a problem saving your payment settings',
+						'woocommerce-admin'
+					)
+				);
+			} );
 	};
 
 	const validate = ( values ) => {
@@ -97,11 +96,14 @@ export const PaymentConnect = ( {
 		return errors;
 	};
 
+	const helpText = setupHelpText && (
+		<p dangerouslySetInnerHTML={ sanitizeHTML( setupHelpText ) } />
+	);
 	const DefaultForm = ( props ) => (
 		<DynamicForm
 			fields={ fields }
-			isBusy={ isOptionsRequesting }
-			onSubmit={ updateSettings }
+			isBusy={ isUpdating }
+			onSubmit={ handleSubmit }
 			submitLabel={ __( 'Proceed', 'woocommerce-admin' ) }
 			validate={ validate }
 			{ ...props }
@@ -113,11 +115,11 @@ export const PaymentConnect = ( {
 			<WooRemotePaymentForm.Slot
 				fillProps={ {
 					defaultForm: DefaultForm,
-					defaultSubmit: updateSettings,
+					defaultSubmit: handleSubmit,
 					defaultFields: fields,
-					markConfigured: () => markConfigured( key ),
+					markConfigured: () => markConfigured( id ),
 				} }
-				id={ key }
+				id={ id }
 			/>
 		);
 	}
@@ -125,12 +127,10 @@ export const PaymentConnect = ( {
 	if ( oAuthConnectionUrl ) {
 		return (
 			<>
+				{ helpText }
 				<Button isPrimary href={ oAuthConnectionUrl }>
 					{ __( 'Connect', 'woocommerce-admin' ) }
 				</Button>
-				{ helpText && (
-					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
-				) }
 			</>
 		);
 	}
@@ -138,17 +138,18 @@ export const PaymentConnect = ( {
 	if ( fields.length ) {
 		return (
 			<>
+				{ helpText }
 				<DefaultForm />
-				{ helpText && (
-					<p dangerouslySetInnerHTML={ sanitizeHTML( helpText ) } />
-				) }
 			</>
 		);
 	}
 
 	return (
-		<Button isPrimary href={ settingsUrl }>
-			{ __( 'Manage', 'woocommerce-admin' ) }
-		</Button>
+		<>
+			{ helpText }
+			<Button isPrimary href={ settingsUrl }>
+				{ __( 'Manage', 'woocommerce-admin' ) }
+			</Button>
+		</>
 	);
 };
