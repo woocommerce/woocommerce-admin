@@ -1,0 +1,355 @@
+/**
+ * Colors
+ */
+/**
+ * Colors
+ */
+/**
+ * SCSS Variables.
+ *
+ * Please use variables from this sheet to ensure consistency across the UI.
+ * Don't add to this sheet unless you're pretty sure the value will be reused in many places.
+ */
+/**
+ * Colors
+ */
+/**
+ * Fonts & basic variables.
+ */
+/**
+ * Grid System.
+ * https://make.wordpress.org/design/2019/10/31/proposal-a-consistent-spacing-system-for-wordpress/
+ */
+/**
+ * Dimensions.
+ */
+/**
+ * Shadows.
+ */
+/**
+ * Editor widths.
+ */
+/**
+ * Block & Editor UI.
+ */
+/**
+ * Block paddings.
+ */
+/**
+ * React Native specific.
+ * These variables do not appear to be used anywhere else.
+ */
+/**
+ * Breakpoint mixins
+ */
+/**
+ * Long content fade mixin
+ *
+ * Creates a fading overlay to signify that the content is longer
+ * than the space allows.
+ */
+/**
+ * Focus styles.
+ */
+/**
+ * Applies editor left position to the selector passed as argument
+ */
+/**
+ * Styles that are reused verbatim in a few places
+ */
+/**
+ * Allows users to opt-out of animations via OS-level preferences.
+ */
+/**
+ * Reset default styles for JavaScript UI based pages.
+ * This is a WP-admin agnostic reset
+ */
+/**
+ * Reset the WP Admin page styles for Gutenberg-like pages.
+ */
+/**
+ * These are default block editor widths in case the theme doesn't provide them.
+ */
+/**
+ * Breakpoints & Media Queries
+ */
+:root {
+  --wp-admin-theme-color: #007cba;
+  --wp-admin-theme-color-darker-10: #006ba1;
+  --wp-admin-theme-color-darker-20: #005a87;
+}
+
+body.admin-color-light {
+  --wp-admin-theme-color: #0085ba;
+  --wp-admin-theme-color-darker-10: #0073a1;
+  --wp-admin-theme-color-darker-20: #006187;
+}
+
+body.admin-color-modern {
+  --wp-admin-theme-color: #3858e9;
+  --wp-admin-theme-color-darker-10: #2145e6;
+  --wp-admin-theme-color-darker-20: #183ad6;
+}
+
+body.admin-color-blue {
+  --wp-admin-theme-color: #096484;
+  --wp-admin-theme-color-darker-10: #07526c;
+  --wp-admin-theme-color-darker-20: #064054;
+}
+
+body.admin-color-coffee {
+  --wp-admin-theme-color: #46403c;
+  --wp-admin-theme-color-darker-10: #383330;
+  --wp-admin-theme-color-darker-20: #2b2724;
+}
+
+body.admin-color-ectoplasm {
+  --wp-admin-theme-color: #523f6d;
+  --wp-admin-theme-color-darker-10: #46365d;
+  --wp-admin-theme-color-darker-20: #3a2c4d;
+}
+
+body.admin-color-midnight {
+  --wp-admin-theme-color: #e14d43;
+  --wp-admin-theme-color-darker-10: #dd382d;
+  --wp-admin-theme-color-darker-20: #d02c21;
+}
+
+body.admin-color-ocean {
+  --wp-admin-theme-color: #627c83;
+  --wp-admin-theme-color-darker-10: #576e74;
+  --wp-admin-theme-color-darker-20: #4c6066;
+}
+
+body.admin-color-sunrise {
+  --wp-admin-theme-color: #dd823b;
+  --wp-admin-theme-color-darker-10: #d97426;
+  --wp-admin-theme-color-darker-20: #c36922;
+}
+
+/* stylelint-disable block-closing-brace-newline-after */
+/* stylelint-enable */
+/**
+ * Breakpoint mixins
+ */
+/* stylelint-disable block-closing-brace-newline-after */
+/* stylelint-enable */
+/**
+* Internal Dependencies
+*/
+.woocommerce-experimental-list {
+  margin: 0;
+  padding: 0;
+}
+
+a.woocommerce-experimental-list__item {
+  color: inherit;
+}
+
+.woocommerce-experimental-list__item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  text-decoration: none;
+  background-color: #fff;
+}
+.woocommerce-experimental-list__item.has-gutters {
+  padding: 16px 24px;
+}
+.woocommerce-experimental-list__item.has-action {
+  cursor: pointer;
+}
+.woocommerce-experimental-list__item:focus {
+  box-shadow: inset 0 0 0 1px #006088, inset 0 0 0 2px #fff;
+}
+.woocommerce-experimental-list__item:focus-visible {
+  box-shadow: none;
+}
+.woocommerce-experimental-list__item:not(.transitions-disabled).woocommerce-list__item-enter {
+  opacity: 0;
+  max-height: 0;
+  transform: translateX(-50%);
+}
+.woocommerce-experimental-list__item:not(.transitions-disabled).woocommerce-list__item-enter-active {
+  opacity: 1;
+  max-height: 100vh;
+  transform: translateX(0%);
+  transition: opacity 500ms, transform 500ms, max-height 500ms;
+}
+.woocommerce-experimental-list__item:not(.transitions-disabled).woocommerce-list__item-exit {
+  opacity: 1;
+  max-height: 100vh;
+  transform: translateX(0%);
+}
+.woocommerce-experimental-list__item:not(.transitions-disabled).woocommerce-list__item-exit-active {
+  opacity: 0;
+  max-height: 0;
+  transform: translateX(-50%);
+  transition: opacity 500ms, transform 500ms, max-height 500ms;
+}
+.woocommerce-experimental-list__item > .woocommerce-list__item-inner {
+  text-decoration: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+}
+.woocommerce-experimental-list__item > .woocommerce-list__item-inner:focus {
+  box-shadow: inset 0 0 0 1px #006088, inset 0 0 0 2px #fff;
+}
+.woocommerce-experimental-list__item .woocommerce-list__item-title {
+  color: #1d2327;
+}
+.woocommerce-experimental-list__item .woocommerce-list__item-content {
+  margin-top: 4px;
+  display: block;
+  font-size: 14px;
+  line-height: 20px;
+  color: #50575d;
+}
+.woocommerce-experimental-list__item .woocommerce-list__item-before {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+}
+.woocommerce-experimental-list__item .woocommerce-list__item-after {
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+.woocommerce-experimental-list__item:not(:first-child) {
+  border-top: 1px solid #f0f0f0;
+}
+.woocommerce-experimental-list__item:hover {
+  background-color: #f0f0f0;
+}
+.woocommerce-experimental-list__item:hover .woocommerce-list__item-title {
+  color: #007cba;
+  color: var(--wp-admin-theme-color);
+}
+.woocommerce-experimental-list__item:hover .woocommerce-list__item-before > svg {
+  fill: #007cba;
+  fill: var(--wp-admin-theme-color);
+}
+.woocommerce-experimental-list__item .woocommerce-list__item-title {
+  color: #007cba;
+  color: var(--wp-admin-theme-color);
+}
+.woocommerce-experimental-list__item .woocommerce-list__item-before > svg {
+  fill: #007cba;
+  fill: var(--wp-admin-theme-color);
+}
+.woocommerce-experimental-list__item .woocommerce-list__item-after > svg {
+  fill: #1e1e1e;
+}
+.woocommerce-experimental-list__item.is-complete .woocommerce-task__icon {
+  background-color: #007cba;
+  background-color: var(--wp-admin-theme-color);
+}
+.woocommerce-experimental-list__item.is-complete .woocommerce-list__item-title {
+  color: #757575;
+}
+.woocommerce-experimental-list__item.is-complete .woocommerce-list__item-content {
+  display: none;
+}
+
+.woocommerce-experimental-list__item-title {
+  color: #2c3338;
+}
+
+.woocommerce-experimental-list__item-content {
+  color: #646970;
+}
+
+.woocommerce-experimental-list__item.list-item-collapse {
+  justify-content: space-between;
+}
+.woocommerce-experimental-list__item.list-item-collapse p {
+  margin: 0;
+}
+.woocommerce-experimental-list__item.list-item-collapse .list-item-collapse__icon-container {
+  justify-content: flex-end;
+}
+
+.woocommerce-task-list__item {
+  position: relative;
+}
+.woocommerce-task-list__item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: transparent;
+}
+.woocommerce-task-list__item.level-1::before {
+  background-color: #d94f4f;
+}
+.woocommerce-task-list__item.level-1 .gridicons-notice-outline {
+  fill: #d94f4f;
+}
+.woocommerce-task-list__item.level-2::before {
+  background-color: #f0b849;
+}
+.woocommerce-task-list__item .woocommerce-task-list__item-title {
+  color: #007cba;
+  color: var(--wp-admin-theme-color);
+}
+.woocommerce-task-list__item .woocommerce-task__additional-info,
+.woocommerce-task-list__item .woocommerce-task-list__item-content,
+.woocommerce-task-list__item .woocommerce-task__estimated-time {
+  color: #757575;
+  font-weight: 400;
+  font-size: 12px;
+}
+.woocommerce-task-list__item .woocommerce-task-list__item-before {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px 16px 20px;
+}
+.woocommerce-task-list__item .woocommerce-task-list__item-text {
+  padding: 16px 0;
+}
+.woocommerce-task-list__item .woocommerce-task-list__item-text .woocommerce-pill {
+  padding: 1px 8px;
+  margin-right: 8px;
+}
+.woocommerce-task-list__item .woocommerce-task-list__item-after {
+  margin-right: 16px;
+  margin-left: 24px;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  padding: 16px 0;
+}
+.woocommerce-task-list__item .woocommerce-task-list__item-before .woocommerce-task__icon {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+}
+.woocommerce-task-list__item .woocommerce-task-list__item-before .woocommerce-task__icon svg {
+  fill: #fff;
+  position: relative;
+  top: 4px;
+  right: 5px;
+}
+.woocommerce-task-list__item.complete .woocommerce-task__icon {
+  background-color: #007cba;
+  background-color: var(--wp-admin-theme-color);
+}
+.woocommerce-task-list__item.complete .woocommerce-task-list__item-title {
+  color: #757575;
+}
+.woocommerce-task-list__item.complete .woocommerce-task-list__item-content {
+  display: none;
+}
+.woocommerce-task-list__item:not(.complete) .woocommerce-task__icon {
+  border: 1px solid #f0f0f0;
+  background: #fff;
+}
+.woocommerce-task-list__item .components-tooltip .components-popover__content {
+  width: 160px;
+  white-space: normal;
+}

@@ -1079,13 +1079,17 @@ body.admin-color-sunrise {
 .woocommerce-filters-advanced .components-card__body ul li:hover {
   background-color: #e0e0e0;
 }
-.woocommerce-filters-advanced .components-select-control__input {
+.woocommerce-filters-advanced .components-select-control .components-input-control__container .components-select-control__input {
   height: 38px;
   padding: 0 0 0 8px;
   margin: 0;
 }
 .woocommerce-filters-advanced .components-card__header .components-base-control__field {
   margin-bottom: 0;
+}
+.woocommerce-filters-advanced .components-card__header p {
+  display: flex;
+  line-height: 38px;
 }
 @media (max-width: 782px) {
   .woocommerce-filters-advanced {
@@ -1098,8 +1102,7 @@ body.admin-color-sunrise {
     margin: 12px 0;
   }
 }
-
-.woocommerce-filters-advanced__title-select {
+.woocommerce-filters-advanced .woocommerce-filters-advanced__title-select {
   width: 70px;
   display: inline-block;
   margin: 0 8px;
