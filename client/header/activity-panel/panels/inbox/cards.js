@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { applyFilters } from '@wordpress/hooks';
 import { Icon, box, comment, page } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
@@ -15,7 +14,7 @@ const ORDER_PANEL_ID = 'orders-panel';
 const REVIEWS_PANEL_ID = 'reviews-panel';
 const STOCK_PANEL_ID = 'stock-panel';
 
-export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
+export const cards = [
 	{
 		name: 'thingsToDoNext',
 		icon: <Bell />,
@@ -50,4 +49,4 @@ export const cards = applyFilters( 'woocommerce_admin_abbreviated_card_list', [
 		),
 		href: `admin.php?page=wc-admin&opened_panel=${ STOCK_PANEL_ID }`,
 	},
-] );
+];
