@@ -112,6 +112,11 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					<span className="woocommerce-task-list__item-title">
 						{ title }
 					</span>
+					{ expanded && (
+						<div className="woocommerce-task-list__item-content">
+							{ content }
+						</div>
+					) }
 					{ additionalInfo && (
 						<div
 							className="woocommerce-task__additional-info"
@@ -119,11 +124,6 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 								additionalInfo
 							) }
 						></div>
-					) }
-					{ expanded && (
-						<div className="woocommerce-task-list__item-content">
-							{ content }
-						</div>
 					) }
 					{ expanded && ! completed && (
 						<Button

@@ -287,6 +287,7 @@ export const TaskList = ( {
 									level={ task.level }
 									action={ task.onClick }
 									actionLabel={ task.action }
+									additionalInfo={ task.additionalInfo }
 								/>
 							) ) }
 						</ListComp>
