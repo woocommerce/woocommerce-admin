@@ -56,6 +56,7 @@ export function getAllTasks( {
 	query,
 	toggleCartModal,
 	onTaskSelect,
+	hasCompleteAddress,
 } ) {
 	const {
 		hasPaymentGateway,
@@ -84,6 +85,8 @@ export function getAllTasks( {
 
 	const woocommercePaymentsInstalled =
 		installedPlugins.indexOf( 'woocommerce-payments' ) !== -1;
+	const woocommerceServicesActive =
+		activePlugins.indexOf( 'woocommerce-services' ) !== -1;
 	const {
 		completed: profilerCompleted,
 		product_types: productTypes,
@@ -125,6 +128,33 @@ export function getAllTasks( {
 			),
 			firstProducts,
 			lastProduct
+		);
+	}
+
+	const {
+		automatedTaxSupportedCountries = [],
+		taxJarActivated,
+	} = onboardingStatus;
+
+	const isTaxJarSupported =
+		! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
+		automatedTaxSupportedCountries.includes( countryCode );
+
+	let taxAction = __( "Let's go", 'woocommerce-admin' );
+	let taxContent = __(
+		'Set your store location and configure tax rate settings.',
+		'woocommerce-admin'
+	);
+
+	if (
+		hasCompleteAddress &&
+		woocommerceServicesActive &&
+		isTaxJarSupported
+	) {
+		taxAction = __( 'Yes please', 'woocommerce-admin' );
+		taxContent = __(
+			'Good news! WooCommerce Services and Jetpack can automate your sales tax calculations for you.',
+			'woocommerce-admin'
 		);
 	}
 
@@ -253,12 +283,9 @@ export function getAllTasks( {
 		{
 			key: 'tax',
 			title: __( 'Set up tax', 'woocommerce-admin' ),
-			content: __(
-				'Good news! WooCommerce Services and Jetpack can automate your sales tax calculations for you.',
-				'woocommerce-admin'
-			),
+			content: taxContent,
 			container: <Tax />,
-			action: __( 'Yes please', 'woocommerce-admin' ),
+			action: taxAction,
 			onClick: () => {
 				onTaskSelect( 'tax' );
 				updateQueryString( { task: 'tax' } );
