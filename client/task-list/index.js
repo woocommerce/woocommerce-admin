@@ -210,12 +210,25 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		<>
 			{ setupTasks && ( ! isSetupTaskListHidden || task ) && (
 				<TaskList
+					name="task_list"
+					eventName="tasklist"
 					dismissedTasks={ dismissedTasks || [] }
 					isComplete={ isTaskListComplete }
 					query={ query }
 					tasks={ setupTasks }
 					title={ __( 'Finish setup', 'woocommerce-admin' ) }
 					trackedCompletedTasks={ trackedCompletedTasks || [] }
+					onComplete={ () =>
+						updateOptions( {
+							woocommerce_default_homepage_layout: 'two_columns',
+						} )
+					}
+					onHide={ () =>
+						updateOptions( {
+							woocommerce_task_list_prompt_shown: true,
+							woocommerce_default_homepage_layout: 'two_columns',
+						} )
+					}
 				/>
 			) }
 			{ extensionTasks && (
@@ -241,9 +254,11 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 			) }
 			{ extensionTasks && ! isExtendedTaskListHidden && (
 				<TaskList
+					name="extended_task_list"
+					eventName="extended_tasklist"
+					collapsible
 					dismissedTasks={ dismissedTasks || [] }
 					isComplete={ isExtendedTaskListComplete }
-					name={ 'extended_task_list' }
 					query={ query }
 					tasks={ extensionTasks }
 					title={ __( 'Things to do next', 'woocommerce-admin' ) }

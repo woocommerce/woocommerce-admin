@@ -18,12 +18,16 @@ import {
 
 export const TaskList = ( {
 	query,
-	name = 'task_list',
+	name,
+	eventName,
 	isComplete,
 	dismissedTasks,
 	tasks,
 	trackedCompletedTasks: totalTrackedCompletedTasks,
 	title: listTitle,
+	collapsible = false,
+	onComplete,
+	onHide,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
@@ -73,10 +77,6 @@ export const TaskList = ( {
 		const taskListToComplete = isComplete
 			? { [ taskListVariableName ]: 'no' }
 			: { [ taskListVariableName ]: 'yes' };
-		if ( name === 'task_list' ) {
-			taskListToComplete.woocommerce_default_homepage_layout =
-				'two_columns';
-		}
 
 		if (
 			( ! incompleteTasks.length && ! isComplete ) ||
@@ -85,6 +85,10 @@ export const TaskList = ( {
 			updateOptions( {
 				...taskListToComplete,
 			} );
+
+			if ( typeof onComplete === 'function' ) {
+				onComplete();
+			}
 		}
 	};
 
@@ -164,28 +168,18 @@ export const TaskList = ( {
 			return;
 		}
 
-		const isCoreTaskList = name === 'task_list';
-		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
-
-		recordEvent( `${ taskListName }_view`, {
+		recordEvent( `${ eventName }_view`, {
 			number_tasks: visibleTasks.length,
 			store_connected: profileItems.wccom_connected,
 		} );
 	};
 
 	const hideTaskCard = ( action ) => {
-		const isCoreTaskList = name === 'task_list';
-		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
 		const updateOptionsParams = {
 			[ `woocommerce_${ name }_hidden` ]: 'yes',
 		};
-		if ( isCoreTaskList ) {
-			updateOptionsParams.woocommerce_task_list_prompt_shown = true;
-			updateOptionsParams.woocommerce_default_homepage_layout =
-				'two_columns';
-		}
 
-		recordEvent( `${ taskListName }_completed`, {
+		recordEvent( `${ eventName }_completed`, {
 			action,
 			completed_task_count: completedTaskKeys.length,
 			incomplete_task_count: incompleteTasks.length,
@@ -193,6 +187,10 @@ export const TaskList = ( {
 		updateOptions( {
 			...updateOptionsParams,
 		} );
+
+		if ( typeof onHide === 'function' ) {
+			onHide();
+		}
 	};
 
 	const renderMenu = () => {
@@ -244,19 +242,17 @@ export const TaskList = ( {
 		listTasks.length - 2
 	);
 	const collapseLabel = __( 'Show less', 'woocommerce-admin' );
-	const ListComp = name === 'task_list' ? List : CollapsibleList;
+	const ListComp = collapsible ? CollapsibleList : List;
 
-	const listProps =
-		name === 'task_list'
-			? {}
-			: {
-					collapseLabel,
-					expandLabel,
-					show: 2,
-					onCollapse: () =>
-						recordEvent( 'extended_tasklist_collapse' ),
-					onExpand: () => recordEvent( 'extended_tasklist_expand' ),
-			  };
+	const listProps = collapsible
+		? {
+				collapseLabel,
+				expandLabel,
+				show: 2,
+				onCollapse: () => recordEvent( `${ eventName }_collapse` ),
+				onExpand: () => recordEvent( `${ eventName }_expand` ),
+		  }
+		: {};
 
 	return (
 		<>
