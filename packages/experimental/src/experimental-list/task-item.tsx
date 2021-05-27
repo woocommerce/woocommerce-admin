@@ -24,6 +24,10 @@ const sanitizeHTML = ( html: string ) => {
 
 type TaskLevel = 1 | 2 | 3;
 
+type ActionArgs = {
+	isExpanded?: boolean;
+};
+
 type TaskItemProps = {
 	title: string;
 	completed: boolean;
@@ -35,7 +39,10 @@ type TaskItemProps = {
 	content: string;
 	expanded?: boolean;
 	level?: TaskLevel;
-	action: ( event?: React.MouseEvent | React.KeyboardEvent ) => void;
+	action: (
+		event?: React.MouseEvent | React.KeyboardEvent,
+		args?: ActionArgs
+	) => void;
 	actionLabel?: string;
 };
 
@@ -126,7 +133,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 								event: React.MouseEvent | React.KeyboardEvent
 							) => {
 								event.stopPropagation();
-								action( event );
+								action( event, { isExpanded: true } );
 							} }
 						>
 							{ actionLabel || title }
