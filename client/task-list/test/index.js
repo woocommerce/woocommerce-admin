@@ -38,6 +38,9 @@ jest.mock( '@wordpress/data', () => ( {
 	} ),
 	useDispatch: jest.fn(),
 } ) );
+jest.mock( '@woocommerce/explat', () => ( {
+	useExperiment: jest.fn().mockReturnValue( [ false, {} ] ),
+} ) );
 
 const TASK_LIST_HEADING = 'Finish setup';
 const EXTENDED_TASK_LIST_HEADING = 'Things to do next';

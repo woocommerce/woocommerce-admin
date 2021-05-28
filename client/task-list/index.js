@@ -12,6 +12,7 @@ import {
 	PLUGINS_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { useExperiment } from '@woocommerce/explat';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -24,6 +25,7 @@ import { getCountryCode } from '../dashboard/utils';
 import TaskList from './task-list';
 import { DisplayOption } from '../header/activity-panel/display-options';
 import { TaskStep } from './task-step';
+import TaskListPlaceholder from './placeholder';
 
 const taskDashboardSelect = ( select ) => {
 	const { getProfileItems, getTasksStatus } = select( ONBOARDING_STORE_NAME );
@@ -98,6 +100,9 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 	} = useSelect( taskDashboardSelect );
 
 	const [ isCartModalOpen, setIsCartModalOpen ] = useState( false );
+	const [ isLoadingExperiment, experimentAssignment ] = useExperiment(
+		'woocommerce_tasklist_progression'
+	);
 
 	useEffect( () => {
 		document.body.classList.add( 'woocommerce-onboarding' );
@@ -208,29 +213,38 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 
 	return (
 		<>
-			{ setupTasks && ( ! isSetupTaskListHidden || task ) && (
-				<TaskList
-					name="task_list"
-					eventName="tasklist"
-					dismissedTasks={ dismissedTasks || [] }
-					isComplete={ isTaskListComplete }
-					query={ query }
-					tasks={ setupTasks }
-					title={ __( 'Finish setup', 'woocommerce-admin' ) }
-					trackedCompletedTasks={ trackedCompletedTasks || [] }
-					onComplete={ () =>
-						updateOptions( {
-							woocommerce_default_homepage_layout: 'two_columns',
-						} )
-					}
-					onHide={ () =>
-						updateOptions( {
-							woocommerce_task_list_prompt_shown: true,
-							woocommerce_default_homepage_layout: 'two_columns',
-						} )
-					}
-				/>
-			) }
+			{ setupTasks &&
+				( ! isSetupTaskListHidden || task ) &&
+				( isLoadingExperiment ? (
+					<TaskListPlaceholder />
+				) : (
+					<TaskList
+						name="task_list"
+						eventName="tasklist"
+						expandingItems={
+							experimentAssignment?.variationName === 'treatment'
+						}
+						dismissedTasks={ dismissedTasks || [] }
+						isComplete={ isTaskListComplete }
+						query={ query }
+						tasks={ setupTasks }
+						title={ __( 'Finish setup', 'woocommerce-admin' ) }
+						trackedCompletedTasks={ trackedCompletedTasks || [] }
+						onComplete={ () =>
+							updateOptions( {
+								woocommerce_default_homepage_layout:
+									'two_columns',
+							} )
+						}
+						onHide={ () =>
+							updateOptions( {
+								woocommerce_task_list_prompt_shown: true,
+								woocommerce_default_homepage_layout:
+									'two_columns',
+							} )
+						}
+					/>
+				) ) }
 			{ extensionTasks && (
 				<DisplayOption>
 					<MenuGroup
