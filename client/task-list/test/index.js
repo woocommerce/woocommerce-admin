@@ -13,6 +13,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { SlotFillProvider } from '@wordpress/components';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -70,6 +71,8 @@ describe( 'TaskDashboard and TaskList', () => {
 				time: '1 minute',
 				isDismissable: true,
 				type: 'setup',
+				action: 'CTA (optional)',
+				content: 'This is the optional task content',
 			},
 			{
 				key: 'required',
@@ -80,6 +83,8 @@ describe( 'TaskDashboard and TaskList', () => {
 				time: '1 minute',
 				isDismissable: false,
 				type: 'setup',
+				action: 'CTA (required)',
+				content: 'This is the require task content',
 			},
 			{
 				key: 'completed',
@@ -660,5 +665,51 @@ describe( 'TaskDashboard and TaskList', () => {
 		expect( updateOptions ).toHaveBeenCalledWith( {
 			woocommerce_extended_task_list_hidden: 'yes',
 		} );
+	} );
+
+	it( 'setup task list renders normal items in experiment control', () => {
+		apiFetch.mockResolvedValue( {} );
+		getAllTasks.mockReturnValue( tasks );
+		useSelect.mockImplementation( () => ( {
+			dismissedTasks: [],
+			isSetupTaskListHidden: false,
+			isExtendedTaskListHidden: true,
+			profileItems: {},
+		} ) );
+		const { queryByText } = render( <TaskDashboard query={ {} } /> );
+		expect( queryByText( 'This is the optional task content' ) ).toBeNull();
+		expect( queryByText( 'CTA (optional)' ) ).toBeNull();
+	} );
+
+	it( 'setup task list renders expandable items in experiment variant', async () => {
+		apiFetch.mockResolvedValue( {} );
+		getAllTasks.mockReturnValue( tasks );
+		useSelect.mockImplementation( () => ( {
+			dismissedTasks: [],
+			isSetupTaskListHidden: false,
+			isExtendedTaskListHidden: true,
+			profileItems: {},
+		} ) );
+		useExperiment.mockReturnValue( [
+			false,
+			{
+				variationName: 'treatment',
+			},
+		] );
+		const { container, queryByText } = render(
+			<TaskDashboard query={ {} } />
+		);
+
+		// Expect the first incomplete task to be expanded
+		expect(
+			await findByText( container, 'This is the optional task content' )
+		).not.toBeNull();
+		expect(
+			await findByText( container, 'CTA (optional)' )
+		).not.toBeNull();
+
+		// Expect the second not to be.
+		expect( queryByText( 'This is the required task content' ) ).toBeNull();
+		expect( queryByText( 'CTA (required)' ) ).toBeNull();
 	} );
 } );
