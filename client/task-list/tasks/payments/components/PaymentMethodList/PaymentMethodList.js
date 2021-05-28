@@ -12,7 +12,7 @@ import {
 } from '@wordpress/components';
 import { Text } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
-import { RecommendedRibbon, SetupRequired } from '@woocommerce/tasks';
+import { RecommendedRibbon, SetupRequired } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies

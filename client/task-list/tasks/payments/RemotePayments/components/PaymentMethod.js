@@ -11,7 +11,7 @@ import {
 	pluginNames,
 } from '@woocommerce/data';
 import { Plugins, Stepper } from '@woocommerce/components';
-import { WooRemotePayment } from '@woocommerce/tasks';
+import { WooRemotePayment } from '@woocommerce/onboarding';
 import { recordEvent } from '@woocommerce/tracks';
 import { useEffect, useState, useMemo, useCallback } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';

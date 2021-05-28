@@ -477,8 +477,8 @@ class Loader {
 		);
 
 		wp_register_style(
-			'wc-tasks',
-			self::get_url( 'tasks/style', 'css' ),
+			'wc-onboarding',
+			self::get_url( 'onboarding/style', 'css' ),
 			array(),
 			$css_file_version
 		);
@@ -705,7 +705,7 @@ class Loader {
 		wp_enqueue_script( WC_ADMIN_APP );
 		wp_enqueue_style( WC_ADMIN_APP );
 		wp_enqueue_style( 'wc-material-icons' );
-		wp_enqueue_style( 'wc-tasks' );
+		wp_enqueue_style( 'wc-onboarding' );
 
 		// Use server-side detection to prevent unneccessary stylesheet loading in other browsers.
 		$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : ''; // phpcs:ignore sanitization ok.

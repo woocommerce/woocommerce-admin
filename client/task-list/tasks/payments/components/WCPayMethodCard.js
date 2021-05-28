@@ -7,7 +7,7 @@ import {
 	WCPayCardFooter,
 	WCPayCardBody,
 	SetupRequired,
-} from '@woocommerce/tasks';
+} from '@woocommerce/onboarding';
 import { __ } from '@wordpress/i18n';
 import { Text } from '@woocommerce/experimental';
 import { Link, Pill } from '@woocommerce/components';

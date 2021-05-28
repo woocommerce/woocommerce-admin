@@ -6,7 +6,7 @@ import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
 import { DynamicForm } from '@woocommerce/components';
-import { WooRemotePaymentForm } from '@woocommerce/tasks';
+import { WooRemotePaymentForm } from '@woocommerce/onboarding';
 import { useSlot } from '@woocommerce/experimental';
 
 /**
