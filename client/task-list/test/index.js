@@ -229,6 +229,51 @@ describe( 'TaskDashboard and TaskList', () => {
 		).toBeInTheDocument();
 	} );
 
+	it( 'invokes onComplete callback when supplied', () => {
+		apiFetch.mockResolvedValue( {} );
+		const onComplete = jest.fn();
+		act( () => {
+			render(
+				<TaskList
+					name="task_list"
+					eventName="tasklist"
+					dismissedTasks={ [] }
+					isComplete={ false }
+					query={ {} }
+					trackedCompletedTasks={ [] }
+					tasks={ shorterTasksList }
+					onComplete={ onComplete }
+				/>
+			);
+		} );
+
+		expect( onComplete ).toHaveBeenCalled();
+	} );
+
+	it( 'invokes onHide callback when supplied', () => {
+		apiFetch.mockResolvedValue( {} );
+		const onHide = jest.fn();
+		const { getByRole } = render(
+			<TaskList
+				name="task_list"
+				eventName="tasklist"
+				dismissedTasks={ [] }
+				isComplete={ false }
+				query={ {} }
+				trackedCompletedTasks={ [] }
+				tasks={ tasks.setup }
+				onHide={ onHide }
+			/>
+		);
+
+		expect( onHide ).not.toHaveBeenCalled();
+
+		userEvent.click( getByRole( 'button', { name: 'Task List Options' } ) );
+		userEvent.click( getByRole( 'button', { name: 'Hide this' } ) );
+
+		expect( onHide ).toHaveBeenCalled();
+	} );
+
 	it( 'sets homescreen layout default when dismissed', async () => {
 		useSelect.mockImplementation( () => ( {
 			dismissedTasks: [],
