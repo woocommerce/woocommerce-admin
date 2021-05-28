@@ -70,23 +70,21 @@ export const WCPayMethodCard = ( { method, isEnabled } ) => {
 
 			<WCPayCardBody
 				description={ description }
-				linkOnClick={ () => {
+				onLinkClick={ () => {
 					recordEvent( 'tasklist_payment_learn_more' );
 				} }
 			/>
-			<WCPayCardFooter
-				buttonComponent={ () => (
+			<WCPayCardFooter>
+				<>
+					<Text>
+						<TosPrompt />
+					</Text>
 					<ButtonComponent
 						isEnabled={ isEnabled }
 						method={ method }
 					/>
-				) }
-				tosComponent={ () => (
-					<Text>
-						<TosPrompt />
-					</Text>
-				) }
-			/>
+				</>
+			</WCPayCardFooter>
 		</WCPayCard>
 	);
 };

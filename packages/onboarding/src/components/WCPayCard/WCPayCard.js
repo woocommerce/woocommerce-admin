@@ -27,7 +27,7 @@ export const WCPayCardHeader = ( {
 export const WCPayCardBody = ( {
 	description,
 	heading,
-	linkOnClick = () => {},
+	onLinkClick = () => {},
 } ) => (
 	<CardBody>
 		{ heading && <Text as="h2">{ heading }</Text> }
@@ -40,7 +40,7 @@ export const WCPayCardBody = ( {
 				type="external"
 				rel="noreferrer"
 				href="https://woocommerce.com/payments/"
-				onClick={ linkOnClick }
+				onClick={ onLinkClick }
 			>
 				{ __( 'Learn more', 'woocommerce-admin' ) }
 			</Link>
@@ -50,14 +50,8 @@ export const WCPayCardBody = ( {
 	</CardBody>
 );
 
-export const WCPayCardFooter = ( {
-	buttonComponent: ButtonComponent = null,
-	tosComponent: TosComponent = null,
-} ) => (
-	<CardFooter>
-		<TosComponent />
-		<ButtonComponent />
-	</CardFooter>
+export const WCPayCardFooter = ( { children } ) => (
+	<CardFooter>{ children }</CardFooter>
 );
 
 export const WCPayCard = ( { children } ) => {
