@@ -1,5 +1,9 @@
 import { getElementByText, waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
+import {Page} from "puppeteer";
+
+// Declare the global page
+declare var page: Page;
 
 export class WcHomescreen extends BasePage {
 	url = 'wp-admin/admin.php?page=wc-admin';

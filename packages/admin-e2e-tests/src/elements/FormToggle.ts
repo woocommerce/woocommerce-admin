@@ -1,6 +1,10 @@
+import { Page } from 'puppeteer';
 import { BaseElement } from './BaseElement';
 
 import { hasClass } from '../utils/actions';
+
+// Declare the global page
+declare var page: Page;
 
 export class FormToggle extends BaseElement {
 	// Represents a FormToggle input. Use `selector` to represent the container its found in.

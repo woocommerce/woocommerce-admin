@@ -4,6 +4,7 @@
     "types": [ "node", "jest" ],
     "rootDir": "src", 
     "outDir": "dist",
+	"noEmit": false,
     "target": "es5"
   },
   "include": [ "src/" ]

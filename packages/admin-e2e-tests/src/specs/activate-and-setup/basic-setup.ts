@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { Page } from 'puppeteer';
 const {
 	clearAndFillInput,
 	verifyValueOfInputField,
@@ -11,8 +10,8 @@ const {
 	beforeAll,
 	describe,
 	it,
+	expect,
 } = require( '@jest/globals' );
-const { expect } = require( '@types/jest' );
 
 /**
  * Internal dependencies
@@ -21,7 +20,7 @@ import { WcSettings } from '../../pages/WcSettings';
 import { WpSettings } from '../../pages/WpSettings';
 import { Login } from '../../pages/Login';
 
-const testAdminBasicSetup = ( page: Page ) => {
+const testAdminBasicSetup = () => {
 	describe('Store owner can finish initial store setup', () => {
 		const wcSettings = new WcSettings( page );
 		const wpSettings = new WpSettings( page );

@@ -6,7 +6,10 @@ import { ProductTypeSection } from '../sections/onboarding/ProductTypesSection';
 import { StoreDetailsSection } from '../sections/onboarding/StoreDetailsSection';
 import { ThemeSection } from '../sections/onboarding/ThemeSection';
 import { BasePage } from './BasePage';
-const { expect } = require( '@types/jest' );
+const { expect } = require( '@jest/globals' );
+
+// Declare the global page
+declare var page: Page;
 
 export class OnboardingWizard extends BasePage {
 	url = 'wp-admin/admin.php?page=wc-admin&path=/setup-wizard';

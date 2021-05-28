@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { Page } from 'puppeteer';
 const {
 	afterAll,
 	beforeAll,
@@ -18,13 +17,13 @@ import { PaymentsSetup } from '../../pages/PaymentsSetup';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { BankAccountTransferSetup } from '../../sections/payment-setup/BankAccountTransferSetup';
 
-const testAdminPaymentSetupTask = ( page: Page ) => {
-	describe('Payment setup task', () => {
-		const profileWizard = new OnboardingWizard(page);
-		const homeScreen = new WcHomescreen(page);
-		const paymentsSetup = new PaymentsSetup(page);
-		const bankTransferSetup = new BankAccountTransferSetup(page);
-		const login = new Login(page);
+const testAdminPaymentSetupTask = () => {
+	describe( 'Payment setup task', () => {
+		const profileWizard = new OnboardingWizard( page );
+		const homeScreen = new WcHomescreen( page );
+		const paymentsSetup = new PaymentsSetup( page );
+		const bankTransferSetup = new BankAccountTransferSetup( page );
+		const login = new Login( page );
 
 		beforeAll( async () => {
 			await login.login();

@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { Page } from 'puppeteer';
 const {
 	afterAll,
 	beforeAll,
@@ -15,7 +14,7 @@ const {
 import { Analytics } from '../../pages/Analytics';
 import { Login } from '../../pages/Login';
 
-const testAdminAnalyticsPages = ( page: Page ) => {
+const testAdminAnalyticsPages = () => {
 	describe('Analytics pages', () => {
 		const analyticsPage = new Analytics(page);
 		const login = new Login(page);

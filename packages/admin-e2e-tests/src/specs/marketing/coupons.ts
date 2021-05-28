@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { Page } from 'puppeteer';
 const {
 	afterAll,
 	beforeAll,
@@ -12,10 +11,10 @@ const {
 /**
  * Internal dependencies
  */
- import { Coupons } from '../../pages/Coupons';
+import { Coupons } from '../../pages/Coupons';
  import { Login } from '../../pages/Login';
 
- const testAdminCouponsPage = ( page: Page ) => {
+ const testAdminCouponsPage = () => {
 	 describe( 'Coupons page', () => {
 		 const couponsPage = new Coupons( page );
 		 const login = new Login( page );

@@ -1,6 +1,10 @@
 const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
+import { Page } from 'puppeteer';
 import { getElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
+
+// Declare the global page
+declare var page: Page;
 
 const config = require( 'config' );
 

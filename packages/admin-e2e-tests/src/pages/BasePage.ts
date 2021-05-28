@@ -7,6 +7,9 @@ import { getElementByText } from '../utils/actions';
 const config = require( 'config' );
 const baseUrl = config.get( 'url' );
 
+// Declare the global page
+declare var page: Page;
+
 // Represents a page that can be navigated to
 export abstract class BasePage {
 	protected page: Page;

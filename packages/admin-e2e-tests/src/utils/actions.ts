@@ -1,5 +1,5 @@
-import { ElementHandle } from 'puppeteer';
-const { expect } = require( '@types/jest' );
+import { ElementHandle, Page } from 'puppeteer';
+const { expect } = require( '@jest/globals' );
 
 /**
  * Wait for UI blocking to end.

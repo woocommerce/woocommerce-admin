@@ -1,14 +1,13 @@
 /**
  * External dependencies
  */
-import { Page } from 'puppeteer';
 const {
 	afterAll,
 	beforeAll,
 	describe,
 	it,
+	expect,
 } = require( '@jest/globals' );
-const { expect } = require( '@types/jest' );
 const config = require( 'config' );
 
 /**
@@ -23,7 +22,7 @@ import { Login } from '../../pages/Login';
 /**
  * This tests a default, happy path for the onboarding wizard.
  */
-const testAdminOnboardingWizard = ( page: Page ) => {
+const testAdminOnboardingWizard = () => {
 	describe( 'Store owner can complete onboarding wizard', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
@@ -109,7 +108,7 @@ const testAdminOnboardingWizard = ( page: Page ) => {
 /**
  * A non-US store doesn't get the "install recommended features" checkbox.
  */
-const testAdminNonUSRecommendedFeatures = ( page: Page ) => {
+const testAdminNonUSRecommendedFeatures = () => {
 	describe( 'A spanish store does not get the install recommended features tab, but sees the benefits section', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
@@ -217,7 +216,7 @@ const testAdminNonUSRecommendedFeatures = ( page: Page ) => {
 	} );
 };
 
-const testSelectiveBundleWCPay = ( page: Page ) => {
+const testSelectiveBundleWCPay = () => {
 	describe( 'A japanese store can complete the selective bundle install but does not include WCPay. ', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
