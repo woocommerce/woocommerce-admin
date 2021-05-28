@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu, Badge } from '@woocommerce/components';
@@ -28,6 +28,7 @@ export const TaskList = ( {
 	collapsible = false,
 	onComplete,
 	onHide,
+	expandingItems = false,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
@@ -70,6 +71,10 @@ export const TaskList = ( {
 			task.visible &&
 			! task.completed &&
 			! dismissedTasks.includes( task.key )
+	);
+
+	const [ currentTask, setCurrentTask ] = useState(
+		incompleteTasks[ 0 ]?.key
 	);
 
 	const possiblyCompleteTaskList = () => {
@@ -276,7 +281,15 @@ export const TaskList = ( {
 									title={ task.title }
 									completed={ task.completed }
 									content={ task.content }
-									onClick={ task.onClick }
+									onClick={
+										! expandingItems || task.completed
+											? task.onClick
+											: () => setCurrentTask( task.key )
+									}
+									expanded={
+										expandingItems &&
+										currentTask === task.key
+									}
 									isDismissable={ task.isDismissable }
 									onDismiss={ () => dismissTask( task ) }
 									time={ task.time }
