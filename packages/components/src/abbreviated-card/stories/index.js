@@ -1,14 +1,14 @@
 /**
  * External dependencies
  */
-import { Icon, page } from '@wordpress/icons';
+import { page } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
 import AbbreviatedCard from '..';
 
 export const Basic = () => (
-	<AbbreviatedCard icon={ <Icon icon={ page } /> } href="#">
+	<AbbreviatedCard icon={ page } href="#">
 		<h3>Title</h3>
 		<p>Abbreviated card content</p>
 	</AbbreviatedCard>
