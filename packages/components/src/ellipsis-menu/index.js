@@ -35,7 +35,6 @@ class EllipsisMenu extends Component {
 						}
 						onToggle( e );
 					} }
-					icon="ellipsis"
 					title={ label }
 					aria-expanded={ isOpen }
 				>

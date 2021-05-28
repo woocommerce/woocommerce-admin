@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Icon, check } from '@wordpress/icons';
 import { Button, Tooltip } from '@wordpress/components';
 import NoticeOutline from 'gridicons/dist/notice-outline';
-import EllipsisMenu from '@woocommerce/components/build/ellipsis-menu';
+import { EllipsisMenu } from '@woocommerce/components';
 import classnames from 'classnames';
 import { sanitize } from 'dompurify';
 
@@ -93,12 +93,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	const showEllipsisMenu = ( onDismiss || remindMeLater ) && ! completed;
 
 	return (
-		<ListItem
-			disableGutters
-			className={ className }
-			onClick={ onClick }
-			animation="slide-right"
-		>
+		<ListItem disableGutters className={ className } onClick={ onClick }>
 			<OptionalTaskTooltip level={ level } completed={ completed }>
 				<div className="woocommerce-task-list__item-before">
 					{ level === 1 && ! completed ? (

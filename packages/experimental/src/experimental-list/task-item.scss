@@ -52,7 +52,7 @@ $task-alert-yellow: #f0b849;
 	.woocommerce-task-list__item-before {
 		display: flex;
 		align-items: center;
-		padding-left: $gap-large;
+		padding: $gap 0 $gap $gap-large;
 	}
 
 	.woocommerce-task-list__item-text {

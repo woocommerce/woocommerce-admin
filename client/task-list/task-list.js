@@ -16,6 +16,11 @@ import {
 	TaskItem,
 } from '@woocommerce/experimental';
 
+/**
+ * Internal dependencies
+ */
+import './task-list.scss';
+
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const TaskList = ( {
@@ -156,8 +161,7 @@ export const TaskList = ( {
 			],
 		} );
 
-		const isCoreTaskList = name === 'task_list';
-		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
+		const taskListName = getTaskListName();
 		recordEvent( `${ taskListName }_dismiss_task`, { task_name: key } );
 
 		updateOptions( {
@@ -176,6 +180,10 @@ export const TaskList = ( {
 		updateOptions( {
 			woocommerce_task_list_dismissed_tasks: updatedDismissedTasks,
 		} );
+		const taskListName = getTaskListName();
+		recordEvent( `${ taskListName }_undo_dismiss_task`, {
+			task_name: key,
+		} );
 	};
 
 	const remindTaskLater = ( { key, onDismiss } ) => {
@@ -191,8 +199,7 @@ export const TaskList = ( {
 				],
 			}
 		);
-		const isCoreTaskList = name === 'task_list';
-		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
+		const taskListName = getTaskListName();
 		recordEvent( `${ taskListName }_remindmelater_task`, {
 			task_name: key,
 		} );
@@ -218,6 +225,10 @@ export const TaskList = ( {
 
 		updateOptions( {
 			woocommerce_task_list_remind_me_later_tasks: updatedRemindMeLaterTasks,
+		} );
+		const taskListName = getTaskListName();
+		recordEvent( `${ taskListName }_undo_remindmelater_task`, {
+			task_name: key,
 		} );
 	};
 
@@ -273,10 +284,7 @@ export const TaskList = ( {
 	const listTasks = visibleTasks.map( ( task ) => {
 		if ( ! task.onClick ) {
 			task.onClick = ( e ) => {
-				const isCoreTaskList = name === 'task_list';
-				const taskListName = isCoreTaskList
-					? 'tasklist'
-					: 'extended_tasklist';
+				const taskListName = getTaskListName();
 				recordEvent( `${ taskListName }_click`, {
 					task_name: task.key,
 				} );
@@ -334,7 +342,7 @@ export const TaskList = ( {
 						{ renderMenu() }
 					</CardHeader>
 					<CardBody>
-						<ListComp animation="slide-right" { ...listProps }>
+						<ListComp animation="none" { ...listProps }>
 							{ listTasks.map( ( task ) => (
 								<TaskItem
 									key={ task.key }

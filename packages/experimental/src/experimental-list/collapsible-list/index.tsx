@@ -87,40 +87,47 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 
 	return (
 		<ExperimentalList { ...listProps }>
-			{ shownChildren }
-			<Transition
-				timeout={ 500 }
-				in={ ! isCollapsed }
-				mountOnEnter
-				unmountOnExit
-			>
-				{ ( state: 'entering' | 'entered' | 'exiting' | 'exited' ) => (
-					<div
-						ref={ collapseContainerRef }
-						style={ {
-							...defaultStyle,
-							...transitionStyles[ state ],
-						} }
-					>
-						{ hiddenChildren }
-					</div>
-				) }
-			</Transition>
-			{ hiddenChildren.length > 0 ? (
-				<ExperimentalListItem
-					className="list-item-collapse"
-					onClick={ clickHandler }
-					animation="none"
+			{ [
+				...shownChildren,
+				<Transition
+					key="remaining-children"
+					timeout={ 500 }
+					in={ ! isCollapsed }
+					mountOnEnter
+					unmountOnExit
 				>
-					<p>{ isCollapsed ? expandLabel : collapseLabel }</p>
+					{ (
+						state: 'entering' | 'entered' | 'exiting' | 'exited'
+					) => (
+						<div
+							ref={ collapseContainerRef }
+							style={ {
+								...defaultStyle,
+								...transitionStyles[ state ],
+							} }
+						>
+							{ hiddenChildren }
+						</div>
+					) }
+				</Transition>,
+				hiddenChildren.length > 0 ? (
+					<ExperimentalListItem
+						key="collapse-item"
+						className="list-item-collapse"
+						onClick={ clickHandler }
+						animation="none"
+						disableGutters
+					>
+						<p>{ isCollapsed ? expandLabel : collapseLabel }</p>
 
-					<Icon
-						className="list-item-collapse__icon"
-						size={ 30 }
-						icon={ isCollapsed ? chevronDown : chevronUp }
-					/>
-				</ExperimentalListItem>
-			) : null }
+						<Icon
+							className="list-item-collapse__icon"
+							size={ 30 }
+							icon={ isCollapsed ? chevronDown : chevronUp }
+						/>
+					</ExperimentalListItem>
+				) : null,
+			] }
 		</ExperimentalList>
 	);
 };
