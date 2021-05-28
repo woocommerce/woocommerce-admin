@@ -1,4 +1,4 @@
-import { setCheckbox, unsetCheckbox } from '@woocommerce/e2e-utils';
+const { setCheckbox, unsetCheckbox } = require( '@woocommerce/e2e-utils' );
 import { BasePage } from '../../pages/BasePage';
 import { waitForElementByText } from '../../utils/actions';
 

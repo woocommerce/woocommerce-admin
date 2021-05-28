@@ -1,4 +1,5 @@
 import { ElementHandle } from 'puppeteer';
+const { expect } = require( '@types/jest' );
 
 /**
  * Wait for UI blocking to end.

@@ -1,12 +1,19 @@
-import {
+/**
+ * External dependencies
+ */
+const {
 	setCheckbox,
 	clearAndFillInput,
 	verifyCheckboxIsSet,
 	verifyCheckboxIsUnset,
-} from '@woocommerce/e2e-utils';
+} = require( '@woocommerce/e2e-utils' );
+const config = require( 'config' );
+
+/**
+ * Internal dependencies
+ */
 import { DropdownTypeaheadField } from '../../elements/DropdownTypeaheadField';
 import { BasePage } from '../../pages/BasePage';
-const config = require( 'config' );
 
 interface StoreDetails {
 	addressLine1?: string;

@@ -1,4 +1,4 @@
-import { clearAndFillInput } from '@woocommerce/e2e-utils';
+const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
 import { BasePage } from '../../pages/BasePage';
 
 type AccountDetails = {
