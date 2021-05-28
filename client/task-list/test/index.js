@@ -229,41 +229,48 @@ describe( 'TaskDashboard and TaskList', () => {
 		).toBeInTheDocument();
 	} );
 
-	it( 'sets homescreen layout default when dismissed', () => {
-		const { getByRole } = render(
-			<TaskList
-				query={ {} }
-				dismissedTasks={ [] }
-				trackedCompletedTasks={ shorterTasksList }
-				tasks={ shorterTasksList }
-			/>
+	it( 'sets homescreen layout default when dismissed', async () => {
+		useSelect.mockImplementation( () => ( {
+			dismissedTasks: [],
+			isSetupTaskListHidden: false,
+			isExtendedTaskListHidden: true,
+			profileItems: {},
+		} ) );
+		apiFetch.mockResolvedValue( {} );
+		getAllTasks.mockReturnValue( tasks );
+		const { container, getByRole } = render(
+			<TaskDashboard query={ {} } />
 		);
+
+		// Wait for the setup task list to render.
+		expect(
+			await findByText( container, TASK_LIST_HEADING )
+		).toBeDefined();
 
 		userEvent.click( getByRole( 'button', { name: 'Task List Options' } ) );
 		userEvent.click( getByRole( 'button', { name: 'Hide this' } ) );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
-			woocommerce_task_list_hidden: 'yes',
 			woocommerce_task_list_prompt_shown: true,
 			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	} );
 
 	it( 'sets homescreen layout default when completed', () => {
+		useSelect.mockImplementation( () => ( {
+			dismissedTasks: [],
+			isSetupTaskListHidden: false,
+			isExtendedTaskListHidden: true,
+			profileItems: {},
+		} ) );
 		apiFetch.mockResolvedValue( {} );
+		getAllTasks.mockReturnValue( { setup: shorterTasksList } );
+
 		act( () => {
-			render(
-				<TaskList
-					query={ {} }
-					dismissedTasks={ [] }
-					trackedCompletedTasks={ shorterTasksList }
-					tasks={ shorterTasksList }
-				/>
-			);
+			render( <TaskDashboard query={ {} } /> );
 		} );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
-			woocommerce_task_list_complete: 'yes',
 			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	} );
@@ -273,6 +280,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		const { setup } = tasks;
 		const { queryByText } = render(
 			<TaskList
+				name="task_list"
+				eventName="tasklist"
 				dismissedTasks={ [ 'optional', 'required', 'completed' ] }
 				isComplete={ false }
 				query={ {} }
@@ -289,6 +298,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		const { extension } = tasks;
 		const { queryByText } = render(
 			<TaskList
+				name="extended_task_list"
+				eventName="extended_tasklist"
 				dismissedTasks={ [ 'extension' ] }
 				isComplete={ false }
 				query={ {} }
@@ -301,22 +312,21 @@ describe( 'TaskDashboard and TaskList', () => {
 	} );
 
 	it( 'sets setup tasks list as completed', () => {
+		useSelect.mockImplementation( () => ( {
+			dismissedTasks: [],
+			isSetupTaskListHidden: false,
+			isExtendedTaskListHidden: true,
+			profileItems: {},
+		} ) );
 		apiFetch.mockResolvedValue( {} );
+		getAllTasks.mockReturnValue( { setup: shorterTasksList } );
+
 		act( () => {
-			render(
-				<TaskList
-					dismissedTasks={ [] }
-					isComplete={ false }
-					query={ {} }
-					trackedCompletedTasks={ shorterTasksList }
-					tasks={ shorterTasksList }
-				/>
-			);
+			render( <TaskDashboard query={ {} } /> );
 		} );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
 			woocommerce_task_list_complete: 'yes',
-			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	} );
 
@@ -325,12 +335,13 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="extended_task_list"
+					eventName="extended_tasklist"
 					dismissedTasks={ [] }
 					isComplete={ false }
 					query={ {} }
 					trackedCompletedTasks={ [] }
 					tasks={ shorterTasksList }
-					name={ 'extended_task_list' }
 				/>
 			);
 		} );
@@ -346,6 +357,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="task_list"
+					eventName="tasklist"
 					dismissedTasks={ [ 'optional', 'required', 'completed' ] }
 					isComplete={ false }
 					query={ {} }
@@ -357,7 +370,6 @@ describe( 'TaskDashboard and TaskList', () => {
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
 			woocommerce_task_list_complete: 'yes',
-			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	} );
 
@@ -367,12 +379,13 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="extended_task_list"
+					eventName="extended_tasklist"
 					dismissedTasks={ [ 'extension' ] }
 					isComplete={ false }
 					query={ {} }
 					trackedCompletedTasks={ [] }
 					tasks={ extension }
-					name={ 'extended_task_list' }
 				/>
 			);
 		} );
@@ -388,6 +401,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="task_list"
+					eventName="tasklist"
 					dismissedTasks={ [] }
 					isComplete={ true }
 					query={ {} }
@@ -399,7 +414,6 @@ describe( 'TaskDashboard and TaskList', () => {
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
 			woocommerce_task_list_complete: 'no',
-			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	} );
 
@@ -409,12 +423,13 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="extended_task_list"
+					eventName="extended_tasklist"
 					dismissedTasks={ [] }
 					isComplete={ true }
 					query={ {} }
 					trackedCompletedTasks={ shorterTasksList }
 					tasks={ extension }
-					name={ 'extended_task_list' }
 				/>
 			);
 		} );
@@ -430,6 +445,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="task_list"
+					eventName="tasklist"
 					dismissedTasks={ [] }
 					query={ {} }
 					trackedCompletedTasks={ [] }
@@ -449,6 +466,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="task_list"
+					eventName="tasklist"
 					dismissedTasks={ [] }
 					query={ {} }
 					trackedCompletedTasks={ [ 'completed', 'extension' ] }
@@ -468,6 +487,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="task_list"
+					eventName="tasklist"
 					dismissedTasks={ [] }
 					query={ {} }
 					trackedCompletedTasks={ [ 'extension' ] }
@@ -486,6 +507,8 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
+					name="task_list"
+					eventName="tasklist"
 					dismissedTasks={ [ 'completed-1' ] }
 					query={ {} }
 					trackedCompletedTasks={ [] }
@@ -504,12 +527,13 @@ describe( 'TaskDashboard and TaskList', () => {
 		const { extension } = tasks;
 		const { getByText } = render(
 			<TaskList
+				name="extended_task_list"
+				eventName="extended_tasklist"
 				dismissedTasks={ [] }
 				isComplete={ false }
 				query={ {} }
 				trackedCompletedTasks={ [] }
 				tasks={ extension }
-				name={ 'extended_task_list' }
 			/>
 		);
 
