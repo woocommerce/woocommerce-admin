@@ -59,7 +59,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'klarna',
+				'key'        => 'kco',
 				'title'      => __( 'Klarna', 'woocommerce-admin' ),
 				'content'    => __( 'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.', 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/klarna-black.png',
