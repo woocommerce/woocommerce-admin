@@ -3,14 +3,14 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
-import { Fill as ExpermientalNotificationFill } from '@wordpress/components';
+import { Fill as NotificationFill } from '@wordpress/components';
 import { AbbreviatedCard } from '@woocommerce/components';
 import { page } from '@wordpress/icons';
 import { Text } from '@woocommerce/experimental';
 
 const MyAbbreviatedNotification = () => {
 	return (
-		<ExpermientalNotificationFill name="__experimentalAbbreviatedNotification">
+		<NotificationFill name="AbbreviatedNotification">
 			<AbbreviatedCard
 				className="woocommerce-abbreviated-notification"
 				icon={ page }
@@ -26,7 +26,7 @@ const MyAbbreviatedNotification = () => {
 					{ __( 'This is an unread notifications', 'plugin-domain' ) }
 				</Text>
 			</AbbreviatedCard>
-		</ExpermientalNotificationFill>
+		</NotificationFill>
 	);
 };
 

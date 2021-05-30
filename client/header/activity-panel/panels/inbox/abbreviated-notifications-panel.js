@@ -27,8 +27,7 @@ const ORDER_PANEL_ID = 'orders-panel';
 const REVIEWS_PANEL_ID = 'reviews-panel';
 const STOCK_PANEL_ID = 'stock-panel';
 
-export const ABBREVIATED_NOTIFICATION_SLOT_NAME =
-	'__experimentalAbbreviatedNotification';
+export const ABBREVIATED_NOTIFICATION_SLOT_NAME = 'AbbreviatedNotification';
 
 export const AbbreviatedNotificationsPanel = ( {
 	hasExtraFills,
