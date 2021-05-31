@@ -1,6 +1,10 @@
 /**
- * External dependencies
+ * Internal dependencies
  */
+import { Analytics } from '../../pages/Analytics';
+import { Login } from '../../pages/Login';
+
+// External modules
 const {
 	afterAll,
 	beforeAll,
@@ -8,16 +12,10 @@ const {
 	it,
 } = require( '@jest/globals' );
 
-/**
- * Internal dependencies
- */
-import { Analytics } from '../../pages/Analytics';
-import { Login } from '../../pages/Login';
-
 const testAdminAnalyticsPages = () => {
 	describe('Analytics pages', () => {
-		const analyticsPage = new Analytics(page);
-		const login = new Login(page);
+		const analyticsPage = new Analytics( page );
+		const login = new Login( page );
 
 		beforeAll( async () => {
 			await login.login();

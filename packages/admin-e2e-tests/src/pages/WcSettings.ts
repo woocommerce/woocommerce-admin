@@ -1,13 +1,11 @@
 /**
- * External dependencies
- */
-const { setCheckbox } = require( '@woocommerce/e2e-utils' );
-
-/**
  * Internal dependencies
  */
 import { getAttribute, waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
+
+// External modules
+const { setCheckbox } = require( '@woocommerce/e2e-utils' );
 
 export class WcSettings extends BasePage {
 	url = 'wp-admin/admin.php?page=wc-settings';

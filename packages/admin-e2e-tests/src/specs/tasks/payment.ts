@@ -1,14 +1,4 @@
 /**
- * External dependencies
- */
-const {
-	afterAll,
-	beforeAll,
-	describe,
-	it,
-} = require( '@jest/globals' );
-
-/**
  * Internal dependencies
  */
 import { Login } from '../../pages/Login';
@@ -16,6 +6,13 @@ import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { PaymentsSetup } from '../../pages/PaymentsSetup';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { BankAccountTransferSetup } from '../../sections/payment-setup/BankAccountTransferSetup';
+
+const {
+	afterAll,
+	beforeAll,
+	describe,
+	it,
+} = require( '@jest/globals' );
 
 const testAdminPaymentSetupTask = () => {
 	describe( 'Payment setup task', () => {

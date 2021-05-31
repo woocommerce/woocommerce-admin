@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
-import { ElementHandle, Page } from 'puppeteer';
+import { ElementHandle } from 'puppeteer';
+
 const { expect } = require( '@jest/globals' );
 
 /**

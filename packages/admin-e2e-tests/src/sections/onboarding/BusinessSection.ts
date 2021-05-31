@@ -1,10 +1,11 @@
-const { setCheckbox, unsetCheckbox } = require( '@woocommerce/e2e-utils' );
-
 /**
  * Internal dependencies
  */
 import { BasePage } from '../../pages/BasePage';
 import { waitForElementByText } from '../../utils/actions';
+
+// External modules
+const { setCheckbox, unsetCheckbox } = require( '@woocommerce/e2e-utils' );
 
 export class BusinessSection extends BasePage {
 	async isDisplayed() {

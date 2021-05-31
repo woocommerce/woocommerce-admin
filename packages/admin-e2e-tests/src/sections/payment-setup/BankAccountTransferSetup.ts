@@ -1,5 +1,10 @@
-const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
+/**
+ * Internal dependencies
+ */
 import { BasePage } from '../../pages/BasePage';
+
+// External modules
+const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
 
 type AccountDetails = {
 	accountName: string;

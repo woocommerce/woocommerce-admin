@@ -1,9 +1,8 @@
 /**
  * Internal dependencies
  */
-import { waitForElementByText } from '../utils/actions';
+import { waitForElementByText, getElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
-import { getElementByText } from '../utils/actions';
 
 type PaymentMethodWithSetupButton =
 	| 'wcpay'
@@ -40,7 +39,7 @@ export class PaymentsSetup extends BasePage {
 	}
 
 	async methodHasBeenSetup( method: PaymentMethod ) {
-		await getElementByText( 'button', 'Manage', `.woocommerce-task-payment-${ method }` )
+		await getElementByText( 'button', 'Manage', `.woocommerce-task-payment-${ method }` );
 	}
 
 	async enableCashOnDelivery() {

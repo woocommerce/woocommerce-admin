@@ -16,7 +16,7 @@ export class FormToggle extends BaseElement {
 					`Could not find form toggle with selector ${ this.selector }`
 				);
 			}
-			input?.click();
+			input.click();
 
 			// Wait for it to be checked.
 			await this.page.waitForSelector(
@@ -35,7 +35,7 @@ export class FormToggle extends BaseElement {
 					`Could not find form toggle with selector ${ this.selector }`
 				);
 			}
-			input?.click();
+			input.click();
 
 			// Wait for a not checked toggle to be present.
 			await page.waitForFunction(

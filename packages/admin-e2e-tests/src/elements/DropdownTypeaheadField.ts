@@ -1,12 +1,9 @@
 /**
- * External dependencies
- */
-const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
-
-/**
  * Internal dependencies
  */
 import { BaseElement } from './BaseElement';
+
+const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
 
 export class DropdownTypeaheadField extends BaseElement {
 	async search( text: string ) {

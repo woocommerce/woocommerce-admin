@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { ElementHandle, Page } from 'puppeteer';
-const config = require( 'config' );
 
 /**
  * Internal dependencies
@@ -12,12 +11,14 @@ import { DropdownTypeaheadField } from '../elements/DropdownTypeaheadField';
 import { FormToggle } from '../elements/FormToggle';
 import { getElementByText } from '../utils/actions';
 
+// Get base URL for the test site
+const config = require( 'config' );
 const baseUrl = config.get( 'url' );
 
 // Represents a page that can be navigated to
 export abstract class BasePage {
 	protected page: Page;
-	protected url: string = '';
+	protected url = '';
 	protected baseUrl: string = baseUrl;
 
 	// cache of elements that have been setup, note that they are unique "per page/per selector"

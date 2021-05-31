@@ -1,6 +1,13 @@
 /**
- * External dependencies
+ * Internal dependencies
  */
+import { OnboardingWizard } from '../../pages/OnboardingWizard';
+import { WcHomescreen } from '../../pages/WcHomescreen';
+import { TaskTitles } from '../../constants/taskTitles';
+import { getElementByText } from '../../utils/actions';
+import { Login } from '../../pages/Login';
+
+// External modules
 const {
 	afterAll,
 	beforeAll,
@@ -9,15 +16,6 @@ const {
 	expect,
 } = require( '@jest/globals' );
 const config = require( 'config' );
-
-/**
- * Internal dependencies
- */
-import { OnboardingWizard } from '../../pages/OnboardingWizard';
-import { WcHomescreen } from '../../pages/WcHomescreen';
-import { TaskTitles } from '../../constants/taskTitles';
-import { getElementByText } from '../../utils/actions';
-import { Login } from '../../pages/Login';
 
 /**
  * This tests a default, happy path for the onboarding wizard.
@@ -194,7 +192,7 @@ const testAdminNonUSRecommendedFeatures = () => {
 		} );
 
 		it( 'should display the choose payments task, and not the woocommerce payments task', async () => {
-			const homescreen = new WcHomescreen(page);
+			const homescreen = new WcHomescreen( page );
 			await homescreen.isDisplayed();
 			await homescreen.possiblyDismissWelcomeModal();
 
@@ -285,7 +283,7 @@ const testSelectiveBundleWCPay = () => {
 			// Add WC Pay check
 			await profileWizard.business.expandRecommendedBusinessFeatures();
 
-			expect(page).not.toMatchElement( 'a', {
+			expect( page ).not.toMatchElement( 'a', {
 				text: 'WooCommerce Payments',
 			} );
 
@@ -301,7 +299,7 @@ const testSelectiveBundleWCPay = () => {
 		} );
 
 		it( 'should display the choose payments task, and not the woocommerce payments task', async () => {
-			const homescreen = new WcHomescreen(page);
+			const homescreen = new WcHomescreen( page );
 			await homescreen.isDisplayed();
 			await homescreen.possiblyDismissWelcomeModal();
 			const tasks = await homescreen.getTaskList();

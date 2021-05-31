@@ -1,6 +1,10 @@
 /**
- * External dependencies
+ * Internal dependencies
  */
+import { WcSettings } from '../../pages/WcSettings';
+import { WpSettings } from '../../pages/WpSettings';
+import { Login } from '../../pages/Login';
+
 const {
 	clearAndFillInput,
 	verifyValueOfInputField,
@@ -12,13 +16,6 @@ const {
 	it,
 	expect,
 } = require( '@jest/globals' );
-
-/**
- * Internal dependencies
- */
-import { WcSettings } from '../../pages/WcSettings';
-import { WpSettings } from '../../pages/WpSettings';
-import { Login } from '../../pages/Login';
 
 const testAdminBasicSetup = () => {
 	describe('Store owner can finish initial store setup', () => {

@@ -1,14 +1,12 @@
 /**
- * External dependencies
- */
-const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
-const config = require( 'config' );
-
-/**
  * Internal dependencies
  */
 import { getElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
+
+// External modules
+const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
+const config = require( 'config' );
 
 export class Login extends BasePage {
 	url = 'wp-login.php';

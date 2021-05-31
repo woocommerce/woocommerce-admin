@@ -1,6 +1,10 @@
 /**
- * External dependencies
+ * Internal dependencies
  */
+import { DropdownTypeaheadField } from '../../elements/DropdownTypeaheadField';
+import { BasePage } from '../../pages/BasePage';
+
+// External modules
 const {
 	setCheckbox,
 	clearAndFillInput,
@@ -8,12 +12,6 @@ const {
 	verifyCheckboxIsUnset,
 } = require( '@woocommerce/e2e-utils' );
 const config = require( 'config' );
-
-/**
- * Internal dependencies
- */
-import { DropdownTypeaheadField } from '../../elements/DropdownTypeaheadField';
-import { BasePage } from '../../pages/BasePage';
 
 interface StoreDetails {
 	addressLine1?: string;

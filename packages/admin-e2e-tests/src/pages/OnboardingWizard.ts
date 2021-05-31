@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { Page } from 'puppeteer';
-const { expect } = require( '@jest/globals' );
 
 /**
  * Internal dependencies
@@ -14,6 +13,9 @@ import { ProductTypeSection } from '../sections/onboarding/ProductTypesSection';
 import { StoreDetailsSection } from '../sections/onboarding/StoreDetailsSection';
 import { ThemeSection } from '../sections/onboarding/ThemeSection';
 import { BasePage } from './BasePage';
+
+// External modules
+const { expect } = require( '@jest/globals' );
 
 export class OnboardingWizard extends BasePage {
 	url = 'wp-admin/admin.php?page=wc-admin&path=/setup-wizard';
