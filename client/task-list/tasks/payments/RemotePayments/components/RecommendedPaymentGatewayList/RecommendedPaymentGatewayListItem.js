@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { Fragment } from '@wordpress/element';
 import { CardBody, CardMedia, CardDivider } from '@wordpress/components';
 import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
+import { RecommendedRibbon, SetupRequired } from '@woocommerce/onboarding';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text, useSlot } from '@woocommerce/experimental';
 import { useSelect } from '@wordpress/data';
@@ -13,8 +14,6 @@ import { useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { PaymentAction } from '../../../components/PaymentAction';
-import { RecommendedRibbon } from '../../../components/RecommendedRibbon';
-import { SetupRequired } from '../../../components/SetupRequired';
 
 import './RecommendedPaymentGatewayList.scss';
 

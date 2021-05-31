@@ -3,15 +3,11 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import {
-	Form,
-	H,
-	TextControl,
-	WooRemotePayment,
-} from '@woocommerce/components';
+import { Form, H, TextControl } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { WooRemotePayment } from '@woocommerce/onboarding';
 
 const initialFormValues = {
 	account_name: '',
