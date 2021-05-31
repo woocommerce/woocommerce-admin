@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { Card, CardHeader } from '@wordpress/components';
-import { useMemo } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -11,23 +10,12 @@ import { RecommendedPaymentGatewayListItem } from './RecommendedPaymentGatewayLi
 
 import './RecommendedPaymentGatewayList.scss';
 
-const RECOMMENDED_GATEWAY_KEYS = [ 'wcpay', 'mercadopago', 'stripe' ];
-
 export const RecommendedPaymentGatewayList = ( {
 	heading,
+	recommendedPaymentGateway,
 	recommendedPaymentGateways,
 	markConfigured,
 } ) => {
-	const recommendedMethod = useMemo( () => {
-		for ( const key in RECOMMENDED_GATEWAY_KEYS ) {
-			const gateway = recommendedPaymentGateways.get( key );
-			if ( gateway && gateway.visible ) {
-				return gateway;
-			}
-		}
-		return null;
-	}, [ recommendedPaymentGateways ] );
-
 	return (
 		<Card>
 			<CardHeader as="h2">{ heading }</CardHeader>
@@ -39,7 +27,7 @@ export const RecommendedPaymentGatewayList = ( {
 							key={ key }
 							markConfigured={ markConfigured }
 							paymentGateway={ paymentGateway }
-							isRecommended={ recommendedMethod === key }
+							isRecommended={ recommendedPaymentGateway === key }
 							recommendedPaymentGatewayKeys={ recommendedPaymentGateways.keys() }
 						/>
 					);

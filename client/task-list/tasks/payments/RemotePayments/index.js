@@ -115,6 +115,16 @@ export const RemotePayments = ( { query } ) => {
 		} );
 	}, [] );
 
+	const recommendedPaymentGateway = useMemo( () => {
+		for ( const key in RECOMMENDED_GATEWAY_KEYS ) {
+			const gateway = paymentGatewayRecommendations.get( key );
+			if ( gateway && gateway.visible ) {
+				return gateway;
+			}
+		}
+		return null;
+	}, [ paymentGatewayRecommendations ] );
+
 	const currentPaymentGateway = useMemo( () => {
 		if (
 			! query.method ||
@@ -168,6 +178,7 @@ export const RemotePayments = ( { query } ) => {
 			{ !! enabledPaymentGatewayRecommendations.size && (
 				<RecommendedPaymentGatewayList
 					heading={ __( 'Enabled payment methods', 'wc-admin' ) }
+					recommendedPaymentGateway={ recommendedPaymentGateway }
 					recommendedPaymentGateways={
 						enabledPaymentGatewayRecommendations
 					}
@@ -180,6 +191,7 @@ export const RemotePayments = ( { query } ) => {
 					recommendedPaymentGateways={
 						additionalPaymentGatewayRecommendations
 					}
+					recommendedPaymentGateway={ recommendedPaymentGateway }
 					markConfigured={ markConfigured }
 				/>
 			) }
