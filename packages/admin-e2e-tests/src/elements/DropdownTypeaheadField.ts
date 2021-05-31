@@ -3,7 +3,9 @@
  */
 import { BaseElement } from './BaseElement';
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 export class DropdownTypeaheadField extends BaseElement {
 	async search( text: string ) {

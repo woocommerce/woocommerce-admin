@@ -11,8 +11,9 @@ import { DropdownTypeaheadField } from '../elements/DropdownTypeaheadField';
 import { FormToggle } from '../elements/FormToggle';
 import { getElementByText } from '../utils/actions';
 
-// Get base URL for the test site
+/* eslint-disable @typescript-eslint/no-var-requires */
 const config = require( 'config' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 const baseUrl = config.get( 'url' );
 
 // Represents a page that can be navigated to

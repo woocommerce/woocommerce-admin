@@ -5,6 +5,7 @@ import { WcSettings } from '../../pages/WcSettings';
 import { WpSettings } from '../../pages/WpSettings';
 import { Login } from '../../pages/Login';
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 const {
 	clearAndFillInput,
 	verifyValueOfInputField,
@@ -16,9 +17,10 @@ const {
 	it,
 	expect,
 } = require( '@jest/globals' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 const testAdminBasicSetup = () => {
-	describe('Store owner can finish initial store setup', () => {
+	describe( 'Store owner can finish initial store setup', () => {
 		const wcSettings = new WcSettings( page );
 		const wpSettings = new WpSettings( page );
 		const login = new Login( page );
@@ -60,10 +62,16 @@ const testAdminBasicSetup = () => {
 
 			// Verify that settings have been saved
 			await Promise.all( [
-				expect( page ).toMatchElement( '#setting-error-settings_updated', {
-					text: 'Permalink structure updated.',
-				} ),
-				verifyValueOfInputField( '#permalink_structure', '/%postname%/' ),
+				expect( page ).toMatchElement(
+					'#setting-error-settings_updated',
+					{
+						text: 'Permalink structure updated.',
+					}
+				),
+				verifyValueOfInputField(
+					'#permalink_structure',
+					'/%postname%/'
+				),
 				verifyValueOfInputField(
 					'#woocommerce_permalink_structure',
 					'/product/'

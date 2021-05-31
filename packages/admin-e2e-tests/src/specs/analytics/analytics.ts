@@ -4,16 +4,11 @@
 import { Analytics } from '../../pages/Analytics';
 import { Login } from '../../pages/Login';
 
-// External modules
-const {
-	afterAll,
-	beforeAll,
-	describe,
-	it,
-} = require( '@jest/globals' );
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { afterAll, beforeAll, describe, it } = require( '@jest/globals' );
 
 const testAdminAnalyticsPages = () => {
-	describe('Analytics pages', () => {
+	describe( 'Analytics pages', () => {
 		const analyticsPage = new Analytics( page );
 		const login = new Login( page );
 

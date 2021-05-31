@@ -4,7 +4,7 @@
 import { DropdownTypeaheadField } from '../../elements/DropdownTypeaheadField';
 import { BasePage } from '../../pages/BasePage';
 
-// External modules
+/* eslint-disable @typescript-eslint/no-var-requires */
 const {
 	setCheckbox,
 	clearAndFillInput,
@@ -12,6 +12,7 @@ const {
 	verifyCheckboxIsUnset,
 } = require( '@woocommerce/e2e-utils' );
 const config = require( 'config' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 interface StoreDetails {
 	addressLine1?: string;

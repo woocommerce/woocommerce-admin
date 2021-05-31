@@ -4,13 +4,9 @@
 import { Coupons } from '../../pages/Coupons';
 import { Login } from '../../pages/Login';
 
-// External modules
-const {
-	afterAll,
-	beforeAll,
-	describe,
-	it,
-} = require( '@jest/globals' );
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { afterAll, beforeAll, describe, it } = require( '@jest/globals' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 const testAdminCouponsPage = () => {
 	describe( 'Coupons page', () => {

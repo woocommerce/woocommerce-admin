@@ -7,12 +7,9 @@ import { PaymentsSetup } from '../../pages/PaymentsSetup';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { BankAccountTransferSetup } from '../../sections/payment-setup/BankAccountTransferSetup';
 
-const {
-	afterAll,
-	beforeAll,
-	describe,
-	it,
-} = require( '@jest/globals' );
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { afterAll, beforeAll, describe, it } = require( '@jest/globals' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 const testAdminPaymentSetupTask = () => {
 	describe( 'Payment setup task', () => {

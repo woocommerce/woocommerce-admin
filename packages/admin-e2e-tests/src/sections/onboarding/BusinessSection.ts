@@ -4,8 +4,9 @@
 import { BasePage } from '../../pages/BasePage';
 import { waitForElementByText } from '../../utils/actions';
 
-// External modules
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { setCheckbox, unsetCheckbox } = require( '@woocommerce/e2e-utils' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 export class BusinessSection extends BasePage {
 	async isDisplayed() {

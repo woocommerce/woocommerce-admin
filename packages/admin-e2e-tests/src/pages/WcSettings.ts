@@ -4,8 +4,9 @@
 import { getAttribute, waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 
-// External modules
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { setCheckbox } = require( '@woocommerce/e2e-utils' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 export class WcSettings extends BasePage {
 	url = 'wp-admin/admin.php?page=wc-settings';

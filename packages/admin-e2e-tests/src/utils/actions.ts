@@ -3,7 +3,9 @@
  */
 import { ElementHandle } from 'puppeteer';
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { expect } = require( '@jest/globals' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 /**
  * Wait for UI blocking to end.

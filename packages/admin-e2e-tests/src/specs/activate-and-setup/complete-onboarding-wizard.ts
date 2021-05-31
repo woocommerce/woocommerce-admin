@@ -7,7 +7,7 @@ import { TaskTitles } from '../../constants/taskTitles';
 import { getElementByText } from '../../utils/actions';
 import { Login } from '../../pages/Login';
 
-// External modules
+/* eslint-disable @typescript-eslint/no-var-requires */
 const {
 	afterAll,
 	beforeAll,
@@ -16,6 +16,7 @@ const {
 	expect,
 } = require( '@jest/globals' );
 const config = require( 'config' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 /**
  * This tests a default, happy path for the onboarding wizard.
@@ -65,13 +66,15 @@ const testAdminOnboardingWizard = () => {
 			await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
-			await profileWizard.productTypes.selectProduct( 'Physical products' );
+			await profileWizard.productTypes.selectProduct(
+				'Physical products'
+			);
 			await profileWizard.productTypes.selectProduct( 'Downloads' );
 
 			await profileWizard.continue();
 		} );
 
-		it('can complete the business section', async () => {
+		it( 'can complete the business section', async () => {
 			await profileWizard.business.isDisplayed();
 			await profileWizard.business.selectProductNumber(
 				config.get( 'onboardingwizard.numberofproducts' )
@@ -88,7 +91,7 @@ const testAdminOnboardingWizard = () => {
 			// Add WC Pay check
 			await profileWizard.business.expandRecommendedBusinessFeatures();
 
-			expect(page).toMatchElement( 'a', {
+			expect( page ).toMatchElement( 'a', {
 				text: 'WooCommerce Payments',
 			} );
 
@@ -96,7 +99,7 @@ const testAdminOnboardingWizard = () => {
 			await profileWizard.continue();
 		} );
 
-		it('can complete the theme selection section', async () => {
+		it( 'can complete the theme selection section', async () => {
 			await profileWizard.themes.isDisplayed();
 			await profileWizard.themes.continueWithActiveTheme();
 		} );
@@ -152,7 +155,9 @@ const testAdminNonUSRecommendedFeatures = () => {
 			await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
-			await profileWizard.productTypes.selectProduct( 'Physical products' );
+			await profileWizard.productTypes.selectProduct(
+				'Physical products'
+			);
 			await profileWizard.productTypes.selectProduct( 'Downloads' );
 
 			await profileWizard.continue();
@@ -215,7 +220,7 @@ const testAdminNonUSRecommendedFeatures = () => {
 };
 
 const testSelectiveBundleWCPay = () => {
-	describe( 'A japanese store can complete the selective bundle install but does not include WCPay. ', () => {
+	describe( 'A japanese store can complete the selective bundle install but does not include WCPay.', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
 
@@ -258,7 +263,9 @@ const testSelectiveBundleWCPay = () => {
 			await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
-			await profileWizard.productTypes.selectProduct( 'Physical products' );
+			await profileWizard.productTypes.selectProduct(
+				'Physical products'
+			);
 			await profileWizard.productTypes.selectProduct( 'Downloads' );
 
 			await profileWizard.continue();

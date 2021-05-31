@@ -3,8 +3,9 @@
  */
 import { BasePage } from '../../pages/BasePage';
 
-// External modules
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 type AccountDetails = {
 	accountName: string;

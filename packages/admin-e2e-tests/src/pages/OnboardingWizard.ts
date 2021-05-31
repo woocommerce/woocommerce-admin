@@ -14,7 +14,7 @@ import { StoreDetailsSection } from '../sections/onboarding/StoreDetailsSection'
 import { ThemeSection } from '../sections/onboarding/ThemeSection';
 import { BasePage } from './BasePage';
 
-// External modules
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { expect } = require( '@jest/globals' );
 
 export class OnboardingWizard extends BasePage {

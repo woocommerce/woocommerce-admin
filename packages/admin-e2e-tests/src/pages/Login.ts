@@ -4,7 +4,7 @@
 import { getElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 
-// External modules
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
 const config = require( 'config' );
 
