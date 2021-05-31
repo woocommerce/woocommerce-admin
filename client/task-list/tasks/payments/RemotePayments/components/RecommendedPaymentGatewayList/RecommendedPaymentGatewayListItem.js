@@ -18,7 +18,6 @@ import { PaymentAction } from '../../../components/PaymentAction';
 import './RecommendedPaymentGatewayList.scss';
 
 export const RecommendedPaymentGatewayListItem = ( {
-	hasDivider = true,
 	isRecommended,
 	paymentGateway,
 	markConfigured,
@@ -69,7 +68,6 @@ export const RecommendedPaymentGatewayListItem = ( {
 
 	return (
 		<Fragment key={ key }>
-			{ hasDivider && <CardDivider /> }
 			<CardBody
 				style={ { paddingLeft: 0, marginBottom: 0 } }
 				className={ classes }
@@ -106,6 +104,7 @@ export const RecommendedPaymentGatewayListItem = ( {
 					/>
 				</div>
 			</CardBody>
+			<CardDivider />
 		</Fragment>
 	);
 };

@@ -32,11 +32,10 @@ export const RecommendedPaymentGatewayList = ( {
 		<Card>
 			<CardHeader as="h2">{ heading }</CardHeader>
 			{ Array.from( recommendedPaymentGateways.values() ).map(
-				( paymentGateway, index ) => {
+				( paymentGateway ) => {
 					const { key } = paymentGateway;
 					return (
 						<RecommendedPaymentGatewayListItem
-							hasDivider={ index !== 0 }
 							key={ key }
 							markConfigured={ markConfigured }
 							paymentGateway={ paymentGateway }
