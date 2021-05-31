@@ -22,7 +22,7 @@
  ],
  "sideEffects": false,
  "scripts": {
-  "clean": "rm -rf ./dist ./tsconfig.tsbuildinfo",
+  "clean": "rm -rf ./build ./build-module ./tsconfig.tsbuildinfo",
   "compile": "tsc -b",
   "build": "npm run clean && npm run compile",
   "prepare": "npm run build",
