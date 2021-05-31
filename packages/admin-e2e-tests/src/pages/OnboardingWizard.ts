@@ -1,4 +1,12 @@
+/**
+ * External dependencies
+ */
 import { Page } from 'puppeteer';
+const { expect } = require( '@jest/globals' );
+
+/**
+ * Internal dependencies
+ */
 import { BenefitsSection } from '../sections/onboarding/BenefitsSection';
 import { BusinessSection } from '../sections/onboarding/BusinessSection';
 import { IndustrySection } from '../sections/onboarding/IndustrySection';
@@ -6,10 +14,6 @@ import { ProductTypeSection } from '../sections/onboarding/ProductTypesSection';
 import { StoreDetailsSection } from '../sections/onboarding/StoreDetailsSection';
 import { ThemeSection } from '../sections/onboarding/ThemeSection';
 import { BasePage } from './BasePage';
-const { expect } = require( '@jest/globals' );
-
-// Declare the global page
-declare var page: Page;
 
 export class OnboardingWizard extends BasePage {
 	url = 'wp-admin/admin.php?page=wc-admin&path=/setup-wizard';

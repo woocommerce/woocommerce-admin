@@ -1,4 +1,11 @@
+/**
+ * External dependencies
+ */
 const { setCheckbox } = require( '@woocommerce/e2e-utils' );
+
+/**
+ * Internal dependencies
+ */
 import { getAttribute, waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 

@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import { Page } from 'puppeteer';
 
 export abstract class BaseElement {

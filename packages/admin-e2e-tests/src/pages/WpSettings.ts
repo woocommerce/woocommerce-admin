@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import { waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 

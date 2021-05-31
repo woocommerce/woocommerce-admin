@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import { Browser, Page } from 'puppeteer';
 
 declare global {

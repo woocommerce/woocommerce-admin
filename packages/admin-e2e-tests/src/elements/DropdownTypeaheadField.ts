@@ -1,9 +1,12 @@
+/**
+ * External dependencies
+ */
 const { clearAndFillInput } = require( '@woocommerce/e2e-utils' );
-import { Page } from 'puppeteer';
-import { BaseElement } from './BaseElement';
 
-// Declare the global page
-declare var page: Page;
+/**
+ * Internal dependencies
+ */
+import { BaseElement } from './BaseElement';
 
 export class DropdownTypeaheadField extends BaseElement {
 	async search( text: string ) {

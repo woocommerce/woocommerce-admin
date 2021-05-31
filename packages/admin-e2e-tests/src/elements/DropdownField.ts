@@ -1,9 +1,8 @@
-import { Page } from 'puppeteer';
+/**
+ * Internal dependencies
+ */
 import { getElementByText, getInputValue } from '../utils/actions';
 import { BaseElement } from './BaseElement';
-
-// Declare the global page
-declare var page: Page;
 
 export class DropdownField extends BaseElement {
 	async select( value: string ) {

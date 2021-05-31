@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import { BasePage } from './BasePage';
 
 export class NewCoupon extends BasePage {

@@ -1,14 +1,18 @@
+/**
+ * External dependencies
+ */
 import { ElementHandle, Page } from 'puppeteer';
+const config = require( 'config' );
+
+/**
+ * Internal dependencies
+ */
 import { DropdownField } from '../elements/DropdownField';
 import { DropdownTypeaheadField } from '../elements/DropdownTypeaheadField';
 import { FormToggle } from '../elements/FormToggle';
 import { getElementByText } from '../utils/actions';
 
-const config = require( 'config' );
 const baseUrl = config.get( 'url' );
-
-// Declare the global page
-declare var page: Page;
 
 // Represents a page that can be navigated to
 export abstract class BasePage {
