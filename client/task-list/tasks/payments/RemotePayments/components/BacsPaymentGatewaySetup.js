@@ -55,15 +55,16 @@ const BacsPaymentGatewaySetup = () => {
 					'woocommerce-admin'
 				)
 			);
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your payment settings',
-					'woocommerce-admin'
-				)
-			);
+			return;
 		}
+
+		createNotice(
+			'error',
+			__(
+				'There was a problem saving your payment settings',
+				'woocommerce-admin'
+			)
+		);
 	};
 
 	return (
