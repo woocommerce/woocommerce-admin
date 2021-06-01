@@ -35,26 +35,10 @@ const Template: Story< ListProps > = ( args ) => (
 
 export const Primary = Template.bind( { onClick: () => {} } );
 
-export const Default: Story = () => {
-	return (
-		<List>
-			<ListItem disableGutters onClick={ () => {} }>
-				<div>Without gutters no padding is added to the list item.</div>
-			</ListItem>
-			<ListItem onClick={ () => {} }>
-				<div>Any markup can go here.</div>
-			</ListItem>
-			<ListItem onClick={ () => {} }>
-				<div>Any markup can go here.</div>
-			</ListItem>
-			<ListItem onClick={ () => {} }>
-				<div>Any markup can go here.</div>
-			</ListItem>
-		</List>
-	);
+Primary.args = {
+	listType: 'ul',
+	animation: 'slide-right',
 };
-
-Default.storyName = 'List / ListItem.';
 
 export const CollapsibleListExample: Story = () => {
 	return (
