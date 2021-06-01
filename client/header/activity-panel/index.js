@@ -66,7 +66,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	};
 
 	const {
-		hasUnreadNotifications,
+		hasUnreadNotifications = false,
 		unreadNotifications = [],
 		requestingTaskListOptions,
 		setupTaskListComplete,
