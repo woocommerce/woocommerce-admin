@@ -37,6 +37,7 @@ const wcAdminPackages = [
 	'number',
 	'data',
 	'tracks',
+	'onboarding',
 ];
 
 const entryPoints = {};
@@ -119,7 +120,7 @@ const webpackConfig = {
 			},
 			{
 				test: /\.s?css$/,
-				exclude: /storybook\/wordpress/,
+				exclude: [ /storybook\/wordpress/, /build-style\/*\/*.css/ ],
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',
