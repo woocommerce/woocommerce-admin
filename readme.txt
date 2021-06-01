@@ -74,8 +74,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Changelog ==
 
 == Unreleased ==
-
-- Fix: `@woocommerce/navigation.getIdsFromQuery` support for `0` as a valid id. #7028
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981
