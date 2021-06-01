@@ -13,7 +13,7 @@ import { sanitize } from 'dompurify';
 /**
  * Internal dependencies
  */
-import InboxNoteActionButton from './action';
+import { InboxNoteActionButton } from './action';
 import { useCallbackOnLinkClick } from './use-callback-on-link-click';
 
 const ALLOWED_TAGS = [ 'a', 'b', 'em', 'i', 'strong', 'p', 'br' ];
