@@ -38,7 +38,15 @@ class Init {
 			$methods[] = $method;
 		}
 
-		return $methods;
+		return array_values(
+			array_filter(
+				$methods,
+				function( $method ) {
+					return $method->is_visible;
+				}
+			)
+		);
+
 	}
 
 	/**
