@@ -50,7 +50,7 @@ class Tax extends Component {
 		const { auto } = query;
 		this.reset();
 
-		if ( auto ) {
+		if ( auto === 'true' ) {
 			this.enableAutomatedTax();
 		}
 	}
