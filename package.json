@@ -73,16 +73,9 @@
 		"create-wc-extension": "node ./bin/starter-pack/starter-pack.js",
 		"storybook": "./bin/import-wp-css-storybook.sh && start-storybook  -c ./storybook -p 6007 --ci",
 		"build-storybook": "build-storybook  -c ./storybook",
-		"changelog": "node ./bin/changelog --changelogSrcType='ZENHUB_RELEASE'",
 		"bump-version": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
 		"wp-env-mysql-port": "node ./docker/wc-admin-wp-env/mysql-port.js",
 		"create-hook-reference": "node ./bin/hook-reference/index.js"
-	},
-	"changelog": {
-		"labelPrefix": "[Type]",
-		"skipLabel": "skip-changelog",
-		"defaultPrefix": "dev",
-		"repo": "woocommerce/woocommerce-admin"
 	},
 	"husky": {
 		"hooks": {
@@ -91,15 +84,15 @@
 		}
 	},
 	"dependencies": {
-		"@automattic/explat-client": "0.0.1",
-		"@automattic/explat-client-react-helpers": "0.0.1",
-		"@woocommerce/e2e-environment": "0.2.1",
-		"@woocommerce/e2e-utils": "0.1.4",
+		"@automattic/explat-client": "0.0.2",
+		"@automattic/explat-client-react-helpers": "0.0.2",
+		"@woocommerce/e2e-environment": "0.2.2",
+		"@woocommerce/e2e-utils": "0.1.5",
 		"@wordpress/api-fetch": "2.2.8",
 		"@wordpress/base-styles": "3.3.0",
 		"@wordpress/components": "11.1.3",
 		"@wordpress/core-data": "2.25.0",
-		"@wordpress/data": "4.26.1",
+		"@wordpress/data": "4.27.3",
 		"@wordpress/data-controls": "1.20.1",
 		"@wordpress/date": "3.13.0",
 		"@wordpress/dom": "2.16.0",
@@ -107,7 +100,7 @@
 		"@wordpress/hooks": "2.11.0",
 		"@wordpress/html-entities": "2.10.0",
 		"@wordpress/i18n": "3.17.0",
-		"@wordpress/icons": "2.9.0",
+		"@wordpress/icons": "2.10.3",
 		"@wordpress/keycodes": "2.18.0",
 		"@wordpress/notices": "1.12.0",
 		"@wordpress/plugins": "2.24.1",
@@ -116,7 +109,7 @@
 		"classnames": "2.3.1",
 		"core-js": "3.9.1",
 		"debug": "4.3.1",
-		"dompurify": "2.2.7",
+		"dompurify": "2.2.8",
 		"github-label-sync": "2.0.0",
 		"gridicons": "3.3.1",
 		"interpolate-components": "1.1.1",
@@ -128,7 +121,7 @@
 		"react-transition-group": "4.4.1",
 		"react-visibility-sensor": "5.1.1",
 		"redux": "4.0.5",
-		"typescript": "4.2.2"
+		"typescript": "4.2.4"
 	},
 	"devDependencies": {
 		"@automattic/color-studio": "2.5.0",
@@ -151,9 +144,9 @@
 		"@storybook/addons": "6.1.14",
 		"@storybook/react": "6.1.14",
 		"@testing-library/jest-dom": "5.12.0",
-		"@testing-library/react": "11.2.6",
+		"@testing-library/react": "11.2.7",
 		"@testing-library/react-hooks": "3.7.0",
-		"@testing-library/user-event": "13.1.8",
+		"@testing-library/user-event": "13.1.9",
 		"@types/cookie": "0.4.0",
 		"@types/dompurify": "2.2.2",
 		"@types/expect-puppeteer": "4.4.5",
@@ -181,6 +174,7 @@
 		"@woocommerce/notices": "file:packages/notices",
 		"@woocommerce/number": "file:packages/number",
 		"@woocommerce/tracks": "file:packages/tracks",
+		"@woocommerce/onboarding": "file:packages/onboarding",
 		"@wordpress/babel-plugin-makepot": "2.1.3",
 		"@wordpress/babel-preset-default": "5.0.1",
 		"@wordpress/browserslist-config": "2.7.0",
