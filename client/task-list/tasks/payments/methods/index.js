@@ -15,7 +15,6 @@ import Bacs from './bacs';
 import BacsLogo from '../images/bacs';
 import CodLogo from '../images/cod';
 import WCPayLogo from '../images/wcpay';
-import RazorpayLogo from '../images/razorpay';
 import { PayUIndiaLogo } from '../images/payu-india';
 import Stripe from './stripe';
 import Square from './square';
@@ -467,7 +466,12 @@ export function getPaymentMethods( {
 					) }
 				</>
 			),
-			before: <RazorpayLogo />,
+			before: (
+				<img
+					src={ wcAdminAssetUrl + 'onboarding/razorpay.svg' }
+					alt={ __( 'Razorpay', 'woocommerce-admin' ) }
+				/>
+			),
 			visible: countryCode === 'IN' && ! hasCbdIndustry,
 			plugins: [ 'woo-razorpay' ],
 			container: <Razorpay />,
