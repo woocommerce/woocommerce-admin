@@ -13,7 +13,6 @@ import {
  */
 import Bacs from './bacs';
 import BacsLogo from '../images/bacs';
-import CodLogo from '../images/cod';
 import WCPayLogo from '../images/wcpay';
 import { PayUIndiaLogo } from '../images/payu-india';
 import Stripe from './stripe';
@@ -91,7 +90,12 @@ export function getPaymentMethods( {
 					) }
 				</>
 			),
-			before: <img src={ wcAssetUrl + 'images/stripe.png' } alt="" />,
+			before: (
+				<img
+					src={ wcAssetUrl + 'images/stripe.png' }
+					alt={ __( 'Stripe Logo', 'woocommerce-admin' ) }
+				/>
+			),
 			visible:
 				stripeSupportedCountries.includes( countryCode ) &&
 				! hasCbdIndustry,
@@ -118,7 +122,7 @@ export function getPaymentMethods( {
 			before: (
 				<img
 					src={ wcAdminAssetUrl + 'onboarding/paystack.png' }
-					alt="Paystack logo"
+					alt={ __( 'Paystack Logo', 'woocommerce-admin' ) }
 				/>
 			),
 			visible:
@@ -176,7 +180,7 @@ export function getPaymentMethods( {
 			before: (
 				<img
 					src={ wcAssetUrl + 'images/payfast.png' }
-					alt="PayFast logo"
+					alt={ __( 'PayFast Logo', 'woocommerce-admin' ) }
 				/>
 			),
 			visible: [ 'ZA' ].includes( countryCode ) && ! hasCbdIndustry,
@@ -234,7 +238,7 @@ export function getPaymentMethods( {
 			before: (
 				<img
 					src={ wcAdminAssetUrl + 'onboarding/mercadopago.png' }
-					alt=""
+					alt={ __( 'Mercado Pago Logo', 'woocommerce-admin' ) }
 				/>
 			),
 			visible: [ 'AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY' ].includes(
@@ -261,7 +265,12 @@ export function getPaymentMethods( {
 					) }
 				</>
 			),
-			before: <img src={ wcAssetUrl + 'images/paypal.png' } alt="" />,
+			before: (
+				<img
+					src={ wcAssetUrl + 'images/paypal.png' }
+					alt={ __( 'PayPal Logo', 'woocommerce-admin' ) }
+				/>
+			),
 			visible: countryCode !== 'IN' && ! hasCbdIndustry,
 			plugins: [ PAYPAL_PLUGIN ],
 			container: <PayPal />,
@@ -284,7 +293,10 @@ export function getPaymentMethods( {
 				'woocommerce-admin'
 			),
 			before: (
-				<img src={ wcAssetUrl + 'images/klarna-black.png' } alt="" />
+				<img
+					src={ wcAssetUrl + 'images/klarna-black.png' }
+					alt={ __( 'Klarna Logo', 'woocommerce-admin' ) }
+				/>
 			),
 			visible:
 				[ 'SE', 'FI', 'NO' ].includes( countryCode ) &&
@@ -309,7 +321,10 @@ export function getPaymentMethods( {
 				'woocommerce-admin'
 			),
 			before: (
-				<img src={ wcAssetUrl + 'images/klarna-black.png' } alt="" />
+				<img
+					src={ wcAssetUrl + 'images/klarna-black.png' }
+					alt={ __( 'Klarna Logo', 'woocommerce-admin' ) }
+				/>
 			),
 			visible:
 				[
@@ -402,7 +417,10 @@ export function getPaymentMethods( {
 				</>
 			),
 			before: (
-				<img src={ `${ wcAssetUrl }images/square-black.png` } alt="" />
+				<img
+					src={ `${ wcAssetUrl }images/square-black.png` }
+					alt={ __( 'Square Logo', 'woocommerce-admin' ) }
+				/>
 			),
 			visible:
 				( hasCbdIndustry && [ 'US' ].includes( countryCode ) ) ||
@@ -439,7 +457,7 @@ export function getPaymentMethods( {
 			before: (
 				<img
 					src={ wcAssetUrl + 'images/eway-logo.jpg' }
-					alt="eWAY logo"
+					alt={ __( 'eWAY Logo', 'woocommerer-admin' ) }
 				/>
 			),
 			visible: [ 'AU', 'NZ' ].includes( countryCode ) && ! hasCbdIndustry,
@@ -512,7 +530,12 @@ export function getPaymentMethods( {
 				'Take payments in cash upon delivery.',
 				'woocommerce-admin'
 			),
-			before: <CodLogo />,
+			before: (
+				<img
+					src={ wcAdminAssetUrl + 'onboarding/cod.svg' }
+					alt={ __( 'Cash on Delivery Logo', 'woocommerce-admin' ) }
+				/>
+			),
 			visible: ! hasCbdIndustry,
 			isEnabled:
 				options.woocommerce_cod_settings &&
