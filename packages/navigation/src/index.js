@@ -87,7 +87,7 @@ export const getScreenFromPath = ( path = getPath() ) => {
  * Get an array of IDs from a comma-separated query parameter.
  *
  * @param {string} [queryString=''] string value extracted from URL.
- * @return {Array<number>} List of IDs converted to an arry of unique integers.
+ * @return {Array<number>} List of IDs converted to an array of unique integers.
  */
 export function getIdsFromQuery( queryString = '' ) {
 	return [
