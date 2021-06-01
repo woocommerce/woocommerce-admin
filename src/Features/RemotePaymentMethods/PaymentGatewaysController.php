@@ -35,9 +35,9 @@ class PaymentGatewaysController {
 		$data['post_install_scripts'] = self::get_post_install_scripts( $gateway );
 		$data['settings_url']         = admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . strtolower( $gateway->id ) );
 
-		if ( method_exists( $gateway, 'get_oauth_connection_url' ) ) {
-			$return_url                   = wc_admin_url( '&task=payments&connection-return=' . strtolower( $gateway->id ) );
-			$data['oauth_connection_url'] = $gateway->get_oauth_connection_url( $return_url );
+		if ( method_exists( $gateway, 'get_connection_url' ) ) {
+			$return_url             = wc_admin_url( '&task=payments&connection-return=' . strtolower( $gateway->id ) );
+			$data['connection_url'] = $gateway->get_connection_url( $return_url );
 		}
 
 		if ( method_exists( $gateway, 'get_setup_help_text' ) ) {
