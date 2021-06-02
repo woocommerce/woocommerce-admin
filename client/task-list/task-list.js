@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu, Badge } from '@woocommerce/components';
@@ -18,12 +18,17 @@ import {
 
 export const TaskList = ( {
 	query,
-	name = 'task_list',
+	name,
+	eventName,
 	isComplete,
 	dismissedTasks,
 	tasks,
 	trackedCompletedTasks: totalTrackedCompletedTasks,
 	title: listTitle,
+	collapsible = false,
+	onComplete,
+	onHide,
+	expandingItems = false,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
@@ -53,46 +58,50 @@ export const TaskList = ( {
 		possiblyTrackCompletedTasks();
 	}, [ query ] );
 
+	const visibleTasks = tasks.filter(
+		( task ) => task.visible && ! dismissedTasks.includes( task.key )
+	);
+
+	const completedTaskKeys = visibleTasks
+		.filter( ( task ) => task.completed )
+		.map( ( task ) => task.key );
+
+	const incompleteTasks = tasks.filter(
+		( task ) =>
+			task.visible &&
+			! task.completed &&
+			! dismissedTasks.includes( task.key )
+	);
+
+	const [ currentTask, setCurrentTask ] = useState(
+		incompleteTasks[ 0 ]?.key
+	);
+
 	const possiblyCompleteTaskList = () => {
 		const taskListVariableName = `woocommerce_${ name }_complete`;
 		const taskListToComplete = isComplete
 			? { [ taskListVariableName ]: 'no' }
 			: { [ taskListVariableName ]: 'yes' };
-		if ( name === 'task_list' ) {
-			taskListToComplete.woocommerce_default_homepage_layout =
-				'two_columns';
-		}
 
 		if (
-			( ! getIncompleteTasks().length && ! isComplete ) ||
-			( getIncompleteTasks().length && isComplete )
+			( ! incompleteTasks.length && ! isComplete ) ||
+			( incompleteTasks.length && isComplete )
 		) {
 			updateOptions( {
 				...taskListToComplete,
 			} );
+
+			if ( typeof onComplete === 'function' ) {
+				onComplete();
+			}
 		}
-	};
-
-	const getCompletedTaskKeys = () => {
-		return getVisibleTasks()
-			.filter( ( task ) => task.completed )
-			.map( ( task ) => task.key );
-	};
-
-	const getIncompleteTasks = () => {
-		return tasks.filter(
-			( task ) =>
-				task.visible &&
-				! task.completed &&
-				! dismissedTasks.includes( task.key )
-		);
 	};
 
 	const getTrackedIncompletedTasks = (
 		partialCompletedTasks,
 		allTrackedTask
 	) => {
-		return getVisibleTasks()
+		return visibleTasks
 			.filter(
 				( task ) =>
 					allTrackedTask.includes( task.key ) &&
@@ -102,7 +111,6 @@ export const TaskList = ( {
 	};
 
 	const possiblyTrackCompletedTasks = () => {
-		const completedTaskKeys = getCompletedTaskKeys();
 		const trackedCompletedTasks = getTrackedCompletedTasks(
 			completedTaskKeys,
 			totalTrackedCompletedTasks
@@ -160,48 +168,34 @@ export const TaskList = ( {
 		} );
 	};
 
-	const getVisibleTasks = () => {
-		return tasks.filter(
-			( task ) => task.visible && ! dismissedTasks.includes( task.key )
-		);
-	};
-
 	const recordTaskListView = () => {
 		if ( query.task ) {
 			return;
 		}
 
-		const isCoreTaskList = name === 'task_list';
-		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
-
-		const visibleTasks = getVisibleTasks();
-
-		recordEvent( `${ taskListName }_view`, {
+		recordEvent( `${ eventName }_view`, {
 			number_tasks: visibleTasks.length,
 			store_connected: profileItems.wccom_connected,
 		} );
 	};
 
 	const hideTaskCard = ( action ) => {
-		const isCoreTaskList = name === 'task_list';
-		const taskListName = isCoreTaskList ? 'tasklist' : 'extended_tasklist';
 		const updateOptionsParams = {
 			[ `woocommerce_${ name }_hidden` ]: 'yes',
 		};
-		if ( isCoreTaskList ) {
-			updateOptionsParams.woocommerce_task_list_prompt_shown = true;
-			updateOptionsParams.woocommerce_default_homepage_layout =
-				'two_columns';
-		}
 
-		recordEvent( `${ taskListName }_completed`, {
+		recordEvent( `${ eventName }_completed`, {
 			action,
-			completed_task_count: getCompletedTaskKeys().length,
-			incomplete_task_count: getIncompleteTasks().length,
+			completed_task_count: completedTaskKeys.length,
+			incomplete_task_count: incompleteTasks.length,
 		} );
 		updateOptions( {
 			...updateOptionsParams,
 		} );
+
+		if ( typeof onHide === 'function' ) {
+			onHide();
+		}
 	};
 
 	const renderMenu = () => {
@@ -223,7 +217,7 @@ export const TaskList = ( {
 		);
 	};
 
-	const listTasks = getVisibleTasks().map( ( task ) => {
+	const listTasks = visibleTasks.map( ( task ) => {
 		if ( ! task.onClick ) {
 			task.onClick = ( e ) => {
 				if ( e.target.nodeName === 'A' ) {
@@ -253,19 +247,17 @@ export const TaskList = ( {
 		listTasks.length - 2
 	);
 	const collapseLabel = __( 'Show less', 'woocommerce-admin' );
-	const ListComp = name === 'task_list' ? List : CollapsibleList;
+	const ListComp = collapsible ? CollapsibleList : List;
 
-	const listProps =
-		name === 'task_list'
-			? {}
-			: {
-					collapseLabel,
-					expandLabel,
-					show: 2,
-					onCollapse: () =>
-						recordEvent( 'extended_tasklist_collapse' ),
-					onExpand: () => recordEvent( 'extended_tasklist_expand' ),
-			  };
+	const listProps = collapsible
+		? {
+				collapseLabel,
+				expandLabel,
+				show: 2,
+				onCollapse: () => recordEvent( `${ eventName }_collapse` ),
+				onExpand: () => recordEvent( `${ eventName }_expand` ),
+		  }
+		: {};
 
 	return (
 		<>
@@ -277,7 +269,7 @@ export const TaskList = ( {
 					<CardHeader size="medium">
 						<div className="wooocommerce-task-card__header">
 							<Text variant="title.small">{ listTitle }</Text>
-							<Badge count={ getIncompleteTasks().length } />
+							<Badge count={ incompleteTasks.length } />
 						</div>
 						{ renderMenu() }
 					</CardHeader>
@@ -289,11 +281,22 @@ export const TaskList = ( {
 									title={ task.title }
 									completed={ task.completed }
 									content={ task.content }
-									onClick={ task.onClick }
+									onClick={
+										! expandingItems || task.completed
+											? task.onClick
+											: () => setCurrentTask( task.key )
+									}
+									expanded={
+										expandingItems &&
+										currentTask === task.key
+									}
 									isDismissable={ task.isDismissable }
 									onDismiss={ () => dismissTask( task ) }
 									time={ task.time }
 									level={ task.level }
+									action={ task.onClick }
+									actionLabel={ task.action }
+									additionalInfo={ task.additionalInfo }
 								/>
 							) ) }
 						</ListComp>
