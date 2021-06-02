@@ -134,6 +134,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Redirect to WC Home after setting up a payment method #6891
 - Update: Hook up payments gateway data store #7038
 - Update: Update remote payment docs gateway methods #7079
+- Update: Remove original business step flow #7103
 
 == 2.3.1 5/24/2021 ==
 - Tweak: Store profiler - Changed MailPoet's title and description #6990
