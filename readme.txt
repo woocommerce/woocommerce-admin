@@ -74,6 +74,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Changelog ==
 
 == Unreleased ==
+- Dev: Reduce the specificity and complexity of the ReportError component #6846
 - Add: Create onboarding package to house refactored WCPay card and relevant components #7058
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
@@ -92,9 +93,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Free extension list powered by remote config #6952
 - Add: Add PayPal to fallback payment gateways #7001
 - Add: Add a data store for WC Payments REST APIs #6918
+- Add: Progressive setup checklist copy and call to action buttons. #6956
 - Add: Add Paystack as fallback gateway #7025
 - Add: Add COD method to default payment gateway recommendations #7057
 - Add: Add BACS as default fallback payment gateway #7073
+- Add: A/B test of progressive checklist features. #7089
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
@@ -107,6 +110,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Offload remote inbox notifications engine run using action-scheduler. #6995
 - Dev: Add source param support for notes query. #6979
 - Dev: Remove the use of Dashicons and replace with @wordpress/icons or gridicons. #7020
+- Dev: Refactor inbox panel components and moved to experimental package. #7006 
 - Enhancement: Add expand/collapse to extendable task list. #6910
 - Enhancement: Add task hierarchy support to extended task list. #6916
 - Fix: Rule Processing Transformer to handle dotNotation default value #7009
@@ -125,12 +129,15 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix style regression with the Chart header. #7002
 - Fix styling of the advanced filter operator selection. #7005
 - Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
+- Fix: Notices not dissapearing. #7077
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
 - Update: Task list component with new Experimental Task list. #6849
 - Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
+- Dev: Remove react-docgen docs in favor of Storybook #7055
 - Update: Hook up payments gateway data store #7038
+- Update: Update remote payment docs gateway methods #7079
 
 == 2.3.1 5/24/2021 ==
 - Tweak: Store profiler - Changed MailPoet's title and description #6990
