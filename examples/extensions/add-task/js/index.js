@@ -9,7 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * WooCommerce dependencies
  */
-import { Card } from '@woocommerce/components';
+import { Card, CardBody } from '@wordpress/components';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 
 /* global addTaskData */
@@ -48,21 +48,23 @@ const markTaskIncomplete = () => {
 
 const Task = () => {
 	return (
-		<Card className="is-narrow">
-			{ __( 'Example task card content.', 'plugin-domain' ) }
-			<br />
-			<br />
-			<div>
-				{ addTaskData.isComplete ? (
-					<button onClick={ markTaskIncomplete }>
-						{ __( 'Mark task incomplete', 'plugin-domain' ) }
-					</button>
-				) : (
-					<button onClick={ markTaskComplete }>
-						{ __( 'Mark task complete', 'plugin-domain' ) }
-					</button>
-				) }
-			</div>
+		<Card className="woocommerce-task-card">
+			<CardBody>
+				{ __( 'Example task card content.', 'plugin-domain' ) }
+				<br />
+				<br />
+				<div>
+					{ addTaskData.isComplete ? (
+						<button onClick={ markTaskIncomplete }>
+							{ __( 'Mark task incomplete', 'plugin-domain' ) }
+						</button>
+					) : (
+						<button onClick={ markTaskComplete }>
+							{ __( 'Mark task complete', 'plugin-domain' ) }
+						</button>
+					) }
+				</div>
+			</CardBody>
 		</Card>
 	);
 };
@@ -80,10 +82,13 @@ addFilter(
 				key: 'example',
 				title: __( 'Example', 'plugin-domain' ),
 				content: __( 'This is an example task.', 'plugin-domain' ),
-				icon: 'info',
 				container: <Task />,
 				completed: addTaskData.isComplete,
 				visible: true,
+				additionalInfo: __( 'Additional info here', 'woocommerce-admin' ),
+				time: __( '2 minutes', 'woocommerce-admin' ),
+				isDismissable: true,
+				onDismiss: () => console.log( 'The task was dismissed' ),
 			},
 		];
 	}
