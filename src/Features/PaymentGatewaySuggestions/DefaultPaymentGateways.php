@@ -168,7 +168,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'woocommerce_square_credit_card',
+				'key'        => 'square_credit_card',
 				'title'      => __( 'Square', 'woocommerce-admin' ),
 				'content'    => __( 'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). Sell online and in store and track sales and inventory in one place.', 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/square-black.png',
