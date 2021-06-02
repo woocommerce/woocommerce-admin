@@ -26,7 +26,6 @@ import { getAdminLink } from '@woocommerce/wc-admin-settings';
 /**
  * Internal dependencies
  */
-import { BenefitsLayout } from './steps/benefits';
 import { BusinessDetailsStep } from './steps/business-details';
 import Industry from './steps/industry';
 import ProductTypes from './steps/product-types';
@@ -94,8 +93,7 @@ class ProfileWizard extends Component {
 	}
 
 	getSteps() {
-		const { profileItems, query } = this.props;
-		const { step } = query;
+		const { profileItems } = this.props;
 		const steps = [];
 
 		steps.push( {
@@ -138,17 +136,6 @@ class ProfileWizard extends Component {
 				profileItems.hasOwnProperty( 'theme' ) &&
 				profileItems.theme !== null,
 		} );
-
-		if (
-			! this.cachedActivePlugins.includes( 'woocommerce-services' ) ||
-			! this.cachedActivePlugins.includes( 'jetpack' ) ||
-			step === 'benefits'
-		) {
-			steps.push( {
-				key: 'benefits',
-				container: BenefitsLayout,
-			} );
-		}
 
 		return applyFilters( STEPS_FILTER, steps );
 	}
