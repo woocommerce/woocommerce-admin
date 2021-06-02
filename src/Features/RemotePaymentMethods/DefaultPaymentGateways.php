@@ -59,7 +59,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'mollie',
+				'key'        => 'mollie_wc_gateway_banktransfer',
 				'title'      => __( 'Mollie', 'woocommerce-admin' ),
 				'content'    => __( 'Effortless payments by Mollie: Offer global and local payment methods, get onboarded in minutes, and supported in your language.', 'woocommerce-admin' ),
 				'image'      => plugins_url( 'images/onboarding/mollie.svg', WC_ADMIN_PLUGIN_FILE ),
