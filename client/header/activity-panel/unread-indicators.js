@@ -85,7 +85,8 @@ function getAbbreviatedNotifications( select, query ) {
 		[],
 		query
 	);
-	const dismissedTasks = getOption( 'woocommerce_task_list_dismissed_tasks' );
+	const dismissedTasks =
+		getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
 	const orderStatuses = getOrderStatuses( select );
 	const notifications = [
 		{
