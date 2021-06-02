@@ -1,4 +1,4 @@
-# Unreleased
+# 7.0.0
 
 -   Fix style regression with the Chart header. #7002
 -   Fix styling of the advanced filter operator selection. #7005
