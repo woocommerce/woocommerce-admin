@@ -344,7 +344,10 @@ export function getPaymentMethods( {
 			before: (
 				<img
 					src={ wcAdminAssetUrl + '/onboarding/mollie.svg' }
-					alt=""
+					alt={ __(
+						'Mollie Payments for WooCommerce logo',
+						'woocommerce-admin'
+					) }
 				/>
 			),
 			plugins: [ 'mollie-payments-for-woocommerce' ],
