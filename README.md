@@ -78,6 +78,7 @@ When deployed the docsify docs also host an embedded version of the storybook do
 ```
 npm install
 npm run docs
+cd docs
 npx docsify serve
 ```
 
