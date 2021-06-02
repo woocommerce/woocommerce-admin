@@ -161,9 +161,9 @@ class DefaultPaymentGateways {
 	}
 
 	/**
-	 * Get array of countries supported by WCPay depending on features
+	 * Get array of countries supported by WCPay depending on feature flag.
 	 *
-	 * @return array Array of countries
+	 * @return array Array of countries.
 	 */
 	public static function get_wcpay_countries() {
 		$countries               = array( 'US', 'PR' );
