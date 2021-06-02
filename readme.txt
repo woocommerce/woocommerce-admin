@@ -74,6 +74,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Changelog ==
 
 == Unreleased ==
+- Dev: Reduce the specificity and complexity of the ReportError component #6846
 - Add: Create onboarding package to house refactored WCPay card and relevant components #7058
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
@@ -92,8 +93,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Free extension list powered by remote config #6952
 - Add: Add PayPal to fallback payment gateways #7001
 - Add: Add a data store for WC Payments REST APIs #6918
+- Add: Progressive setup checklist copy and call to action buttons. #6956
 - Add: Add Paystack as fallback gateway #7025
 - Add: Add COD method to default payment gateway recommendations #7057
+- Add: A/B test of progressive checklist features. #7089
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
@@ -129,7 +132,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Task list component with new Experimental Task list. #6849
 - Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
+- Dev: Remove react-docgen docs in favor of Storybook #7055
 - Update: Hook up payments gateway data store #7038
+- Update: Update remote payment docs gateway methods #7079
 - Add: Add Mollie to the default payment gateways. #7092
 
 == 2.3.1 5/24/2021 ==
