@@ -118,7 +118,7 @@ export const RemotePayments = ( { query } ) => {
 	const recommendedPaymentGateway = useMemo( () => {
 		for ( const key in RECOMMENDED_GATEWAY_KEYS ) {
 			const gateway = paymentGatewayRecommendations.get( key );
-			if ( gateway && gateway.visible ) {
+			if ( gateway ) {
 				return gateway;
 			}
 		}
