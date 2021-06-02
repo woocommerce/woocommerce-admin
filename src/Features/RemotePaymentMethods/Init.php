@@ -42,7 +42,7 @@ class Init {
 			array_filter(
 				$methods,
 				function( $method ) {
-					return $method->is_visible;
+					return ! property_exists( $method, 'is_visible' ) || $method->is_visible;
 				}
 			)
 		);
