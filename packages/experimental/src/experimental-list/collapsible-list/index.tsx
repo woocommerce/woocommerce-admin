@@ -2,8 +2,9 @@
  * External dependencies
  */
 import { Icon, chevronUp, chevronDown } from '@wordpress/icons';
-import { useState, useCallback, Children } from '@wordpress/element';
+import { useState, useCallback, useEffect, Children } from '@wordpress/element';
 import { Transition } from 'react-transition-group';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -36,6 +37,44 @@ function getContainerHeight( collapseContainer: HTMLDivElement | null ) {
 	return containerHeight;
 }
 
+/**
+ * This functions returns a new list of shown children depending on the new children updates.
+ * If one is removed, it will remove it from the show array.
+ * If one is added, it will add it back to the shown list, making use of the new children list to keep order.
+ *
+ * @param currentChildren a list of the current children.
+ * @param currentShownChildren a list of the current shown children.
+ * @param newChildren a list of the new children.
+ * @returns new list of children that should be shown.
+ */
+function getUpdatedShownChildren(
+	currentChildren: React.ReactElement[],
+	currentShownChildren: React.ReactElement[],
+	newChildren: React.ReactElement[]
+): React.ReactElement[] {
+	if ( newChildren.length < currentChildren.length ) {
+		const newChildrenKeys = newChildren.map( ( child ) => child.key );
+		// Filter out removed child
+		return currentShownChildren.filter(
+			( item ) => item.key && newChildrenKeys.includes( item.key )
+		);
+	} else {
+		const currentShownChildrenKeys = currentShownChildren.map(
+			( child ) => child.key
+		);
+		const currentChildrenKeys = currentChildren.map(
+			( child ) => child.key
+		);
+		// Add new child back in.
+		return newChildren.filter(
+			( child ) =>
+				child.key &&
+				( currentShownChildrenKeys.includes( child.key ) ||
+					! currentChildrenKeys.includes( child.key ) )
+		);
+	}
+}
+
 export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	children,
 	collapsed = true,
@@ -48,14 +87,68 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 } ): JSX.Element => {
 	const [ isCollapsed, setCollapsed ] = useState( collapsed );
 	const [ containerHeight, setContainerHeight ] = useState( 0 );
+	const [ footerLabels, setFooterLabels ] = useState( {
+		collapse: collapseLabel,
+		expand: expandLabel,
+	} );
+	const [ displayedChildren, setDisplayedChildren ] = useState< {
+		all: React.ReactElement[];
+		shown: React.ReactElement[];
+		hidden: React.ReactElement[];
+	} >( {
+		all: [],
+		shown: [],
+		hidden: [],
+	} );
 	const collapseContainerRef = useCallback(
 		( containerElement: HTMLDivElement ) => {
 			if ( containerElement ) {
 				setContainerHeight( getContainerHeight( containerElement ) );
 			}
 		},
-		[ children ]
+		[ displayedChildren.hidden ]
 	);
+
+	useEffect( () => {
+		let allChildren = Children.toArray( children ) as React.ReactElement[];
+		if (
+			displayedChildren.all.length > 0 &&
+			isCollapsed &&
+			listProps.animation !== 'none'
+		) {
+			setDisplayedChildren( {
+				...displayedChildren,
+				shown: getUpdatedShownChildren(
+					displayedChildren.all,
+					displayedChildren.shown,
+					allChildren
+				),
+			} );
+			setTimeout( () => {
+				updateChildren();
+			}, 500 );
+		} else {
+			updateChildren();
+		}
+	}, [ children ] );
+
+	const updateChildren = () => {
+		let shownChildren: React.ReactElement[] = [];
+		let allChildren = Children.toArray( children ) as React.ReactElement[];
+		let hiddenChildren = allChildren;
+		if ( show > 0 ) {
+			shownChildren = allChildren.slice( 0, show );
+			hiddenChildren = allChildren.slice( show );
+		}
+		if ( hiddenChildren.length > 0 ) {
+			setFooterLabels( { expand: expandLabel, collapse: collapseLabel } );
+		}
+		setDisplayedChildren( {
+			all: allChildren,
+			shown: shownChildren,
+			hidden: hiddenChildren,
+		} );
+	};
 
 	const triggerCallbacks = ( newCollapseValue: boolean ) => {
 		if ( onCollapse && newCollapseValue ) {
@@ -71,13 +164,6 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 		triggerCallbacks( ! isCollapsed );
 	}, [ isCollapsed ] );
 
-	let shownChildren: React.ReactNode[] = [];
-	let hiddenChildren = Children.toArray( children );
-	if ( show > 0 ) {
-		shownChildren = hiddenChildren.slice( 0, show );
-		hiddenChildren = hiddenChildren.slice( show );
-	}
-
 	const transitionStyles = {
 		entered: { maxHeight: containerHeight },
 		entering: { maxHeight: containerHeight },
@@ -85,10 +171,15 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 		exited: { maxHeight: 0 },
 	};
 
+	const listClasses = classnames(
+		listProps.className || '',
+		'woocommerce-experimental-list'
+	);
+
 	return (
-		<ExperimentalList { ...listProps }>
+		<ExperimentalList { ...listProps } className={ listClasses }>
 			{ [
-				...shownChildren,
+				...displayedChildren.shown,
 				<Transition
 					key="remaining-children"
 					timeout={ 500 }
@@ -106,11 +197,11 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 								...transitionStyles[ state ],
 							} }
 						>
-							{ hiddenChildren }
+							{ displayedChildren.hidden }
 						</div>
 					) }
 				</Transition>,
-				hiddenChildren.length > 0 ? (
+				displayedChildren.hidden.length > 0 ? (
 					<ExperimentalListItem
 						key="collapse-item"
 						className="list-item-collapse"
@@ -118,7 +209,11 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 						animation="none"
 						disableGutters
 					>
-						<p>{ isCollapsed ? expandLabel : collapseLabel }</p>
+						<p>
+							{ isCollapsed
+								? footerLabels.expand
+								: footerLabels.collapse }
+						</p>
 
 						<Icon
 							className="list-item-collapse__icon"

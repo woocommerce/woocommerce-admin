@@ -161,8 +161,7 @@ export const TaskList = ( {
 			],
 		} );
 
-		const taskListName = getTaskListName();
-		recordEvent( `${ taskListName }_dismiss_task`, { task_name: key } );
+		recordEvent( `${ eventName }_dismiss_task`, { task_name: key } );
 
 		updateOptions( {
 			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
@@ -180,8 +179,7 @@ export const TaskList = ( {
 		updateOptions( {
 			woocommerce_task_list_dismissed_tasks: updatedDismissedTasks,
 		} );
-		const taskListName = getTaskListName();
-		recordEvent( `${ taskListName }_undo_dismiss_task`, {
+		recordEvent( `${ eventName }_undo_dismiss_task`, {
 			task_name: key,
 		} );
 	};
@@ -199,8 +197,7 @@ export const TaskList = ( {
 				],
 			}
 		);
-		const taskListName = getTaskListName();
-		recordEvent( `${ taskListName }_remindmelater_task`, {
+		recordEvent( `${ eventName }_remindmelater_task`, {
 			task_name: key,
 		} );
 
@@ -226,8 +223,7 @@ export const TaskList = ( {
 		updateOptions( {
 			woocommerce_task_list_remind_me_later_tasks: updatedRemindMeLaterTasks,
 		} );
-		const taskListName = getTaskListName();
-		recordEvent( `${ taskListName }_undo_remindmelater_task`, {
+		recordEvent( `${ eventName }_undo_remindmelater_task`, {
 			task_name: key,
 		} );
 	};
@@ -284,8 +280,7 @@ export const TaskList = ( {
 	const listTasks = visibleTasks.map( ( task ) => {
 		if ( ! task.onClick ) {
 			task.onClick = ( e ) => {
-				const taskListName = getTaskListName();
-				recordEvent( `${ taskListName }_click`, {
+				recordEvent( `${ eventName }_click`, {
 					task_name: task.key,
 				} );
 				if ( e.target.nodeName === 'A' ) {
@@ -342,7 +337,7 @@ export const TaskList = ( {
 						{ renderMenu() }
 					</CardHeader>
 					<CardBody>
-						<ListComp animation="none" { ...listProps }>
+						<ListComp animation="custom" { ...listProps }>
 							{ listTasks.map( ( task ) => (
 								<TaskItem
 									key={ task.key }

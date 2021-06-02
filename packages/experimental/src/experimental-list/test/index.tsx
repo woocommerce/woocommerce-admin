@@ -2,6 +2,7 @@
  * External dependencies
  */
 import {
+	waitFor,
 	render,
 	screen,
 	waitForElementToBeRemoved,

@@ -3,26 +3,22 @@
 	&.woocommerce-list__item-enter {
 		opacity: 0;
 		max-height: 0;
-		transform: translateY(50px);
 	}
 
 	&.woocommerce-list__item-enter-active {
 		opacity: 1;
-		max-height: 80px;
-		transform: translateY(0%);
-		transition: opacity 500ms, transform 250ms, max-height 500ms;
+		max-height: 100px;
+		transition: opacity 500ms, max-height 500ms;
 	}
 
 	&.woocommerce-list__item-exit {
 		opacity: 1;
-		max-height: 80px;
-		transform: translateY(0%);
+		max-height: 100px;
 	}
 
 	&.woocommerce-list__item-exit-active {
 		opacity: 0;
 		max-height: 0;
-		transform: translateY(-50px);
-		transition: opacity 500ms, transform 250ms, max-height 500ms;
+		transition: opacity 500ms, max-height 500ms;
 	}
 }

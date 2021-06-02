@@ -253,12 +253,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		act( () => {
 			render(
 				<TaskList
-					name="task_list"
-					eventName="tasklist"
-					dismissedTasks={ [] }
-					isComplete={ false }
-					query={ {} }
-					trackedCompletedTasks={ [] }
+					{ ...defaultTaskListProps }
 					tasks={ shorterTasksList }
 					onComplete={ onComplete }
 				/>
@@ -272,7 +267,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		apiFetch.mockResolvedValue( {} );
 		const onHide = jest.fn();
 		const { getByRole } = render(
-			<TaskList { ...defaultTaskListProps } />
+			<TaskList { ...defaultTaskListProps } onHide={ onHide } />
 		);
 
 		expect( onHide ).not.toHaveBeenCalled();
@@ -321,7 +316,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		getAllTasks.mockReturnValue( { setup: shorterTasksList } );
 
 		act( () => {
-			render( <TaskList { ...defaultTaskListProps } /> );
+			render( <TaskDashboard query={ {} } /> );
 		} );
 
 		expect( updateOptions ).toHaveBeenCalledWith( {
