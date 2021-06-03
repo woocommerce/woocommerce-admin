@@ -42,10 +42,10 @@ function getContainerHeight( collapseContainer: HTMLDivElement | null ) {
  * If one is removed, it will remove it from the show array.
  * If one is added, it will add it back to the shown list, making use of the new children list to keep order.
  *
- * @param currentChildren a list of the current children.
- * @param currentShownChildren a list of the current shown children.
- * @param newChildren a list of the new children.
- * @returns new list of children that should be shown.
+ * @param {Array.<import('react').ReactElement>} currentChildren a list of the current children.
+ * @param {Array.<import('react').ReactElement>} currentShownChildren a list of the current shown children.
+ * @param {Array.<import('react').ReactElement>} newChildren a list of the new children.
+ * @return {Array.<import('react').ReactElement>} new list of children that should be shown.
  */
 function getUpdatedShownChildren(
 	currentChildren: React.ReactElement[],
@@ -58,21 +58,18 @@ function getUpdatedShownChildren(
 		return currentShownChildren.filter(
 			( item ) => item.key && newChildrenKeys.includes( item.key )
 		);
-	} else {
-		const currentShownChildrenKeys = currentShownChildren.map(
-			( child ) => child.key
-		);
-		const currentChildrenKeys = currentChildren.map(
-			( child ) => child.key
-		);
-		// Add new child back in.
-		return newChildren.filter(
-			( child ) =>
-				child.key &&
-				( currentShownChildrenKeys.includes( child.key ) ||
-					! currentChildrenKeys.includes( child.key ) )
-		);
 	}
+	const currentShownChildrenKeys = currentShownChildren.map(
+		( child ) => child.key
+	);
+	const currentChildrenKeys = currentChildren.map( ( child ) => child.key );
+	// Add new child back in.
+	return newChildren.filter(
+		( child ) =>
+			child.key &&
+			( currentShownChildrenKeys.includes( child.key ) ||
+				! currentChildrenKeys.includes( child.key ) )
+	);
 }
 
 export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
@@ -109,8 +106,30 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 		[ displayedChildren.hidden ]
 	);
 
+	const updateChildren = () => {
+		let shownChildren: React.ReactElement[] = [];
+		const allChildren = Children.toArray(
+			children
+		) as React.ReactElement[];
+		let hiddenChildren = allChildren;
+		if ( show > 0 ) {
+			shownChildren = allChildren.slice( 0, show );
+			hiddenChildren = allChildren.slice( show );
+		}
+		if ( hiddenChildren.length > 0 ) {
+			setFooterLabels( { expand: expandLabel, collapse: collapseLabel } );
+		}
+		setDisplayedChildren( {
+			all: allChildren,
+			shown: shownChildren,
+			hidden: hiddenChildren,
+		} );
+	};
+
 	useEffect( () => {
-		let allChildren = Children.toArray( children ) as React.ReactElement[];
+		const allChildren = Children.toArray(
+			children
+		) as React.ReactElement[];
 		if (
 			displayedChildren.all.length > 0 &&
 			isCollapsed &&
@@ -131,24 +150,6 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 			updateChildren();
 		}
 	}, [ children ] );
-
-	const updateChildren = () => {
-		let shownChildren: React.ReactElement[] = [];
-		let allChildren = Children.toArray( children ) as React.ReactElement[];
-		let hiddenChildren = allChildren;
-		if ( show > 0 ) {
-			shownChildren = allChildren.slice( 0, show );
-			hiddenChildren = allChildren.slice( show );
-		}
-		if ( hiddenChildren.length > 0 ) {
-			setFooterLabels( { expand: expandLabel, collapse: collapseLabel } );
-		}
-		setDisplayedChildren( {
-			all: allChildren,
-			shown: shownChildren,
-			hidden: hiddenChildren,
-		} );
-	};
 
 	const triggerCallbacks = ( newCollapseValue: boolean ) => {
 		if ( onCollapse && newCollapseValue ) {
