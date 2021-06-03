@@ -31,7 +31,10 @@ export const Item = ( {
 		loading,
 	} = paymentGateway;
 
-	const slot = useSlot( `woocommerce_remote_payment_${ key }` );
+	const connectSlot = useSlot(
+		`woocommerce_payment_gateway_connect_${ key }`
+	);
+	const setupSlot = useSlot( `woocommerce_payment_gateway_setup_${ key }` );
 
 	const installedPaymentGateway = installedPaymentGateways[ key ] || {};
 
@@ -43,7 +46,9 @@ export const Item = ( {
 	} = installedPaymentGateway;
 
 	const isConfigured = ! needsSetup;
-	const hasFills = Boolean( slot?.fills?.length );
+	const hasFills =
+		Boolean( connectSlot?.fills?.length ) ||
+		Boolean( setupSlot?.fills?.length );
 	const hasSetup = Boolean(
 		plugins.length || requiredSettingsKeys.length || hasFills
 	);

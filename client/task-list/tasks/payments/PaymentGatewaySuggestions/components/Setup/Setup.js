@@ -11,7 +11,7 @@ import {
 	pluginNames,
 } from '@woocommerce/data';
 import { Plugins, Stepper } from '@woocommerce/components';
-import { WooRemotePayment } from '@woocommerce/onboarding';
+import { WooPaymentGatewaySetup } from '@woocommerce/onboarding';
 import { recordEvent } from '@woocommerce/tracks';
 import { useEffect, useState, useMemo, useCallback } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
@@ -30,7 +30,7 @@ export const Setup = ( {
 	recordConnectStartEvent,
 } ) => {
 	const { key, plugins = [], title } = method;
-	const slot = useSlot( `woocommerce_remote_payment_${ key }` );
+	const slot = useSlot( `woocommerce_payment_gateway_setup_${ key }` );
 	const hasFills = Boolean( slot?.fills?.length );
 	const [ isPluginLoaded, setIsPluginLoaded ] = useState( false );
 
@@ -162,7 +162,7 @@ export const Setup = ( {
 		<Card className="woocommerce-task-payment-method woocommerce-task-card">
 			<CardBody>
 				{ hasFills ? (
-					<WooRemotePayment.Slot
+					<WooPaymentGatewaySetup.Slot
 						fillProps={ {
 							defaultStepper: DefaultStepper,
 							defaultInstallStep: installStep,
