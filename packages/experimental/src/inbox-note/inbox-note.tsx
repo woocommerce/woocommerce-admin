@@ -107,8 +107,8 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		let isClickOutsideDropdown = false;
 		if ( relatedTarget && 'className' in relatedTarget ) {
 			const classNames = relatedTarget.className;
-			isClickOutsideDropdown = dropdownClasses.some( ( className ) =>
-				classNames.includes( className )
+			isClickOutsideDropdown = dropdownClasses.some( ( cName ) =>
+				classNames.includes( cName )
 			);
 		}
 		if ( isClickOutsideDropdown ) {
@@ -246,9 +246,14 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
 	const date = dateCreated;
 	const hasImage = layout !== 'plain' && layout !== '';
-	const cardClassName = classnames( 'woocommerce-inbox-message', className, layout, {
-		'message-is-unread': unread && status === 'unactioned',
-	} );
+	const cardClassName = classnames(
+		'woocommerce-inbox-message',
+		className,
+		layout,
+		{
+			'message-is-unread': unread && status === 'unactioned',
+		}
+	);
 
 	return (
 		<VisibilitySensor onChange={ onVisible }>
