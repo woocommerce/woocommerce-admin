@@ -3,13 +3,13 @@
  * Handles running payment method specs
  */
 
-namespace Automattic\WooCommerce\Admin\Features\RemotePaymentMethods;
+namespace Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions;
 
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
-use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\DefaultPaymentGateways;
-use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\PaymentGatewaysController;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\DefaultPaymentGateways;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\PaymentGatewaysController;
 
 /**
  * Remote Payment Methods engine.

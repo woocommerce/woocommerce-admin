@@ -1,18 +1,18 @@
-# WooCommerce Remote Payment Gateway Recommendations
+# WooCommerce Payment Gateway Suggestions
 
-This feature allows a remote data source to specify the currently recommended payment gateways. The feature polls the remote JSON file to retrieve a list of recommended and visible gateways based on rulesets to be shown to the user.
+This feature uses JSON to retrieve the currently recommended payment gateways. The feature is capable of polling remote JSON sources to retrieve a list of recommended and visible gateways based on rulesets to be shown to the user.
 
 After merchants click on a recommendation, plugins from this source will then walk through an installer step, followed by a connection step with the minimum required fields for setup defined by the downloaded plugin.
 
-## Enabling Remote Payment Gateway Recommendations
+## Enabling Payment Gateway Suggestions
 
-This feature is behind a feature flag. In order for it to run, the `remote-payment-methods` must be set to `true` in `~/config/{environment}.json` and the plugin must be rebuilt either using `npm start` or `npm run build`.
+This feature is behind a feature flag. In order for it to run, the `payment-gateway-suggestions` must be set to `true` in `~/config/{environment}.json` and the plugin must be rebuilt either using `npm start` or `npm run build`.
 
 Currently there is no working remote data source. For testing purposes, [this plugin](https://github.com/joshuatf/woocommerce-admin-remote-tester) can be used which adds a data source and removes the transient cache so the data source is re-fetched on each subsequent page load.
 
 ## Remote Data Source Schema
 
-The remote data source schema defines the recommended payment gateways and required plugins to kick of the setup process. The goal of this config is to provide the mininum amount of information possible to show a list of gateways and allow the gateways themselves to define specifics around configuration.
+The data source schema defines the recommended payment gateways and required plugins to kick of the setup process. The goal of this config is to provide the mininum amount of information possible to show a list of gateways and allow the gateways themselves to define specifics around configuration.
 
 ```json
 [
@@ -36,7 +36,7 @@ The remote data source schema defines the recommended payment gateways and requi
 ]
 ```
 
-The remote specs use the [rule processor](https://github.com/woocommerce/woocommerce-admin/blob/main/src/RemoteInboxNotifications/README.md#rule) to determine if a gateway should be shown using the `is_visible` property.
+The specs use the [rule processor](https://github.com/woocommerce/woocommerce-admin/blob/main/src/RemoteInboxNotifications/README.md#rule) to determine if a gateway should be shown using the `is_visible` property.
 
 ## Payment Gateway Configs
 

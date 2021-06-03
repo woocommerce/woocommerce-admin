@@ -5,7 +5,7 @@ import { LocalPayments } from './LocalPayments';
 import { PaymentGatewaySuggestions } from './PaymentGatewaySuggestions';
 
 export const Payments = ( { query } ) => {
-	if ( window.wcAdminFeatures[ 'remote-payment-methods' ] ) {
+	if ( window.wcAdminFeatures[ 'payment-gateway-suggestions' ] ) {
 		return <PaymentGatewaySuggestions query={ query } />;
 	}
 
