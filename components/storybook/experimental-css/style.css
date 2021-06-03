@@ -264,18 +264,44 @@ a.woocommerce-experimental-list__item {
 }
 
 .woocommerce-experimental-list__item.list-item-collapse {
-  justify-content: space-between;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 48px;
+}
+.woocommerce-experimental-list__item.list-item-collapse > * {
+  align-self: center;
 }
 .woocommerce-experimental-list__item.list-item-collapse p {
   margin: 0;
+  padding: 16px 24px;
 }
 .woocommerce-experimental-list__item.list-item-collapse .list-item-collapse__icon-container {
   justify-content: flex-end;
 }
+.woocommerce-experimental-list__item.list-item-collapse.woocommerce-list__item-enter {
+  max-height: 0;
+  opacity: 1;
+}
+.woocommerce-experimental-list__item.list-item-collapse.woocommerce-list__item-enter-active {
+  max-height: 55px;
+  transition: max-height 500ms;
+}
+.woocommerce-experimental-list__item.list-item-collapse.woocommerce-list__item-exit {
+  max-height: 55px;
+}
+.woocommerce-experimental-list__item.list-item-collapse.woocommerce-list__item-exit-active {
+  max-height: 0;
+  opacity: 1;
+  transition: max-height 500ms;
+}
 
 .woocommerce-task-list__item {
   position: relative;
-  padding-right: 24px;
+  display: grid;
+  grid-template-columns: 72px auto 48px;
+}
+.woocommerce-task-list__item > * {
+  align-self: center;
 }
 .woocommerce-task-list__item::before {
   content: "";
@@ -309,7 +335,7 @@ a.woocommerce-experimental-list__item {
 .woocommerce-task-list__item .woocommerce-task-list__item-before {
   display: flex;
   align-items: center;
-  padding: 16px 20px 16px 24px;
+  padding: 16px 0 16px 24px;
 }
 .woocommerce-task-list__item .woocommerce-task-list__item-text {
   padding: 16px 0;
@@ -327,12 +353,8 @@ a.woocommerce-experimental-list__item {
   margin-bottom: 8px;
 }
 .woocommerce-task-list__item .woocommerce-task-list__item-after {
-  margin-left: 16px;
-  margin-right: 24px;
   display: flex;
   align-items: center;
-  margin-left: auto;
-  padding: 16px 0;
 }
 .woocommerce-task-list__item .woocommerce-task-list__item-before .woocommerce-task__icon {
   border-radius: 50%;
@@ -363,6 +385,9 @@ a.woocommerce-experimental-list__item {
 .woocommerce-task-list__item .components-tooltip .components-popover__content {
   width: 160px;
   white-space: normal;
+}
+.woocommerce-task-list__item .woocommerce-task-card__section-controls {
+  text-align: left;
 }
 
 .woocommerce-inbox-message {
