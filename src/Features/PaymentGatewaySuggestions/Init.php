@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles running payment method specs
+ * Handles running payment gateway suggestion specs
  */
 
 namespace Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions;
@@ -13,10 +13,10 @@ use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\PaymentGatew
 
 /**
  * Remote Payment Methods engine.
- * This goes through the specs and gets eligible payment methods.
+ * This goes through the specs and gets eligible payment gateways.
  */
 class Init {
-	const SPECS_TRANSIENT_NAME = 'woocommerce_admin_remote_payment_methods_specs';
+	const SPECS_TRANSIENT_NAME = 'woocommerce_admin_payment_gateway_suggestions_specs';
 
 	/**
 	 * Constructor.
