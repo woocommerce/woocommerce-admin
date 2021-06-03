@@ -46,7 +46,17 @@ describe( 'Inbox', () => {
 			<AbbreviatedNotificationsPanel query={ {} } />
 		);
 		expect( getByText( 'Things to do next' ) ).toBeDefined();
-		expect( getByText( 'You have 1 new things to do' ) ).toBeDefined();
+		expect( getByText( 'You have 1 new thing to do' ) ).toBeDefined();
+	} );
+	it( 'shows plural copy for the `Things to do next` notification panel', () => {
+		useSelect.mockImplementation( () => ( {
+			thingsToDoNextCount: 5,
+		} ) );
+		const { getByText } = render(
+			<AbbreviatedNotificationsPanel query={ {} } />
+		);
+		expect( getByText( 'Things to do next' ) ).toBeDefined();
+		expect( getByText( 'You have 5 new things to do' ) ).toBeDefined();
 	} );
 	it( 'shows the `Orders to fulfill` notification panel, with 2 thing to do', () => {
 		useSelect.mockImplementation( () => ( {

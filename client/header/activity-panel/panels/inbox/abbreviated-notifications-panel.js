@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Text } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
 import { AbbreviatedCard } from '@woocommerce/components';
@@ -87,9 +87,11 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					</Text>
 					<Text>
 						{ sprintf(
-							__(
-								/* translators: Things the user has to do */
-								'You have %s new things to do',
+							/* translators: Things the user has to do */
+							_n(
+								'You have %d new thing to do',
+								'You have %d new things to do',
+								thingsToDoNextCount,
 								'woocommerce-admin'
 							),
 							thingsToDoNextCount
@@ -112,8 +114,10 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					<Text>
 						{ sprintf(
 							/* translators: Number of orders the user has to fulfill */
-							__(
-								'You have %s orders to fulfill',
+							_n(
+								'You have %d order to fulfill',
+								'You have %d orders to fulfill',
+								ordersToProcessCount,
 								'woocommerce-admin'
 							),
 							ordersToProcessCount
@@ -135,9 +139,11 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					</Text>
 					<Text>
 						{ sprintf(
-							__(
-								/* translators: Number of reviews the user has to moderate */
-								'You have %s reviews to moderate',
+							/* translators: Number of reviews the user has to moderate */
+							_n(
+								'You have %d review to moderate',
+								'You have %d reviews to moderate',
+								reviewsToModerateCount,
 								'woocommerce-admin'
 							),
 							reviewsToModerateCount
