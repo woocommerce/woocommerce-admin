@@ -2,7 +2,13 @@
  * External dependencies
  */
 import { Icon, chevronUp, chevronDown } from '@wordpress/icons';
-import { useState, useCallback, useEffect, Children } from '@wordpress/element';
+import {
+	useState,
+	useCallback,
+	useEffect,
+	Children,
+	isValidElement,
+} from '@wordpress/element';
 import { Transition } from 'react-transition-group';
 import classnames from 'classnames';
 
@@ -108,9 +114,10 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 
 	const updateChildren = () => {
 		let shownChildren: React.ReactElement[] = [];
-		const allChildren = Children.toArray(
-			children
-		) as React.ReactElement[];
+		const allChildren =
+			Children.map( children, ( child ) =>
+				isValidElement( child ) && 'key' in child ? child : null
+			) || [];
 		let hiddenChildren = allChildren;
 		if ( show > 0 ) {
 			shownChildren = allChildren.slice( 0, show );
@@ -127,9 +134,10 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	};
 
 	useEffect( () => {
-		const allChildren = Children.toArray(
-			children
-		) as React.ReactElement[];
+		const allChildren =
+			Children.map( children, ( child ) =>
+				isValidElement( child ) && 'key' in child ? child : null
+			) || [];
 		if (
 			displayedChildren.all.length > 0 &&
 			isCollapsed &&
