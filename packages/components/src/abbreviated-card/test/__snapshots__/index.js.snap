@@ -9,7 +9,7 @@ exports[`AbbreviatedCard it renders correctly 1`] = `
       class="components-card__body css-xmjzce-BodyUI e1q7k77g3"
     >
       <a
-        data-link-type="wp-admin"
+        data-link-type="wc-admin"
         href="#"
       >
         <div

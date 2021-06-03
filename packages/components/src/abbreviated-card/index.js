@@ -10,7 +10,14 @@ import PropTypes from 'prop-types';
  */
 import Link from '../link';
 
-const AbbreviatedCard = ( { children, className, href, icon, onClick } ) => {
+const AbbreviatedCard = ( {
+	children,
+	className,
+	href,
+	icon,
+	onClick,
+	type,
+} ) => {
 	return (
 		<Card
 			className={ classnames(
@@ -19,7 +26,7 @@ const AbbreviatedCard = ( { children, className, href, icon, onClick } ) => {
 			) }
 		>
 			<CardBody size={ null }>
-				<Link href={ href } onClick={ onClick } type="wp-admin">
+				<Link href={ href } onClick={ onClick } type={ type }>
 					<div className="woocommerce-abbreviated-card__icon">
 						<Icon icon={ icon } />
 					</div>

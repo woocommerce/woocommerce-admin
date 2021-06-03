@@ -19,6 +19,7 @@ import {
 	getUnreadOrders,
 } from '../../../../homescreen/activity-panel/orders/utils';
 import { getUnapprovedReviews } from '../../../../homescreen/activity-panel/reviews/utils';
+import { isWCAdmin } from '../../../../dashboard/utils';
 import { Bell } from './icons/bell';
 
 const EXTENDED_TASK_LIST_ID = 'extended_task_list';
@@ -71,6 +72,8 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 		} );
 	};
 
+	const isWCAdminPage = isWCAdmin( window.location.href );
+
 	return (
 		<div className="woocommerce-abbreviated-notifications">
 			{ thingsToDoNextCount > 0 && (
@@ -81,6 +84,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					onClick={ () =>
 						trackAbbreviatedCardClick( 'thingsToDoNext' )
 					}
+					type={ isWCAdminPage ? 'wc-admin' : 'wp-admin' }
 				>
 					<Text as="h3">
 						{ __( 'Things to do next', 'woocommerce-admin' ) }
@@ -107,6 +111,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					onClick={ () =>
 						trackAbbreviatedCardClick( 'ordersToProcess' )
 					}
+					type={ isWCAdminPage ? 'wc-admin' : 'wp-admin' }
 				>
 					<Text as="h3">
 						{ __( 'Orders to fulfill', 'woocommerce-admin' ) }
@@ -133,6 +138,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					onClick={ () =>
 						trackAbbreviatedCardClick( 'reviewsToModerate' )
 					}
+					type={ isWCAdminPage ? 'wc-admin' : 'wp-admin' }
 				>
 					<Text as="h3">
 						{ __( 'Reviews to moderate', 'woocommerce-admin' ) }
@@ -159,6 +165,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					onClick={ () =>
 						trackAbbreviatedCardClick( 'stockNotices' )
 					}
+					type={ isWCAdminPage ? 'wc-admin' : 'wp-admin' }
 				>
 					<Text as="h3">
 						{ __( 'Inventory to review', 'woocommerce-admin' ) }
