@@ -8,7 +8,7 @@ import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 /**
  * Internal dependencies
  */
-import { SelectiveFeaturesBusinessStep } from './flows/selective-bundle';
+import { BusinessFeaturesList } from './flows/selective-bundle';
 import './style.scss';
 
 export const BusinessDetailsStep = ( props ) => {
@@ -42,9 +42,6 @@ export const BusinessDetailsStep = ( props ) => {
 	};
 
 	return (
-		<SelectiveFeaturesBusinessStep
-			{ ...props }
-			initialValues={ initialValues }
-		/>
+		<BusinessFeaturesList { ...props } initialValues={ initialValues } />
 	);
 };
