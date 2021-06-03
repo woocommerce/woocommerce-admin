@@ -15,7 +15,10 @@ import { useMemo, useCallback } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { RecommendedPaymentGatewayList } from './components/RecommendedPaymentGatewayList';
+import {
+	RecommendedPaymentGatewayList,
+	RecommendedPaymentGatewayListPlaceholder,
+} from './components/RecommendedPaymentGatewayList';
 import { PaymentMethod } from './components/PaymentMethod';
 import { WCPayMethodCard } from '../components/WCPayMethodCard';
 import './components/BacsPaymentGatewaySetup';
@@ -165,6 +168,10 @@ export const RemotePayments = ( { query } ) => {
 
 	return (
 		<div className="woocommerce-task-payments">
+			{ ! paymentGatewayRecommendations.size && (
+				<RecommendedPaymentGatewayListPlaceholder />
+			) }
+
 			{ !! wcPayGateway && (
 				<WCPayMethodCard
 					isEnabled={
