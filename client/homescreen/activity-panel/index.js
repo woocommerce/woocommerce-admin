@@ -70,7 +70,7 @@ export const ActivityPanel = () => {
 		return null;
 	}
 
-	const getInitialState = ( panelId ) => {
+	const getInitialOpenState = ( panelId ) => {
 		const { opened_panel: openedPanel } = getUrlParams(
 			window.location.search
 		);
@@ -104,7 +104,7 @@ export const ActivityPanel = () => {
 						] }
 						key={ id }
 						className={ className }
-						initialOpen={ getInitialState( id ) || initialOpen }
+						initialOpen={ getInitialOpenState( id ) || initialOpen }
 						collapsible={ collapsible }
 						disabled={ ! collapsible }
 						onToggle={ ( isOpen ) => {
