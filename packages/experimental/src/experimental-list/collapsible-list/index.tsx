@@ -124,6 +124,8 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 			hiddenChildren = allChildren.slice( show );
 		}
 		if ( hiddenChildren.length > 0 ) {
+			// Only update when footer will be shown, this way it won't update mid transition if the outer component
+			// updates the label as well.
 			setFooterLabels( { expand: expandLabel, collapse: collapseLabel } );
 		}
 		setDisplayedChildren( {
@@ -151,6 +153,7 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 					allChildren
 				),
 			} );
+			// Update the hidden children after the remove/add transition is done, making the transition less busy.
 			setTimeout( () => {
 				updateChildren();
 			}, 500 );
