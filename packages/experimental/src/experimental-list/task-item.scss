@@ -65,13 +65,20 @@ $task-alert-yellow: #f0b849;
 	}
 
 	.woocommerce-task-list__item-content {
+		max-height: 0px;
+		overflow: hidden;
 		margin-top: $gap-smallest;
 		margin-bottom: $gap-smallest;
 	}
 
+	&.expanded {
+		.woocommerce-task-list__item-content {
+			max-height: 250px;
+		}
+	}
+
 	.woocommerce-task-list__item-action {
-		margin-top: $gap-smallest;
-		margin-bottom: $gap-smaller;
+		margin-bottom: $gap-smallest;
 	}
 
 	.woocommerce-task-list__item-after {
