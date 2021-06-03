@@ -19,7 +19,10 @@ import {
 	RecommendedPaymentGatewayList,
 	RecommendedPaymentGatewayListPlaceholder,
 } from './components/RecommendedPaymentGatewayList';
-import { PaymentMethod } from './components/PaymentMethod';
+import {
+	PaymentMethod,
+	PaymentMethodPlaceholder,
+} from './components/PaymentMethod';
 import { WCPayMethodCard } from '../components/WCPayMethodCard';
 import './components/BacsPaymentGatewaySetup';
 
@@ -145,6 +148,10 @@ export const RemotePayments = ( { query } ) => {
 
 		return gateway;
 	}, [ isResolving, query, paymentGatewayRecommendations ] );
+
+	if ( query.method && ! currentPaymentGateway ) {
+		return <PaymentMethodPlaceholder />;
+	}
 
 	if ( currentPaymentGateway ) {
 		return (
