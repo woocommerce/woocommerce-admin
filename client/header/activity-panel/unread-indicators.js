@@ -78,7 +78,16 @@ function getIncompleteTasksCount( tasks, dismissedTasks ) {
 	).length;
 }
 
-function getAbbreviatedNotifications( select, query ) {
+export function isAbbreviatedPanelVisible(
+	select,
+	setupTaskListHidden,
+	extendedTaskListHidden,
+	query
+) {
+	if ( ! setupTaskListHidden && extendedTaskListHidden ) {
+		return false;
+	}
+
 	const { getOption } = select( OPTIONS_STORE_NAME );
 	const thingsToDoNext = applyFilters(
 		'woocommerce_admin_onboarding_task_list',
@@ -88,42 +97,24 @@ function getAbbreviatedNotifications( select, query ) {
 	const dismissedTasks =
 		getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
 	const orderStatuses = getOrderStatuses( select );
-	const notifications = [
-		{
-			name: 'thingsToDoNext',
-			count: getIncompleteTasksCount( thingsToDoNext, dismissedTasks ),
-		},
-		{
-			name: 'ordersToProcess',
-			count: getUnreadOrders( select, orderStatuses ),
-		},
-		{
-			name: 'reviewsToModerate',
-			count: getUnapprovedReviews( select ),
-		},
-		{
-			name: 'stockNotices',
-			count: getLowStockProducts( select ),
-		},
-	];
 
-	return notifications;
-}
+	const isIncompleteTasksCardVisible = ! extendedTaskListHidden
+		? getIncompleteTasksCount( thingsToDoNext, dismissedTasks ) > 0
+		: false;
+	const isOrdersCardVisible = setupTaskListHidden
+		? getUnreadOrders( select, orderStatuses ) > 0
+		: false;
+	const isReviewsCardVisible = setupTaskListHidden
+		? getUnapprovedReviews( select )
+		: false;
+	const isLowStockCardVisible = setupTaskListHidden
+		? getLowStockProducts( select )
+		: false;
 
-export function getUnreadNotifications(
-	select,
-	setupTaskListHidden,
-	extendedTaskListHidden,
-	query
-) {
-	if ( ! setupTaskListHidden && extendedTaskListHidden ) {
-		return [];
-	}
-	const notifications = getAbbreviatedNotifications( select, query );
-	return notifications.filter( ( { count, name } ) => {
-		const isVisible = setupTaskListHidden
-			? ! extendedTaskListHidden || name !== 'thingsToDoNext'
-			: ! extendedTaskListHidden && name === 'thingsToDoNext';
-		return count > 0 && isVisible;
-	} );
+	return (
+		isIncompleteTasksCardVisible ||
+		isOrdersCardVisible ||
+		isReviewsCardVisible ||
+		isLowStockCardVisible
+	);
 }

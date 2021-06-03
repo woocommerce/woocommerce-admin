@@ -25,7 +25,7 @@ import { recordEvent } from '@woocommerce/tracks';
  * Internal dependencies
  */
 import './style.scss';
-import { getUnreadNotes, getUnreadNotifications } from './unread-indicators';
+import { getUnreadNotes, isAbbreviatedPanelVisible } from './unread-indicators';
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
@@ -66,8 +66,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	};
 
 	const {
-		hasUnreadNotifications = false,
-		unreadNotifications = [],
+		hasUnreadNotes = false,
+		hasAbbreviatedNotifications = false,
 		requestingTaskListOptions,
 		setupTaskListComplete,
 		setupTaskListHidden,
@@ -79,17 +79,15 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
 		const isExtendedTaskListHidden =
 			getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes';
-		const unreadNotificationList = getUnreadNotifications(
-			select,
-			isSetupTaskListHidden,
-			isExtendedTaskListHidden,
-			query
-		);
 
 		return {
-			hasUnreadNotifications:
-				getUnreadNotes( select ) || unreadNotificationList.length > 0,
-			unreadNotifications: unreadNotificationList,
+			hasUnreadNotes: getUnreadNotes( select ),
+			hasAbbreviatedNotifications: isAbbreviatedPanelVisible(
+				select,
+				isSetupTaskListHidden,
+				isExtendedTaskListHidden,
+				query
+			),
 			requestingTaskListOptions:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
@@ -159,7 +157,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			name: 'inbox',
 			title: __( 'Inbox', 'woocommerce-admin' ),
 			icon: <Icon icon={ inboxIcon } />,
-			unread: hasUnreadNotifications,
+			unread: hasUnreadNotes || hasAbbreviatedNotifications,
 			visible:
 				( isEmbedded || ! isHomescreen() ) && ! isPerformingSetupTask(),
 		};
@@ -237,7 +235,14 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 
 		switch ( tab ) {
 			case 'inbox':
-				return <InboxPanel notifications={ unreadNotifications } />;
+				return (
+					<InboxPanel
+						hasAbbreviatedNotifications={
+							hasAbbreviatedNotifications
+						}
+						query={ query }
+					/>
+				);
 			case 'help':
 				return <HelpPanel taskName={ task } />;
 			default:
