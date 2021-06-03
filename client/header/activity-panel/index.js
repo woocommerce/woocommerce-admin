@@ -25,7 +25,10 @@ import { recordEvent } from '@woocommerce/tracks';
  * Internal dependencies
  */
 import './style.scss';
-import { getUnreadNotes, isAbbreviatedPanelVisible } from './unread-indicators';
+import {
+	isNotesPanelVisible,
+	isAbbreviatedPanelVisible,
+} from './unread-indicators';
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
@@ -81,7 +84,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes';
 
 		return {
-			hasUnreadNotes: getUnreadNotes( select ),
+			hasUnreadNotes: isNotesPanelVisible( select ),
 			hasAbbreviatedNotifications: isAbbreviatedPanelVisible(
 				select,
 				isSetupTaskListHidden,
