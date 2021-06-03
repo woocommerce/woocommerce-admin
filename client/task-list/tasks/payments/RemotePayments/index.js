@@ -57,7 +57,7 @@ export const RemotePayments = ( { query } ) => {
 					gateway.key === 'woocommerce_payments' &&
 					! (
 						paymentGateways[ gateway.key ] &&
-						paymentGateways[ gateway.key ].needs_setup !== true
+						! paymentGateways[ gateway.key ].needs_setup
 					)
 				) {
 					wcPay = gateway;
