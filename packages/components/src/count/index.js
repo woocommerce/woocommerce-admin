@@ -3,7 +3,6 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
-import deprecated from '@wordpress/deprecated';
 
 /**
  * Display a number with a styled border.
@@ -14,13 +13,6 @@ import deprecated from '@wordpress/deprecated';
  * @return {Object} -
  */
 const Count = ( { count, label } ) => {
-	deprecated( 'Count', {
-		version: '7.2.0',
-		alternative: '@woocommerce/components Badge',
-		plugin: 'WooCommerce',
-		hint: 'Use `import { Badge } from "@woocommerce/components"`',
-	} );
-
 	if ( ! label ) {
 		label = sprintf( __( 'Total %d', 'woocommerce-admin' ), count );
 	}
