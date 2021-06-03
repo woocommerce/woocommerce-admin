@@ -13,9 +13,9 @@ import { Text, useSlot } from '@woocommerce/experimental';
  */
 import { PaymentAction } from '../../../components/PaymentAction';
 
-import './RecommendedPaymentGatewayList.scss';
+import './List.scss';
 
-export const RecommendedPaymentGatewayListItem = ( {
+export const Item = ( {
 	installedPaymentGateways,
 	isRecommended,
 	paymentGateway,

@@ -21,10 +21,10 @@ import { useSlot } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { createNoticesFromResponse } from '~/lib/notices';
-import { PaymentConnect } from '../PaymentConnect';
-import './PaymentMethod.scss';
+import { Connect } from './Connect';
+import './Setup.scss';
 
-export const PaymentMethod = ( {
+export const Setup = ( {
 	markConfigured,
 	method,
 	recordConnectStartEvent,
@@ -131,7 +131,7 @@ export const PaymentMethod = ( {
 			}
 		),
 		content: paymentGateway ? (
-			<PaymentConnect
+			<Connect
 				markConfigured={ markConfigured }
 				paymentGateway={ paymentGateway }
 				recordConnectStartEvent={ recordConnectStartEvent }

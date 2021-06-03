@@ -6,11 +6,11 @@ import { Card, CardHeader } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { RecommendedPaymentGatewayListItem } from './RecommendedPaymentGatewayListItem';
+import { Item } from './Item';
 
-import './RecommendedPaymentGatewayList.scss';
+import './List.scss';
 
-export const RecommendedPaymentGatewayList = ( {
+export const List = ( {
 	heading,
 	installedPaymentGateways,
 	recommendedPaymentGateway,
@@ -24,7 +24,7 @@ export const RecommendedPaymentGatewayList = ( {
 				( paymentGateway ) => {
 					const { key } = paymentGateway;
 					return (
-						<RecommendedPaymentGatewayListItem
+						<Item
 							key={ key }
 							markConfigured={ markConfigured }
 							paymentGateway={ paymentGateway }

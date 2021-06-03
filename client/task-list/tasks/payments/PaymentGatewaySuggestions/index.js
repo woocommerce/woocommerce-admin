@@ -15,16 +15,10 @@ import { useMemo, useCallback } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import {
-	RecommendedPaymentGatewayList,
-	RecommendedPaymentGatewayListPlaceholder,
-} from './components/RecommendedPaymentGatewayList';
-import {
-	PaymentMethod,
-	PaymentMethodPlaceholder,
-} from './components/PaymentMethod';
+import { List, Placeholder as ListPlaceholder } from './components/List';
+import { Setup, Placeholder as SetupPlaceholder } from './components/Setup';
 import { WCPayMethodCard } from '../components/WCPayMethodCard';
-import './components/BacsPaymentGatewaySetup';
+import './plugins/Bacs';
 
 const RECOMMENDED_GATEWAY_KEYS = [
 	'woocommerce_payments',
@@ -32,7 +26,7 @@ const RECOMMENDED_GATEWAY_KEYS = [
 	'stripe',
 ];
 
-export const RemotePayments = ( { query } ) => {
+export const PaymentGatewaySuggestions = ( { query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const {
 		additionalPaymentGatewayRecommendations,
@@ -167,12 +161,12 @@ export const RemotePayments = ( { query } ) => {
 	}, [ isResolving, query, paymentGatewayRecommendations ] );
 
 	if ( query.method && ! currentPaymentGateway ) {
-		return <PaymentMethodPlaceholder />;
+		return <SetupPlaceholder />;
 	}
 
 	if ( currentPaymentGateway ) {
 		return (
-			<PaymentMethod
+			<Setup
 				method={ currentPaymentGateway }
 				markConfigured={ markConfigured }
 				recordConnectStartEvent={ recordConnectStartEvent }
@@ -182,9 +176,7 @@ export const RemotePayments = ( { query } ) => {
 
 	return (
 		<div className="woocommerce-task-payments">
-			{ ! paymentGatewayRecommendations.size && (
-				<RecommendedPaymentGatewayListPlaceholder />
-			) }
+			{ ! paymentGatewayRecommendations.size && <ListPlaceholder /> }
 
 			{ !! wcPayGateway && (
 				<WCPayMethodCard
@@ -197,7 +189,7 @@ export const RemotePayments = ( { query } ) => {
 			) }
 
 			{ !! enabledPaymentGatewayRecommendations.size && (
-				<RecommendedPaymentGatewayList
+				<List
 					heading={ __(
 						'Enabled payment methods',
 						'woocommerce-admin'
@@ -211,7 +203,7 @@ export const RemotePayments = ( { query } ) => {
 			) }
 
 			{ !! additionalPaymentGatewayRecommendations.size && (
-				<RecommendedPaymentGatewayList
+				<List
 					heading={ __(
 						'Additional payment methods',
 						'woocommerce-admin'
@@ -228,4 +220,4 @@ export const RemotePayments = ( { query } ) => {
 	);
 };
 
-export default RemotePayments;
+export default PaymentGatewaySuggestions;

@@ -12,6 +12,11 @@ import {
 } from '@wordpress/components';
 import { Text } from '@woocommerce/experimental';
 
+/**
+ * Internal dependencies
+ */
+import './List.scss';
+
 const PlaceholderItem = () => {
 	const classes = classnames(
 		'woocommerce-task-payment',
@@ -44,7 +49,7 @@ const PlaceholderItem = () => {
 	);
 };
 
-export const RecommendedPaymentGatewayListPlaceholder = () => {
+export const Placeholder = () => {
 	const classes =
 		'is-loading woocommerce-recommended-payment-gateway-list-placeholder';
 

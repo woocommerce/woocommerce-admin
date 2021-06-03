@@ -14,7 +14,7 @@ import { useSlot } from '@woocommerce/experimental';
  */
 import sanitizeHTML from '~/lib/sanitize-html';
 
-export const PaymentConnect = ( {
+export const SetupConnect = ( {
 	markConfigured,
 	paymentGateway,
 	recordConnectStartEvent,
