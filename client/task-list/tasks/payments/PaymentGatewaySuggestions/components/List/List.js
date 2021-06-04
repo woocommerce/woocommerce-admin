@@ -20,15 +20,15 @@ export const List = ( {
 	return (
 		<Card>
 			<CardHeader as="h2">{ heading }</CardHeader>
-			{ Array.from( suggestions.values() ).map( ( paymentGateway ) => {
-				const { key } = paymentGateway;
+			{ Array.from( suggestions.values() ).map( ( suggestion ) => {
+				const { key } = suggestion;
 				return (
 					<Item
 						key={ key }
-						markConfigured={ markConfigured }
-						paymentGateway={ paymentGateway }
-						paymentGateways={ paymentGateways }
 						isRecommended={ recommended === key }
+						markConfigured={ markConfigured }
+						paymentGateways={ paymentGateways }
+						suggestion={ suggestion }
 						suggestionKeys={ suggestions.keys() }
 					/>
 				);

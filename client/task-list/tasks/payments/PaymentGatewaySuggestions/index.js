@@ -175,13 +175,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			{ ! suggestions.size && <ListPlaceholder /> }
 
 			{ !! wcPaySuggestion && (
-				<WCPayMethodCard
-					isEnabled={
-						'woocommerce_payments' in paymentGateways &&
-						paymentGateways.woocommerce_payments.enabled
-					}
-					suggestion={ wcPaySuggestion }
-				/>
+				<WCPayMethodCard suggestion={ wcPaySuggestion } />
 			) }
 
 			{ !! enabledSuggestions.size && (

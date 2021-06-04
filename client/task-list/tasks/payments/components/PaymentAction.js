@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Spinner } from '@wordpress/components';
 import { updateQueryString } from '@woocommerce/navigation';
+import { recordEvent } from '@woocommerce/tracks';
 import { useState } from '@wordpress/element';
 
 export const PaymentAction = ( {
@@ -17,7 +18,6 @@ export const PaymentAction = ( {
 	methodKey,
 	onSetUp = () => {},
 	onSetupCallback,
-	onManageButtonClick = () => {},
 	setupButtonText = __( 'Set up', 'woocommerce-admin' ),
 } ) => {
 	const [ isBusy, setIsBusy ] = useState( false );
@@ -54,7 +54,9 @@ export const PaymentAction = ( {
 			className={ classes }
 			isSecondary
 			href={ manageUrl }
-			onClick={ onManageButtonClick }
+			onClick={ () =>
+				recordEvent( 'tasklist_payment_manage', { id: methodKey } )
+			}
 		>
 			{ __( 'Manage', 'woocommerce-admin' ) }
 		</Button>

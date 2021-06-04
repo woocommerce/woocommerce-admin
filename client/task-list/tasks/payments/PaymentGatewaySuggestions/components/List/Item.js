@@ -16,34 +16,27 @@ import { PaymentAction } from '../../../components/PaymentAction';
 import './List.scss';
 
 export const Item = ( {
-	installedPaymentGateways,
 	isRecommended,
-	paymentGateway,
 	markConfigured,
+	paymentGateways,
+	suggestion,
 	suggestionKeys,
 } ) => {
-	const {
-		image,
-		content,
-		key,
-		plugins = [],
-		title,
-		loading,
-	} = paymentGateway;
+	const { image, content, key, plugins = [], title, loading } = suggestion;
 
 	const connectSlot = useSlot(
 		`woocommerce_payment_gateway_connect_${ key }`
 	);
 	const setupSlot = useSlot( `woocommerce_payment_gateway_setup_${ key }` );
 
-	const installedPaymentGateway = installedPaymentGateways[ key ] || {};
+	const paymentGateway = paymentGateways[ key ] || {};
 
 	const {
 		enabled: isEnabled = false,
 		needs_setup: needsSetup = false,
 		required_settings_keys: requiredSettingsKeys = [],
-		settings_url: manageUrl = null,
-	} = installedPaymentGateway;
+		settings_url: manageUrl,
+	} = paymentGateway;
 
 	const isConfigured = ! needsSetup;
 	const hasFills =
