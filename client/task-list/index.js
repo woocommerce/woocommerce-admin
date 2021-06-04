@@ -12,6 +12,7 @@ import {
 	PLUGINS_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { useExperiment } from '@woocommerce/explat';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -24,6 +25,7 @@ import { getCountryCode } from '../dashboard/utils';
 import TaskList from './task-list';
 import { DisplayOption } from '../header/activity-panel/display-options';
 import { TaskStep } from './task-step';
+import TaskListPlaceholder from './placeholder';
 
 const taskDashboardSelect = ( select ) => {
 	const { getProfileItems, getTasksStatus } = select( ONBOARDING_STORE_NAME );
@@ -43,6 +45,14 @@ const taskDashboardSelect = ( select ) => {
 	const countryCode = getCountryCode(
 		generalSettings.woocommerce_default_country
 	);
+	const {
+		woocommerce_store_address: storeAddress,
+		woocommerce_default_country: defaultCountry,
+		woocommerce_store_postcode: storePostCode,
+	} = generalSettings;
+	const hasCompleteAddress = Boolean(
+		storeAddress && defaultCountry && storePostCode
+	);
 
 	const activePlugins = getActivePlugins();
 	const installedPlugins = getInstalledPlugins();
@@ -52,6 +62,9 @@ const taskDashboardSelect = ( select ) => {
 		activePlugins,
 		countryCode,
 		dismissedTasks: getOption( 'woocommerce_task_list_dismissed_tasks' ),
+		remindMeLaterTasks: getOption(
+			'woocommerce_task_list_remind_me_later_tasks'
+		),
 		isExtendedTaskListComplete:
 			getOption( 'woocommerce_extended_task_list_complete' ) === 'yes',
 		isExtendedTaskListHidden:
@@ -65,6 +78,7 @@ const taskDashboardSelect = ( select ) => {
 		onboardingStatus,
 		profileItems,
 		trackedCompletedTasks,
+		hasCompleteAddress,
 	};
 };
 
@@ -82,12 +96,17 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		profileItems,
 		isSetupTaskListHidden,
 		dismissedTasks,
+		remindMeLaterTasks,
 		isTaskListComplete,
 		isExtendedTaskListHidden,
 		isExtendedTaskListComplete,
+		hasCompleteAddress,
 	} = useSelect( taskDashboardSelect );
 
 	const [ isCartModalOpen, setIsCartModalOpen ] = useState( false );
+	const [ isLoadingExperiment, experimentAssignment ] = useExperiment(
+		'woocommerce_tasklist_progression'
+	);
 
 	useEffect( () => {
 		document.body.classList.add( 'woocommerce-onboarding' );
@@ -173,6 +192,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		query,
 		toggleCartModal,
 		onTaskSelect,
+		hasCompleteAddress,
 	} );
 
 	const { extension, setup: setupTasks } = allTasks;
@@ -197,16 +217,39 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 
 	return (
 		<>
-			{ setupTasks && ( ! isSetupTaskListHidden || task ) && (
-				<TaskList
-					dismissedTasks={ dismissedTasks || [] }
-					isComplete={ isTaskListComplete }
-					query={ query }
-					tasks={ setupTasks }
-					title={ __( 'Finish setup', 'woocommerce-admin' ) }
-					trackedCompletedTasks={ trackedCompletedTasks || [] }
-				/>
-			) }
+			{ setupTasks &&
+				( ! isSetupTaskListHidden || task ) &&
+				( isLoadingExperiment ? (
+					<TaskListPlaceholder />
+				) : (
+					<TaskList
+						name="task_list"
+						eventName="tasklist"
+						expandingItems={
+							experimentAssignment?.variationName === 'treatment'
+						}
+						dismissedTasks={ dismissedTasks || [] }
+						remindMeLaterTasks={ remindMeLaterTasks || [] }
+						isComplete={ isTaskListComplete }
+						query={ query }
+						tasks={ setupTasks }
+						title={ __( 'Finish setup', 'woocommerce-admin' ) }
+						trackedCompletedTasks={ trackedCompletedTasks || [] }
+						onComplete={ () =>
+							updateOptions( {
+								woocommerce_default_homepage_layout:
+									'two_columns',
+							} )
+						}
+						onHide={ () =>
+							updateOptions( {
+								woocommerce_task_list_prompt_shown: true,
+								woocommerce_default_homepage_layout:
+									'two_columns',
+							} )
+						}
+					/>
+				) ) }
 			{ extensionTasks && (
 				<DisplayOption>
 					<MenuGroup
@@ -230,9 +273,12 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 			) }
 			{ extensionTasks && ! isExtendedTaskListHidden && (
 				<TaskList
+					name="extended_task_list"
+					eventName="extended_tasklist"
+					collapsible
 					dismissedTasks={ dismissedTasks || [] }
+					remindMeLaterTasks={ remindMeLaterTasks || [] }
 					isComplete={ isExtendedTaskListComplete }
-					name={ 'extended_task_list' }
 					query={ query }
 					tasks={ extensionTasks }
 					title={ __( 'Things to do next', 'woocommerce-admin' ) }
