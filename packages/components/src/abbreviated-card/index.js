@@ -60,6 +60,10 @@ AbbreviatedCard.propTypes = {
 	 * Called when the card is clicked.
 	 */
 	onClick: PropTypes.func,
+	/**
+	 * Type of link.
+	 */
+	type: PropTypes.oneOf( [ 'wp-admin', 'wc-admin', 'external' ] ),
 };
 
 export default AbbreviatedCard;

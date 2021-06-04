@@ -25,3 +25,4 @@ import { Icon, box } from '@wordpress/icons';
 | `href`      | String    | `null`  | (required) The resource to link to                                               |
 | `icon`      | Element   | `null`  | (required) The element used to represent the icon for this card                  |
 | `onClick`   | Function  | `null`  | On click handler called when the component is clicked                            |
+| `type`      | String    | `null`  | Type of link                                                                     |
