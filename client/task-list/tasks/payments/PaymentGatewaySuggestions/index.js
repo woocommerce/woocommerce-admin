@@ -49,28 +49,23 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		let wcPay = null;
 		const mappedSugggestions = select( ONBOARDING_STORE_NAME )
 			.getPaymentGatewaySuggestions()
-			.reduce( ( map, gateway ) => {
-				map.set( gateway.key, gateway );
+			.reduce( ( map, suggestion ) => {
+				const { id } = suggestion;
+				map.set( id, suggestion );
 
 				// WCPay is handled separately when not installed and configured
 				if (
-					gateway.key === 'woocommerce_payments' &&
-					! (
-						gateways[ gateway.key ] &&
-						! gateways[ gateway.key ].needs_setup
-					)
+					id === 'woocommerce_payments' &&
+					! ( gateways[ id ] && ! gateways[ id ].needs_setup )
 				) {
-					wcPay = gateway;
+					wcPay = suggestion;
 					return map;
 				}
 
-				if (
-					gateways[ gateway.key ] &&
-					gateways[ gateway.key ].enabled
-				) {
-					enabled.set( gateway.key, gateway );
+				if ( gateways[ id ] && gateways[ id ].enabled ) {
+					enabled.set( id, suggestion );
 				} else {
-					additional.set( gateway.key, gateway );
+					additional.set( id, suggestion );
 				}
 
 				return map;
@@ -133,8 +128,8 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 	}, [] );
 
 	const recommended = useMemo( () => {
-		for ( const key in RECOMMENDED_GATEWAY_KEYS ) {
-			const gateway = suggestions.get( key );
+		for ( const id in RECOMMENDED_GATEWAY_KEYS ) {
+			const gateway = suggestions.get( id );
 			if ( gateway ) {
 				return gateway;
 			}

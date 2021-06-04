@@ -29,14 +29,14 @@ export const Setup = ( {
 	suggestion,
 	recordConnectStartEvent,
 } ) => {
-	const { key, plugins = [], title } = suggestion;
-	const slot = useSlot( `woocommerce_payment_gateway_setup_${ key }` );
+	const { id, plugins = [], title } = suggestion;
+	const slot = useSlot( `woocommerce_payment_gateway_setup_${ id }` );
 	const hasFills = Boolean( slot?.fills?.length );
 	const [ isPluginLoaded, setIsPluginLoaded ] = useState( false );
 
 	useEffect( () => {
 		recordEvent( 'payments_task_stepper_view', {
-			payment_method: key,
+			payment_method: id,
 		} );
 	}, [] );
 
@@ -58,10 +58,10 @@ export const Setup = ( {
 		return {
 			isOptionUpdating: isOptionsUpdating(),
 			isPaymentGatewayResolving: isResolving( 'getPaymentGateway', [
-				key,
+				id,
 			] ),
 			paymentGateway: ! pluginsToInstall.length
-				? getPaymentGateway( key )
+				? getPaymentGateway( id )
 				: null,
 			needsPluginInstall: !! pluginsToInstall.length,
 		};
@@ -167,10 +167,10 @@ export const Setup = ( {
 							defaultStepper: DefaultStepper,
 							defaultInstallStep: installStep,
 							defaultConnectStep: connectStep,
-							markConfigured: () => markConfigured( key ),
+							markConfigured: () => markConfigured( id ),
 							paymentGateway,
 						} }
-						id={ key }
+						id={ id }
 					/>
 				) : (
 					<DefaultStepper />

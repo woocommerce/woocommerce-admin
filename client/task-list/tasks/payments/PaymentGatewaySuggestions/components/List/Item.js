@@ -22,14 +22,14 @@ export const Item = ( {
 	suggestion,
 	suggestionKeys,
 } ) => {
-	const { image, content, key, plugins = [], title, loading } = suggestion;
+	const { image, content, id, plugins = [], title, loading } = suggestion;
 
 	const connectSlot = useSlot(
-		`woocommerce_payment_gateway_connect_${ key }`
+		`woocommerce_payment_gateway_connect_${ id }`
 	);
-	const setupSlot = useSlot( `woocommerce_payment_gateway_setup_${ key }` );
+	const setupSlot = useSlot( `woocommerce_payment_gateway_setup_${ id }` );
 
-	const paymentGateway = paymentGateways[ key ] || {};
+	const paymentGateway = paymentGateways[ id ] || {};
 
 	const {
 		enabled: isEnabled = false,
@@ -51,11 +51,11 @@ export const Item = ( {
 		'woocommerce-task-payment',
 		'woocommerce-task-card',
 		! isConfigured && 'woocommerce-task-payment-not-configured',
-		'woocommerce-task-payment-' + key
+		'woocommerce-task-payment-' + id
 	);
 
 	return (
-		<Fragment key={ key }>
+		<Fragment key={ id }>
 			<CardBody
 				style={ { paddingLeft: 0, marginBottom: 0 } }
 				className={ classes }
@@ -76,7 +76,7 @@ export const Item = ( {
 				<div className="woocommerce-task-payment__footer">
 					<PaymentAction
 						manageUrl={ manageUrl }
-						methodKey={ key }
+						id={ id }
 						hasSetup={ hasSetup }
 						isConfigured={ isConfigured }
 						isEnabled={ isEnabled }
@@ -86,7 +86,7 @@ export const Item = ( {
 						onSetup={ () =>
 							recordEvent( 'tasklist_payment_setup', {
 								options: suggestionKeys,
-								selected: key,
+								selected: id,
 							} )
 						}
 					/>

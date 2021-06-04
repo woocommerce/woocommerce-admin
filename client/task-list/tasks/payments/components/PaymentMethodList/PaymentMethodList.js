@@ -82,7 +82,7 @@ export const PaymentMethodList = ( {
 						<div className="woocommerce-task-payment__footer">
 							<PaymentAction
 								manageUrl={ manageUrl }
-								methodKey={ key }
+								id={ key }
 								hasSetup={ !! method.container }
 								isConfigured={ isConfigured }
 								isEnabled={ method.isEnabled }

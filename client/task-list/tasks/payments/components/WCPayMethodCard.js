@@ -74,7 +74,7 @@ export const WCPayMethodCard = ( { suggestion } ) => {
 						<TosPrompt />
 					</Text>
 					<PaymentAction
-						methodKey={ id }
+						id={ id }
 						hasSetup={ true }
 						isConfigured={ isConfigured }
 						isEnabled={ isEnabled }

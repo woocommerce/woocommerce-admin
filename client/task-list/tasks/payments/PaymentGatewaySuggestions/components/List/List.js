@@ -21,11 +21,11 @@ export const List = ( {
 		<Card>
 			<CardHeader as="h2">{ heading }</CardHeader>
 			{ Array.from( suggestions.values() ).map( ( suggestion ) => {
-				const { key } = suggestion;
+				const { id } = suggestion;
 				return (
 					<Item
-						key={ key }
-						isRecommended={ recommended === key }
+						key={ id }
+						isRecommended={ recommended === id }
 						markConfigured={ markConfigured }
 						paymentGateways={ paymentGateways }
 						suggestion={ suggestion }
