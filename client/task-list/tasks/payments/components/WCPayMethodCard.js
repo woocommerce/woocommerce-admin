@@ -38,7 +38,7 @@ const TosPrompt = () =>
 	} );
 
 const ButtonComponent = ( {
-	method: { key: methodKey, isConfigured, loading, onClick },
+	suggestion: { key: methodKey, isConfigured, loading, onClick },
 	isEnabled,
 } ) => (
 	<PaymentAction
@@ -55,8 +55,8 @@ const ButtonComponent = ( {
 	/>
 );
 
-export const WCPayMethodCard = ( { method, isEnabled } ) => {
-	const { description } = method;
+export const WCPayMethodCard = ( { suggestion, isEnabled } ) => {
+	const { description } = suggestion;
 
 	return (
 		<WCPayCard>
@@ -81,7 +81,7 @@ export const WCPayMethodCard = ( { method, isEnabled } ) => {
 					</Text>
 					<ButtonComponent
 						isEnabled={ isEnabled }
-						method={ method }
+						suggestion={ suggestion }
 					/>
 				</>
 			</WCPayCardFooter>

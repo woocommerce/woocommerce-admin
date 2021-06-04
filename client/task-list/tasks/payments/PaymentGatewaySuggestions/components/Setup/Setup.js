@@ -26,10 +26,10 @@ import './Setup.scss';
 
 export const Setup = ( {
 	markConfigured,
-	method,
+	suggestion,
 	recordConnectStartEvent,
 } ) => {
-	const { key, plugins = [], title } = method;
+	const { key, plugins = [], title } = suggestion;
 	const slot = useSlot( `woocommerce_payment_gateway_setup_${ key }` );
 	const hasFills = Boolean( slot?.fills?.length );
 	const [ isPluginLoaded, setIsPluginLoaded ] = useState( false );

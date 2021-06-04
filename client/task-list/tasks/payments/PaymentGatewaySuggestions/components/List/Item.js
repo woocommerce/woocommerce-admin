@@ -20,7 +20,7 @@ export const Item = ( {
 	isRecommended,
 	paymentGateway,
 	markConfigured,
-	recommendedPaymentGatewayKeys,
+	suggestionKeys,
 } ) => {
 	const {
 		image,
@@ -92,7 +92,7 @@ export const Item = ( {
 						markConfigured={ markConfigured }
 						onSetup={ () =>
 							recordEvent( 'tasklist_payment_setup', {
-								options: recommendedPaymentGatewayKeys,
+								options: suggestionKeys,
 								selected: key,
 							} )
 						}

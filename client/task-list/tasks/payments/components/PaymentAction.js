@@ -45,7 +45,7 @@ export const PaymentAction = ( {
 		}
 
 		updateQueryString( {
-			method: methodKey,
+			id: methodKey,
 		} );
 	};
 
