@@ -33,6 +33,8 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 		ordersToProcessCount,
 		reviewsToModerateCount,
 		stockNoticesCount,
+		isSetupTaskListHidden,
+		isExtendedTaskListHidden,
 	} = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
 		const thingsToDoNext = applyFilters(
@@ -51,6 +53,10 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 				thingsToDoNext,
 				dismissedTasks
 			),
+			isSetupTaskListHidden:
+				getOption( 'woocommerce_task_list_hidden' ) === 'yes',
+			isExtendedTaskListHidden:
+				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
 		};
 	} );
 
@@ -76,7 +82,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 
 	return (
 		<div className="woocommerce-abbreviated-notifications">
-			{ thingsToDoNextCount > 0 && (
+			{ thingsToDoNextCount > 0 && ! isExtendedTaskListHidden && (
 				<AbbreviatedCard
 					className="woocommerce-abbreviated-notification"
 					icon={ <Bell /> }
@@ -103,7 +109,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					</Text>
 				</AbbreviatedCard>
 			) }
-			{ ordersToProcessCount > 0 && (
+			{ ordersToProcessCount > 0 && isSetupTaskListHidden && (
 				<AbbreviatedCard
 					className="woocommerce-abbreviated-notification"
 					icon={ page }
@@ -130,7 +136,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					</Text>
 				</AbbreviatedCard>
 			) }
-			{ reviewsToModerateCount > 0 && (
+			{ reviewsToModerateCount > 0 && isSetupTaskListHidden && (
 				<AbbreviatedCard
 					className="woocommerce-abbreviated-notification"
 					icon={ comment }
@@ -157,7 +163,7 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 					</Text>
 				</AbbreviatedCard>
 			) }
-			{ stockNoticesCount > 0 && (
+			{ stockNoticesCount > 0 && isSetupTaskListHidden && (
 				<AbbreviatedCard
 					className="woocommerce-abbreviated-notification"
 					icon={ box }

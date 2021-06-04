@@ -21,15 +21,23 @@ jest.mock( '@wordpress/data', () => {
 } );
 
 describe( 'Inbox', () => {
-	beforeEach( () => {
-		useSelect.mockImplementation( () => ( {
-			stockNoticesCount: 0,
-			reviewsToModerateCount: 0,
-			ordersToProcessCount: 0,
-			thingsToDoNextCount: 0,
-		} ) );
-	} );
 	it( 'does not show any abbreviated notifications', () => {
+		const { queryByText } = render(
+			<AbbreviatedNotificationsPanel query={ {} } />
+		);
+		expect( queryByText( 'Things to do next' ) ).toBeNull();
+		expect( queryByText( 'Orders to fulfill' ) ).toBeNull();
+		expect( queryByText( 'Reviews to moderate' ) ).toBeNull();
+		expect( queryByText( 'Inventory to review' ) ).toBeNull();
+	} );
+	it( 'does not show any abbreviated panel when the extended task list is hidden and the setup list is visible', () => {
+		useSelect.mockImplementation( () => ( {
+			stockNoticesCount: 4,
+			reviewsToModerateCount: 3,
+			ordersToProcessCount: 2,
+			thingsToDoNextCount: 1,
+			isExtendedTaskListHidden: true,
+		} ) );
 		const { queryByText } = render(
 			<AbbreviatedNotificationsPanel query={ {} } />
 		);
@@ -61,6 +69,7 @@ describe( 'Inbox', () => {
 	it( 'shows the `Orders to fulfill` notification panel, with 2 thing to do', () => {
 		useSelect.mockImplementation( () => ( {
 			ordersToProcessCount: 2,
+			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
 			<AbbreviatedNotificationsPanel query={ {} } />
@@ -71,6 +80,7 @@ describe( 'Inbox', () => {
 	it( 'shows the `Reviews to moderate` notification panel, with 3 thing to do', () => {
 		useSelect.mockImplementation( () => ( {
 			reviewsToModerateCount: 3,
+			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
 			<AbbreviatedNotificationsPanel query={ {} } />
@@ -81,6 +91,7 @@ describe( 'Inbox', () => {
 	it( 'shows the `Inventory to review` notification panel', () => {
 		useSelect.mockImplementation( () => ( {
 			stockNoticesCount: 4,
+			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
 			<AbbreviatedNotificationsPanel query={ {} } />
@@ -96,6 +107,7 @@ describe( 'Inbox', () => {
 			reviewsToModerateCount: 3,
 			ordersToProcessCount: 2,
 			thingsToDoNextCount: 1,
+			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
 			<AbbreviatedNotificationsPanel query={ {} } />
