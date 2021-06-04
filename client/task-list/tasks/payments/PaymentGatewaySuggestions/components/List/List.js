@@ -14,7 +14,7 @@ export const List = ( {
 	heading,
 	markConfigured,
 	paymentGateways,
-	recommended,
+	recommendation,
 	suggestions,
 } ) => {
 	return (
@@ -25,7 +25,7 @@ export const List = ( {
 				return (
 					<Item
 						key={ id }
-						isRecommended={ recommended === id }
+						isRecommended={ recommendation === id }
 						markConfigured={ markConfigured }
 						paymentGateways={ paymentGateways }
 						suggestion={ suggestion }

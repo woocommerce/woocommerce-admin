@@ -127,7 +127,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		} );
 	}, [] );
 
-	const recommended = useMemo( () => {
+	const recommendation = useMemo( () => {
 		for ( const id in RECOMMENDED_GATEWAY_KEYS ) {
 			const gateway = suggestions.get( id );
 			if ( gateway ) {
@@ -180,7 +180,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 						'woocommerce-admin'
 					) }
 					paymentGateways={ paymentGateways }
-					recommended={ recommended }
+					recommendation={ recommendation }
 					suggestions={ enabledSuggestions }
 				/>
 			) }
@@ -192,7 +192,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 						'woocommerce-admin'
 					) }
 					paymentGateways={ paymentGateways }
-					recommended={ recommended }
+					recommendation={ recommendation }
 					suggestions={ additionalSuggestions }
 					markConfigured={ markConfigured }
 				/>
