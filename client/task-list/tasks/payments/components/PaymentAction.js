@@ -9,7 +9,7 @@ import { useState } from '@wordpress/element';
 
 export const PaymentAction = ( {
 	hasSetup = false,
-	isConfigured = false,
+	needsSetup = true,
 	id,
 	isEnabled = false,
 	isLoading = false,
@@ -93,7 +93,7 @@ export const PaymentAction = ( {
 		);
 	}
 
-	if ( ! isConfigured ) {
+	if ( needsSetup ) {
 		return (
 			<div>
 				<Button

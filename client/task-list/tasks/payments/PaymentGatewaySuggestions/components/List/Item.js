@@ -38,19 +38,18 @@ export const Item = ( {
 		settings_url: manageUrl,
 	} = paymentGateway;
 
-	const isConfigured = ! needsSetup;
 	const hasFills =
 		Boolean( connectSlot?.fills?.length ) ||
 		Boolean( setupSlot?.fills?.length );
 	const hasSetup = Boolean(
 		plugins.length || requiredSettingsKeys.length || hasFills
 	);
-	const showRecommendedRibbon = isRecommended && ! isConfigured;
+	const showRecommendedRibbon = isRecommended && needsSetup;
 
 	const classes = classnames(
 		'woocommerce-task-payment',
 		'woocommerce-task-card',
-		! isConfigured && 'woocommerce-task-payment-not-configured',
+		needsSetup && 'woocommerce-task-payment-not-configured',
 		'woocommerce-task-payment-' + id
 	);
 
@@ -67,7 +66,7 @@ export const Item = ( {
 					{ showRecommendedRibbon && <RecommendedRibbon /> }
 					<Text as="h3" className="woocommerce-task-payment__title">
 						{ title }
-						{ isEnabled && ! isConfigured && <SetupRequired /> }
+						{ isEnabled && needsSetup && <SetupRequired /> }
 					</Text>
 					<div className="woocommerce-task-payment__content">
 						{ content }
@@ -78,7 +77,7 @@ export const Item = ( {
 						manageUrl={ manageUrl }
 						id={ id }
 						hasSetup={ hasSetup }
-						isConfigured={ isConfigured }
+						needsSetup={ needsSetup }
 						isEnabled={ isEnabled }
 						isRecommended={ isRecommended }
 						isLoading={ loading }

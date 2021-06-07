@@ -46,11 +46,7 @@ export const WCPayMethodCard = ( { suggestion } ) => {
 			select( PAYMENT_GATEWAYS_STORE_NAME ).getPaymentGateway( key ) || {}
 		);
 	} );
-	const {
-		id,
-		enabled: isEnabled,
-		needs_setup: isConfigured,
-	} = paymentGateway;
+	const { id, enabled: isEnabled, needs_setup: needsSetup } = paymentGateway;
 
 	return (
 		<WCPayCard>
@@ -76,7 +72,7 @@ export const WCPayMethodCard = ( { suggestion } ) => {
 					<PaymentAction
 						id={ id }
 						hasSetup={ true }
-						isConfigured={ isConfigured }
+						needsSetup={ needsSetup }
 						isEnabled={ isEnabled }
 						isRecommended={ true }
 						setupButtonText={ __(
