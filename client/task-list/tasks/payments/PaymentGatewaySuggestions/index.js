@@ -47,7 +47,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		const enabled = new Map();
 		const additional = new Map();
 		let wcPay = null;
-		const mappedSugggestions = select( ONBOARDING_STORE_NAME )
+		const mappedSuggestions = select( ONBOARDING_STORE_NAME )
 			.getPaymentGatewaySuggestions()
 			.reduce( ( map, suggestion ) => {
 				const { id } = suggestion;
@@ -81,7 +81,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 				'getPaymentGatewaySuggestions'
 			),
 			paymentGateways: gateways,
-			suggestions: mappedSugggestions,
+			suggestions: mappedSuggestions,
 			wcPaySuggestion: wcPay,
 		};
 	} );
