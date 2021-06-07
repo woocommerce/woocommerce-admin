@@ -40,13 +40,13 @@ const TosPrompt = () =>
 	} );
 
 export const WCPayMethodCard = ( { suggestion } ) => {
-	const { description, key } = suggestion;
+	const { description, id } = suggestion;
 	const paymentGateway = useSelect( ( select ) => {
 		return (
-			select( PAYMENT_GATEWAYS_STORE_NAME ).getPaymentGateway( key ) || {}
+			select( PAYMENT_GATEWAYS_STORE_NAME ).getPaymentGateway( id ) || {}
 		);
 	} );
-	const { id, enabled: isEnabled, needs_setup: needsSetup } = paymentGateway;
+	const { enabled: isEnabled, needs_setup: needsSetup } = paymentGateway;
 
 	return (
 		<WCPayCard>
