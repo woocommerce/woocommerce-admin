@@ -20,7 +20,7 @@ import { Setup, Placeholder as SetupPlaceholder } from './components/Setup';
 import { WCPayMethodCard } from '../components/WCPayMethodCard';
 import './plugins/Bacs';
 
-const RECOMMENDED_GATEWAY_KEYS = [
+const RECOMMENDED_GATEWAY_IDS = [
 	'woocommerce_payments',
 	'mercadopago',
 	'stripe',
@@ -86,32 +86,32 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		};
 	} );
 
-	const enablePaymentGateway = ( paymentGatewayKey ) => {
-		if ( ! paymentGatewayKey ) {
+	const enablePaymentGateway = ( id ) => {
+		if ( ! id ) {
 			return;
 		}
 
-		const gateway = getPaymentGateway( paymentGatewayKey );
+		const gateway = getPaymentGateway( id );
 
 		if ( ! gateway || gateway.enabled ) {
 			return;
 		}
 
-		updatePaymentGateway( paymentGatewayKey, {
+		updatePaymentGateway( id, {
 			enabled: true,
 		} );
 	};
 
 	const markConfigured = useCallback(
-		async ( paymentGatewayKey, queryParams = {} ) => {
-			if ( ! suggestions.get( paymentGatewayKey ) ) {
-				throw `Payment gateway ${ paymentGatewayKey } not found in available gateways list`;
+		async ( id, queryParams = {} ) => {
+			if ( ! suggestions.get( id ) ) {
+				throw `Payment gateway ${ id } not found in available gateways list`;
 			}
 
-			enablePaymentGateway( paymentGatewayKey );
+			enablePaymentGateway( id );
 
 			recordEvent( 'tasklist_payment_connect_method', {
-				payment_method: paymentGatewayKey,
+				payment_method: id,
 			} );
 
 			getHistory().push(
@@ -128,7 +128,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 	}, [] );
 
 	const recommendation = useMemo( () => {
-		for ( const id in RECOMMENDED_GATEWAY_KEYS ) {
+		for ( const id in RECOMMENDED_GATEWAY_IDS ) {
 			const gateway = suggestions.get( id );
 			if ( gateway ) {
 				return gateway;

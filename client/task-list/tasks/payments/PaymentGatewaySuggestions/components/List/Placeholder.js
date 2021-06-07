@@ -51,7 +51,7 @@ const PlaceholderItem = () => {
 
 export const Placeholder = () => {
 	const classes =
-		'is-loading woocommerce-recommended-payment-gateway-list-placeholder';
+		'is-loading woocommerce-payment-gateway-suggestions-list-placeholder';
 
 	return (
 		<Card aria-hidden="true" className={ classes }>
