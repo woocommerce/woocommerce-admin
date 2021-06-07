@@ -3,7 +3,7 @@
  */
 import { Slot, Fill } from '@wordpress/components';
 
-const WooPaymentGatewayConnect = ( { id, ...props } ) => (
+export const WooPaymentGatewayConnect = ( { id, ...props } ) => (
 	<Fill name={ 'woocommerce_payment_gateway_connect_' + id } { ...props } />
 );
 
@@ -13,5 +13,3 @@ WooPaymentGatewayConnect.Slot = ( { id, fillProps } ) => (
 		fillProps={ fillProps }
 	/>
 );
-
-export default WooPaymentGatewayConnect;

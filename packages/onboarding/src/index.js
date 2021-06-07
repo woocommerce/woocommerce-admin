@@ -3,5 +3,5 @@ export * from './components/RecommendedRibbon';
 export * from './components/SetupRequired';
 export * from './components/WCPayAcceptedMethods';
 export { default as WCPayLogo } from './images/wcpay-logo';
-export { default as WooPaymentGatewaySetup } from './components/woo-payment-gateway-setup';
-export { default as WooPaymentGatewayConnect } from './components/woo-payment-gateway-connect';
+export { WooPaymentGatewaySetup } from './components/WooPaymentGatewaySetup';
+export { WooPaymentGatewayConnect } from './components/WooPaymentGatewayConnect';
