@@ -3,7 +3,7 @@
  * Gets a list of fallback methods if remote fetching is disabled.
  */
 
-namespace Automattic\WooCommerce\Admin\Features\RemotePaymentMethods;
+namespace Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,7 +23,7 @@ class DefaultPaymentGateways {
 	public static function get_all() {
 		return array(
 			array(
-				'key'        => 'payfast',
+				'id'         => 'payfast',
 				'title'      => __( 'PayFast', 'woocommerce-admin' ),
 				'content'    => __( 'The PayFast extension for WooCommerce enables you to accept payments by Credit Card and EFT via one of South Africa’s most popular payment gateways. No setup fees or monthly subscription costs.  Selecting this extension will configure your store to use South African rands as the selected currency.', 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/payfast.png',
@@ -38,7 +38,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'stripe',
+				'id'         => 'stripe',
 				'title'      => __( 'Credit cards - powered by Stripe', 'woocommerce-admin' ),
 				'content'    => __( 'Accept debit and credit cards in 135+ currencies, methods such as Alipay, and one-touch checkout with Apple Pay.', 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/stripe.png',
@@ -49,7 +49,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'paystack',
+				'id'         => 'paystack',
 				'title'      => __( 'Paystack', 'woocommerce-admin' ),
 				'content'    => __( 'Paystack helps African merchants accept one-time and recurring payments online with a modern, safe, and secure payment gateway.', 'woocommerce-admin' ),
 				'image'      => plugins_url( 'images/onboarding/paystack.png', WC_ADMIN_PLUGIN_FILE ),
@@ -95,7 +95,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'woo-mercado-pago-custom',
+				'id'         => 'woo-mercado-pago-custom',
 				'title'      => __( 'Mercado Pago Checkout Pro & Custom', 'woocommerce-admin' ),
 				'content'    => __( 'Accept credit and debit cards, offline (cash or bank transfer) and logged-in payments with money in Mercado Pago. Safe and secure payments with the leading payment processor in LATAM.', 'woocommerce-admin' ),
 				'image'      => plugins_url( 'images/onboarding/mercadopago.png', WC_ADMIN_PLUGIN_FILE ),
@@ -105,7 +105,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'ppcp-gateway',
+				'id'         => 'ppcp-gateway',
 				'title'      => __( 'PayPal Payments', 'woocommerce-admin' ),
 				'content'    => __( "Safe and secure payments using credit cards or your customer's PayPal account.", 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/paypal.png',
@@ -120,7 +120,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'cod',
+				'id'         => 'cod',
 				'title'      => __( 'Cash on delivery', 'woocommerce-admin' ),
 				'content'    => __( 'Take payments in cash upon delivery.', 'woocommerce-admin' ),
 				'image'      => plugins_url( 'images/onboarding/cod.svg', WC_ADMIN_PLUGIN_FILE ),
@@ -129,7 +129,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'bacs',
+				'id'         => 'bacs',
 				'title'      => __( 'Direct bank transfer', 'woocommerce-admin' ),
 				'content'    => __( 'Take payments via bank transfer.', 'woocommerce-admin' ),
 				'image'      => plugins_url( 'images/onboarding/bacs.svg', WC_ADMIN_PLUGIN_FILE ),
@@ -138,7 +138,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'         => 'woocommerce_payments',
+				'id'          => 'woocommerce_payments',
 				'title'       => __( 'WooCommerce Payments', 'woocommerce-admin' ),
 				'content'     => __(
 					'Manage transactions without leaving your WordPress Dashboard. Only with WooCommerce Payments.',
@@ -153,7 +153,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'razorpay',
+				'id'         => 'razorpay',
 				'title'      => __( 'Razorpay', 'woocommerce-admin' ),
 				'content'    => __( 'The official Razorpay extension for WooCommerce allows you to accept credit cards, debit cards, netbanking, wallet, and UPI payments.', 'woocommerce-admin' ),
 				'image'      => plugins_url( 'images/onboarding/razorpay.svg', WC_ADMIN_PLUGIN_FILE ),
@@ -176,6 +176,28 @@ class DefaultPaymentGateways {
 				'is_visible' => array(
 					self::get_rules_for_countries( array( 'AU', 'NZ' ) ),
 					self::get_rules_for_cbd( false ),
+				),
+			),
+			array(
+				'key'        => 'square_credit_card',
+				'title'      => __( 'Square', 'woocommerce-admin' ),
+				'content'    => __( 'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). Sell online and in store and track sales and inventory in one place.', 'woocommerce-admin' ),
+				'image'      => WC()->plugin_url() . '/assets/images/square-black.png',
+				'plugins'    => array( 'woocommerce-square' ),
+				'is_visible' => array(
+					(object) array(
+						'type'     => 'or',
+						'operands' => (object) array(
+							array(
+								self::get_rules_for_countries( array( 'US' ) ),
+								self::get_rules_for_cbd( true ),
+							),
+							array(
+								self::get_rules_for_countries( array( 'US', 'CA', 'JP', 'GB', 'AU', 'IE' ) ),
+								self::get_rules_for_selling_venues( array( 'brick-mortar', 'brick-mortar-other' ) ),
+							),
+						),
+					),
 				),
 			),
 		);
@@ -207,6 +229,38 @@ class DefaultPaymentGateways {
 				'type'      => 'base_location_country',
 				'value'     => $country,
 				'operation' => '=',
+			);
+		}
+
+		return (object) array(
+			'type'     => 'or',
+			'operands' => $rules,
+		);
+	}
+
+	/**
+	 * Get rules that match the store's selling venues.
+	 *
+	 * @param array $selling_venues Array of venues to match.
+	 * @return object Rules to match.
+	 */
+	public static function get_rules_for_selling_venues( $selling_venues ) {
+		$rules = array();
+
+		foreach ( $selling_venues as $venue ) {
+			$rules[] = (object) array(
+				'type'         => 'option',
+				'transformers' => array(
+					(object) array(
+						'use'       => 'dot_notation',
+						'arguments' => (object) array(
+							'path' => 'selling_venues',
+						),
+					),
+				),
+				'option_name'  => 'woocommerce_onboarding_profile',
+				'operation'    => '=',
+				'value'        => $venue,
 			);
 		}
 

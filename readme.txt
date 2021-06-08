@@ -82,6 +82,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Create onboarding package to house refactored WCPay card and relevant components #7058
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
+- Fix: Add target to the button to open it in a new tab  #7110
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
@@ -102,6 +103,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Add a data store for WC Payments REST APIs #6918
 - Add: Progressive setup checklist copy and call to action buttons. #6956
 - Add: Add Paystack as fallback gateway #7025
+- Add: Add Square as default fallback gateway #7107
 - Add: Add COD method to default payment gateway recommendations #7057
 - Add: Add BACS as default fallback payment gateway #7073
 - Add: A/B test of progressive checklist features. #7089
@@ -138,6 +140,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix style regression with the Chart header. #7002
 - Fix styling of the advanced filter operator selection. #7005
 - Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
+- Fix: Bug with Orders Report coupon exclusion filter. #7021
+- Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
 - Fix: Notices not dissapearing. #7077
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
@@ -189,12 +193,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Refactor payments to allow management of methods #6786
 - Tweak: Add tracking data for the preview site button #6623
 - Tweak: Update WC Payments copy on the task list #6734
+- Tweak: Update payment gateway suggestions semantics to be more consistent #7130
 - Tweak: Add check to see if value for contains is array, show warning if not. #6645
 - Tweak: Sort the extension task list by completion status and allow toggling visibility. #6792
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Update: Replace marketing extension - Google Listings and Ads. #6939
 - Update: Update choose niche note cta URL #6733
 - Update: UI updates to Payment Task screen #6766
+- Update: Update payment gateway suggestions semantics to be more consistent #7130
 - Update: Adding setup required icon for non-configured payment methods #6811
 
 == 2.2.6 5/7/2021 ==
