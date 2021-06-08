@@ -1,3 +1,15 @@
+# Unreleased
+
+-   Fix style regression with the Chart header. #7002
+-   Fix styling of the advanced filter operator selection. #7005
+-   Remove the use of Dashicons and replace with @wordpress/icons or gridicons #7020
+-   Add tree shaking support to this package. #7034
+-   Deprecate the Gravatar component. #7716
+-   Remove useFilters from the package. #7117
+-   Deprecate SegmentedSelection, it will be removed in the next major release. #7118
+-   Deprecate the Count component, with plan to remove in next major version. #7115
+-   Remove the long deprecated Card component (use Card from `@wordpress/components` instead). #7114
+
 # 6.2.0
 
 -   Fix `autocompleter` for custom Search in `CompareFilter` #6911

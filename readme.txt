@@ -74,20 +74,39 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Changelog ==
 
 == Unreleased ==
+
+- Dev: Add Jetpack Backup admin note #6738
+- Add: Adding WCPay payment configuration defaults. #7097
+- Fix: Transformer casing is incorrect and creates an error on case-sensitive systems #7104
+- Dev: Reduce the specificity and complexity of the ReportError component #6846
+- Add: Create onboarding package to house refactored WCPay card and relevant components #7058
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
+- Fix: Add target to the button to open it in a new tab  #7110
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
+- Fix: Set autoload to false for all remote inbox notifications options. #7060
 - Add: Consume remote payment methods on frontend #6867
 - Add: Extend payment gateways REST endpoint #6919
 - Add: Add remote payment gateway recommendations initial docs #6962
+- Add: Add loading placeholders for payment gateways task #7123
 - Add: Note date range logic for GivingFeedback, and InsightFirstSale note. #6969
 - Add: Add transient notices feature #6809
 - Add: Add transformers in remote inbox notifications #6948
+- Add: Add Mercado Pago as default fallback payment gateway #7043
+- Add: Add in Razorpay as default fallback payment gateway #7096
 - Add: Get post install scripts from gateway and enqueue in client #6967
+- Add: Add eWAY as default fallback gateway #7108
 - Add: Free extension list powered by remote config #6952
 - Add: Add PayPal to fallback payment gateways #7001
+- Add: Add a data store for WC Payments REST APIs #6918
+- Add: Progressive setup checklist copy and call to action buttons. #6956
+- Add: Add Paystack as fallback gateway #7025
+- Add: Add COD method to default payment gateway recommendations #7057
+- Add: Add BACS as default fallback payment gateway #7073
+- Add: A/B test of progressive checklist features. #7089
+- Add: Add payment gateway return URL and action #7095
 - Dev: Update package-lock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
@@ -97,9 +116,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add payment method selector to onboarding store #6921
 - Dev: Add disabled prop to SelectControl #6902
 - Dev: Add filter variation to tracks data in products analytics. #6913
+- Dev: Offload remote inbox notifications engine run using action-scheduler. #6995
 - Dev: Add source param support for notes query. #6979
+- Dev: Remove the use of Dashicons and replace with @wordpress/icons or gridicons. #7020
+- Dev: Refactor inbox panel components and moved to experimental package. #7006
 - Enhancement: Add expand/collapse to extendable task list. #6910
 - Enhancement: Add task hierarchy support to extended task list. #6916
+- Enhancement: Add remind me later option to task list. #6923
+- Fix: Rule Processing Transformer to handle dotNotation default value #7009
 - Fix: Remove Navigation's uneeded SlotFill context #6832
 - Fix: Report filters expecting specific ordering. #6847
 - Fix: Render bug with report comparison mode selections. #6862
@@ -112,16 +136,31 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Multiple preload tag output bug. #6998
 - Fix: Call existing filters for leaderboards in analytics. #6626
 - Fix: Set target to blank for the external links #6999
+- Fix style regression with the Chart header. #7002
+- Fix styling of the advanced filter operator selection. #7005
+- Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
 - Fix: Bug with Orders Report coupon exclusion filter. #7021
 - Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
+- Fix: Notices not dissapearing. #7077
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
-- Tweak: Store profiler - Changed MailPoet's title and description #6990
-- Tweak: Adjust WC Pay supported countries #7048
 - Update: Task list component with new Experimental Task list. #6849
+- Update: Optimize payment gateway resolution #7124
 - Update: Experimental task list import to the experimental package. #6950
 - Update: Redirect to WC Home after setting up a payment method #6891
+- Dev: Remove react-docgen docs in favor of Storybook #7055
+- Update: Hook up payments gateway data store #7038
+- Update: Update remote payment docs gateway methods #7079
+- Add: Add Mollie to the default payment gateways. #7092
+- Dev: Remove support for IE11. #7112
+- Update: Remove original business step flow #7103
+
+== 2.3.1 5/24/2021 ==
+- Tweak: Store profiler - Changed MailPoet's title and description #6990
 - Update: Payment recommendation screen transition and add external link icon. #7022
+- Fix: A JS exception being thrown on the product tags page. #7053
+- Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
+- Tweak: Adjust WC Pay supported countries #7048
 
 == 2.3.0 5/13/2021 ==
 - Add: Add plugin installer to allow installation of plugins via URL #6805
