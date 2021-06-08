@@ -4,8 +4,9 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { DynamicForm, WooRemotePaymentForm } from '@woocommerce/components';
 import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
+import { DynamicForm } from '@woocommerce/components';
+import { WooRemotePaymentForm } from '@woocommerce/onboarding';
 import { useSlot } from '@woocommerce/experimental';
 
 /**
@@ -20,7 +21,7 @@ export const PaymentConnect = ( {
 } ) => {
 	const {
 		id,
-		oauth_connection_url: oAuthConnectionUrl,
+		connection_url: connectionUrl,
 		setup_help_text: setupHelpText,
 		required_settings_keys: settingKeys,
 		settings,
@@ -118,17 +119,18 @@ export const PaymentConnect = ( {
 					defaultSubmit: handleSubmit,
 					defaultFields: fields,
 					markConfigured: () => markConfigured( id ),
+					paymentGateway,
 				} }
 				id={ id }
 			/>
 		);
 	}
 
-	if ( oAuthConnectionUrl ) {
+	if ( connectionUrl ) {
 		return (
 			<>
 				{ helpText }
-				<Button isPrimary href={ oAuthConnectionUrl }>
+				<Button isPrimary href={ connectionUrl }>
 					{ __( 'Connect', 'woocommerce-admin' ) }
 				</Button>
 			</>

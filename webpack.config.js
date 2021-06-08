@@ -37,6 +37,7 @@ const wcAdminPackages = [
 	'number',
 	'data',
 	'tracks',
+	'onboarding',
 ];
 
 const entryPoints = {};
@@ -135,10 +136,14 @@ const webpackConfig = {
 						options: {
 							sassOptions: {
 								includePaths: [
-									'client/stylesheets/abstracts',
+									path.resolve(
+										__dirname,
+										'client/stylesheets/abstracts'
+									),
 								],
 							},
-							prependData:
+							webpackImporter: true,
+							additionalData:
 								'@import "_colors"; ' +
 								'@import "_variables"; ' +
 								'@import "_breakpoints"; ' +
@@ -195,7 +200,10 @@ const webpackConfig = {
 				transform: ( content ) => content,
 			} ) )
 		),
-		new WooCommerceDependencyExtractionWebpackPlugin(),
+
+		// We reuse this Webpack setup for Storybook, where we need to disable dependency extraction.
+		! process.env.STORYBOOK &&
+			new WooCommerceDependencyExtractionWebpackPlugin(),
 		new MomentTimezoneDataPlugin( {
 			startYear: 2000, // This strips out timezone data before the year 2000 to make a smaller file.
 		} ),
