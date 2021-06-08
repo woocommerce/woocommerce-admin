@@ -11,6 +11,8 @@ use \Automattic\WooCommerce\Admin\API\Reports\DataStore as ReportsDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\DataStoreInterface;
 use \Automattic\WooCommerce\Admin\API\Reports\SqlQuery;
 use \Automattic\WooCommerce\Admin\API\Reports\Cache;
+use \Automattic\WooCommerce\Admin\API\Reports\TimeInterval;
+
 
 /**
  * API\Reports\Orders\DataStore.
@@ -213,8 +215,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			'page'              => 1,
 			'order'             => 'DESC',
 			'orderby'           => 'date_created',
-			'before'            => '',
-			'after'             => '',
+			'before'            => TimeInterval::default_before(),
+			'after'             => TimeInterval::default_after(),
 			'fields'            => '*',
 			'product_includes'  => array(),
 			'product_excludes'  => array(),
