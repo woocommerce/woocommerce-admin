@@ -13,7 +13,6 @@ import './List.scss';
 export const List = ( {
 	heading,
 	markConfigured,
-	paymentGateways,
 	recommendation,
 	suggestions,
 } ) => {
@@ -27,9 +26,8 @@ export const List = ( {
 						key={ id }
 						isRecommended={ recommendation === id }
 						markConfigured={ markConfigured }
-						paymentGateways={ paymentGateways }
 						suggestion={ suggestion }
-						suggestionKeys={ suggestions.keys() }
+						suggestionIds={ suggestions.keys() }
 					/>
 				);
 			} ) }

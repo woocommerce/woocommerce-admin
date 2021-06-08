@@ -16,18 +16,18 @@ import sanitizeHTML from '~/lib/sanitize-html';
 
 export const Connect = ( {
 	markConfigured,
-	paymentGateway,
+	suggestedGateway,
 	recordConnectStartEvent,
 } ) => {
 	const {
 		id,
-		connection_url: connectionUrl,
-		setup_help_text: setupHelpText,
-		required_settings_keys: settingKeys,
+		connectionUrl,
+		setupHelpText,
+		settingKeys,
 		settings,
-		settings_url: settingsUrl,
+		settingsUrl,
 		title,
-	} = paymentGateway;
+	} = suggestedGateway;
 
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
@@ -119,7 +119,7 @@ export const Connect = ( {
 					defaultSubmit: handleSubmit,
 					defaultFields: fields,
 					markConfigured: () => markConfigured( id ),
-					paymentGateway,
+					paymentGateway: suggestedGateway,
 				} }
 				id={ id }
 			/>

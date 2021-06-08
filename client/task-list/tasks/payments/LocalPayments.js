@@ -224,7 +224,7 @@ export const LocalPayments = ( { query } ) => {
 	return (
 		<div className="woocommerce-task-payments">
 			{ !! wcPayMethod && (
-				<WCPayMethodCard method={ wcPayMethod[ 0 ] } />
+				<WCPayMethodCard suggestion={ wcPayMethod[ 0 ] } />
 			) }
 
 			{ !! enabledCardMethods.length && (
