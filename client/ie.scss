@@ -4,6 +4,8 @@
  * @format
  */
 
+@use "sass:math";
+
 .woocommerce-profile-wizard__body .woocommerce-profile-wizard__container {
 	> .woocommerce-profile-wizard__themes-tab-panel {
 		@include breakpoint( '>782px' ) {
@@ -13,13 +15,13 @@
 						margin-bottom: $gap-large;
 						@if $i % 2 == 0 {
 							grid-column: 2;
-							grid-row: $i /2;
-							margin-left: $gap-large / 2;
+							grid-row: math.div($i, 2);
+							margin-left: math.div($gap-large, 2);
 						}
 						@else {
 							grid-column: 1;
-							grid-row: ($i / 2) +0.5;
-							margin-right: $gap-large / 2;
+							grid-row: math.div($i, 2) +0.5;
+							margin-right: math.div($gap-large, 2);
 						}
 					}
 				}

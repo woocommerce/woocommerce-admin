@@ -1,7 +1,11 @@
+@use '@wordpress/base-styles/colors' as wp-colors;
+@use '@automattic/color-studio/dist/color-variables.scss' as automattic-colors;
+@use "sass:math";
+
 // Rem output with px fallback
 @mixin font-size( $sizeValue: 16, $lineHeight: false ) {
 	font-size: $sizeValue + px;
-	font-size: ( $sizeValue / 16 ) + rem;
+	font-size: math.div( $sizeValue, 16 ) + rem;
 	@if ( $lineHeight ) {
 		line-height: $lineHeight;
 	}
@@ -22,7 +26,7 @@
 // Adds animation to placeholder section
 @mixin placeholder( $lighten-percentage: 30% ) {
 	animation: loading-fade 1.6s ease-in-out infinite;
-	background-color: $gray-100;
+	background-color: wp-colors.$gray-100;
 	color: transparent;
 
 	&::after {
@@ -43,59 +47,6 @@
 	}
 }
 
-// Gutenberg mixins. These are temporary until Gutenberg's mixins are exposed.
-/**
- * Breakpoint mixins
- */
-
-@mixin break-huge() {
-	@media (min-width: #{ ($break-huge) }) {
-		@content;
-	}
-}
-
-@mixin break-wide() {
-	@media (min-width: #{ ($break-wide) }) {
-		@content;
-	}
-}
-
-@mixin break-xlarge() {
-	@media (min-width: #{ ($break-xlarge) }) {
-		@content;
-	}
-}
-
-@mixin break-large() {
-	@media (min-width: #{ ($break-large) }) {
-		@content;
-	}
-}
-
-@mixin break-medium() {
-	@media (min-width: #{ ($break-medium) }) {
-		@content;
-	}
-}
-
-@mixin break-small() {
-	@media (min-width: #{ ($break-small) }) {
-		@content;
-	}
-}
-
-@mixin break-mobile() {
-	@media (min-width: #{ ($break-mobile) }) {
-		@content;
-	}
-}
-
-@mixin break-zoomed-in() {
-	@media (min-width: #{ ($break-zoomed-in) }) {
-		@content;
-	}
-}
-
 // Buttons with rounded corners.
 @mixin button-style__disabled {
 	opacity: 0.6;
@@ -103,59 +54,34 @@
 }
 
 @mixin button-style__hover {
-	background-color: $studio-white;
+	background-color: automattic-colors.$studio-white;
 	color: $gray-900;
 	box-shadow: inset 0 0 0 1px $gray-400, inset 0 0 0 2px $studio-white,
-		0 1px 1px rgba($gray-900, 0.2);
+		0 1px 1px rgba( $gray-900, 0.2 );
 }
 
 @mixin button-style__active() {
 	outline: none;
-	background-color: $studio-white;
-	color: $gray-900;
+	background-color: automattic-colors.$studio-white;
+	color: wp-colors.$gray-900;
 	box-shadow: inset 0 0 0 1px $gray-400, inset 0 0 0 2px $studio-white;
 }
 
 @mixin button-style__focus-active() {
-	background-color: $studio-white;
-	color: $gray-900;
-	box-shadow: inset 0 0 0 1px $gray-700, inset 0 0 0 2px $studio-white;
+	background-color: automattic-colors.$studio-white;
+	color: wp-colors.$gray-900;
+	box-shadow: inset 0 0 0 1px wp-colors.$gray-700,
+		inset 0 0 0 2px automattic-colors.$studio-white;
 
 	// Windows High Contrast mode will show this outline, but not the box-shadow.
 	outline: 2px solid transparent;
 	outline-offset: -2px;
 }
 
-/* stylelint-disable block-closing-brace-newline-after */
-@mixin reduce-motion( $property: '' ) {
-	@if $property == 'transition' {
-		@media ( prefers-reduced-motion: reduce ) {
-			transition-duration: 0s;
-		}
-	}
-	@else if $property == 'animation' {
-		@media ( prefers-reduced-motion: reduce ) {
-			animation-duration: 1ms;
-		}
-	}
-	@else {
-		@media ( prefers-reduced-motion: reduce ) {
-			transition-duration: 0s;
-			animation-duration: 1ms;
-		}
-	}
-}
-/* stylelint-enable */
-
-@mixin break-small() {
-	@media (min-width: #{ ($break-small) }) {
-		@content;
-	}
-}
-
 // Gutenberg Switch.
 @mixin switch-style__focus-active() {
-	box-shadow: 0 0 0 2px $studio-white, 0 0 0 3px $gray-700;
+	box-shadow: 0 0 0 2px automattic-colors.$studio-white,
+		0 0 0 3px wp-colors.$gray-700;
 
 	// Windows High Contrast mode will show this outline, but not the box-shadow.
 	outline: 2px solid transparent;
@@ -165,19 +91,19 @@
 // Sets positions for children of grid elements
 @mixin set-grid-item-position( $wrap-after, $number-of-items ) {
 	@for $i from 1 through $number-of-items {
-		&:nth-child(#{$i}) {
-			grid-column-start: #{($i - 1) % $wrap-after + 1};
-			grid-column-end: #{($i - 1) % $wrap-after + 2};
-			grid-row-start: #{floor(( $i - 1 ) / $wrap-after) + 1};
-			grid-row-end: #{floor(( $i - 1 ) / $wrap-after) + 2};
+		&:nth-child( #{$i} ) {
+			grid-column-start: #{( $i - 1 ) % $wrap-after + 1};
+			grid-column-end: #{( $i - 1 ) % $wrap-after + 2};
+			grid-row-start: #{floor( math.div( $i - 1, $wrap-after ) ) + 1};
+			grid-row-end: #{floor( math.div( $i - 1, $wrap-after ) ) + 2};
 		}
 	}
 }
 
 // Hide an element from sighted users, but availble to screen reader users.
 @mixin visually-hidden() {
-	clip: rect(1px, 1px, 1px, 1px);
-	clip-path: inset(50%);
+	clip: rect( 1px, 1px, 1px, 1px );
+	clip-path: inset( 50% );
 	height: 1px;
 	width: 1px;
 	margin: -1px;

@@ -140,8 +140,15 @@ async function buildScssFile( styleFile ) {
 		],
 		data:
 			[ 'colors', 'variables', 'breakpoints', 'mixins' ]
-				.map( ( imported ) => `@import "_${ imported }";` )
-				.join( ' ' ) + fs.readFileSync( styleFile, 'utf8' ),
+				.map(
+					( imported ) =>
+						`@forward "_${ imported }"; @use "_${ imported }" as *;`
+				)
+				.join(
+					` @use "@automattic/color-studio/dist/color-variables.scss" as *;
+						@forward "@automattic/color-studio/dist/color-variables.scss";
+					`
+				) + fs.readFileSync( styleFile, 'utf8' ),
 	} );
 
 	const postCSSConfig = require( '@wordpress/postcss-plugins-preset' );
