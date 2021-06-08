@@ -180,6 +180,8 @@ class WC_Tests_Reports_Orders extends WC_Unit_Test_Case {
 	 * See: https://github.com/woocommerce/woocommerce-admin/issues/6824.
 	 */
 	public function test_coupon_exclusion_includes_orders_without_coupons() {
+		global $wpdb;
+
 		WC_Helper_Reports::reset_stats_dbs();
 
 		$coupon = WC_Helper_Coupon::create_coupon( 'coupon_1' );
@@ -211,6 +213,14 @@ class WC_Tests_Reports_Orders extends WC_Unit_Test_Case {
 		$data       = $data_store->get_data(
 			array(
 				'coupon_excludes' => array( $coupon->get_id() ),
+			)
+		);
+
+		error_log( var_export( $data_store->get_data( array() ), true ) );
+		error_log(
+			var_export(
+				$wpdb->get_results( 'SELECT * FROM ' . \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore::get_db_table_name() ), // @codingStandardsIgnoreLine
+				true
 			)
 		);
 
