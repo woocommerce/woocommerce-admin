@@ -200,8 +200,6 @@ class WC_Tests_Reports_Orders extends WC_Unit_Test_Case {
 		$order->calculate_totals();
 		$order->save();
 
-		WC_Helper_Queue::run_all_pending();
-
 		$order_2 = WC_Helper_Order::create_order( 1, $simple_product );
 		$order_2->set_total( 25 );
 		$order_2->set_status( 'completed' );
@@ -209,18 +207,15 @@ class WC_Tests_Reports_Orders extends WC_Unit_Test_Case {
 
 		WC_Helper_Queue::run_all_pending();
 
+		$start_time = gmdate( 'Y-m-d H:00:00', $order->get_date_created()->getOffsetTimestamp() );
+		$end_time   = gmdate( 'Y-m-d H:59:59', $order->get_date_created()->getOffsetTimestamp() );
+
 		$data_store = new OrdersDataStore();
 		$data       = $data_store->get_data(
 			array(
+				'after'           => $start_time,
+				'before'          => $end_time,
 				'coupon_excludes' => array( $coupon->get_id() ),
-			)
-		);
-
-		error_log( var_export( $data_store->get_data( array() ), true ) );
-		error_log(
-			var_export(
-				$wpdb->get_results( 'SELECT * FROM ' . \Automattic\WooCommerce\Admin\API\Reports\Orders\Stats\DataStore::get_db_table_name() ), // @codingStandardsIgnoreLine
-				true
 			)
 		);
 
