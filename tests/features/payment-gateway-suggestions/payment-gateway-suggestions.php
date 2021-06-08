@@ -67,7 +67,7 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 				),
 			)
 		);
-		$suggestions = PaymentGatewaySuggestions::get_methods();
+		$suggestions = PaymentGatewaySuggestions::get_suggestions();
 		$this->assertCount( 2, $suggestions );
 	}
 
@@ -80,7 +80,7 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 			PaymentGatewaySuggestions::SPECS_TRANSIENT_NAME,
 			$this->get_mock_specs()
 		);
-		$suggestions = PaymentGatewaySuggestions::get_methods();
+		$suggestions = PaymentGatewaySuggestions::get_suggestions();
 		$this->assertCount( 0, $suggestions );
 	}
 
@@ -93,7 +93,7 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 			PaymentGatewaySuggestions::SPECS_TRANSIENT_NAME,
 			$this->get_mock_specs()
 		);
-		$suggestions = PaymentGatewaySuggestions::get_methods();
+		$suggestions = PaymentGatewaySuggestions::get_suggestions();
 		$this->assertEquals( 'mock-gateway', $suggestions[0]->id );
 	}
 
@@ -121,7 +121,7 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 		$wp_locale_switcher = new WP_Locale_switcher();
 		$wp_locale_switcher->switch_to_locale( 'zh_TW' );
 
-		$suggestions = PaymentGatewaySuggestions::get_methods();
+		$suggestions = PaymentGatewaySuggestions::get_suggestions();
 
 		$wp_locale_switcher->switch_to_locale( 'en_US' );
 
