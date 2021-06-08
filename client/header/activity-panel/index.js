@@ -69,8 +69,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	};
 
 	const {
-		hasUnreadNotes = false,
-		hasAbbreviatedNotifications = false,
+		hasUnreadNotes,
+		hasAbbreviatedNotifications,
 		requestingTaskListOptions,
 		setupTaskListComplete,
 		setupTaskListHidden,
