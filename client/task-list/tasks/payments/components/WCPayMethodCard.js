@@ -4,10 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import interpolateComponents from 'interpolate-components';
 import { Link, Pill } from '@woocommerce/components';
-import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
-import { useSelect } from '@wordpress/data';
 import {
 	WCPayCard,
 	WCPayCardHeader,
@@ -39,7 +37,7 @@ const TosPrompt = () =>
 		},
 	} );
 
-export const WCPayMethodCard = ( { suggestion } ) => {
+export const WCPayMethodCard = ( { suggestion, onSetupCallback = null } ) => {
 	const { description, id, needsSetup, isEnabled } = suggestion;
 
 	return (
@@ -58,6 +56,7 @@ export const WCPayMethodCard = ( { suggestion } ) => {
 					recordEvent( 'tasklist_payment_learn_more' );
 				} }
 			/>
+
 			<WCPayCardFooter>
 				<>
 					<Text>
@@ -73,6 +72,7 @@ export const WCPayMethodCard = ( { suggestion } ) => {
 							'Get started',
 							'woocommerce-admin'
 						) }
+						onSetupCallback={ onSetupCallback }
 					/>
 				</>
 			</WCPayCardFooter>

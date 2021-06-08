@@ -219,12 +219,21 @@ export const LocalPayments = ( { query } ) => {
 	const wcPayMethod =
 		wcPayIndex === -1
 			? null
-			: additionalCardMethods.splice( wcPayIndex, 1 );
+			: additionalCardMethods.splice( wcPayIndex, 1 )[ 0 ];
 
 	return (
 		<div className="woocommerce-task-payments">
 			{ !! wcPayMethod && (
-				<WCPayMethodCard suggestion={ wcPayMethod[ 0 ] } />
+				<WCPayMethodCard
+					onSetupCallback={ wcPayMethod.onClick }
+					suggestion={ {
+						...wcPayMethod,
+						description: __(
+							'Try the new way to get paid. Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.',
+							'wc-admin'
+						),
+					} }
+				/>
 			) }
 
 			{ !! enabledCardMethods.length && (
