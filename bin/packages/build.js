@@ -14,7 +14,7 @@ const glob = require( 'glob' );
 const babel = require( '@babel/core' );
 const chalk = require( 'chalk' );
 const mkdirp = require( 'mkdirp' );
-const sass = require( 'node-sass' );
+const sass = require( 'sass' );
 const postcss = require( 'postcss' );
 const rimraf = require( 'rimraf' );
 
@@ -115,7 +115,7 @@ function buildJsFile( file, silent ) {
  */
 async function buildPackageScss( packagePath ) {
 	const srcDir = path.resolve( packagePath, SRC_DIR );
-	const scssFiles = glob.sync( `${ srcDir }/*.scss` );
+	const scssFiles = glob.sync( `${ srcDir }/**/*.scss` );
 
 	// Build scss files individually.
 	return Promise.all( scssFiles.map( ( file ) => buildScssFile( file ) ) );
@@ -136,6 +136,7 @@ async function buildScssFile( styleFile ) {
 		file: styleFile,
 		includePaths: [
 			path.resolve( __dirname, '../../client/stylesheets/abstracts' ),
+			path.resolve( __dirname, '../../node_modules' ),
 		],
 		data:
 			[ 'colors', 'variables', 'breakpoints', 'mixins' ]
