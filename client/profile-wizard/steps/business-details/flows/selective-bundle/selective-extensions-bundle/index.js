@@ -345,7 +345,12 @@ const transformRemoteExtensions = ( extensionData ) => {
 };
 
 const baseValues = { install_extensions: true };
-const createInitialValues = ( extensions, country, industry, productTypes ) => {
+export const createInitialValues = (
+	extensions,
+	country,
+	industry,
+	productTypes
+) => {
 	return extensions.reduce( ( acc, curr ) => {
 		const plugins = getVisiblePlugins(
 			curr.plugins,
