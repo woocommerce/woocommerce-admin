@@ -7,14 +7,12 @@ import { AbbreviatedNotificationsPanel } from './abbreviated-notifications-panel
 
 export const InboxPanel = ( {
 	hasAbbreviatedNotifications,
-	hasExtraFills,
 	thingsToDoNextCount,
 } ) => {
 	return (
 		<div className="woocommerce-notification-panels">
-			{ ( hasAbbreviatedNotifications || hasExtraFills ) && (
+			{ hasAbbreviatedNotifications && (
 				<AbbreviatedNotificationsPanel
-					hasExtraFills={ hasExtraFills }
 					thingsToDoNextCount={ thingsToDoNextCount }
 				/>
 			) }

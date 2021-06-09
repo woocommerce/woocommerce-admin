@@ -57,6 +57,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	const [ isPanelClosing, setIsPanelClosing ] = useState( false );
 	const [ isPanelOpen, setIsPanelOpen ] = useState( false );
 	const [ isPanelSwitching, setIsPanelSwitching ] = useState( false );
+	const { fills } = useSlot( ABBREVIATED_NOTIFICATION_SLOT_NAME );
+	const hasExtendedNotifications = Boolean( fills && fills.length );
 
 	const getPreviewSiteBtnTrackData = ( select, getOption ) => {
 		let trackData = {};
@@ -111,11 +113,10 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			thingsToDoNextCount > 0 ||
 			isOrdersCardVisible ||
 			isReviewsCardVisible ||
-			isLowStockCardVisible
+			isLowStockCardVisible ||
+			hasExtendedNotifications
 		);
 	}
-	const slot = useSlot( ABBREVIATED_NOTIFICATION_SLOT_NAME );
-	const hasExtraFills = Boolean( slot.fills && slot.fills.length );
 
 	const {
 		hasUnreadNotes,
@@ -222,8 +223,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			name: 'inbox',
 			title: __( 'Inbox', 'woocommerce-admin' ),
 			icon: <Icon icon={ inboxIcon } />,
-			unread:
-				hasUnreadNotes || hasAbbreviatedNotifications || hasExtraFills,
+			unread: hasUnreadNotes || hasAbbreviatedNotifications,
 			visible:
 				( isEmbedded || ! isHomescreen() ) && ! isPerformingSetupTask(),
 		};
@@ -306,7 +306,6 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 						hasAbbreviatedNotifications={
 							hasAbbreviatedNotifications
 						}
-						hasExtraFills={ hasExtraFills }
 						thingsToDoNextCount={ thingsToDoNextCount }
 					/>
 				);

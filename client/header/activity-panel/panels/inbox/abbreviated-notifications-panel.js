@@ -29,10 +29,7 @@ const STOCK_PANEL_ID = 'stock-panel';
 
 export const ABBREVIATED_NOTIFICATION_SLOT_NAME = 'AbbreviatedNotification';
 
-export const AbbreviatedNotificationsPanel = ( {
-	hasExtraFills,
-	thingsToDoNextCount,
-} ) => {
+export const AbbreviatedNotificationsPanel = ( { thingsToDoNextCount } ) => {
 	const {
 		ordersToProcessCount,
 		reviewsToModerateCount,
@@ -166,7 +163,7 @@ export const AbbreviatedNotificationsPanel = ( {
 					</Text>
 				</AbbreviatedCard>
 			) }
-			{ hasExtraFills && isExtendedTaskListHidden && <Slot /> }
+			{ ! isExtendedTaskListHidden && <Slot /> }
 		</div>
 	);
 };
