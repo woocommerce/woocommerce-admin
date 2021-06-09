@@ -194,6 +194,7 @@ const installableExtensionsData = [
 					),
 					'creative-mail-for-woocommerce'
 				),
+				selected: false,
 			},
 		],
 	},
@@ -217,9 +218,12 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 	}
 
 	const extensionsList = extensions
-		.map( ( extension ) => {
-			return pluginNames[ extension ];
-		} )
+		.reduce( ( uniqueExtensionList, extension ) => {
+			const extensionName = pluginNames[ extension ];
+			return uniqueExtensionList.includes( extensionName )
+				? uniqueExtensionList
+				: [ ...uniqueExtensionList, extensionName ];
+		}, [] )
 		.join( ', ' );
 
 	if ( isInstallingActivating ) {
@@ -311,6 +315,8 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
  * @param {string} country  Woo store country
  * @param {Array} industry List of selected industries
  * @param {Array} productTypes List of selected product types
+ *
+ * @return {Array} Array of visible plugins
  */
 const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 	const countryCode = getCountryCode( country );
@@ -342,15 +348,20 @@ const transformRemoteExtensions = ( extensionData ) => {
 };
 
 const baseValues = { install_extensions: true };
-const createInitialValues = ( extensions, country, industry, productTypes ) => {
+export const createInitialValues = (
+	extensions,
+	country,
+	industry,
+	productTypes
+) => {
 	return extensions.reduce( ( acc, curr ) => {
 		const plugins = getVisiblePlugins(
 			curr.plugins,
 			country,
 			industry,
 			productTypes
-		).reduce( ( pluginAcc, { key } ) => {
-			return { ...pluginAcc, [ key ]: true };
+		).reduce( ( pluginAcc, { key, selected } ) => {
+			return { ...pluginAcc, [ key ]: selected ?? true };
 		}, {} );
 
 		return {
