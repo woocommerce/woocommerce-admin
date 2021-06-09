@@ -9,6 +9,7 @@
 -   Deprecate SegmentedSelection, it will be removed in the next major release. #7118
 -   Deprecate the Count component, with plan to remove in next major version. #7115
 -   Remove the long deprecated Card component (use Card from `@wordpress/components` instead). #7114
+-   Fix non-string query prop warning in SelectControl component.
 
 # 6.2.0
 
