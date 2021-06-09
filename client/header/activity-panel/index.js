@@ -21,6 +21,7 @@ import {
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { applyFilters } from '@wordpress/hooks';
+import { useSlot } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -39,6 +40,7 @@ import {
 	getUnreadOrders,
 } from '../../homescreen/activity-panel/orders/utils';
 import { getUnapprovedReviews } from '../../homescreen/activity-panel/reviews/utils';
+import { ABBREVIATED_NOTIFICATION_SLOT_NAME } from './panels/inbox/abbreviated-notifications-panel';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -112,6 +114,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			isLowStockCardVisible
 		);
 	}
+	const slot = useSlot( ABBREVIATED_NOTIFICATION_SLOT_NAME );
+	const hasExtraFills = Boolean( slot.fills && slot.fills.length );
 
 	const {
 		hasUnreadNotes,
@@ -218,7 +222,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			name: 'inbox',
 			title: __( 'Inbox', 'woocommerce-admin' ),
 			icon: <Icon icon={ inboxIcon } />,
-			unread: hasUnreadNotes || hasAbbreviatedNotifications,
+			unread:
+				hasUnreadNotes || hasAbbreviatedNotifications || hasExtraFills,
 			visible:
 				( isEmbedded || ! isHomescreen() ) && ! isPerformingSetupTask(),
 		};
@@ -301,6 +306,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 						hasAbbreviatedNotifications={
 							hasAbbreviatedNotifications
 						}
+						hasExtraFills={ hasExtraFills }
 						thingsToDoNextCount={ thingsToDoNextCount }
 					/>
 				);
