@@ -20,21 +20,25 @@ import {
 } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import {
-	isNotesPanelVisible,
-	isAbbreviatedPanelVisible,
-} from './unread-indicators';
+import { isNotesPanelVisible } from './unread-indicators';
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
 import { DisplayOptions } from './display-options';
 import { HighlightTooltip } from './highlight-tooltip';
 import { Panel } from './panel';
+import {
+	getLowStockCount as getLowStockProducts,
+	getOrderStatuses,
+	getUnreadOrders,
+} from '../../homescreen/activity-panel/orders/utils';
+import { getUnapprovedReviews } from '../../homescreen/activity-panel/reviews/utils';
 
 const HelpPanel = lazy( () =>
 	import( /* webpackChunkName: "activity-panels-help" */ './panels/help' )
@@ -68,9 +72,51 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		return trackData;
 	};
 
+	function getThingsToDoNextCount(
+		tasks,
+		dismissedTasks,
+		isExtendedTaskListHidden
+	) {
+		if ( ! tasks || isExtendedTaskListHidden ) {
+			return 0;
+		}
+		return tasks.filter(
+			( task ) =>
+				task.visible &&
+				! task.completed &&
+				! dismissedTasks.includes( task.key )
+		).length;
+	}
+
+	function isAbbreviatedPanelVisible(
+		select,
+		setupTaskListHidden,
+		thingsToDoNextCount
+	) {
+		const orderStatuses = getOrderStatuses( select );
+
+		const isOrdersCardVisible = setupTaskListHidden
+			? getUnreadOrders( select, orderStatuses ) > 0
+			: false;
+		const isReviewsCardVisible = setupTaskListHidden
+			? getUnapprovedReviews( select )
+			: false;
+		const isLowStockCardVisible = setupTaskListHidden
+			? getLowStockProducts( select )
+			: false;
+
+		return (
+			thingsToDoNextCount > 0 ||
+			isOrdersCardVisible ||
+			isReviewsCardVisible ||
+			isLowStockCardVisible
+		);
+	}
+
 	const {
 		hasUnreadNotes,
 		hasAbbreviatedNotifications,
+		thingsToDoNextCount,
 		requestingTaskListOptions,
 		setupTaskListComplete,
 		setupTaskListHidden,
@@ -82,15 +128,27 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
 		const isExtendedTaskListHidden =
 			getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes';
+		const extendedTaskList = applyFilters(
+			'woocommerce_admin_onboarding_task_list',
+			[],
+			query
+		);
+		const dismissedTasks =
+			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
+		const thingsToDoCount = getThingsToDoNextCount(
+			extendedTaskList,
+			dismissedTasks,
+			isExtendedTaskListHidden
+		);
 
 		return {
 			hasUnreadNotes: isNotesPanelVisible( select ),
 			hasAbbreviatedNotifications: isAbbreviatedPanelVisible(
 				select,
 				isSetupTaskListHidden,
-				isExtendedTaskListHidden,
-				query
+				thingsToDoCount
 			),
+			thingsToDoNextCount: thingsToDoCount,
 			requestingTaskListOptions:
 				isResolving( 'getOption', [
 					'woocommerce_task_list_complete',
@@ -243,7 +301,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 						hasAbbreviatedNotifications={
 							hasAbbreviatedNotifications
 						}
-						query={ query }
+						thingsToDoNextCount={ thingsToDoNextCount }
 					/>
 				);
 			case 'help':

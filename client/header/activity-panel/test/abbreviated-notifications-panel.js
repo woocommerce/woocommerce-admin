@@ -23,7 +23,7 @@ jest.mock( '@wordpress/data', () => {
 describe( 'Inbox', () => {
 	it( 'does not show any abbreviated notifications', () => {
 		const { queryByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 0 } />
 		);
 		expect( queryByText( 'Things to do next' ) ).toBeNull();
 		expect( queryByText( 'Orders to fulfill' ) ).toBeNull();
@@ -35,11 +35,10 @@ describe( 'Inbox', () => {
 			stockNoticesCount: 4,
 			reviewsToModerateCount: 3,
 			ordersToProcessCount: 2,
-			thingsToDoNextCount: 1,
 			isExtendedTaskListHidden: true,
 		} ) );
 		const { queryByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 1 } />
 		);
 		expect( queryByText( 'Things to do next' ) ).toBeNull();
 		expect( queryByText( 'Orders to fulfill' ) ).toBeNull();
@@ -48,20 +47,17 @@ describe( 'Inbox', () => {
 	} );
 	it( 'shows the `Things to do next` notification panel, with 1 thing to do', () => {
 		useSelect.mockImplementation( () => ( {
-			thingsToDoNextCount: 1,
+			isExtendedTaskListHidden: false,
 		} ) );
 		const { getByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 1 } />
 		);
 		expect( getByText( 'Things to do next' ) ).toBeDefined();
 		expect( getByText( 'You have 1 new thing to do' ) ).toBeDefined();
 	} );
 	it( 'shows plural copy for the `Things to do next` notification panel', () => {
-		useSelect.mockImplementation( () => ( {
-			thingsToDoNextCount: 5,
-		} ) );
 		const { getByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 5 } />
 		);
 		expect( getByText( 'Things to do next' ) ).toBeDefined();
 		expect( getByText( 'You have 5 new things to do' ) ).toBeDefined();
@@ -72,7 +68,7 @@ describe( 'Inbox', () => {
 			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 0 } />
 		);
 		expect( getByText( 'Orders to fulfill' ) ).toBeDefined();
 		expect( getByText( 'You have 2 orders to fulfill' ) ).toBeDefined();
@@ -83,7 +79,7 @@ describe( 'Inbox', () => {
 			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 0 } />
 		);
 		expect( getByText( 'Reviews to moderate' ) ).toBeDefined();
 		expect( getByText( 'You have 3 reviews to moderate' ) ).toBeDefined();
@@ -94,7 +90,7 @@ describe( 'Inbox', () => {
 			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 0 } />
 		);
 		expect( getByText( 'Inventory to review' ) ).toBeDefined();
 		expect(
@@ -106,11 +102,10 @@ describe( 'Inbox', () => {
 			stockNoticesCount: 4,
 			reviewsToModerateCount: 3,
 			ordersToProcessCount: 2,
-			thingsToDoNextCount: 1,
 			isSetupTaskListHidden: true,
 		} ) );
 		const { getByText } = render(
-			<AbbreviatedNotificationsPanel query={ {} } />
+			<AbbreviatedNotificationsPanel thingsToDoNextCount={ 1 } />
 		);
 		expect( getByText( 'Things to do next' ) ).toBeDefined();
 		expect( getByText( 'Orders to fulfill' ) ).toBeDefined();

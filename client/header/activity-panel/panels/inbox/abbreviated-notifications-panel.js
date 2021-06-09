@@ -7,7 +7,6 @@ import { recordEvent } from '@woocommerce/tracks';
 import { AbbreviatedCard } from '@woocommerce/components';
 import { useSelect } from '@wordpress/data';
 import { OPTIONS_STORE_NAME } from '@woocommerce/data';
-import { applyFilters } from '@wordpress/hooks';
 import { box, comment, page } from '@wordpress/icons';
 
 /**
@@ -27,9 +26,8 @@ const ORDER_PANEL_ID = 'orders-panel';
 const REVIEWS_PANEL_ID = 'reviews-panel';
 const STOCK_PANEL_ID = 'stock-panel';
 
-export const AbbreviatedNotificationsPanel = ( { query } ) => {
+export const AbbreviatedNotificationsPanel = ( { thingsToDoNextCount } ) => {
 	const {
-		thingsToDoNextCount,
 		ordersToProcessCount,
 		reviewsToModerateCount,
 		stockNoticesCount,
@@ -37,40 +35,17 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 		isExtendedTaskListHidden,
 	} = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const thingsToDoNext = applyFilters(
-			'woocommerce_admin_onboarding_task_list',
-			[],
-			query
-		);
-		const dismissedTasks =
-			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
 		const orderStatuses = getOrderStatuses( select );
 		return {
 			ordersToProcessCount: getUnreadOrders( select, orderStatuses ),
 			reviewsToModerateCount: getUnapprovedReviews( select ),
 			stockNoticesCount: getLowStockCount( select ),
-			thingsToDoNextCount: getIncompleteTasksCount(
-				thingsToDoNext,
-				dismissedTasks
-			),
 			isSetupTaskListHidden:
 				getOption( 'woocommerce_task_list_hidden' ) === 'yes',
 			isExtendedTaskListHidden:
 				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
 		};
 	} );
-
-	function getIncompleteTasksCount( tasks, dismissedTasks ) {
-		if ( ! tasks ) {
-			return 0;
-		}
-		return tasks.filter(
-			( task ) =>
-				task.visible &&
-				! task.completed &&
-				! dismissedTasks.includes( task.key )
-		).length;
-	}
 
 	const trackAbbreviatedCardClick = ( name ) => {
 		recordEvent( 'activity_panel_click', {
@@ -177,12 +152,9 @@ export const AbbreviatedNotificationsPanel = ( { query } ) => {
 						{ __( 'Inventory to review', 'woocommerce-admin' ) }
 					</Text>
 					<Text>
-						{ sprintf(
-							__(
-								'You have inventory to review and update',
-								'woocommerce-admin'
-							),
-							stockNoticesCount
+						{ __(
+							'You have inventory to review and update',
+							'woocommerce-admin'
 						) }
 					</Text>
 				</AbbreviatedCard>

@@ -5,11 +5,16 @@ import './inbox.scss';
 import NotesPanel from '../../../../inbox-panel';
 import { AbbreviatedNotificationsPanel } from './abbreviated-notifications-panel';
 
-export const InboxPanel = ( { hasAbbreviatedNotifications, query } ) => {
+export const InboxPanel = ( {
+	hasAbbreviatedNotifications,
+	thingsToDoNextCount,
+} ) => {
 	return (
 		<div className="woocommerce-notification-panels">
 			{ hasAbbreviatedNotifications && (
-				<AbbreviatedNotificationsPanel query={ query } />
+				<AbbreviatedNotificationsPanel
+					thingsToDoNextCount={ thingsToDoNextCount }
+				/>
 			) }
 			<NotesPanel />
 		</div>
