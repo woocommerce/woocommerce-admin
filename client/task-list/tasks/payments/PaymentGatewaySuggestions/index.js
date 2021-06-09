@@ -29,14 +29,14 @@ const RECOMMENDED_GATEWAY_IDS = [
 export const PaymentGatewaySuggestions = ( { query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const {
-		additionalSuggestions,
-		enabledSuggestions,
+		additionalGateways,
+		enabledGateways,
 		getPaymentGateway,
-		suggestions,
+		paymentGateways,
 		isResolving,
-		wcPaySuggestion,
+		wcPayGateway,
 	} = useSelect( ( select ) => {
-		const gateways = select( PAYMENT_GATEWAYS_STORE_NAME )
+		const installedPaymentGateways = select( PAYMENT_GATEWAYS_STORE_NAME )
 			.getPaymentGateways()
 			.reduce( ( map, gateway ) => {
 				map[ gateway.id ] = gateway;
@@ -50,18 +50,20 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			.getPaymentGatewaySuggestions()
 			.reduce( ( map, suggestion ) => {
 				const { id } = suggestion;
-				const gateway = gateways[ id ] ? gateways[ id ] : {};
+				const installedGateway = installedPaymentGateways[ id ]
+					? installedPaymentGateways[ id ]
+					: {};
 				const enrichedSuggestion = {
-					installed: !! gateways[ id ],
-					postInstallScripts: gateway.post_install_scripts,
-					enabled: gateway.enabled,
-					needsSetup: gateway.needs_setup,
-					requiredKeys: gateway.required_settings_keys,
-					settingsUrl: gateway.settings_url,
-					connectionUrl: gateway.connection_url,
-					setupHelpText: gateway.setup_help_text,
-					settings: gateway.settings,
-					title: gateway.title,
+					installed: !! installedPaymentGateways[ id ],
+					postInstallScripts: installedGateway.post_install_scripts,
+					enabled: installedGateway.enabled,
+					needsSetup: installedGateway.needs_setup,
+					requiredKeys: installedGateway.required_settings_keys,
+					settingsUrl: installedGateway.settings_url,
+					connectionUrl: installedGateway.connection_url,
+					setupHelpText: installedGateway.setup_help_text,
+					settings: installedGateway.settings,
+					title: installedGateway.title,
 					...suggestion,
 				};
 
@@ -89,16 +91,16 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			}, new Map() );
 
 		return {
-			additionalSuggestions: additional,
-			enabledSuggestions: enabled,
+			additionalGateways: additional,
+			enabledGateways: enabled,
 			getPaymentGateway: select( PAYMENT_GATEWAYS_STORE_NAME )
 				.getPaymentGateway,
 			getOption: select( OPTIONS_STORE_NAME ).getOption,
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
 				'getPaymentGatewaySuggestions'
 			),
-			suggestions: mappedSuggestions,
-			wcPaySuggestion: wcPay,
+			paymentGateways: mappedSuggestions,
+			wcPayGateway: wcPay,
 		};
 	} );
 
@@ -120,7 +122,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 
 	const markConfigured = useCallback(
 		async ( id, queryParams = {} ) => {
-			if ( ! suggestions.get( id ) ) {
+			if ( ! paymentGateways.get( id ) ) {
 				throw `Payment gateway ${ id } not found in available gateways list`;
 			}
 
@@ -134,7 +136,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 				getNewPath( { ...queryParams, task: 'payments' }, '/', {} )
 			);
 		},
-		[ suggestions ]
+		[ paymentGateways ]
 	);
 
 	const recordConnectStartEvent = useCallback( ( gatewayId ) => {
@@ -145,36 +147,36 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 
 	const recommendation = useMemo( () => {
 		for ( const id in RECOMMENDED_GATEWAY_IDS ) {
-			const gateway = suggestions.get( id );
+			const gateway = paymentGateways.get( id );
 			if ( gateway ) {
 				return gateway;
 			}
 		}
 		return null;
-	}, [ suggestions ] );
+	}, [ paymentGateways ] );
 
-	const currentSuggestion = useMemo( () => {
-		if ( ! query.id || isResolving || ! suggestions.size ) {
+	const currentGateway = useMemo( () => {
+		if ( ! query.id || isResolving || ! paymentGateways.size ) {
 			return null;
 		}
 
-		const gateway = suggestions.get( query.id );
+		const gateway = paymentGateways.get( query.id );
 
 		if ( ! gateway ) {
 			throw `Current gateway ${ query.id } not found in available gateways list`;
 		}
 
 		return gateway;
-	}, [ isResolving, query, suggestions ] );
+	}, [ isResolving, query, paymentGateways ] );
 
-	if ( query.id && ! currentSuggestion ) {
+	if ( query.id && ! currentGateway ) {
 		return <SetupPlaceholder />;
 	}
 
-	if ( currentSuggestion ) {
+	if ( currentGateway ) {
 		return (
 			<Setup
-				suggestion={ currentSuggestion }
+				paymentGateway={ currentGateway }
 				markConfigured={ markConfigured }
 				recordConnectStartEvent={ recordConnectStartEvent }
 			/>
@@ -183,31 +185,31 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 
 	return (
 		<div className="woocommerce-task-payments">
-			{ ! suggestions.size && <ListPlaceholder /> }
+			{ ! paymentGateways.size && <ListPlaceholder /> }
 
-			{ !! wcPaySuggestion && (
-				<WCPaySuggestionCard suggestion={ wcPaySuggestion } />
+			{ !! wcPayGateway && (
+				<WCPaySuggestionCard paymentGateway={ wcPayGateway } />
 			) }
 
-			{ !! enabledSuggestions.size && (
+			{ !! enabledGateways.size && (
 				<List
 					heading={ __(
 						'Enabled payment gateways',
 						'woocommerce-admin'
 					) }
 					recommendation={ recommendation }
-					suggestions={ enabledSuggestions }
+					paymentGateways={ enabledGateways }
 				/>
 			) }
 
-			{ !! additionalSuggestions.size && (
+			{ !! additionalGateways.size && (
 				<List
 					heading={ __(
 						'Additional payment gateways',
 						'woocommerce-admin'
 					) }
 					recommendation={ recommendation }
-					suggestions={ additionalSuggestions }
+					paymentGateways={ additionalGateways }
 					markConfigured={ markConfigured }
 				/>
 			) }

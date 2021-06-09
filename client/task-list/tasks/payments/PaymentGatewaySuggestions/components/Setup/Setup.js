@@ -26,7 +26,7 @@ import './Setup.scss';
 
 export const Setup = ( {
 	markConfigured,
-	suggestion,
+	paymentGateway,
 	recordConnectStartEvent,
 } ) => {
 	const {
@@ -35,7 +35,7 @@ export const Setup = ( {
 		title,
 		postInstallScripts,
 		installed: gatewayInstalled,
-	} = suggestion;
+	} = paymentGateway;
 	const slot = useSlot( `woocommerce_payment_gateway_setup_${ id }` );
 	const hasFills = Boolean( slot?.fills?.length );
 	const [ isPluginLoaded, setIsPluginLoaded ] = useState( false );
@@ -138,7 +138,7 @@ export const Setup = ( {
 			content: gatewayInstalled ? (
 				<Connect
 					markConfigured={ markConfigured }
-					suggestedGateway={ suggestion }
+					paymentGateway={ paymentGateway }
 					recordConnectStartEvent={ recordConnectStartEvent }
 				/>
 			) : null,
@@ -175,7 +175,7 @@ export const Setup = ( {
 							defaultInstallStep: installStep,
 							defaultConnectStep: connectStep,
 							markConfigured: () => markConfigured( id ),
-							paymentGateway: suggestion,
+							paymentGateway,
 						} }
 						id={ id }
 					/>

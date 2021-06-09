@@ -38,10 +38,10 @@ const TosPrompt = () =>
 	} );
 
 export const WCPaySuggestionCard = ( {
-	suggestion,
+	paymentGateway,
 	onSetupCallback = null,
 } ) => {
-	const { description, id, needsSetup, isEnabled } = suggestion;
+	const { description, id, needsSetup, isEnabled } = paymentGateway;
 
 	return (
 		<WCPayCard>

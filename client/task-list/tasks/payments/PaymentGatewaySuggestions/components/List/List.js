@@ -14,23 +14,25 @@ export const List = ( {
 	heading,
 	markConfigured,
 	recommendation,
-	suggestions,
+	paymentGateways,
 } ) => {
 	return (
 		<Card>
 			<CardHeader as="h2">{ heading }</CardHeader>
-			{ Array.from( suggestions.values() ).map( ( suggestion ) => {
-				const { id } = suggestion;
-				return (
-					<Item
-						key={ id }
-						isRecommended={ recommendation === id }
-						markConfigured={ markConfigured }
-						suggestion={ suggestion }
-						suggestionIds={ suggestions.keys() }
-					/>
-				);
-			} ) }
+			{ Array.from( paymentGateways.values() ).map(
+				( paymentGateway ) => {
+					const { id } = paymentGateway;
+					return (
+						<Item
+							key={ id }
+							isRecommended={ recommendation === id }
+							markConfigured={ markConfigured }
+							paymentGateway={ paymentGateway }
+							gatewayIds={ paymentGateways.keys() }
+						/>
+					);
+				}
+			) }
 		</Card>
 	);
 };

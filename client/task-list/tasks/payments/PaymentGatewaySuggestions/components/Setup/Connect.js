@@ -16,7 +16,7 @@ import sanitizeHTML from '~/lib/sanitize-html';
 
 export const Connect = ( {
 	markConfigured,
-	suggestedGateway,
+	paymentGateway,
 	recordConnectStartEvent,
 } ) => {
 	const {
@@ -27,7 +27,7 @@ export const Connect = ( {
 		settings,
 		settingsUrl,
 		title,
-	} = suggestedGateway;
+	} = paymentGateway;
 
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
@@ -119,7 +119,7 @@ export const Connect = ( {
 					defaultSubmit: handleSubmit,
 					defaultFields: fields,
 					markConfigured: () => markConfigured( id ),
-					paymentGateway: suggestedGateway,
+					paymentGateway,
 				} }
 				id={ id }
 			/>

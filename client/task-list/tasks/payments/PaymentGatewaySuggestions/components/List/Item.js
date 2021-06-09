@@ -18,8 +18,8 @@ import './List.scss';
 export const Item = ( {
 	isRecommended,
 	markConfigured,
-	suggestion,
-	suggestionIds,
+	paymentGateway,
+	gatewayIds,
 } ) => {
 	const {
 		image,
@@ -32,7 +32,7 @@ export const Item = ( {
 		needsSetup = false,
 		requiredSettingsKeys = [],
 		settingsUrl: manageUrl,
-	} = suggestion;
+	} = paymentGateway;
 
 	const connectSlot = useSlot(
 		`woocommerce_payment_gateway_connect_${ id }`
@@ -85,7 +85,7 @@ export const Item = ( {
 						markConfigured={ markConfigured }
 						onSetup={ () =>
 							recordEvent( 'tasklist_payment_setup', {
-								options: suggestionIds,
+								options: gatewayIds,
 								selected: id,
 							} )
 						}

@@ -226,7 +226,7 @@ export const LocalPayments = ( { query } ) => {
 			{ !! wcPayMethod && (
 				<WCPaySuggestionCard
 					onSetupCallback={ wcPayMethod.onClick }
-					suggestion={ {
+					paymentGateway={ {
 						...wcPayMethod,
 						description: __(
 							'Try the new way to get paid. Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.',
