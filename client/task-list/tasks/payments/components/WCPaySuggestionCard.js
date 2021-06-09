@@ -37,7 +37,10 @@ const TosPrompt = () =>
 		},
 	} );
 
-export const WCPayMethodCard = ( { suggestion, onSetupCallback = null } ) => {
+export const WCPaySuggestionCard = ( {
+	suggestion,
+	onSetupCallback = null,
+} ) => {
 	const { description, id, needsSetup, isEnabled } = suggestion;
 
 	return (

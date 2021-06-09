@@ -17,7 +17,7 @@ import { useMemo, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { PaymentMethodList } from './components/PaymentMethodList';
-import { WCPayMethodCard } from './components/WCPayMethodCard';
+import { WCPaySuggestionCard } from './components/WCPaySuggestionCard';
 import { getCountryCode } from '../../../dashboard/utils';
 import { getPaymentMethods } from './methods';
 import { PaymentSetup } from './components/PaymentSetup';
@@ -224,7 +224,7 @@ export const LocalPayments = ( { query } ) => {
 	return (
 		<div className="woocommerce-task-payments">
 			{ !! wcPayMethod && (
-				<WCPayMethodCard
+				<WCPaySuggestionCard
 					onSetupCallback={ wcPayMethod.onClick }
 					suggestion={ {
 						...wcPayMethod,

@@ -17,7 +17,7 @@ import { useMemo, useCallback } from '@wordpress/element';
  */
 import { List, Placeholder as ListPlaceholder } from './components/List';
 import { Setup, Placeholder as SetupPlaceholder } from './components/Setup';
-import { WCPayMethodCard } from '../components/WCPayMethodCard';
+import { WCPaySuggestionCard } from '../components/WCPaySuggestionCard';
 import './plugins/Bacs';
 
 const RECOMMENDED_GATEWAY_IDS = [
@@ -186,7 +186,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			{ ! suggestions.size && <ListPlaceholder /> }
 
 			{ !! wcPaySuggestion && (
-				<WCPayMethodCard suggestion={ wcPaySuggestion } />
+				<WCPaySuggestionCard suggestion={ wcPaySuggestion } />
 			) }
 
 			{ !! enabledSuggestions.size && (
