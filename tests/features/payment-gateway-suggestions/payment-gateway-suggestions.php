@@ -66,14 +66,14 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 	public function test_get_default_specs() {
 		remove_all_filters( 'transient_' . PaymentGatewaySuggestions::SPECS_TRANSIENT_NAME );
 		add_filter(
-			'woocommerce_admin_payment_gateway_suggestions_data_sources',
+			DataSourcePoller::FILTER_NAME,
 			function() {
 				return array();
-			},
-			PHP_INT_MAX
+			}
 		);
 		$specs    = PaymentGatewaySuggestions::get_specs();
 		$defaults = DefaultPaymentGateways::get_all();
+		remove_all_filters( DataSourcePoller::FILTER_NAME );
 		$this->assertEquals( $defaults, $specs );
 	}
 
