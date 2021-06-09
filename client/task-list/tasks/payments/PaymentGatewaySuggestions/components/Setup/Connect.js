@@ -23,21 +23,15 @@ export const Connect = ( {
 		id,
 		connectionUrl,
 		setupHelpText,
-		settingKeys,
-		settings,
 		settingsUrl,
 		title,
+		requiredSettings: fields = [],
 	} = paymentGateway;
 
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const slot = useSlot( `woocommerce_payment_gateway_connect_${ id }` );
 	const hasFills = Boolean( slot?.fills?.length );
-	const fields = settingKeys
-		? settingKeys
-				.map( ( settingKey ) => settings[ settingKey ] )
-				.filter( Boolean )
-		: [];
 
 	const { isUpdating } = useSelect( ( select ) => {
 		const { isPaymentGatewayUpdating } = select(

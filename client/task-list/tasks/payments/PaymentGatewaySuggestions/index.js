@@ -50,7 +50,9 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			.getPaymentGatewaySuggestions()
 			.reduce( ( map, suggestion ) => {
 				const { id } = suggestion;
-				const installedGateway = installedPaymentGateways[ id ]
+				const installedGateway = installedPaymentGateways[
+					suggestion.id
+				]
 					? installedPaymentGateways[ id ]
 					: {};
 				const enrichedSuggestion = {
@@ -58,12 +60,18 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 					postInstallScripts: installedGateway.post_install_scripts,
 					enabled: installedGateway.enabled,
 					needsSetup: installedGateway.needs_setup,
-					requiredKeys: installedGateway.required_settings_keys,
 					settingsUrl: installedGateway.settings_url,
 					connectionUrl: installedGateway.connection_url,
 					setupHelpText: installedGateway.setup_help_text,
-					settings: installedGateway.settings,
 					title: installedGateway.title,
+					requiredSettings: installedGateway.required_settings_keys
+						? installedGateway.required_settings_keys
+								.map(
+									( settingKey ) =>
+										installedGateway.settings[ settingKey ]
+								)
+								.filter( Boolean )
+						: null,
 					...suggestion,
 				};
 
