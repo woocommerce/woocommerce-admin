@@ -249,8 +249,8 @@ export class Shipping extends Component {
 							},
 					  } )
 					: __(
-							'With WooCommerce Shipping you can save time' +
-								' by printing your USPS and DHL Express shipping labels at home',
+							'With WooCommerce Shipping you can save time ' +
+								'by printing your USPS and DHL Express shipping labels at home',
 							'woocommerce-admin'
 					  ),
 				content: (
