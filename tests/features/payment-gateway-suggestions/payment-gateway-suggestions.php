@@ -18,7 +18,29 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 	public function setUp() {
 		parent::setUp();
 
+		add_filter(
+			'transient_' . PaymentGatewaySuggestions::SPECS_TRANSIENT_NAME,
+			function( $value ) {
+				if ( $value ) {
+					return $value;
+				}
+
+				return array(
+					array(
+						'id' => 'default-gateway',
+					),
+				);
+			}
+		);
+	}
+
+	/**
+	 * Tear down.
+	 */
+	public function tearDown() {
+		parent::tearDown();
 		PaymentGatewaySuggestions::delete_specs_transient();
+		remove_all_filters( 'transient_' . PaymentGatewaySuggestions::SPECS_TRANSIENT_NAME );
 	}
 
 	/**
@@ -125,7 +147,7 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 
 		$wp_locale_switcher->switch_to_locale( 'en_US' );
 
-		$this->assertNotEquals( 1, count( $suggestions ) );
+		$this->assertEquals( 'default-gateway', $suggestions[0]->id );
 	}
 
 	/**
