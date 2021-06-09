@@ -90,7 +90,12 @@ class ProductAttributes extends \WC_REST_Product_Attributes_Controller {
 			return array();
 		}
 
-		$attributes     = $this->get_custom_attribute_by_slug( $request['slug'] );
+		$attributes = $this->get_custom_attribute_by_slug( $request['slug'] );
+
+		if ( is_wp_error( $attributes ) ) {
+			return $attributes;
+		}
+
 		$response_items = $this->format_custom_attribute_items_for_response( $attributes );
 
 		return reset( $response_items );

@@ -51,9 +51,12 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 		$product->set_attributes( $attributes );
 		$product->save();
 
-		// Custom attribute terms can only be found once assigned to variations.
-		$data_store = $product->get_data_store();
-		$data_store->create_all_product_variations( $product );
+		// Assign one variation to the '1' size.
+		$variation  = $product->get_available_variations( 'objects' )[0];
+		$attributes = $variation->get_attributes();
+		$attributes[ sanitize_title( $custom_attr->get_name() ) ] = '1';
+		$variation->set_attributes( $attributes );
+		$variation->save();
 	}
 
 	/**
@@ -229,9 +232,8 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 5, count( $terms ) );
-
-		// All terms will have the same count since we created all possible variations.
-		// Test for ( 3 size * 2 colour * 3 number ) combinations = 18.
-		$this->assertEquals( 18, $terms[0]['count'] );
+		$this->assertEquals( '1', $terms[0]['slug'] );
+		$this->assertEquals( 1, $terms[0]['count'] );
+		$this->assertEquals( 0, $terms[1]['count'] );
 	}
 }
