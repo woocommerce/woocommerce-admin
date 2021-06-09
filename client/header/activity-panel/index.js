@@ -58,7 +58,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	const [ isPanelOpen, setIsPanelOpen ] = useState( false );
 	const [ isPanelSwitching, setIsPanelSwitching ] = useState( false );
 	const { fills } = useSlot( ABBREVIATED_NOTIFICATION_SLOT_NAME );
-	const hasExtendedNotifications = Boolean( fills && fills.length );
+	const hasExtendedNotifications = Boolean( fills?.length );
 
 	const getPreviewSiteBtnTrackData = ( select, getOption ) => {
 		let trackData = {};
