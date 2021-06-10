@@ -3,6 +3,7 @@
 -   Revert Card component removal #7167.
 -   Filters: On update respect all other queries, not just persistedQueries #7155
 -   Add rowKey prop to Table and TableCard component. #7196
+-   AdvancedFilters: Create workable defaults for Reports that don't have them #7186
 
 # 7.0.0
 

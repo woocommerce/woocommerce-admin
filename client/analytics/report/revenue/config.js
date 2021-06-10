@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 
 const REVENUE_REPORT_CHARTS_FILTER = 'woocommerce_admin_revenue_report_charts';
@@ -60,8 +60,32 @@ export const charts = applyFilters( REVENUE_REPORT_CHARTS_FILTER, [
 	},
 ] );
 
-export const filters = applyFilters( REVENUE_REPORT_FILTERS_FILTER, [] );
 export const advancedFilters = applyFilters(
 	REVENUE_REPORT_ADVANCED_FILTERS_FILTER,
-	{}
+	{
+		filters: {},
+		title: _x(
+			'Revenue Match {{select /}} Filters',
+			'A sentence describing filters for Variations. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ',
+			'woocommerce-admin'
+		),
+	}
+);
+
+const filterValues = [];
+
+if ( Object.keys( advancedFilters.filters ).length ) {
+	filterValues.push( {
+		label: __( 'All Revenue', 'woocommerce-admin' ),
+		value: 'all',
+	} );
+	filterValues.push( {
+		label: __( 'Advanced Filters', 'woocommerce-admin' ),
+		value: 'advanced',
+	} );
+}
+
+export const filters = applyFilters(
+	REVENUE_REPORT_FILTERS_FILTER,
+	filterValues
 );
