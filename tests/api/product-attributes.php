@@ -57,6 +57,28 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 		$attributes[ sanitize_title( $custom_attr->get_name() ) ] = '1';
 		$variation->set_attributes( $attributes );
 		$variation->save();
+
+		// Add more custom Numeric Size values to another product.
+		$product_2 = new WC_Product_Variable();
+		$product_2->set_props(
+			array(
+				'name' => 'Dummy Variable Product 2',
+				'sku'  => 'DUMMY VARIABLE SKU 2',
+			)
+		);
+
+		$custom_attr_2 = new WC_Product_Attribute();
+		$custom_attr_2->set_name( 'Numeric Size' );
+		$custom_attr_2->set_options( array( '6', '7', '8', '9', '10' ) );
+		$custom_attr_2->set_visible( true );
+		$custom_attr_2->set_variation( true );
+
+		$product_2->set_attributes(
+			array(
+				$custom_attr_2,
+			)
+		);
+		$product_2->save();
 	}
 
 	/**
@@ -231,7 +253,7 @@ class WC_Tests_API_Product_Attributes extends WC_REST_Unit_Test_Case {
 		$terms    = $response->get_data();
 
 		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 5, count( $terms ) );
+		$this->assertEquals( 10, count( $terms ) );
 		$this->assertEquals( '1', $terms[0]['slug'] );
 		$this->assertEquals( 1, $terms[0]['count'] );
 		$this->assertEquals( 0, $terms[1]['count'] );

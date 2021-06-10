@@ -113,12 +113,12 @@ trait CustomAttributeTraits {
 					continue;
 				}
 
-				// Skip already matched attributes.
+				// Combine all values when there are multiple matching custom attributes.
 				if ( isset( $custom_attributes[ $meta_attribute_key ] ) ) {
-					continue;
+					$custom_attributes[ $meta_attribute_key ]['value'] .= ' ' . WC_DELIMITER . ' ' . $meta_value['value'];
+				} else {
+					$custom_attributes[ $meta_attribute_key ] = $meta_attribute_value;
 				}
-
-				$custom_attributes[ $meta_attribute_key ] = $meta_attribute_value;
 			}
 		}
 

@@ -113,6 +113,7 @@ class ProductAttributeTerms extends \WC_REST_Product_Attribute_Terms_Controller 
 				"SELECT meta_value, COUNT(meta_id) AS product_count
 				FROM {$wpdb->postmeta}
 				WHERE meta_key = %s
+				AND meta_value != ''
 				GROUP BY meta_value",
 				'attribute_' . esc_sql( $slug )
 			),
