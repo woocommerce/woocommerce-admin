@@ -4,7 +4,7 @@ Tags: ecommerce, e-commerce, store, sales, reports, analytics, dashboard, activi
 Requires at least: 5.4.0
 Tested up to: 5.7.0
 Requires PHP: 7.0
-Stable tag: 2.4.0-dev
+Stable tag: 2.4.0-beta.1
 License: GPLv3
 License URI: https://github.com/woocommerce/woocommerce-admin/blob/main/license.txt
 
@@ -75,6 +75,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+
+== 2.4.0 6/10/2021 ==
 - Dev: Add Jetpack Backup admin note #6738
 - Add: Adding WCPay payment configuration defaults. #7097
 - Fix: Transformer casing is incorrect and creates an error on case-sensitive systems #7104
