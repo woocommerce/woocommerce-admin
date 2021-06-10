@@ -631,28 +631,12 @@ class Onboarding {
 	 * @return bool
 	 */
 	protected function is_wc_pages() {
-		$allowed_paths = array(
-			'wc-admin',
-			'wc-admin&path=/setup-wizard',
-			'wc-admin&path=/analytics/overview',
-			'wc-admin&path=/analytics/products',
-			'wc-admin&path=/analytics/revenue',
-			'wc-admin&path=/analytics/orders',
-			'wc-admin&path=/analytics/variations',
-			'wc-admin&path=/analytics/categories',
-			'wc-admin&path=/analytics/coupons',
-			'wc-admin&path=/analytics/taxes',
-			'wc-admin&path=/analytics/downloads',
-			'wc-admin&path=/analytics/stock',
-			'wc-admin&path=/analytics/settings',
-			'wc-admin&path=/marketing',
-		);
-		$current_page  = PageController::get_instance()->get_current_page();
+		$current_page = PageController::get_instance()->get_current_page();
 		if ( ! $current_page || ! isset( $current_page['path'] ) ) {
 			return false;
 		}
 
-		return in_array( $current_page['path'], $allowed_paths, true );
+		return 0 === strpos( $current_page['path'], 'wc-admin' );
 	}
 
 	/**
