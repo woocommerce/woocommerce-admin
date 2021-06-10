@@ -25,7 +25,7 @@ export const Connect = ( {
 		setupHelpText,
 		settingsUrl,
 		title,
-		requiredSettings: fields = [],
+		requiredSettings: fields,
 	} = paymentGateway;
 
 	const { createNotice } = useDispatch( 'core/notices' );

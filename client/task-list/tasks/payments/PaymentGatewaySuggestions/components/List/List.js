@@ -19,20 +19,20 @@ export const List = ( {
 	return (
 		<Card>
 			<CardHeader as="h2">{ heading }</CardHeader>
-			{ Array.from( paymentGateways.values() ).map(
-				( paymentGateway ) => {
-					const { id } = paymentGateway;
-					return (
-						<Item
-							key={ id }
-							isRecommended={ recommendation === id }
-							markConfigured={ markConfigured }
-							paymentGateway={ paymentGateway }
-							gatewayIds={ paymentGateways.keys() }
-						/>
-					);
-				}
-			) }
+			{ paymentGateways.map( ( paymentGateway ) => {
+				const { id } = paymentGateway;
+				return (
+					<Item
+						key={ id }
+						isRecommended={ recommendation === id }
+						markConfigured={ markConfigured }
+						paymentGateway={ paymentGateway }
+						gatewayIds={ paymentGateways.map(
+							( gateway ) => gateway.id
+						) }
+					/>
+				);
+			} ) }
 		</Card>
 	);
 };
