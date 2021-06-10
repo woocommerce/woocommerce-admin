@@ -1,6 +1,7 @@
 # Unreleased
 
 -   Revert Card component removal #7167.
+-   Filters: On update respect all other queries, not just persistedQueries #7155
 
 # 7.0.0
 
