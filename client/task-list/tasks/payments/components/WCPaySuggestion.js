@@ -46,7 +46,7 @@ export const WCPaySuggestion = ( {
 	return (
 		<WCPayCard>
 			<WCPayCardHeader>
-				{ needsSetup ? (
+				{ isEnabled ? (
 					<SetupRequired />
 				) : (
 					<Pill>{ __( 'Recommended', 'woocommerce-admin' ) }</Pill>
