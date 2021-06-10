@@ -81,6 +81,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: WCPay not working in local payments task #7151
 - Fix: Include onboarding settings on the analytic pages #7109
 - Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
+- Fix: Filters: On update respect all other queries, not just persistedQueries #7155
 - Tweak: Revert Card component removal #7167
 - Fix: Currency display on Orders activity card on homescreen #7181
 
