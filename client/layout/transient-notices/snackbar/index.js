@@ -41,6 +41,7 @@ function Snackbar(
 		onRemove = noop,
 		icon = null,
 		explicitDismiss = false,
+		status,
 		// onDismiss is a callback executed when the snackbar is dismissed.
 		// It is distinct from onRemove, which _looks_ like a callback but is
 		// actually the function to call to remove the snackbar from the UI.
@@ -99,6 +100,7 @@ function Snackbar(
 		'components-snackbar__content',
 		{
 			'components-snackbar__content-with-icon': !! icon,
+			'is-error': status === 'error',
 		}
 	);
 
