@@ -9,11 +9,7 @@ import { Component } from '@wordpress/element';
 import { find, partial, last, get, includes } from 'lodash';
 import PropTypes from 'prop-types';
 import { Icon, chevronLeft } from '@wordpress/icons';
-import {
-	flattenFilters,
-	getPersistedQuery,
-	updateQueryString,
-} from '@woocommerce/navigation';
+import { flattenFilters, updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -130,8 +126,6 @@ class FilterPicker extends Component {
 
 	update( value, additionalQueries = {} ) {
 		const { path, query, config, onFilterSelect } = this.props;
-		// Keep only time related queries when updating to a new filter
-		const persistedQuery = getPersistedQuery( query );
 		const update = {
 			[ config.param ]:
 				( config.defaultValue || DEFAULT_FILTER ) === value
@@ -143,7 +137,7 @@ class FilterPicker extends Component {
 		config.staticParams.forEach( ( param ) => {
 			update[ param ] = query[ param ];
 		} );
-		updateQueryString( update, path, persistedQuery );
+		updateQueryString( update, path, query );
 		onFilterSelect( update );
 	}
 
