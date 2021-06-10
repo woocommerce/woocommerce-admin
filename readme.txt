@@ -148,6 +148,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Notices not dissapearing. #7077
 - Fix: Keyboard accessibility on the free features tab. #7149
 - Fix: Fix error handling when remote free extension API returns empty array. #7147
+- Fix: Report export filtering bug. #7165
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
 - Update: Task list component with new Experimental Task list. #6849
