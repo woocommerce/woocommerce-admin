@@ -37,7 +37,7 @@ const TosPrompt = () =>
 		},
 	} );
 
-export const WCPaySuggestionCard = ( {
+export const WCPaySuggestion = ( {
 	paymentGateway,
 	onSetupCallback = null,
 } ) => {
@@ -46,7 +46,7 @@ export const WCPaySuggestionCard = ( {
 	return (
 		<WCPayCard>
 			<WCPayCardHeader>
-				{ isEnabled ? (
+				{ needsSetup ? (
 					<SetupRequired />
 				) : (
 					<Pill>{ __( 'Recommended', 'woocommerce-admin' ) }</Pill>

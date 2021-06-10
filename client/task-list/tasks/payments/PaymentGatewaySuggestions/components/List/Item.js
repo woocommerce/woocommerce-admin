@@ -30,7 +30,7 @@ export const Item = ( {
 		loading,
 		enabled: isEnabled = false,
 		needsSetup = false,
-		requiredSettingsKeys = [],
+		requiredSettings,
 		settingsUrl: manageUrl,
 	} = paymentGateway;
 
@@ -43,7 +43,7 @@ export const Item = ( {
 		Boolean( connectSlot?.fills?.length ) ||
 		Boolean( setupSlot?.fills?.length );
 	const hasSetup = Boolean(
-		plugins.length || requiredSettingsKeys.length || hasFills
+		plugins.length || requiredSettings.length || hasFills
 	);
 	const showRecommendedRibbon = isRecommended && needsSetup;
 
