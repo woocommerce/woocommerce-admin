@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.4.0
+
 ### Add target to the button to open it in a new tab #7110
 
 1. Navigate to WooCommerce -> Settings -> Payments
@@ -62,6 +64,13 @@
 
 1. Install and activate Jetpack
 2. Confirm Jetpack in not show in Free features list
+### Include onboarding settings on the analytic pages #7109
+
+1. Finish the onboarding wizard as usual.
+2. Navigate to one of the analytic pages then refresh the page.
+3. Navigate to WooCommerce -> Home and start OBW again.
+4. Click the continue button.
+5. OBW should continue without an error.
 
 ### Set target to blank for the external links #6999
 

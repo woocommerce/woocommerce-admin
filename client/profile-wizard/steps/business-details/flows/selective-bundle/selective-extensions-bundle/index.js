@@ -414,6 +414,11 @@ export const SelectiveExtensionsBundle = ( {
 				path: '/wc-admin/onboarding/free-extensions',
 			} )
 				.then( ( results ) => {
+					if ( ! results?.length ) {
+						// Assuming empty array or null results is err.
+						setLocalInstallableExtensions();
+						return;
+					}
 					const transformedExtensions = transformRemoteExtensions(
 						results
 					);
@@ -485,9 +490,8 @@ export const SelectiveExtensionsBundle = ( {
 								'Add recommended business features to my site'
 							) }
 						</p>
-						<Icon
+						<Button
 							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
-							icon={ showExtensions ? chevronUp : chevronDown }
 							onClick={ () => {
 								setShowExtensions( ! showExtensions );
 
@@ -498,7 +502,13 @@ export const SelectiveExtensionsBundle = ( {
 									);
 								}
 							} }
-						/>
+						>
+							<Icon
+								icon={
+									showExtensions ? chevronUp : chevronDown
+								}
+							/>
+						</Button>
 					</div>
 					{ showExtensions &&
 						installableExtensions.map(
