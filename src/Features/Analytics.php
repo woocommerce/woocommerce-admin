@@ -44,7 +44,6 @@ class Analytics {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_settings_features', array( $this, 'add_feature_toggle' ) );
-		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) ); // May not need this.
 
 		if ( 'yes' === get_option( self::TOGGLE_OPTION_NAME, 'yes' ) ) {
 			add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
@@ -76,18 +75,6 @@ class Analytics {
 		);
 
 		return $features;
-	}
-
-	/**
-	 * Preload options to prime state of the application.
-	 *
-	 * @param array $options Array of options to preload.
-	 * @return array
-	 */
-	public function preload_options( $options ) {
-		$options[] = self::TOGGLE_OPTION_NAME;
-
-		return $options;
 	}
 
 	/**
