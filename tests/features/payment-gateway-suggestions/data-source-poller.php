@@ -43,7 +43,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 								array(
 									'key' => 'mock-gateway-invalid',
 								),
-							),
+							)
 						),
 					);
 				}
