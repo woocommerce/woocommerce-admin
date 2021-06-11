@@ -78,6 +78,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: WCPay not working in local payments task #7151
 - Fix: Include onboarding settings on the analytic pages #7109
 - Tweak: Revert Card component removal #7167
+- Add: SlotFill to Abbreviated Notification panel #7091
 
 == 2.4.0 6/10/2021 ==
 - Dev: Reduce the specificity and complexity of the ReportError component #6846
@@ -176,7 +177,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Update: Update remote payment docs gateway methods #7079
 - Update: Remove original business step flow #7103
 - Update: WooCommerce Shipping copy on onboarding steps #7148
-- Add: SlotFill to Abbreviated Notification panel #7091
 
 == 2.3.1 5/24/2021 ==
 - Tweak: Store profiler - Changed MailPoet's title and description #6990
