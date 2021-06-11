@@ -626,7 +626,7 @@ class Onboarding {
 	}
 
 	/**
-	 * Determine if the current page is home or setup wizard.
+	 * Determine if the current page is one of the WC Admin pages.
 	 *
 	 * @return bool
 	 */
