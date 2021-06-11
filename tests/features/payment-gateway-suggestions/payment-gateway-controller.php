@@ -35,22 +35,42 @@ class WC_Tests_PaymentGatewaySuggestions_PaymentGatewaysController extends WC_RE
 			'woocommerce_payment_gateways',
 			function( $gateways ) {
 				$gateways[] = 'WC_Mock_Payment_Gateway';
+				$gateways[] = 'WC_Mock_Enhanced_Payment_Gateway';
 
 				return $gateways;
 			}
 		);
 		WC()->payment_gateways()->init();
 
-		$this->gateway = new WC_Mock_Payment_Gateway();
+		$this->gateway = new WC_Mock_Enhanced_Payment_Gateway();
 	}
 
 	/**
 	 * Get mock gateway.
 	 */
 	public function get_mock_gateway_response() {
-		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/mock' );
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/mock-enhanced' );
 		$response = $this->server->dispatch( $request );
 		return $response->get_data();
+	}
+
+	/**
+	 * Tests a gateway that has not been enhanced with the new methods.
+	 */
+	public function test_non_enhanced_gateway() {
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/mock' );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$this->assertArrayHasKey( 'needs_setup', $data );
+		$this->assertEquals( array(), $data['post_install_scripts'] );
+		$this->assertEquals(
+			admin_url( 'admin.php?page=wc-settings&tab=checkout&section=mock' ),
+			$data['settings_url']
+		);
+		$this->assertEquals( null, $data['connection_url'] );
+		$this->assertEquals( null, $data['setup_help_text'] );
+		$this->assertEquals( array(), $data['required_settings_keys'] );
 	}
 
 	/**
@@ -85,7 +105,7 @@ class WC_Tests_PaymentGatewaySuggestions_PaymentGatewaysController extends WC_RE
 	public function test_settings_url() {
 		$response = $this->get_mock_gateway_response();
 		$this->assertEquals(
-			admin_url( 'admin.php?page=wc-settings&tab=checkout&section=mock' ),
+			admin_url( 'admin.php?page=wc-settings&tab=checkout&section=mock-enhanced' ),
 			$response['settings_url']
 		);
 	}
@@ -96,7 +116,7 @@ class WC_Tests_PaymentGatewaySuggestions_PaymentGatewaysController extends WC_RE
 	public function test_connection_url() {
 		$response = $this->get_mock_gateway_response();
 		$this->assertEquals(
-			'http://testconnection.com?return=' . wc_admin_url( '&task=payments&connection-return=mock' ),
+			'http://testconnection.com?return=' . wc_admin_url( '&task=payments&connection-return=mock-enhanced' ),
 			$response['connection_url']
 		);
 	}
