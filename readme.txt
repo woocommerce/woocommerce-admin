@@ -75,6 +75,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Fix: WCPay not working in local payments task #7151
+- Fix: Include onboarding settings on the analytic pages #7109
+- Tweak: Revert Card component removal #7167
 
 == 2.4.0 6/10/2021 ==
 - Dev: Add Jetpack Backup admin note #6738
