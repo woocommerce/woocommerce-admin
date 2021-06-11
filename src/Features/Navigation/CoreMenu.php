@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\Features\Navigation;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
+use Automattic\WooCommerce\Admin\Features\Analytics;
 
 /**
  * CoreMenu class. Handles registering Core menu items.
@@ -79,6 +80,7 @@ class CoreMenu {
 	 * @return array
 	 */
 	public static function get_categories() {
+		$analytics_enabled = 'yes' === get_option( Analytics::TOGGLE_OPTION_NAME, 'yes' );
 		return array(
 			array(
 				'title' => __( 'Orders', 'woocommerce-admin' ),
@@ -90,17 +92,19 @@ class CoreMenu {
 				'id'    => 'woocommerce-products',
 				'order' => 20,
 			),
+			$analytics_enabled ?
 			array(
 				'title' => __( 'Analytics', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-analytics',
 				'order' => 30,
-			),
+			) : null,
+			$analytics_enabled ?
 			array(
 				'title'  => __( 'Reports', 'woocommerce-admin' ),
 				'id'     => 'woocommerce-reports',
 				'parent' => 'woocommerce-analytics',
 				'order'  => 200,
-			),
+			) : null,
 			array(
 				'title' => __( 'Marketing', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-marketing',
