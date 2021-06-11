@@ -64,6 +64,7 @@
 
 1. Install and activate Jetpack
 2. Confirm Jetpack in not show in Free features list
+
 ### Include onboarding settings on the analytic pages #7109
 
 1. Finish the onboarding wizard as usual.
