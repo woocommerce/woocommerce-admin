@@ -76,6 +76,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 == Unreleased ==
 
 - Fix: WCPay not working in local payments task #7151
+- Tweak: Revert Card component removal #7167
 
 == 2.4.0 6/10/2021 ==
 - Add: Consume remote payment methods on frontend #6867
