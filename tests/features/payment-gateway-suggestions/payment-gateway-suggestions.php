@@ -6,6 +6,7 @@
  */
 
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\Init as PaymentGatewaySuggestions;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\DefaultPaymentGateways;
 
 /**
  * class WC_Tests_PaymentGatewaySuggestions_Init
@@ -63,6 +64,7 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 	 * Test that default gateways are provided when remote sources don't exist.
 	 */
 	public function test_get_default_specs() {
+		remove_all_filters( 'transient_' . PaymentGatewaySuggestions::SPECS_TRANSIENT_NAME );
 		add_filter(
 			'woocommerce_admin_payment_gateway_suggestions_data_sources',
 			function() {
@@ -70,8 +72,9 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 			},
 			PHP_INT_MAX
 		);
-		$specs = PaymentGatewaySuggestions::get_specs();
-		$this->assertTrue( ! empty( $specs ) );
+		$specs    = PaymentGatewaySuggestions::get_specs();
+		$defaults = DefaultPaymentGateways::get_all();
+		$this->assertEquals( $defaults, $specs );
 	}
 
 	/**
@@ -175,5 +178,6 @@ class WC_Tests_PaymentGatewaySuggestions_Init extends WC_Unit_Test_Case {
 
 		$localized_specs = PaymentGatewaySuggestions::localize( $specs );
 		$this->assertEquals( 'Mock Gateway', $localized_specs[0]->title );
+		$this->assertCount( 1, $localized_specs );
 	}
 }
