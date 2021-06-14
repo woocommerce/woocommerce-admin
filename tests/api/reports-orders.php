@@ -116,7 +116,7 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertEquals( 10, count( $properties ) );
+		$this->assertEquals( 11, count( $properties ) );
 		$this->assertArrayHasKey( 'date_created_gmt', $properties );
 		$this->assertArrayHasKey( 'order_id', $properties );
 		$this->assertArrayHasKey( 'order_number', $properties );
@@ -125,6 +125,7 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 		$this->assertArrayHasKey( 'customer_id', $properties );
 		$this->assertArrayHasKey( 'net_total', $properties );
 		$this->assertArrayHasKey( 'num_items_sold', $properties );
+		$this->assertArrayHasKey( 'total_formatted', $properties );
 		$this->assertArrayHasKey( 'customer_type', $properties );
 		$this->assertArrayHasKey( 'extended_info', $properties );
 	}
