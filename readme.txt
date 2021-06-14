@@ -127,6 +127,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add remind me later option to task list. #6923
 - Enhancement: Enable Remote Free Extensions List #7144
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
+- Fix: Issue where summary stats were not showing in Analytics > Stock. #7161
 - Fix: Rule Processing Transformer to handle dotNotation default value #7009
 - Fix: Remove Navigation's uneeded SlotFill context #6832
 - Fix: Report filters expecting specific ordering. #6847
@@ -154,9 +155,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Add target to the button to open it in a new tab  #7110
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Fix: Set autoload to false for all remote inbox notifications options. #7060
-- Fix: Include onboarding settings on the analytic pages #7109
-- Fix: WCPay not working in local payments task #7151
-- Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
 - Tweak: Revert Card component removal #7167
 - Update: Task list component with new Experimental Task list. #6849
