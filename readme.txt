@@ -75,10 +75,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+- Add: SlotFill to Abbreviated Notification panel #7091
+- Add: Add unit tests around extended payment gateway controller #7133
 - Fix: WCPay not working in local payments task #7151
 - Fix: Include onboarding settings on the analytic pages #7109
 - Tweak: Revert Card component removal #7167
-- Add: SlotFill to Abbreviated Notification panel #7091
 - Fix: Currency display on Orders activity card on homescreen #7181
 
 == 2.4.0 6/10/2021 ==
@@ -168,6 +169,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Add target to the button to open it in a new tab  #7110
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Fix: Set autoload to false for all remote inbox notifications options. #7060
+- Fix: Issue where summary stats were not showing in Analytics > Stock. #7161
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
 - Update: Task list component with new Experimental Task list. #6849
