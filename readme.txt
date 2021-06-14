@@ -77,6 +77,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 - Fix: WCPay not working in local payments task #7151
 - Fix: Include onboarding settings on the analytic pages #7109
+- Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
 - Tweak: Revert Card component removal #7167
 - Add: SlotFill to Abbreviated Notification panel #7091
 
