@@ -60,7 +60,7 @@ export function formatErrors(
 				);
 			}
 		);
-	} else if ( typeof response === 'string') {
+	} else if ( typeof response === 'string' ) {
 		return response;
 	} else {
 		return response.message;
@@ -193,9 +193,9 @@ export function* installPlugins( plugins: string[] ) {
 
 		return results;
 	} catch ( error ) {
-		if (plugins.length === 1 && !error[plugins[0]]) {
+		if ( plugins.length === 1 && ! error[ plugins[ 0 ] ] ) {
 			// Incase of a network error
-			error = { [plugins[0]]: error.message };
+			error = { [ plugins[ 0 ] ]: error.message };
 		}
 		yield setError( 'installPlugins', error );
 		throw new Error( formatErrorMessage( error ) );
@@ -224,9 +224,9 @@ export function* activatePlugins( plugins: string[] ) {
 
 		return results;
 	} catch ( error ) {
-		if (plugins.length === 1 && !error[plugins[0]]) {
+		if ( plugins.length === 1 && ! error[ plugins[ 0 ] ] ) {
 			// Incase of a network error
-			error = { [plugins[0]]: error.message };
+			error = { [ plugins[ 0 ] ]: error.message };
 		}
 		yield setError( 'activatePlugins', error );
 		throw new Error( formatErrorMessage( error, 'activate' ) );
@@ -248,7 +248,12 @@ export function* installAndActivatePlugins( plugins: string[] ) {
 }
 
 export const createErrorNotice = ( errorMessage: string ) => {
-	return controls.dispatch( 'core/notices', 'createNotice', 'error', errorMessage );
+	return controls.dispatch(
+		'core/notices',
+		'createNotice',
+		'error',
+		errorMessage
+	);
 };
 
 export function* connectToJetpack(
