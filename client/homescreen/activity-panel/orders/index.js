@@ -156,7 +156,7 @@ class OrdersPanel extends Component {
 			const {
 				date_created_gmt: dateCreatedGmt,
 				extended_info: extendedInfo,
-				order_id: orderId
+				order_id: orderId,
 			} = order;
 			const productsCount =
 				extendedInfo && extendedInfo.products
