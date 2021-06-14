@@ -71,7 +71,6 @@ class OrdersPanel extends Component {
 
 	renderOrders() {
 		const { orders } = this.props;
-		const Currency = this.context;
 
 		if ( orders.length === 0 ) {
 			return this.renderEmptyCard();
@@ -157,15 +156,12 @@ class OrdersPanel extends Component {
 			const {
 				date_created_gmt: dateCreatedGmt,
 				extended_info: extendedInfo,
-				order_id: orderId,
-				total_sales: totalSales,
+				order_id: orderId
 			} = order;
 			const productsCount =
 				extendedInfo && extendedInfo.products
 					? extendedInfo.products.length
 					: 0;
-
-			const total = totalSales;
 
 			cards.push(
 				<ActivityCard
@@ -194,7 +190,7 @@ class OrdersPanel extends Component {
 									productsCount
 								) }
 							</span>
-							<span>{ Currency.formatAmount( total ) }</span>
+							<span>{ order.total_formatted }</span>
 						</div>
 					}
 				>
@@ -347,6 +343,7 @@ export default withSelect( ( select, props ) => {
 			'order_number',
 			'status',
 			'total_sales',
+			'total_formatted',
 			'extended_info.customer',
 			'extended_info.products',
 		],
