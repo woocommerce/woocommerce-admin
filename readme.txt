@@ -75,7 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
-== 2.4.0 6/11/2021 ==
+== 2.4.0 6/10/2021 ==
 - Add: SlotFill to Abbreviated Notification panel #7091
 - Add: Consume remote payment methods on frontend #6867
 - Add: Extend payment gateways REST endpoint #6919
@@ -127,6 +127,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add remind me later option to task list. #6923
 - Enhancement: Enable Remote Free Extensions List #7144
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
+- Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
 - Fix: Issue where summary stats were not showing in Analytics > Stock. #7161
 - Fix: Rule Processing Transformer to handle dotNotation default value #7009
 - Fix: Remove Navigation's uneeded SlotFill context #6832
