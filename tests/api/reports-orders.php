@@ -448,7 +448,6 @@ class WC_Tests_API_Reports_Orders extends WC_REST_Unit_Test_Case {
 		$response        = $this->server->dispatch( $request );
 		$response_orders = $response->get_data();
 
-		$this->assertIsArray( $response_orders );
 		$this->assertCount( 2, $response_orders );
 
 		// Replace keys with "order_id".
