@@ -55,7 +55,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 								array(
 									'id' => 'mock-gateway3',
 								),
-							),
+							)
 						),
 					);
 				}
