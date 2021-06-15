@@ -10,7 +10,7 @@ import {
 import { Link } from '@woocommerce/components';
 import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
-import { NAVIGATION_STORE_NAME } from '@woocommerce/data';
+import { NAVIGATION_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -26,6 +26,15 @@ const NavigationPlugin = () => {
 		};
 	} );
 
+	const { isAnalyticsEnabled } = useSelect( ( select ) => {
+		return {
+			isAnalyticsEnabled:
+				select( OPTIONS_STORE_NAME ).getOption(
+					'woocommerce_analytics_enabled'
+				) === 'yes',
+		};
+	} );
+
 	/**
 	 * If the current page is embedded, stay with the default urls
 	 * provided by Navigation because the router isn't present to
@@ -37,7 +46,7 @@ const NavigationPlugin = () => {
 
 	const reports = getReports().filter( ( item ) => item.navArgs );
 
-	const pages = getPages()
+	const pages = getPages( isAnalyticsEnabled )
 		.filter( ( page ) => page.navArgs )
 		.map( ( page ) => {
 			if ( page.path === '/analytics/settings' ) {

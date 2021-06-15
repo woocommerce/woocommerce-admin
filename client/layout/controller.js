@@ -51,7 +51,7 @@ const SettingsGroup = lazy( () =>
 
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
-export const getPages = () => {
+export const getPages = ( isAnalyticsEnabled ) => {
 	const pages = [];
 	const initialBreadcrumbs = [ [ '', wcSettings.woocommerceTranslation ] ];
 
@@ -69,7 +69,7 @@ export const getPages = () => {
 		capability: 'manage_woocommerce',
 	} );
 
-	if ( window.wcAdminFeatures.analytics ) {
+	if ( isAnalyticsEnabled ) {
 		pages.push( {
 			container: Dashboard,
 			path: '/analytics/overview',
@@ -106,19 +106,6 @@ export const getPages = () => {
 		} );
 		pages.push( {
 			container: AnalyticsReport,
-			path: '/customers',
-			breadcrumbs: [
-				...initialBreadcrumbs,
-				__( 'Customers', 'woocommerce-admin' ),
-			],
-			wpOpenMenu: 'toplevel_page_woocommerce',
-			navArgs: {
-				id: 'woocommerce-analytics-customers',
-			},
-			capability: 'view_woocommerce_reports',
-		} );
-		pages.push( {
-			container: AnalyticsReport,
 			path: '/analytics/:report',
 			breadcrumbs: ( { match } ) => {
 				const report = find( getReports(), {
@@ -140,6 +127,20 @@ export const getPages = () => {
 			capability: 'view_woocommerce_reports',
 		} );
 	}
+
+	pages.push( {
+		container: AnalyticsReport,
+		path: '/customers',
+		breadcrumbs: [
+			...initialBreadcrumbs,
+			__( 'Customers', 'woocommerce-admin' ),
+		],
+		wpOpenMenu: 'toplevel_page_woocommerce',
+		navArgs: {
+			id: 'woocommerce-analytics-customers',
+		},
+		capability: 'view_woocommerce_reports',
+	} );
 
 	if ( window.wcAdminFeatures.marketing ) {
 		pages.push( {
