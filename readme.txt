@@ -75,7 +75,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
-== 2.4.0 6/10/2021 ==
+== 2.4.0 6/15/2021 ==
 - Add: SlotFill to Abbreviated Notification panel #7091
 - Add: Consume remote payment methods on frontend #6867
 - Add: Extend payment gateways REST endpoint #6919
