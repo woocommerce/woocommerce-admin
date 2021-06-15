@@ -45,12 +45,14 @@ class Analytics {
 	public function __construct() {
 		add_filter( 'woocommerce_settings_features', array( $this, 'add_feature_toggle' ) );
 
-		if ( 'yes' === get_option( self::TOGGLE_OPTION_NAME, 'yes' ) ) {
-			add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
-			add_filter( 'woocommerce_admin_get_user_data_fields', array( $this, 'add_user_data_fields' ) );
-			add_action( 'admin_menu', array( $this, 'register_pages' ) );
-			add_filter( 'woocommerce_debug_tools', array( $this, 'register_cache_clear_tool' ) );
+		if ( 'yes' !== get_option( self::TOGGLE_OPTION_NAME, 'yes' ) ) {
+			return;
 		}
+
+		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
+		add_filter( 'woocommerce_admin_get_user_data_fields', array( $this, 'add_user_data_fields' ) );
+		add_action( 'admin_menu', array( $this, 'register_pages' ) );
+		add_filter( 'woocommerce_debug_tools', array( $this, 'register_cache_clear_tool' ) );
 	}
 
 	/**
