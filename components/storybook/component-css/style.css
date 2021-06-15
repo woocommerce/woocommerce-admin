@@ -994,13 +994,13 @@ body.admin-color-sunrise {
 .woocommerce-ellipsis-menu {
   text-align: center;
 }
-
-.woocommerce-ellipsis-menu__toggle {
+.woocommerce-ellipsis-menu .woocommerce-ellipsis-menu__toggle {
   justify-content: center;
   vertical-align: middle;
   width: 24px;
+  padding: 0;
 }
-.woocommerce-ellipsis-menu__toggle .gridicon {
+.woocommerce-ellipsis-menu .woocommerce-ellipsis-menu__toggle .gridicon {
   transform: rotate(90deg);
 }
 
