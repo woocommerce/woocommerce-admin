@@ -44,6 +44,7 @@ class Analytics {
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_settings_features', array( $this, 'add_feature_toggle' ) );
+		add_action( 'update_option_' . self::TOGGLE_OPTION_NAME, array( $this, 'reload_page_on_toggle' ), 10, 2 );
 
 		if ( 'yes' !== get_option( self::TOGGLE_OPTION_NAME, 'yes' ) ) {
 			return;
@@ -77,6 +78,23 @@ class Analytics {
 		);
 
 		return $features;
+	}
+
+	/**
+	 * Reloads the page when the option is toggled to make sure all Analytics features are loaded.
+	 *
+	 * @param string $old_value Old value.
+	 * @param string $value     New value.
+	 */
+	public static function reload_page_on_toggle( $old_value, $value ) {
+		if ( $old_value === $value ) {
+			return;
+		}
+
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+			wp_safe_redirect( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			exit();
+		}
 	}
 
 	/**
