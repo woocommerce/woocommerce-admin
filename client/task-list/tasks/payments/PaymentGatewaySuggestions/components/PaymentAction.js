@@ -92,7 +92,7 @@ export const PaymentAction = ( {
 	}
 
 	// This isolates core gateways that include setup
-	if ( hasSetup && ! hasPlugins ) {
+	if ( ! hasPlugins ) {
 		if ( isEnabled ) {
 			return <ManageButton />;
 		}
@@ -100,11 +100,11 @@ export const PaymentAction = ( {
 		return <SetupButton />;
 	}
 
-	if ( hasSetup && ! needsSetup ) {
+	if ( ! needsSetup ) {
 		return <ManageButton />;
 	}
 
-	if ( isInstalled && needsSetup && hasPlugins ) {
+	if ( isInstalled && hasPlugins ) {
 		return (
 			<div>
 				<Button
