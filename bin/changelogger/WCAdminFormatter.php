@@ -16,6 +16,9 @@ function dd($x) {
  */
 class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 	use PluginTrait;
+
+
+
 	/**
 	 * Bullet for changes.
 	 *
@@ -84,6 +87,7 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 			trim( substr( $haystack, $i ), "\n" ),
 		);
 	}
+
 	/**
 	 * Parse changelog data into a Changelog object.
 	 *
@@ -109,7 +113,6 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 
 		$bullet = $this->bullet . ' ';
 		$len    = strlen( $bullet );
-		$indent = str_repeat( ' ', $len );
 
 		// Fix newlines and expand tabs.
 		$changelog = strtr( $changelog, array( "\r\n" => "\n" ) );
@@ -124,13 +127,6 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 			);
 		}
 
-
-
-
-		// Everything up to the first level-2 ATX heading is the prologue.
-		list( $prologue, $changelog ) = $this->split( "\n$changelog", "\n## " );
-		$ret->setPrologue( $prologue );
-
 		// Entries make up the rest of the document.
 		$entries = array();
 		while ( '' !== $changelog ) {
@@ -142,7 +138,6 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 			if ( ! preg_match( '/^## +(\[?[^] ]+\]?) - (.+?) *$/', $heading, $m ) ) {
 				throw new InvalidArgumentException( "Invalid heading: $heading" );
 			}
-			$link      = null;
 			$version   = $m[1];
 			$timestamp = $m[2];
 			if ( '[' === $version[0] && ']' === substr( $version, -1 ) ) {
@@ -150,7 +145,6 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 				if ( ! isset( $links[ $version ] ) ) {
 					throw new InvalidArgumentException( "Heading seems to have a linked version, but link was not found: $heading" );
 				}
-				$link                  = $links[ $version ];
 				$usedlinks[ $version ] = true;
 			}
 			if ( $timestamp === $this->unreleased ) {
@@ -170,134 +164,82 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 			$entry     = $this->newChangelogEntry(
 				$version,
 				array(
-					'link'      => $link,
 					'timestamp' => $timestamp,
 				)
 			);
 			$entries[] = $entry;
-
-			// Extract the prologue, if any.
-			list( $prologue, $content ) = $this->split( "\n$content", "\n### ", "\n$bullet" );
-			$entry->setPrologue( $prologue );
 
 			if ( '' === $content ) {
 				// Huh, no changes.
 				continue;
 			}
 
-			// Inject an empty heading if necessary so the change parsing can be more straightforward.
-			if ( '#' !== $content[0] ) {
-				$content = "### \n$content";
-			}
-
 			// Now parse all the subheadings and changes.
 			while ( '' !== $content ) {
-				list( $section, $content )    = $this->split( $content, "\n### " );
-				list( $subheading, $section ) = $this->split( $section, "\n" );
-				$subheading                   = trim( substr( $subheading, 4 ) );
 				$changes                      = array();
-				$cur                          = '';
-				$section                      = explode( "\n", $section );
-				while ( $section ) {
-					$line   = array_shift( $section );
-					$prefix = substr( $line, 0, $len );
-					if ( $prefix === $bullet ) {
-						$cur = trim( $cur );
-						if ( '' !== $cur ) {
-							$changes[] = $cur;
-						}
-						$cur = substr( $line, $len ) . "\n";
-					} elseif ( $prefix === $indent ) {
-						$cur .= substr( $line, $len ) . "\n";
-					} elseif ( '' === $line ) {
-						$cur .= "\n";
-					} else {
-						// If there are no more subsections and the rest of the lines don't contain
-						// bullets, assume it's an epilogue. Otherwise, assume it's an error.
-						$section = $line . "\n" . implode( "\n", $section );
-						if ( '' === $content && strpos( $section, "\n$bullet" ) === false ) {
-							$entry->setEpilogue( $section );
-							break;
-						} else {
-							throw new InvalidArgumentException( "Malformatted changes list near \"$line\"" );
-						}
-					}
+				$section                      = explode( "\n", $content );
+				foreach ($section as $row) {
+					$row = trim($row);
+					//remove bullet
+					$row = str_replace($this->bullet, '', $row);
+					$row_segments = explode(':', $row);
+
+					array_push($changes, array(
+						'subheading' => trim($row_segments[0]),
+						'content' => trim($row_segments[1])
+					));
 				}
-				$cur = trim( $cur );
-				if ( '' !== $cur ) {
-					$changes[] = $cur;
-				}
+
 				foreach ( $changes as $change ) {
-					$author = '';
-					if ( $this->parseAuthors && preg_match( '/ \(([^()\n]+)\)$/', $change, $m ) ) {
-						$author = $m[1];
-						$change = substr( $change, 0, -strlen( $m[0] ) );
-					}
 					$entry->appendChange(
 						$this->newChangeEntry(
 							array(
-								'subheading' => $subheading,
-								'author'     => $author,
-								'content'    => $change,
+								'subheading' => $change['subheading'],
+								'content'    => $change['content'],
 								'timestamp'  => $entryTimestamp,
 							)
 						)
 					);
 				}
+				$content = '';
 			}
 		}
+		print_r($entries);
 		$ret->setEntries( $entries );
-
-		// Append any unused links to the epilogue.
-		$epilogue = $ret->getEpilogue();
-		foreach ( $links as $id => $content ) {
-			if ( empty( $usedlinks[ $id ] ) ) {
-				$epilogue .= "\n[$id]: $content";
-			}
-		}
-		$ret->setEpilogue( $epilogue );
-
-		print_r($ret);
 
 		return $ret;
 	}
-//
-//	public function format( Changelog $changelog ) {
-//		$ret = '';
-//		$dateFormat = 'm/d/Y';
-//		$bullet = '- ';
-//		$indent = str_repeat( ' ', strlen( $bullet ) );
-//
-//		foreach ( $changelog->getEntries() as $entry ) {
-//			$timestamp = $entry->getTimestamp();
-//			$ret .= '== ' . $entry->getVersion() . ' '.$timestamp->format($dateFormat).' =='."\n\n";
-//
-//			$prologue = trim( $entry->getPrologue() );
-//			if ( '' !== $prologue ) {
-//				$ret .= "\n$prologue\n\n";
-//			}
-//
-//			foreach ( $entry->getChangesBySubheading() as $heading => $changes ) {
-//				$post = '';
-//				foreach ( $changes as $change ) {
-//					$text = trim( $change->getContent() );
-//					if ( '' !== $text ) {
-//						if ( $change->getAuthor() !== '' ) {
-//							$text .= " ({$change->getAuthor()})";
-//						}
-//						$ret    .= $bullet . $heading.': '.str_replace( "\n", "\n$indent", $text ) . "\n";
-//						$heading = '';
-//						$post    = "\n";
-//					}
-//				}
-//				$ret .= $post;
-//			}
-//
-//			$ret = trim( $ret ) . "\n\n";
-//		}
-//
-//		$ret = trim( $ret ) . "\n";
-//
-//		return $ret;
-//	}
+
+	public function format( Changelog $changelog ) {
+		$ret = '';
+		$dateFormat = 'm/d/Y';
+		$bullet = '- ';
+		$indent = str_repeat( ' ', strlen( $bullet ) );
+
+		foreach ( $changelog->getEntries() as $entry ) {
+			$timestamp = $entry->getTimestamp();
+			$ret .= '## ' . $entry->getVersion() . ' - '.$timestamp->format($dateFormat)."\n\n";
+
+			$prologue = trim( $entry->getPrologue() );
+			if ( '' !== $prologue ) {
+				$ret .= "\n$prologue\n\n";
+			}
+
+			foreach ( $entry->getChangesBySubheading() as $heading => $changes ) {
+				foreach ( $changes as $change ) {
+					$text = trim( $change->getContent() );
+					if ( '' !== $text ) {
+						$ret    .= $bullet . $heading.': '.str_replace( "\n", "\n$indent", $text ) . "\n";
+					}
+				}
+				$ret .= $post;
+			}
+
+			$ret = trim( $ret ) . "\n\n";
+		}
+
+		$ret = trim( $ret ) . "\n";
+
+		return $ret;
+	}
 }
