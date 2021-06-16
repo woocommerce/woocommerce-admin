@@ -52,20 +52,22 @@ class Features {
 	}
 
 	/**
-	 * Gets the beta feature options as an associative array that can be toggled on or off.
+	 * Gets the optional feature options as an associative array that can be toggled on or off.
 	 *
 	 * @return array
 	 */
-	public static function get_beta_feature_options() {
+	public static function get_optional_feature_options() {
 		$features = [];
 
-		$navigation_class = self::get_feature_class( 'navigation' );
-		$settings_class   = self::get_feature_class( 'settings' );
-		if ( $navigation_class ) {
-			$features['navigation'] = $navigation_class::TOGGLE_OPTION_NAME;
-			$features['settings']   = $settings_class::TOGGLE_OPTION_NAME;
-		}
+		$optional_features = array( 'navigation', 'settings', 'analytics' );
 
+		foreach ( $optional_features as $optional_feature ) {
+			$feature_class = self::get_feature_class( $optional_feature );
+
+			if ( $feature_class ) {
+				$features[ $optional_feature ] = $feature_class::TOGGLE_OPTION_NAME;
+			}
+		}
 		return $features;
 	}
 
@@ -117,7 +119,7 @@ class Features {
 	}
 
 	/**
-	 * Check if a feature is enabled.  Defaults to true for all features unless they are in beta.
+	 * Check if a feature is enabled.  Defaults to true for all features unless they are optional.
 	 *
 	 * @param string $feature Feature slug.
 	 * @return bool
@@ -127,7 +129,7 @@ class Features {
 			return false;
 		}
 
-		$features = self::get_beta_feature_options();
+		$features = self::get_optional_feature_options();
 
 		if ( isset( $features[ $feature ] ) ) {
 			$feature_option = $features[ $feature ];
@@ -144,13 +146,13 @@ class Features {
 	}
 
 	/**
-	 * Enable a toggleable beta feature.
+	 * Enable a toggleable optional feature.
 	 *
 	 * @param string $feature Feature name.
 	 * @return bool
 	 */
 	public static function enable( $feature ) {
-		$features = self::get_beta_feature_options();
+		$features = self::get_optional_feature_options();
 
 		if ( isset( $features[ $feature ] ) ) {
 			update_option( $features[ $feature ], 'yes' );
@@ -161,13 +163,13 @@ class Features {
 	}
 
 	/**
-	 * Disable a toggleable beta feature.
+	 * Disable a toggleable optional feature.
 	 *
 	 * @param string $feature Feature name.
 	 * @return bool
 	 */
 	public static function disable( $feature ) {
-		$features = self::get_beta_feature_options();
+		$features = self::get_optional_feature_options();
 
 		if ( isset( $features[ $feature ] ) ) {
 			update_option( $features[ $feature ], 'no' );

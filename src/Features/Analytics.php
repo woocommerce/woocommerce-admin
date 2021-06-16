@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features;
 
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\API\Reports\Cache;
+use Automattic\WooCommerce\Admin\Features\Features;
 
 /**
  * Contains backend logic for the Analytics feature.
@@ -47,7 +48,7 @@ class Analytics {
 		add_action( 'update_option_' . self::TOGGLE_OPTION_NAME, array( $this, 'reload_page_on_toggle' ), 10, 2 );
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 
-		if ( 'yes' !== get_option( self::TOGGLE_OPTION_NAME, 'yes' ) ) {
+		if ( ! Features::is_enabled( 'analytics' ) ) {
 			return;
 		}
 

@@ -80,7 +80,7 @@ class CoreMenu {
 	 * @return array
 	 */
 	public static function get_categories() {
-		$analytics_enabled = 'yes' === get_option( Analytics::TOGGLE_OPTION_NAME, 'yes' );
+		$analytics_enabled = Features::is_enabled( 'analytics' );
 		return array(
 			array(
 				'title' => __( 'Orders', 'woocommerce-admin' ),
