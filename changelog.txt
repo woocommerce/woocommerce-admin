@@ -1,12 +1,16 @@
-## 2.5 - 06/16/2021
+== 2.6 - 06/16/2021 ==
 
-## 2.4 - 06/16/2021
+== 2.5 - 06/16/2021 == 
 
-## 2.3 - 06/16/2021
+- Fix: dkfjkd
+
+== 2.4 - 06/16/2021 ==
+
+== 2.3 - 06/16/2021 == 
 
 - Fix: kasjdflk
 
-## 2.2.0 - 03/30/2021
+== 2.2.0 - 03/30/2021 == 
 
 - Fix: Check if features are currently being enabled #6688
 - Fix: Fix the activity panel toggle not closing on click #6679
@@ -21,17 +25,17 @@
 - Dev: Update undefined task name properties for help panel tracks #6565
 - Dev: Refactor profile wizard benefits step and add tests #6583
 
-## 2.1.4 - 03/29/2021
+== 2.1.4 - 03/29/2021 == 
 
 - Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
 
-## 2.1.3 - 03/14/2021
+== 2.1.3 - 03/14/2021 == 
 
 - Feature: Increase target audience for business feature step. #6508
 - Fix: Correct a bug where the JP connection flow would not happen when installing JP in the OBW. #6521
 - Fix: Add ustomer name column to CSV export #6556
 
-## 2.1.2 - 03/10/2021
+== 2.1.2 - 03/10/2021 == 
 
 - Fix: Add guard to "Deactivate Plugin" note handlers to prevent fatal error. #6532
 - Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540

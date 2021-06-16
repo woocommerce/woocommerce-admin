@@ -129,45 +129,44 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 
 		// Entries make up the rest of the document.
 		$entries = array();
-		while ( '' !== $changelog ) {
-			// Extract the first entry from the changelog file, then extract the heading from it.
-			list( $content, $changelog ) = $this->split( $changelog, "\n## " );
-			list( $heading, $content )   = $this->split( $content, "\n" );
-
+		preg_match_all('/^\=\=\s+([^\n=]+)\s+\=\=((?:(?!^\=\=).?)+)/ms', $changelog, $matches);
+		foreach ($matches[0] as $section) {
+			$heading_pattern = '/^== +(\[?[^] ]+\]?) - (.+?) ==/';
 			// Parse the heading and create a ChangelogEntry for it.
-			if ( ! preg_match( '/^## +(\[?[^] ]+\]?) - (.+?) *$/', $heading, $m ) ) {
+			preg_match( $heading_pattern, $section, $heading );
+			if ( ! count($heading)) {
 				throw new InvalidArgumentException( "Invalid heading: $heading" );
 			}
-			$version   = $m[1];
-			$timestamp = $m[2];
-			if ( '[' === $version[0] && ']' === substr( $version, -1 ) ) {
-				$version = substr( $version, 1, -1 );
-				if ( ! isset( $links[ $version ] ) ) {
-					throw new InvalidArgumentException( "Heading seems to have a linked version, but link was not found: $heading" );
-				}
-				$usedlinks[ $version ] = true;
-			}
+
+			$version   = $heading[1];
+			$timestamp = $heading[2];
 			if ( $timestamp === $this->unreleased ) {
 				$timestamp      = null;
 				$entryTimestamp = new DateTime( 'now', new DateTimeZone( 'UTC' ) );
+
 			} else {
 				try {
 					$timestamp = new DateTime( $timestamp, new DateTimeZone( 'UTC' ) );
 				} catch ( \Exception $ex ) {
 					throw new InvalidArgumentException( "Heading has an invalid timestamp: $heading", 0, $ex );
 				}
-				if ( strtotime( $m[2], 0 ) !== strtotime( $m[2], 1000000000 ) ) {
+				if ( strtotime( $heading[2], 0 ) !== strtotime( $heading[2], 1000000000 ) ) {
 					throw new InvalidArgumentException( "Heading has a relative timestamp: $heading" );
 				}
 				$entryTimestamp = $timestamp;
+
 			}
-			$entry     = $this->newChangelogEntry(
+
+			$entry = $this->newChangelogEntry(
 				$version,
 				array(
 					'timestamp' => $timestamp,
 				)
 			);
+
+
 			$entries[] = $entry;
+			$content = trim(preg_replace($heading_pattern, '', $section));
 
 			if ( '' === $content ) {
 				// Huh, no changes.
@@ -177,8 +176,8 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 			// Now parse all the subheadings and changes.
 			while ( '' !== $content ) {
 				$changes                      = array();
-				$section                      = explode( "\n", $content );
-				foreach ($section as $row) {
+				$rows                      = explode( "\n", $content );
+				foreach ($rows as $row) {
 					$row = trim($row);
 					//remove bullet
 					$row = str_replace($this->bullet, '', $row);
@@ -203,10 +202,10 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 				}
 				$content = '';
 			}
-		}
-		print_r($entries);
-		$ret->setEntries( $entries );
 
+		}
+
+		$ret->setEntries( $entries );
 		return $ret;
 	}
 
@@ -218,7 +217,7 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 
 		foreach ( $changelog->getEntries() as $entry ) {
 			$timestamp = $entry->getTimestamp();
-			$ret .= '## ' . $entry->getVersion() . ' - '.$timestamp->format($dateFormat)."\n\n";
+			$ret .= '== ' . $entry->getVersion() . ' - '.$timestamp->format($dateFormat)." == \n\n";
 
 			$prologue = trim( $entry->getPrologue() );
 			if ( '' !== $prologue ) {
@@ -232,7 +231,6 @@ class WCAdminFormatter extends KeepAChangelogParser implements FormatterPlugin {
 						$ret    .= $bullet . $heading.': '.str_replace( "\n", "\n$indent", $text ) . "\n";
 					}
 				}
-				$ret .= $post;
 			}
 
 			$ret = trim( $ret ) . "\n\n";
