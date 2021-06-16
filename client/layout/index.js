@@ -3,7 +3,7 @@
  */
 import { SlotFillProvider } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { withSelect, useSelect } from '@wordpress/data';
+import { withSelect } from '@wordpress/data';
 import { Component, lazy, Suspense } from '@wordpress/element';
 import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -14,7 +14,6 @@ import { getHistory, getQuery } from '@woocommerce/navigation';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	PLUGINS_STORE_NAME,
-	OPTIONS_STORE_NAME,
 	useUser,
 	withPluginsHydration,
 	withOptionsHydration,
@@ -231,19 +230,11 @@ const Layout = compose(
 
 const _PageLayout = () => {
 	const { currentUserCan } = useUser();
-	const { isAnalyticsEnabled } = useSelect( ( select ) => {
-		return {
-			isAnalyticsEnabled:
-				select( OPTIONS_STORE_NAME ).getOption(
-					'woocommerce_analytics_enabled'
-				) === 'yes',
-		};
-	} );
 
 	return (
 		<Router history={ getHistory() }>
 			<Switch>
-				{ getPages( isAnalyticsEnabled )
+				{ getPages()
 					.filter(
 						( page ) =>
 							! page.capability ||

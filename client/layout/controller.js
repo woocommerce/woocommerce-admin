@@ -51,7 +51,7 @@ const SettingsGroup = lazy( () =>
 
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
-export const getPages = ( isAnalyticsEnabled ) => {
+export const getPages = () => {
 	const pages = [];
 	const initialBreadcrumbs = [ [ '', wcSettings.woocommerceTranslation ] ];
 
@@ -69,7 +69,7 @@ export const getPages = ( isAnalyticsEnabled ) => {
 		capability: 'manage_woocommerce',
 	} );
 
-	if ( isAnalyticsEnabled ) {
+	if ( window.wcAdminFeatures.analytics ) {
 		pages.push( {
 			container: Dashboard,
 			path: '/analytics/overview',
