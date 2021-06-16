@@ -261,6 +261,7 @@ class DefaultPaymentGateways {
 				'option_name'  => 'woocommerce_onboarding_profile',
 				'operation'    => '=',
 				'value'        => $venue,
+				'default'      => array(),
 			);
 		}
 

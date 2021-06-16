@@ -13,7 +13,9 @@ export const PaymentAction = ( {
 	id,
 	isEnabled = false,
 	isLoading = false,
+	isInstalled = false,
 	isRecommended = false,
+	hasPlugins,
 	manageUrl = null,
 	markConfigured,
 	onSetUp = () => {},
@@ -60,6 +62,19 @@ export const PaymentAction = ( {
 		</Button>
 	);
 
+	const SetupButton = () => (
+		<Button
+			className={ classes }
+			isPrimary={ isRecommended }
+			isSecondary={ ! isRecommended }
+			isBusy={ isBusy }
+			disabled={ isBusy }
+			onClick={ () => handleClick() }
+		>
+			{ setupButtonText }
+		</Button>
+	);
+
 	if ( ! hasSetup ) {
 		if ( ! isEnabled ) {
 			return (
@@ -76,24 +91,20 @@ export const PaymentAction = ( {
 		return <ManageButton />;
 	}
 
-	if ( ! isEnabled ) {
-		return (
-			<div>
-				<Button
-					className={ classes }
-					isPrimary={ isRecommended }
-					isSecondary={ ! isRecommended }
-					isBusy={ isBusy }
-					disabled={ isBusy }
-					onClick={ () => handleClick() }
-				>
-					{ setupButtonText }
-				</Button>
-			</div>
-		);
+	// This isolates core gateways that include setup
+	if ( hasSetup && ! hasPlugins ) {
+		if ( isEnabled ) {
+			return <ManageButton />;
+		}
+
+		return <SetupButton />;
 	}
 
-	if ( needsSetup ) {
+	if ( hasSetup && ! needsSetup ) {
+		return <ManageButton />;
+	}
+
+	if ( isInstalled && needsSetup && hasPlugins ) {
 		return (
 			<div>
 				<Button
@@ -110,5 +121,5 @@ export const PaymentAction = ( {
 		);
 	}
 
-	return <ManageButton />;
+	return <SetupButton />;
 };
