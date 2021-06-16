@@ -18,7 +18,7 @@ import {
  * Internal dependencies
  */
 
-import { PaymentAction } from './PaymentAction';
+import { PaymentAction } from '../PaymentGatewaySuggestions/components/PaymentAction';
 
 const TosPrompt = () =>
 	interpolateComponents( {

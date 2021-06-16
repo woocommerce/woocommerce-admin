@@ -11,7 +11,7 @@ import { Text, useSlot } from '@woocommerce/experimental';
 /**
  * Internal dependencies
  */
-import { PaymentAction } from '../../../components/PaymentAction';
+import { PaymentAction } from '../PaymentAction';
 
 import './List.scss';
 
