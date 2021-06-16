@@ -19,6 +19,17 @@ class Features {
 	protected static $instance = null;
 
 	/**
+	 * Optional features
+	 *
+	 * @var array
+	 */
+	protected static $optional_features = array(
+		'navigation' => array( 'default' => 'no' ),
+		'settings'   => array( 'default' => 'no' ),
+		'analytics'  => array( 'default' => 'yes' ),
+	);
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -59,13 +70,11 @@ class Features {
 	public static function get_optional_feature_options() {
 		$features = [];
 
-		$optional_features = array( 'navigation', 'settings', 'analytics' );
-
-		foreach ( $optional_features as $optional_feature ) {
-			$feature_class = self::get_feature_class( $optional_feature );
+		foreach ( array_keys( self::$optional_features ) as $optional_feature_key ) {
+			$feature_class = self::get_feature_class( $optional_feature_key );
 
 			if ( $feature_class ) {
-				$features[ $optional_feature ] = $feature_class::TOGGLE_OPTION_NAME;
+				$features[ $optional_feature_key ] = $feature_class::TOGGLE_OPTION_NAME;
 			}
 		}
 		return $features;
@@ -139,7 +148,9 @@ class Features {
 				return true;
 			}
 
-			return 'yes' === get_option( $feature_option, 'no' );
+			$default = isset( self::$optional_features[ $feature ]['default'] ) ? self::$optional_features[ $feature ]['default'] : 'no';
+
+			return 'yes' === get_option( $feature_option, $default );
 		}
 
 		return true;
