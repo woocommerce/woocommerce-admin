@@ -151,7 +151,7 @@ export const Connect = ( {
 				</p>
 			) }
 			<Button isPrimary href={ settingsUrl }>
-				{ __( 'Manage', 'woocommerce-admin' ) }
+				{ __( 'Set up', 'woocommerce-admin' ) }
 			</Button>
 		</>
 	);
