@@ -128,6 +128,23 @@ class FilterPicker extends Component {
 		} ) );
 	}
 
+	getAllFilterParams() {
+		const { config } = this.props;
+		const params = [];
+		const getParam = ( filters ) => {
+			filters.forEach( ( filter ) => {
+				if ( filter.settings ) {
+					params.push( filter.settings.param );
+				}
+				if ( filter.subFilters ) {
+					getParam( filter.subFilters );
+				}
+			} );
+		};
+		getParam( config.filters );
+		return params;
+	}
+
 	update( value, additionalQueries = {} ) {
 		const {
 			path,
@@ -147,13 +164,22 @@ class FilterPicker extends Component {
 		config.staticParams.forEach( ( param ) => {
 			update[ param ] = query[ param ];
 		} );
-		// If the filter is being reset to "all", remove any advancedFilters while
-		// leaving any other that may have been added by extensions.
-		if ( config.param === 'filter' && value === 'all' ) {
+
+		// Remove all of this filter's params not associated witth the update while
+		// leaving any other params from any other filter an extension may have added.
+		this.getAllFilterParams().forEach( ( param ) => {
+			if ( ! update[ param ] ) {
+				// Explicitly give value of undefined so it can be removed from the query.
+				update[ param ] = undefined;
+			}
+		} );
+
+		// If the main filter is being set to anything but advanced, remove any advancedFilters.
+		if ( config.param === 'filter' && value !== 'advanced' ) {
 			const resetAdvancedFilters = getQueryFromActiveFilters(
 				[],
 				query,
-				advancedFilters.filters
+				advancedFilters.filters || {}
 			);
 
 			update = {
