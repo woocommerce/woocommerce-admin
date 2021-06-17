@@ -77,7 +77,7 @@
 		"bump-version": "npm run -s install-if-deps-outdated && php ./bin/update-version.php",
 		"wp-env-mysql-port": "node ./docker/wc-admin-wp-env/mysql-port.js",
 		"create-hook-reference": "node ./bin/hook-reference/index.js",
-		"changelogger": "php ./bin/changelogger.php"
+		"changelogger": "./vendor/bin/changelogger"
 	},
 	"husky": {
 		"hooks": {

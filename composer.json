@@ -48,7 +48,9 @@
 		},
         "changelogger": {
 			"changelog": "./changelog.txt",
-        	"formatter": "WCAdmin",
+        	"formatter": {
+        		"filename": "bin/changelogger/WCAdminFormatter.php"
+        	},
 			"versioning": "wordpress",
         	"changes-dir": "./changelogs",
             "types": [
