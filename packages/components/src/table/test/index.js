@@ -84,7 +84,7 @@ describe( 'TableCard', () => {
 				rows={ mockData }
 				rowsPerPage={ 1 }
 				totalRows={ 5 }
-				rowKey={ ( row, index ) => row[ 1 ].value }
+				rowKey={ ( row ) => row[ 1 ].value }
 			/>
 		);
 

@@ -15,7 +15,7 @@ export const Basic = () => (
 			caption="Revenue Last Week"
 			rows={ rows }
 			headers={ headers }
-			rowKey={ ( row, index ) => row[ 0 ].value }
+			rowKey={ ( row ) => row[ 0 ].value }
 		/>
 	</Card>
 );

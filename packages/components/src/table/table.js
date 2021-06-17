@@ -125,7 +125,7 @@ class Table extends Component {
 	}
 
 	getRowKey( row, index ) {
-		if ( this.props.rowKey && 'function' === typeof this.props.rowKey ) {
+		if ( this.props.rowKey && typeof this.props.rowKey === 'function' ) {
 			return this.props.rowKey( row, index );
 		}
 		return index;
