@@ -51,7 +51,7 @@ describe( 'TaskDashboard and TaskList', () => {
 	const updateOptions = jest.fn();
 	const createNotice = jest.fn();
 	const originalClientHeight = Object.getOwnPropertyDescriptor(
-		HTMLElement.prototype,
+		global.HTMLElement.prototype,
 		'clientHeight'
 	);
 
@@ -61,7 +61,7 @@ describe( 'TaskDashboard and TaskList', () => {
 			createNotice,
 			installAndActivatePlugins: jest.fn(),
 		} ) );
-		Object.defineProperty( HTMLElement.prototype, 'clientHeight', {
+		Object.defineProperty( global.HTMLElement.prototype, 'clientHeight', {
 			configurable: true,
 			value: 100,
 		} );
@@ -70,7 +70,7 @@ describe( 'TaskDashboard and TaskList', () => {
 		jest.clearAllMocks();
 		if ( originalClientHeight ) {
 			Object.defineProperty(
-				HTMLElement.prototype,
+				global.HTMLElement.prototype,
 				'offsetHeight',
 				originalClientHeight
 			);
