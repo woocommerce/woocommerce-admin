@@ -1,7 +1,10 @@
 /**
  * External dependencies
  */
-import { apiFetch, dispatch as oldDispatch } from '@wordpress/data-controls';
+import {
+	apiFetch,
+	dispatch as depreciatedDispatch,
+} from '@wordpress/data-controls';
 import { controls } from '@wordpress/data';
 
 /**
@@ -12,7 +15,7 @@ import { STORE_NAME } from './constants';
 import { updateSettingsForGroup, updateErrorForGroup } from './actions';
 
 const dispatch =
-	controls && controls.dispatch ? controls.dispatch : oldDispatch;
+	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
 
 function settingsToSettingsResource( settings ) {
 	return settings.reduce( ( resource, setting ) => {

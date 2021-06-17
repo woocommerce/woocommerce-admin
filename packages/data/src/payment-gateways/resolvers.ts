@@ -1,7 +1,10 @@
 /**
  * External dependencies
  */
-import { apiFetch } from '@wordpress/data-controls';
+import {
+	apiFetch,
+	dispatch as depreciatedDispatch,
+} from '@wordpress/data-controls';
 import { controls } from '@wordpress/data';
 
 /**
@@ -19,6 +22,9 @@ import {
 import { API_NAMESPACE, STORE_KEY } from './constants';
 import { PaymentGateway } from './types';
 
+const dispatch =
+	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
+
 export function* getPaymentGateways() {
 	yield getPaymentGatewaysRequest();
 
@@ -28,7 +34,7 @@ export function* getPaymentGateways() {
 		} );
 		yield getPaymentGatewaysSuccess( response );
 		for ( let i = 0; i < response.length; i++ ) {
-			yield controls.dispatch(
+			yield dispatch(
 				STORE_KEY,
 				'finishResolution',
 				'getPaymentGateway',

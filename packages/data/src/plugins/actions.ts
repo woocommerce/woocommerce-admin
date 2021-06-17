@@ -4,7 +4,7 @@
 import {
 	apiFetch,
 	select,
-	dispatch as oldDispatch,
+	dispatch as depreciatedDispatch,
 } from '@wordpress/data-controls';
 import { controls } from '@wordpress/data';
 import { _n, sprintf } from '@wordpress/i18n';
@@ -23,7 +23,7 @@ import {
 } from './types';
 
 const dispatch =
-	controls && controls.dispatch ? controls.dispatch : oldDispatch;
+	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
 const resolveSelect =
 	controls && controls.resolveSelect ? controls.resolveSelect : select;
 
