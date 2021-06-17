@@ -5,6 +5,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class WriteCommand
+ */
 class WriteCommand extends Command {
 
 	/**
@@ -14,11 +17,21 @@ class WriteCommand extends Command {
 	 */
 	protected static $defaultName = 'write';
 
+	/**
+	 * Configuration.
+	 *
+	 * @var array
+	 */
 	private $config;
 
-	public function __construct(array $config) {
+	/**
+	 * WriteCommand constructor.
+	 *
+	 * @param array $config configuration object.
+	 */
+	public function __construct( array $config ) {
 		parent::__construct();
-	    $this->config = $config;
+		$this->config = $config;
 	}
 
 	/**
@@ -33,32 +46,29 @@ class WriteCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * @param InputInterface $input InputInterface.
+	 * @param InputInterface  $input InputInterface.
 	 * @param OutputInterface $output OutputInterface.
 	 *
 	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
-
-		$file = $this->config['index_file'];
+		$file    = $this->config['index_file'];
 		$version = $input->getArgument( 'version' );
 
 		$contents = $this->mergeSegmentFiles();
 
-		$pattern = '/^## Unreleased((?:(?!^##).)+)/ms';
+		$pattern     = '/^## Unreleased((?:(?!^##).)+)/ms';
 		$replacement = "## Unreleased\n## {$version}\n\n" . $contents . "\n\n";
 
-		$readme = file_get_contents( $file );
+		$readme       = file_get_contents( $file );
 		$new_contents = preg_replace( $pattern, $replacement, $readme );
 		if ( strlen( $new_contents ) === strlen( $readme ) || null === $new_contents ) {
-			$output->writeln( "Failed to write the changelog: please check readme.txt format." );
-			return self::FATAL_EXIT;
+			$output->writeln( 'Failed to write the changelog: please check readme.txt format.' );
+			return 500;
 		}
 
 		file_put_contents( $file, $new_contents );
-
 		$this->deleteSegments();
-
 		$output->writeln( "Index file has been updated with version {$version}." );
 	}
 
@@ -69,10 +79,10 @@ class WriteCommand extends Command {
 	 */
 	protected function mergeSegmentFiles() {
 		$segment_dir = $this->config['segment_file_dir'];
-		$files = glob( $segment_dir . '/*.md' );
-		$contents = '';
+		$files       = glob( $segment_dir . '/*.md' );
+		$contents    = '';
 		foreach ( $files as $file ) {
-			$content = file_get_contents($file);
+			$content   = file_get_contents( $file );
 			$contents .= "\n{$content}";
 		}
 
@@ -84,9 +94,9 @@ class WriteCommand extends Command {
 	 */
 	protected function deleteSegments() {
 		$segment_dir = $this->config['segment_file_dir'];
-		$files = glob( $segment_dir . '/*.md' );
+		$files       = glob( $segment_dir . '/*.md' );
 		foreach ( $files as $file ) {
-			unlink($file);
+			unlink( $file );
 		}
 	}
 }
