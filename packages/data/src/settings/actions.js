@@ -14,6 +14,7 @@ import { NAMESPACE } from '../constants';
 import { STORE_NAME } from './constants';
 import TYPES from './action-types';
 
+// Can be removed in WP 5.9, wp.data is supported in >5.7.
 const resolveSelect =
 	controls && controls.resolveSelect ? controls.resolveSelect : select;
 

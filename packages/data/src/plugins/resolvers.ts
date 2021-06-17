@@ -23,6 +23,7 @@ import {
 } from './actions';
 import { PaypalOnboardingStatus, RecommendedTypes } from './types';
 
+// Can be removed in WP 5.9, wp.data is supported in >5.7.
 const resolveSelect =
 	controls && controls.resolveSelect ? controls.resolveSelect : select;
 type PluginGetResponse = {

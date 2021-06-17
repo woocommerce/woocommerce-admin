@@ -14,6 +14,7 @@ import { NAMESPACE } from '../constants';
 import { STORE_NAME } from './constants';
 import { updateSettingsForGroup, updateErrorForGroup } from './actions';
 
+// Can be removed in WP 5.9.
 const dispatch =
 	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
 

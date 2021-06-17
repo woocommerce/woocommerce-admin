@@ -22,6 +22,7 @@ import {
 import { API_NAMESPACE, STORE_KEY } from './constants';
 import { PaymentGateway } from './types';
 
+// Can be removed in WP 5.9.
 const dispatch =
 	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
 

@@ -22,6 +22,7 @@ import {
 	SelectorKeysWithActions,
 } from './types';
 
+// Can be removed in WP 5.9, wp.data is supported in >5.7.
 const dispatch =
 	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
 const resolveSelect =
