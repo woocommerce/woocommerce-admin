@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { createRef } from '@wordpress/element';
 /**
  * Internal dependencies
@@ -107,12 +107,12 @@ describe( 'VerticalCSSTransition', () => {
 		).toBe( '0' );
 	} );
 
-	it( 'should set transitionDuration to the passed in timeout', () => {
+	it( 'should not set transition variables when not in transition', () => {
 		const nodeRef = createRef< undefined | HTMLDivElement >();
 		render(
 			<VerticalCSSTransition
-				in={ false }
-				timeout={ 10 }
+				in={ true }
+				timeout={ 0 }
 				nodeRef={ nodeRef as React.RefObject< undefined > }
 				classNames="test"
 			>
@@ -125,7 +125,41 @@ describe( 'VerticalCSSTransition', () => {
 		expect(
 			nodeRef.current &&
 				nodeRef.current.parentElement?.style.transitionDuration
-		).toBe( '10ms' );
+		).toBe( '' );
+		expect(
+			nodeRef.current &&
+				nodeRef.current.parentElement?.style.transitionProperty
+		).toBe( '' );
+	} );
+
+	it( 'should add transition style properties when in transition', ( done ) => {
+		const nodeRef = createRef< undefined | HTMLDivElement >();
+		render(
+			<VerticalCSSTransition
+				in={ true }
+				appear
+				timeout={ 0 }
+				nodeRef={ nodeRef as React.RefObject< undefined > }
+				classNames="test"
+				onEntering={ () => {
+					expect(
+						nodeRef.current &&
+							nodeRef.current.parentElement?.style
+								.transitionDuration
+					).toBe( '0ms' );
+					expect(
+						nodeRef.current &&
+							nodeRef.current.parentElement?.style
+								.transitionProperty
+					).toBe( 'max-height' );
+					done();
+				} }
+			>
+				<div ref={ nodeRef as React.RefObject< HTMLDivElement > }>
+					Test
+				</div>
+			</VerticalCSSTransition>
+		);
 	} );
 
 	it( 'should still set css classes on enter transition', ( done ) => {
@@ -201,16 +235,25 @@ describe( 'VerticalCSSTransition', () => {
 	} );
 
 	describe( 'defaultStyle', () => {
-		it( 'should overwrite default style when passed in', () => {
+		it( 'should overwrite default style when passed in', ( done ) => {
 			const nodeRef = createRef< undefined | HTMLDivElement >();
 			render(
 				<VerticalCSSTransition
-					in={ false }
+					in={ true }
+					appear
 					timeout={ 0 }
 					nodeRef={ nodeRef as React.RefObject< undefined > }
 					classNames="test"
 					defaultStyle={ {
 						transitionProperty: 'max-height, opacity',
+					} }
+					onEntering={ () => {
+						expect(
+							nodeRef.current &&
+								nodeRef.current.parentElement?.style
+									.transitionProperty
+						).toBe( 'max-height, opacity' );
+						done();
 					} }
 				>
 					<div ref={ nodeRef as React.RefObject< HTMLDivElement > }>
@@ -218,11 +261,6 @@ describe( 'VerticalCSSTransition', () => {
 					</div>
 				</VerticalCSSTransition>
 			);
-
-			expect(
-				nodeRef.current &&
-					nodeRef.current.parentElement?.style.transitionProperty
-			).toBe( 'max-height, opacity' );
 		} );
 	} );
 } );

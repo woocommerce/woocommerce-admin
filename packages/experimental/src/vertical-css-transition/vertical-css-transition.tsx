@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, useRef } from '@wordpress/element';
 import { CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import { CSSTransition } from 'react-transition-group';
 
@@ -29,6 +29,9 @@ export const VerticalCSSTransition: React.FC< VerticalCSSTransitionProps > = ( {
 	...props
 } ) => {
 	const [ containerHeight, setContainerHeight ] = useState( 0 );
+	const cssTransitionRef = useRef< CSSTransition< HTMLElement > | null >(
+		null
+	);
 	const collapseContainerRef = useCallback(
 		( containerElement: HTMLDivElement ) => {
 			if ( containerElement ) {
@@ -38,31 +41,67 @@ export const VerticalCSSTransition: React.FC< VerticalCSSTransitionProps > = ( {
 		[ children ]
 	);
 
+	const getTimeouts = () => {
+		const { timeout } = props;
+		let exit, enter, appear;
+
+		if ( typeof timeout === 'number' ) {
+			exit = enter = appear = timeout;
+		}
+
+		if ( timeout !== undefined && typeof timeout !== 'number' ) {
+			exit = timeout.exit;
+			enter = timeout.enter;
+			appear = timeout.appear !== undefined ? timeout.appear : enter;
+		}
+		return { exit, enter, appear };
+	};
+
 	const transitionStyles = {
 		entered: { maxHeight: containerHeight },
 		entering: { maxHeight: containerHeight },
 		exiting: { maxHeight: 0 },
 		exited: { maxHeight: 0 },
 	};
-	const transitionDuration =
-		( typeof props.timeout === 'number' ? props.timeout : 500 ) + 'ms';
-	defaultStyle = {
-		transitionProperty: 'max-height',
-		transitionDuration,
-		maxHeight: 0,
-		overflow: 'hidden',
-		...( defaultStyle || {} ),
+
+	const getTransitionStyle = (
+		state: 'entering' | 'entered' | 'exiting' | 'exited'
+	) => {
+		const timeouts = getTimeouts();
+		const appearing =
+			cssTransitionRef.current &&
+			cssTransitionRef.current.context &&
+			cssTransitionRef.current.context.isMounting;
+		let duration;
+		if ( state.startsWith( 'enter' ) ) {
+			duration = timeouts[ appearing ? 'enter' : 'appear' ];
+		} else {
+			duration = timeouts.exit;
+		}
+
+		const styles: React.CSSProperties = {
+			transitionProperty: 'max-height',
+			transitionDuration:
+				duration === undefined ? '500ms' : duration + 'ms',
+			overflow: 'hidden',
+			...( defaultStyle || {} ),
+			...transitionStyles[ state ],
+		};
+		// only include transition styles when entering or exiting.
+		if ( state !== 'entering' && state !== 'exiting' ) {
+			styles.transitionDuration = undefined;
+			styles.transition = undefined;
+			styles.transitionProperty = undefined;
+		}
+		return styles;
 	};
 
 	return (
-		<CSSTransition { ...props }>
+		<CSSTransition { ...props } ref={ cssTransitionRef }>
 			{ ( state: 'entering' | 'entered' | 'exiting' | 'exited' ) => (
 				<div
 					className="vertical-css-transition-container"
-					style={ {
-						...defaultStyle,
-						...transitionStyles[ state ],
-					} }
+					style={ getTransitionStyle( state ) }
 					ref={ collapseContainerRef }
 				>
 					{ children }
