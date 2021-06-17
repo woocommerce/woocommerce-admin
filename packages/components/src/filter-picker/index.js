@@ -9,7 +9,11 @@ import { Component } from '@wordpress/element';
 import { find, partial, last, get, includes } from 'lodash';
 import PropTypes from 'prop-types';
 import { Icon, chevronLeft } from '@wordpress/icons';
-import { flattenFilters, updateQueryString } from '@woocommerce/navigation';
+import {
+	flattenFilters,
+	updateQueryString,
+	getQueryFromActiveFilters,
+} from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -125,8 +129,14 @@ class FilterPicker extends Component {
 	}
 
 	update( value, additionalQueries = {} ) {
-		const { path, query, config, onFilterSelect } = this.props;
-		const update = {
+		const {
+			path,
+			query,
+			config,
+			onFilterSelect,
+			advancedFilters,
+		} = this.props;
+		let update = {
 			[ config.param ]:
 				( config.defaultValue || DEFAULT_FILTER ) === value
 					? undefined
@@ -137,6 +147,20 @@ class FilterPicker extends Component {
 		config.staticParams.forEach( ( param ) => {
 			update[ param ] = query[ param ];
 		} );
+		// If the filter is being reset to "all", remove any advancedFilters while
+		// leaving any other that may have been added by extensions.
+		if ( config.param === 'filter' && value === 'all' ) {
+			const resetAdvancedFilters = getQueryFromActiveFilters(
+				[],
+				query,
+				advancedFilters.filters
+			);
+
+			update = {
+				...update,
+				...resetAdvancedFilters,
+			};
+		}
 		updateQueryString( update, path, query );
 		onFilterSelect( update );
 	}
@@ -387,6 +411,10 @@ FilterPicker.propTypes = {
 	 * Function to be called after filter selection.
 	 */
 	onFilterSelect: PropTypes.func,
+	/**
+	 * Advanced Filters configuration object.
+	 */
+	advancedFilters: PropTypes.object,
 };
 
 FilterPicker.defaultProps = {
