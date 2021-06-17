@@ -133,7 +133,10 @@ class FilterPicker extends Component {
 		const params = [];
 		const getParam = ( filters ) => {
 			filters.forEach( ( filter ) => {
-				if ( filter.settings ) {
+				if (
+					filter.settings &&
+					! params.includes( filter.settings.param )
+				) {
 					params.push( filter.settings.param );
 				}
 				if ( filter.subFilters ) {
