@@ -100,6 +100,10 @@ class DependencyExtractionWebpackPlugin extends WPDependencyExtractionWebpackPlu
 			}
 		}
 
+		if ( request === '@wordpress/data' ) {
+			return null;
+		}
+
 		// Fall back to the WP method
 		return super.mapRequestToDependency( request );
 	}
