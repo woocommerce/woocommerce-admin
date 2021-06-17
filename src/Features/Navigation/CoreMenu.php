@@ -189,7 +189,7 @@ class CoreMenu {
 		}
 
 		$customers_item = array();
-		if ( class_exists( '\Automattic\WooCommerce\Admin\Features\Analytics' ) ) {
+		if ( class_exists( '\Automattic\WooCommerce\Admin\Features\Analytics' ) && Features::is_enabled( 'analytics' ) ) {
 			$customers_item = array(
 				'id'    => 'woocommerce-analytics-customers',
 				'title' => __( 'Customers', 'woocommerce-admin' ),
