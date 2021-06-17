@@ -10,7 +10,6 @@ namespace Automattic\WooCommerce\Admin\Features\Navigation;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
-use Automattic\WooCommerce\Admin\Features\Analytics;
 
 /**
  * CoreMenu class. Handles registering Core menu items.
