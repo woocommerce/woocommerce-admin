@@ -57,8 +57,8 @@ class WriteCommand extends Command {
 
 		$contents = $this->mergeSegmentFiles();
 
-		$pattern     = '/^## Unreleased((?:(?!^##).)+)/ms';
-		$replacement = "## Unreleased\n## {$version}\n\n" . $contents . "\n\n";
+		$pattern     = '/^# Testing instructions((?:(?!^##).)+)/ms';
+		$replacement = "# Testing instructions\n\n## {$version}\n" . $contents . "\n\n";
 
 		$readme       = file_get_contents( $file );
 		$new_contents = preg_replace( $pattern, $replacement, $readme );
@@ -83,7 +83,7 @@ class WriteCommand extends Command {
 		$contents    = '';
 		foreach ( $files as $file ) {
 			$content   = file_get_contents( $file );
-			$contents .= "\n{$content}";
+			$contents .= "\n\n{$content}";
 		}
 
 		return $contents;
