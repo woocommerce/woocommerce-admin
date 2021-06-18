@@ -127,6 +127,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Enhancement: Add remind me later option to task list. #6923
 - Enhancement: Enable Remote Free Extensions List #7144
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
+- Fix: Update the wordpress/babel-preset to avoid crashes in WP5.8 beta2 #7202
+- Fix: Add fallback for the select/dispatch data-controls for older WP versions #7204
 - Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
 - Fix: Issue where summary stats were not showing in Analytics > Stock. #7161
 - Fix: Rule Processing Transformer to handle dotNotation default value #7009
