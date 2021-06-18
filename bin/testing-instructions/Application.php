@@ -32,5 +32,4 @@ class Application extends SymfonyApplication {
 		$output->getFormatter()->setStyle( 'warning', new OutputFormatterStyle( 'black', 'yellow' ) );
 		return parent::doRun( $input, $output );
 	}
-
 }
