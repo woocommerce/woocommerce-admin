@@ -134,5 +134,12 @@ class PaymentGatewaysController {
 				),
 			)
 		);
+
+		wc_admin_record_tracks_event(
+			'tasklist_payment_connect_method',
+			array(
+				'payment_method' => $gateway_id,
+			)
+		);
 	}
 }
