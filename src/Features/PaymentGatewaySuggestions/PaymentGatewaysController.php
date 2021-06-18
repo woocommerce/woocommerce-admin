@@ -141,5 +141,7 @@ class PaymentGatewaysController {
 				'payment_method' => $gateway_id,
 			)
 		);
+
+		wp_safe_redirect( wc_admin_url( '&task=payments' ) );
 	}
 }
