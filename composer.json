@@ -51,7 +51,7 @@
         	"formatter": {
         		"filename": "bin/changelogger/WCAdminFormatter.php"
         	},
-			"versioning": "wordpress",
+			"versioning": "semvar",
         	"changes-dir": "./changelogs",
             "types": [
                 "Fix",
