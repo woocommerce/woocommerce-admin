@@ -25,8 +25,12 @@
 	},
 	"scripts": {
 		"bin": "echo 'bin not installed'",
-		"post-install-cmd": ["@composer bin all install --ansi"],
-		"post-update-cmd": ["@composer bin all update --ansi"],
+		"post-install-cmd": [
+			"@composer bin all install --ansi"
+		],
+		"post-update-cmd": [
+			"@composer bin all update --ansi"
+		],
 		"test": [
 			"phpunit"
 		],
@@ -46,23 +50,23 @@
 		"bamarni-bin": {
 			"target-directory": "bin/composer"
 		},
-        "changelogger": {
+		"changelogger": {
 			"changelog": "./changelog.txt",
-        	"formatter": {
-        		"filename": "bin/changelogger/WCAdminFormatter.php"
-        	},
+			"formatter": {
+				"filename": "bin/changelogger/WCAdminFormatter.php"
+			},
 			"versioning": "semvar",
-        	"changes-dir": "./changelogs",
-            "types": [
-                "Fix",
-                "Add",
-                "Update",
-                "Dev",
-                "Tweak",
-                "Performance",
+			"changes-dir": "./changelogs",
+			"types": [
+				"Fix",
+				"Add",
+				"Update",
+				"Dev",
+				"Tweak",
+				"Performance",
 				"Enhancement"
-            ]
-        }		
+			]
+		}
 	},
 	"autoload": {
 		"psr-4": {
