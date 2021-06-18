@@ -133,8 +133,10 @@ class AddCommand extends Command {
 		$body   .= "\n###";
 		$pattern = '/### (Detailed test instructions:)\R+(.+?)(?=\R+###)/s';
 		preg_match( $pattern, $body, $matches );
+
 		if ( 3 === count( $matches ) ) {
-			return $matches[2];
+			//Remove <!-- --> or <!--- ---> comments.
+			return preg_replace('/(?=<!--)([\s\S]*?)-->/', '', $matches[2]);
 		}
 
 		return '';
