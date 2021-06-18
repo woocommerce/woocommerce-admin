@@ -83,6 +83,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
 - Tweak: Revert Card component removal #7167
 - Fix: Currency display on Orders activity card on homescreen #7181
+- Fix: Report export filtering bug. #7165
 
 == 2.4.0 6/10/2021 ==
 - Dev: Reduce the specificity and complexity of the ReportError component #6846
@@ -172,7 +173,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Fix: Set autoload to false for all remote inbox notifications options. #7060
 - Fix: Issue where summary stats were not showing in Analytics > Stock. #7161
-- Fix: Report export filtering bug. #7165
 - Tweak: Only fetch remote payment gateway recommendations when opted in #6964
 - Tweak: Setup checklist copy revert. #7015
 - Update: Task list component with new Experimental Task list. #6849
