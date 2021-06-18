@@ -1,3 +1,8 @@
+# Unreleased
+
+-   Fix error parsing of plugin data package. #7164
+-   Update dependencies
+
 # 1.3.1
 
 -   Fix, state md5 as npm dependency. #7087

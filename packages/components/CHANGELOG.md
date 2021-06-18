@@ -1,3 +1,8 @@
+# Unreleased
+
+-   Revert Card component removal #7167.
+-   Add rowKey prop to Table and TableCard component. #7196
+
 # 7.0.0
 
 -   Fix style regression with the Chart header. #7002
