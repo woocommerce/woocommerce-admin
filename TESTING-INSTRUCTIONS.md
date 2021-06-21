@@ -4,6 +4,12 @@
 
 ## 2.4.0
 
+### Add padding on table header button #7213
+
+1. Create tax rates
+2. Go to Analytics -> Taxes
+3. Check it the table style renders as expected
+
 ### Add target to the button to open it in a new tab #7110
 
 1. Navigate to WooCommerce -> Settings -> Payments
