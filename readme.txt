@@ -88,6 +88,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Report export filtering bug. #7165
 - Fix:  Use tab char for the CSV injection prevention. #7154
+- Update: Notes to use a date range. #7222
 
 == 2.4.0 6/10/2021 ==
 - Dev: Add Jetpack Backup admin note #6738
