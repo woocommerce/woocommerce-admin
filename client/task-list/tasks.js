@@ -273,9 +273,10 @@ export function getAllTasks( {
 				updateQueryString( { task: 'payments' } );
 			},
 			visible:
-				! woocommercePaymentsInstalled ||
-				! woocommercePaymentsSelectedInProfiler ||
-				! isWCPaySupported( countryCode ),
+				window.wcAdminFeatures[ 'payment-gateway-suggestions' ] &&
+				( ! woocommercePaymentsInstalled ||
+					! woocommercePaymentsSelectedInProfiler ||
+					! isWCPaySupported( countryCode ) ),
 			time: __( '2 minutes', 'woocommerce-admin' ),
 			type: 'setup',
 		},
