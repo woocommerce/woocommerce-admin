@@ -7,13 +7,15 @@ import { updateQueryString } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { useState } from '@wordpress/element';
 
-export const PaymentAction = ( {
+export const Action = ( {
 	hasSetup = false,
 	needsSetup = true,
 	id,
 	isEnabled = false,
 	isLoading = false,
+	isInstalled = false,
 	isRecommended = false,
+	hasPlugins,
 	manageUrl = null,
 	markConfigured,
 	onSetUp = () => {},
@@ -60,6 +62,19 @@ export const PaymentAction = ( {
 		</Button>
 	);
 
+	const SetupButton = () => (
+		<Button
+			className={ classes }
+			isPrimary={ isRecommended }
+			isSecondary={ ! isRecommended }
+			isBusy={ isBusy }
+			disabled={ isBusy }
+			onClick={ () => handleClick() }
+		>
+			{ setupButtonText }
+		</Button>
+	);
+
 	if ( ! hasSetup ) {
 		if ( ! isEnabled ) {
 			return (
@@ -76,24 +91,20 @@ export const PaymentAction = ( {
 		return <ManageButton />;
 	}
 
-	if ( ! isEnabled ) {
-		return (
-			<div>
-				<Button
-					className={ classes }
-					isPrimary={ isRecommended }
-					isSecondary={ ! isRecommended }
-					isBusy={ isBusy }
-					disabled={ isBusy }
-					onClick={ () => handleClick() }
-				>
-					{ setupButtonText }
-				</Button>
-			</div>
-		);
+	// This isolates core gateways that include setup
+	if ( ! hasPlugins ) {
+		if ( isEnabled ) {
+			return <ManageButton />;
+		}
+
+		return <SetupButton />;
 	}
 
-	if ( needsSetup ) {
+	if ( ! needsSetup ) {
+		return <ManageButton />;
+	}
+
+	if ( isInstalled && hasPlugins ) {
 		return (
 			<div>
 				<Button
@@ -110,5 +121,5 @@ export const PaymentAction = ( {
 		);
 	}
 
-	return <ManageButton />;
+	return <SetupButton />;
 };

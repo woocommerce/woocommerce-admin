@@ -24,7 +24,7 @@ import Payments from './tasks/payments';
 import {
 	installActivateAndConnectWcpay,
 	isWCPaySupported,
-} from './tasks/payments/methods/wcpay';
+} from './tasks/payments/PaymentGatewaySuggestions/components/WCPay';
 import { groupListOfObjectsBy } from '../lib/collections';
 import { getLinkTypeAndHref } from '~/store-management-links';
 
