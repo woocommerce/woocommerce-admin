@@ -96,7 +96,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
 - Fix: Include onboarding settings on the analytic pages #7109
-- Fix: Use a tab character in favor of single quote for CSV injection prevention #7154 
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
