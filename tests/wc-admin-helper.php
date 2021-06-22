@@ -46,6 +46,19 @@ class WC_Admin_Tests_Admin_Helper extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test wc_admin_active_in_date_range with custom start date
+	 */
+	public function test_is_wc_admin_active_in_date_range_with_custom_start_date() {
+		update_option( WCAdminHelper::WC_ADMIN_TIMESTAMP_OPTION, time() - DAY_IN_SECONDS );
+		$active_for = WCAdminHelper::is_wc_admin_active_in_date_range( 'week-1', 2 * DAY_IN_SECONDS );
+		$this->assertEquals( $active_for, false );
+
+		update_option( WCAdminHelper::WC_ADMIN_TIMESTAMP_OPTION, time() - ( 4 * DAY_IN_SECONDS ) );
+		$active_for = WCAdminHelper::is_wc_admin_active_in_date_range( 'week-1', 2 * DAY_IN_SECONDS );
+		$this->assertEquals( $active_for, true );
+	}
+
+	/**
 	 * @dataProvider range_provider
 	 * Test wc_admin_active_in_date_range with data provided from range_provider.
 	 *
