@@ -4,13 +4,6 @@
 
 ## 2.4.0
 
-### Localize string for description #7219
-
-1. Switch WP language to non-en.
-2. Turn on WooCommerce plugin and start a Onboarding wizard.
-3. Go to step 2 - Industry and click on "Other" checkbox.
-4. Look at the Description field's placeholder
-
 ### Add target to the button to open it in a new tab #7110
 
 1. Navigate to WooCommerce -> Settings -> Payments
