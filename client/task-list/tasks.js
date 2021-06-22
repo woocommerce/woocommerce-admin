@@ -20,11 +20,11 @@ import { getCategorizedOnboardingProducts } from '../dashboard/utils';
 import { Products } from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
-import Payments from './tasks/payments';
+import { PaymentGatewaySuggestions } from './tasks/PaymentGatewaySuggestions';
 import {
 	installActivateAndConnectWcpay,
 	isWCPaySupported,
-} from './tasks/payments/PaymentGatewaySuggestions/components/WCPay';
+} from './tasks/PaymentGatewaySuggestions/components/WCPay';
 import { groupListOfObjectsBy } from '../lib/collections';
 import { getLinkTypeAndHref } from '~/store-management-links';
 
@@ -266,7 +266,7 @@ export function getAllTasks( {
 				'Choose payment providers and enable payment methods at checkout.',
 				'woocommerce-admin'
 			),
-			container: <Payments />,
+			container: <PaymentGatewaySuggestions query={ query } />,
 			completed: hasPaymentGateway,
 			onClick: () => {
 				onTaskSelect( 'payments' );
