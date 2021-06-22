@@ -4782,12 +4782,12 @@
 "@woocommerce/components@file:packages/components":
   version "7.0.0"
   dependencies:
-    "@woocommerce/csv-export" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-09bd0a2e-b651-488e-aecc-b34e89669f45-1624384854307/node_modules/@woocommerce/csv-export"
-    "@woocommerce/currency" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-09bd0a2e-b651-488e-aecc-b34e89669f45-1624384854307/node_modules/@woocommerce/currency"
-    "@woocommerce/data" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-09bd0a2e-b651-488e-aecc-b34e89669f45-1624384854307/node_modules/@woocommerce/data"
-    "@woocommerce/date" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-09bd0a2e-b651-488e-aecc-b34e89669f45-1624384854307/node_modules/@woocommerce/date"
-    "@woocommerce/experimental" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-09bd0a2e-b651-488e-aecc-b34e89669f45-1624384854307/node_modules/@woocommerce/experimental"
-    "@woocommerce/navigation" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-09bd0a2e-b651-488e-aecc-b34e89669f45-1624384854307/node_modules/@woocommerce/navigation"
+    "@woocommerce/csv-export" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/csv-export"
+    "@woocommerce/currency" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/currency"
+    "@woocommerce/data" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/data"
+    "@woocommerce/date" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/date"
+    "@woocommerce/experimental" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/experimental"
+    "@woocommerce/navigation" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/navigation"
     "@wordpress/api-fetch" "^3.21.5"
     "@wordpress/components" "10.2.0"
     "@wordpress/compose" "3.23.1"
@@ -4831,28 +4831,15 @@
 "@woocommerce/currency@file:packages/currency":
   version "3.1.0"
   dependencies:
-    "@woocommerce/number" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-currency-3.1.0-4d2fde86-6c21-4010-b7ea-956128d58018-1624384854334/node_modules/@woocommerce/number"
+    "@woocommerce/number" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-currency-3.1.0-8d4cbf50-a995-48a2-a8c4-dca4475a0457-1624389962986/node_modules/@woocommerce/number"
     "@wordpress/deprecated" "^2.9.0"
     "@wordpress/html-entities" "2.10.0"
-
-"@woocommerce/customer-effort-score@file:packages/customer-effort-score":
-  version "1.0.0"
-  dependencies:
-    "@wordpress/components" "^11.1.1"
-    "@wordpress/compose" "^3.22.0"
-    "@wordpress/data" "^4.27.3"
-    "@wordpress/element" "2.19.0"
-    "@wordpress/i18n" "3.17.0"
-    "@wordpress/notices" "^2.11.0"
-    classnames "2.3.1"
-    prop-types "15.7.2"
-    react-transition-group "4.4.1"
 
 "@woocommerce/data@file:packages/data":
   version "1.3.1"
   dependencies:
-    "@woocommerce/date" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-data-1.3.1-f7fe4261-2435-4d78-b220-9dcd38cd3199-1624384854334/node_modules/@woocommerce/date"
-    "@woocommerce/navigation" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-data-1.3.1-f7fe4261-2435-4d78-b220-9dcd38cd3199-1624384854334/node_modules/@woocommerce/navigation"
+    "@woocommerce/date" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-data-1.3.1-b48dd85c-fc5b-4465-b34e-7fb53a84e18f-1624389962987/node_modules/@woocommerce/date"
+    "@woocommerce/navigation" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-data-1.3.1-b48dd85c-fc5b-4465-b34e-7fb53a84e18f-1624389962987/node_modules/@woocommerce/navigation"
     "@wordpress/core-data" "3.0.0"
     "@wordpress/i18n" "3.17.0"
     md5 "^2.3.0"
@@ -4864,11 +4851,6 @@
     "@wordpress/date" "3.13.0"
     "@wordpress/i18n" "3.17.0"
     moment "2.29.1"
-
-"@woocommerce/dependency-extraction-webpack-plugin@file:packages/dependency-extraction-webpack-plugin":
-  version "1.6.0"
-  dependencies:
-    "@wordpress/dependency-extraction-webpack-plugin" "^2.8.0"
 
 "@woocommerce/e2e-environment@0.2.2":
   version "0.2.2"
@@ -4896,22 +4878,11 @@
     faker "^5.1.0"
     fishery "^1.2.0"
 
-"@woocommerce/eslint-plugin@file:packages/eslint-plugin":
-  version "1.2.0"
-  dependencies:
-    "@typescript-eslint/parser" "^4.13.0"
-    "@wordpress/eslint-plugin" "^8.0.0"
-    eslint "^7"
-    eslint-plugin-react-hooks "^4.0.4"
-    eslint-plugin-testing-library "^3.10.1"
-    requireindex "^1.2.0"
-    typescript "^4.1.3"
-
 "@woocommerce/experimental@file:packages/experimental":
   version "1.3.0"
   dependencies:
     "@babel/runtime" "7.14.0"
-    "@woocommerce/components" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-experimental-1.3.0-cf33a2a9-cfcb-400e-a8a7-62a15651772c-1624384854338/node_modules/@woocommerce/components"
+    "@woocommerce/components" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-experimental-1.3.0-beac0e2c-af3e-493c-9af3-6d389b8a1734-1624389962990/node_modules/@woocommerce/components"
     "@wordpress/components" "10.2.0"
     "@wordpress/element" "2.19.0"
     "@wordpress/i18n" "3.17.0"
@@ -4924,45 +4895,17 @@
     react-transition-group "4.4.1"
     react-visibility-sensor "5.1.1"
 
-"@woocommerce/explat@file:packages/explat":
-  version "1.0.1"
-  dependencies:
-    "@automattic/explat-client" "0.0.2"
-    "@automattic/explat-client-react-helpers" "0.0.2"
-    cookie "^0.4.1"
-    qs "6.9.6"
-
 "@woocommerce/navigation@file:packages/navigation":
   version "6.0.1"
   dependencies:
-    "@woocommerce/experimental" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-navigation-6.0.1-0fd3f126-e159-4f54-99c8-c121829c8338-1624384854337/node_modules/@woocommerce/experimental"
+    "@woocommerce/experimental" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-navigation-6.0.1-6e565c95-7a6e-433d-ba3c-adfc6c51d98a-1624389962989/node_modules/@woocommerce/experimental"
     history "4.10.1"
     qs "6.9.6"
-
-"@woocommerce/notices@file:packages/notices":
-  version "3.0.0"
-  dependencies:
-    "@babel/runtime" "7.14.0"
-    "@wordpress/a11y" "2.15.2"
-    "@wordpress/data" "4.27.3"
 
 "@woocommerce/number@file:packages/number":
   version "2.1.1"
   dependencies:
     locutus "2.0.14"
-
-"@woocommerce/onboarding@file:packages/onboarding":
-  version "1.0.0"
-  dependencies:
-    "@wordpress/components" "^14.1.0"
-    "@wordpress/i18n" "^4.1.0"
-    gridicons "^3.3.1"
-    interpolate-components "^1.1.1"
-
-"@woocommerce/tracks@file:packages/tracks":
-  version "1.0.1"
-  dependencies:
-    debug "4.3.1"
 
 "@wordpress/a11y@2.15.2":
   version "2.15.2"
@@ -8784,17 +8727,17 @@ copy-webpack-plugin@5.1.2:
     webpack-log "^2.0.0"
 
 core-js-compat@^3.14.0, core-js-compat@^3.15.0, core-js-compat@^3.8.1, core-js-compat@^3.9.0:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.15.0.tgz#e14a371123db9d1c5b41206d3f420643d238b8fa"
-  integrity sha512-8X6lWsG+s7IfOKzV93a7fRYfWRZobOfjw5V5rrq43Vh/W+V6qYxl7Akalsvgab4PFT/4L/pjQbdBUEM36NXKrw==
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.15.1.tgz#1afe233716d37ee021956ef097594071b2b585a7"
+  integrity sha512-xGhzYMX6y7oEGQGAJmP2TmtBLvR4nZmRGEcFa3ubHOq5YEp51gGN9AovVa0AoujGZIq+Wm6dISiYyGNfdflYww==
   dependencies:
     browserslist "^4.16.6"
     semver "7.0.0"
 
 core-js-pure@^3.15.0, core-js-pure@^3.8.2:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.15.0.tgz#c19349ae0be197b8bcf304acf4d91c5e29ae2091"
-  integrity sha512-RO+LFAso8DB6OeBX9BAcEGvyth36QtxYon1OyVsITNVtSKr/Hos0BXZwnsOJ7o+O6KHtK+O+cJIEj9NGg6VwFA==
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.15.1.tgz#8356f6576fa2aa8e54ca6fe02620968ff010eed7"
+  integrity sha512-OZuWHDlYcIda8sJLY4Ec6nWq2hRjlyCqCZ+jCflyleMkVt3tPedDVErvHslyS2nbO+SlBFMSBJYvtLMwxnrzjA==
 
 core-js@3.9.1:
   version "3.9.1"
@@ -8812,9 +8755,9 @@ core-js@^2.4.0, core-js@^2.6.5:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.0.4, core-js@^3.12.1, core-js@^3.6.4, core-js@^3.6.5, core-js@^3.8.2:
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.15.0.tgz#db9554ebce0b6fd90dc9b1f2465c841d2d055044"
-  integrity sha512-GUbtPllXMYRzIgHNZ4dTYTcUemls2cni83Q4Q/TrFONHfhcg9oEGOtaGHfb0cpzec60P96UKPvMkjX1jET8rUw==
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.15.1.tgz#6c08ab88abdf56545045ccf5fd81f47f407e7f1a"
+  integrity sha512-h8VbZYnc9pDzueiS2610IULDkpFFPunHwIpl8yRwFahAEEdSpHlTy3h3z3rKq5h11CaUdBEeRViu9AYvbxiMeg==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
