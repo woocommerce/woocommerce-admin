@@ -89,9 +89,9 @@ export const VerticalCSSTransition: React.FC< VerticalCSSTransitionProps > = ( {
 		};
 		// only include transition styles when entering or exiting.
 		if ( state !== 'entering' && state !== 'exiting' ) {
-			styles.transitionDuration = undefined;
-			styles.transition = undefined;
-			styles.transitionProperty = undefined;
+			delete styles.transitionDuration;
+			delete styles.transition;
+			delete styles.transitionProperty;
 		}
 		return styles;
 	};
