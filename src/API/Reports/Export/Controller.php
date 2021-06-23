@@ -162,6 +162,7 @@ class Controller extends \Automattic\WooCommerce\Admin\API\Reports\Controller {
 
 		$default_export_id = str_replace( '.', '', microtime( true ) );
 		$export_id         = apply_filters( 'woocommerce_admin_export_id', $default_export_id );
+		$export_id 		   = (string) sanitize_file_name( $export_id );
 
 		$total_rows = ReportExporter::queue_report_export( $export_id, $report_type, $report_args, $send_email );
 
