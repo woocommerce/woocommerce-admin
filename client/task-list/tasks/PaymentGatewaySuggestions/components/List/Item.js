@@ -65,7 +65,9 @@ export const Item = ( {
 					<img src={ image } alt={ title } />
 				</CardMedia>
 				<div className="woocommerce-task-payment__description">
-					{ showRecommendedRibbon && <RecommendedRibbon /> }
+					{ showRecommendedRibbon && (
+						<RecommendedRibbon gatewayId={ id } />
+					) }
 					<Text as="h3" className="woocommerce-task-payment__title">
 						{ title }
 						{ isInstalled && needsSetup && !! plugins.length && (

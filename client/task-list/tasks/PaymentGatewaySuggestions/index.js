@@ -22,7 +22,7 @@ import './plugins/Bacs';
 
 const RECOMMENDED_GATEWAY_IDS = [
 	'woocommerce_payments',
-	'mercadopago',
+	'woo-mercado-pago-custom',
 	'stripe',
 ];
 
@@ -130,10 +130,10 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 	}, [] );
 
 	const recommendation = useMemo( () => {
-		for ( const id in RECOMMENDED_GATEWAY_IDS ) {
+		for ( const id of RECOMMENDED_GATEWAY_IDS ) {
 			const gateway = paymentGateways.get( id );
 			if ( gateway ) {
-				return gateway;
+				return id;
 			}
 		}
 		return null;
