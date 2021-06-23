@@ -79,6 +79,7 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\OnboardingTasks',
 			'Automattic\WooCommerce\Admin\API\OnboardingThemes',
 			'Automattic\WooCommerce\Admin\API\NavigationFavorites',
+			'Automattic\WooCommerce\Admin\API\Taxes',
 		);
 
 		if ( Features::is_enabled( 'analytics' ) ) {
@@ -106,7 +107,6 @@ class Init {
 				'Automattic\WooCommerce\Admin\API\Reports\Downloads\Stats\Controller',
 				'Automattic\WooCommerce\Admin\API\Reports\Customers\Controller',
 				'Automattic\WooCommerce\Admin\API\Reports\Customers\Stats\Controller',
-				'Automattic\WooCommerce\Admin\API\Taxes',
 			);
 
 			// The performance indicators controller must be registered last, after other /stats endpoints have been registered.
