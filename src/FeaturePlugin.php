@@ -142,8 +142,8 @@ class FeaturePlugin {
 			return;
 		}
 
-		$this->includes();
 		$this->hooks();
+		$this->includes();
 	}
 
 	/**
