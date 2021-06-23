@@ -28,9 +28,8 @@ add_filter( 'woocommerce_admin_export_id', function ($export_id) {
 2. Repeat the same steps from above. The filename in the link now should be `different_export_id`.
 ### Payment gateway suggestions feature
 
-1. Note that the `payment-gateway-suggestion` feature should be turned on in your current build
-2. Navigate to the homescreen via WooCommerce -> Home
-3. Click on "Set up payments"
+1. Navigate to the homescreen via WooCommerce -> Home
+2. Click on "Set up payments"
 
 #### How to test
 
@@ -40,7 +39,7 @@ Individual payment gateway plugins dictate the settings and connection flow.  Fo
 2. Note that the gateway is installed if it requires a plugin
 3. On the connection step, a button should be presented that links to the gateway's (legacy) settings screen
 4. Delete the plugin
-5. Clone and checkout one of the gateway PRs in this issue - https://github.com/woocommerce/woocommerce-admin/issues/6878
+5. Install the payment gateways in this zip.  They don't need to be activated, but the folder names should match those in the zip. @TODO - add zip URL.
 6. If setting fields are shown, make sure that validation works, input is saved, and is persisted on page refresh.  Make sure the gateway is marked as enabled and not labeled "Requires setup" if all fields are completed.
 7. If the "Connect" button is shown, follow the connection flow.  Make sure that you are returned to the payments task and that the gateway is enabled and marked as configured.
 8. Remove some settings manually under the payment gateway's legacy settings screen.  Make sure the gateway is no longer marked as configured.
@@ -72,7 +71,7 @@ Individual payment gateway plugins dictate the settings and connection flow.  Fo
 1. Set your store country to any country except India
 2. Don't select CBD as an industry during onboarding
 3. Make sure the PayPal connection flow is shown and works as expected
-4. Throw an error in the REST endpoint `WC_PAYPAL_NAMESPACE + '/onboarding/get-params'`
+4. In Chrome, open the console "Network" tab and right-click on the `get-params` request and select "Block request URL"
 5. Refresh the page and note that the manual settings flow is shown
 
 
