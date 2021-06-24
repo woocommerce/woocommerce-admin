@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"allowJs": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"jsx": "react",
+		"jsxFactory": "wp.element.createElement",
+		"jsxFragmentFactory": "wp.element.Fragment"
+	},
+	"exclude": [
+		"node_modules",
+		"build",
+		"build-module",
+		"**/test/*"
+	]
+}
