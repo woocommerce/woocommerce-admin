@@ -19,6 +19,17 @@ class Features {
 	protected static $instance = null;
 
 	/**
+	 * Optional features
+	 *
+	 * @var array
+	 */
+	protected static $optional_features = array(
+		'navigation' => array( 'default' => 'no' ),
+		'settings'   => array( 'default' => 'no' ),
+		'analytics'  => array( 'default' => 'yes' ),
+	);
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -43,7 +54,7 @@ class Features {
 	}
 
 	/**
-	 * Gets a build configured array of enabled WooCommerce Admin features/sections.
+	 * Gets a build configured array of enabled WooCommerce Admin features/sections, but does not respect optionally disabled features.
 	 *
 	 * @return array Enabled Woocommerce Admin features/sections.
 	 */
@@ -52,20 +63,20 @@ class Features {
 	}
 
 	/**
-	 * Gets the beta feature options as an associative array that can be toggled on or off.
+	 * Gets the optional feature options as an associative array that can be toggled on or off.
 	 *
 	 * @return array
 	 */
-	public static function get_beta_feature_options() {
+	public static function get_optional_feature_options() {
 		$features = [];
 
-		$navigation_class = self::get_feature_class( 'navigation' );
-		$settings_class   = self::get_feature_class( 'settings' );
-		if ( $navigation_class ) {
-			$features['navigation'] = $navigation_class::TOGGLE_OPTION_NAME;
-			$features['settings']   = $settings_class::TOGGLE_OPTION_NAME;
-		}
+		foreach ( array_keys( self::$optional_features ) as $optional_feature_key ) {
+			$feature_class = self::get_feature_class( $optional_feature_key );
 
+			if ( $feature_class ) {
+				$features[ $optional_feature_key ] = $feature_class::TOGGLE_OPTION_NAME;
+			}
+		}
 		return $features;
 	}
 
@@ -117,40 +128,57 @@ class Features {
 	}
 
 	/**
-	 * Check if a feature is enabled.  Defaults to true for all features unless they are in beta.
+	 * Gets a build configured array of enabled WooCommerce Admin respecting optionally disabled features.
+	 *
+	 * @return array Enabled Woocommerce Admin features/sections.
+	 */
+	public static function get_available_features() {
+		$features                      = self::get_features();
+		$optional_features_unavailable = [];
+
+		foreach ( array_keys( self::$optional_features ) as $optional_feature_key ) {
+			$feature_class = self::get_feature_class( $optional_feature_key );
+
+			if ( $feature_class ) {
+				$default = isset( self::$optional_features[ $optional_feature_key ]['default'] ) ?
+					self::$optional_features[ $optional_feature_key ]['default'] :
+					'no';
+
+				// Check if the feature is currently being enabled, if it is continue.
+				/* phpcs:disable WordPress.Security.NonceVerification */
+				$feature_option = $feature_class::TOGGLE_OPTION_NAME;
+				if ( isset( $_POST[ $feature_option ] ) && '1' === $_POST[ $feature_option ] ) {
+					continue;
+				}
+
+				if ( 'yes' !== get_option( $feature_class::TOGGLE_OPTION_NAME, $default ) ) {
+					$optional_features_unavailable[] = $optional_feature_key;
+				}
+			}
+		}
+
+		return array_values( array_diff( $features, $optional_features_unavailable ) );
+	}
+
+	/**
+	 * Check if a feature is enabled.
 	 *
 	 * @param string $feature Feature slug.
 	 * @return bool
 	 */
 	public static function is_enabled( $feature ) {
-		if ( ! self::exists( $feature ) ) {
-			return false;
-		}
-
-		$features = self::get_beta_feature_options();
-
-		if ( isset( $features[ $feature ] ) ) {
-			$feature_option = $features[ $feature ];
-			// Check if the feature is currently being enabled.
-			/* phpcs:disable WordPress.Security.NonceVerification */
-			if ( isset( $_POST[ $feature_option ] ) && '1' === $_POST[ $feature_option ] ) {
-				return true;
-			}
-
-			return 'yes' === get_option( $feature_option, 'no' );
-		}
-
-		return true;
+		$available_features = self::get_available_features();
+		return in_array( $feature, $available_features, true );
 	}
 
 	/**
-	 * Enable a toggleable beta feature.
+	 * Enable a toggleable optional feature.
 	 *
 	 * @param string $feature Feature name.
 	 * @return bool
 	 */
 	public static function enable( $feature ) {
-		$features = self::get_beta_feature_options();
+		$features = self::get_optional_feature_options();
 
 		if ( isset( $features[ $feature ] ) ) {
 			update_option( $features[ $feature ], 'yes' );
@@ -161,13 +189,13 @@ class Features {
 	}
 
 	/**
-	 * Disable a toggleable beta feature.
+	 * Disable a toggleable optional feature.
 	 *
 	 * @param string $feature Feature name.
 	 * @return bool
 	 */
 	public static function disable( $feature ) {
-		$features = self::get_beta_feature_options();
+		$features = self::get_optional_feature_options();
 
 		if ( isset( $features[ $feature ] ) ) {
 			update_option( $features[ $feature ], 'no' );

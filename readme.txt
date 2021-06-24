@@ -78,15 +78,27 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: SlotFill to Abbreviated Notification panel #7091
 - Add: Add unit tests around extended payment gateway controller #7133
 - Add: Add payment gateway suggestion unit tests #7142
+- Add: Feature toggle to disable Analytics UI #7168
 - Fix: WCPay not working in local payments task #7151
 - Fix: Include onboarding settings on the analytic pages #7109
 - Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
+- Fix: Fixing button state logic for remote payment gateways #7200
+- Fix: Skip schedule customer data deletion on site deletion #7214
+- Fix: Load Analytics API only when feature is turned on #7193
 - Tweak: Revert Card component removal #7167
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Report export filtering bug. #7165
 - Fix: Localize string for description #7219
+- Fix: Use tab char for the CSV injection prevention. #7154
+- Fix: Use saved form values if available when switching tabs #7226
+- Fix: The use of gridicons for Analytics section controls. #7237
+- Dev: Add `woocommerce_admin_export_id` filter for customizing the export file name #7178
+- Update: Notes to use a date range. #7222
 
 == 2.4.0 6/10/2021 ==
+- Dev: Add Jetpack Backup admin note #6738
+- Add: Adding WCPay payment configuration defaults. #7097
+- Fix: Transformer casing is incorrect and creates an error on case-sensitive systems #7104
 - Dev: Reduce the specificity and complexity of the ReportError component #6846
 - Add: Create onboarding package to house refactored WCPay card and relevant components #7058
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
@@ -164,6 +176,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
 - Fix: Bug with Orders Report coupon exclusion filter. #7021
 - Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
+- Fix: Attribute filter bug with "any X" variations. #7046
 - Fix: Notices not dissapearing. #7077
 - Fix: Keyboard accessibility on the free features tab. #7149
 - Fix: Fix error handling when remote free extension API returns empty array. #7147
