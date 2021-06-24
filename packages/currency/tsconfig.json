@@ -1,11 +1,7 @@
 {
-	"extends": "../../tsconfig",
+	"extends": "../tsconfig",
 	"compilerOptions": {
-		"noEmit": false,
 		"rootDir": "src",
 		"outDir": "build-module"
-	},
-	"exclude": [
-		"**/test/*"
-	]
+	}
 }
