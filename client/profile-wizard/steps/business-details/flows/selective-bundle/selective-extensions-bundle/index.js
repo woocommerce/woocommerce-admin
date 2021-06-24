@@ -20,7 +20,7 @@ import { AppIllustration } from '../app-illustration';
 import './style.scss';
 import { setAllPropsToValue } from '~/lib/collections';
 import { getCountryCode } from '~/dashboard/utils';
-import { isWCPaySupported } from '~/task-list/tasks/payments/PaymentGatewaySuggestions/components/WCPay';
+import { isWCPaySupported } from '~/task-list/tasks/PaymentGatewaySuggestions/components/WCPay';
 
 const generatePluginDescriptionWithLink = (
 	description,
