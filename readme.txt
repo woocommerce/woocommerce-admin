@@ -86,6 +86,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Skip schedule customer data deletion on site deletion #7214
 - Fix: Load Analytics API only when feature is turned on #7193
 - Tweak: Revert Card component removal #7167
+- Tweak: Removed unused feature flags #7233
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Report export filtering bug. #7165
 - Fix:  Use tab char for the CSV injection prevention. #7154
