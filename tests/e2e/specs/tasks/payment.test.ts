@@ -38,6 +38,21 @@ describe( 'Payment setup task', () => {
 		await paymentsSetup.isDisplayed();
 	} );
 
+	it( 'Saving valid bank account transfer details enables the payment method', async () => {
+		await paymentsSetup.goToPaymentMethodSetup( 'bacs' );
+		await bankTransferSetup.saveAccountDetails( {
+			accountNumber: '1234',
+			accountName: 'Savings',
+			bankName: 'TestBank',
+			sortCode: '12',
+			iban: '12 3456 7890',
+			swiftCode: 'ABBA',
+		} );
+
+		await paymentsSetup.isDisplayed();
+		await paymentsSetup.methodHasBeenSetup( 'bacs' );
+	} );
+
 	it( 'Enabling cash on delivery enables the payment method', async () => {
 		await paymentsSetup.enableCashOnDelivery();
 		await paymentsSetup.methodHasBeenSetup( 'cod' );
