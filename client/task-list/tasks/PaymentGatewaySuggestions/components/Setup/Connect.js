@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
@@ -75,8 +75,14 @@ export const Connect = ( {
 					markConfigured( id );
 					createNotice(
 						'success',
-						title +
-							__( ' connected successfully', 'woocommerce-admin' )
+						sprintf(
+							/* translators: %s = title of the payment gateway */
+							__(
+								'%s configured successfully',
+								'woocommerce-admin'
+							),
+							title
+						)
 					);
 				}
 			} )
