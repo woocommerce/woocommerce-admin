@@ -14,7 +14,7 @@ export class AnalyticsOverview extends Analytics {
 			list.map( async ( item ) => ( {
 				title: await item.evaluate( ( element ) => {
 					const header = element.querySelector( 'h2' );
-					return header.textContent;
+					return header?.textContent;
 				} ),
 				element: item,
 			} ) )
@@ -29,20 +29,20 @@ export class AnalyticsOverview extends Analytics {
 			const ellipsisMenu = await section.element.$(
 				'.woocommerce-ellipsis-menu button'
 			);
-			ellipsisMenu.click();
+			ellipsisMenu?.click();
 		}
 	}
 
 	async removeSection( sectionTitle: string ) {
 		await this.openSectionEllipsis( sectionTitle );
 		const item = await waitForElementByText( 'div', 'Remove section' );
-		await item.click();
+		await item?.click();
 	}
 
 	async addSection( sectionTitle: string ) {
 		await this.page.waitForSelector( "button[title='Add more sections']" );
 		await this.page.click( "button[title='Add more sections']" );
 		const item = await waitForElementByText( 'span', sectionTitle );
-		await item.click();
+		await item?.click();
 	}
 }
