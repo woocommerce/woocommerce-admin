@@ -84,10 +84,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
 - Fix: Fixing button state logic for remote payment gateways #7200
 - Fix: Skip schedule customer data deletion on site deletion #7214
+- Fix: Load Analytics API only when feature is turned on #7193
 - Tweak: Revert Card component removal #7167
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Report export filtering bug. #7165
-- Fix:  Use tab char for the CSV injection prevention. #7154
+- Fix: Use tab char for the CSV injection prevention. #7154
+- Fix: Use saved form values if available when switching tabs #7226
+- Fix: The use of gridicons for Analytics section controls. #7237
+- Dev: Add `woocommerce_admin_export_id` filter for customizing the export file name #7178
 - Update: Notes to use a date range. #7222
 
 == 2.4.0 6/10/2021 ==
