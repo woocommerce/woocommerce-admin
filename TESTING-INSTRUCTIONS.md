@@ -438,7 +438,7 @@ wp.hooks.addFilter( 'woocommerce_admin_profile_wizard_steps', 'woocommerce-admin
 UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 5 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
 ```
 
--   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications).
+-   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/releases).
 -   Now run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools) manually.
 -   You should have received an email like the image above.
 -   Verify the note's status is `sent`. You can use an SQL statement like this:
