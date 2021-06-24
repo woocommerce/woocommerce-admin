@@ -270,7 +270,7 @@ In case the report shows "no data", please reimport historical data by following
 -   Create a brand new site.
 -   Install a plugin to log every sent email (you can use [WP mail logging](https://wordpress.org/plugins/wp-mail-logging/)).
 -   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/releases).
--   Create a [new note type `email`](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications).
+-   Create a [new note type `email`](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications#3---email).
 -   Now go to WooCommerce > Settings > Email (`/wp-admin/admin.php?page=wc-settings&tab=email`) and check the checkbox `Enable email insights` and save changes.
 -   Now run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools) manually.
 -   Go to Tools > WP Mail Logging Log (`/wp-admin/tools.php?page=wpml_plugin_log`) and verify the testing email note was sent.
