@@ -4779,79 +4779,6 @@
     create-hmac "1.1.7"
     oauth-1.0a "2.2.6"
 
-"@woocommerce/components@file:packages/components":
-  version "7.0.0"
-  dependencies:
-    "@woocommerce/csv-export" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/csv-export"
-    "@woocommerce/currency" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/currency"
-    "@woocommerce/data" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/data"
-    "@woocommerce/date" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/date"
-    "@woocommerce/experimental" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/experimental"
-    "@woocommerce/navigation" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-components-7.0.0-18e8e214-cdeb-45b8-aeb4-7394d6ca24ff-1624389962993/node_modules/@woocommerce/navigation"
-    "@wordpress/api-fetch" "^3.21.5"
-    "@wordpress/components" "10.2.0"
-    "@wordpress/compose" "3.23.1"
-    "@wordpress/date" "3.13.0"
-    "@wordpress/deprecated" "^3.1.1"
-    "@wordpress/dom" "2.16.0"
-    "@wordpress/element" "2.19.0"
-    "@wordpress/html-entities" "2.10.0"
-    "@wordpress/i18n" "3.17.0"
-    "@wordpress/icons" "^2.10.3"
-    "@wordpress/keycodes" "2.18.0"
-    "@wordpress/viewport" "2.24.0"
-    classnames "^2.3.1"
-    core-js "3.9.1"
-    d3-axis "1.0.12"
-    d3-format "1.4.5"
-    d3-scale "2.2.2"
-    d3-scale-chromatic "1.5.0"
-    d3-selection "1.4.2"
-    d3-shape "1.3.7"
-    d3-time-format "2.3.0"
-    dompurify "2.2.9"
-    emoji-flags "1.3.0"
-    gridicons "3.3.1"
-    interpolate-components "1.1.1"
-    md5 "2.3.0"
-    memoize-one "5.1.1"
-    moment "2.29.1"
-    prop-types "15.7.2"
-    qs "6.9.6"
-    react-dates "^17.2.0"
-    react-router-dom "5.2.0"
-    react-transition-group "4.4.1"
-
-"@woocommerce/csv-export@file:packages/csv-export":
-  version "1.3.1"
-  dependencies:
-    browser-filesaver "1.1.1"
-    moment "2.29.1"
-
-"@woocommerce/currency@file:packages/currency":
-  version "3.1.0"
-  dependencies:
-    "@woocommerce/number" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-currency-3.1.0-8d4cbf50-a995-48a2-a8c4-dca4475a0457-1624389962986/node_modules/@woocommerce/number"
-    "@wordpress/deprecated" "^2.9.0"
-    "@wordpress/html-entities" "2.10.0"
-
-"@woocommerce/data@file:packages/data":
-  version "1.3.1"
-  dependencies:
-    "@woocommerce/date" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-data-1.3.1-b48dd85c-fc5b-4465-b34e-7fb53a84e18f-1624389962987/node_modules/@woocommerce/date"
-    "@woocommerce/navigation" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-data-1.3.1-b48dd85c-fc5b-4465-b34e-7fb53a84e18f-1624389962987/node_modules/@woocommerce/navigation"
-    "@wordpress/core-data" "3.0.0"
-    "@wordpress/i18n" "3.17.0"
-    md5 "^2.3.0"
-    rememo "^3.0.0"
-
-"@woocommerce/date@file:packages/date":
-  version "3.0.0"
-  dependencies:
-    "@wordpress/date" "3.13.0"
-    "@wordpress/i18n" "3.17.0"
-    moment "2.29.1"
-
 "@woocommerce/e2e-environment@0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@woocommerce/e2e-environment/-/e2e-environment-0.2.2.tgz#1a5a415689eef1b784270282035330133c275630"
@@ -4877,35 +4804,6 @@
     config "3.3.3"
     faker "^5.1.0"
     fishery "^1.2.0"
-
-"@woocommerce/experimental@file:packages/experimental":
-  version "1.3.0"
-  dependencies:
-    "@babel/runtime" "7.14.0"
-    "@woocommerce/components" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-experimental-1.3.0-beac0e2c-af3e-493c-9af3-6d389b8a1734-1624389962990/node_modules/@woocommerce/components"
-    "@wordpress/components" "10.2.0"
-    "@wordpress/element" "2.19.0"
-    "@wordpress/i18n" "3.17.0"
-    "@wordpress/icons" "2.10.3"
-    "@wordpress/keycodes" "2.18.0"
-    classnames "^2.3.1"
-    dompurify "2.2.9"
-    gridicons "3.3.1"
-    moment "2.29.1"
-    react-transition-group "4.4.1"
-    react-visibility-sensor "5.1.1"
-
-"@woocommerce/navigation@file:packages/navigation":
-  version "6.0.1"
-  dependencies:
-    "@woocommerce/experimental" "file:../../Library/Caches/Yarn/v6/npm-@woocommerce-navigation-6.0.1-6e565c95-7a6e-433d-ba3c-adfc6c51d98a-1624389962989/node_modules/@woocommerce/experimental"
-    history "4.10.1"
-    qs "6.9.6"
-
-"@woocommerce/number@file:packages/number":
-  version "2.1.1"
-  dependencies:
-    locutus "2.0.14"
 
 "@wordpress/a11y@2.15.2":
   version "2.15.2"

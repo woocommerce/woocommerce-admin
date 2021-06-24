@@ -5,9 +5,7 @@
 	"private": true,
 	"workspaces": {
 		"packages": [
-			"packages/currency",
-			"packages/experimental",
-			"packages/number"
+			"packages/*"
 		]
 	},
 	"repository": {
