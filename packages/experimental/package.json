@@ -47,5 +47,11 @@
 		"@storybook/react": "6.2.9",
 		"@types/dompurify": "2.2.2",
 		"@types/react-transition-group": "4.4.1"
+	},
+	"scripts": {
+		"clean": "tsc --build ./tsconfig.json ./tsconfig-cjs.json --clean && npx rimraf dist",
+		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"start": "yarn run build -- --watch",
+		"prepack": "yarn run clean && yarn run build"
 	}
 }

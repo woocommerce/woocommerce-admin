@@ -9,5 +9,5 @@
         "outDir": "build",
         "composite": false,
         "incremental": true
-    }
+    },
 }
