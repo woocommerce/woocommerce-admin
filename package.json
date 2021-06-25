@@ -29,7 +29,7 @@
 		"analyze": "cross-env NODE_ENV=production ANALYZE=true webpack",
 		"postbuild": "yarn run -s i18n:pot && yarn run -s i18n:build",
 		"build:feature-config": "php bin/generate-feature-config.php",
-		"build:packages": "yarn node ./bin/packages/build.js",
+		"build:packages": "yarn workspaces run prepack && yarn node ./bin/packages/build.js",
 		"build:release": "./bin/build-plugin-zip.sh",
 		"clean": "rimraf ./dist ./packages/*/build ./packages/*/build-module ./packages/*/build-style",
 		"predev": "yarn run -s install-if-deps-outdated && php ./bin/update-version.php",
