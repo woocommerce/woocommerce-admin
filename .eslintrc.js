@@ -17,6 +17,12 @@ module.exports = {
 		'@wordpress/no-unsafe-wp-apis': 'warn',
 		'jest/valid-title': 'warn',
 		'@wordpress/no-global-active-element': 'warn',
+		'no-unused-vars': [
+			'error',
+			{
+				varsIgnorePattern: 'createElement',
+			},
+		],
 	},
 	overrides: [
 		{
@@ -38,6 +44,12 @@ module.exports = {
 				'no-shadow': 'off',
 				'@typescript-eslint/no-shadow': [ 'error' ],
 				'@typescript-eslint/no-empty-function': 'off',
+				'@typescript-eslint/no-unused-vars': [
+					'error',
+					{
+						varsIgnorePattern: 'createElement',
+					},
+				],
 			},
 		},
 	],
