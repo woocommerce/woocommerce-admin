@@ -74,5 +74,11 @@
 	"devDependencies": {
 		"@storybook/addon-console": "1.2.3",
 		"@storybook/react": "6.2.9"
+	},
+	"scripts": {
+		"clean": "npx rimraf build build-*",
+		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"start": "yarn run build -- --watch",
+		"prepack": "yarn run clean && yarn run build"
 	}
 }

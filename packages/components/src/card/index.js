@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { Component } from '@wordpress/element';
+import { createElement, Component } from '@wordpress/element';
 import classnames from 'classnames';
 import deprecated from '@wordpress/deprecated';
 import PropTypes from 'prop-types';
