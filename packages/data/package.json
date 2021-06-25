@@ -23,7 +23,11 @@
 	"dependencies": {
 		"@woocommerce/date": "3.0.0",
 		"@woocommerce/navigation": "6.0.1",
+		"@wordpress/compose": "3.23.1",
 		"@wordpress/core-data": "3.0.0",
+		"@wordpress/data": "5.0.0",
+		"@wordpress/data-controls": "2.0.0",
+		"@wordpress/element": "2.19.0",
 		"@wordpress/i18n": "3.17.0",
 		"md5": "^2.3.0",
 		"rememo": "^3.0.0"
@@ -33,5 +37,11 @@
 	},
 	"peerDependencies": {
 		"@wordpress/core-data": "^3.0.0"
+	},
+	"scripts": {
+		"clean": "npx rimraf build build-*",
+		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"start": "yarn run build -- --watch",
+		"prepack": "yarn run clean && yarn run build"
 	}
 }
