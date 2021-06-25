@@ -8,8 +8,8 @@
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"jsx": "react",
-		"jsxFactory": "wp.element.createElement",
-		"jsxFragmentFactory": "wp.element.Fragment"
+		"jsxFactory": "createElement",
+		"jsxFragmentFactory": "Fragment"
 	},
 	"exclude": [
 		"node_modules",
