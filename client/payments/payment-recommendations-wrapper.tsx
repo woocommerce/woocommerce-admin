@@ -20,7 +20,7 @@ export const PaymentRecommendations: React.FC< EmbeddedBodyProps > = ( {
 	tab,
 	section,
 } ) => {
-	if ( true ) {
+	if ( page === 'wc-settings' && tab === 'checkout' && ! section ) {
 		return (
 			<Suspense fallback={ null }>
 				<PaymentRecommendationsChunk />
