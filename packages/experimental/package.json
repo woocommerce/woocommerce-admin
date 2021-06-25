@@ -46,10 +46,12 @@
 		"@storybook/addon-console": "1.2.3",
 		"@storybook/react": "6.2.9",
 		"@types/dompurify": "2.2.2",
-		"@types/react-transition-group": "4.4.1"
+		"@types/react-transition-group": "4.4.1",
+		"@testing-library/react": "11.2.7",
+		"@testing-library/user-event": "13.1.9"
 	},
 	"scripts": {
-		"clean": "tsc --build ./tsconfig.json ./tsconfig-cjs.json --clean && npx rimraf dist",
+		"clean": "npx rimraf build build-*",
 		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"start": "yarn run build -- --watch",
 		"prepack": "yarn run clean && yarn run build"

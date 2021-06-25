@@ -1,13 +1,6 @@
 {
-    "extends": "./tsconfig",
+    "extends": "../tsconfig-cjs",
     "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "declaration": false,
-        "declarationMap": false,
-        "declarationDir": null,
-        "outDir": "build",
-        "composite": false,
-        "incremental": true
-    },
+        "outDir": "build"
+    }
 }
