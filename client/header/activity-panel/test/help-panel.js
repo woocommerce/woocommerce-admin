@@ -42,7 +42,7 @@ describe( 'Activity Panels', () => {
 					text: 'PayFast',
 				},
 				{
-					id: 'eway_payments',
+					id: 'eway',
 					text: 'eWAY',
 				},
 			];

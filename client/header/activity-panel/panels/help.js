@@ -147,7 +147,7 @@ function getPaymentGatewaySuggestions( props ) {
 			link:
 				'https://docs.woocommerce.com/document/payfast-payment-gateway/?utm_source=help_panel',
 		},
-		paymentGatewaySuggestions.eway_payments && {
+		paymentGatewaySuggestions.eway && {
 			title: __( 'eWAY Setup and Configuration', 'woocommerce-admin' ),
 			link:
 				'https://docs.woocommerce.com/document/eway/?utm_source=help_panel',
