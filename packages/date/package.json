@@ -23,12 +23,19 @@
 	"dependencies": {
 		"@wordpress/date": "3.13.0",
 		"@wordpress/i18n": "3.17.0",
-		"moment": "2.29.1"
+		"moment": "2.29.1",
+		"qs": "6.9.6"
 	},
 	"peerDependencies": {
 		"lodash": "^4.17.0"
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"scripts": {
+		"clean": "npx rimraf build build-*",
+		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"start": "yarn run build -- --watch",
+		"prepack": "yarn run clean && yarn run build"
 	}
 }
