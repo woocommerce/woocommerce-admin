@@ -32,5 +32,11 @@
 	},
 	"devDependencies": {
 		"@types/cookie": "0.4.0"
+	},
+	"scripts": {
+		"clean": "npx rimraf build build-*",
+		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"start": "yarn run build -- --watch",
+		"prepack": "yarn run clean && yarn run build"
 	}
 }
