@@ -8,6 +8,7 @@ import url from 'url';
 import { isString } from 'lodash';
 import md5 from 'md5';
 import deprecated from '@wordpress/deprecated';
+import { createElement } from '@wordpress/element';
 
 /**
  * Display a users Gravatar.

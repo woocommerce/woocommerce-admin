@@ -4,6 +4,7 @@
 import { __, sprintf } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
 import deprecated from '@wordpress/deprecated';
+import { createElement } from '@wordpress/element';
 
 /**
  * Display a number with a styled border.
