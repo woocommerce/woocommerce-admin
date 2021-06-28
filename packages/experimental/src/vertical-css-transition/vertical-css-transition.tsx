@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import { useState, useCallback, useRef } from '@wordpress/element';
+import {
+	createElement,
+	useState,
+	useCallback,
+	useRef,
+} from '@wordpress/element';
 import { CSSTransitionProps } from 'react-transition-group/CSSTransition';
 import { CSSTransition } from 'react-transition-group';
 
