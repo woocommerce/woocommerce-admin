@@ -42,6 +42,7 @@ type TaskItemProps = {
 	content: string;
 	expandable?: boolean;
 	expanded?: boolean;
+	showActionButton?: boolean;
 	level?: TaskLevel;
 	action: (
 		event?: React.MouseEvent | React.KeyboardEvent,
@@ -73,6 +74,27 @@ const OptionalTaskTooltip: React.FC< {
 	return <Tooltip text={ tooltip }>{ children }</Tooltip>;
 };
 
+const OptionalExpansionWrapper: React.FC< {
+	expandable: boolean;
+	expanded: boolean;
+} > = ( { children, expandable, expanded } ) => {
+	if ( ! expandable ) {
+		return <>{ children }</>;
+	}
+	return (
+		<VerticalCSSTransition
+			timeout={ 500 }
+			in={ expanded }
+			classNames="woocommerce-task-list__item-content"
+			defaultStyle={ {
+				transitionProperty: 'max-height, opacity',
+			} }
+		>
+			{ children }
+		</VerticalCSSTransition>
+	);
+};
+
 export const TaskItem: React.FC< TaskItemProps > = ( {
 	completed,
 	title,
@@ -85,6 +107,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	content,
 	expandable = false,
 	expanded = false,
+	showActionButton,
 	level = 3,
 	action,
 	actionLabel,
@@ -94,6 +117,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 		'level-2': level === 2 && ! completed,
 		'level-1': level === 1 && ! completed,
 	} );
+	if ( showActionButton === undefined ) {
+		showActionButton = expandable;
+	}
 
 	const showEllipsisMenu =
 		( ( onDismiss || remindMeLater ) && ! completed ) ||
@@ -123,13 +149,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					<span className="woocommerce-task-list__item-title">
 						{ title }
 					</span>
-					<VerticalCSSTransition
-						timeout={ 500 }
-						in={ expanded }
-						classNames="woocommerce-task-list__item-content"
-						defaultStyle={ {
-							transitionProperty: 'max-height, opacity',
-						} }
+					<OptionalExpansionWrapper
+						expandable={ expandable }
+						expanded={ expanded }
 					>
 						<div className="woocommerce-task-list__item-content">
 							{ content }
@@ -141,7 +163,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 									) }
 								></div>
 							) }
-							{ ! completed && (
+							{ ! completed && showActionButton && (
 								<Button
 									className="woocommerce-task-list__item-action"
 									isPrimary
@@ -158,7 +180,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 								</Button>
 							) }
 						</div>
-					</VerticalCSSTransition>
+					</OptionalExpansionWrapper>
 
 					{ ! expandable && ! completed && additionalInfo && (
 						<div
