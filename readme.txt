@@ -159,6 +159,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Make `Search` accept synchronous `autocompleter.options`. #6884
 - Fix: Set autoload to false for all remote inbox notifications options. #7060
 - Fix: The use of gridicons for Analytics section controls. #7237
+- Fix: WordPress 5.8 compatibility UI fixes #7255
 - Tweak: Setup checklist copy revert. #7015
 - Tweak: Revert Card component removal #7167
 - Update: Task list component with new Experimental Task list. #6849
