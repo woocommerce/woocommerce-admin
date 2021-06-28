@@ -255,6 +255,7 @@ describe( 'Experimental List', () => {
 					expandLabel="Show more items"
 					onExpand={ onExpand }
 					onCollapse={ onCollapse }
+					unmountOnExit
 				>
 					<div id="test">Test</div>
 					<div>Test 2</div>

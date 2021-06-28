@@ -7,6 +7,7 @@ import {
 	useCallback,
 	useEffect,
 	Children,
+	useRef,
 	isValidElement,
 } from '@wordpress/element';
 import { Transition } from 'react-transition-group';
@@ -25,10 +26,13 @@ type CollapsibleListProps = {
 	show?: number;
 	onCollapse?: () => void;
 	onExpand?: () => void;
+	mountOnEnter?: boolean;
+	unmountOnExit?: boolean;
 } & ListProps;
 
 const defaultStyle = {
-	transition: `max-height 500ms ease-in-out`,
+	transitionProperty: 'max-height',
+	transitionDuration: '500ms',
 	maxHeight: 0,
 	overflow: 'hidden',
 };
@@ -78,6 +82,34 @@ function getUpdatedShownChildren(
 	);
 }
 
+const getTransitionStyle = (
+	state: 'entering' | 'entered' | 'exiting' | 'exited',
+	isCollapsed: boolean,
+	elementRef: HTMLDivElement | null
+) => {
+	let maxHeight = 0;
+	if ( ( state === 'entered' || state === 'entering' ) && elementRef ) {
+		maxHeight = getContainerHeight( elementRef );
+	}
+	const styles: React.CSSProperties = {
+		...defaultStyle,
+		maxHeight,
+	};
+
+	// only include transition styles when entering or exiting.
+	if ( state !== 'entering' && state !== 'exiting' ) {
+		delete styles.transitionDuration;
+		delete styles.transition;
+		delete styles.transitionProperty;
+	}
+	// Remove maxHeight when entered, so we do not need to worry about nested items changing height while expanded.
+	if ( state === 'entered' && ! isCollapsed ) {
+		delete styles.maxHeight;
+	}
+
+	return styles;
+};
+
 export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	children,
 	collapsed = true,
@@ -86,10 +118,14 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	show = 0,
 	onCollapse,
 	onExpand,
+	mountOnEnter = true,
+	unmountOnExit = false,
 	...listProps
 } ): JSX.Element => {
 	const [ isCollapsed, setCollapsed ] = useState( collapsed );
-	const [ containerHeight, setContainerHeight ] = useState( 0 );
+	const [ isTransitionCollapsed, setTransitionCollapsed ] = useState(
+		collapsed
+	);
 	const [ footerLabels, setFooterLabels ] = useState( {
 		collapse: collapseLabel,
 		expand: expandLabel,
@@ -103,14 +139,7 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 		shown: [],
 		hidden: [],
 	} );
-	const collapseContainerRef = useCallback(
-		( containerElement: HTMLDivElement ) => {
-			if ( containerElement ) {
-				setContainerHeight( getContainerHeight( containerElement ) );
-			}
-		},
-		[ displayedChildren.hidden ]
-	);
+	const collapseContainerRef = useRef< HTMLDivElement >( null );
 
 	const updateChildren = () => {
 		let shownChildren: React.ReactElement[] = [];
@@ -134,6 +163,12 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 			hidden: hiddenChildren,
 		} );
 	};
+
+	// This allows for an extra render cycle that adds the maxHeight back in before the exiting transition.
+	// This way the exiting transition still works correctly.
+	useEffect( () => {
+		setTransitionCollapsed( isCollapsed );
+	}, [ isCollapsed ] );
 
 	useEffect( () => {
 		const allChildren =
@@ -176,13 +211,6 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 		triggerCallbacks( ! isCollapsed );
 	}, [ isCollapsed ] );
 
-	const transitionStyles = {
-		entered: { maxHeight: containerHeight },
-		entering: { maxHeight: containerHeight },
-		exiting: { maxHeight: 0 },
-		exited: { maxHeight: 0 },
-	};
-
 	const listClasses = classnames(
 		listProps.className || '',
 		'woocommerce-experimental-list'
@@ -195,23 +223,27 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 				<Transition
 					key="remaining-children"
 					timeout={ 500 }
-					in={ ! isCollapsed }
-					mountOnEnter
-					unmountOnExit
+					in={ ! isTransitionCollapsed }
+					mountOnEnter={ mountOnEnter }
+					unmountOnExit={ unmountOnExit }
 				>
 					{ (
 						state: 'entering' | 'entered' | 'exiting' | 'exited'
-					) => (
-						<div
-							ref={ collapseContainerRef }
-							style={ {
-								...defaultStyle,
-								...transitionStyles[ state ],
-							} }
-						>
-							{ displayedChildren.hidden }
-						</div>
-					) }
+					) => {
+						const transitionStyles = getTransitionStyle(
+							state,
+							isCollapsed,
+							collapseContainerRef.current
+						);
+						return (
+							<div
+								ref={ collapseContainerRef }
+								style={ transitionStyles }
+							>
+								{ displayedChildren.hidden }
+							</div>
+						);
+					} }
 				</Transition>,
 				displayedChildren.hidden.length > 0 ? (
 					<ExperimentalListItem
