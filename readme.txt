@@ -94,6 +94,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Use saved form values if available when switching tabs #7226
 - Fix: The use of gridicons for Analytics section controls. #7237
 - Fix: WordPress 5.8 compatibility UI fixes #7255
+- Fix: CurrencyFactory constructor to use proper function #7261
 - Dev: Add `woocommerce_admin_export_id` filter for customizing the export file name #7178
 - Update: Notes to use a date range. #7222
 
