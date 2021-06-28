@@ -1,0 +1,18 @@
+{
+	"preset": "ts-jest/presets/js-with-ts",
+	"rootDir": "../../",
+	"moduleNameMapper": {
+		"@woocommerce/(settings|wc-admin-settings)": "<rootDir>/client/wc-admin-settings/index.js"
+	},
+	"testMatch": [
+		"**/__tests__/**/*.[jt]s?(x)",
+		"**/test/*.[jt]s?(x)",
+		"**/?(*.)test.[jt]s?(x)"
+	],
+	"verbose": true,
+	"globals": {
+		"ts-jest": {
+			"tsconfig": "../tsconfig.test.json"
+		}
+	}
+}
