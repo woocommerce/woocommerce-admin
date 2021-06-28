@@ -6,7 +6,7 @@ import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
 import { DynamicForm } from '@woocommerce/components';
-import { WooPaymentGatewayConnect } from '@woocommerce/onboarding';
+import { WooPaymentGatewayConfigure } from '@woocommerce/onboarding';
 import { useSlot } from '@woocommerce/experimental';
 
 /**
@@ -34,7 +34,7 @@ export const validateFields = ( values, fields ) => {
 	return errors;
 };
 
-export const Connect = ( {
+export const Configure = ( {
 	markConfigured,
 	paymentGateway,
 	recordConnectStartEvent,
@@ -50,7 +50,7 @@ export const Connect = ( {
 
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
-	const slot = useSlot( `woocommerce_payment_gateway_connect_${ id }` );
+	const slot = useSlot( `woocommerce_payment_gateway_configure_${ id }` );
 	const hasFills = Boolean( slot?.fills?.length );
 
 	const { isUpdating } = useSelect( ( select ) => {
@@ -113,7 +113,7 @@ export const Connect = ( {
 
 	if ( hasFills ) {
 		return (
-			<WooPaymentGatewayConnect.Slot
+			<WooPaymentGatewayConfigure.Slot
 				fillProps={ {
 					defaultForm: DefaultForm,
 					defaultSubmit: handleSubmit,
