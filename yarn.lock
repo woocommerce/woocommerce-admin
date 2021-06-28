@@ -4779,6 +4779,14 @@
     create-hmac "1.1.7"
     oauth-1.0a "2.2.6"
 
+"@woocommerce/csv-export@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@woocommerce/csv-export/-/csv-export-1.3.1.tgz#adbcf536c38fa8025e0c78a7e974d889e1f84caa"
+  integrity sha512-ap6qliQ0P0fM1I19Bbm5rR6UBceDwTURT+7qRGikrM3d98gl6SCS3Zlj++5NySIRqA7n6+0/BnY0FYRY35fg4Q==
+  dependencies:
+    browser-filesaver "1.1.1"
+    moment "2.29.1"
+
 "@woocommerce/e2e-environment@0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@woocommerce/e2e-environment/-/e2e-environment-0.2.2.tgz#1a5a415689eef1b784270282035330133c275630"
@@ -10156,7 +10164,7 @@ es5-shim@^4.5.13:
   resolved "https://registry.yarnpkg.com/es5-shim/-/es5-shim-4.5.15.tgz#6a26869b261854a3b045273f5583c52d390217fe"
   integrity sha512-FYpuxEjMeDvU4rulKqFdukQyZSTpzhg4ScQHrAosrlVpR6GFyaw14f74yn2+4BugniIS0Frpg7TvwZocU4ZMTw==
 
-es6-promise@^4.0.3, es6-promise@^4.2.5:
+es6-promise@^4.0.3:
   version "4.2.8"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.2.8.tgz#4eb21594c972bc40553d276e510539143db53e0a"
   integrity sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==
@@ -15291,12 +15299,10 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
-locutus@2.0.14:
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/locutus/-/locutus-2.0.14.tgz#53d259ac7200b0621ed4e5604b6c49993415a455"
-  integrity sha512-0H1o1iHNEp3kJ5rW57bT/CAP5g6Qm0Zd817Wcx2+rOMTYyIJoc482Ja1v9dB6IUjwvWKcBNdYi7x2lRXtlJ3bA==
-  dependencies:
-    es6-promise "^4.2.5"
+locutus@2.0.15:
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/locutus/-/locutus-2.0.15.tgz#d75b9100713aaaf30be8b38ed6543910498c0db0"
+  integrity sha512-2xWC4RkoAoCVXEb/stzEgG1TNgd+mrkLBj6TuEDNyUoKeQ2XzDTyJUC23sMiqbL6zJmJSP3w59OZo+zc4IBOmA==
 
 lodash._basecallback@^3.0.0:
   version "3.3.1"
