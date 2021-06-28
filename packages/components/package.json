@@ -72,13 +72,19 @@
 		"access": "public"
 	},
 	"devDependencies": {
+		"@wordpress/scripts": "12.6.1",
 		"@storybook/addon-console": "1.2.3",
-		"@storybook/react": "6.2.9"
+		"@storybook/react": "6.2.9",
+		"@testing-library/react": "11.2.7"
 	},
 	"scripts": {
+		"build": "yarn run build:js && yarn run build:styles",
+		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"build:css": "yarn node ../../bin/packages/build.js src/style.scss",
 		"clean": "npx rimraf build build-*",
-		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
-		"start": "yarn run build -- --watch",
-		"prepack": "yarn run clean && yarn run build"
+		"prepack": "yarn run clean && yarn run build",
+		"watch": "concurrently \"yarn run watch:js\" \"yarn run watch:css\"",
+		"watch:js": "yarn run build:js --watch",
+		"watch:css": "yarn node ../../bin/packages/watch.js ."
 	}
 }

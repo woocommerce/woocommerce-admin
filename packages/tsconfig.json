@@ -13,8 +13,8 @@
 	},
 	"exclude": [
 		"node_modules",
-		"build",
-		"build-module",
+		"**/build",
+		"**/build-module",
 		"**/test/*"
 	]
 }
