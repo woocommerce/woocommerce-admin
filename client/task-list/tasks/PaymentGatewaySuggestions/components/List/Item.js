@@ -11,8 +11,7 @@ import { Text, useSlot } from '@woocommerce/experimental';
 /**
  * Internal dependencies
  */
-import { PaymentAction } from '../PaymentAction';
-
+import { Action } from '../Action';
 import './List.scss';
 
 export const Item = ( {
@@ -43,6 +42,7 @@ export const Item = ( {
 	const hasFills =
 		Boolean( connectSlot?.fills?.length ) ||
 		Boolean( setupSlot?.fills?.length );
+
 	const hasSetup = Boolean(
 		plugins.length || requiredSettings.length || hasFills
 	);
@@ -77,7 +77,7 @@ export const Item = ( {
 					</div>
 				</div>
 				<div className="woocommerce-task-payment__footer">
-					<PaymentAction
+					<Action
 						manageUrl={ manageUrl }
 						id={ id }
 						hasSetup={ hasSetup }

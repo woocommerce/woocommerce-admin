@@ -7,7 +7,7 @@ import { updateQueryString } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { useState } from '@wordpress/element';
 
-export const PaymentAction = ( {
+export const Action = ( {
 	hasSetup = false,
 	needsSetup = true,
 	id,
@@ -55,6 +55,7 @@ export const PaymentAction = ( {
 		<Button
 			className={ classes }
 			isSecondary
+			role="button"
 			href={ manageUrl }
 			onClick={ () => recordEvent( 'tasklist_payment_manage', { id } ) }
 		>
