@@ -3,7 +3,6 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import { useRef } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { PAYMENT_GATEWAYS_STORE_NAME } from '@woocommerce/data';
 import { DynamicForm } from '@woocommerce/components';
@@ -101,24 +100,21 @@ export const Configure = ( {
 	const helpText = setupHelpText && (
 		<p dangerouslySetInnerHTML={ sanitizeHTML( setupHelpText ) } />
 	);
-	const DefaultForm = useRef( ( props ) => {
-		return (
-			<DynamicForm
-				fields={ fields }
-				isBusy={ isUpdating }
-				onSubmit={ handleSubmit }
-				submitLabel={ __( 'Proceed', 'woocommerce-admin' ) }
-				validate={ ( values ) => validateFields( values, fields ) }
-				{ ...props }
-			/>
-		);
-	} );
+	const defaultForm = (
+		<DynamicForm
+			fields={ fields }
+			isBusy={ isUpdating }
+			onSubmit={ handleSubmit }
+			submitLabel={ __( 'Proceed', 'woocommerce-admin' ) }
+			validate={ ( values ) => validateFields( values, fields ) }
+		/>
+	);
 
 	if ( hasFills ) {
 		return (
 			<WooPaymentGatewayConfigure.Slot
 				fillProps={ {
-					defaultForm: DefaultForm.current,
+					defaultForm,
 					defaultSubmit: handleSubmit,
 					defaultFields: fields,
 					markConfigured: () => markConfigured( id ),
@@ -144,7 +140,7 @@ export const Configure = ( {
 		return (
 			<>
 				{ helpText }
-				<DefaultForm.current />
+				{ defaultForm }
 			</>
 		);
 	}
