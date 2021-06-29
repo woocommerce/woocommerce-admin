@@ -8,9 +8,10 @@ A Slotfill component that will replace the <DynamicForm /> component involved in
 <WooPaymentGatewayConfigure id={ key }>
   {({defaultForm: DefaultForm}) => {
     return <>
-    <p>Fill Content
-    </p>
-    { defaultForm }
+      <p>
+        Fill Content
+      </p>
+      { defaultForm }
     </>;
 }}
 </WooPaymentGatewayConfigure>
