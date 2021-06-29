@@ -84,7 +84,7 @@
 		"build:css": "yarn node ../../bin/packages/build.js src/style.scss",
 		"clean": "npx rimraf build build-*",
 		"prepack": "yarn run clean && yarn run build",
-		"test": "yarn run jest --config ./jest.config.json",
+		"test": "yarn workspaces run build && yarn run jest --config ./jest.config.json",
 		"watch": "concurrently \"yarn run watch:js\" \"yarn run watch:css\"",
 		"watch:js": "yarn run build:js --watch",
 		"watch:css": "yarn node ../../bin/packages/watch.js ."

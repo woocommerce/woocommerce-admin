@@ -23,6 +23,8 @@
 		"@wordpress/i18n": "3.17.0"
 	},
 	"scripts": {
-		"prepack": "echo 'no-op'"
+		"clean": "npx rimraf build build-*",
+		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"prepack": "yarn run clean && yarn run build"
 	}
 }

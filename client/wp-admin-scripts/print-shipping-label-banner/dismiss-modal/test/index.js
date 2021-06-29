@@ -4,6 +4,7 @@
 import { Fragment } from '@wordpress/element';
 import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

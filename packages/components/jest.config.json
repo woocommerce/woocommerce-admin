@@ -1,18 +1,28 @@
 {
 	"preset": "ts-jest/presets/js-with-ts",
-	"rootDir": "../../",
-	"moduleNameMapper": {
-		"@woocommerce/(settings|wc-admin-settings)": "<rootDir>/client/wc-admin-settings/index.js"
+	"rootDir": "./src",
+	"globals": {
+		"ts-jest": {
+			"tsconfig": "../tsconfig.test.json"
+		}
 	},
+	"transformIgnorePatterns": [ "/node_modules", "/build/" ],
+	"restoreMocks": true,
 	"testMatch": [
 		"**/__tests__/**/*.[jt]s?(x)",
 		"**/test/*.[jt]s?(x)",
 		"**/?(*.)test.[jt]s?(x)"
 	],
-	"verbose": true,
-	"globals": {
-		"ts-jest": {
-			"tsconfig": "../tsconfig.test.json"
-		}
-	}
+	"transform": {
+		"^.+\\.[jt]sx?$": "ts-jest"
+	},
+	"testPathIgnorePatterns": [
+		"/node_modules/",
+		"<rootDir>/.*/build/",
+		"<rootDir>/.*/build-module/",
+		"<rootDir>/tests/e2e/"
+	],
+	"testEnvironment": "jest-environment-jsdom-sixteen",
+	"timers": "modern",
+	"verbose": true
 }
