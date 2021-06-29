@@ -60,7 +60,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'kco',
+				'id'        => 'kco',
 				'title'      => __( 'Klarna', 'woocommerce-admin' ),
 				'content'    => __( 'Choose the payment that you want, pay now, pay later or slice it. No credit card numbers, no passwords, no worries.', 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/klarna-black.png',
@@ -71,7 +71,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'mollie_wc_gateway_banktransfer',
+				'id'        => 'mollie_wc_gateway_banktransfer',
 				'title'      => __( 'Mollie', 'woocommerce-admin' ),
 				'content'    => __( 'Effortless payments by Mollie: Offer global and local payment methods, get onboarded in minutes, and supported in your language.', 'woocommerce-admin' ),
 				'image'      => plugins_url( 'images/onboarding/mollie.svg', WC_ADMIN_PLUGIN_FILE ),
@@ -168,7 +168,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'id'         => 'eway_payments',
+				'id'         => 'eway',
 				'title'      => __( 'eWAY', 'woocommerce-admin' ),
 				'content'    => __( 'The eWAY extension for WooCommerce allows you to take credit card payments directly on your store without redirecting your customers to a third party site to make payment.', 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/eway-logo.jpg',
@@ -179,7 +179,7 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
-				'key'        => 'square_credit_card',
+				'id'        => 'square_credit_card',
 				'title'      => __( 'Square', 'woocommerce-admin' ),
 				'content'    => __( 'Securely accept credit and debit cards with one low rate, no surprise fees (custom rates available). Sell online and in store and track sales and inventory in one place.', 'woocommerce-admin' ),
 				'image'      => WC()->plugin_url() . '/assets/images/square-black.png',
