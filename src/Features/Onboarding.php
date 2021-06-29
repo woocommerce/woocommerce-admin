@@ -722,6 +722,7 @@ class Onboarding {
 		$options[] = 'woocommerce_razorpay_settings';
 		$options[] = 'woocommerce_payubiz_settings';
 		$options[] = 'woocommerce_mollie_payments_settings';
+		$options[] = 'woocommerce_setup_jetpack_opted_in';
 
 		return $options;
 	}
