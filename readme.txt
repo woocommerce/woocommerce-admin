@@ -105,6 +105,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Revert Card component removal #7167
 - Tweak: Repurpose disable wc-admin filter to remove optional features #7232
 - Tweak: Removed unused feature flags #7233
+- Fix: Preload woocommerce_setup_jetpack_opted_in option to prevent TOS text flickering #7269
+- Tweak: Revert Card component removal #7167
 - Update: Notes to use a date range. #7222
 
 == 2.4.0 6/10/2021 ==
