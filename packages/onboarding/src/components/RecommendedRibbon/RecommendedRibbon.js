@@ -3,10 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 
-const localPartners = [ 'woo-mercado-pago-custom' ];
-
-export const RecommendedRibbon = ( { gatewayId } ) => {
-	const text = localPartners.includes( gatewayId )
+export const RecommendedRibbon = ( { isLocalPartner = false } ) => {
+	const text = isLocalPartner
 		? __( 'Local Partner', 'woocommerce-admin' )
 		: __( 'Recommended', 'woocommerce-admin' );
 
