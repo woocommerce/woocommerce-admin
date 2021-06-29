@@ -5,6 +5,7 @@ import React from '@wordpress/element';
 import { render } from '@testing-library/react';
 import { brush } from '@wordpress/icons';
 import userEvent from '@testing-library/user-event';
+import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies
