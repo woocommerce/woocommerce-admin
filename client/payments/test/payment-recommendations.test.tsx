@@ -12,6 +12,7 @@ import {
 	WPDataSelectors,
 	Plugin,
 } from '@woocommerce/data';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -19,8 +20,7 @@ import {
 import PaymentRecommendations, {
 	getPaymentRecommendationData,
 } from '../payment-recommendations';
-import { isWCPaySupported } from '~/task-list/tasks/PaymentGatewaySuggestions/components/WCPay';
-import { getAdminLink } from '../../wc-admin-settings';
+import { isWCPaySupported } from '../../task-list/tasks/PaymentGatewaySuggestions/components/WCPay';
 import { createNoticesFromResponse } from '~/lib/notices';
 
 jest.mock( '@woocommerce/tracks', () => ( { recordEvent: jest.fn() } ) );
@@ -61,7 +61,7 @@ jest.mock(
 	} )
 );
 
-jest.mock( '../../wc-admin-settings', () => ( {
+jest.mock( '@woocommerce/wc-admin-settings', () => ( {
 	getAdminLink: jest
 		.fn()
 		.mockImplementation( ( link: string ) => 'https://test.ca/' + link ),
