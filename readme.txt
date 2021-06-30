@@ -102,6 +102,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix:  Use tab char for the CSV injection prevention. #7154
 - Tweak: Revert Card component removal #7167
 - Tweak: Removed unused feature flags #7233
+- Tweak: Change event name when installing Google Listings and Ads. #7276
 - Update: Notes to use a date range. #7222
 
 == 2.4.0 6/10/2021 ==
