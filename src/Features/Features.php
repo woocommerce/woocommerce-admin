@@ -268,20 +268,25 @@ class Features {
 			array()
 		);
 
-		if ( empty( $features ) ) {
+		$features_disabled = apply_filters( 'woocommerce_admin_disabled', false );
+
+		if ( ! $features_disabled && empty( $features ) ) {
 			return $settings;
 		}
+
+		$desc          = __( 'Start using new features that are being progressively rolled out to improve the store management experience.', 'woocommerce-admin' );
+		$disabled_desc = __( 'WooCommerce features have been disabled.', 'woocommerce-admin' );
 
 		return array_merge(
 			array(
 				array(
 					'title' => __( 'Features', 'woocommerce-admin' ),
 					'type'  => 'title',
-					'desc'  => __( 'Start using new features that are being progressively rolled out to improve the store management experience.', 'woocommerce-admin' ),
+					'desc'  => $features_disabled ? $disabled_desc : $desc,
 					'id'    => 'features_options',
 				),
 			),
-			$features,
+			$features_disabled ? array() : $features,
 			array(
 				array(
 					'type' => 'sectionend',
