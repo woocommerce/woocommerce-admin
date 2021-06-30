@@ -9,12 +9,14 @@
 		"skipLibCheck": true,
 		"jsx": "react",
 		"jsxFactory": "createElement",
-		"jsxFragmentFactory": "Fragment"
+		"jsxFragmentFactory": "Fragment",
+		"incremental": true
 	},
 	"exclude": [
 		"node_modules",
 		"**/build",
 		"**/build-module",
-		"**/test/*"
+		"**/test/*",
+		"**/jest.config.js"
 	]
 }

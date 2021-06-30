@@ -7,7 +7,6 @@
         "declarationMap": false,
         "declarationDir": null,
         "outDir": "build",
-        "composite": false,
-        "incremental": true
+        "composite": false
     }
 }
