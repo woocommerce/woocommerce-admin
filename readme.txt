@@ -132,7 +132,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Dev: Add disabled prop to SelectControl #6902
 - Dev: Add filter variation to tracks data in products analytics. #6913
 - Dev: Offload remote inbox notifications engine run using action-scheduler. #6995
-- Dev: Add source param support for notes query. #6979
 - Dev: Remove the use of Dashicons and replace with @wordpress/icons or gridicons. #7020
 - Dev: Refactor inbox panel components and moved to experimental package. #7006
 - Dev: Business features uncheck creative mail by default #7139
