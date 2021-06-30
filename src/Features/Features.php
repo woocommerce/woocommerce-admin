@@ -277,6 +277,10 @@ class Features {
 		$desc          = __( 'Start using new features that are being progressively rolled out to improve the store management experience.', 'woocommerce-admin' );
 		$disabled_desc = __( 'WooCommerce features have been disabled.', 'woocommerce-admin' );
 
+		if ( $features_disabled ) {
+			$GLOBALS['hide_save_button'] = true;
+		}
+
 		return array_merge(
 			array(
 				array(
