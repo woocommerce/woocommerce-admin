@@ -2,6 +2,138 @@
 
 ## Unreleased
 
+### Use saved values if available when switching tabs #7226
+
+1. Start onboarding wizard and continue to step 4.
+2. Enter selections for business details and choose "Continue"
+3. Select the tab "Business details" to go back
+4. Confirm that the previously selected values are shown. 
+
+### Change the emailed report file name #7178
+
+**Confirm the default behaviour remains the same**
+1. Create a new store and install the [WP Mail Logging by MailPoet plugin](https://wordpress.org/plugins/wp-mail-logging/)
+2. Go to Analytics -> Revenue and change the date range to last month
+3. Click the download button and make sure you see the "Your revenue report will be emailed to you" notification
+4. Go to Tools -> Scheduled Action and run the newly created `woocommerce_admin_report_export` action. After that is complete, run the `woocommerce_admin_email_report_download_link` action.
+5. Go to Tools -> WP Mail Log and check the latest email. The URL linked to the "Download your Revenue report" should work as usual. The URL will be something like `filename=wc-revenue-report-export-16236128226138`
+
+**Confirm the new filter is working**
+1. Add this code to the `woocommerce-admin.php` file
+```php
+add_filter( 'woocommerce_admin_export_id', function ($export_id) {
+	return 'different_export_id';
+} );
+```
+2. Repeat the same steps from above. The filename in the link now should be `different_export_id`.
+### Payment gateway suggestions feature
+
+1. Navigate to the homescreen via WooCommerce -> Home
+2. Click on "Set up payments"
+
+#### How to test
+
+Individual payment gateway plugins dictate the settings and connection flow.  For testing purposes, we'll test both the default behavior of the gateway and the enhanced configuration behavior.
+
+1. On the payments task, click "Set up" or "Enable" next to a gateway
+2. Note that the gateway is installed if it requires a plugin
+3. On the connection step, a button should be presented that links to the gateway's (legacy) settings screen
+4. Delete the plugin
+5. Install some of the payment gateways from the links below.  They don't need to be activated, but the folder names should match those on WordPress.org to avoid conflicts.
+6. If setting fields are shown, make sure that validation works, input is saved, and is persisted on page refresh.  Make sure the gateway is marked as enabled and not labeled "Requires setup" if all fields are completed.
+7. If the "Connect" button is shown, follow the connection flow.  Make sure that you are returned to the payments task and that the gateway is enabled and marked as configured.
+8. Remove some settings manually under the payment gateway's legacy settings screen.  Make sure the gateway is no longer marked as configured.
+
+* Klarna - https://mc.a8c.com/includes/img-uploader/files/1624475036-klarna-checkout-for-woocommerce.zip
+* PayFast - https://mc.a8c.com/includes/img-uploader/files/1624660950-woocommerce-payfast-gateway.zip
+* PayPal - https://mc.a8c.com/includes/img-uploader/files/1624475037-woocommerce-paypal-payments.zip
+* RazorPay - https://mc.a8c.com/includes/img-uploader/files/1624660848-woo-razorpay.zip
+* Stripe - https://mc.a8c.com/includes/img-uploader/files/1624661118-woocommerce-gateway-stripe.zip
+* MercaoPago - https://mc.a8c.com/includes/img-uploader/files/1624475616-woocommerce-mercadopago.zip
+* Square - https://mc.a8c.com/includes/img-uploader/files/1624475232-woocommerce-square.zip
+* eWAY - https://mc.a8c.com/includes/img-uploader/files/1624476063-woocommerce-gateway-eway.zip
+
+##### PayFast
+
+1. Set your country to South Africa in WooCommerce->Settings
+2. Don't select CBD as an industry during onboarding
+
+##### Paystack
+
+1. Set your country to South Africa in WooCommerce->Settings
+2. Don't select CBD as an industry during onboarding
+3. Complete the payment tasks
+4. Make sure that `ZAR` is the site currency after configuration of Paystack and that "test mode" is turned off in settings
+
+##### Stripe
+
+1. Set your store country to a Stripe supported country (e.g., US - https://stripe.com/global )
+2. Don't select CBD as an industry during onboarding
+3. Make sure you're using a site with https
+4. Attempt to use the oauth connection flow to enable the gateway, making sure you are returned to the site and connection is successful
+5. Remove the connection and use a non-https site
+6. Check that the manual settings configuration flow is shown
+
+##### PayPal
+
+1. Set your store country to any country except India
+2. Don't select CBD as an industry during onboarding
+3. Make sure the PayPal connection flow is shown and works as expected
+4. In Chrome, open the console "Network" tab and right-click on the `get-params` request and select "Block request URL"
+5. Refresh the page and note that the manual settings flow is shown
+
+
+##### Klarna
+
+1. Set your store country to one of the following: `SE, FI, NO`
+2. Don't select CBD as an industry during onboarding
+
+
+##### Mollie
+
+1. Set your store country to one of the following: `FR, DE, GB, AT, CH, ES, IT, PL, FI, NL, BE`
+2. Don't select CBD as an industry during onboarding
+
+##### Mercado Pago
+
+1. Set your store country to one of the following: `AR, BR, CL, CO, MX, PE, UY`
+2. Make sure the help text is shown when setting up the gateway with links to registration and the settings screen.
+
+### WooCommerce Payments
+
+1. Set your store country to one of the following: `US, PR`
+2. Don't select CBD as an industry during onboarding
+3. Make sure the WC Pay card is shown above the other payment gateways
+4. Attempt to install and configured the gateway
+
+##### Cash on Delivery
+
+1. Make sure "Enable" is shown and clicking this enables the gateway
+2. Make sure the "Manage" button is shown after enabling the gateway
+
+
+##### Direct bank transfer
+
+1. Make sure "Set up" is shown next to the gateway
+2. Enter some bank details
+3. Make sure the gateway is marked as enabled and configured with the entered settings when visiting the legacy settings screen
+
+##### RazorPay
+
+1. Set your store country to India
+2. Don't select CBD as an industry during onboarding
+
+##### eWAY
+
+1. Set your store country to one of the following: `AU, NZ`
+2. Don't select CBD as an industry during onboarding
+3. Make sure the API key and password fields are shown
+
+##### Square
+
+1. Set your store country to the `US` and select CBD as an industy during onboarding OR set your store country to one of `US, CA, JP, GB, AU, IE`, don't select CBD as an industry and select that you have a physical store in the business details step.
+2. Make sure the connection flow is shown.
+
 ## 2.4.0
 
 ### Add target to the button to open it in a new tab #7110
@@ -64,6 +196,7 @@
 
 1. Install and activate Jetpack
 2. Confirm Jetpack in not show in Free features list
+
 ### Include onboarding settings on the analytic pages #7109
 
 1. Finish the onboarding wizard as usual.
@@ -110,9 +243,9 @@
 ### Business features uncheck creative mail by default #7139
 
 2. Complete the OBW until you get to the business details step.
-2. Continue setup until the Business Detail step.
-3. Open `Free Features` tab and toggle dropdown for `Add recommended business features to my site`.
-4. Observe that the list have `Creative Mail` unchecked by default.
+3. Continue setup until the Business Detail step.
+4. Open `Free Features` tab and toggle dropdown for `Add recommended business features to my site`.
+5. Observe that the list have `Creative Mail` unchecked by default.
 
 ### Fix an issue with OBW when wc-pay and Jetpack are both being installed. #6957
 
@@ -268,12 +401,10 @@ In case the report shows "no data", please reimport historical data by following
 
 -   Create a brand new site.
 -   Install a plugin to log every sent email (you can use [WP mail logging](https://wordpress.org/plugins/wp-mail-logging/)).
--   Install and active [this gist](https://gist.github.com/octaedro/864315edaf9c6a2a6de71d297be1ed88) to create an email note. Just download the file and install it as a plugin.
--   After activating the plugin, press `Add Email Notes` to create a note.
+-   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/releases).
+-   Create a [new note type `email`](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications#3---email).
 -   Now go to WooCommerce > Settings > Email (`/wp-admin/admin.php?page=wc-settings&tab=email`) and check the checkbox `Enable email insights` and save changes.
--   You will need to run the cron so you can install a plugin like [WP Crontol](https://wordpress.org/plugins/wp-crontrol/)
--   Go to Tools > Cron events (`/wp-admin/tools.php?page=crontrol_admin_manage_page`).
--   Call the hook `wc_admin_daily` by pressing its `Run Now` link. (https://user-images.githubusercontent.com/1314156/111530634-4929ce80-8742-11eb-8b53-de936ceea76e.png)
+-   Now run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools) manually.
 -   Go to Tools > WP Mail Logging Log (`/wp-admin/tools.php?page=wpml_plugin_log`) and verify the testing email note was sent.
 -   View the message and press `Test action` (a broken image will be visible under the button, but that's expected and only visible in a test environment).
 
@@ -312,8 +443,8 @@ Uruguay
 2. Open `notifications.json.php` from woocommerce.com repository and find a rule that uses the `contains` operator and remove the `default` key. Please make a note of the option name.
 3. Open `src/RemoteInboxNotifications/DataSourcepoller.php` from your WooCommerce Admin repository and change the datasource to your local woocommerce.com (woocommerce.test)
 4. Make sure your local WooCommerce Admin database does not have the option from step #2
-5. Install and activate [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)
-6. Navigate to Tools -> Cron Events and run `wc_admin_daily` job
+5. Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications).
+6. Now run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools) manually.
 7. Check your debug log in `wp-content/debug.log`. You should see PHP error.
 
 ### Close activity panel tabs by default and track #6566
@@ -439,7 +570,8 @@ wp.hooks.addFilter( 'woocommerce_admin_profile_wizard_steps', 'woocommerce-admin
 UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 5 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
 ```
 
--   Run the cron (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
+-   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/releases).
+-   Now run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools) manually.
 -   You should have received an email like the image above.
 -   Verify the note's status is `sent`. You can use an SQL statement like this:
 
@@ -492,10 +624,9 @@ UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7
 2. Continue to the Business Details step.
 3. Expand "Add recommended business features to my site" by clicking the down arrow.
 4. Confirm that "WooCommerce Tax" is listed.
-5. Install & activate [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/) plugin
-6. Navigate to Tools -> Cron Events
-7. Run `wc_admin_daily` job
-8. Navigate to WooCommerce -> Home and confirm the Insight note.
+5. Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications).
+6. Run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools).
+7. Navigate to WooCommerce -> Home and confirm the Insight note.
 
 ### Use wc filter to get status tabs for tools category #6525
 
@@ -624,14 +755,14 @@ Creative Mail
 ### Remove Mollie promo note on install #6510
 
 -   If you do not currently have the Mollie note on your WooCommerce Admin home screen, you can add a test note with the correct name as follows:
-    1. install the WooCommerce Admin Test Helper plugin [here](https://github.com/woocommerce/woocommerce-admin-test-helper)
-    2. Go to the Admin notes tab
+    1. Install the WooCommerce Admin Test Helper plugin [here](https://github.com/woocommerce/woocommerce-admin-test-helper)
+    2. Go to the [Admin notes tab](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications)
     3. Add an admin note with the name `wc-admin-effortless-payments-by-mollie`
     4. Go to the WCA home screen and verify that your test note is present
 -   The note is removed on a new version install, so either install an old version of WCA and upgrade to the current one, or trigger the install process manually:
-    1. install the WCA test helper
-    2. go to the Tools tab
-    3. click the `Trigger WCA install` button
+    1. Install the WCA test helper
+    2. Go to the Tools tab
+    3. Click the `Trigger WCA install` button
 
 ### Deprecate Onboarding::has_woocommerce_support #6401
 
@@ -797,13 +928,10 @@ Scenario #2
 UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
 ```
 
--   Make sure the `woocommerce_merchant_email_notifications` option is set to `yes`:
+-   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications).
+-   Make sure the `woocommerce_merchant_email_notifications` option is set to `yes` by [using the update option tool](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Update-option).
 
-```
-UPDATE `wp_options` SET `option_value` = 'yes' WHERE `wp_options`.`option_name` = 'woocommerce_merchant_email_notifications';
-```
-
--   Run the `wc_admin_daily ` cron job (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
+-   Run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools).
 -   You should have received an email like the image above.
 
 ## 2.1.2
@@ -874,22 +1002,11 @@ INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `
 UPDATE `wp_options` SET `option_value`=UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 10 day)) WHERE `option_name` = 'woocommerce_admin_install_timestamp';
 ```
 
--   Confirm that `woocommerce_merchant_email_notifications` was not set before by `core` with a SQL statement like:
+-   Confirm that `woocommerce_merchant_email_notifications` was not set before by `core`.
+-   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications).
+-   Delete `woocommerce_merchant_email_notifications` if present [using the update option tool](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Update-option).
 
-```
-DELETE FROM `wp_options` WHERE `wp_options`.`option_name` = 'woocommerce_merchant_email_notifications';
-```
-
-or with wp-cli:
-
-```
-wp option delete 'woocommerce_merchant_email_notifications';
-```
-
--   Run the cron job `wc_admin_daily` (this tool can help [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/)).
-    -   Go to **Tools > Cron Events** and scroll down to the `wc_admin_daily`.
-    -   Hover over the item and click `Edit` change the **Next Run** to `Now` and click `Update Event`.
-    -   It will redirect you to the cron event list, and `wc_admin_daily` should be near the top, if you wait 10 seconds and refresh the page the `wc_admin_daily` should be near the bottom again, this means it has been run, and scheduled again to run tomorrow.
+-   Run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools).
 -   You should have not received an email note.
 -   Verify the note `wc-admin-add-first-product-note` was added in the DB and its `status` is `unactioned`. You can use a statement like this:
 
@@ -944,9 +1061,9 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 ### Add a new note with a link to the downloadable product doc #6277
 
 1. Make sure your store does not have any download products.
-2. Install WP Crontrol plugin.
+2. Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications).
 3. Add a new download product.
-4. Navigate to Tools -> Cron Events and run `wc_admin_daily`
+4. Run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools) manually.
 5. Navigate to WooCommerce -> Home and confirm that the note has been added.
 
 ### Onboarding - Fixed "Business Details" error #6271
@@ -1046,7 +1163,8 @@ localStorage.setItem( 'debug', 'wc-admin:tracks' );
     2. revenue is between 0-2500
     3. do not check "setting up for client" in obw
     4. store should have no products
--   Next you need to install WP Crontrol, go to its list of cron events and click "run now" on "wc_admin_daily"
+-   Install and activate [WC Admin Test Helper](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Admin-notifications)
+-   Run the [`wc_admin_daily` cron](https://github.com/woocommerce/woocommerce-admin-test-helper/wiki/Tools) manually
 -   Confirm the new note is displayed and that the content matches that specified below:
     -   Title: Getting Started in eCommerce - webinar
     -   Copy: We want to make eCommerce and this process of getting started as easy as possible for you. Watch this webinar to get tips on how to have our store up and running in a breeze.
