@@ -52,7 +52,9 @@
 	},
 	"scripts": {
 		"clean": "npx rimraf build build-*",
-		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"build": "yarn run build:js && yarn run build:css",
+		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"build:css": "yarn node ../../bin/packages/build.js src/style.scss",
 		"start": "yarn run build -- --watch",
 		"prepack": "yarn run clean && yarn run build",
 		"test": "yarn workspaces run build && yarn run test:nobuild",
