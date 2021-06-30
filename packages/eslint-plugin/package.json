@@ -38,7 +38,9 @@
 		"access": "public"
 	},
 	"scripts": {
-		"build": "echo 'no-op'",
-		"prepack": "echo 'no-op'"
+		"build": ":",
+		"prepack": ":",
+		"test": ":",
+		"test:nobuild": ":"
 	}
 }
