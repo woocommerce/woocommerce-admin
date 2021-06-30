@@ -101,7 +101,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Report export filtering bug. #7165
 - Fix:  Use tab char for the CSV injection prevention. #7154
 - Tweak: Revert Card component removal #7167
-- Tweak: Removed unused feature flags #7233
+- Tweak: Removed unused feature flags #7233 and #7273
 - Update: Notes to use a date range. #7222
 
 == 2.4.0 6/10/2021 ==
