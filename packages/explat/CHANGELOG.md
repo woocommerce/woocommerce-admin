@@ -1,6 +1,6 @@
 # Unreleased
 
--   Fix TDZ in build and refactor anon polling to use setTimeout
+-   Fix and refactor explat polling to use setTimeout #7274
 
 # 1.0.1
 
