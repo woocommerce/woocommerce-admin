@@ -21,6 +21,7 @@
 		"clean": "npx rimraf build build-*",
 		"prepack": "yarn run clean && yarn run build",
 		"test": ":",
-		"test:nobuild": ":"
+		"test:nobuild": ":",
+		"test-staged": ":"
 	}
 }
