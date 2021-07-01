@@ -75,6 +75,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+== 2.4.1 7/1/2021 ==
+- Fix: Fix and refactor explat polling to use setTimeout #7274
+
 == 2.4.0 6/29/2021 ==
 - Add: SlotFill to Abbreviated Notification panel #7091
 - Add: Consume remote payment methods on frontend #6867
