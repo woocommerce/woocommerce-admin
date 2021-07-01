@@ -37,6 +37,7 @@
 		"start": "yarn run build -- --watch",
 		"prepack": "yarn run clean && yarn run build",
 		"test": "yarn workspaces run build && yarn run test:nobuild",
-		"test:nobuild": "yarn run jest --config ./jest.config.json"
+		"test:nobuild": "yarn run jest --config ./jest.config.json",
+		"test-staged": "yarn run jest --bail --config ./jest.config.json --findRelatedTests"
 	}
 }

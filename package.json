@@ -62,7 +62,7 @@
 		"test:packages": "yarn workspaces run test",
 		"test": "yarn workspaces run build && yarn run test:client && yarn workspaces run test:nobuild",
 		"test:e2e": "WP_VERSION=latest yarn run build && npx wc-e2e docker:down && npx wc-e2e docker:up && npx wc-e2e test:e2e",
-		"test-staged": "./node_modules/jest-24.9.0/bin/jest.js --bail --config tests/js/jest.config.json --findRelatedTests",
+		"test-staged": "yarn run test:client --bail --findRelatedTests",
 		"test:help": "wp-scripts test-unit-js --help",
 		"test:php": "docker-compose -f docker/wc-admin-php-test-suite/docker-compose.yml run --rm phpunit",
 		"posttest:php": "docker-compose -f docker/wc-admin-php-test-suite/docker-compose.yml down",

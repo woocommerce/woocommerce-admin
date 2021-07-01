@@ -27,6 +27,7 @@
 		"build": ":",
 		"prepack": ":",
 		"test": ":",
-		"test:nobuild": ":"
+		"test:nobuild": ":",
+		"test-staged": ":"
 	}
 }
