@@ -9,7 +9,6 @@ import {
 	SETTINGS_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	WCDataStoreName,
-	WPDataSelectors,
 	Plugin,
 } from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
@@ -71,12 +70,6 @@ jest.mock( '../../lib/notices', () => ( {
 		// do nothing
 	} ),
 } ) );
-
-const storeSelectors: WPDataSelectors = {
-	hasStartedResolution: () => true,
-	hasFinishedResolution: () => true,
-	isResolving: () => false,
-};
 
 describe( 'Payment recommendations', () => {
 	it( 'should render nothing with no recommendedPlugins and country not defined', () => {
@@ -375,7 +368,7 @@ describe( 'Payment recommendations', () => {
 			installAndActivateMock.mockClear();
 			installAndActivateMock.mockImplementation(
 				() =>
-					new Promise( ( resolve, reject ) => {
+					new Promise( () => {
 						throw {
 							code: 500,
 							message: 'failed to install plugin',

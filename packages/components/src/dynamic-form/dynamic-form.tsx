@@ -1,9 +1,8 @@
 /**
  * External dependencies
  */
-import { useMemo } from '@wordpress/element';
+import { createElement, useMemo } from '@wordpress/element';
 import { Button } from '@wordpress/components';
-import { createElement } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**

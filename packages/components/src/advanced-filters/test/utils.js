@@ -1,8 +1,12 @@
 /**
+ * External dependencies
+ */
+import { createElement } from '@wordpress/element';
+
+/**
  * Internal dependencies
  */
 import { textContent } from '../utils';
-import { createElement } from '@wordpress/element';
 
 describe( 'textContent()', () => {
 	test( 'should get text `Hello World`', () => {
