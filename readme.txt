@@ -185,7 +185,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Call existing filters for leaderboards in analytics. #6626
 - Fix: Set target to blank for the external links #6999
 - Fix: Style regression with the Chart header. #7002
-- Fix style regression with the Chart header. #7002
 - Fix styling of the advanced filter operator selection. #7005
 - Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
 - Fix: Bug with Orders Report coupon exclusion filter. #7021
