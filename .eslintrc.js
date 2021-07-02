@@ -1,4 +1,7 @@
 module.exports = {
+	env: {
+		'jest/globals': true,
+	},
 	extends: [ 'plugin:@woocommerce/eslint-plugin/recommended' ],
 	settings: {
 		'import/resolver': 'typescript',
