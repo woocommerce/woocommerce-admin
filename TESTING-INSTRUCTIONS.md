@@ -394,7 +394,7 @@ In case the report shows "no data", please reimport historical data by following
 ### Update WC Payments plugin copy #6734
 
 1. Install WooCommerce with WooCommerce Payments
-2. Clone this branch and run npm start (only needed if you are using dev version)
+2. Clone this branch and run yarn start (only needed if you are using dev version)
 3. Navigate to WooCommerce -> Home and observe the copy change.
 
 ## 2.2.0
