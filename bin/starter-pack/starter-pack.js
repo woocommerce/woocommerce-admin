@@ -83,7 +83,7 @@ const maybeThrowError = ( error ) => {
 		)
 	);
 	process.stdout.write( '\n' );
-	console.log( 'npm install' );
-	console.log( 'npm start' );
+	console.log( 'yarn install' );
+	console.log( 'yarn start' );
 	process.stdout.write( '\n' );
 } )();

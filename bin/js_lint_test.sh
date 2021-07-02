@@ -2,8 +2,8 @@
 
 set -o errexit
 
-npm run -s install-if-deps-outdated
-npm run lint
-npm run build
-npm test
+yarn run -s install-if-deps-outdated
+yarn run lint
+yarn run build
+yarn test
 

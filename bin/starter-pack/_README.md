@@ -7,9 +7,8 @@ A WooCommerce Admin Extension
 To get started, run the following commands:
 
 ```text
-npm install
-npm start
+yarn install
+yarn start
 ```
 
 See [wp-scripts](https://github.com/WordPress/gutenberg/tree/master/packages/scripts) for more usage information.
-

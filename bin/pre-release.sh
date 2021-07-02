@@ -78,11 +78,11 @@ success "Version bumped successfully"
 
 status "Run scripts to propagate version numbers and update dependencies."
 
-npm run bump-version
+yarn run bump-version
 
 status "Run docs script to make sure docs are updated."
 
-npm run docs
+yarn run docs
 
 status "Here are the changes so far. Make sure the following changes are reflected."
 
