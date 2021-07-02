@@ -81,6 +81,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: SlotFill to Abbreviated Notification panel #7091
 - Dev: Add `woocommerce_admin_export_id` filter for customizing the export file name #7178
 - Dev: Remove old payment gateway task components #7224
+- Dev: Update package builds to use TypeScript and run in isolation. #7286
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Fix obsolete key property in gateway defaults #7229
 - Fix: Fixing button state logic for remote payment gateways #7200
