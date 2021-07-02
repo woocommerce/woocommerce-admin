@@ -14,7 +14,7 @@ const glob = require( 'glob' );
 const babel = require( '@babel/core' );
 const chalk = require( 'chalk' );
 const mkdirp = require( 'mkdirp' );
-const sass = require( 'node-sass' );
+const sass = require( 'sass' );
 const postcss = require( 'postcss' );
 const rimraf = require( 'rimraf' );
 
@@ -115,7 +115,7 @@ function buildJsFile( file, silent ) {
  */
 async function buildPackageScss( packagePath ) {
 	const srcDir = path.resolve( packagePath, SRC_DIR );
-	const scssFiles = glob.sync( `${ srcDir }/*.scss` );
+	const scssFiles = glob.sync( `${ srcDir }/**/*.scss` );
 
 	// Build scss files individually.
 	return Promise.all( scssFiles.map( ( file ) => buildScssFile( file ) ) );
@@ -136,11 +136,14 @@ async function buildScssFile( styleFile ) {
 		file: styleFile,
 		includePaths: [
 			path.resolve( __dirname, '../../client/stylesheets/abstracts' ),
+			path.resolve( __dirname, '../../node_modules' ),
 		],
 		data:
+			'@forward "sass:math"; @use "sass:math";' +
 			[ 'colors', 'variables', 'breakpoints', 'mixins' ]
 				.map( ( imported ) => `@import "_${ imported }";` )
-				.join( ' ' ) + fs.readFileSync( styleFile, 'utf8' ),
+				.join( ' ' ) +
+			fs.readFileSync( styleFile, 'utf8' ),
 	} );
 
 	const postCSSConfig = require( '@wordpress/postcss-plugins-preset' );

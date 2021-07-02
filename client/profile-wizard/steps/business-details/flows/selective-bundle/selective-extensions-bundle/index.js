@@ -20,7 +20,7 @@ import { AppIllustration } from '../app-illustration';
 import './style.scss';
 import { setAllPropsToValue } from '~/lib/collections';
 import { getCountryCode } from '~/dashboard/utils';
-import { isWCPaySupported } from '~/task-list/tasks/payments/methods/wcpay';
+import { isWCPaySupported } from '~/task-list/tasks/PaymentGatewaySuggestions/components/WCPay';
 
 const generatePluginDescriptionWithLink = (
 	description,
@@ -194,6 +194,7 @@ const installableExtensionsData = [
 					),
 					'creative-mail-for-woocommerce'
 				),
+				selected: false,
 			},
 		],
 	},
@@ -217,15 +218,18 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 	}
 
 	const extensionsList = extensions
-		.map( ( extension ) => {
-			return pluginNames[ extension ];
-		} )
+		.reduce( ( uniqueExtensionList, extension ) => {
+			const extensionName = pluginNames[ extension ];
+			return uniqueExtensionList.includes( extensionName )
+				? uniqueExtensionList
+				: [ ...uniqueExtensionList, extensionName ];
+		}, [] )
 		.join( ', ' );
 
 	if ( isInstallingActivating ) {
 		return (
 			<div className="woocommerce-profile-wizard__footnote">
-				<Text variant="caption" as="p">
+				<Text variant="caption" as="p" size="12" lineHeight="16px">
 					{ sprintf(
 						/* translators: %s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping */
 						_n(
@@ -251,7 +255,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 	);
 	return (
 		<div className="woocommerce-profile-wizard__footnote">
-			<Text variant="caption" as="p">
+			<Text variant="caption" as="p" size="12" lineHeight="16px">
 				{ sprintf(
 					/* translators: %1$s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping, %2$s: text: 'User accounts are required to use these features.'  */
 					_n(
@@ -265,7 +269,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 				) }
 			</Text>
 			{ installingJetpackOrWcShipping && (
-				<Text variant="caption" as="p">
+				<Text variant="caption" as="p" size="12" lineHeight="16px">
 					{ interpolateComponents( {
 						mixedString: __(
 							'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
@@ -311,6 +315,8 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
  * @param {string} country  Woo store country
  * @param {Array} industry List of selected industries
  * @param {Array} productTypes List of selected product types
+ *
+ * @return {Array} Array of visible plugins
  */
 const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 	const countryCode = getCountryCode( country );
@@ -320,6 +326,34 @@ const getVisiblePlugins = ( plugins, country, industry, productTypes ) => {
 			! plugin.isVisible ||
 			plugin.isVisible( countryCode, industry, productTypes )
 	);
+};
+
+/**
+ * Returns bundles that have at least 1 visible plugin.
+ *
+ * @param {Array} bundles  list of bundles
+ * @param {string} country  Woo store country
+ * @param {Array} industry List of selected industries
+ * @param {Array} productTypes List of selected product types
+ *
+ * @return {Array} Array of visible bundles
+ */
+const getVisibleBundles = ( bundles, country, industry, productTypes ) => {
+	return bundles
+		.map( ( bundle ) => {
+			return {
+				...bundle,
+				plugins: getVisiblePlugins(
+					bundle.plugins,
+					country,
+					industry,
+					productTypes
+				),
+			};
+		} )
+		.filter( ( bundle ) => {
+			return bundle.plugins.length;
+		} );
 };
 
 const transformRemoteExtensions = ( extensionData ) => {
@@ -342,15 +376,20 @@ const transformRemoteExtensions = ( extensionData ) => {
 };
 
 const baseValues = { install_extensions: true };
-const createInitialValues = ( extensions, country, industry, productTypes ) => {
+export const createInitialValues = (
+	extensions,
+	country,
+	industry,
+	productTypes
+) => {
 	return extensions.reduce( ( acc, curr ) => {
 		const plugins = getVisiblePlugins(
 			curr.plugins,
 			country,
 			industry,
 			productTypes
-		).reduce( ( pluginAcc, { key } ) => {
-			return { ...pluginAcc, [ key ]: true };
+		).reduce( ( pluginAcc, { key, selected } ) => {
+			return { ...pluginAcc, [ key ]: selected ?? true };
 		}, {} );
 
 		return {
@@ -389,7 +428,14 @@ export const SelectiveExtensionsBundle = ( {
 				industry,
 				productTypes
 			);
-			setInstallableExtensions( installableExtensionsData );
+			setInstallableExtensions(
+				getVisibleBundles(
+					installableExtensionsData,
+					country,
+					industry,
+					productTypes
+				)
+			);
 			setValues( initialValues );
 			setIsFetching( false );
 		};
@@ -403,6 +449,11 @@ export const SelectiveExtensionsBundle = ( {
 				path: '/wc-admin/onboarding/free-extensions',
 			} )
 				.then( ( results ) => {
+					if ( ! results?.length ) {
+						// Assuming empty array or null results is err.
+						setLocalInstallableExtensions();
+						return;
+					}
 					const transformedExtensions = transformRemoteExtensions(
 						results
 					);
@@ -412,7 +463,14 @@ export const SelectiveExtensionsBundle = ( {
 						industry,
 						productTypes
 					);
-					setInstallableExtensions( transformedExtensions );
+					setInstallableExtensions(
+						getVisibleBundles(
+							transformedExtensions,
+							country,
+							industry,
+							productTypes
+						)
+					);
 					setValues( initialValues );
 					setIsFetching( false );
 				} )
@@ -474,9 +532,8 @@ export const SelectiveExtensionsBundle = ( {
 								'Add recommended business features to my site'
 							) }
 						</p>
-						<Icon
+						<Button
 							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
-							icon={ showExtensions ? chevronUp : chevronDown }
 							onClick={ () => {
 								setShowExtensions( ! showExtensions );
 
@@ -487,7 +544,13 @@ export const SelectiveExtensionsBundle = ( {
 									);
 								}
 							} }
-						/>
+						>
+							<Icon
+								icon={
+									showExtensions ? chevronUp : chevronDown
+								}
+							/>
+						</Button>
 					</div>
 					{ showExtensions &&
 						installableExtensions.map(
@@ -499,21 +562,18 @@ export const SelectiveExtensionsBundle = ( {
 									{ isFetching ? (
 										<Spinner />
 									) : (
-										getVisiblePlugins(
-											plugins,
-											country,
-											industry,
-											productTypes
-										).map( ( { description, key } ) => (
-											<BundleExtensionCheckbox
-												key={ key }
-												description={ description }
-												isChecked={ values[ key ] }
-												onChange={ getCheckboxChangeHandler(
-													key
-												) }
-											/>
-										) )
+										plugins.map(
+											( { description, key } ) => (
+												<BundleExtensionCheckbox
+													key={ key }
+													description={ description }
+													isChecked={ values[ key ] }
+													onChange={ getCheckboxChangeHandler(
+														key
+													) }
+												/>
+											)
+										)
 									) }
 								</div>
 							)

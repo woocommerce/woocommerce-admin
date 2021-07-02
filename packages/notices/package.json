@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/notices",
-	"version": "2.11.0",
+	"version": "3.0.0",
 	"description": "State management for notices.",
 	"author": "The WordPress Contributors",
 	"license": "GPL-2.0-or-later",
@@ -24,7 +24,7 @@
 	"dependencies": {
 		"@babel/runtime": "7.14.0",
 		"@wordpress/a11y": "2.15.2",
-		"@wordpress/data": "4.26.1"
+		"@wordpress/data": "4.27.3"
 	},
 	"peerDependencies": {
 		"lodash": "^4.17.0"

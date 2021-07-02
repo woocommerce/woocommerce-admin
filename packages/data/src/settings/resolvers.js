@@ -1,7 +1,11 @@
 /**
  * External dependencies
  */
-import { apiFetch, dispatch } from '@wordpress/data-controls';
+import {
+	apiFetch,
+	dispatch as depreciatedDispatch,
+} from '@wordpress/data-controls';
+import { controls } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -9,6 +13,10 @@ import { apiFetch, dispatch } from '@wordpress/data-controls';
 import { NAMESPACE } from '../constants';
 import { STORE_NAME } from './constants';
 import { updateSettingsForGroup, updateErrorForGroup } from './actions';
+
+// Can be removed in WP 5.9.
+const dispatch =
+	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
 
 function settingsToSettingsResource( settings ) {
 	return settings.reduce( ( resource, setting ) => {

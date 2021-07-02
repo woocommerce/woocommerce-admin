@@ -18,10 +18,6 @@
 
 	.components-card__header {
 		margin-bottom: 12px;
-
-		svg {
-			margin-right: 6px;
-		}
 	}
 
 	a.components-button {
@@ -93,7 +89,7 @@
 	}
 }
 
-.woocommerce-store-alerts__message {
+.components-card__body .woocommerce-store-alerts__message {
 	margin-bottom: 16px;
 }
 
@@ -110,8 +106,8 @@
 		padding: 4px;
 
 		/*!rtl:ignore*/
-		.rtl & .dashicons-arrow-left-alt2,
-		.rtl & .dashicons-arrow-right-alt2 {
+		.rtl & .arrow-left-icon,
+		.rtl & .arrow-right-icon {
 			transform: scaleX(-1);
 		}
 	}
@@ -122,6 +118,7 @@
 		border-color: $button-border;
 		border-style: solid;
 		flex: 1 1;
+		@include font-size( 14 );
 	}
 
 	@include breakpoint( '<782px' ) {

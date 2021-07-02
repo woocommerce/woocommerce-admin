@@ -32,7 +32,7 @@ import './payment-recommendations.scss';
 import { getCountryCode } from '../dashboard/utils';
 import { getAdminLink } from '../wc-admin-settings';
 import { createNoticesFromResponse } from '../lib/notices';
-import { isWCPaySupported } from '../task-list/tasks/payments/methods/wcpay';
+import { isWCPaySupported } from '~/task-list/tasks/PaymentGatewaySuggestions/components/WCPay';
 
 const SEE_MORE_LINK =
 	'https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/?utm_source=payments_recommendations';
@@ -180,7 +180,12 @@ const PaymentRecommendations: React.FC = () => {
 		<Card size="large" className="woocommerce-recommended-payments-card">
 			<CardHeader size="medium">
 				<div className="woocommerce-recommended-payments-card__header">
-					<Text variant="title.small">
+					<Text
+						variant="title.small"
+						as="p"
+						size="20"
+						lineHeight="28px"
+					>
 						{ __(
 							'Recommended ways to get paid',
 							'woocommerce-admin'
@@ -191,6 +196,9 @@ const PaymentRecommendations: React.FC = () => {
 							'woocommerce-recommended-payments__header-heading'
 						}
 						variant="caption"
+						as="p"
+						size="12"
+						lineHeight="16px"
 					>
 						{ __(
 							'We recommend adding one of the following payment extensions to your store. The extension will be installed and activated for you when you click "Get started".',
@@ -217,7 +225,7 @@ const PaymentRecommendations: React.FC = () => {
 				<List items={ pluginsList } />
 			</CardBody>
 			<CardFooter>
-				<Button href={ SEE_MORE_LINK } isTertiary>
+				<Button href={ SEE_MORE_LINK } target="_blank" isTertiary>
 					{ __( 'See more options', 'woocommerce-admin' ) }
 					<ExternalIcon size={ 18 } />
 				</Button>

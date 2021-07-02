@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { apiFetch, select } from '@wordpress/data-controls';
+import { controls } from '@wordpress/data';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -22,6 +23,9 @@ import {
 } from './actions';
 import { PaypalOnboardingStatus, RecommendedTypes } from './types';
 
+// Can be removed in WP 5.9, wp.data is supported in >5.7.
+const resolveSelect =
+	controls && controls.resolveSelect ? controls.resolveSelect : select;
 type PluginGetResponse = {
 	plugins: string[];
 } & Response;
@@ -115,7 +119,7 @@ function* setOnboardingStatusWithOptions() {
 		merchant_id_production: string;
 		client_id_production: string;
 		client_secret_production: string;
-	} = yield select(
+	} = yield resolveSelect(
 		OPTIONS_STORE_NAME,
 		'getOption',
 		'woocommerce-ppcp-settings'
@@ -136,7 +140,9 @@ function* setOnboardingStatusWithOptions() {
 export function* getPaypalOnboardingStatus() {
 	yield setIsRequesting( 'getPaypalOnboardingStatus', true );
 
-	const errorData: { data?: { status: number } } = yield select(
+	const errorData: {
+		data?: { status: number };
+	} = yield resolveSelect(
 		STORE_NAME,
 		'getPluginsError',
 		'getPaypalOnboardingStatus'
