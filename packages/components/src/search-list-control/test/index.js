@@ -3,7 +3,6 @@
  */
 import renderer from 'react-test-renderer';
 import { noop } from 'lodash';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

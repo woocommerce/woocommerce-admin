@@ -3,7 +3,6 @@
  */
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

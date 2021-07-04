@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import ChevronDownIcon from 'gridicons/dist/chevron-down';
 import { isNil, noop } from 'lodash';
 import PropTypes from 'prop-types';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

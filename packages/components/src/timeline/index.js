@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import { format } from '@wordpress/date';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

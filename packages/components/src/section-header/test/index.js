@@ -2,7 +2,6 @@
  * External dependencies
  */
 import renderer from 'react-test-renderer';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

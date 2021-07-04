@@ -2,7 +2,6 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
-import { createElement } from '@wordpress/element';
 
 /**
  * `EmptyTable` displays a blank space with an optional message passed as a children node

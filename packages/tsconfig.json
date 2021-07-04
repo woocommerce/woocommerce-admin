@@ -7,9 +7,7 @@
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"jsx": "react",
-		"jsxFactory": "createElement",
-		"jsxFragmentFactory": "Fragment",
+		"jsx": "react-jsx",
 		"incremental": true
 	},
 	"exclude": [

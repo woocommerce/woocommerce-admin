@@ -4,7 +4,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { setSetting } from '@woocommerce/wc-admin-settings';
 import userEvent from '@testing-library/user-event';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

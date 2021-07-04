@@ -4,7 +4,6 @@
 import moment from 'moment';
 import { withState } from '@wordpress/compose';
 import { DatePicker, H, Section } from '@woocommerce/components';
-import { createElement } from '@wordpress/element';
 
 const dateFormat = 'MM/DD/YYYY';
 

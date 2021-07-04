@@ -2,7 +2,6 @@
  * External dependencies
  */
 import GridIcon from 'gridicons';
-import { createElement } from '@wordpress/element';
 
 export default [
 	{

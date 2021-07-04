@@ -4,7 +4,6 @@
 import classnames from 'classnames';
 import { format } from '@wordpress/date';
 import PropTypes from 'prop-types';
-import { createElement } from '@wordpress/element';
 
 const TimelineItem = ( props ) => {
 	const { item, className, clockFormat } = props;

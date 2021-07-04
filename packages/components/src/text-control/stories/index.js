@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { TextControl } from '@woocommerce/components';
-import { createElement } from '@wordpress/element';
 
 /**
  * External dependencies

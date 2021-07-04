@@ -3,7 +3,6 @@
  */
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { createElement } from '@wordpress/element';
 
 /**
  * Use `OrderStatus` to display a badge with human-friendly text describing the current order status.

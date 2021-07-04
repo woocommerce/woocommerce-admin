@@ -3,7 +3,6 @@
  */
 import { withState } from '@wordpress/compose';
 import { Stepper } from '@woocommerce/components';
-import { createElement } from '@wordpress/element';
 
 const BasicExamples = withState( {
 	currentStep: 'first',

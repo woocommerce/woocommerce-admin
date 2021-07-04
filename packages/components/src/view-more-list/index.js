@@ -3,7 +3,6 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import PropTypes from 'prop-types';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

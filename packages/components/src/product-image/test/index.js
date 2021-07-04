@@ -3,7 +3,6 @@
  */
 import { render } from '@testing-library/react';
 import { setSetting } from '@woocommerce/wc-admin-settings';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

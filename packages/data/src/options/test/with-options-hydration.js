@@ -3,7 +3,6 @@
  */
 import { render } from '@testing-library/react';
 import { useSelect } from '@wordpress/data';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

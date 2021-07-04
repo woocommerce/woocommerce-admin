@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import deprecated from '@wordpress/deprecated';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

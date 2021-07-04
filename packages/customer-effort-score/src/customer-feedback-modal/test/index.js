@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies

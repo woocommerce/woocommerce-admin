@@ -2,7 +2,6 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
-import { createElement } from '@wordpress/element';
 
 /**
  * A component to display summarized table data - the list of data passed in on a single line.

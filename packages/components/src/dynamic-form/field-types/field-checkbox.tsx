@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { CheckboxControl } from '@wordpress/components';
-import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies
