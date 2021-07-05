@@ -4,7 +4,6 @@
 import { Button } from '@wordpress/components';
 import CustomizeIcon from 'gridicons/dist/customize';
 import moment from 'moment';
-import { Gravatar } from '@woocommerce/components';
 import { render } from '@testing-library/react';
 
 /**
