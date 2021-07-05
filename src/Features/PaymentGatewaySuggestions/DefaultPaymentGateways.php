@@ -167,6 +167,21 @@ class DefaultPaymentGateways {
 				),
 			),
 			array(
+				'id'         => 'payubiz',
+				'title'      => __( 'PayU for WooCommerce', 'woocommerce-admin' ),
+				'content'    => __( 'Enable PayU’s exclusive plugin for WooCommerce to start accepting payments in 100+ payment methods available in India including credit cards, debit cards, UPI, & more!', 'woocommerce-admin' ),
+				'image'      => plugins_url( 'images/onboarding/payu.svg', WC_ADMIN_PLUGIN_FILE ),
+				'plugins'    => array( 'payu-india' ),
+				'is_visible' => array(
+					(object) array(
+						'type'      => 'base_location_country',
+						'value'     => 'IN',
+						'operation' => '=',
+					),
+					self::get_rules_for_cbd( false ),
+				),
+			),
+			array(
 				'id'         => 'eway',
 				'title'      => __( 'eWAY', 'woocommerce-admin' ),
 				'content'    => __( 'The eWAY extension for WooCommerce allows you to take credit card payments directly on your store without redirecting your customers to a third party site to make payment.', 'woocommerce-admin' ),
