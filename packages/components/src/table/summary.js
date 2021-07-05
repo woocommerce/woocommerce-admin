@@ -35,3 +35,13 @@ TableSummary.propTypes = {
 };
 
 export default TableSummary;
+
+export const TableSummaryPlaceholder = () => {
+	return (
+		<ul className="woocommerce-table__summary">
+			<li className="woocommerce-table__summary-item">
+				<span className="is-placeholder" />
+			</li>
+		</ul>
+	);
+};
