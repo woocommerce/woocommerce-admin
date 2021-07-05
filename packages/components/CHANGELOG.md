@@ -2,6 +2,7 @@
 
 -   Revert Card component removal #7167.
 -   Add rowKey prop to Table and TableCard component. #7196
+-   Remove deprecated Card, Count and Gravatar components. #7293
 
 # 7.0.0
 
