@@ -2,6 +2,7 @@
 
 -   Revert Card component removal #7167.
 -   Add rowKey prop to Table and TableCard component. #7196
+-   Add TableSummaryPlaceholder to support skeleton loading. #7294
 
 # 7.0.0
 

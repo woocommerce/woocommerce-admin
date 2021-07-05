@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Add TableSummaryPlaceholder to support skeleton loading #7294
+
+1. Visit any page using element Table to see this update.
+2. For example, Products, Orders, Revenue under Analytics; or Transactions, Deposits under Payments.
+3. While loading, scrolling down to the bottom of the table to see the placeholder of TableSummary.
+
 ### Use saved values if available when switching tabs #7226
 
 1. Start onboarding wizard and continue to step 4.
