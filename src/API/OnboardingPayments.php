@@ -9,7 +9,7 @@ namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Features\RemotePaymentMethods\Init as RemotePaymentMethods;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\Init as PaymentGatewaySuggestions;
 
 /**
  * Onboarding Payments Controller.
@@ -42,7 +42,7 @@ class OnboardingPayments extends \WC_REST_Data_Controller {
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_available_methods' ),
+					'callback'            => array( $this, 'get_suggestions' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
@@ -65,14 +65,14 @@ class OnboardingPayments extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Return available payment methods.
+	 * Return available payment gateway suggestions.
 	 *
 	 * @param \WP_REST_Request $request Request data.
 	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
-	public function get_available_methods( $request ) {
-		return RemotePaymentMethods::get_methods();
+	public function get_suggestions( $request ) {
+		return PaymentGatewaySuggestions::get_suggestions();
 	}
 
 }

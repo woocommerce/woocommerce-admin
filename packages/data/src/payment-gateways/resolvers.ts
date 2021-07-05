@@ -1,7 +1,11 @@
 /**
  * External dependencies
  */
-import { apiFetch } from '@wordpress/data-controls';
+import {
+	apiFetch,
+	dispatch as depreciatedDispatch,
+} from '@wordpress/data-controls';
+import { controls } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -15,8 +19,12 @@ import {
 	getPaymentGatewaysRequest,
 } from './actions';
 
-import { API_NAMESPACE } from './constants';
+import { API_NAMESPACE, STORE_KEY } from './constants';
 import { PaymentGateway } from './types';
+
+// Can be removed in WP 5.9.
+const dispatch =
+	controls && controls.dispatch ? controls.dispatch : depreciatedDispatch;
 
 export function* getPaymentGateways() {
 	yield getPaymentGatewaysRequest();
@@ -26,6 +34,14 @@ export function* getPaymentGateways() {
 			path: API_NAMESPACE + '/payment_gateways',
 		} );
 		yield getPaymentGatewaysSuccess( response );
+		for ( let i = 0; i < response.length; i++ ) {
+			yield dispatch(
+				STORE_KEY,
+				'finishResolution',
+				'getPaymentGateway',
+				[ response[ i ].id ]
+			);
+		}
 	} catch ( e ) {
 		yield getPaymentGatewaysError( e );
 	}

@@ -1,1 +1,0 @@
-export { RecommendedPaymentGatewayList } from './RecommendedPaymentGatewayList';

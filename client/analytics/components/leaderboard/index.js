@@ -58,7 +58,7 @@ export class Leaderboard extends Component {
 		const classes = 'woocommerce-leaderboard';
 
 		if ( isError ) {
-			return <ReportError className={ classes } isError />;
+			return <ReportError className={ classes } />;
 		}
 
 		const rows = this.getFormattedRows();
@@ -67,7 +67,12 @@ export class Leaderboard extends Component {
 			return (
 				<Card className={ classes }>
 					<CardHeader>
-						<Text variant="title.small" as="h3">
+						<Text
+							variant="title.small"
+							as="h3"
+							size="20"
+							lineHeight="28px"
+						>
 							{ title }
 						</Text>
 					</CardHeader>

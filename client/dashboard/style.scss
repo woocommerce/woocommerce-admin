@@ -5,7 +5,7 @@
 
 .woocommerce-dashboard__columns {
 	display: grid;
-	grid-template-columns: calc(50% - #{$gap-large/2}) calc(50% - #{$gap-large/2});
+	grid-template-columns: calc(50% - #{math.div($gap-large, 2)}) calc(50% - #{math.div($gap-large, 2)});
 	grid-column-gap: $gap-large;
 
 	// Auto-position fix for IE11.
@@ -85,6 +85,10 @@
 	.woocommerce-ellipsis-menu__item {
 		padding-bottom: 10px;
 	}
+}
+
+.components-card .woocommerce-ellipsis-menu__toggle {
+	padding: 0;
 }
 
 .woocommerce-task-dashboard__body {

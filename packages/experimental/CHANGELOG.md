@@ -1,6 +1,15 @@
 # Unreleased
 
+-   Add new VerticalCSSTransition component for handling height transitions. #7203
+-   Update TaskItem to make use of the VerticalCSSTransition. #7203
+
+# 1.3.0
+
 -   Remove the use of Dashicons and replace with @wordpress/icons or gridicons #7020
+-   Add expanded item text and CTA button. #6956
+-   Add inbox note components (InboxNoteCard, InboxNotePlaceholder, and InboxDismissConfirmationModal). #7006
+-   Add transition animation to expanding TaskItems.
+-   Add tree shaking support to this package.
 
 # 1.2.0
 
