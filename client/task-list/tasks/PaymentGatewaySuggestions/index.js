@@ -126,8 +126,11 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 	const recommendation = useMemo(
 		() =>
 			Array.from( paymentGateways.values() )
-				.filter( ( gateway ) => gateway.is_recommended )
-				.sort( ( a, b ) => a.is_recommended - b.is_recommended )
+				.filter( ( gateway ) => gateway.recommendation_priority )
+				.sort(
+					( a, b ) =>
+						a.recommendation_priority - b.recommendation_priority
+				)
 				.map( ( gateway ) => gateway.id )
 				.shift(),
 		[ paymentGateways ]
