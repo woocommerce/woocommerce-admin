@@ -51,18 +51,6 @@ describe( 'ActivityCard', () => {
 		expect( container ).toMatchSnapshot();
 	} );
 
-	test( 'should render a gravatar on a card', () => {
-		const { container } = render(
-			<ActivityCard
-				title="Inbox message"
-				icon={ <Gravatar user="admin@local.test" /> }
-			>
-				This card has some content
-			</ActivityCard>
-		);
-		expect( container ).toMatchSnapshot();
-	} );
-
 	test( 'should render a timestamp on a card', () => {
 		// We're generating this via moment to ensure it's always "3 days ago".
 		const threeDaysAgo = moment().subtract( 3, 'days' ).format();
