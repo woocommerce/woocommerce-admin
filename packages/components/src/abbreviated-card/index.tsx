@@ -10,7 +10,12 @@ import PropTypes from 'prop-types';
  */
 import Link from '../link';
 
-const AbbreviatedCard = ( {
+export type AbbreviatedCardProps = {
+	type: 'wp-admin' | 'wc-admin' | 'external';
+	icon: string;
+} & React.HTMLAttributes< HTMLElement >;
+
+const AbbreviatedCard: React.FC< AbbreviatedCardProps > = ( {
 	children,
 	className,
 	href,

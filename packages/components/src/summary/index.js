@@ -23,6 +23,7 @@ import Menu from './menu';
  * @return {Object} -
  */
 const SummaryList = ( { children, isDropdownBreakpoint, label } ) => {
+	console.log( isDropdownBreakpoint );
 	const items = children( {} );
 	// We default to "one" because we can't have empty children.
 	const itemCount = Children.count( items ) || 1;
@@ -42,6 +43,7 @@ const SummaryList = ( { children, isDropdownBreakpoint, label } ) => {
 	}
 
 	const selected = items.find( ( item ) => !! item.props.selected );
+
 	if ( ! selected ) {
 		return summaryMenu;
 	}
