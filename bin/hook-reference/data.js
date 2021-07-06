@@ -21,7 +21,8 @@ const getSourceFile = ( file, commit, { source } ) => {
 const logProgress = ( fileName, { tags } ) => {
 	const hook = tags.find( ( tag ) => dataTypes.includes( tag.tag ) );
 	console.log(
-		chalk.cyan( `${ hook.name } ` ) +
+		chalk.green( `@${ hook.tag } ` ) +
+			chalk.cyan( `${ hook.name } ` ) +
 			chalk.yellow( 'generated in ' ) +
 			chalk.yellow.underline( fileName )
 	);
