@@ -360,6 +360,7 @@ export const TaskList = ( {
 										expandingItems &&
 										currentTask === task.key
 									}
+									onDelete={ task.onDelete ?? undefined }
 									onDismiss={
 										task.isDismissable
 											? () => dismissTask( task )
