@@ -114,6 +114,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 } ) => {
 	const className = classnames( 'woocommerce-task-list__item', {
 		complete: completed,
+		expanded,
 		'level-2': level === 2 && ! completed,
 		'level-1': level === 1 && ! completed,
 	} );
