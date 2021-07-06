@@ -91,7 +91,7 @@ export const Item = ( {
 						isRecommended={ isRecommended }
 						isLoading={ loading }
 						markConfigured={ markConfigured }
-						onSetup={ () =>
+						onSetUp={ () =>
 							recordEvent( 'tasklist_payment_setup', {
 								options: gatewayIds,
 								selected: id,

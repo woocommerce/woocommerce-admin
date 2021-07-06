@@ -117,12 +117,6 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		[ paymentGateways ]
 	);
 
-	const recordConnectStartEvent = useCallback( ( gatewayId ) => {
-		recordEvent( 'tasklist_payment_connect_start', {
-			payment_method: gatewayId,
-		} );
-	}, [] );
-
 	const recommendation = useMemo(
 		() =>
 			Array.from( paymentGateways.values() )
@@ -184,7 +178,6 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			<Setup
 				paymentGateway={ currentGateway }
 				markConfigured={ markConfigured }
-				recordConnectStartEvent={ recordConnectStartEvent }
 			/>
 		);
 	}
