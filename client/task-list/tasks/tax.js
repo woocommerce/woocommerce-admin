@@ -533,7 +533,7 @@ export default compose(
 		const connectOptions = getOption( 'wc_connect_options' ) || {};
 		const tosAccepted =
 			connectOptions.tos_accepted ||
-			getOption( 'woocommerce_setup_jetpack_opted_in' );
+			getOption( 'woocommerce_setup_jetpack_opted_in' ) === '1';
 
 		const tasksStatus = getTasksStatus();
 
