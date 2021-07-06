@@ -26,8 +26,6 @@ type CollapsibleListProps = {
 	show?: number;
 	onCollapse?: () => void;
 	onExpand?: () => void;
-	mountOnEnter?: boolean;
-	unmountOnExit?: boolean;
 } & ListProps;
 
 const defaultStyle = {
@@ -118,14 +116,13 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	show = 0,
 	onCollapse,
 	onExpand,
-	mountOnEnter = true,
-	unmountOnExit = false,
 	...listProps
 } ): JSX.Element => {
 	const [ isCollapsed, setCollapsed ] = useState( collapsed );
-	const [ isTransitionCollapsed, setTransitionCollapsed ] = useState(
-		collapsed
-	);
+	const [
+		isTransitionComponentCollapsed,
+		setTransitionComponentCollapsed,
+	] = useState( collapsed );
 	const [ footerLabels, setFooterLabels ] = useState( {
 		collapse: collapseLabel,
 		expand: expandLabel,
@@ -167,7 +164,7 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 	// This allows for an extra render cycle that adds the maxHeight back in before the exiting transition.
 	// This way the exiting transition still works correctly.
 	useEffect( () => {
-		setTransitionCollapsed( isCollapsed );
+		setTransitionComponentCollapsed( isCollapsed );
 	}, [ isCollapsed ] );
 
 	useEffect( () => {
@@ -223,9 +220,9 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 				<Transition
 					key="remaining-children"
 					timeout={ 500 }
-					in={ ! isTransitionCollapsed }
-					mountOnEnter={ mountOnEnter }
-					unmountOnExit={ unmountOnExit }
+					in={ ! isTransitionComponentCollapsed }
+					mountOnEnter={ true }
+					unmountOnExit={ false }
 				>
 					{ (
 						state: 'entering' | 'entered' | 'exiting' | 'exited'

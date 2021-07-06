@@ -255,7 +255,6 @@ describe( 'Experimental List', () => {
 					expandLabel="Show more items"
 					onExpand={ onExpand }
 					onCollapse={ onCollapse }
-					unmountOnExit
 				>
 					<div id="test">Test</div>
 					<div>Test 2</div>
@@ -277,11 +276,6 @@ describe( 'Experimental List', () => {
 			if ( listItem ) {
 				userEvent.click( listItem );
 			}
-			await waitForElementToBeRemoved(
-				container.querySelector( '#test' )
-			);
-			expect( container ).not.toHaveTextContent( 'Test' );
-			expect( container ).not.toHaveTextContent( 'Test 2' );
 			expect( container ).toHaveTextContent( 'Show more items' );
 			expect( container ).not.toHaveTextContent( 'Show less' );
 			expect( onExpand ).toHaveBeenCalledTimes( 1 );
