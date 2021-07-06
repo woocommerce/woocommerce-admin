@@ -196,7 +196,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 									{ __( 'Dismiss', 'woocommerce-admin' ) }
 								</Button>
 							) }
-							{ remindMeLater && ! completed  && (
+							{ remindMeLater && ! completed && (
 								<Button
 									onClick={ ( e: React.MouseEvent ) => {
 										e.stopPropagation();
