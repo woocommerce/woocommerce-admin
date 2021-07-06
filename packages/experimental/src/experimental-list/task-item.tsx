@@ -95,7 +95,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 		'level-1': level === 1 && ! completed,
 	} );
 
-	const showEllipsisMenu = ( ( onDismiss || remindMeLater ) && ! completed ) || ( onDelete && completed ) ;
+	const showEllipsisMenu =
+		( ( onDismiss || remindMeLater ) && ! completed ) ||
+		( onDelete && completed );
 
 	return (
 		<ListItem disableGutters className={ className } onClick={ onClick }>
