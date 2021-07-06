@@ -70,10 +70,6 @@ class RemoteInboxNotificationsEngine {
 	 * condition and thus doesn't return any results.
 	 */
 	public static function on_admin_init() {
-		if ( ! Features::is_enabled( 'remote-inbox-notifications' ) ) {
-			return;
-		}
-
 		add_action( 'activated_plugin', array( __CLASS__, 'run' ) );
 		add_action( 'deactivated_plugin', array( __CLASS__, 'run_on_deactivated_plugin' ), 10, 1 );
 		StoredStateSetupForProducts::admin_init();
