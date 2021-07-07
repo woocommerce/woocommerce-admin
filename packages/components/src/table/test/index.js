@@ -17,7 +17,7 @@ expect.extend( { toHaveClass } );
 
 describe( 'TableCard', () => {
 	it( 'should render placeholders for Table and TableSummary while loading', () => {
-		render(
+		const { container } = render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -38,10 +38,12 @@ describe( 'TableCard', () => {
 		expect( screen.getByRole( 'complementary' ) ).toHaveClass(
 			'is-loading'
 		);
+
+		expect( container ).toMatchSnapshot();
 	} );
 
 	it( 'should not render placeholder Table and TableSummary when not loading', () => {
-		render(
+		const { container } = render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -60,10 +62,12 @@ describe( 'TableCard', () => {
 		expect( screen.getByRole( 'complementary' ) ).not.toHaveClass(
 			'is-loading'
 		);
+
+		expect( container ).toMatchSnapshot();
 	} );
 
 	it( 'should not error with default callback props', () => {
-		render(
+		const { container } = render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -89,10 +93,12 @@ describe( 'TableCard', () => {
 
 		// We shouldn't get here if an error occurred.
 		expect( true ).toBe( true );
+
+		expect( container ).toMatchSnapshot();
 	} );
 
 	it( 'should render rows correctly with custom rowKey prop', () => {
-		render(
+		const { container } = render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -110,5 +116,7 @@ describe( 'TableCard', () => {
 				screen.queryByText( row[ 0 ].display )
 			).toBeInTheDocument();
 		}
+
+		expect( container ).toMatchSnapshot();
 	} );
 } );
