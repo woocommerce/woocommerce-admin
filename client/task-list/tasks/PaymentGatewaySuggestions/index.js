@@ -10,7 +10,7 @@ import {
 	PAYMENT_GATEWAYS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useMemo, useCallback } from '@wordpress/element';
+import { useMemo, useCallback, useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -81,6 +81,16 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			};
 		}
 	);
+
+	useEffect( () => {
+		if ( paymentGateways.size ) {
+			recordEvent( 'tasklist_payments_options', {
+				options: Array.from( paymentGateways.values() ).map(
+					( gateway ) => gateway.id
+				),
+			} );
+		}
+	}, [ paymentGateways ] );
 
 	const enablePaymentGateway = ( id ) => {
 		if ( ! id ) {
