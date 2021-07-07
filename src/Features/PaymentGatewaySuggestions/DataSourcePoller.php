@@ -12,8 +12,16 @@ defined( 'ABSPATH' ) || exit;
  * This handles polling specs from JSON endpoints.
  */
 class DataSourcePoller {
+	/**
+	 * Name of data sources filter.
+	 */
+	const FILTER_NAME = 'woocommerce_admin_payment_gateway_suggestions_data_sources';
+
+	/**
+	 * Default data sources array.
+	 */
 	const DATA_SOURCES = array(
-		'https://woocommerce.com/wp-json/wccom/payment-methods/1.0/methods.json',
+		'https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/suggestions.json',
 	);
 
 	/**
@@ -43,7 +51,7 @@ class DataSourcePoller {
 	 */
 	public static function read_specs_from_data_sources() {
 		$specs        = array();
-		$data_sources = apply_filters( 'woocommerce_admin_payment_gateway_suggestions_data_sources', self::DATA_SOURCES );
+		$data_sources = apply_filters( self::FILTER_NAME, self::DATA_SOURCES );
 
 		// Note that this merges the specs from the data sources based on the
 		// id - last one wins.
@@ -65,7 +73,13 @@ class DataSourcePoller {
 	private static function read_data_source( $url ) {
 		$logger_context = array( 'source' => $url );
 		$logger         = self::get_logger();
-		$response       = wp_remote_get( $url );
+		$response       = wp_remote_get(
+			add_query_arg(
+				'_locale',
+				get_user_locale(),
+				$url
+			)
+		);
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
 			$logger->error(

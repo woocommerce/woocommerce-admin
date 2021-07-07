@@ -2,6 +2,7 @@
 
 -   Revert Card component removal #7167.
 -   Filters: On update respect all other queries, not just persistedQueries #7155
+-   Add rowKey prop to Table and TableCard component. #7196
 
 # 7.0.0
 
@@ -15,6 +16,7 @@
 -   Deprecate the Count component, with plan to remove in next major version. #7115
 -   Remove the long deprecated Card component (use Card from `@wordpress/components` instead). #7114
 -   Add `<AbbreviatedCard />` component. #7017
+-   Fix non-string query prop warning in SelectControl component. #7046
 -   Remove support for IE11. #7112
 
 # 6.2.0

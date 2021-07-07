@@ -8,12 +8,12 @@ import NoticeOutline from 'gridicons/dist/notice-outline';
 import { EllipsisMenu } from '@woocommerce/components';
 import classnames from 'classnames';
 import { sanitize } from 'dompurify';
-import { CSSTransition } from 'react-transition-group';
 
 /**
  * Internal dependencies
  */
 import { Text, ListItem } from '../';
+import { VerticalCSSTransition } from '../vertical-css-transition';
 
 const ALLOWED_TAGS = [ 'a', 'b', 'em', 'i', 'strong', 'p', 'br' ];
 const ALLOWED_ATTR = [ 'target', 'href', 'rel', 'name', 'download' ];
@@ -34,6 +34,7 @@ type TaskItemProps = {
 	title: string;
 	completed: boolean;
 	onClick: () => void;
+	onDelete?: () => void;
 	onDismiss?: () => void;
 	remindMeLater?: () => void;
 	additionalInfo?: string;
@@ -75,6 +76,7 @@ const OptionalTaskTooltip: React.FC< {
 export const TaskItem: React.FC< TaskItemProps > = ( {
 	completed,
 	title,
+	onDelete,
 	onDismiss,
 	remindMeLater,
 	onClick,
@@ -93,7 +95,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 		'level-1': level === 1 && ! completed,
 	} );
 
-	const showEllipsisMenu = ( onDismiss || remindMeLater ) && ! completed;
+	const showEllipsisMenu =
+		( ( onDismiss || remindMeLater ) && ! completed ) ||
+		( onDelete && completed );
 
 	return (
 		<ListItem disableGutters className={ className } onClick={ onClick }>
@@ -109,15 +113,23 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 				</div>
 			</OptionalTaskTooltip>
 			<div className="woocommerce-task-list__item-text">
-				<Text as="div" variant={ completed ? 'body.small' : 'button' }>
+				<Text
+					as="div"
+					size="14"
+					lineHeight={ completed ? '18px' : '20px' }
+					weight={ completed ? 'normal' : '600' }
+					variant={ completed ? 'body.small' : 'button' }
+				>
 					<span className="woocommerce-task-list__item-title">
 						{ title }
 					</span>
-					<CSSTransition
-						appear
+					<VerticalCSSTransition
 						timeout={ 500 }
 						in={ expanded }
 						classNames="woocommerce-task-list__item-content"
+						defaultStyle={ {
+							transitionProperty: 'max-height, opacity',
+						} }
 					>
 						<div className="woocommerce-task-list__item-content">
 							{ content }
@@ -146,7 +158,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 								</Button>
 							) }
 						</div>
-					</CSSTransition>
+					</VerticalCSSTransition>
 
 					{ ! expandable && ! completed && additionalInfo && (
 						<div
@@ -172,7 +184,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					}
 					renderContent={ () => (
 						<div className="woocommerce-task-card__section-controls">
-							{ onDismiss && (
+							{ onDismiss && ! completed && (
 								<Button
 									onClick={ (
 										e:
@@ -186,7 +198,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 									{ __( 'Dismiss', 'woocommerce-admin' ) }
 								</Button>
 							) }
-							{ remindMeLater && (
+							{ remindMeLater && ! completed && (
 								<Button
 									onClick={ ( e: React.MouseEvent ) => {
 										e.stopPropagation();
@@ -197,6 +209,20 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 										'Remind me later',
 										'woocommerce-admin'
 									) }
+								</Button>
+							) }
+							{ onDelete && completed && (
+								<Button
+									onClick={ (
+										e:
+											| React.MouseEvent
+											| React.KeyboardEvent
+									) => {
+										e.stopPropagation();
+										onDelete();
+									} }
+								>
+									{ __( 'Delete', 'woocommerce-admin' ) }
 								</Button>
 							) }
 						</div>
