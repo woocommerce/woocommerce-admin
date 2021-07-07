@@ -42,8 +42,8 @@ function getContainerHeight( collapseContainer: HTMLDivElement | null ) {
 			containerHeight += child.clientHeight;
 			const style = window.getComputedStyle( child );
 
-			containerHeight += parseInt( style.marginTop ) || 0;
-			containerHeight += parseInt( style.marginBottom ) || 0;
+			containerHeight += parseInt( style.marginTop, 10 ) || 0;
+			containerHeight += parseInt( style.marginBottom, 10 ) || 0;
 		}
 	}
 	return containerHeight;
