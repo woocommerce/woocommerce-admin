@@ -55,7 +55,7 @@
 		"publish-packages:dev": "yarn run build:packages && lerna publish from-package --npm-tag next",
 		"publish-packages:prod": "yarn run build:packages && lerna publish from-package",
 		"prestart": "yarn run -s install-if-deps-outdated",
-		"start": "cross-env WC_ADMIN_PHASE=development yarn run build:packages && cross-env WC_ADMIN_PHASE=development yarn run build:feature-config && concurrently \"cross-env WC_ADMIN_PHASE=development webpack --watch\" \"yarn tsc --build --watch\"",
+		"start": "cross-env WC_ADMIN_PHASE=development yarn run build:packages && cross-env WC_ADMIN_PHASE=development yarn run build:feature-config && concurrently \"cross-env WC_ADMIN_PHASE=development webpack --watch\" \"yarn tsc --build --watch\" \"yarn node ./bin/packages/watch.js ./packages\"",
 		"pretest": "yarn run -s install-if-no-packages",
 		"test:debug": "yarn node --inspect-brk ./node_modules/.bin/jest --config client/jest.config.json --watch --runInBand --no-cache",
 		"test:client": "yarn run jest --config client/jest.config.json",

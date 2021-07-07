@@ -22,7 +22,7 @@ const exists = ( filename ) => {
 
 // Exclude deceitful source-like files, such as editor swap files.
 const isSourceFile = ( filename ) => {
-	return /\.scss$/.test( filename );
+	return ! /\/node_modules\//.test( filename ) && /\.scss$/.test( filename );
 };
 
 const rebuild = ( filename ) => filesToBuild.set( filename, true );
@@ -38,7 +38,7 @@ if ( ! dir.length ) {
 	process.exit( 1 );
 }
 
-const srcDir = path.resolve( dir[ 0 ], 'src' );
+const srcDir = path.resolve( dir[ 0 ] );
 
 try {
 	fs.accessSync( srcDir, fs.F_OK );
