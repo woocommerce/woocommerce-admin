@@ -30,7 +30,7 @@
 	"scripts": {
 		"clean": "npx rimraf build build-*",
 		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
-		"start": "yarn run build -- --watch",
+		"start": "yarn tsc --build --watch",
 		"prepack": "yarn run clean && yarn run build",
 		"test": "yarn workspaces run build && yarn run test:nobuild",
 		"test:nobuild": "yarn run jest --config ./jest.config.json",

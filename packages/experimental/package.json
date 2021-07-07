@@ -43,6 +43,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
+		"concurrently": "5.3.0",
 		"@storybook/addon-console": "1.2.3",
 		"@storybook/react": "6.2.9",
 		"@types/dompurify": "2.2.2",
@@ -55,7 +56,7 @@
 		"build": "yarn run build:js && yarn run build:css",
 		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"build:css": "yarn node ../../bin/packages/build.js src/style.scss",
-		"start": "yarn run build -- --watch",
+		"start": "concurrently \"yarn tsc --build --watch\" \"yarn node ../../bin/packages/watch.js ./src\"",
 		"prepack": "yarn run clean && yarn run build",
 		"test": "yarn workspaces run build && yarn run test:nobuild",
 		"test:nobuild": "yarn run jest --config ./jest.config.json",
