@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
  */
 const TableSummary = ( { data } ) => {
 	return (
-		<ul className="woocommerce-table__summary">
+		<ul className="woocommerce-table__summary" role="complementary">
 			{ data.map( ( { label, value }, i ) => (
 				<li className="woocommerce-table__summary-item" key={ i }>
 					<span className="woocommerce-table__summary-value">
@@ -38,7 +38,10 @@ export default TableSummary;
 
 export const TableSummaryPlaceholder = () => {
 	return (
-		<ul className="woocommerce-table__summary">
+		<ul
+			className="woocommerce-table__summary is-loading"
+			role="complementary"
+		>
 			<li className="woocommerce-table__summary-item">
 				<span className="is-placeholder" />
 			</li>
