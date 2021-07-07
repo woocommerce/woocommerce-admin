@@ -57,7 +57,9 @@ const testAdminAnalyticsOverview = () => {
 				for ( const section of sections ) {
 					const index = sections.indexOf( section );
 					const menuItems = (
-						await analyticsPage.getEllipsisMenuItems( section.title )
+						await analyticsPage.getEllipsisMenuItems(
+							section.title
+						)
 					 ).map( ( item ) => item.title );
 					if ( index === 0 ) {
 						expect( menuItems ).toContain( 'Move down' );

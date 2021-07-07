@@ -1,4 +1,11 @@
+/**
+ * External dependencies
+ */
 import { ElementHandle } from 'puppeteer';
+
+/**
+ * Internal dependencies
+ */
 import { waitForElementByText } from '../utils/actions';
 import { Analytics } from './Analytics';
 
@@ -39,7 +46,7 @@ export class AnalyticsOverview extends Analytics {
 
 	async openSectionEllipsis( sectionTitle: string ) {
 		const section = ( await this.getSections() ).find(
-			( section ) => section.title === sectionTitle
+			( thisSection ) => thisSection.title === sectionTitle
 		);
 		if ( section ) {
 			const ellipsisMenu = await section.element.$(
@@ -54,7 +61,7 @@ export class AnalyticsOverview extends Analytics {
 
 	async closeSectionEllipsis( sectionTitle: string ) {
 		const section = ( await this.getSections() ).find(
-			( section ) => section.title === sectionTitle
+			( thisSection ) => thisSection.title === sectionTitle
 		);
 		if ( section ) {
 			const ellipsisMenu = await section.element.$(
