@@ -85,6 +85,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Fix obsolete key property in gateway defaults #7229
 - Fix: Fixing button state logic for remote payment gateways #7200
+- Fix: Recommended gateway suggestions not displayed properly #7231
 - Fix: Include onboarding settings on the analytic pages #7109
 - Fix: Load Analytics API only when feature is turned on #7193
 - Fix: Localize string for description #7219
@@ -104,10 +105,14 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Fix and refactor explat polling to use setTimeout #7274
 - Fix: Cache product/variation revenue query results. #7067
 - Tweak: Remove performance indicators when Analytics Flag disabled #7234
+- Fix: Fix missing translation strings for CES #7270
+- Fix: Add missing translation strings in the business features section #7268
+- Fix: Fix inbox note dismiss dropdown not closing on Safari #7278
 - Tweak: Revert Card component removal #7167
+- Tweak: Removed unused feature flags #7233 and #7273
 - Tweak: Repurpose disable wc-admin filter to remove optional features #7232
-- Tweak: Removed unused feature flags #7233
 - Update: Notes to use a date range. #7222
+- Add: Add a delete option to completed tasks #7300
 
 == 2.4.0 6/10/2021 ==
 - Dev: Add Jetpack Backup admin note #6738
