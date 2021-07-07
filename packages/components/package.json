@@ -73,6 +73,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
+		"concurrently": "5.3.0",
 		"@wordpress/scripts": "12.6.1",
 		"@storybook/addon-console": "1.2.3",
 		"@storybook/react": "6.2.9",
@@ -84,12 +85,10 @@
 		"build:css": "yarn node ../../bin/packages/build.js src/style.scss",
 		"clean": "npx rimraf build build-*",
 		"prepack": "yarn run clean && yarn run build",
+		"start": "concurrently \"yarn tsc --build --watch\" \"yarn node ../../bin/packages/watch.js ./src\"",
 		"test": "yarn workspaces run build && yarn run test:nobuild",
 		"test:nobuild": "yarn run jest --config ./jest.config.json",
 		"test:update-snapshots": "yarn run test:nobuild --updateSnapshot",
-		"test-staged": "yarn run jest --bail --config ./jest.config.json --findRelatedTests",
-		"watch": "concurrently \"yarn run watch:js\" \"yarn run watch:css\"",
-		"watch:js": "yarn run build:js --watch",
-		"watch:css": "yarn node ../../bin/packages/watch.js ."
+		"test-staged": "yarn run jest --bail --config ./jest.config.json --findRelatedTests"
 	}
 }
