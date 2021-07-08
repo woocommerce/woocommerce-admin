@@ -36,6 +36,11 @@ TableSummary.propTypes = {
 
 export default TableSummary;
 
+/**
+ * A component to display a placeholder box for `TableSummary`. There is no prop for this component.
+ *
+ * @return {Object} -
+ */
 export const TableSummaryPlaceholder = () => {
 	return (
 		<ul
