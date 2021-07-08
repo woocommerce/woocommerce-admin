@@ -37,6 +37,7 @@
 		{ "path": "packages/date" },
 		{ "path": "packages/experimental" },
 		{ "path": "packages/explat" },
+		{ "path": "packages/js-tests" },
 		{ "path": "packages/navigation" },
 		{ "path": "packages/notices" },
 		{ "path": "packages/number" },
