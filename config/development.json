@@ -2,8 +2,6 @@
 	"features": {
 		"activity-panels": true,
 		"analytics": true,
-		"analytics-dashboard": true,
-		"analytics-dashboard/customizable": true,
 		"coupons": true,
 		"customer-effort-score-tracks": true,
 		"homescreen": true,
@@ -18,8 +16,6 @@
 		"settings": false,
 		"shipping-label-banner": true,
 		"store-alerts": true,
-		"transient-notices": true,
-		"wcpay": true,
-		"wcpay/support-international-countries": true
+		"transient-notices": true
 	}
 }
