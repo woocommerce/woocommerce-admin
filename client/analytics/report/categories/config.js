@@ -50,7 +50,7 @@ export const advancedFilters = applyFilters(
 		filters: {},
 		title: _x(
 			'Categories Match {{select /}} Filters',
-			'A sentence describing filters for Variations. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ',
+			'A sentence describing filters for Categories. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ',
 			'woocommerce-admin'
 		),
 	}

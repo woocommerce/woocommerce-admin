@@ -41,7 +41,7 @@ export const advancedFilters = applyFilters(
 		filters: {},
 		title: _x(
 			'Coupons Match {{select /}} Filters',
-			'A sentence describing filters for Variations. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ',
+			'A sentence describing filters for Coupons. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ',
 			'woocommerce-admin'
 		),
 	}

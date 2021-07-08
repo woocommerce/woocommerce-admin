@@ -174,8 +174,8 @@ export const advancedFilters = applyFilters(
 	{
 		filters: {},
 		title: _x(
-			'Product Match {{select /}} Filters',
-			'A sentence describing filters for Variations. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ',
+			'Products Match {{select /}} Filters',
+			'A sentence describing filters for Products. See screen shot for context: https://cloudup.com/cSsUY9VeCVJ',
 			'woocommerce-admin'
 		),
 	}
