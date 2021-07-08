@@ -2,12 +2,6 @@
 	"name": "@woocommerce/admin-library",
 	"version": "2.5.0-dev",
 	"homepage": "https://woocommerce.github.io/woocommerce-admin/",
-	"private": true,
-	"workspaces": {
-		"packages": [
-			"packages/*"
-		]
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com:woocommerce/woocommerce-admin.git"
