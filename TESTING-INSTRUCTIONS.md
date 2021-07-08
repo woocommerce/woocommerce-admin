@@ -11,6 +11,18 @@
 5. Click the Download button.
 6. Open the downloaded file and confirm the status values match the table.
 
+### Fix end date for last periods #6584
+1. Update your system clock to March 2021
+2. Create a completed order on 29th February 2020
+3. Go to Analytics > Revenue
+4. In the date range filter, select "Last Month" preset and compare to "Previous Year"
+5. Observe that 29th February sales are included
+6. In the date range filter, select "Last Week" preset and compare to "Previous Year"
+7. Observe that the end date is the same as the current year's end date
+8. In the date range filter, select "Last Quarter" preset and compare to "Previous Year"
+9. Observe that the end date is the same as the selected quarter and subtract 1 year
+10. In the date range filter, select "Last Year" preset and compare to "Previous Year"
+11. Observe that the end date is the same as the selected year and subtract 1 year
 ## 2.5.0
 
 ### Fix WC Home crash when the Analytics is disabled #7339
@@ -1133,19 +1145,6 @@ wp db query 'SELECT status FROM wp_wc_admin_notes WHERE name = "wc-admin-add-fir
 2. Go to `Analytics` > `Orders`
 3. Set the `Date Range` filter in order to cover the refunded order date.
 4. Verify that now the associated order number and the related products are visible.
-
-### Fix end date for last periods #6584
-1. Update your system clock to March 2021
-2. Create a completed order on 29th February 2020
-3. Go to Analytics > Revenue
-4. In the date range filter, select "Last Month" preset and compare to "Previous Year"
-5. Observe that 29th February sales are included
-6. In the date range filter, select "Last Week" preset and compare to "Previous Year"
-7. Observe that the end date is the same as the current year's end date
-8. In the date range filter, select "Last Quarter" preset and compare to "Previous Year"
-9. Observe that the end date is the same as the selected quarter and subtract 1 year
-10. In the date range filter, select "Last Year" preset and compare to "Previous Year"
-11. Observe that the end date is the same as the selected year and subtract 1 year
 
 ### Remove CES actions for adding and editing a product and editing an order #6355
 
