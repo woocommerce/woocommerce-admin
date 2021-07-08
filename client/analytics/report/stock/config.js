@@ -22,36 +22,40 @@ export const advancedFilters = applyFilters(
 	}
 );
 
-const filterValues = [
-	{ label: __( 'All Products', 'woocommerce-admin' ), value: 'all' },
-	{
-		label: __( 'Out of Stock', 'woocommerce-admin' ),
-		value: 'outofstock',
-	},
-	{
-		label: __( 'Low Stock', 'woocommerce-admin' ),
-		value: 'lowstock',
-	},
-	{ label: __( 'In Stock', 'woocommerce-admin' ), value: 'instock' },
-	{
-		label: __( 'On Backorder', 'woocommerce-admin' ),
-		value: 'onbackorder',
-	},
-];
-
-if ( Object.keys( advancedFilters.filters ).length ) {
-	filterValues.push( {
-		label: __( 'Advanced Filters', 'woocommerce-admin' ),
-		value: 'advanced',
-	} );
-}
-
 export const filters = applyFilters( STOCK_REPORT_FILTERS_FILTER, [
 	{
 		label: __( 'Show', 'woocommerce-admin' ),
 		staticParams: [ 'paged', 'per_page' ],
 		param: 'type',
 		showFilters: () => true,
-		filters: filterValues,
+		filters: [
+			{ label: __( 'All Products', 'woocommerce-admin' ), value: 'all' },
+			{
+				label: __( 'Out of Stock', 'woocommerce-admin' ),
+				value: 'outofstock',
+			},
+			{
+				label: __( 'Low Stock', 'woocommerce-admin' ),
+				value: 'lowstock',
+			},
+			{ label: __( 'In Stock', 'woocommerce-admin' ), value: 'instock' },
+			{
+				label: __( 'On Backorder', 'woocommerce-admin' ),
+				value: 'onbackorder',
+			},
+		],
+	},
+	{
+		label: __( 'Filter by', 'woocommerce-admin' ),
+		staticParams: [ 'paged', 'per_page' ],
+		param: 'filter',
+		showFilters: () => Object.keys( advancedFilters.filters ).length,
+		filters: [
+			{ label: __( 'All Products', 'woocommerce-admin' ), value: 'all' },
+			{
+				label: __( 'Advanced Filters', 'woocommerce-admin' ),
+				value: 'advanced',
+			},
+		],
 	},
 ] );
