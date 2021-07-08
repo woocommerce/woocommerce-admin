@@ -15,8 +15,7 @@ RUN apk --no-cache add \
 	npm \
 	subversion \
 	unzip \
-	wget \
-	yarn
+	wget
 
 COPY install-php-version.sh /tmp/  
 RUN chmod u+x /tmp/install-php-version.sh && /tmp/install-php-version.sh

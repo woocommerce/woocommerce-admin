@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Performs an `yarn install`. Since that's a costly operation,
+ * Performs an `npm install`. Since that's a costly operation,
  * it will only perform it if needed, that is, if the packages
  * installed at `node_modules` aren't in sync over what
  * `package-lock.json` has. For that, modification times of both
@@ -24,14 +24,14 @@ const needsInstall = () => {
 };
 
 if ( needsInstall() ) {
-	const installResult = spawnSync( 'yarn', [ 'install' ], {
+	const installResult = spawnSync( 'npm', [ 'install' ], {
 		shell: true,
 		stdio: 'inherit',
 	} ).status;
-	
+
 	if ( installResult ) {
 		process.exit( installResult );
 	}
-	
+
 	fs.utimesSync( 'node_modules', new Date(), new Date() );
 }

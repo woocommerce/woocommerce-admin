@@ -3,7 +3,7 @@ const fs = require( 'fs' );
 
 if ( ! fs.existsSync( 'node_modules' ) ) {
 	console.log( 'No "node_modules" present, installing dependencies...' );
-	const installResult = spawnSync( 'yarn', [ 'install' ], {
+	const installResult = spawnSync( 'npm', [ 'install' ], {
 		shell: true,
 		stdio: 'inherit',
 	} ).status;

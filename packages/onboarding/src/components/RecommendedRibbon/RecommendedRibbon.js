@@ -4,10 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { createElement } from '@wordpress/element';
 
-const localPartners = [ 'mercadopago' ];
-
-export const RecommendedRibbon = ( { methodKey } ) => {
-	const text = localPartners.includes( methodKey )
+export const RecommendedRibbon = ( { isLocalPartner = false } ) => {
+	const text = isLocalPartner
 		? __( 'Local Partner', 'woocommerce-admin' )
 		: __( 'Recommended', 'woocommerce-admin' );
 

@@ -5,6 +5,7 @@ import {
 	createElement,
 	useState,
 	useCallback,
+	useEffect,
 	useRef,
 } from '@wordpress/element';
 import { CSSTransitionProps } from 'react-transition-group/CSSTransition';
@@ -20,6 +21,10 @@ function getContainerHeight( container: HTMLDivElement ) {
 	let containerHeight = 0;
 	for ( const child of container.children ) {
 		containerHeight += child.clientHeight;
+		const style = window.getComputedStyle( child );
+
+		containerHeight += parseInt( style.marginTop, 10 ) || 0;
+		containerHeight += parseInt( style.marginBottom, 10 ) || 0;
 	}
 	return containerHeight;
 }
@@ -34,6 +39,7 @@ export const VerticalCSSTransition: React.FC< VerticalCSSTransitionProps > = ( {
 	...props
 } ) => {
 	const [ containerHeight, setContainerHeight ] = useState( 0 );
+	const [ transitionIn, setTransitionIn ] = useState( props.in || false );
 	const cssTransitionRef = useRef< CSSTransition< HTMLElement > | null >(
 		null
 	);
@@ -45,6 +51,10 @@ export const VerticalCSSTransition: React.FC< VerticalCSSTransitionProps > = ( {
 		},
 		[ children ]
 	);
+
+	useEffect( () => {
+		setTransitionIn( props.in || false );
+	}, [ props.in ] );
 
 	const getTimeouts = () => {
 		const { timeout } = props;
@@ -98,11 +108,19 @@ export const VerticalCSSTransition: React.FC< VerticalCSSTransitionProps > = ( {
 			delete styles.transition;
 			delete styles.transitionProperty;
 		}
+		// Remove maxHeight when entered, so we do not need to worry about nested items changing height while expanded.
+		if ( state === 'entered' && props.in ) {
+			delete styles.maxHeight;
+		}
 		return styles;
 	};
 
 	return (
-		<CSSTransition { ...props } ref={ cssTransitionRef }>
+		<CSSTransition
+			{ ...props }
+			in={ transitionIn }
+			ref={ cssTransitionRef }
+		>
 			{ ( state: 'entering' | 'entered' | 'exiting' | 'exited' ) => (
 				<div
 					className="vertical-css-transition-container"

@@ -2,6 +2,37 @@
 
 ## Unreleased
 
+### Fix missing translation strings for CES #7270
+
+1. Navigate to Settings -> General and change the site language to a non-English (I've used Espanol for testing purposes).
+2. You might need to update the language file if it's your first time using the selected language. Update the language file from Dashboard -> Updates
+3. Go to WooCommerce -> Settings
+4. Click the [ Save Changes ] button to trigger the CES modal.
+5. Confirm the modal has correct translations (Refer to the screenshots)
+
+### Add missing translation strings in the business features section #7268
+
+1. Checkout this branch and run `npm start`
+2. Navigate to Settings -> General and change the site language to non-English (I've used Espanol for testing purposes)
+3. You might need to download the new language in Dashboard -> Updates
+4. Navigate to wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard&step=business-features and confirm the translation is working as expected.
+
+### Fix inbox note dismiss dropdown not closing on Safari #7278
+
+1. Checkout this branch and run npm start
+2. Navigate to WooCommerce -> Home
+3. Click "Dismiss" on a note. Confirm the position of the popover is correct.
+4. Click anywhere outside of the popover content and confirm the popover is closed.
+
+### Sync the category lookup table when a new category gets created #7290
+
+1. Navigate to Products -> Add New
+2. Add a new category on the Add New page and assign the product to it.
+3. Place an order with the product
+4. Navigate to Analytics -> Categories
+5. You should see the category.
+>>>>>>> cdc813055 (Add changelog)
+
 ### Use saved values if available when switching tabs #7226
 
 1. Start onboarding wizard and continue to step 4.
@@ -125,6 +156,11 @@ Individual payment gateway plugins dictate the settings and connection flow. For
 1. Set your store country to India
 2. Don't select CBD as an industry during onboarding
 
+##### PayU
+
+1. Set your store country to India
+2. Don't select CBD as an industry during onboarding
+
 ##### eWAY
 
 1. Set your store country to one of the following: `AU, NZ`
@@ -137,6 +173,12 @@ Individual payment gateway plugins dictate the settings and connection flow. For
 2. Make sure the connection flow is shown.
 
 ## 2.4.0
+
+### Add padding on table header button #7213
+
+1. Create tax rates
+2. Go to Analytics -> Taxes
+3. Check it the table style renders as expected
 
 ### Add target to the button to open it in a new tab #7110
 

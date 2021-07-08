@@ -3,7 +3,7 @@ module.exports = {
 	'client/**/*.js': [
 		'wp-scripts format-js',
 		'wp-scripts lint-js',
-		'yarn run test-staged',
+		'npm run test-staged',
 	],
 	'packages/**/*.js': ( packageFiles ) => {
 		const globalScripts = [
@@ -30,7 +30,7 @@ module.exports = {
 
 		const workspaceScripts = Object.keys( filesByPackage ).map(
 			( packageName ) =>
-				`lerna --scope @woocommerce/${ packageName } run test-staged ${ filesByPackage[
+				`lerna --scope @woocommerce/${ packageName } run test-staged -- ${ filesByPackage[
 					packageName
 				].join( ' ' ) }`
 		);
