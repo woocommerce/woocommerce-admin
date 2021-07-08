@@ -26,6 +26,9 @@
 		"moment": "2.29.1",
 		"qs": "6.9.6"
 	},
+	"devDependencies": {
+		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings"
+	},
 	"peerDependencies": {
 		"lodash": "^4.17.0"
 	},
@@ -35,10 +38,10 @@
 	"scripts": {
 		"clean": "npx rimraf build build-*",
 		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
-		"start": "yarn tsc --build --watch",
-		"prepack": "yarn run clean && yarn run build",
-		"test": "yarn workspaces run build && yarn run test:nobuild",
-		"test:nobuild": "yarn run jest --config ./jest.config.json",
-		"test-staged": "yarn run jest --bail --config ./jest.config.json --findRelatedTests"
+		"start": "tsc --build --watch",
+		"prepack": "npm run clean && npm run build",
+		"test": "lerna run build && npm run test:nobuild",
+		"test:nobuild": "jest --config ./jest.config.json",
+		"test-staged": "jest --bail --config ./jest.config.json --findRelatedTests"
 	}
 }

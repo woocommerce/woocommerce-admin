@@ -394,7 +394,7 @@ In case the report shows "no data", please reimport historical data by following
 ### Update WC Payments plugin copy #6734
 
 1. Install WooCommerce with WooCommerce Payments
-2. Clone this branch and run yarn start (only needed if you are using dev version)
+2. Clone this branch and run npm start (only needed if you are using dev version)
 3. Navigate to WooCommerce -> Home and observe the copy change.
 
 ## 2.2.0
@@ -531,7 +531,7 @@ Testing `woocommerce_navigation_intro_modal_dismissed`
 ### Fix "Themes" step visibility in IE 11 #6578
 
 1. Get an IE 11 test environment. I downloaded a trial version of Parallels Desktop on [here](https://www.parallels.com/) and IE 11 virtual machine from [developer.microsoft.com](https://developer.microsoft.com/en-us/microsoft-edge/tools/vms/)
-2. Make a zip version of this branch by running `yarn run test:zip`
+2. Make a zip version of this branch by running `npm run test:zip`
 3. Make a JN site -> install and activate the zip file.
 4. Open IE 11 and start OBW
 5. Confirm that the themes are displayed correctly.
@@ -558,7 +558,7 @@ wp.hooks.addFilter( 'woocommerce_admin_profile_wizard_steps', 'woocommerce-admin
 ### Adjust targeting store age: 2 - 5 days for the Add First Product note #6554
 
 -   Checkout this branch.
--   Create a zip for testing with `yarn run zip:test`.
+-   Create a zip for testing with `npm run zip:test`.
 -   Create a `jurassic.ninja` instance.
 -   Upload the plugin and activate it.
 -   Update the installation date (we need a store between 2 and 5 days old). You can do it with an SQL statement like this:
@@ -995,7 +995,7 @@ INSERT INTO `wp_wc_admin_notes` (`name`, `type`, `locale`, `title`, `content`, `
 
 ### Email notes now are turned off by default #6324
 
--   Create a zip for testing with `yarn run zip:test`.
+-   Create a zip for testing with `npm run zip:test`.
 -   Create a `jurassic.ninja` instance.
 -   Upload the plugin and activate it.
 -   Update the installation date (we need a 10-day old store). You can do it with an SQL statement like this (using the WP phpMyAdmin plugin):

@@ -7,7 +7,7 @@ A docker app to run the PHP Test Suite.
 For convenience, the PHP Test Suite can be run from an npm script.
 
 ```shell
-yarn run test:php
+npm run test:php
 ```
 
 This runs the the `phpunit` container with `docker-compose -f run --rm phpunit`. On first use, the container will install the PHP Test Suite and perform the tests. Subsequent use will only perform the tests.
@@ -27,7 +27,7 @@ Then run the test suite normally using the npm script. Installation will be auto
 PHPUnit flags can be passed to the npm script. To limit testing to a single test case, use the `--filter` flag.
 
 ```shell
-yarn run test:php -- --filter=<name of test>
+npm run test:php -- --filter=<name of test>
 ```
 
 ## Selecting the WordPress and WooCommerce Versions
@@ -35,7 +35,7 @@ yarn run test:php -- --filter=<name of test>
 By default, the minimum supported versions of WordPress and WooCommerce are used to build the test suite. This can be overridden with environment variables.
 
 ```shell
-WP_VERSION=5.6 WC_VERSION=4.9.0 yarn run test:php
+WP_VERSION=5.6 WC_VERSION=4.9.0 npm run test:php
 ```
 
 ## Selecting PHP versions
@@ -47,7 +47,7 @@ As mentioned in the readme, when running tests in PHP 8 it will modify the compo
 To run tests using PHP 8:
 
 ```shell
-PHP_VERSION=8 yarn run test:php
+PHP_VERSION=8 npm run test:php
 ```
 
 ## Development

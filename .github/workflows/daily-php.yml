@@ -24,12 +24,12 @@ jobs:
                   node-version: '14'
             - name: Build
               run: |
-                  yarn run build:feature-config	
+                  npm run build:feature-config	
                   composer install  --no-dev
               shell: bash
             - name: Run the PHP unit tests
               env:
                   WP_VERSION: ${{ matrix.wordpress }}
                   WC_VERSION: ${{ matrix.woocommerce }}
-              run: yarn run test:php
+              run: npm run test:php
               shell: bash

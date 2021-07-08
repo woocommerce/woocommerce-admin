@@ -53,13 +53,13 @@
 	},
 	"scripts": {
 		"clean": "npx rimraf build build-*",
-		"build": "yarn run build:js && yarn run build:css",
+		"build": "npm run build:js && npm run build:css",
 		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
-		"build:css": "yarn node ../../bin/packages/build.js src/style.scss",
-		"start": "concurrently \"yarn tsc --build --watch\" \"yarn node ../../bin/packages/watch.js ./src\"",
-		"prepack": "yarn run clean && yarn run build",
-		"test": "yarn workspaces run build && yarn run test:nobuild",
-		"test:nobuild": "yarn run jest --config ./jest.config.json",
-		"test-staged": "yarn run jest --bail --config ./jest.config.json --findRelatedTests"
+		"build:css": "node ../../bin/packages/build.js src/style.scss",
+		"start": "concurrently \"tsc --build --watch\" \"node ../../bin/packages/watch.js ./src\"",
+		"prepack": "npm run clean && npm run build",
+		"test": "lerna run build && npm run test:nobuild",
+		"test:nobuild": "jest --config ./jest.config.json",
+		"test-staged": "jest --bail --config ./jest.config.json --findRelatedTests"
 	}
 }
