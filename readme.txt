@@ -75,18 +75,52 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
-- Add: SlotFill to Abbreviated Notification panel #7091
 - Add: Add unit tests around extended payment gateway controller #7133
 - Add: Add payment gateway suggestion unit tests #7142
-- Fix: WCPay not working in local payments task #7151
+- Add: Feature toggle to disable Analytics UI #7168
+- Add: SlotFill to Abbreviated Notification panel #7091
+- Dev: Add `woocommerce_admin_export_id` filter for customizing the export file name #7178
+- Dev: Remove old payment gateway task components #7224
+- Fix: Currency display on Orders activity card on homescreen #7181
+- Fix: Fix obsolete key property in gateway defaults #7229
+- Fix: Fixing button state logic for remote payment gateways #7200
+- Fix: Recommended gateway suggestions not displayed properly #7231
 - Fix: Include onboarding settings on the analytic pages #7109
+- Fix: Load Analytics API only when feature is turned on #7193
+- Fix: Localize string for description #7219
 - Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
-- Tweak: Revert Card component removal #7167
+- Fix: Filters: On update respect all other queries, not just persistedQueries #7155
+- Add: Adding tests for PaymentGatewaySuggestions > List component #7201
+- Fix: Report export filtering bug. #7165
+- Fix: Use tab char for the CSV injection prevention. #7154
+- Fix: Use saved form values if available when switching tabs #7226
+- Fix: Skip schedule customer data deletion on site deletion #7214
+- Fix: The use of gridicons for Analytics section controls. #7237
+- Fix: WCPay not working in local payments task #7151
+- Fix: WordPress 5.8 compatibility UI fixes #7255
+- Fix: CurrencyFactory constructor to use proper function #7261
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Report export filtering bug. #7165
 - Fix: Add padding on table header button #7213
+- Fix:  Use tab char for the CSV injection prevention. #7154
+- Fix: Add height auto on autocomplete popover button #7225
+- Fix: Make WooCommerce-admin full-screen minimum height 100vh important #7230
+- Fix: Fix and refactor explat polling to use setTimeout #7274
+- Fix: Cache product/variation revenue query results. #7067
+- Tweak: Remove performance indicators when Analytics Flag disabled #7234
+- Fix: Fix missing translation strings for CES #7270
+- Fix: Add missing translation strings in the business features section #7268
+- Fix: Fix inbox note dismiss dropdown not closing on Safari #7278
+- Tweak: Revert Card component removal #7167
+- Tweak: Removed unused feature flags #7233 and #7273
+- Tweak: Repurpose disable wc-admin filter to remove optional features #7232
+- Update: Notes to use a date range. #7222
+- Add: Add a delete option to completed tasks #7300
 
 == 2.4.0 6/10/2021 ==
+- Dev: Add Jetpack Backup admin note #6738
+- Add: Adding WCPay payment configuration defaults. #7097
+- Fix: Transformer casing is incorrect and creates an error on case-sensitive systems #7104
 - Dev: Reduce the specificity and complexity of the ReportError component #6846
 - Add: Create onboarding package to house refactored WCPay card and relevant components #7058
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
@@ -159,11 +193,12 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Multiple preload tag output bug. #6998
 - Fix: Call existing filters for leaderboards in analytics. #6626
 - Fix: Set target to blank for the external links #6999
-- Fix style regression with the Chart header. #7002
+- Fix: Style regression with the Chart header. #7002
 - Fix styling of the advanced filter operator selection. #7005
 - Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
 - Fix: Bug with Orders Report coupon exclusion filter. #7021
 - Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
+- Fix: Attribute filter bug with "any X" variations. #7046
 - Fix: Notices not dissapearing. #7077
 - Fix: Keyboard accessibility on the free features tab. #7149
 - Fix: Fix error handling when remote free extension API returns empty array. #7147
