@@ -16,7 +16,7 @@ class RemoteInboxNotifications {
 	/**
 	 * Option name used to toggle this feature.
 	 */
-	const TOGGLE_OPTION_NAME = 'woocommerce_remote_inbox_notifications_enabled';
+	const TOGGLE_OPTION_NAME = 'woocommerce_show_marketplace_suggestions';
 
 	/**
 	 * Class instance.
@@ -39,52 +39,8 @@ class RemoteInboxNotifications {
 	 * Hook into WooCommerce.
 	 */
 	public function __construct() {
-		add_filter( 'woocommerce_settings_features', array( $this, 'add_feature_toggle' ) );
-		add_action( 'update_option_' . self::TOGGLE_OPTION_NAME, array( $this, 'reload_page_on_toggle' ), 10, 2 );
-
 		if ( Features::is_enabled( 'remote-inbox-notifications' ) ) {
 			RemoteInboxNotificationsEngine::init();
-		}
-	}
-
-	/**
-	 * Add the feature toggle to the features settings.
-	 *
-	 * @param array $features Feature sections.
-	 * @return array
-	 */
-	public static function add_feature_toggle( $features ) {
-		$description = __(
-			'Allows Remote Inbox Notifications',
-			'woocommerce-admin'
-		);
-
-		$features[] = array(
-			'title'   => __( 'Remote Inbox Notifications', 'woocommerce-admin' ),
-			'desc'    => $description,
-			'id'      => self::TOGGLE_OPTION_NAME,
-			'type'    => 'checkbox',
-			'default' => 'yes',
-			'class'   => '',
-		);
-
-		return $features;
-	}
-
-	/**
-	 * Reloads the page when the option is toggled to make sure all Remote Inbox features are loaded.
-	 *
-	 * @param string $old_value Old value.
-	 * @param string $value     New value.
-	 */
-	public static function reload_page_on_toggle( $old_value, $value ) {
-		if ( $old_value === $value ) {
-			return;
-		}
-
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			wp_safe_redirect( wp_unslash( $_SERVER['REQUEST_URI'] ) );
-			exit();
 		}
 	}
 }
