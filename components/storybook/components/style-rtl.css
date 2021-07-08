@@ -1949,6 +1949,7 @@ a.woocommerce-list__item {
   border-bottom: 1px solid #f0f0f0;
   font-size: 13px;
   min-height: 43px;
+  height: auto;
 }
 .woocommerce-search.woocommerce-select-control .woocommerce-select-control__option:last-of-type {
   border-bottom: none;
