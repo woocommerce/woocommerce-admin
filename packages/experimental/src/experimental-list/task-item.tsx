@@ -34,6 +34,7 @@ type TaskItemProps = {
 	title: string;
 	completed: boolean;
 	onClick: () => void;
+	onDelete?: () => void;
 	onDismiss?: () => void;
 	remindMeLater?: () => void;
 	additionalInfo?: string;
@@ -41,6 +42,7 @@ type TaskItemProps = {
 	content: string;
 	expandable?: boolean;
 	expanded?: boolean;
+	showActionButton?: boolean;
 	level?: TaskLevel;
 	action: (
 		event?: React.MouseEvent | React.KeyboardEvent,
@@ -72,9 +74,31 @@ const OptionalTaskTooltip: React.FC< {
 	return <Tooltip text={ tooltip }>{ children }</Tooltip>;
 };
 
+const OptionalExpansionWrapper: React.FC< {
+	expandable: boolean;
+	expanded: boolean;
+} > = ( { children, expandable, expanded } ) => {
+	if ( ! expandable ) {
+		return <>{ children }</>;
+	}
+	return (
+		<VerticalCSSTransition
+			timeout={ 500 }
+			in={ expanded }
+			classNames="woocommerce-task-list__item-content"
+			defaultStyle={ {
+				transitionProperty: 'max-height, opacity',
+			} }
+		>
+			{ children }
+		</VerticalCSSTransition>
+	);
+};
+
 export const TaskItem: React.FC< TaskItemProps > = ( {
 	completed,
 	title,
+	onDelete,
 	onDismiss,
 	remindMeLater,
 	onClick,
@@ -83,17 +107,24 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	content,
 	expandable = false,
 	expanded = false,
+	showActionButton,
 	level = 3,
 	action,
 	actionLabel,
 } ) => {
 	const className = classnames( 'woocommerce-task-list__item', {
 		complete: completed,
+		expanded,
 		'level-2': level === 2 && ! completed,
 		'level-1': level === 1 && ! completed,
 	} );
+	if ( showActionButton === undefined ) {
+		showActionButton = expandable;
+	}
 
-	const showEllipsisMenu = ( onDismiss || remindMeLater ) && ! completed;
+	const showEllipsisMenu =
+		( ( onDismiss || remindMeLater ) && ! completed ) ||
+		( onDelete && completed );
 
 	return (
 		<ListItem disableGutters className={ className } onClick={ onClick }>
@@ -119,13 +150,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					<span className="woocommerce-task-list__item-title">
 						{ title }
 					</span>
-					<VerticalCSSTransition
-						timeout={ 500 }
-						in={ expanded }
-						classNames="woocommerce-task-list__item-content"
-						defaultStyle={ {
-							transitionProperty: 'max-height, opacity',
-						} }
+					<OptionalExpansionWrapper
+						expandable={ expandable }
+						expanded={ expanded }
 					>
 						<div className="woocommerce-task-list__item-content">
 							{ content }
@@ -137,7 +164,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 									) }
 								></div>
 							) }
-							{ ! completed && (
+							{ ! completed && showActionButton && (
 								<Button
 									className="woocommerce-task-list__item-action"
 									isPrimary
@@ -154,7 +181,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 								</Button>
 							) }
 						</div>
-					</VerticalCSSTransition>
+					</OptionalExpansionWrapper>
 
 					{ ! expandable && ! completed && additionalInfo && (
 						<div
@@ -180,7 +207,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					}
 					renderContent={ () => (
 						<div className="woocommerce-task-card__section-controls">
-							{ onDismiss && (
+							{ onDismiss && ! completed && (
 								<Button
 									onClick={ (
 										e:
@@ -194,7 +221,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 									{ __( 'Dismiss', 'woocommerce-admin' ) }
 								</Button>
 							) }
-							{ remindMeLater && (
+							{ remindMeLater && ! completed && (
 								<Button
 									onClick={ ( e: React.MouseEvent ) => {
 										e.stopPropagation();
@@ -205,6 +232,20 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 										'Remind me later',
 										'woocommerce-admin'
 									) }
+								</Button>
+							) }
+							{ onDelete && completed && (
+								<Button
+									onClick={ (
+										e:
+											| React.MouseEvent
+											| React.KeyboardEvent
+									) => {
+										e.stopPropagation();
+										onDelete();
+									} }
+								>
+									{ __( 'Delete', 'woocommerce-admin' ) }
 								</Button>
 							) }
 						</div>
