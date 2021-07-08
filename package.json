@@ -18,7 +18,7 @@
 		"license.txt"
 	],
 	"scripts": {
-		"prebuild": "npm run -s install-if-deps-outdated",
+		"prebuild": "npm run install-if-deps-outdated",
 		"build": "npm run build:feature-config && npm run build:packages && cross-env NODE_ENV=production webpack",
 		"analyze": "cross-env NODE_ENV=production ANALYZE=true webpack",
 		"postbuild": "npm run -s i18n:pot && npm run -s i18n:build",
@@ -54,7 +54,7 @@
 		"publish-packages:check": "npm run build:packages && lerna updated",
 		"publish-packages:dev": "npm run build:packages && lerna publish from-package --npm-tag next",
 		"publish-packages:prod": "npm run build:packages && lerna publish from-package",
-		"prestart": "npm run -s install-if-deps-outdated",
+		"prestart": "npm run install-if-deps-outdated",
 		"start": "cross-env WC_ADMIN_PHASE=development npm run build:packages && cross-env WC_ADMIN_PHASE=development npm run build:feature-config && concurrently \"cross-env WC_ADMIN_PHASE=development webpack --watch\" \"tsc --build --watch\" \"node ./bin/packages/watch.js ./packages\"",
 		"pretest": "npm run -s install-if-no-packages",
 		"test:debug": "node --inspect-brk ./node_modules/.bin/jest --config client/jest.config.json --watch --runInBand --no-cache",
