@@ -20,7 +20,7 @@ import { AppIllustration } from '../app-illustration';
 import './style.scss';
 import { setAllPropsToValue } from '~/lib/collections';
 import { getCountryCode } from '~/dashboard/utils';
-import { isWCPaySupported } from '~/task-list/tasks/payments/methods/wcpay';
+import { isWCPaySupported } from '~/task-list/tasks/PaymentGatewaySuggestions/components/WCPay';
 
 const generatePluginDescriptionWithLink = (
 	description,
@@ -229,7 +229,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 	if ( isInstallingActivating ) {
 		return (
 			<div className="woocommerce-profile-wizard__footnote">
-				<Text variant="caption" as="p">
+				<Text variant="caption" as="p" size="12" lineHeight="16px">
 					{ sprintf(
 						/* translators: %s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping */
 						_n(
@@ -255,7 +255,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 	);
 	return (
 		<div className="woocommerce-profile-wizard__footnote">
-			<Text variant="caption" as="p">
+			<Text variant="caption" as="p" size="12" lineHeight="16px">
 				{ sprintf(
 					/* translators: %1$s: a comma separated list of plugins, e.g. Jetpack, Woocommerce Shipping, %2$s: text: 'User accounts are required to use these features.'  */
 					_n(
@@ -269,7 +269,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 				) }
 			</Text>
 			{ installingJetpackOrWcShipping && (
-				<Text variant="caption" as="p">
+				<Text variant="caption" as="p" size="12" lineHeight="16px">
 					{ interpolateComponents( {
 						mixedString: __(
 							'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
@@ -529,7 +529,8 @@ export const SelectiveExtensionsBundle = ( {
 						/>
 						<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
 							{ __(
-								'Add recommended business features to my site'
+								'Add recommended business features to my site',
+								'woocommerce-admin'
 							) }
 						</p>
 						<Button
@@ -588,7 +589,7 @@ export const SelectiveExtensionsBundle = ( {
 						disabled={ isInstallingActivating }
 						isPrimary
 					>
-						Continue
+						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</div>
 			</Card>

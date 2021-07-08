@@ -79,6 +79,7 @@ class CoreMenu {
 	 * @return array
 	 */
 	public static function get_categories() {
+		$analytics_enabled = Features::is_enabled( 'analytics' );
 		return array(
 			array(
 				'title' => __( 'Orders', 'woocommerce-admin' ),
@@ -90,17 +91,19 @@ class CoreMenu {
 				'id'    => 'woocommerce-products',
 				'order' => 20,
 			),
+			$analytics_enabled ?
 			array(
 				'title' => __( 'Analytics', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-analytics',
 				'order' => 30,
-			),
+			) : null,
+			$analytics_enabled ?
 			array(
 				'title'  => __( 'Reports', 'woocommerce-admin' ),
 				'id'     => 'woocommerce-reports',
 				'parent' => 'woocommerce-analytics',
 				'order'  => 200,
-			),
+			) : null,
 			array(
 				'title' => __( 'Marketing', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-marketing',
@@ -175,18 +178,18 @@ class CoreMenu {
 		}
 
 		$home_item = array();
-		if ( defined( '\Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG' ) ) {
+		if ( defined( '\Automattic\WooCommerce\Admin\Features\Homescreen::MENU_SLUG' ) ) {
 			$home_item = array(
 				'id'              => 'woocommerce-home',
 				'title'           => __( 'Home', 'woocommerce-admin' ),
-				'url'             => \Automattic\WooCommerce\Admin\Features\AnalyticsDashboard::MENU_SLUG,
+				'url'             => \Automattic\WooCommerce\Admin\Features\Homescreen::MENU_SLUG,
 				'order'           => 0,
 				'matchExpression' => 'page=wc-admin((?!path=).)*$',
 			);
 		}
 
 		$customers_item = array();
-		if ( class_exists( '\Automattic\WooCommerce\Admin\Features\Analytics' ) ) {
+		if ( Features::is_enabled( 'analytics' ) ) {
 			$customers_item = array(
 				'id'    => 'woocommerce-analytics-customers',
 				'title' => __( 'Customers', 'woocommerce-admin' ),
