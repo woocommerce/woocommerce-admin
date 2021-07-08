@@ -157,10 +157,10 @@ a.woocommerce-experimental-list__item {
 .woocommerce-experimental-list__item.has-gutters {
   padding: 16px 24px;
 }
-.woocommerce-experimental-list__item.has-action {
+.woocommerce-experimental-list__item.has-action:not(.expanded) {
   cursor: pointer;
 }
-.woocommerce-experimental-list__item:focus {
+.woocommerce-experimental-list__item:focus:not(.expanded) {
   box-shadow: inset 0 0 0 1px #006088, inset 0 0 0 2px #fff;
 }
 .woocommerce-experimental-list__item:focus-visible {
@@ -331,6 +331,9 @@ a.woocommerce-experimental-list__item {
   color: #757575;
   font-weight: 400;
   font-size: 12px;
+}
+.woocommerce-task-list__item .woocommerce-task__estimated-time {
+  margin-top: 4px;
 }
 .woocommerce-task-list__item .woocommerce-task-list__item-before {
   display: flex;
