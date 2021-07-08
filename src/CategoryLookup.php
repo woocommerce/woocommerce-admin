@@ -133,7 +133,7 @@ class CategoryLookup {
 	}
 
 	/**
-	 * When a product category gets created, add a new lookup data.
+	 * When a product category gets created, add a new lookup row.
 	 *
 	 * @param int $category_id Term ID being created.
 	 */
