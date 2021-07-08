@@ -67,7 +67,7 @@ describe( 'TableCard', () => {
 	} );
 
 	it( 'should not error with default callback props', () => {
-		const { container } = render(
+		render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -93,12 +93,10 @@ describe( 'TableCard', () => {
 
 		// We shouldn't get here if an error occurred.
 		expect( true ).toBe( true );
-
-		expect( container ).toMatchSnapshot();
 	} );
 
 	it( 'should render rows correctly with custom rowKey prop', () => {
-		const { container } = render(
+		render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -116,7 +114,5 @@ describe( 'TableCard', () => {
 				screen.queryByText( row[ 0 ].display )
 			).toBeInTheDocument();
 		}
-
-		expect( container ).toMatchSnapshot();
 	} );
 } );
