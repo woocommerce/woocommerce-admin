@@ -85,7 +85,12 @@ if ( Object.keys( advancedFilters.filters ).length ) {
 	} );
 }
 
-export const filters = applyFilters(
-	REVENUE_REPORT_FILTERS_FILTER,
-	filterValues
-);
+export const filters = applyFilters( REVENUE_REPORT_FILTERS_FILTER, [
+	{
+		label: __( 'Show', 'woocommerce-admin' ),
+		staticParams: [ 'chartType', 'paged', 'per_page' ],
+		param: 'filter',
+		showFilters: () => filterValues.length > 0,
+		filters: filterValues,
+	},
+] );
