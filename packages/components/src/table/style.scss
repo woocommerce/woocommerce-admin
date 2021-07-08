@@ -290,11 +290,12 @@ th.woocommerce-table__item {
 	margin-left: $gap-smaller;
 	margin-right: $gap-smaller;
 
+	$place-holder-width: 200px;
 	.is-placeholder {
 		@include placeholder();
 		display: inline-block;
 		height: 16px;
-		width: 200px;
+		width: $place-holder-width;
 	}
 
 	.woocommerce-table__summary-label,
