@@ -3174,6 +3174,8 @@ a.woocommerce-list__item {
 .woocommerce-table__header:not(.is-left-aligned) button,
 .woocommerce-table__item:not(.is-left-aligned) button {
   justify-content: flex-end;
+  padding-right: 24px;
+  padding-left: 24px;
 }
 .woocommerce-table__header.is-numeric .is-placeholder,
 .woocommerce-table__item.is-numeric .is-placeholder {
