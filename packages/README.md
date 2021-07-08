@@ -11,7 +11,7 @@ Currently we have a small set of public-facing packages that can be dowloaded fr
 
 ## Working with existing packages
 
--   You can make changes to packages files as normal, and running `yarn start` will compile and watch both app files and packages.
+-   You can make changes to packages files as normal, and running `npm start` will compile and watch both app files and packages.
 -   :warning: Make sure any dependencies you add to a package are also added to that package's `package.json`, not just the woocommerce-admin package.json
 -   :warning: Make sure you're not importing from any woocommerce-admin files outside of the package (you can import from other packages, just use the `import from @woocommerce/package` syntax).
 -   Add your change to the CHANGELOG for that package under the next version number, creating one if necessary (we use semantic versioning for packages, [see these guidelines](https://github.com/WordPress/gutenberg/blob/master/CONTRIBUTING.md#maintaining-changelogs)).
@@ -69,10 +69,10 @@ To create a new package, add a new folder to `/packages`, containing…
 
 ## Publishing packages
 
--   Run `yarn run publish-packages:check` to see which packages will be published
+-   Run `npm run publish-packages:check` to see which packages will be published
 -   Create a PR with a CHANGELOG for each updated package (or try to add to the CHANGELOG with any PR editing `packages/`)
--   Run `yarn run publish-packages:prod` to publish the package
--   _OR_ Run `yarn run publish-packages:dev` to publish "next" releases (installed as `npm i @woocommerce/package@next`). Only use `:dev` if you have a reason to.
+-   Run `npm run publish-packages:prod` to publish the package
+-   _OR_ Run `npm run publish-packages:dev` to publish "next" releases (installed as `npm i @woocommerce/package@next`). Only use `:dev` if you have a reason to.
 -   Both commands will run `build:packages` before the lerna task, just to catch any last updates.
 
 It will confirm with you once more before publishing:
@@ -95,6 +95,6 @@ If you accept, Lerna will create git tags, publish those to github, then push yo
 Sometimes, its helpful to release a singular package. This can be done directly through npm. Be sure versions and builds are correct.
 
 -   Bump the version in the package's package.json as well as its CHANGELOG file.
--   `yarn install && yarn run build:packages` to build packages.
+-   `npm install && npm run build:packages` to build packages.
 -   `cd packages/<package-name>`
 -   `npm publish`

@@ -33,11 +33,11 @@
 	},
 	"scripts": {
 		"clean": "npx rimraf build build-*",
-		"build": "yarn run build:js && yarn run build:css",
+		"build": "npm run build:js && npm run build:css",
 		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
-		"build:css": "yarn node ../../bin/packages/build.js src/style.scss",
-		"start": "concurrently \"yarn tsc --build --watch\" \"yarn node ../../bin/packages/watch.js ./src\"",
-		"prepack": "yarn run clean && yarn run build",
+		"build:css": "node ../../bin/packages/build.js src/style.scss",
+		"start": "concurrently \"tsc --build --watch\" \"node ../../bin/packages/watch.js ./src\"",
+		"prepack": "npm run clean && npm run build",
 		"test": ":",
 		"test:nobuild": ":",
 		"test-staged": ":"

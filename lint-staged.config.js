@@ -1,5 +1,5 @@
 module.exports = {
-	'*.scss': [ 'yarn run lint:css-fix' ],
+	'*.scss': [ 'npm run lint:css-fix' ],
 	'client/**/*.js': [
 		'wp-scripts format-js',
 		'wp-scripts lint-js',
@@ -30,7 +30,7 @@ module.exports = {
 
 		const workspaceScripts = Object.keys( filesByPackage ).map(
 			( packageName ) =>
-				`yarn workspace @woocommerce/${ packageName } run test-staged ${ filesByPackage[
+				`lerna --scope @woocommerce/${ packageName } run test-staged ${ filesByPackage[
 					packageName
 				].join( ' ' ) }`
 		);

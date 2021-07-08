@@ -4,7 +4,7 @@
 #
 phase=${WC_ADMIN_PHASE:-plugin} 
 
-WC_ADMIN_PHASE=$phase yarn run build
+WC_ADMIN_PHASE=$phase npm run build
 composer install --no-dev
 rm woocommerce-admin.zip
 ./bin/make-zip.sh woocommerce-admin.zip

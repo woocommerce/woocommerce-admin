@@ -26,10 +26,10 @@ jobs:
                   node-version: '14'
             - name: Build
               run: |
-                  yarn install
+                  npm install
                   composer require wp-cli/i18n-command
-                  yarn run build:feature-config
-                  yarn run build
+                  npm run build:feature-config
+                  npm run build
             - name: Setup wp-env
               env:
                   WP_ENV_CONFIG: '{ core: "${{ matrix.wordpress }}", plugins: [ ".", "${{ matrix.woocommerce }}" ] }'

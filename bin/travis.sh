@@ -3,7 +3,7 @@
 
 if [ "$1" == 'before' ]; then
 	cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
-	yarn run build:feature-config
+	npm run build:feature-config
 
 	# This is a temporary solution for a breaking change in composer 2.0.7
 	# to the Jetpack autoloader. This can be removed when 

@@ -59,10 +59,10 @@ jobs:
                   sudo /etc/init.d/mysql start
                   bash bin/ci/gh-install-wp-tests.sh wc_admin_test root 'root' localhost
                   cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
-                  yarn run build:feature-config	
+                  npm run build:feature-config	
                   composer install --no-dev
                   node --version
-                  yarn --version
+                  npm --version
                   timedatectl
             - name: Add PHP8 Compatibility.
               run: |
