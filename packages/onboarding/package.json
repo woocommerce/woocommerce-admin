@@ -37,9 +37,6 @@
 		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"build:css": "node ../../bin/packages/build.js src/style.scss",
 		"start": "concurrently \"tsc --build --watch\" \"node ../../bin/packages/watch.js ./src\"",
-		"prepack": "npm run clean && npm run build",
-		"test": ":",
-		"test:nobuild": ":",
-		"test-staged": ":"
+		"prepack": "npm run clean && npm run build"
 	}
 }

@@ -36,12 +36,5 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	},
-	"scripts": {
-		"build": ":",
-		"prepack": ":",
-		"test": ":",
-		"test:nobuild": ":",
-		"test-staged": ":"
 	}
 }

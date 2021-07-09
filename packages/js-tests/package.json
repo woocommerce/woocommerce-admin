@@ -18,9 +18,6 @@
 	"scripts": {
 		"build": "tsc --build",
 		"clean": "npx rimraf build build-*",
-		"prepack": "npm run clean && npm run build",
-		"test": ":",
-		"test:nobuild": ":",
-		"test-staged": ":"
+		"prepack": "npm run clean && npm run build"
 	}
 }

@@ -26,9 +26,6 @@
 		"clean": "npx rimraf build build-*",
 		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"prepack": "npm run clean && npm run build",
-		"start": "tsc --build --watch",
-		"test": ":",
-		"test:nobuild": ":",
-		"test-staged": ":"
+		"start": "tsc --build --watch"
 	}
 }
