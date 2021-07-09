@@ -1,7 +1,7 @@
 {
-	"extends": "../tsconfig",
-	"compilerOptions": {
+    "extends": "../tsconfig-cjs",
+    "compilerOptions": {
 		"rootDir": "src",
-		"outDir": "build-module"
-	}
+        "outDir": "build"
+    }
 }

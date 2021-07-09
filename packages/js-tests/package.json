@@ -15,9 +15,8 @@
 	},
 	"private": true,
 	"main": "build/util/index.js",
-	"main-module": "build-module/util/index.js",
 	"scripts": {
-		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
+		"build": "tsc --build",
 		"clean": "npx rimraf build build-*",
 		"prepack": "npm run clean && npm run build",
 		"test": ":",
