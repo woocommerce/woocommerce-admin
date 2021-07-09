@@ -60,7 +60,7 @@
 		"test:debug": "node --inspect-brk ./node_modules/.bin/jest --config client/jest.config.json --watch --runInBand --no-cache",
 		"test:client": "jest --config client/jest.config.json",
 		"test:packages": "lerna run test",
-		"test": "tsc --build && npm run test:client && lerna run test:nobuild",
+		"test": "lerna run build && npm run test:client && lerna run test:nobuild",
 		"test:e2e": "WP_VERSION=latest npm run build && npx wc-e2e docker:down && npx wc-e2e docker:up && npx wc-e2e test:e2e",
 		"test-staged": "npm run test:client --bail --findRelatedTests",
 		"test:help": "wp-scripts test-unit-js --help",
