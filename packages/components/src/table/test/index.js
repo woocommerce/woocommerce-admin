@@ -42,7 +42,7 @@ describe( 'TableCard', () => {
 		expect( container ).toMatchSnapshot();
 	} );
 
-	it( 'should not render placeholder Table and TableSummary when not loading', () => {
+	it( 'should render table along with summary data when row and summary data is present', () => {
 		const { container } = render(
 			<TableCard
 				title="Revenue"
