@@ -10,6 +10,7 @@ The following command installs WP-ENV globally.
 
 `npm -g i @wordpress/env`
 
+
 ## Starting WP-ENV
 
 1. Navigate to the root of WooCommerce Admin source code.
@@ -37,6 +38,7 @@ If you don't have Composer available locally, run the following command. It runs
 
 `wp-env run composer composer install`
 
+
 You might also want to run `npm start` to watch your CSS and JS changes if you are working on the frontend.
 
 You're now ready to develop!
@@ -57,6 +59,7 @@ You can find more about `.wp-env.override.json` configuration [here](https://git
 
 Create `.wp-env.override.json` in the root directory with the following content.
 
+
 ```json
 {
 	"phpVersion": "8.0"
@@ -72,11 +75,12 @@ Open the default `.wp-env.json` and copy `plugins` array and paste it into the `
 ```json
 {
 	"plugins": [
-		".",
-		"../woocommerce",
-		"https://downloads.wordpress.org/plugin/wp-crontrol.1.10.0.zip"
-	]
+        ".",
+        "../woocommerce",
+        "https://downloads.wordpress.org/plugin/wp-crontrol.1.10.0.zip"
+    ]
 }
+
 ```
 
 Method 2 - Adding to the `mappings`
@@ -86,8 +90,8 @@ This method is simpler, but the plugin does not get activated on startup. You ne
 ```json
 {
 	"mappings": {
-		"wp-content/plugins/wp-crontrol": "../woocommerce"
-	}
+    	"wp-content/plugins/wp-crontrol": "../woocommerce"
+    }
 }
 ```
 
@@ -101,12 +105,12 @@ You can get the current Mysql port with `npm run wp-env-mysql-port` command.
 2. Use the following values to access the Mysql container.
 3. You can omit the username and password.
 
-| Name     | Value                 |
-| -------- | --------------------- |
-| Host     | 127.0.0.1             |
-| Username |                       |
-| Password |                       |
-| Port     | Port from the command |
+| Name | Value |
+|--------|-----|
+|  Host  | 127.0.0.1 |
+| Username |  |
+| Password |  |
+| Port | Port from the command |
 
 ## HOWTOs
 
@@ -119,3 +123,6 @@ You can run a command in the container with the following syntax. You can find m
 
 Syntax:
 `wp-env run :container-type :linux-command`
+
+
+

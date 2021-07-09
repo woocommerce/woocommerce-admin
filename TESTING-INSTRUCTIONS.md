@@ -38,12 +38,11 @@
 1. Start onboarding wizard and continue to step 4.
 2. Enter selections for business details and choose "Continue"
 3. Select the tab "Business details" to go back
-4. Confirm that the previously selected values are shown.
+4. Confirm that the previously selected values are shown. 
 
 ### Change the emailed report file name #7178
 
 **Confirm the default behaviour remains the same**
-
 1. Create a new store and install the [WP Mail Logging by MailPoet plugin](https://wordpress.org/plugins/wp-mail-logging/)
 2. Go to Analytics -> Revenue and change the date range to last month
 3. Click the download button and make sure you see the "Your revenue report will be emailed to you" notification
@@ -51,17 +50,13 @@
 5. Go to Tools -> WP Mail Log and check the latest email. The URL linked to the "Download your Revenue report" should work as usual. The URL will be something like `filename=wc-revenue-report-export-16236128226138`
 
 **Confirm the new filter is working**
-
 1. Add this code to the `woocommerce-admin.php` file
-
 ```php
 add_filter( 'woocommerce_admin_export_id', function ($export_id) {
 	return 'different_export_id';
 } );
 ```
-
 2. Repeat the same steps from above. The filename in the link now should be `different_export_id`.
-
 ### Payment gateway suggestions feature
 
 1. Navigate to the homescreen via WooCommerce -> Home
@@ -69,25 +64,25 @@ add_filter( 'woocommerce_admin_export_id', function ($export_id) {
 
 #### How to test
 
-Individual payment gateway plugins dictate the settings and connection flow. For testing purposes, we'll test both the default behavior of the gateway and the enhanced configuration behavior.
+Individual payment gateway plugins dictate the settings and connection flow.  For testing purposes, we'll test both the default behavior of the gateway and the enhanced configuration behavior.
 
 1. On the payments task, click "Set up" or "Enable" next to a gateway
 2. Note that the gateway is installed if it requires a plugin
 3. On the connection step, a button should be presented that links to the gateway's (legacy) settings screen
 4. Delete the plugin
-5. Install some of the payment gateways from the links below. They don't need to be activated, but the folder names should match those on WordPress.org to avoid conflicts.
-6. If setting fields are shown, make sure that validation works, input is saved, and is persisted on page refresh. Make sure the gateway is marked as enabled and not labeled "Requires setup" if all fields are completed.
-7. If the "Connect" button is shown, follow the connection flow. Make sure that you are returned to the payments task and that the gateway is enabled and marked as configured.
-8. Remove some settings manually under the payment gateway's legacy settings screen. Make sure the gateway is no longer marked as configured.
+5. Install some of the payment gateways from the links below.  They don't need to be activated, but the folder names should match those on WordPress.org to avoid conflicts.
+6. If setting fields are shown, make sure that validation works, input is saved, and is persisted on page refresh.  Make sure the gateway is marked as enabled and not labeled "Requires setup" if all fields are completed.
+7. If the "Connect" button is shown, follow the connection flow.  Make sure that you are returned to the payments task and that the gateway is enabled and marked as configured.
+8. Remove some settings manually under the payment gateway's legacy settings screen.  Make sure the gateway is no longer marked as configured.
 
--   Klarna - https://mc.a8c.com/includes/img-uploader/files/1624475036-klarna-checkout-for-woocommerce.zip
--   PayFast - https://mc.a8c.com/includes/img-uploader/files/1624660950-woocommerce-payfast-gateway.zip
--   PayPal - https://mc.a8c.com/includes/img-uploader/files/1624475037-woocommerce-paypal-payments.zip
--   RazorPay - https://mc.a8c.com/includes/img-uploader/files/1624660848-woo-razorpay.zip
--   Stripe - https://mc.a8c.com/includes/img-uploader/files/1624661118-woocommerce-gateway-stripe.zip
--   MercaoPago - https://mc.a8c.com/includes/img-uploader/files/1624475616-woocommerce-mercadopago.zip
--   Square - https://mc.a8c.com/includes/img-uploader/files/1624475232-woocommerce-square.zip
--   eWAY - https://mc.a8c.com/includes/img-uploader/files/1624476063-woocommerce-gateway-eway.zip
+* Klarna - https://mc.a8c.com/includes/img-uploader/files/1624475036-klarna-checkout-for-woocommerce.zip
+* PayFast - https://mc.a8c.com/includes/img-uploader/files/1624660950-woocommerce-payfast-gateway.zip
+* PayPal - https://mc.a8c.com/includes/img-uploader/files/1624475037-woocommerce-paypal-payments.zip
+* RazorPay - https://mc.a8c.com/includes/img-uploader/files/1624660848-woo-razorpay.zip
+* Stripe - https://mc.a8c.com/includes/img-uploader/files/1624661118-woocommerce-gateway-stripe.zip
+* MercaoPago - https://mc.a8c.com/includes/img-uploader/files/1624475616-woocommerce-mercadopago.zip
+* Square - https://mc.a8c.com/includes/img-uploader/files/1624475232-woocommerce-square.zip
+* eWAY - https://mc.a8c.com/includes/img-uploader/files/1624476063-woocommerce-gateway-eway.zip
 
 ##### PayFast
 
@@ -118,10 +113,12 @@ Individual payment gateway plugins dictate the settings and connection flow. For
 4. In Chrome, open the console "Network" tab and right-click on the `get-params` request and select "Block request URL"
 5. Refresh the page and note that the manual settings flow is shown
 
+
 ##### Klarna
 
 1. Set your store country to one of the following: `SE, FI, NO`
 2. Don't select CBD as an industry during onboarding
+
 
 ##### Mollie
 
@@ -144,6 +141,7 @@ Individual payment gateway plugins dictate the settings and connection flow. For
 
 1. Make sure "Enable" is shown and clicking this enables the gateway
 2. Make sure the "Manage" button is shown after enabling the gateway
+
 
 ##### Direct bank transfer
 

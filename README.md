@@ -39,7 +39,7 @@ All the commands from `@woocommerce/e2e-environment` can be run through `npx`.
 
 ```
 # Set up the e2e environment
-npm install
+npm i
 npx wc-e2e docker:up
 ```
 

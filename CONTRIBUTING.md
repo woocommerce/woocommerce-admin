@@ -12,7 +12,7 @@ If you're filing a bug, specific steps to reproduce are always helpful. Please i
 
 ## Localizing WooCommerce Admin
 
-To translate WooCommerce Admin in your locale or language, [select your locale here](https://translate.wordpress.org/projects/wp-plugins/woocommerce-admin) and translate _Development_ (which contains the plugin's string) and/or _Development Readme_ (please translate what you see in the Details tab of the [plugin page](https://wordpress.org/plugins/woocommerce-admin/)).
+To translate WooCommerce Admin in your locale or language, [select your locale here](https://translate.wordpress.org/projects/wp-plugins/woocommerce-admin) and translate *Development* (which contains the plugin's string) and/or *Development Readme* (please translate what you see in the Details tab of the [plugin page](https://wordpress.org/plugins/woocommerce-admin/)).
 
 A Global Translation Editor (GTE) or Project Translation Editor (PTE) with suitable rights will process your translations in due time.
 
@@ -41,10 +41,9 @@ If you're a first-time code contributor to the repository, here's a quick guide 
 5. Visit your dev environment in the browser to enable the `WooCommerce Admin` plugin and try it out.
 
 Tips:
-
--   Try to keep each PR small (around 200-250 lines or less, if you can), and having multiple very small commits in each PR is preferable to one larger commit (especially if the PR is larger).
--   Don't combine code formatting changes with meaningful ones. If there's formatting work that needs to be done en masse, do it all in one PR, then open another one for meaningful code changes.
--   Add unit tests to your PR for better code coverage and review.
+- Try to keep each PR small (around 200-250 lines or less, if you can), and having multiple very small commits in each PR is preferable to one larger commit (especially if the PR is larger).
+- Don't combine code formatting changes with meaningful ones. If there's formatting work that needs to be done en masse, do it all in one PR, then open another one for meaningful code changes.
+- Add unit tests to your PR for better code coverage and review.
 
 After you've made your updates, you're ready to commit:
 
@@ -106,13 +105,13 @@ Assume the tester does not have context on how to test the feature except for a 
 ### Setting up PHP unit tests using [VVV](https://github.com/Varying-Vagrant-Vagrants/VVV)
 
 1. SSH into the Vagrant box:
-    1. `cd` down to the Vagrant root (where `www` lives)
+    1. `cd` down to the Vagrant root (where `www` lives) 
     2. `vagrant ssh`
 2. `cd /srv/www/<name of wp install>/public_html/wp-content/plugins/woocommerce-admin`
 3. Set up test environment: `bin/install-wp-tests.sh wc-admin-tests root root`
 4. Generate feature config: `php bin/generate-feature-config.php`
 
-_Note: A WooCommerce development environment is required to live within the same `plugins` folder. Follow these [steps](https://github.com/woocommerce/woocommerce/wiki/How-to-set-up-WooCommerce-development-environment) to do so._
+*Note: A WooCommerce development environment is required to live within the same `plugins` folder. Follow these [steps](https://github.com/woocommerce/woocommerce/wiki/How-to-set-up-WooCommerce-development-environment) to do so.*
 
 ### Running tests
 
@@ -132,10 +131,10 @@ For example, to just run Order Report Stats tests:
 
 There are a number of helper scripts exposed via our `package.json` (below list is not exhaustive, you can view the [`package.json` file directly to see all](https://github.com/woocommerce/woocommerce-admin/blob/main/package.json)):
 
--   `npm run lint` : Run eslint over the javascript files
--   `npm run i18n` : A multi-step process, used to create a pot file from both the JS and PHP gettext calls. First it runs `i18n:js`, which creates a temporary `.pot` file from the JS files. Next it runs `i18n:php`, which converts that `.pot` file to a PHP file. Lastly, it runs `i18n:pot`, which creates the final `.pot` file from all the PHP files in the plugin (including the generated one with the JS strings).
--   `npm test` : Run the JS test suite
--   `npm run docs`: Runs the script for generating/updating docs.
+ - `npm run lint` : Run eslint over the javascript files
+ - `npm run i18n` : A multi-step process, used to create a pot file from both the JS and PHP gettext calls. First it runs `i18n:js`, which creates a temporary `.pot` file from the JS files. Next it runs `i18n:php`, which converts that `.pot` file to a PHP file. Lastly, it runs `i18n:pot`, which creates the final `.pot` file from all the PHP files in the plugin (including the generated one with the JS strings).
+ - `npm test` : Run the JS test suite
+ - `npm run docs`: Runs the script for generating/updating docs.
 
 ## Debugging
 
@@ -164,4 +163,4 @@ WooCommerce Admin is licensed under [GNU General Public License v3 (or later)](/
 All materials contributed should be compatible with the GPLv3. This means that if you own the material, you agree to license it under the GPLv3 license. If you are contributing code that is not your own, such as adding a component from another Open Source project, or adding an `npm` package, you need to make sure you follow these steps:
 
 1. Check that the code has a license. If you can't find one, you can try to contact the original author and get permission to use, or ask them to release under a compatible Open Source license.
-2. Check the license is compatible with [GPLv3](https://www.gnu.org/licenses/license-list.en.html#GPLCompatibleLicenses), note that the Apache 2.0 license is _not_ compatible.
+2. Check the license is compatible with [GPLv3](https://www.gnu.org/licenses/license-list.en.html#GPLCompatibleLicenses), note that the Apache 2.0 license is *not* compatible.
