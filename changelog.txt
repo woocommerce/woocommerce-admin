@@ -1,4 +1,4 @@
-== 2.5.0-beta.1 07/8/2021 ==
+== 2.5.0 07/8/2021 ==
 
 - Add: Add a delete option to completed tasks #7300
 - Add: Add unit tests around extended payment gateway controller #7133
