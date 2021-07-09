@@ -55,7 +55,7 @@
 			"formatter": {
 				"filename": "bin/changelogger/WCAdminFormatter.php"
 			},
-			"versioning": "semvar",
+			"versioning": "semver",
 			"changes-dir": "./changelogs",
 			"types": [
 				"Fix",
