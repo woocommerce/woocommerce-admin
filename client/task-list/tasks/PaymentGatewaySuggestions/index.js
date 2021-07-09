@@ -110,9 +110,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 				payment_method: id,
 			} );
 
-			getHistory().push(
-				getNewPath( { ...queryParams, task: 'payments' }, '/', {} )
-			);
+			getHistory().push( getNewPath( { ...queryParams }, '/', {} ) );
 		},
 		[ paymentGateways ]
 	);
