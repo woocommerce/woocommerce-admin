@@ -30,6 +30,15 @@
 2. For example, Products, Orders, Revenue under Analytics; or Transactions, Deposits under Payments.
 3. While loading, scrolling down to the bottom of the table to see the placeholder of TableSummary.
 
+### Sync the category lookup table when a new category gets created #7290
+
+1. Navigate to Products -> Add New
+2. Add a new category on the Add New page and assign the product to it.
+3. Place an order with the product
+4. Navigate to Analytics -> Categories
+5. You should see the category.
+>>>>>>> cdc813055 (Add changelog)
+
 ### Use saved values if available when switching tabs #7226
 
 1. Start onboarding wizard and continue to step 4.
@@ -168,6 +177,12 @@ Individual payment gateway plugins dictate the settings and connection flow.  Fo
 2. Make sure the connection flow is shown.
 
 ## 2.4.0
+
+### Add padding on table header button #7213
+
+1. Create tax rates
+2. Go to Analytics -> Taxes
+3. Check it the table style renders as expected
 
 ### Add target to the button to open it in a new tab #7110
 
