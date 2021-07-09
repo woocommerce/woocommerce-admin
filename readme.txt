@@ -106,7 +106,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Tweak: Repurpose disable wc-admin filter to remove optional features #7232
 - Tweak: Removed unused feature flags #7233
 - Update: Notes to use a date range. #7222
-- Update: Remove facebook extension from onboarding extensions fallback list #7287
 
 == 2.4.0 6/10/2021 ==
 - Dev: Add Jetpack Backup admin note #6738
