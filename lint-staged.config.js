@@ -1,11 +1,11 @@
 module.exports = {
 	'*.scss': [ 'npm run lint:css-fix' ],
-	'client/**/*.js': [
+	'client/**/*.(t|j)s?(x)': [
 		'wp-scripts format-js',
 		'wp-scripts lint-js',
 		'npm run test-staged',
 	],
-	'packages/**/*.js': ( packageFiles ) => {
+	'packages/**/*.(t|j)s?(x)': ( packageFiles ) => {
 		const globalScripts = [
 			`wp-scripts format-js ${ packageFiles.join( ' ' ) }`,
 			`wp-scripts lint-js ${ packageFiles.join( ' ' ) }`,
