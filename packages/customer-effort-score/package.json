@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/customer-effort-score",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "WooCommerce utility to measure user effort.",
 	"author": "Automattic",
 	"license": "GPL-3.0-or-later",
@@ -35,9 +35,9 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"concurrently": "5.3.0",
 		"@testing-library/react": "11.2.7",
-		"@types/wordpress__components": "9.8.6"
+		"@types/wordpress__components": "9.8.6",
+		"concurrently": "5.3.0"
 	},
 	"scripts": {
 		"clean": "npx rimraf build build-*",

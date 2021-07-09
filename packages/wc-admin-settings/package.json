@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/wc-admin-settings",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Wrapper around the wcSettings object - used for development.",
 	"author": "Automattic",
 	"license": "GPL-2.0-or-later",
