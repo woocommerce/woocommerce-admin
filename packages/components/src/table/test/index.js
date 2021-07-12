@@ -17,7 +17,7 @@ expect.extend( { toHaveClass } );
 
 describe( 'TableCard', () => {
 	it( 'should render placeholders for Table and TableSummary while loading', () => {
-		const { container } = render(
+		render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -38,12 +38,10 @@ describe( 'TableCard', () => {
 		expect( screen.getByRole( 'complementary' ) ).toHaveClass(
 			'is-loading'
 		);
-
-		expect( container ).toMatchSnapshot();
 	} );
 
 	it( 'should render table along with summary data when row and summary data is present', () => {
-		const { container } = render(
+		render(
 			<TableCard
 				title="Revenue"
 				headers={ mockHeaders }
@@ -62,8 +60,6 @@ describe( 'TableCard', () => {
 		expect( screen.getByRole( 'complementary' ) ).not.toHaveClass(
 			'is-loading'
 		);
-
-		expect( container ).toMatchSnapshot();
 	} );
 
 	it( 'should not error with default callback props', () => {
