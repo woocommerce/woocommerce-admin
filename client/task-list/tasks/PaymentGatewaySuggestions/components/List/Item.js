@@ -14,12 +14,7 @@ import { Text, useSlot } from '@woocommerce/experimental';
 import { Action } from '../Action';
 import './List.scss';
 
-export const Item = ( {
-	isRecommended,
-	markConfigured,
-	paymentGateway,
-	gatewayIds,
-} ) => {
+export const Item = ( { isRecommended, markConfigured, paymentGateway } ) => {
 	const {
 		image,
 		content,
@@ -93,7 +88,6 @@ export const Item = ( {
 						markConfigured={ markConfigured }
 						onSetUp={ () =>
 							recordEvent( 'tasklist_payment_setup', {
-								options: gatewayIds,
 								selected: id,
 							} )
 						}
