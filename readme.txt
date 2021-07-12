@@ -103,7 +103,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix:  Use tab char for the CSV injection prevention. #7154
 - Fix: Fix and refactor explat polling to use setTimeout #7274
 - Fix: Cache product/variation revenue query results. #7067
-- Fix: Tracks events in payment gateway suggestions. #7304
 - Tweak: Remove performance indicators when Analytics Flag disabled #7234
 - Fix: Fix missing translation strings for CES #7270
 - Tweak: Revert Card component removal #7167
