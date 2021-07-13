@@ -97,7 +97,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: WCPay not working in local payments task #7151
 - Fix: WordPress 5.8 compatibility UI fixes #7255
 - Fix: CurrencyFactory constructor to use proper function #7261
-- Fix: Create workable defaults for Reports that don't have AdvancedFilters #7186
 - Fix: Currency display on Orders activity card on homescreen #7181
 - Fix: Report export filtering bug. #7165
 - Fix:  Use tab char for the CSV injection prevention. #7154
