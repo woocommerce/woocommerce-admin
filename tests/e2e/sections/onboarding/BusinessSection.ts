@@ -46,7 +46,7 @@ export class BusinessSection extends BasePage {
 			const inputsNum = document.querySelectorAll(
 				'.components-checkbox-control__input'
 			).length;
-			return inputsNum > 5;
+			return inputsNum > 1;
 		} );
 	}
 
