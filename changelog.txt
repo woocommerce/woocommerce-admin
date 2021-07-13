@@ -30,6 +30,7 @@
 - Fix: Fix missing translation strings for CES #7270
 - Fix: Add missing translation strings in the business features section #7268
 - Fix: Fix inbox note dismiss dropdown not closing on Safari #7278
+- Fix: Create workable defaults for Reports that don’t have AdvancedFilters #7186
 - Sync the category lookup table when a new category gets created #7290
 - Tweak: Remove performance indicators when Analytics Flag disabled #7234
 - Tweak: Change event name when installing Google Listings and Ads. #7276
