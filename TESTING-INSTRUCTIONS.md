@@ -1,7 +1,6 @@
 # Testing instructions
 
 ## Unreleased
-
 ### Fix missing translation strings for CES #7270
 
 1. Navigate to Settings -> General and change the site language to a non-English (I've used Espanol for testing purposes).
@@ -23,6 +22,28 @@
 2. Navigate to WooCommerce -> Home
 3. Click "Dismiss" on a note. Confirm the position of the popover is correct.
 4. Click anywhere outside of the popover content and confirm the popover is closed.
+
+### Sync the category lookup table when a new category gets created #7290
+
+1. Navigate to Products -> Add New
+2. Add a new category on the Add New page and assign the product to it.
+3. Place an order with the product
+4. Navigate to Analytics -> Categories
+5. You should see the category.
+
+### Remove facebook extension from onboarding extensions fallback list #7287
+
+1. Go to the OBW and look at the Free features tab
+1. Observe no Facebook extension in the list
+
+###  "Terms of service" link disappears from "Set up Tax" screen #7269
+
+1. Go to OBW setup wizard.
+2. Uncheck the "WooCommerce shipping" and "WooCommerce Tax" options at Free features step.
+3. Complete the OBW setup.
+4. Go to WooCommerce->Home.
+5. Click on "Set up Tax" option on Task list.
+6. TOS should not blink. 
 
 ### Use saved values if available when switching tabs #7226
 
@@ -162,6 +183,12 @@ Individual payment gateway plugins dictate the settings and connection flow.  Fo
 2. Make sure the connection flow is shown.
 
 ## 2.4.0
+
+### Add padding on table header button #7213
+
+1. Create tax rates
+2. Go to Analytics -> Taxes
+3. Check it the table style renders as expected
 
 ### Add target to the button to open it in a new tab #7110
 

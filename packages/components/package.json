@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/components",
-	"version": "7.0.0",
+	"version": "7.1.0",
 	"description": "UI components for WooCommerce.",
 	"author": "Automattic",
 	"license": "GPL-3.0-or-later",
@@ -29,7 +29,6 @@
 		"@woocommerce/currency": "file:../currency",
 		"@woocommerce/data": "file:../data",
 		"@woocommerce/date": "file:../date",
-		"@woocommerce/experimental": "file:../experimental",
 		"@woocommerce/navigation": "file:../navigation",
 		"@wordpress/api-fetch": "^3.21.5",
 		"@wordpress/components": "10.2.0",
@@ -42,6 +41,7 @@
 		"@wordpress/i18n": "3.17.0",
 		"@wordpress/icons": "^2.10.3",
 		"@wordpress/keycodes": "2.18.0",
+		"@wordpress/url": "2.21.0",
 		"@wordpress/viewport": "2.24.0",
 		"classnames": "^2.3.1",
 		"core-js": "3.9.1",
