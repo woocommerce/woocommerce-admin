@@ -18,6 +18,11 @@ import { DisplayOption } from '../header/activity-panel/display-options';
 import TaskList from './task-list';
 import TaskListPlaceholder from './placeholder';
 import { TaskStep } from './task-step';
+import './tasks/appearance';
+import './tasks/PaymentGatewaySuggestions';
+import './tasks/products';
+import './tasks/shipping';
+import './tasks/tax';
 
 const TaskDashboard = ( { query } ) => {
 	const { task } = query;
