@@ -25,7 +25,6 @@ wp-cli.local.yml
 *.zip
 .idea
 .vscode/
-yarn-error.log
 
 # Composer
 /vendor/
