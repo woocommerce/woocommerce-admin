@@ -29,6 +29,7 @@
 	"exclude": [ "node_modules", "build", "build-module", "dist", "vendor" ],
 	"files": [],
 	"references": [
+		{ "path": "packages/admin-e2e-tests" },
         { "path": "packages/components" },
 		{ "path": "packages/csv-export" },
 		{ "path": "packages/currency" },
