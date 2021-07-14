@@ -13,19 +13,13 @@ import {
 } from '@woocommerce/navigation';
 import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import {
-	Text,
-	List,
-	CollapsibleList,
-	TaskItem,
-} from '@woocommerce/experimental';
+import { Text, List, CollapsibleList } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
+import { TaskListItem } from './task-list-item';
 import './task-list.scss';
-
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const TaskList = ( {
 	query,
@@ -39,7 +33,6 @@ export const TaskList = ( {
 	onHide,
 	expandingItems = false,
 } ) => {
-	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { profileItems } = useSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
@@ -104,87 +97,6 @@ export const TaskList = ( {
 				onComplete();
 			}
 		}
-	};
-
-	const dismissTask = ( { key, onDismiss } ) => {
-		createNotice( 'success', __( 'Task dismissed' ), {
-			actions: [
-				{
-					label: __( 'Undo', 'woocommerce-admin' ),
-					onClick: () => undoDismissTask( key ),
-				},
-			],
-		} );
-
-		recordEvent( `${ eventName }_dismiss_task`, { task_name: key } );
-
-		// @todo This should use the task API to set dismissed tasks.
-		// updateOptions( {
-		// 	woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
-		// } );
-		if ( onDismiss ) {
-			onDismiss();
-		}
-	};
-
-	const undoDismissTask = ( key ) => {
-		// @todo This should use the task API to set dismissed tasks.
-		// const updatedDismissedTasks = dismissedTasks.filter(
-		// 	( task ) => task !== key
-		// );
-
-		// updateOptions( {
-		// 	woocommerce_task_list_dismissed_tasks: updatedDismissedTasks,
-		// } );
-		recordEvent( `${ eventName }_undo_dismiss_task`, {
-			task_name: key,
-		} );
-	};
-
-	const remindTaskLater = ( { key, onDismiss } ) => {
-		createNotice(
-			'success',
-			__( 'Task postponed until tomorrow', 'woocommerce-admin' ),
-			{
-				actions: [
-					{
-						label: __( 'Undo', 'woocommerce-admin' ),
-						onClick: () => undoRemindTaskLater( key ),
-					},
-				],
-			}
-		);
-		recordEvent( `${ eventName }_remindmelater_task`, {
-			task_name: key,
-		} );
-
-		// @todo This should use the task API to set snooze time.
-		// const dismissTime = Date.now() + DAY_IN_MS;
-		// updateOptions( {
-		// 	woocommerce_task_list_remind_me_later_tasks: {
-		// 		...remindMeLaterTasks,
-		// 		[ key ]: dismissTime,
-		// 	},
-		// } );
-		if ( onDismiss ) {
-			onDismiss();
-		}
-	};
-
-	const undoRemindTaskLater = ( key ) => {
-		// @todo This should use the task API to set snooze time.
-		// const {
-		// 	// eslint-disable-next-line no-unused-vars
-		// 	[ key ]: oldValue,
-		// 	...updatedRemindMeLaterTasks
-		// } = remindMeLaterTasks;
-
-		// updateOptions( {
-		// 	woocommerce_task_list_remind_me_later_tasks: updatedRemindMeLaterTasks,
-		// } );
-		recordEvent( `${ eventName }_undo_remindmelater_task`, {
-			task_name: key,
-		} );
 	};
 
 	const recordTaskListView = () => {
@@ -315,36 +227,13 @@ export const TaskList = ( {
 					<CardBody>
 						<ListComp animation="custom" { ...listProps }>
 							{ listTasks.map( ( task ) => (
-								<TaskItem
+								<TaskListItem
 									key={ task.id }
-									title={ task.title }
-									completed={ task.isComplete }
-									content={ task.content }
-									onClick={
-										! expandingItems || task.isComplete
-											? task.onClick
-											: () => setCurrentTask( task.id )
-									}
-									expandable={ expandingItems }
-									expanded={
-										expandingItems &&
-										currentTask === task.id
-									}
-									onDismiss={
-										task.isDismissable
-											? () => dismissTask( task )
-											: undefined
-									}
-									remindMeLater={
-										task.isSnoozable
-											? () => remindTaskLater( task )
-											: undefined
-									}
-									time={ task.time }
-									level={ task.level }
-									action={ task.onClick }
-									actionLabel={ task.actionLabel }
-									additionalInfo={ task.additionalInfo }
+									currentTask={ currentTask }
+									eventName={ eventName }
+									expandingItems={ expandingItems }
+									task={ task }
+									setCurrentTask={ setCurrentTask }
 								/>
 							) ) }
 						</ListComp>
