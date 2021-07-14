@@ -3,8 +3,6 @@ export { default as AdvancedFilters } from './advanced-filters';
 export { default as AnimationSlider } from './animation-slider';
 export { default as Chart } from './chart';
 export { default as ChartPlaceholder } from './chart/placeholder';
-export { default as Card } from './card';
-export { default as Count } from './count';
 export { CompareButton, CompareFilter } from './compare-filter';
 export { default as Date } from './date';
 export { default as DateRangeFilterPicker } from './date-range-filter-picker';
@@ -16,7 +14,6 @@ export { default as EmptyContent } from './empty-content';
 export { default as Flag } from './flag';
 export { default as Form } from './form';
 export { default as FilterPicker } from './filter-picker';
-export { default as Gravatar } from './gravatar';
 export { H, Section } from './section';
 export { default as ImageUpload } from './image-upload';
 export { default as Link } from './link';
@@ -49,7 +46,10 @@ export { default as Table } from './table/table';
 export { default as TableCard } from './table';
 export { default as EmptyTable } from './table/empty';
 export { default as TablePlaceholder } from './table/placeholder';
-export { default as TableSummary } from './table/summary';
+export {
+	default as TableSummary,
+	TableSummaryPlaceholder,
+} from './table/summary';
 export { default as Tag } from './tag';
 export { default as TextControl } from './text-control';
 export { default as TextControlWithAffixes } from './text-control-with-affixes';

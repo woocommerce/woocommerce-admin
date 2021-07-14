@@ -1,6 +1,12 @@
 # Testing instructions
 
 ## Unreleased
+
+### Fix WC Home crash when the Analytics is disabled.
+
+1. Navigate to WooCommerce -> Settings -> Advanced -> Features. Uncheck Analytics and save the changes.
+2. Navigate to WooCommerce -> Home and confirm the page loads without an error.
+
 ### Fix missing translation strings for CES #7270
 
 1. Navigate to Settings -> General and change the site language to a non-English (I've used Espanol for testing purposes).
@@ -23,6 +29,12 @@
 3. Click "Dismiss" on a note. Confirm the position of the popover is correct.
 4. Click anywhere outside of the popover content and confirm the popover is closed.
 
+### Add TableSummaryPlaceholder to support skeleton loading #7294
+
+1. Visit any page using element Table to see this update.
+2. For example, Products, Orders, Revenue under Analytics; or Transactions, Deposits under Payments.
+3. While loading, scrolling down to the bottom of the table to see the placeholder of TableSummary.
+
 ### Sync the category lookup table when a new category gets created #7290
 
 1. Navigate to Products -> Add New
@@ -35,6 +47,15 @@
 
 1. Go to the OBW and look at the Free features tab
 1. Observe no Facebook extension in the list
+
+###  "Terms of service" link disappears from "Set up Tax" screen #7269
+
+1. Go to OBW setup wizard.
+2. Uncheck the "WooCommerce shipping" and "WooCommerce Tax" options at Free features step.
+3. Complete the OBW setup.
+4. Go to WooCommerce->Home.
+5. Click on "Set up Tax" option on Task list.
+6. TOS should not blink. 
 
 ### Use saved values if available when switching tabs #7226
 
