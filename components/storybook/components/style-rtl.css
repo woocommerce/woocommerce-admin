@@ -3171,6 +3171,22 @@ th.woocommerce-table__item {
   margin-right: 8px;
   margin-left: 8px;
 }
+.woocommerce-table__summary-item .is-placeholder {
+  animation: loading-fade 1.6s ease-in-out infinite;
+  background-color: #f0f0f0;
+  color: transparent;
+  display: inline-block;
+  height: 16px;
+  width: 200px;
+}
+.woocommerce-table__summary-item .is-placeholder::after {
+  content: " ";
+}
+@media screen and (prefers-reduced-motion: reduce) {
+  .woocommerce-table__summary-item .is-placeholder {
+    animation: none;
+  }
+}
 .woocommerce-table__summary-item .woocommerce-table__summary-label,
 .woocommerce-table__summary-item .woocommerce-table__summary-value {
   display: inline-block;
