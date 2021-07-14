@@ -666,7 +666,8 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$tasks = array(
 			array(
 				'id'         => 'setup',
-				'isComplete' => false,
+				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
+				'isHidden'   => get_option( 'woocommerce_task_list_hidden' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
 					array(
