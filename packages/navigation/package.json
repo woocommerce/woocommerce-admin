@@ -21,7 +21,6 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@woocommerce/experimental": "file:../experimental",
 		"@wordpress/api-fetch": "2.2.8",
 		"@wordpress/compose": "3.23.1",
 		"@wordpress/notices": "1.12.0",
