@@ -56,6 +56,7 @@
 		"publish-packages:prod": "npm run build:packages && lerna publish from-package",
 		"prestart": "npm run install-if-deps-outdated",
 		"start": "cross-env WC_ADMIN_PHASE=development npm run build:packages && cross-env WC_ADMIN_PHASE=development npm run build:feature-config && concurrently \"cross-env WC_ADMIN_PHASE=development webpack --watch\" \"tsc --build --watch\" \"node ./bin/packages/watch.js ./packages\"",
+		"start:package": "lerna run start --parallel --scope",
 		"pretest": "npm run -s install-if-no-packages",
 		"test:debug": "node --inspect-brk ./node_modules/.bin/jest --config client/jest.config.json --watch --runInBand --no-cache",
 		"test:client": "jest --config client/jest.config.json",
