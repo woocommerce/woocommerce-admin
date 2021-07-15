@@ -10,7 +10,7 @@ import {
 	PAYMENT_GATEWAYS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useMemo, useCallback } from '@wordpress/element';
+import { useMemo, useCallback, useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -85,6 +85,16 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		}
 	);
 
+	useEffect( () => {
+		if ( paymentGateways.size ) {
+			recordEvent( 'tasklist_payments_options', {
+				options: Array.from( paymentGateways.values() ).map(
+					( gateway ) => gateway.id
+				),
+			} );
+		}
+	}, [ paymentGateways ] );
+
 	const enablePaymentGateway = ( id ) => {
 		if ( ! id ) {
 			return;
@@ -119,12 +129,6 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		},
 		[ paymentGateways ]
 	);
-
-	const recordConnectStartEvent = useCallback( ( gatewayId ) => {
-		recordEvent( 'tasklist_payment_connect_start', {
-			payment_method: gatewayId,
-		} );
-	}, [] );
 
 	const recommendation = useMemo(
 		() =>
@@ -187,7 +191,6 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 			<Setup
 				paymentGateway={ currentGateway }
 				markConfigured={ markConfigured }
-				recordConnectStartEvent={ recordConnectStartEvent }
 			/>
 		);
 	}
