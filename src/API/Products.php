@@ -154,6 +154,7 @@ class Products extends \WC_REST_Products_Controller {
 		if (
 			$request->get_param( 'low_in_stock' ) === true &&
 			$request->get_param( 'page' ) === 1 &&
+			is_array( $request->get_param( '_fields' ) ) &&
 			count( $request->get_param( '_fields' ) ) === 1 &&
 			in_array( 'id', $request->get_param( '_fields' ), true )
 		) {
