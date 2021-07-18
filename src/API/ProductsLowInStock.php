@@ -136,10 +136,15 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	protected function get_low_in_stock_products( $page = 1, $per_page = 1 ) {
 		global $wpdb;
 
-		$offset              = ( $page - 1 ) * $per_page;
-		$low_stock_threshold = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
+		$offset                       = ( $page - 1 ) * $per_page;
+		$low_stock_threshold          = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
+		$use_sitewide_stock_threshold = $this->is_using_sitewide_stock_threshold_only();
 
-		$query_string  = $this->get_query( $offset, $per_page );
+		if ( $use_sitewide_stock_threshold ) {
+			$query_string = $this->get_query_for_sitewide_threshold( $offset, $per_page );
+		} else {
+			$query_string = $this->get_query( $offset, $per_page );
+		}
 		$query_results = $wpdb->get_results(
 			// phpcs:ignore -- not sure why phpcs complains about this line when prepare() is used here.
 			$wpdb->prepare( $query_string, $low_stock_threshold ),
@@ -156,6 +161,18 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	}
 
 	/**
+	 * Check to see if store is using sitewide threshold only. Meaning that it does not have any custom
+	 * stock threshold for a product.
+	 *
+	 * @return bool
+	 */
+	public function is_using_sitewide_stock_threshold_only() {
+		global $wpdb;
+		$count = $wpdb->get_var( "select count(*) as total from {$wpdb->postmeta} where meta_key='_low_stock_amount'" );
+		return 0 === (int) $count;
+	}
+
+	/**
 	 * Convert post object to expected API response.
 	 *
 	 * @param object $query_result a row of query result from get_low_in_stock_products.
@@ -166,6 +183,11 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 		if ( ! isset( $query_result->last_order_date ) ) {
 			$query_result->last_order_date = null;
 		}
+
+		if ( ! isset( $query_result->low_stock_amount ) ) {
+			$query_result->low_stock_amount = null;
+		}
+
 		return array(
 			'id'               => (int) $query_result->ID,
 			'images'           => $query_result->images,
@@ -234,6 +256,43 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 		);
 	}
 
+	/**
+	 * Create a query by replacing :select_fields, :order_by, and :limit.
+	 *
+	 * @param int $offset offset value.
+	 * @param int $limit limit value.
+	 *
+	 * @return string
+	 */
+	public function get_query_for_sitewide_threshold( $offset, $limit ) {
+		global $wpdb;
+		$query = "
+			SELECT
+				SQL_CALC_FOUND_ROWS wp_posts.*, 
+				wc_product_meta_lookup.stock_quantity
+			FROM  
+			  {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup
+			  LEFT JOIN {$wpdb->posts} wp_posts ON wp_posts.ID = wc_product_meta_lookup.product_id 
+			WHERE 
+			  wp_posts.post_type IN ('product', 'product_variation') 
+			  AND (
+			    (wp_posts.post_status = 'publish')
+			  ) 
+			  AND wc_product_meta_lookup.stock_quantity IS NOT NULL 
+			  AND wc_product_meta_lookup.stock_status IN('instock', 'outofstock') 
+			  AND wc_product_meta_lookup.stock_quantity <= %d
+			order by wc_product_meta_lookup.product_id DESC   
+			limit :offset, :limit
+		";
+
+		return strtr(
+			$query,
+			array(
+				':offset' => $offset,
+				':limit'  => $limit,
+			)
+		);
+	}
 	/**
 	 * Get the query params for collections of attachments.
 	 *
