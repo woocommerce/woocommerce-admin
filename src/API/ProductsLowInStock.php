@@ -1,0 +1,219 @@
+<?php
+/**
+ * REST API Products Controller
+ *
+ * Handles requests to /products/*
+ */
+
+namespace Automattic\WooCommerce\Admin\API;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Products controller.
+ *
+ * @extends WC_REST_Products_Controller
+ */
+class ProductsLowInStock extends \WC_REST_Controller {
+
+	/**
+	 * Endpoint namespace.
+	 *
+	 * @var string
+	 */
+	protected $namespace = 'wc-analytics';
+
+	/**
+	 * Register routes.
+	 */
+	public function register_routes() {
+		register_rest_route(
+			$this->namespace,
+			'products/low-in-stock',
+			array(
+				'args'   => array(),
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+	}
+
+	/**
+	 * Check permission for the get_items.
+	 *
+	 * @param WP_REST_Request $request request object.
+	 *
+	 * @return bool
+	 */
+	public function get_items_permissions_check( $request ) {
+		if ( ! wc_rest_check_post_permissions( 'products', 'read' ) ) {
+			return new WP_Error(
+				'woocommerce_rest_cannot_view',
+				__( 'Sorry, you cannot list resources.', 'woocommerce-admin' ),
+				array( 'status' => rest_authorization_required_code() )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get low in stock products.
+	 *
+	 * @param WP_REST_Request $request request object.
+	 *
+	 * @return array
+	 */
+	public function get_items( $request ) {
+		$page          = $request->get_param( 'page' );
+		$per_page      = $request->get_param( 'per_page' );
+		$query_results = $this->get_low_in_stock_products( $page, $per_page );
+
+		$response = rest_ensure_response( $query_results['objects'] );
+		$response->header( 'X-WP-Total', $query_results['total'] );
+		$response->header( 'X-WP-TotalPages', $query_results['pages'] );
+
+		return $response;
+	}
+
+	/**
+	 * Get low in stock products data.
+	 *
+	 * @param int $page current page.
+	 * @param int $per_page items per page.
+	 *
+	 * @return array
+	 */
+	protected function get_low_in_stock_products( $page = 1, $per_page = 1 ) {
+		global $wpdb;
+
+		$offset              = ( $page - 1 ) * $per_page;
+		$low_stock_threshold = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
+
+		$query_string  = $this->get_query( $offset, $per_page );
+		$query_results = $wpdb->get_results(
+			// phpcs:ignore -- not sure why phpcs complains about this line when prepare() is used here.
+			$wpdb->prepare( $query_string, $low_stock_threshold )
+		);
+
+		$total_results = $wpdb->get_var( 'SELECT FOUND_ROWS()' );
+
+		return array(
+			'objects' => array_map( array( $this, 'transsform_post_to_product' ), $query_results ),
+			'total'   => (int) $total_results,
+			'pages'   => (int) ceil( $total_results / (int) $per_page ),
+		);
+	}
+
+	/**
+	 * Convert post object to expected API response.
+	 *
+	 * @param object $query_result a row of query result from get_low_in_stock_products.
+	 *
+	 * @return array
+	 */
+	protected function transsform_post_to_product( $query_result ) {
+		$type = 'product_variation' === $query_result->post_type ? 'variation' : 'product';
+
+		return array(
+			'id'               => (int) $query_result->ID,
+			'images'           => array(),
+			'low_stock_amount' => $query_result->low_stock_amount,
+			'name'             => $query_result->post_title,
+			'parent_id'        => $query_result->post_parent,
+			'stock_quantity'   => (int) $query_result->stock_quantity,
+			'type'             => $type,
+		);
+	}
+
+	/**
+	 * Create a query by replacing :select_fields, :order_by, and :limit.
+	 *
+	 * @param int $offset offset value.
+	 * @param int $limit limit value.
+	 *
+	 * @return string
+	 */
+	protected function get_query( $offset, $limit ) {
+		global $wpdb;
+		$query = "
+			SELECT
+				SQL_CALC_FOUND_ROWS wp_posts.*, 
+				low_stock_amount_meta.meta_value AS low_stock_amount
+			FROM  
+			  {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup
+			  LEFT JOIN {$wpdb->posts} wp_posts ON wp_posts.ID = wc_product_meta_lookup.product_id 
+			  LEFT JOIN {$wpdb->postmeta} AS low_stock_amount_meta ON wp_posts.ID = low_stock_amount_meta.post_id 
+			  AND low_stock_amount_meta.meta_key = '_low_stock_amount' 
+			WHERE 
+			  1 = 1 
+			  AND wp_posts.post_type IN ('product', 'product_variation') 
+			  AND (
+			    (wp_posts.post_status = 'publish')
+			  ) 
+			  AND wc_product_meta_lookup.stock_quantity IS NOT NULL 
+			  AND wc_product_meta_lookup.stock_status IN('instock', 'outofstock') 
+			  AND (
+			    (
+			      low_stock_amount_meta.meta_value > '' 
+			      AND wc_product_meta_lookup.stock_quantity <= CAST(
+			        low_stock_amount_meta.meta_value AS SIGNED
+			      )
+			    ) 
+			    OR (
+			      (
+			        low_stock_amount_meta.meta_value IS NULL 
+			        OR low_stock_amount_meta.meta_value <= ''
+			      ) 
+			      AND wc_product_meta_lookup.stock_quantity <= %d
+			    )
+			  )
+			order by wc_product_meta_lookup.product_id DESC   
+			limit :offset, :limit
+		";
+
+		return strtr(
+			$query,
+			array(
+				':offset' => $offset,
+				':limit'  => $limit,
+			)
+		);
+	}
+
+	/**
+	 * Get the query params for collections of attachments.
+	 *
+	 * @return array
+	 */
+	public function get_collection_params() {
+		$params                       = array();
+		$params['context']            = $this->get_context_param();
+		$params['context']['default'] = 'view';
+
+		$params['page']     = array(
+			'description'       => __( 'Current page of the collection.', 'woocommerce-admin' ),
+			'type'              => 'integer',
+			'default'           => 1,
+			'sanitize_callback' => 'absint',
+			'validate_callback' => 'rest_validate_request_arg',
+			'minimum'           => 1,
+		);
+		$params['per_page'] = array(
+			'description'       => __( 'Maximum number of items to be returned in result set.', 'woocommerce-admin' ),
+			'type'              => 'integer',
+			'default'           => 10,
+			'minimum'           => 1,
+			'maximum'           => 100,
+			'sanitize_callback' => 'absint',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+
+		return $params;
+	}
+}
