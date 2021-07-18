@@ -66,6 +66,8 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 			$query_results['results']
 		);
 
+		$query_results['results'] = $this->set_last_order_date( $query_results['results'] );
+
 		$query_results['results'] = array_map( array( $this, 'transsform_post_to_product' ), $query_results['results'] );
 
 		$response = rest_ensure_response( array_values( $query_results['results'] ) );
@@ -73,6 +75,54 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 		$response->header( 'X-WP-TotalPages', $query_results['pages'] );
 
 		return $response;
+	}
+
+	/**
+	 * Set the last order date for each data.
+	 *
+	 * @param array $results query result from get_low_in_stock_products.
+	 *
+	 * @return mixed
+	 */
+	protected function set_last_order_date( $results ) {
+		global $wpdb;
+		if ( 0 === count( $results ) ) {
+			return $results;
+		}
+
+		$wheres = array();
+		foreach ( $results as $result ) {
+			if ( 'variation_product' === $result->post_type ) {
+				array_push( $wheres, "(product_id={$result->post_parent} and variation_id={$result->ID})" );
+
+			} else {
+				array_push( $wheres, "product_id={$result->ID}" );
+			}
+		}
+
+		if ( count( $wheres ) > 1 ) {
+			$where_clause = implode( ' or ', $wheres );
+		} else {
+			$where_clause = $wheres[0];
+		}
+
+		$product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
+		$query_string         = "
+			select product_id, MAX( wc_order_product_lookup.date_created ) AS last_order_date from {$product_lookup_table} wc_order_product_lookup
+			where {$where_clause}
+			group by product_id
+			order by date_created desc
+		";
+
+		// phpcs:ignore
+		$query_results = $wpdb->get_results( $query_string, OBJECT_K );
+		foreach ( $query_results as $key => $query_result ) {
+			if ( isset( $results[ $key ] ) ) {
+				$results[ $key ]->last_order_date = $query_result->last_order_date;
+			}
+		}
+
+		return $results;
 	}
 
 	/**
@@ -113,11 +163,15 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	 * @return array
 	 */
 	protected function transsform_post_to_product( $query_result ) {
+		if ( ! isset( $query_result->last_order_date ) ) {
+			$query_result->last_order_date = null;
+		}
 		return array(
 			'id'               => (int) $query_result->ID,
 			'images'           => $query_result->images,
 			'attributes'       => $query_result->attributes,
 			'low_stock_amount' => $query_result->low_stock_amount,
+			'last_order_date'  => $query_result->last_order_date,
 			'name'             => $query_result->post_title,
 			'parent_id'        => $query_result->post_parent,
 			'stock_quantity'   => (int) $query_result->stock_quantity,
@@ -146,8 +200,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 			  LEFT JOIN {$wpdb->postmeta} AS low_stock_amount_meta ON wp_posts.ID = low_stock_amount_meta.post_id 
 			  AND low_stock_amount_meta.meta_key = '_low_stock_amount' 
 			WHERE 
-			  1 = 1 
-			  AND wp_posts.post_type IN ('product', 'product_variation') 
+			  wp_posts.post_type IN ('product', 'product_variation') 
 			  AND (
 			    (wp_posts.post_status = 'publish')
 			  ) 
