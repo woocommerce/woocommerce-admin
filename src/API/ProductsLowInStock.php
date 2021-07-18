@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @extends WC_REST_Products_Controller
  */
-class ProductsLowInStock extends \WC_REST_Controller {
+class ProductsLowInStock extends \WC_REST_Products_Controller {
 
 	/**
 	 * Endpoint namespace.
@@ -44,37 +44,31 @@ class ProductsLowInStock extends \WC_REST_Controller {
 	}
 
 	/**
-	 * Check permission for the get_items.
-	 *
-	 * @param WP_REST_Request $request request object.
-	 *
-	 * @return bool
-	 */
-	public function get_items_permissions_check( $request ) {
-		if ( ! wc_rest_check_post_permissions( 'products', 'read' ) ) {
-			return new WP_Error(
-				'woocommerce_rest_cannot_view',
-				__( 'Sorry, you cannot list resources.', 'woocommerce-admin' ),
-				array( 'status' => rest_authorization_required_code() )
-			);
-		}
-
-		return true;
-	}
-
-	/**
 	 * Get low in stock products.
 	 *
 	 * @param WP_REST_Request $request request object.
 	 *
-	 * @return array
+	 * @return WP_REST_Response|WP_ERROR
 	 */
 	public function get_items( $request ) {
 		$page          = $request->get_param( 'page' );
 		$per_page      = $request->get_param( 'per_page' );
 		$query_results = $this->get_low_in_stock_products( $page, $per_page );
 
-		$response = rest_ensure_response( $query_results['objects'] );
+		// set images and attributes.
+		$query_results['results'] = array_map(
+			function( $query_result ) {
+				$product                  = wc_get_product( $query_result );
+				$query_result->images     = $this->get_images( $product );
+				$query_result->attributes = $this->get_attributes( $product );
+				return $query_result;
+			},
+			$query_results['results']
+		);
+
+		$query_results['results'] = array_map( array( $this, 'transsform_post_to_product' ), $query_results['results'] );
+
+		$response = rest_ensure_response( array_values( $query_results['results'] ) );
 		$response->header( 'X-WP-Total', $query_results['total'] );
 		$response->header( 'X-WP-TotalPages', $query_results['pages'] );
 
@@ -98,13 +92,14 @@ class ProductsLowInStock extends \WC_REST_Controller {
 		$query_string  = $this->get_query( $offset, $per_page );
 		$query_results = $wpdb->get_results(
 			// phpcs:ignore -- not sure why phpcs complains about this line when prepare() is used here.
-			$wpdb->prepare( $query_string, $low_stock_threshold )
+			$wpdb->prepare( $query_string, $low_stock_threshold ),
+			OBJECT_K
 		);
 
 		$total_results = $wpdb->get_var( 'SELECT FOUND_ROWS()' );
 
 		return array(
-			'objects' => array_map( array( $this, 'transsform_post_to_product' ), $query_results ),
+			'results' => $query_results,
 			'total'   => (int) $total_results,
 			'pages'   => (int) ceil( $total_results / (int) $per_page ),
 		);
@@ -118,16 +113,15 @@ class ProductsLowInStock extends \WC_REST_Controller {
 	 * @return array
 	 */
 	protected function transsform_post_to_product( $query_result ) {
-		$type = 'product_variation' === $query_result->post_type ? 'variation' : 'product';
-
 		return array(
 			'id'               => (int) $query_result->ID,
-			'images'           => array(),
+			'images'           => $query_result->images,
+			'attributes'       => $query_result->attributes,
 			'low_stock_amount' => $query_result->low_stock_amount,
 			'name'             => $query_result->post_title,
 			'parent_id'        => $query_result->post_parent,
 			'stock_quantity'   => (int) $query_result->stock_quantity,
-			'type'             => $type,
+			'type'             => 'product_variation' === $query_result->post_type ? 'variation' : 'product',
 		);
 	}
 
@@ -144,7 +138,8 @@ class ProductsLowInStock extends \WC_REST_Controller {
 		$query = "
 			SELECT
 				SQL_CALC_FOUND_ROWS wp_posts.*, 
-				low_stock_amount_meta.meta_value AS low_stock_amount
+				low_stock_amount_meta.meta_value AS low_stock_amount,
+				wc_product_meta_lookup.stock_quantity
 			FROM  
 			  {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup
 			  LEFT JOIN {$wpdb->posts} wp_posts ON wp_posts.ID = wc_product_meta_lookup.product_id 
