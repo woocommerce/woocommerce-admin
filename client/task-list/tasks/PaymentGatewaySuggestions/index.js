@@ -22,65 +22,66 @@ import './plugins/Bacs';
 
 export const PaymentGatewaySuggestions = ( { query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
-	const { getPaymentGateway, paymentGateways, isResolving } = useSelect(
-		( select ) => {
-			const installedPaymentGateways = select(
-				PAYMENT_GATEWAYS_STORE_NAME
-			)
-				.getPaymentGateways()
-				.reduce( ( map, gateway ) => {
-					map[ gateway.id ] = gateway;
-					return map;
-				}, {} );
+	const {
+		getPaymentGateway,
+		fetchedPaymentGateways,
+		isResolving,
+	} = useSelect( ( select ) => {
+		const installedPaymentGateways = select( PAYMENT_GATEWAYS_STORE_NAME )
+			.getPaymentGateways()
+			.reduce( ( map, gateway ) => {
+				map[ gateway.id ] = gateway;
+				return map;
+			}, {} );
 
-			const mappedSuggestions = select( ONBOARDING_STORE_NAME )
-				.getPaymentGatewaySuggestions()
-				.reduce( ( map, suggestion ) => {
-					const { id } = suggestion;
-					const installedGateway = installedPaymentGateways[
-						suggestion.id
-					]
-						? installedPaymentGateways[ id ]
-						: {};
+		const mappedSuggestions = select( ONBOARDING_STORE_NAME )
+			.getPaymentGatewaySuggestions()
+			.reduce( ( map, suggestion ) => {
+				const { id } = suggestion;
+				const installedGateway = installedPaymentGateways[
+					suggestion.id
+				]
+					? installedPaymentGateways[ id ]
+					: {};
 
-					const enrichedSuggestion = {
-						installed: !! installedPaymentGateways[ id ],
-						postInstallScripts:
-							installedGateway.post_install_scripts,
-						enabled: installedGateway.enabled || false,
-						needsSetup: installedGateway.needs_setup,
-						settingsUrl: installedGateway.settings_url,
-						connectionUrl: installedGateway.connection_url,
-						setupHelpText: installedGateway.setup_help_text,
-						title: installedGateway.title,
-						requiredSettings: installedGateway.required_settings_keys
-							? installedGateway.required_settings_keys
-									.map(
-										( settingKey ) =>
-											installedGateway.settings[
-												settingKey
-											]
-									)
-									.filter( Boolean )
-							: [],
-						...suggestion,
-					};
+				const enrichedSuggestion = {
+					installed: !! installedPaymentGateways[ id ],
+					postInstallScripts: installedGateway.post_install_scripts,
+					enabled: installedGateway.enabled || false,
+					needsSetup: installedGateway.needs_setup,
+					settingsUrl: installedGateway.settings_url,
+					connectionUrl: installedGateway.connection_url,
+					setupHelpText: installedGateway.setup_help_text,
+					title: installedGateway.title,
+					requiredSettings: installedGateway.required_settings_keys
+						? installedGateway.required_settings_keys
+								.map(
+									( settingKey ) =>
+										installedGateway.settings[ settingKey ]
+								)
+								.filter( Boolean )
+						: [],
+					...suggestion,
+				};
 
-					map.set( id, enrichedSuggestion );
-					return map;
-				}, new Map() );
+				map.set( id, enrichedSuggestion );
+				return map;
+			}, new Map() );
 
-			return {
-				getPaymentGateway: select( PAYMENT_GATEWAYS_STORE_NAME )
-					.getPaymentGateway,
-				getOption: select( OPTIONS_STORE_NAME ).getOption,
-				isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
-					'getPaymentGatewaySuggestions'
-				),
-				paymentGateways: mappedSuggestions,
-			};
-		}
-	);
+		return {
+			getPaymentGateway: select( PAYMENT_GATEWAYS_STORE_NAME )
+				.getPaymentGateway,
+			getOption: select( OPTIONS_STORE_NAME ).getOption,
+			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
+				'getPaymentGatewaySuggestions'
+			),
+			fetchedPaymentGateways: mappedSuggestions,
+		};
+	}, [] );
+
+	const paymentGateways = useMemo( () => fetchedPaymentGateways, [
+		fetchedPaymentGateways.size,
+	] );
 
 	useEffect( () => {
 		if ( paymentGateways.size ) {
