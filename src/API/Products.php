@@ -83,7 +83,6 @@ class Products extends \WC_REST_Products_Controller {
 		return $params;
 	}
 
-
 	/**
 	 * Add product name and sku filtering to the WC API.
 	 *
@@ -112,12 +111,10 @@ class Products extends \WC_REST_Products_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		add_filter( 'posts_fields', array( __CLASS__, 'add_wp_query_fields' ), 10, 2 );
 		add_filter( 'posts_where', array( __CLASS__, 'add_wp_query_filter' ), 10, 2 );
 		add_filter( 'posts_join', array( __CLASS__, 'add_wp_query_join' ), 10, 2 );
 		add_filter( 'posts_groupby', array( __CLASS__, 'add_wp_query_group_by' ), 10, 2 );
 		$response = parent::get_items( $request );
-		remove_filter( 'posts_fields', array( __CLASS__, 'add_wp_query_fields' ), 10 );
 		remove_filter( 'posts_where', array( __CLASS__, 'add_wp_query_filter' ), 10 );
 		remove_filter( 'posts_join', array( __CLASS__, 'add_wp_query_join' ), 10 );
 		remove_filter( 'posts_groupby', array( __CLASS__, 'add_wp_query_group_by' ), 10 );
@@ -189,38 +186,11 @@ class Products extends \WC_REST_Products_Controller {
 		$object_data = $object->get_data();
 		$product_id  = $object_data['id'];
 
-		if ( $request->get_param( 'low_in_stock' ) ) {
-			if ( is_numeric( $object_data['low_stock_amount'] ) ) {
-				$data->data['low_stock_amount'] = $object_data['low_stock_amount'];
-			}
-			if ( isset( $this->last_order_dates[ $product_id ] ) ) {
-				$data->data['last_order_date'] = wc_rest_prepare_date_response( $this->last_order_dates[ $product_id ] );
-			}
-		}
 		if ( isset( $data->data['name'] ) ) {
 			$data->data['name'] = wp_strip_all_tags( $data->data['name'] );
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Add in conditional select fields to the query.
-	 *
-	 * @param string $select Select clause used to select fields from the query.
-	 * @param object $wp_query WP_Query object.
-	 * @return string
-	 */
-	public static function add_wp_query_fields( $select, $wp_query ) {
-		if ( $wp_query->get( 'low_in_stock' ) ) {
-			$fields  = array(
-				'low_stock_amount_meta.meta_value AS low_stock_amount',
-				'MAX( product_lookup.date_created ) AS last_order_date',
-			);
-			$select .= ', ' . implode( ', ', $fields );
-		}
-
-		return $select;
 	}
 
 	/**
@@ -240,52 +210,20 @@ class Products extends \WC_REST_Products_Controller {
 			$where     .= wc_product_sku_enabled() ? $wpdb->prepare( ' OR wc_product_meta_lookup.sku LIKE %s)', $search ) : ')';
 		}
 
-		if ( $wp_query->get( 'low_in_stock' ) ) {
-			$low_stock_amount = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
-			$where           .= "
-			AND wc_product_meta_lookup.stock_quantity IS NOT NULL
-			AND wc_product_meta_lookup.stock_status IN('instock','outofstock')
-			AND (
-				(
-					low_stock_amount_meta.meta_value > ''
-					AND wc_product_meta_lookup.stock_quantity <= CAST(low_stock_amount_meta.meta_value AS SIGNED)
-				)
-				OR (
-					(
-						low_stock_amount_meta.meta_value IS NULL OR low_stock_amount_meta.meta_value <= ''
-					)
-					AND wc_product_meta_lookup.stock_quantity <= {$low_stock_amount}
-				)
-			)";
-		}
-
 		return $where;
 	}
 
 	/**
-	 * Join posts meta tables when product search or low stock query is present.
+	 * Join posts meta tables when product search query is present.
 	 *
 	 * @param string $join Join clause used to search posts.
 	 * @param object $wp_query WP_Query object.
 	 * @return string
 	 */
 	public static function add_wp_query_join( $join, $wp_query ) {
-		global $wpdb;
-
 		$search = $wp_query->get( 'search' );
 		if ( $search && wc_product_sku_enabled() ) {
 			$join = self::append_product_sorting_table_join( $join );
-		}
-
-		if ( $wp_query->get( 'low_in_stock' ) ) {
-			$product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
-
-			$join  = self::append_product_sorting_table_join( $join );
-			$join .= " LEFT JOIN {$wpdb->postmeta} AS low_stock_amount_meta ON {$wpdb->posts}.ID = low_stock_amount_meta.post_id AND low_stock_amount_meta.meta_key = '_low_stock_amount' ";
-			$join .= " LEFT JOIN {$product_lookup_table} product_lookup ON {$wpdb->posts}.ID = CASE
-				WHEN {$wpdb->posts}.post_type = 'product' THEN product_lookup.product_id
-				WHEN {$wpdb->posts}.post_type = 'product_variation' THEN product_lookup.variation_id
-			END";
 		}
 
 		return $join;
@@ -316,9 +254,9 @@ class Products extends \WC_REST_Products_Controller {
 	public static function add_wp_query_group_by( $groupby, $wp_query ) {
 		global $wpdb;
 
-		$search       = $wp_query->get( 'search' );
-		$low_in_stock = $wp_query->get( 'low_in_stock' );
-		if ( empty( $groupby ) && ( $search || $low_in_stock ) ) {
+		$search = $wp_query->get( 'search' );
+
+		if ( empty( $groupby ) && $search ) {
 			$groupby = $wpdb->posts . '.ID';
 		}
 		return $groupby;
