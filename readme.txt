@@ -75,6 +75,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+== 2.4.2 7/19/2021 ==
+- Fix: Add lazy loading by checking panel open status #7376
+- Fix: Add cache-control header to low stock REST API response #7364
+
 == 2.4.1 7/1/2021 ==
 - Fix: Fix and refactor explat polling to use setTimeout #7274
 
