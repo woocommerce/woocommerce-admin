@@ -53,7 +53,8 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	public function get_items( $request ) {
 		$query_results = $this->get_low_in_stock_products(
 			$request->get_param( 'page' ),
-			$request->get_param( 'per_page' )
+			$request->get_param( 'per_page' ),
+			$request->get_param( 'status' )
 		);
 
 		// set images and attributes.
@@ -125,12 +126,13 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	/**
 	 * Get low in stock products data.
 	 *
-	 * @param int $page current page.
-	 * @param int $per_page items per page.
+	 * @param int    $page current page.
+	 * @param int    $per_page items per page.
+	 * @param string $status post status.
 	 *
 	 * @return array
 	 */
-	protected function get_low_in_stock_products( $page = 1, $per_page = 1 ) {
+	protected function get_low_in_stock_products( $page = 1, $per_page = 1, $status = 'publish' ) {
 		global $wpdb;
 
 		$offset                       = ( $page - 1 ) * $per_page;
@@ -145,7 +147,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 
 		$query_results = $wpdb->get_results(
 			// phpcs:ignore -- not sure why phpcs complains about this line when prepare() is used here.
-			$wpdb->prepare( $query_string, $low_stock_threshold, $offset, $per_page ),
+			$wpdb->prepare( $query_string, $status, $low_stock_threshold, $offset, $per_page ),
 			OBJECT_K
 		);
 
@@ -219,7 +221,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 			  :postmeta_join
 			WHERE 
 			  wp_posts.post_type IN ('product', 'product_variation') 
-			  AND wp_posts.post_status = 'publish'
+			  AND wp_posts.post_status = %s
 			  AND wc_product_meta_lookup.stock_quantity IS NOT NULL 
 			  AND wc_product_meta_lookup.stock_status IN('instock', 'outofstock') 
 			  :postmeta_wheres
@@ -289,6 +291,15 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 			'minimum'           => 1,
 			'maximum'           => 100,
 			'sanitize_callback' => 'absint',
+			'validate_callback' => 'rest_validate_request_arg',
+		);
+
+		$params['status'] = array(
+			'default'           => 'any',
+			'description'       => __( 'Limit result set to products assigned a specific status.', 'woocommerce-admin' ),
+			'type'              => 'string',
+			'enum'              => array_merge( array( 'any', 'future', 'trash' ), array_keys( get_post_statuses() ) ),
+			'sanitize_callback' => 'sanitize_key',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
 
