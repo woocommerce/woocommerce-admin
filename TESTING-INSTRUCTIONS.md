@@ -1,7 +1,5 @@
 # Testing instructions
 
-## Unreleased
-
 ## 2.5.0
 
 ### Fix WC Home crash when the Analytics is disabled.
