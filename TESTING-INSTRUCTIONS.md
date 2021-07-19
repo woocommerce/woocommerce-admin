@@ -9,7 +9,7 @@
 1. Navigate to WooCommerce -> Settings -> Advanced -> Features. Uncheck Analytics and save the changes.
 2. Navigate to WooCommerce -> Home and confirm the page loads without an error.
 
-### Fix Fix links on the dismiss dropdown are not clickable #7342
+### Fix links on the dismiss dropdown are not clickable #7342
 
 Please make sure to test it on Safari as well.
 
