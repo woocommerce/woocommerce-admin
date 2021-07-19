@@ -24,63 +24,69 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const {
 		getPaymentGateway,
-		fetchedPaymentGateways,
+		paymentGatewaySuggestions,
+		installedPaymentGateways,
 		isResolving,
 	} = useSelect( ( select ) => {
-		const installedPaymentGateways = select( PAYMENT_GATEWAYS_STORE_NAME )
-			.getPaymentGateways()
-			.reduce( ( map, gateway ) => {
-				map[ gateway.id ] = gateway;
-				return map;
-			}, {} );
-
-		const mappedSuggestions = select( ONBOARDING_STORE_NAME )
-			.getPaymentGatewaySuggestions()
-			.reduce( ( map, suggestion ) => {
-				const { id } = suggestion;
-				const installedGateway = installedPaymentGateways[
-					suggestion.id
-				]
-					? installedPaymentGateways[ id ]
-					: {};
-
-				const enrichedSuggestion = {
-					installed: !! installedPaymentGateways[ id ],
-					postInstallScripts: installedGateway.post_install_scripts,
-					enabled: installedGateway.enabled || false,
-					needsSetup: installedGateway.needs_setup,
-					settingsUrl: installedGateway.settings_url,
-					connectionUrl: installedGateway.connection_url,
-					setupHelpText: installedGateway.setup_help_text,
-					title: installedGateway.title,
-					requiredSettings: installedGateway.required_settings_keys
-						? installedGateway.required_settings_keys
-								.map(
-									( settingKey ) =>
-										installedGateway.settings[ settingKey ]
-								)
-								.filter( Boolean )
-						: [],
-					...suggestion,
-				};
-
-				map.set( id, enrichedSuggestion );
-				return map;
-			}, new Map() );
-
 		return {
 			getPaymentGateway: select( PAYMENT_GATEWAYS_STORE_NAME )
 				.getPaymentGateway,
 			getOption: select( OPTIONS_STORE_NAME ).getOption,
+			installedPaymentGateways: select(
+				PAYMENT_GATEWAYS_STORE_NAME
+			).getPaymentGateways(),
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
 				'getPaymentGatewaySuggestions'
 			),
-			fetchedPaymentGateways: mappedSuggestions,
+			paymentGatewaySuggestions: select(
+				ONBOARDING_STORE_NAME
+			).getPaymentGatewaySuggestions(),
 		};
 	}, [] );
 
-	const paymentGateways = useMemo( () => fetchedPaymentGateways, [
-		fetchedPaymentGateways.size,
+	const getEnrichedPaymentGateways = () => {
+		const mappedPaymentGateways = installedPaymentGateways.reduce(
+			( map, gateway ) => {
+				map[ gateway.id ] = gateway;
+				return map;
+			},
+			{}
+		);
+
+		return paymentGatewaySuggestions.reduce( ( map, suggestion ) => {
+			const { id } = suggestion;
+			const installedGateway = mappedPaymentGateways[ suggestion.id ]
+				? mappedPaymentGateways[ id ]
+				: {};
+
+			const enrichedSuggestion = {
+				installed: !! mappedPaymentGateways[ id ],
+				postInstallScripts: installedGateway.post_install_scripts,
+				enabled: installedGateway.enabled || false,
+				needsSetup: installedGateway.needs_setup,
+				settingsUrl: installedGateway.settings_url,
+				connectionUrl: installedGateway.connection_url,
+				setupHelpText: installedGateway.setup_help_text,
+				title: installedGateway.title,
+				requiredSettings: installedGateway.required_settings_keys
+					? installedGateway.required_settings_keys
+							.map(
+								( settingKey ) =>
+									installedGateway.settings[ settingKey ]
+							)
+							.filter( Boolean )
+					: [],
+				...suggestion,
+			};
+
+			map.set( id, enrichedSuggestion );
+			return map;
+		}, new Map() );
+	};
+
+	const paymentGateways = useMemo( getEnrichedPaymentGateways, [
+		installedPaymentGateways,
+		paymentGatewaySuggestions,
 	] );
 
 	useEffect( () => {
