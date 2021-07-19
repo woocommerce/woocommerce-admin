@@ -133,7 +133,7 @@ class Products extends \WC_REST_Products_Controller {
 		 * https://github.com/woocommerce/woocommerce-admin/issues/7358
 		 */
 		if ( $this->is_low_in_stock_request( $request ) ) {
-			$response->header( 'Cache-Control', 'max-age=60' );
+			$response->header( 'Cache-Control', 'max-age=300' );
 		}
 		return $response;
 	}
