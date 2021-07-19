@@ -1,8 +1,8 @@
 <?php
 /**
- * REST API Products Controller
+ * REST API ProductsLowInStock Controller
  *
- * Handles requests to /products/*
+ * Handles request to /products/low-in-stock
  */
 
 namespace Automattic\WooCommerce\Admin\API;
@@ -10,7 +10,7 @@ namespace Automattic\WooCommerce\Admin\API;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Products controller.
+ * ProductsLowInStock controller.
  *
  * @extends WC_REST_Products_Controller
  */
@@ -51,9 +51,10 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	 * @return WP_REST_Response|WP_ERROR
 	 */
 	public function get_items( $request ) {
-		$page          = $request->get_param( 'page' );
-		$per_page      = $request->get_param( 'per_page' );
-		$query_results = $this->get_low_in_stock_products( $page, $per_page );
+		$query_results = $this->get_low_in_stock_products(
+			$request->get_param( 'page' ),
+			$request->get_param( 'per_page' )
+		);
 
 		// set images and attributes.
 		$query_results['results'] = array_map(
@@ -66,9 +67,11 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 			$query_results['results']
 		);
 
+		// set last_order_date.
 		$query_results['results'] = $this->set_last_order_date( $query_results['results'] );
 
-		$query_results['results'] = array_map( array( $this, 'transsform_post_to_product' ), $query_results['results'] );
+		// convert the post data to the expected API response for the backward compatibility.
+		$query_results['results'] = array_map( array( $this, 'transform_post_to_api_response' ), $query_results['results'] );
 
 		$response = rest_ensure_response( array_values( $query_results['results'] ) );
 		$response->header( 'X-WP-Total', $query_results['total'] );
@@ -84,7 +87,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	 *
 	 * @return mixed
 	 */
-	protected function set_last_order_date( $results ) {
+	protected function set_last_order_date( $results = array() ) {
 		global $wpdb;
 		if ( 0 === count( $results ) ) {
 			return $results;
@@ -92,29 +95,23 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 
 		$wheres = array();
 		foreach ( $results as $result ) {
-			if ( 'variation_product' === $result->post_type ) {
-				array_push( $wheres, "(product_id={$result->post_parent} and variation_id={$result->ID})" );
-
-			} else {
-				array_push( $wheres, "product_id={$result->ID}" );
-			}
+			'variation_product' === $result->post_type ?
+				array_push( $wheres, "(product_id={$result->post_parent} and variation_id={$result->ID})" )
+				: array_push( $wheres, "product_id={$result->ID}" );
 		}
 
-		if ( count( $wheres ) > 1 ) {
-			$where_clause = implode( ' or ', $wheres );
-		} else {
-			$where_clause = $wheres[0];
-		}
+		count( $wheres ) ? $where_clause = implode( ' or ', $wheres ) : $where_clause = $wheres[0];
 
 		$product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
 		$query_string         = "
-			select product_id, MAX( wc_order_product_lookup.date_created ) AS last_order_date from {$product_lookup_table} wc_order_product_lookup
+			select product_id, MAX( wc_order_product_lookup.date_created ) AS last_order_date 
+			from {$product_lookup_table} wc_order_product_lookup
 			where {$where_clause}
 			group by product_id
 			order by date_created desc
 		";
 
-		// phpcs:ignore
+		// phpcs:ignore -- ignore prepare() warning as we're not using any user input here.
 		$query_results = $wpdb->get_results( $query_string, OBJECT_K );
 		foreach ( $query_results as $key => $query_result ) {
 			if ( isset( $results[ $key ] ) ) {
@@ -141,13 +138,14 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 		$use_sitewide_stock_threshold = $this->is_using_sitewide_stock_threshold_only();
 
 		if ( $use_sitewide_stock_threshold ) {
-			$query_string = $this->get_query_for_sitewide_threshold( $offset, $per_page );
+			$query_string = $this->get_query( false );
 		} else {
-			$query_string = $this->get_query( $offset, $per_page );
+			$query_string = $this->get_query();
 		}
+
 		$query_results = $wpdb->get_results(
 			// phpcs:ignore -- not sure why phpcs complains about this line when prepare() is used here.
-			$wpdb->prepare( $query_string, $low_stock_threshold ),
+			$wpdb->prepare( $query_string, $low_stock_threshold, $offset, $per_page ),
 			OBJECT_K
 		);
 
@@ -173,19 +171,19 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	}
 
 	/**
-	 * Convert post object to expected API response.
+	 * Transform post object to expected API response.
 	 *
-	 * @param object $query_result a row of query result from get_low_in_stock_products.
+	 * @param object $query_result a row of query result from get_low_in_stock_products().
 	 *
 	 * @return array
 	 */
-	protected function transsform_post_to_product( $query_result ) {
-		if ( ! isset( $query_result->last_order_date ) ) {
-			$query_result->last_order_date = null;
-		}
-
+	protected function transform_post_to_api_response( $query_result ) {
 		if ( ! isset( $query_result->low_stock_amount ) ) {
 			$query_result->low_stock_amount = null;
+		}
+
+		if ( ! isset( $query_result->last_order_date ) ) {
+			$query_result->last_order_date = null;
 		}
 
 		return array(
@@ -202,97 +200,70 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	}
 
 	/**
-	 * Create a query by replacing :select_fields, :order_by, and :limit.
+	 * Generate a query.
 	 *
-	 * @param int $offset offset value.
-	 * @param int $limit limit value.
+	 * @param bool $siteside_only generates a query for sitewide low stock threshold only query.
 	 *
 	 * @return string
 	 */
-	protected function get_query( $offset, $limit ) {
+	protected function get_query( $siteside_only = false ) {
 		global $wpdb;
 		$query = "
 			SELECT
 				SQL_CALC_FOUND_ROWS wp_posts.*, 
-				low_stock_amount_meta.meta_value AS low_stock_amount,
+				:postmeta_select
 				wc_product_meta_lookup.stock_quantity
 			FROM  
 			  {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup
 			  LEFT JOIN {$wpdb->posts} wp_posts ON wp_posts.ID = wc_product_meta_lookup.product_id 
-			  LEFT JOIN {$wpdb->postmeta} AS low_stock_amount_meta ON wp_posts.ID = low_stock_amount_meta.post_id 
-			  AND low_stock_amount_meta.meta_key = '_low_stock_amount' 
+			  :postmeta_join
 			WHERE 
 			  wp_posts.post_type IN ('product', 'product_variation') 
-			  AND (
-			    (wp_posts.post_status = 'publish')
-			  ) 
+			  AND wp_posts.post_status = 'publish'
 			  AND wc_product_meta_lookup.stock_quantity IS NOT NULL 
 			  AND wc_product_meta_lookup.stock_status IN('instock', 'outofstock') 
-			  AND (
+			  :postmeta_wheres
+			order by wc_product_meta_lookup.product_id DESC   
+			limit %d, %d
+		";
+
+		$postmeta = array(
+			'select' => '',
+			'join'   => '',
+			'wheres' => 'AND wc_product_meta_lookup.stock_quantity <= %d',
+		);
+
+		if ( ! $siteside_only ) {
+			$postmeta['select'] = 'meta.meta_value AS low_stock_amount,';
+			$postmeta['join']   = "LEFT JOIN {$wpdb->postmeta} AS meta ON wp_posts.ID = meta.post_id 
+			  AND meta.meta_key = '_low_stock_amount'";
+			$postmeta['wheres'] = "AND (
 			    (
-			      low_stock_amount_meta.meta_value > '' 
+			      meta.meta_value > '' 
 			      AND wc_product_meta_lookup.stock_quantity <= CAST(
-			        low_stock_amount_meta.meta_value AS SIGNED
+			        meta.meta_value AS SIGNED
 			      )
 			    ) 
 			    OR (
 			      (
-			        low_stock_amount_meta.meta_value IS NULL 
-			        OR low_stock_amount_meta.meta_value <= ''
+			        meta.meta_value IS NULL 
+			        OR meta.meta_value <= ''
 			      ) 
 			      AND wc_product_meta_lookup.stock_quantity <= %d
 			    )
-			  )
-			order by wc_product_meta_lookup.product_id DESC   
-			limit :offset, :limit
-		";
+		    )";
+		}
 
 		return strtr(
 			$query,
 			array(
-				':offset' => $offset,
-				':limit'  => $limit,
+				':postmeta_select' => $postmeta['select'],
+				':postmeta_join'   => $postmeta['join'],
+				':postmeta_wheres' => $postmeta['wheres'],
 			)
 		);
 	}
 
-	/**
-	 * Create a query by replacing :select_fields, :order_by, and :limit.
-	 *
-	 * @param int $offset offset value.
-	 * @param int $limit limit value.
-	 *
-	 * @return string
-	 */
-	public function get_query_for_sitewide_threshold( $offset, $limit ) {
-		global $wpdb;
-		$query = "
-			SELECT
-				SQL_CALC_FOUND_ROWS wp_posts.*, 
-				wc_product_meta_lookup.stock_quantity
-			FROM  
-			  {$wpdb->wc_product_meta_lookup} wc_product_meta_lookup
-			  LEFT JOIN {$wpdb->posts} wp_posts ON wp_posts.ID = wc_product_meta_lookup.product_id 
-			WHERE 
-			  wp_posts.post_type IN ('product', 'product_variation') 
-			  AND (
-			    (wp_posts.post_status = 'publish')
-			  ) 
-			  AND wc_product_meta_lookup.stock_quantity IS NOT NULL 
-			  AND wc_product_meta_lookup.stock_status IN('instock', 'outofstock') 
-			  AND wc_product_meta_lookup.stock_quantity <= %d
-			order by wc_product_meta_lookup.product_id DESC   
-			limit :offset, :limit
-		";
-
-		return strtr(
-			$query,
-			array(
-				':offset' => $offset,
-				':limit'  => $limit,
-			)
-		);
-	}
 	/**
 	 * Get the query params for collections of attachments.
 	 *
