@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @extends WC_REST_Products_Controller
  */
-class ProductsLowInStock extends \WC_REST_Products_Controller {
+final class ProductsLowInStock extends \WC_REST_Products_Controller {
 
 	/**
 	 * Endpoint namespace.
