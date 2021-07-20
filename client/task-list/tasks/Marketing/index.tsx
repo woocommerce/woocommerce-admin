@@ -31,6 +31,8 @@ type Extension = {
 	slug: string;
 };
 
+const ALLOWED_PLUGIN_LISTS = [ 'reach', 'grow' ];
+
 export const Marketing: React.FC = () => {
 	const [ pluginLists, setPluginLists ] = useState< PluginListProps[] >( [] );
 	const [ isFetching, setIsFetching ] = useState( true );
@@ -63,14 +65,18 @@ export const Marketing: React.FC = () => {
 		} )
 			.then( ( results: ExtensionList[] ) => {
 				if ( results?.length ) {
-					const transformedExtensions = results.map( ( list ) => {
-						return {
-							...list,
-							plugins: list.plugins.map( ( extension ) =>
-								transformExtensionToPlugin( extension )
-							),
-						};
-					} );
+					const transformedExtensions = results
+						.map( ( list ) => {
+							return {
+								...list,
+								plugins: list.plugins.map( ( extension ) =>
+									transformExtensionToPlugin( extension )
+								),
+							};
+						} )
+						.filter( ( list ) =>
+							ALLOWED_PLUGIN_LISTS.includes( list.key )
+						);
 					setPluginLists( transformedExtensions );
 				}
 				setIsFetching( false );
