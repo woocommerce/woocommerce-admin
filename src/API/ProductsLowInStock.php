@@ -167,7 +167,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	 *
 	 * @return bool
 	 */
-	public function is_using_sitewide_stock_threshold_only() {
+	protected function is_using_sitewide_stock_threshold_only() {
 		global $wpdb;
 		$count = $wpdb->get_var( "select count(*) as total from {$wpdb->postmeta} where meta_key='_low_stock_amount'" );
 		return 0 === (int) $count;
