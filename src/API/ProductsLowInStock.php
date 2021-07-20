@@ -141,7 +141,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 		$use_sitewide_stock_threshold = $this->is_using_sitewide_stock_threshold_only();
 
 		if ( $use_sitewide_stock_threshold ) {
-			$query_string = $this->get_query( false );
+			$query_string = $this->get_query( $use_sitewide_stock_threshold );
 		} else {
 			$query_string = $this->get_query();
 		}
@@ -194,7 +194,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 			'images'           => $query_result->images,
 			'attributes'       => $query_result->attributes,
 			'low_stock_amount' => $query_result->low_stock_amount,
-			'last_order_date'  => $query_result->last_order_date,
+			'last_order_date'  => wc_rest_prepare_date_response( $query_result->last_order_date ),
 			'name'             => $query_result->post_title,
 			'parent_id'        => $query_result->post_parent,
 			'stock_quantity'   => (int) $query_result->stock_quantity,
@@ -296,10 +296,10 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 		);
 
 		$params['status'] = array(
-			'default'           => 'any',
+			'default'           => 'publish',
 			'description'       => __( 'Limit result set to products assigned a specific status.', 'woocommerce-admin' ),
 			'type'              => 'string',
-			'enum'              => array_merge( array( 'any', 'future', 'trash' ), array_keys( get_post_statuses() ) ),
+			'enum'              => array_merge( array_keys( get_post_statuses() ), array( 'future' ) ),
 			'sanitize_callback' => 'sanitize_key',
 			'validate_callback' => 'rest_validate_request_arg',
 		);
