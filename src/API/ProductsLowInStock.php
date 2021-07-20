@@ -77,6 +77,7 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 		$response = rest_ensure_response( array_values( $query_results['results'] ) );
 		$response->header( 'X-WP-Total', $query_results['total'] );
 		$response->header( 'X-WP-TotalPages', $query_results['pages'] );
+		$response->header( 'Cache-Control', 'max-age=300' );
 
 		return $response;
 	}
