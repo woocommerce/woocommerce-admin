@@ -30,12 +30,13 @@
 	}
 }
 
+.woocommerce-plugin-list__plugin-text {
+	max-width: 370px;
+	margin-right: $gap;
+}
+
 .woocommerce-plugin-list__plugin-action {
 	display: flex;
 	align-items: center;
-	margin-left: 104px;
-
-	@media ( max-width: 782px ) {
-		margin-left: $gap;
-	}
+	margin-left: auto;
 }
