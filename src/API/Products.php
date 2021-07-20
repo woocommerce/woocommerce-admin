@@ -111,6 +111,10 @@ class Products extends \WC_REST_Products_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_items( $request ) {
+		if ( true === $request->get_param( 'low_in_stock' ) ) {
+			return ( new ProductsLowInStock() )->get_items( $request );
+		}
+
 		add_filter( 'posts_where', array( __CLASS__, 'add_wp_query_filter' ), 10, 2 );
 		add_filter( 'posts_join', array( __CLASS__, 'add_wp_query_join' ), 10, 2 );
 		add_filter( 'posts_groupby', array( __CLASS__, 'add_wp_query_group_by' ), 10, 2 );
