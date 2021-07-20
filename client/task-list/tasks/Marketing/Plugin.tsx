@@ -4,20 +4,18 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { Text } from '@woocommerce/experimental';
-import { useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { createNoticesFromResponse } from '~/lib/notices';
 import './Plugin.scss';
 
 export type PluginProps = {
 	isActive: boolean;
 	isInstalled: boolean;
 	description?: string;
+	installAndActivate?: ( slug: string ) => void;
 	imageUrl?: string;
 	manageUrl?: string;
 	name: string;
@@ -27,24 +25,13 @@ export type PluginProps = {
 export const Plugin: React.FC< PluginProps > = ( {
 	description,
 	imageUrl,
+	installAndActivate = () => {},
 	isActive,
 	isInstalled,
 	manageUrl,
 	name,
 	slug,
 } ) => {
-	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
-
-	const installAndActivate = () => {
-		installAndActivatePlugins( [ slug ] )
-			.then( ( response: { errors: Record< string, string > } ) => {
-				createNoticesFromResponse( response );
-			} )
-			.catch( ( response: { errors: Record< string, string > } ) => {
-				createNoticesFromResponse( response );
-			} );
-	};
-
 	return (
 		<div className="woocommerce-plugin-list__plugin">
 			{ imageUrl && (
@@ -72,12 +59,18 @@ export const Plugin: React.FC< PluginProps > = ( {
 					</Button>
 				) }
 				{ isInstalled && ! isActive && (
-					<Button isSecondary onClick={ installAndActivate }>
+					<Button
+						isSecondary
+						onClick={ () => installAndActivate( slug ) }
+					>
 						{ __( 'Activate', 'woocommmerce-admin' ) }
 					</Button>
 				) }
 				{ ! isInstalled && (
-					<Button isSecondary onClick={ installAndActivate }>
+					<Button
+						isSecondary
+						onClick={ () => installAndActivate( slug ) }
+					>
 						{ __( 'Install', 'woocommmerce-admin' ) }
 					</Button>
 				) }

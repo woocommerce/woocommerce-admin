@@ -5,14 +5,16 @@ import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Card, CardHeader, Spinner } from '@wordpress/components';
 import { PLUGINS_STORE_NAME, WCDataSelector } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
 import { useEffect, useState } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 import './Marketing.scss';
+import { createNoticesFromResponse } from '~/lib/notices';
 import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 
@@ -36,6 +38,7 @@ const ALLOWED_PLUGIN_LISTS = [ 'reach', 'grow' ];
 export const Marketing: React.FC = () => {
 	const [ pluginLists, setPluginLists ] = useState< PluginListProps[] >( [] );
 	const [ isFetching, setIsFetching ] = useState( true );
+	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
 	const { activePlugins, installedPlugins } = useSelect(
 		( select: WCDataSelector ) => {
 			const { getActivePlugins, getInstalledPlugins } = select(
@@ -48,6 +51,33 @@ export const Marketing: React.FC = () => {
 			};
 		}
 	);
+
+	const getInstalledMarketingPlugins = () => {
+		const installed: string[] = [];
+		pluginLists.forEach( ( list: PluginListProps ) => {
+			return list.plugins?.forEach( ( plugin ) => {
+				if ( plugin.isInstalled ) {
+					installed.push( plugin.slug );
+				}
+			} );
+		} );
+
+		return installed;
+	};
+
+	const installAndActivate = ( slug: string ) => {
+		installAndActivatePlugins( [ slug ] )
+			.then( ( response: { errors: Record< string, string > } ) => {
+				recordEvent( 'tasklist_marketing_install', {
+					selected_extension: slug,
+					installed_extensions: getInstalledMarketingPlugins(),
+				} );
+				createNoticesFromResponse( response );
+			} )
+			.catch( ( response: { errors: Record< string, string > } ) => {
+				createNoticesFromResponse( response );
+			} );
+	};
 
 	const transformExtensionToPlugin = (
 		extension: Extension
@@ -125,6 +155,7 @@ export const Marketing: React.FC = () => {
 							key={ key }
 							title={ title }
 							plugins={ plugins }
+							installAndActivate={ installAndActivate }
 						/>
 					);
 				} ) }
