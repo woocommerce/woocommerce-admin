@@ -7,6 +7,7 @@ import { Text } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { Plugin, PluginProps } from './Plugin';
+import './PluginList.scss';
 
 export type PluginListProps = {
 	key: string;
@@ -21,15 +22,18 @@ export const PluginList: React.FC< PluginListProps > = ( {
 	return (
 		<div className="woocommerce-plugin-list">
 			{ title && (
-				<Text variant="title.small" size="20" lineHeight="28px">
-					{ title }
-				</Text>
+				<div className="woocommerce-plugin-list__title">
+					<Text variant="sectionheading" as="h3">
+						{ title }
+					</Text>
+				</div>
 			) }
 			{ plugins.map( ( plugin ) => {
 				const {
 					description,
 					imageUrl,
 					isInstalled,
+					manageUrl,
 					slug,
 					name,
 				} = plugin;
@@ -37,6 +41,7 @@ export const PluginList: React.FC< PluginListProps > = ( {
 					<Plugin
 						key={ slug }
 						description={ description }
+						manageUrl={ manageUrl }
 						name={ name }
 						imageUrl={ imageUrl }
 						isInstalled={ isInstalled }

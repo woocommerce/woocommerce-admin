@@ -1,15 +1,18 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Card, CardBody, Spinner } from '@wordpress/components';
+import { Card, CardHeader, Spinner } from '@wordpress/components';
 import { PLUGINS_STORE_NAME, WCDataSelector } from '@woocommerce/data';
+import { Text } from '@woocommerce/experimental';
 import { useEffect, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
+import './Marketing.scss';
 import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 
@@ -42,13 +45,14 @@ export const Marketing: React.FC = () => {
 	const transformExtensionToPlugin = (
 		extension: Extension
 	): PluginProps => {
-		const { description, image_url, key, name } = extension;
+		const { description, image_url, key, manage_url, name } = extension;
 		const slug = key.split( ':' )[ 0 ];
 		return {
 			description,
 			slug,
 			imageUrl: image_url,
 			isInstalled: installedPlugins.includes( slug ),
+			manageUrl: manage_url,
 			name,
 		};
 	};
@@ -84,18 +88,34 @@ export const Marketing: React.FC = () => {
 	return (
 		<div className="woocommerce-task-marketing">
 			<Card className="woocommerce-task-card">
-				<CardBody>
-					{ pluginLists.map( ( list ) => {
-						const { key, title, plugins } = list;
-						return (
-							<PluginList
-								key={ key }
-								title={ title }
-								plugins={ plugins }
-							/>
-						);
-					} ) }
-				</CardBody>
+				<CardHeader>
+					<Text
+						variant="title.small"
+						as="h2"
+						className="woocommerce-task-card__title"
+					>
+						{ __(
+							'Recommended marketing extensions',
+							'woocommerce-admin'
+						) }
+					</Text>
+					<Text>
+						{ __(
+							'We recommend adding one of the following marketing tools for your store. The extension will be installed and activated for you when you click "Get started".',
+							'woocommerce-admin'
+						) }
+					</Text>
+				</CardHeader>
+				{ pluginLists.map( ( list ) => {
+					const { key, title, plugins } = list;
+					return (
+						<PluginList
+							key={ key }
+							title={ title }
+							plugins={ plugins }
+						/>
+					);
+				} ) }
 			</Card>
 		</div>
 	);
