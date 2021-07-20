@@ -13,6 +13,8 @@ import './Plugin.scss';
 
 export type PluginProps = {
 	isActive: boolean;
+	isBusy?: boolean;
+	isDisabled?: boolean;
 	isInstalled: boolean;
 	description?: string;
 	installAndActivate?: ( slug: string ) => void;
@@ -27,6 +29,8 @@ export const Plugin: React.FC< PluginProps > = ( {
 	imageUrl,
 	installAndActivate = () => {},
 	isActive,
+	isBusy,
+	isDisabled,
 	isInstalled,
 	manageUrl,
 	name,
@@ -54,12 +58,19 @@ export const Plugin: React.FC< PluginProps > = ( {
 			</div>
 			<div className="woocommerce-plugin-list__plugin-action">
 				{ isActive && manageUrl && (
-					<Button isSecondary href={ getAdminLink( manageUrl ) }>
+					<Button
+						disabled={ isDisabled }
+						isBusy={ isBusy }
+						isSecondary
+						href={ getAdminLink( manageUrl ) }
+					>
 						{ __( 'Manage', 'woocommmerce-admin' ) }
 					</Button>
 				) }
 				{ isInstalled && ! isActive && (
 					<Button
+						disabled={ isDisabled }
+						isBusy={ isBusy }
 						isSecondary
 						onClick={ () => installAndActivate( slug ) }
 					>
@@ -68,6 +79,8 @@ export const Plugin: React.FC< PluginProps > = ( {
 				) }
 				{ ! isInstalled && (
 					<Button
+						disabled={ isDisabled }
+						isBusy={ isBusy }
 						isSecondary
 						onClick={ () => installAndActivate( slug ) }
 					>

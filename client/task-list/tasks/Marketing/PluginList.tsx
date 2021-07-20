@@ -10,6 +10,7 @@ import { Plugin, PluginProps } from './Plugin';
 import './PluginList.scss';
 
 export type PluginListProps = {
+	currentPlugin?: string | null;
 	key: string;
 	installAndActivate?: ( slug: string ) => void;
 	plugins?: PluginProps[];
@@ -17,6 +18,7 @@ export type PluginListProps = {
 };
 
 export const PluginList: React.FC< PluginListProps > = ( {
+	currentPlugin,
 	installAndActivate = () => {},
 	plugins = [],
 	title,
@@ -49,6 +51,8 @@ export const PluginList: React.FC< PluginListProps > = ( {
 						imageUrl={ imageUrl }
 						installAndActivate={ installAndActivate }
 						isActive={ isActive }
+						isBusy={ currentPlugin === slug }
+						isDisabled={ !! currentPlugin }
 						isInstalled={ isInstalled }
 						slug={ slug }
 					/>

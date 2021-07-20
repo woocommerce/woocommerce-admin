@@ -39,6 +39,9 @@ export const Marketing: React.FC = () => {
 	const [ fetchedExtensions, setFetchedExtensions ] = useState<
 		ExtensionList[]
 	>( [] );
+	const [ currentPlugin, setCurrentPlugin ] = useState< string | null >(
+		null
+	);
 	const [ isFetching, setIsFetching ] = useState( true );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
 	const { activePlugins, installedPlugins } = useSelect(
@@ -86,7 +89,7 @@ export const Marketing: React.FC = () => {
 			} );
 	}, [] );
 
-	const pluginLists = useMemo( () => {
+	const pluginLists: PluginListProps[] = useMemo( () => {
 		return fetchedExtensions
 			.map( ( list ) => {
 				return {
@@ -113,6 +116,7 @@ export const Marketing: React.FC = () => {
 	};
 
 	const installAndActivate = ( slug: string ) => {
+		setCurrentPlugin( slug );
 		installAndActivatePlugins( [ slug ] )
 			.then( ( response: { errors: Record< string, string > } ) => {
 				recordEvent( 'tasklist_marketing_install', {
@@ -120,9 +124,11 @@ export const Marketing: React.FC = () => {
 					installed_extensions: getInstalledMarketingPlugins(),
 				} );
 				createNoticesFromResponse( response );
+				setCurrentPlugin( null );
 			} )
 			.catch( ( response: { errors: Record< string, string > } ) => {
 				createNoticesFromResponse( response );
+				setCurrentPlugin( null );
 			} );
 	};
 
@@ -155,10 +161,11 @@ export const Marketing: React.FC = () => {
 					const { key, title, plugins } = list;
 					return (
 						<PluginList
-							key={ key }
-							title={ title }
-							plugins={ plugins }
+							currentPlugin={ currentPlugin }
 							installAndActivate={ installAndActivate }
+							key={ key }
+							plugins={ plugins }
+							title={ title }
 						/>
 					);
 				} ) }
