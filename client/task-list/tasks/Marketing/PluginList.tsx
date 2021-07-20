@@ -32,6 +32,7 @@ export const PluginList: React.FC< PluginListProps > = ( {
 				const {
 					description,
 					imageUrl,
+					isActive,
 					isInstalled,
 					manageUrl,
 					slug,
@@ -44,6 +45,7 @@ export const PluginList: React.FC< PluginListProps > = ( {
 						manageUrl={ manageUrl }
 						name={ name }
 						imageUrl={ imageUrl }
+						isActive={ isActive }
 						isInstalled={ isInstalled }
 						slug={ slug }
 					/>

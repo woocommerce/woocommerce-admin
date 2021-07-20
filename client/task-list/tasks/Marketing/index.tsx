@@ -36,13 +36,18 @@ const ALLOWED_PLUGIN_LISTS = [ 'reach', 'grow' ];
 export const Marketing: React.FC = () => {
 	const [ pluginLists, setPluginLists ] = useState< PluginListProps[] >( [] );
 	const [ isFetching, setIsFetching ] = useState( true );
-	const { installedPlugins } = useSelect( ( select: WCDataSelector ) => {
-		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
+	const { activePlugins, installedPlugins } = useSelect(
+		( select: WCDataSelector ) => {
+			const { getActivePlugins, getInstalledPlugins } = select(
+				PLUGINS_STORE_NAME
+			);
 
-		return {
-			installedPlugins: getInstalledPlugins(),
-		};
-	} );
+			return {
+				activePlugins: getActivePlugins(),
+				installedPlugins: getInstalledPlugins(),
+			};
+		}
+	);
 
 	const transformExtensionToPlugin = (
 		extension: Extension
@@ -53,6 +58,7 @@ export const Marketing: React.FC = () => {
 			description,
 			slug,
 			imageUrl: image_url,
+			isActive: activePlugins.includes( slug ),
 			isInstalled: installedPlugins.includes( slug ),
 			manageUrl: manage_url,
 			name,

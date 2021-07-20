@@ -15,6 +15,7 @@ import { createNoticesFromResponse } from '~/lib/notices';
 import './Plugin.scss';
 
 export type PluginProps = {
+	isActive: boolean;
 	isInstalled: boolean;
 	description?: string;
 	imageUrl?: string;
@@ -26,6 +27,7 @@ export type PluginProps = {
 export const Plugin: React.FC< PluginProps > = ( {
 	description,
 	imageUrl,
+	isActive,
 	isInstalled,
 	manageUrl,
 	name,
@@ -33,7 +35,7 @@ export const Plugin: React.FC< PluginProps > = ( {
 } ) => {
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
 
-	const installPlugin = () => {
+	const installAndActivate = () => {
 		installAndActivatePlugins( [ slug ] )
 			.then( ( response: { errors: Record< string, string > } ) => {
 				createNoticesFromResponse( response );
@@ -64,13 +66,18 @@ export const Plugin: React.FC< PluginProps > = ( {
 				<Text variant="subtitle.small">{ description }</Text>
 			</div>
 			<div className="woocommerce-plugin-list__plugin-action">
-				{ isInstalled && manageUrl && (
+				{ isActive && manageUrl && (
 					<Button isSecondary href={ getAdminLink( manageUrl ) }>
 						{ __( 'Manage', 'woocommmerce-admin' ) }
 					</Button>
 				) }
+				{ isInstalled && ! isActive && (
+					<Button isSecondary onClick={ installAndActivate }>
+						{ __( 'Activate', 'woocommmerce-admin' ) }
+					</Button>
+				) }
 				{ ! isInstalled && (
-					<Button isSecondary onClick={ installPlugin }>
+					<Button isSecondary onClick={ installAndActivate }>
 						{ __( 'Install', 'woocommmerce-admin' ) }
 					</Button>
 				) }
