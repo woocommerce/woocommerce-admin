@@ -97,7 +97,7 @@ final class ProductsLowInStock extends \WC_REST_Products_Controller {
 
 		$wheres = array();
 		foreach ( $results as $result ) {
-			'variation_product' === $result->post_type ?
+			'product_variation' === $result->post_type ?
 				array_push( $wheres, "(product_id={$result->post_parent} and variation_id={$result->ID})" )
 				: array_push( $wheres, "product_id={$result->ID}" );
 		}
@@ -106,7 +106,10 @@ final class ProductsLowInStock extends \WC_REST_Products_Controller {
 
 		$product_lookup_table = $wpdb->prefix . 'wc_order_product_lookup';
 		$query_string         = "
-			select product_id, MAX( wc_order_product_lookup.date_created ) AS last_order_date 
+			select 
+				product_id, 
+				variation_id, 
+				MAX( wc_order_product_lookup.date_created ) AS last_order_date 
 			from {$product_lookup_table} wc_order_product_lookup
 			where {$where_clause}
 			group by product_id
@@ -114,10 +117,21 @@ final class ProductsLowInStock extends \WC_REST_Products_Controller {
 		";
 
 		// phpcs:ignore -- ignore prepare() warning as we're not using any user input here.
-		$query_results = $wpdb->get_results( $query_string, OBJECT_K );
-		foreach ( $query_results as $key => $query_result ) {
-			if ( isset( $results[ $key ] ) ) {
-				$results[ $key ]->last_order_date = $query_result->last_order_date;
+		$last_order_dates = $wpdb->get_results( $query_string );
+		$last_order_dates_index = array();
+		// Make an index with product_id_variation_id as a key
+		// so that it can be referenced back without looping the whole array.
+		foreach ( $last_order_dates as $last_order_date ) {
+			$last_order_dates_index[ $last_order_date->product_id . '_' . $last_order_date->variation_id ] = $last_order_date;
+		}
+
+		foreach ( $results as &$result ) {
+			'product_variation' === $result->post_type ?
+				$index_key   = $result->post_parent . '_' . $result->ID
+				: $index_key = $result->ID . '_' . $result->post_parent;
+
+			if ( isset( $last_order_dates_index[ $index_key ] ) ) {
+				$result->last_order_date = $last_order_dates_index[ $index_key ]->last_order_date;
 			}
 		}
 
