@@ -7,7 +7,7 @@ import { Card, CardHeader, Spinner } from '@wordpress/components';
 import { PLUGINS_STORE_NAME, WCDataSelector } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
@@ -36,7 +36,9 @@ type Extension = {
 const ALLOWED_PLUGIN_LISTS = [ 'reach', 'grow' ];
 
 export const Marketing: React.FC = () => {
-	const [ pluginLists, setPluginLists ] = useState< PluginListProps[] >( [] );
+	const [ fetchedExtensions, setFetchedExtensions ] = useState<
+		ExtensionList[]
+	>( [] );
 	const [ isFetching, setIsFetching ] = useState( true );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
 	const { activePlugins, installedPlugins } = useSelect(
@@ -51,6 +53,51 @@ export const Marketing: React.FC = () => {
 			};
 		}
 	);
+
+	const transformExtensionToPlugin = (
+		extension: Extension
+	): PluginProps => {
+		const { description, image_url, key, manage_url, name } = extension;
+		const slug = key.split( ':' )[ 0 ];
+		return {
+			description,
+			slug,
+			imageUrl: image_url,
+			isActive: activePlugins.includes( slug ),
+			isInstalled: installedPlugins.includes( slug ),
+			manageUrl: manage_url,
+			name,
+		};
+	};
+
+	useEffect( () => {
+		apiFetch( {
+			path: '/wc-admin/onboarding/free-extensions',
+		} )
+			.then( ( results: ExtensionList[] ) => {
+				if ( results?.length ) {
+					setFetchedExtensions( results );
+				}
+				setIsFetching( false );
+			} )
+			.catch( () => {
+				// @todo Handle error checking.
+				setIsFetching( false );
+			} );
+	}, [] );
+
+	const pluginLists = useMemo( () => {
+		return fetchedExtensions
+			.map( ( list ) => {
+				return {
+					...list,
+					plugins: list.plugins.map( ( extension ) =>
+						transformExtensionToPlugin( extension )
+					),
+				};
+			} )
+			.filter( ( list ) => ALLOWED_PLUGIN_LISTS.includes( list.key ) );
+	}, [ installedPlugins, activePlugins, fetchedExtensions ] );
 
 	const getInstalledMarketingPlugins = () => {
 		const installed: string[] = [];
@@ -78,50 +125,6 @@ export const Marketing: React.FC = () => {
 				createNoticesFromResponse( response );
 			} );
 	};
-
-	const transformExtensionToPlugin = (
-		extension: Extension
-	): PluginProps => {
-		const { description, image_url, key, manage_url, name } = extension;
-		const slug = key.split( ':' )[ 0 ];
-		return {
-			description,
-			slug,
-			imageUrl: image_url,
-			isActive: activePlugins.includes( slug ),
-			isInstalled: installedPlugins.includes( slug ),
-			manageUrl: manage_url,
-			name,
-		};
-	};
-
-	useEffect( () => {
-		apiFetch( {
-			path: '/wc-admin/onboarding/free-extensions',
-		} )
-			.then( ( results: ExtensionList[] ) => {
-				if ( results?.length ) {
-					const transformedExtensions = results
-						.map( ( list ) => {
-							return {
-								...list,
-								plugins: list.plugins.map( ( extension ) =>
-									transformExtensionToPlugin( extension )
-								),
-							};
-						} )
-						.filter( ( list ) =>
-							ALLOWED_PLUGIN_LISTS.includes( list.key )
-						);
-					setPluginLists( transformedExtensions );
-				}
-				setIsFetching( false );
-			} )
-			.catch( () => {
-				// @todo Handle error checking.
-				setIsFetching( false );
-			} );
-	}, [] );
 
 	if ( isFetching ) {
 		return <Spinner />;
