@@ -136,15 +136,10 @@ class ProductsLowInStock extends \WC_REST_Products_Controller {
 	protected function get_low_in_stock_products( $page = 1, $per_page = 1, $status = 'publish' ) {
 		global $wpdb;
 
-		$offset                       = ( $page - 1 ) * $per_page;
-		$low_stock_threshold          = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
-		$use_sitewide_stock_threshold = $this->is_using_sitewide_stock_threshold_only();
+		$offset              = ( $page - 1 ) * $per_page;
+		$low_stock_threshold = absint( max( get_option( 'woocommerce_notify_low_stock_amount' ), 1 ) );
 
-		if ( $use_sitewide_stock_threshold ) {
-			$query_string = $this->get_query( $use_sitewide_stock_threshold );
-		} else {
-			$query_string = $this->get_query();
-		}
+		$query_string = $this->get_query( $this->is_using_sitewide_stock_threshold_only() );
 
 		$query_results = $wpdb->get_results(
 			// phpcs:ignore -- not sure why phpcs complains about this line when prepare() is used here.
