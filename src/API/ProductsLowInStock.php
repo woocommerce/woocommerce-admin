@@ -205,9 +205,9 @@ final class ProductsLowInStock extends \WC_REST_Products_Controller {
 			'low_stock_amount' => $query_result->low_stock_amount,
 			'last_order_date'  => wc_rest_prepare_date_response( $query_result->last_order_date ),
 			'name'             => $query_result->post_title,
-			'parent_id'        => $query_result->post_parent,
+			'parent_id'        => (int) $query_result->post_parent,
 			'stock_quantity'   => (int) $query_result->stock_quantity,
-			'type'             => 'product_variation' === $query_result->post_type ? 'variation' : 'product',
+			'type'             => 'product_variation' === $query_result->post_type ? 'variation' : 'simple',
 		);
 	}
 
