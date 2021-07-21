@@ -70,6 +70,7 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\ProductReviews',
 			'Automattic\WooCommerce\Admin\API\ProductVariations',
 			'Automattic\WooCommerce\Admin\API\Reports\Controller',
+			'Automattic\WooCommerce\Admin\API\ProductsLowInStock',
 			'Automattic\WooCommerce\Admin\API\SettingOptions',
 			'Automattic\WooCommerce\Admin\API\Reports\Import\Controller',
 			'Automattic\WooCommerce\Admin\API\Reports\Export\Controller',
