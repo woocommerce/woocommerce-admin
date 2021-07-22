@@ -19,7 +19,7 @@ jobs:
                 include:
                     - php: '7.0'
                       wordpress: '5.5'
-                      woocommerce: 'latest'
+                      woocommerce: '5.5.2'
                       phpunit: '6.5.9'
                       composer: '1.10.19'
                     - php: '7.0'
