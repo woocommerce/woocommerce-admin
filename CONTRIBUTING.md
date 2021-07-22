@@ -74,7 +74,7 @@ The types we use currently are: "Fix", "Add", "Update", "Dev", "Tweak", "Perform
 
 -   `Fix`. For bugfixes minor and major. e.g. "Fix a crash when the user selected 0 for revenue."
 -   `Add`. This is reserved for new features and functionality. e.g. "A new page for payment settings."
--   `Update`. This is used interchangeably with `Add` at the moment. User your best discretion to choose.
+-   `Update`. This is used interchangeably with `Add` at the moment. Use your best discretion to choose.
 -   `Dev` is for a code change that doesn't have an obvious user facing benefit. e.g. "Refactor a class to be single responsibility."
 -   `Tweak`. For minor changes to user facing functionality. e.g. "Styling updates to the site footer."
 -   `Performance`. For changes that improve the performance of the application. e.g. "Optimized SQL query to run 5x faster.".
