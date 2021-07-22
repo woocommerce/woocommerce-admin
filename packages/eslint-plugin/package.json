@@ -27,7 +27,7 @@
 	"main": "index.js",
 	"dependencies": {
 		"@typescript-eslint/parser": "^4.13.0",
-		"@wordpress/eslint-plugin": "^8.0.0",
+		"@wordpress/eslint-plugin": "^9.1.0",
 		"eslint": "^7",
 		"eslint-plugin-react-hooks": "^4.0.4",
 		"eslint-plugin-testing-library": "^3.10.1",
