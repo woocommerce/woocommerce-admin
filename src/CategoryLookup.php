@@ -138,6 +138,13 @@ class CategoryLookup {
 	 * @param int $category_id Term ID being created.
 	 */
 	public function on_create( $category_id ) {
+		// If WooCommerce is being installed on a multisite, lookup tables haven't been created yet.
+		// Create the tables and regenerate so that the default categories can be created.
+		if ( 'yes' === get_transient( 'wc_installing' ) ) {
+			wp_schedule_single_event( time() + 10, 'generate_category_lookup_table' );
+			return;
+		}
+
 		$this->update( $category_id );
 	}
 
