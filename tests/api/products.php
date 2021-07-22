@@ -62,6 +62,7 @@ class WC_Tests_API_Products extends WC_REST_Unit_Test_Case {
 		$product->delete( true );
 	}
 
+
 	/**
 	 * Test low stock query.
 	 */

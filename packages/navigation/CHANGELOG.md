@@ -1,7 +1,8 @@
-## Unreleased
+## 6.1.0
 
-- Fix `getIdsFromQuery` support for `0` as a valid id.
-- Add `getSetOfIdsFromQuery` util.
+-   Fix commonjs module build, allow package to be built in isolation. #7286
+-   Add `getSetOfIdsFromQuery` util.
+-   Fix `getIdsFromQuery` support for `0` as a valid id.
 
 # 6.0.1
 
