@@ -90,7 +90,7 @@ export const getScreenFromPath = ( path = getPath() ) => {
  * @return {Array<number>} List of IDs converted to an array of unique integers.
  */
 export function getIdsFromQuery( queryString = '' ) {
-	return [ ...getIdsSetFromQuery( queryString ) ];
+	return [ ...getSetOfIdsFromQuery( queryString ) ];
 }
 
 /**
@@ -99,7 +99,7 @@ export function getIdsFromQuery( queryString = '' ) {
  * @param {string} [queryString=''] string value extracted from URL.
  * @return {Set<number>} List of IDs converted to a set of integers.
  */
-export function getIdsSetFromQuery( queryString = '' ) {
+export function getSetOfIdsFromQuery( queryString = '' ) {
 	return new Set( // Return only unique ids.
 		queryString
 			.split( ',' )
