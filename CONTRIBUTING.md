@@ -60,7 +60,7 @@ The pull request template will remind you of some of the details you need to fil
 
 For many pull requests a changelog entry is required. We make use of the [Jetpack Changelogger tool](https://packagist.org/packages/automattic/jetpack-changelogger) to handle our changelogs.
 
-To create a changelog entry run `npm run changelogger -- add` and answer the questions. This will create a changelog entry in the [./changelogs](./changelogs) directory with the data you provided. Upon our next release this will be added to our [changelogs.txt](./changelogs.txt).
+To create a changelog entry run `npm run changelogger -- add` and answer the questions. This will create a changelog entry in the [./changelogs](./changelogs) directory with the data you provided. Upon our next release this will be added to our [changelog.txt](./changelog.txt).
 
 In most cases you'll have to provide a changelog entry (the last question), be sure to add your PR number at the end, in the format below:
 
