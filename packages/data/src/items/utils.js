@@ -78,7 +78,7 @@ export function searchItemsByString( select, endpoint, search, options ) {
 	search.forEach( ( searchWord ) => {
 		const query = {
 			search: searchWord,
-			...{ per_page: 10 },
+			per_page: 10,
 			...options,
 		};
 
