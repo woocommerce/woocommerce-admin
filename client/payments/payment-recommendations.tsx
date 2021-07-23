@@ -221,9 +221,9 @@ const PaymentRecommendations: React.FC = () => {
 					/>
 				</div>
 			</CardHeader>
-			<CardBody>
+			<div>
 				<List items={ pluginsList } />
-			</CardBody>
+			</div>
 			<CardFooter>
 				<Button href={ SEE_MORE_LINK } target="_blank" isTertiary>
 					{ __( 'See more options', 'woocommerce-admin' ) }
