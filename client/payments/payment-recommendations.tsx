@@ -4,13 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { decodeEntities } from '@wordpress/html-entities';
-import {
-	Card,
-	CardBody,
-	CardHeader,
-	CardFooter,
-	Button,
-} from '@wordpress/components';
+import { Card, CardHeader, CardFooter, Button } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { EllipsisMenu, List, Pill } from '@woocommerce/components';
 import { Text } from '@woocommerce/experimental';
