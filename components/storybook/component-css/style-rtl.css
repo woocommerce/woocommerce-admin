@@ -966,6 +966,7 @@ body.admin-color-sunrise {
 }
 .woocommerce-filters-advanced .components-card__body {
   background-color: #f0f0f0;
+  overflow: initial;
 }
 .woocommerce-filters-advanced .components-card__body.is-size-small:hover,
 .woocommerce-filters-advanced .components-card__body ul li:hover {
