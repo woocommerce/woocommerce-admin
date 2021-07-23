@@ -27,7 +27,7 @@
 	}
 
 	.components-card__body {
-		padding: 0;
+		padding: 0 !important; // Gutenberg override
 	}
 
 	.woocommerce-pill {
