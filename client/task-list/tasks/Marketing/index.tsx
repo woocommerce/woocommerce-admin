@@ -120,26 +120,15 @@ export const Marketing: React.FC = () => {
 		return [ installed, lists ];
 	}, [ installedPlugins, activePlugins, fetchedExtensions ] );
 
-	const getInstalledMarketingPlugins = () => {
-		const installed: string[] = [];
-		pluginLists.forEach( ( list: PluginListProps ) => {
-			return list.plugins?.forEach( ( plugin ) => {
-				if ( plugin.isInstalled ) {
-					installed.push( plugin.slug );
-				}
-			} );
-		} );
-
-		return installed;
-	};
-
 	const installAndActivate = ( slug: string ) => {
 		setCurrentPlugin( slug );
 		installAndActivatePlugins( [ slug ] )
 			.then( ( response: { errors: Record< string, string > } ) => {
 				recordEvent( 'tasklist_marketing_install', {
 					selected_extension: slug,
-					installed_extensions: getInstalledMarketingPlugins(),
+					installed_extensions: installedExtensions.map(
+						( extension ) => extension.slug
+					),
 				} );
 				createNoticesFromResponse( response );
 				setCurrentPlugin( null );
