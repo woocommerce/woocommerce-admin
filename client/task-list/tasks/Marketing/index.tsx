@@ -103,7 +103,10 @@ export const Marketing: React.FC = () => {
 				listPlugins.push( plugin );
 			} );
 
-			if ( ! ALLOWED_PLUGIN_LISTS.includes( list.key ) ) {
+			if (
+				! ALLOWED_PLUGIN_LISTS.includes( list.key ) ||
+				! listPlugins.length
+			) {
 				return;
 			}
 
@@ -153,56 +156,60 @@ export const Marketing: React.FC = () => {
 
 	return (
 		<div className="woocommerce-task-marketing">
-			<Card className="woocommerce-task-card">
-				<CardHeader>
-					<Text
-						variant="title.small"
-						as="h2"
-						className="woocommerce-task-card__title"
-					>
-						{ __(
-							'Installed marketing extensions',
-							'woocommerce-admin'
-						) }
-					</Text>
-				</CardHeader>
-				<PluginList
-					currentPlugin={ currentPlugin }
-					plugins={ installedExtensions }
-				/>
-			</Card>
-			<Card className="woocommerce-task-card">
-				<CardHeader>
-					<Text
-						variant="title.small"
-						as="h2"
-						className="woocommerce-task-card__title"
-					>
-						{ __(
-							'Recommended marketing extensions',
-							'woocommerce-admin'
-						) }
-					</Text>
-					<Text>
-						{ __(
-							'We recommend adding one of the following marketing tools for your store. The extension will be installed and activated for you when you click "Get started".',
-							'woocommerce-admin'
-						) }
-					</Text>
-				</CardHeader>
-				{ pluginLists.map( ( list ) => {
-					const { key, title, plugins } = list;
-					return (
-						<PluginList
-							currentPlugin={ currentPlugin }
-							installAndActivate={ installAndActivate }
-							key={ key }
-							plugins={ plugins }
-							title={ title }
-						/>
-					);
-				} ) }
-			</Card>
+			{ installedExtensions.length && (
+				<Card className="woocommerce-task-card">
+					<CardHeader>
+						<Text
+							variant="title.small"
+							as="h2"
+							className="woocommerce-task-card__title"
+						>
+							{ __(
+								'Installed marketing extensions',
+								'woocommerce-admin'
+							) }
+						</Text>
+					</CardHeader>
+					<PluginList
+						currentPlugin={ currentPlugin }
+						plugins={ installedExtensions }
+					/>
+				</Card>
+			) }
+			{ pluginLists.length && (
+				<Card className="woocommerce-task-card">
+					<CardHeader>
+						<Text
+							variant="title.small"
+							as="h2"
+							className="woocommerce-task-card__title"
+						>
+							{ __(
+								'Recommended marketing extensions',
+								'woocommerce-admin'
+							) }
+						</Text>
+						<Text>
+							{ __(
+								'We recommend adding one of the following marketing tools for your store. The extension will be installed and activated for you when you click "Get started".',
+								'woocommerce-admin'
+							) }
+						</Text>
+					</CardHeader>
+					{ pluginLists.map( ( list ) => {
+						const { key, title, plugins } = list;
+						return (
+							<PluginList
+								currentPlugin={ currentPlugin }
+								installAndActivate={ installAndActivate }
+								key={ key }
+								plugins={ plugins }
+								title={ title }
+							/>
+						);
+					} ) }
+				</Card>
+			) }
 		</div>
 	);
 };
