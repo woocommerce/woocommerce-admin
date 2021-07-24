@@ -89,17 +89,32 @@ export const Marketing: React.FC = () => {
 			} );
 	}, [] );
 
-	const pluginLists: PluginListProps[] = useMemo( () => {
-		return fetchedExtensions
-			.map( ( list ) => {
-				return {
-					...list,
-					plugins: list.plugins.map( ( extension ) =>
-						transformExtensionToPlugin( extension )
-					),
-				};
-			} )
-			.filter( ( list ) => ALLOWED_PLUGIN_LISTS.includes( list.key ) );
+	const [ installedExtensions, pluginLists ] = useMemo( () => {
+		const installed: PluginProps[] = [];
+		const lists: PluginListProps[] = [];
+		fetchedExtensions.forEach( ( list ) => {
+			const listPlugins: PluginProps[] = [];
+			list.plugins.forEach( ( extension ) => {
+				const plugin = transformExtensionToPlugin( extension );
+				if ( plugin.isInstalled ) {
+					installed.push( plugin );
+					return;
+				}
+				listPlugins.push( plugin );
+			} );
+
+			if ( ! ALLOWED_PLUGIN_LISTS.includes( list.key ) ) {
+				return;
+			}
+
+			const transformedList: PluginListProps = {
+				...list,
+				plugins: listPlugins,
+			};
+			lists.push( transformedList );
+		} );
+
+		return [ installed, lists ];
 	}, [ installedPlugins, activePlugins, fetchedExtensions ] );
 
 	const getInstalledMarketingPlugins = () => {
@@ -138,6 +153,24 @@ export const Marketing: React.FC = () => {
 
 	return (
 		<div className="woocommerce-task-marketing">
+			<Card className="woocommerce-task-card">
+				<CardHeader>
+					<Text
+						variant="title.small"
+						as="h2"
+						className="woocommerce-task-card__title"
+					>
+						{ __(
+							'Installed marketing extensions',
+							'woocommerce-admin'
+						) }
+					</Text>
+				</CardHeader>
+				<PluginList
+					currentPlugin={ currentPlugin }
+					plugins={ installedExtensions }
+				/>
+			</Card>
 			<Card className="woocommerce-task-card">
 				<CardHeader>
 					<Text
