@@ -208,6 +208,7 @@
 		"cross-env": "7.0.3",
 		"css-loader": "3.6.0",
 		"docsify-cli": "4.4.3",
+		"eslint": "^7.31.0",
 		"eslint-import-resolver-typescript": "2.4.0",
 		"eslint-import-resolver-webpack": "0.13.1",
 		"eslint-plugin-import": "2.22.1",
