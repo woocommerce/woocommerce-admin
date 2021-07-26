@@ -20,13 +20,13 @@ function flushPromises() {
 
 describe( 'Form', () => {
 	it( 'should default to call the deprecated onSubmitCallback if it is provided.', async () => {
-		const mockOnSubmitCallback = jest.fn();
-		const mockOnSubmit = jest.fn();
+		const onSubmitCallback = jest.fn().mockName( 'onSubmitCallback' );
+		const onSubmit = jest.fn().mockName( 'onSubmit' );
 
 		const { queryByText } = render(
 			<Form
-				onSubmitCallback={ mockOnSubmitCallback }
-				onSubmit={ mockOnSubmit }
+				onSubmitCallback={ onSubmitCallback }
+				onSubmit={ onSubmit }
 				validate={ () => ( {} ) }
 			>
 				{ ( { handleSubmit } ) => {
@@ -38,8 +38,8 @@ describe( 'Form', () => {
 		userEvent.click( queryByText( 'Submit' ) );
 
 		await flushPromises();
-		await expect( mockOnSubmitCallback ).toHaveBeenCalledTimes( 1 );
-		await expect( mockOnSubmit ).not.toHaveBeenCalled();
+		await expect( onSubmitCallback ).toHaveBeenCalledTimes( 1 );
+		await expect( onSubmit ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should default to call the deprecated onChangeCallback prop if it is provided.', async () => {
@@ -59,14 +59,14 @@ describe( 'Form', () => {
 								setValue( 'foo', 'bar' );
 							} }
 						>
-							Submit
+							Change
 						</button>
 					);
 				} }
 			</Form>
 		);
 
-		userEvent.click( queryByText( 'Submit' ) );
+		userEvent.click( queryByText( 'Change' ) );
 
 		await flushPromises();
 		await expect( mockOnChangeCallback ).toHaveBeenCalledTimes( 1 );
