@@ -22,6 +22,8 @@ import { setAllPropsToValue } from '~/lib/collections';
 import { getCountryCode } from '~/dashboard/utils';
 import { isWCPaySupported } from '~/task-list/tasks/PaymentGatewaySuggestions/components/WCPay';
 
+const ALLOWED_PLUGIN_LISTS = [ 'basics' ];
+
 const generatePluginDescriptionWithLink = (
 	description,
 	productName,
@@ -396,8 +398,13 @@ export const SelectiveExtensionsBundle = ( {
 						setLocalInstallableExtensions();
 						return;
 					}
+
+					const extensions = results.filter( ( list ) =>
+						ALLOWED_PLUGIN_LISTS.includes( list.key )
+					);
+
 					const transformedExtensions = transformRemoteExtensions(
-						results
+						extensions
 					);
 					const initialValues = createInitialValues(
 						transformedExtensions,
@@ -497,11 +504,8 @@ export const SelectiveExtensionsBundle = ( {
 					</div>
 					{ showExtensions &&
 						installableExtensions.map(
-							( { plugins, title, key: sectionKey } ) => (
+							( { plugins, key: sectionKey } ) => (
 								<div key={ sectionKey }>
-									<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
-										{ title }
-									</div>
 									{ isFetching ? (
 										<Spinner />
 									) : (
