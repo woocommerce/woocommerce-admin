@@ -39,7 +39,7 @@ module.exports = {
 	transform: {
 		'^.+\\.[jt]sx?$': 'ts-jest',
 	},
-	testEnvironment: 'jest-environment-jsdom-sixteen',
-	timers: 'modern',
+	testEnvironment: 'jsdom',
+	timers: 'legacy',
 	verbose: true,
 };
