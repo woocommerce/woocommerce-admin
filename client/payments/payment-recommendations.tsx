@@ -171,8 +171,8 @@ const PaymentRecommendations: React.FC = () => {
 	);
 
 	return (
-		<Card size="large" className="woocommerce-recommended-payments-card">
-			<CardHeader size="medium">
+		<Card size="medium" className="woocommerce-recommended-payments-card">
+			<CardHeader>
 				<div className="woocommerce-recommended-payments-card__header">
 					<Text
 						variant="title.small"
