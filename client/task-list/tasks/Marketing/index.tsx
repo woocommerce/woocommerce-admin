@@ -145,7 +145,7 @@ export const Marketing: React.FC = () => {
 
 	return (
 		<div className="woocommerce-task-marketing">
-			{ installedExtensions.length && (
+			{ !! installedExtensions.length && (
 				<Card className="woocommerce-task-card">
 					<CardHeader>
 						<Text
@@ -165,7 +165,7 @@ export const Marketing: React.FC = () => {
 					/>
 				</Card>
 			) }
-			{ pluginLists.length && (
+			{ !! pluginLists.length && (
 				<Card className="woocommerce-task-card">
 					<CardHeader>
 						<Text
