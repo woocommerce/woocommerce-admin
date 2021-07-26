@@ -156,11 +156,12 @@ describe( 'Container', () => {
 			);
 			getHistory().push( getAdminLink( '/child' ) );
 
-			await new Promise( ( resolve ) => {
-				setTimeout( () => {
-					resolve();
-				}, 0 );
-			} );
+			// Await for a legacy fake timer.
+			const delay = new Promise( ( resolve ) =>
+				setTimeout( resolve, 0 )
+			);
+			jest.advanceTimersByTime( 1 );
+			await delay;
 		} );
 
 		expect(
