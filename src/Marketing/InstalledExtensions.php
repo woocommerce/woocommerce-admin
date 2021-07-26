@@ -24,6 +24,7 @@ class InstalledExtensions {
 		$automatewoo = self::get_automatewoo_extension_data();
 		$mailchimp   = self::get_mailchimp_extension_data();
 		$facebook    = self::get_facebook_extension_data();
+		$pinterest   = self::get_pinterest_extension_data();
 		$google      = self::get_google_extension_data();
 		$hubspot     = self::get_hubspot_extension_data();
 		$amazon_ebay = self::get_amazon_ebay_extension_data();
@@ -38,6 +39,10 @@ class InstalledExtensions {
 
 		if ( $facebook ) {
 			$data[] = $facebook;
+		}
+
+		if ( $pinterest ) {
+			$data[] = $pinterest;
 		}
 
 		if ( $google ) {
@@ -66,6 +71,7 @@ class InstalledExtensions {
 			'mailchimp-for-woocommerce',
 			'creative-mail-by-constant-contact',
 			'facebook-for-woocommerce',
+			'pinterest-for-woocommerce',
 			'google-listings-and-ads',
 			'hubspot-for-woocommerce',
 			'woocommerce-amazon-ebay-integration',
@@ -147,6 +153,33 @@ class InstalledExtensions {
 
 			$data['settingsUrl'] = facebook_for_woocommerce()->get_settings_url();
 			$data['docsUrl']     = facebook_for_woocommerce()->get_documentation_url();
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Get Pinterest extension data.
+	 *
+	 * @return array|bool
+	 */
+	protected static function get_pinterest_extension_data() {
+		$slug = 'pinterest-for-woocommerce';
+
+		if ( ! PluginsHelper::is_plugin_installed( $slug ) ) {
+			return false;
+		}
+
+		$data         = self::get_extension_base_data( $slug );
+		$data['icon'] = plugins_url( 'images/marketing/pinterest.svg', WC_ADMIN_PLUGIN_FILE );
+
+		if ( 'activated' === $data['status'] ) {
+			// TODO: Get onboarded status from pinterest plugin.
+			// TODO: Finalise settings url.
+			// TODO: Finalise docs url.
+			$data['status']      = 'configured';
+			$data['settingsUrl'] = admin_url( 'admin.php?page=pinterest-for-woocommerce-setup-guide' );
+			$data['docsUrl']     = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/';
 		}
 
 		return $data;
