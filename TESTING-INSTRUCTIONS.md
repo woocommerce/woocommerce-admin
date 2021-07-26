@@ -115,14 +115,14 @@ Individual payment gateway plugins dictate the settings and connection flow. For
 7. If the "Connect" button is shown, follow the connection flow. Make sure that you are returned to the payments task and that the gateway is enabled and marked as configured.
 8. Remove some settings manually under the payment gateway's legacy settings screen. Make sure the gateway is no longer marked as configured.
 
--   Klarna -
--   PayFast -
--   PayPal -
--   RazorPay -
--   Stripe -
--   MercaoPago -
--   Square -
--   eWAY -
+-   Klarna - https://github.com/woocommerce/woocommerce-admin/files/6880208/klarna-checkout-for-woocommerce.zip
+-   PayFast - https://github.com/woocommerce/woocommerce-admin/files/6880205/woocommerce-payfast-gateway.zip
+-   PayPal - https://github.com/woocommerce/woocommerce-admin/files/6880109/woocommerce-paypal-payments.zip
+-   RazorPay - https://github.com/woocommerce/woocommerce-admin/files/6880201/woo-razorpay.zip
+-   Stripe - https://github.com/woocommerce/woocommerce-admin/files/6880197/woocommerce-gateway-stripe.zip
+-   MercaoPago - https://github.com/woocommerce/woocommerce-admin/files/6880192/woocommerce-mercadopago.zip
+-   Square - https://github.com/woocommerce/woocommerce-admin/files/6880117/woocommerce-square.zip
+-   eWAY - https://github.com/woocommerce/woocommerce-admin/files/6880111/woocommerce-gateway-eway.zip
 
 ##### PayFast
 
