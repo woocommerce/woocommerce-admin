@@ -283,7 +283,6 @@ exports[`Leaderboard should render empty message when there are no rows 1`] = `
     >
       <div
         class="woocommerce-table is-empty"
-        style="--number-of-rows: 5;"
       >
         No data recorded for the selected time period.
       </div>
