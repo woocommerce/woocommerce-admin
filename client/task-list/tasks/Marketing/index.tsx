@@ -178,7 +178,7 @@ export const Marketing: React.FC = () => {
 								'woocommerce-admin'
 							) }
 						</Text>
-						<Text>
+						<Text as="span">
 							{ __(
 								'We recommend adding one of the following marketing tools for your store. The extension will be installed and activated for you when you click "Get started".',
 								'woocommerce-admin'
