@@ -5,9 +5,9 @@ import { SVG, Path } from '@wordpress/primitives';
 
 const pinterest = (
 	<SVG
-		width="243"
-		height="243"
-		viewBox="0 0 243 243"
+		width="303"
+		height="303"
+		viewBox="-30 -30 303 303"
 		fill="none"
 		xmlns="http://www.w3.org/2000/SVG"
 	>
