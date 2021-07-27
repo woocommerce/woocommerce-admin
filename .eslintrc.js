@@ -61,7 +61,13 @@ module.exports = {
 			},
 		},
 		{
-			files: [ 'client/**/*.js', 'client/**/*.jsx' ],
+			files: [
+				'client/**/*.js',
+				'client/**/*.jsx',
+				'**/stories/*.js',
+				'**/stories/*.jsx',
+				'**/docs/example.js',
+			],
 			rules: {
 				'react/react-in-jsx-scope': 'off',
 			},
