@@ -156,7 +156,7 @@ class DateFilter extends Component {
 
 		this.setState( {
 			rule: newRule,
-			...( newDateState ? newDateState : {} ),
+			...newDateState,
 		} );
 
 		onFilterChange( 'rule', newRule, shouldResetValue );
