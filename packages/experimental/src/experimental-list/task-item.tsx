@@ -146,7 +146,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					) }
 				</div>
 			</OptionalTaskTooltip>
-			<div className="woocommerce-task-list__item-text-test">
+			<div className="woocommerce-task-list__item-text">
 				<Text
 					as="div"
 					size="14"
