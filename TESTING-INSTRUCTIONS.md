@@ -12,7 +12,7 @@
 
 ### Show Pinterest for WooCommerce in `Marketing > Installed` #7417
 
-_Prerequisite_: This requires the forthcoming native [__Pinterest for WooCommerce__ extension](https://github.com/saucal/pinterest-for-woocommerce) (which may not be available).
+_Prerequisite_: This requires the forthcoming native [__Pinterest for WooCommerce__ extension](https://github.com/saucal/pinterest-for-woocommerce) (private repo – may not be available).
 
 If __Pinterest for WooCommerce__ is installed, marketing screen should show status info.
 
