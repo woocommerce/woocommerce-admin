@@ -76,16 +76,7 @@ class BusinessDetails extends Component {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
-			updateProfileItems,
 		} = this.props;
-
-		const {
-			other_platform: otherPlatform,
-			other_platform_name: otherPlatformName,
-			product_count: productCount,
-			revenue,
-			selling_venues: sellingVenues,
-		} = this.state.savedValues;
 
 		const businessExtensions = filterBusinessExtensions(
 			extensionInstallationOptions
@@ -104,24 +95,9 @@ class BusinessDetails extends Component {
 				extensionInstallationOptions[ 'woocommerce-payments' ],
 		} );
 
-		const updates = {
-			other_platform: otherPlatform,
-			other_platform_name:
-				otherPlatform === 'other' ? otherPlatformName : '',
-			product_count: productCount,
-			revenue,
-			selling_venues: sellingVenues,
-			business_extensions: businessExtensions,
-		};
-
-		// Remove possible empty values like `revenue` and `other_platform`.
-		Object.keys( updates ).forEach(
-			( key ) => updates[ key ] === '' && delete updates[ key ]
-		);
-
 		const promises = [
-			updateProfileItems( updates ).catch( () => {
-				throw new Error();
+			this.pushProfileUpdates( {
+				business_extensions: businessExtensions,
 			} ),
 		];
 
@@ -151,6 +127,37 @@ class BusinessDetails extends Component {
 					)
 				);
 			} );
+	}
+
+	async pushProfileUpdates( additions = {} ) {
+		const { updateProfileItems } = this.props;
+
+		const {
+			other_platform: otherPlatform,
+			other_platform_name: otherPlatformName,
+			product_count: productCount,
+			revenue,
+			selling_venues: sellingVenues,
+		} = this.state.savedValues;
+
+		const updates = {
+			other_platform: otherPlatform,
+			other_platform_name:
+				otherPlatform === 'other' ? otherPlatformName : '',
+			product_count: productCount,
+			revenue,
+			selling_venues: sellingVenues,
+			...additions,
+		};
+
+		// Remove possible empty values like `revenue` and `other_platform`.
+		Object.keys( updates ).forEach(
+			( key ) => updates[ key ] === '' && delete updates[ key ]
+		);
+
+		return updateProfileItems( updates ).catch( () => {
+			throw new Error();
+		} );
 	}
 
 	validate( values ) {
@@ -388,7 +395,10 @@ class BusinessDetails extends Component {
 									</Button>
 									{ hasInstallActivateError && (
 										<Button
-											onClick={ () => goToNextStep() }
+											onClick={ () => {
+												this.pushProfileUpdates();
+												goToNextStep();
+											} }
 										>
 											{ __(
 												'Continue without installing',
