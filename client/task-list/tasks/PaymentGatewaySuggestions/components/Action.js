@@ -7,11 +7,6 @@ import { updateQueryString } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { useState } from '@wordpress/element';
 
-/**
- * Internal dependencies
- */
-import './Action.scss';
-
 export const Action = ( {
 	hasSetup = false,
 	needsSetup = true,
