@@ -141,7 +141,7 @@ describe( 'Container', () => {
 		).toContain( 'is-active' );
 	} );
 
-	test( 'should update the active item and level when location changes', async () => {
+	test.skip( 'should update the active item and level when location changes', async () => {
 		window.location = new URL( getAdminLink( 'admin.php?page=wc-admin' ) );
 
 		const { container, queryByText } = render( <Container /> );
