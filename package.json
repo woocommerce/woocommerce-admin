@@ -189,7 +189,7 @@
 		"@wordpress/custom-templated-path-webpack-plugin": "1.7.0",
 		"@wordpress/e2e-test-utils": "4.16.1",
 		"@wordpress/eslint-plugin": "8.0.0",
-		"@wordpress/jest-preset-default": "5.5.0",
+		"@wordpress/jest-preset-default": "7.1.0",
 		"@wordpress/postcss-plugins-preset": "1.6.0",
 		"@wordpress/postcss-themes": "1.0.5",
 		"@wordpress/prettier-config": "0.4.0",
