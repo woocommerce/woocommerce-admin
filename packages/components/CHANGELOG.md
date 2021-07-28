@@ -2,6 +2,7 @@
 
 -   Fix a bug in the deprecated callback handlers of Form component. #7356
 -   Add `hidden` legend position to `Chart`. #7378
+-   Update aligning `Table` fields with the fallback on isNumeric. #xxxx
 
 # 8.0.0
 
