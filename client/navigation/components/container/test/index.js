@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { act, render } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { getHistory } from '@woocommerce/navigation';
 import { useSelect } from '@wordpress/data';
@@ -141,7 +141,7 @@ describe( 'Container', () => {
 		).toContain( 'is-active' );
 	} );
 
-	test.skip( 'should update the active item and level when location changes', async () => {
+	test( 'should update the active item and level when location changes', async () => {
 		window.location = new URL( getAdminLink( 'admin.php?page=wc-admin' ) );
 
 		const { container, queryByText } = render( <Container /> );
@@ -155,21 +155,21 @@ describe( 'Container', () => {
 				getAdminLink( 'admin.php?page=wc-admin&path=/child' )
 			);
 			getHistory().push( getAdminLink( '/child' ) );
-
-			await new Promise( ( resolve ) => {
-				setTimeout( () => {
-					resolve();
-				}, 0 );
-			} );
 		} );
 
-		expect(
-			container.querySelector( '.woocommerce-navigation-category-title' )
-				.textContent
-		).toBe( 'Primary Category' );
-		expect(
-			queryByText( 'Primary Child' ).parentElement.parentElement.classList
-		).toContain( 'is-active' );
+		await waitFor( () =>
+			expect(
+				container.querySelector(
+					'.woocommerce-navigation-category-title'
+				).textContent
+			).toBe( 'Primary Category' )
+		);
+		await waitFor( () =>
+			expect(
+				queryByText( 'Primary Child' ).parentElement.parentElement
+					.classList
+			).toContain( 'is-active' )
+		);
 	} );
 
 	test( 'should update the active level when a category is clicked', () => {
