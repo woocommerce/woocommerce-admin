@@ -13,11 +13,14 @@ export class WcHomescreen extends BasePage {
 	}
 
 	async possiblyDismissWelcomeModal() {
+		const modalText = 'Welcome to your WooCommerce store’s online HQ!';
+		try {
+			await waitForElementByText( 'h2', modalText );
+		} catch ( e ) {
+			return;
+		}
 		// Wait for Benefits section to appear
-		const modal = await getElementByText(
-			'h2',
-			'Welcome to your WooCommerce store’s online HQ!'
-		);
+		const modal = await getElementByText( 'h2', modalText );
 
 		if ( modal ) {
 			await this.clickButtonWithText( 'Next' );
