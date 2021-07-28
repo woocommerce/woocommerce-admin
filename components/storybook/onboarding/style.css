@@ -134,38 +134,37 @@ body.admin-color-sunrise {
  */
 /* stylelint-disable block-closing-brace-newline-after */
 /* stylelint-enable */
-.woocommerce-task-payment-wcpay .woocommerce-task-payment-wcpay__description {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .woocommerce-task-payment-wcpay__description {
   font-size: 16px;
   margin-bottom: 24px;
 }
-.woocommerce-task-payment-wcpay > .components-card__header {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .components-card__header {
   margin-bottom: 12px;
+  justify-content: flex-start;
+  padding: 25px;
 }
-.woocommerce-task-payment-wcpay > .components-card__header .woocommerce-pill {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .components-card__header .woocommerce-pill {
   margin-left: 12px;
 }
-.woocommerce-task-payment-wcpay > .components-card__footer {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .components-card__footer {
   flex-direction: column;
   align-items: flex-start;
 }
-.woocommerce-task-payment-wcpay > .components-card__footer .components-button {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .components-card__footer .components-button {
   margin-top: 16px;
+  margin-left: 0;
 }
-.woocommerce-task-payment-wcpay > .components-card__body h2 {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .components-card__body h2 {
   margin: 0 0 20px 0;
 }
-.woocommerce-task-payment-wcpay .woocommerce-task-payment-wcpay__accepted {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .woocommerce-task-payment-wcpay__accepted {
   display: flex;
   margin-top: 12px;
   flex-wrap: wrap;
   gap: 12px;
 }
-.woocommerce-task-payment-wcpay .woocommerce-task-payment-wcpay__accepted h3 {
+.woocommerce-task-payments .woocommerce-task-payment-wcpay .woocommerce-task-payment-wcpay__accepted h3 {
   color: #40464d;
-}
-.woocommerce-task-payment-wcpay > h2 {
-  display: flex;
-  justify-content: flex-start;
 }
 
 .woocommerce-task-payment__recommended-ribbon {
