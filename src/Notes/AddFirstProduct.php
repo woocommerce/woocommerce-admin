@@ -63,7 +63,8 @@ class AddFirstProduct {
 			/* translators: %s: line break */
 			sprintf( __( 'Nice one; you\'ve created a WooCommerce store! Now it\'s time to add your first product and get ready to start selling.%s', 'woocommerce-admin' ), '<br/><br/>' ),
 			__( 'There are three ways to add your products: you can <strong>create products manually, import them at once via CSV file</strong>, or <strong>migrate them from another service</strong>.<br/><br/>', 'woocommerce-admin' ),
-			__( '<a href="https://docs.woocommerce.com/document/managing-products/?utm_source=help_panel&utm_medium=product">Explore our docs</a> for more information, or just get started!', 'woocommerce-admin' ),
+			/* translators: %1$s and %2$s are link tags. */
+			sprintf( __( '%1$1sExplore our docs%2$2s for more information, or just get started!', 'woocommerce-admin' ), '<a href="https://docs.woocommerce.com/document/managing-products/?utm_source=help_panel&utm_medium=product">', '</a>' ),
 		);
 
 		$additional_data = array(
