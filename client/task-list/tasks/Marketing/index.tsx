@@ -93,6 +93,10 @@ export const Marketing: React.FC = () => {
 		const installed: PluginProps[] = [];
 		const lists: PluginListProps[] = [];
 		fetchedExtensions.forEach( ( list ) => {
+			if ( ! ALLOWED_PLUGIN_LISTS.includes( list.key ) ) {
+				return;
+			}
+
 			const listPlugins: PluginProps[] = [];
 			list.plugins.forEach( ( extension ) => {
 				const plugin = transformExtensionToPlugin( extension );
@@ -103,10 +107,7 @@ export const Marketing: React.FC = () => {
 				listPlugins.push( plugin );
 			} );
 
-			if (
-				! ALLOWED_PLUGIN_LISTS.includes( list.key ) ||
-				! listPlugins.length
-			) {
+			if ( ! listPlugins.length ) {
 				return;
 			}
 
