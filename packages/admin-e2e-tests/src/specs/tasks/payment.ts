@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { takeScreenshotFor } from '@woocommerce/e2e-environment';
+
+/**
  * Internal dependencies
  */
 import { Login } from '../../pages/Login';
@@ -31,6 +36,7 @@ const testAdminPaymentSetupTask = () => {
 
 			await homeScreen.isDisplayed();
 			await homeScreen.possiblyDismissWelcomeModal();
+			await takeScreenshotFor( 'Payment setup task' );
 		} );
 
 		afterAll( async () => {

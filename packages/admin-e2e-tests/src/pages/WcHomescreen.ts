@@ -1,7 +1,10 @@
 /**
  * Internal dependencies
  */
-import { getElementByText, waitForElementByText } from '../utils/actions';
+import {
+	waitForElementByText,
+	waitForElementByTextWithoutThrow,
+} from '../utils/actions';
 import { BasePage } from './BasePage';
 
 export class WcHomescreen extends BasePage {
@@ -14,18 +17,19 @@ export class WcHomescreen extends BasePage {
 
 	async possiblyDismissWelcomeModal() {
 		const modalText = 'Welcome to your WooCommerce store’s online HQ!';
-		try {
-			await waitForElementByText( 'h2', modalText );
-		} catch ( e ) {
-			return;
-		}
-		// Wait for Benefits section to appear
-		const modal = await getElementByText( 'h2', modalText );
+		const modal = await waitForElementByTextWithoutThrow(
+			'h2',
+			modalText,
+			10000
+		);
 
 		if ( modal ) {
 			await this.clickButtonWithText( 'Next' );
+			await this.page.waitFor( 1000 );
 			await this.clickButtonWithText( 'Next' );
+			await this.page.waitFor( 1000 );
 			await this.click( '.components-guide__finish-button' );
+			await this.page.waitFor( 500 );
 		}
 	}
 
