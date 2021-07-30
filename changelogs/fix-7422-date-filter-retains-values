@@ -1,4 +1,0 @@
-Significance: patch
-Type: Fix
-
-Do not retain values when switching between rules in the DateFilter component #7423
