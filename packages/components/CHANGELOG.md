@@ -1,3 +1,8 @@
+# Unreleased
+
+-   Fix a bug in the deprecated callback handlers of Form component. #7356
+-   Add `hidden` legend position to `Chart`. #7378
+
 # 8.0.0
 
 -   Fix commonjs module build, allow package to be built in isolation. #7286
