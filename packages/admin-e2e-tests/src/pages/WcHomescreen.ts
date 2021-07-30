@@ -20,7 +20,7 @@ export class WcHomescreen extends BasePage {
 		const modal = await waitForElementByTextWithoutThrow(
 			'h2',
 			modalText,
-			10000
+			10
 		);
 
 		if ( modal ) {
@@ -52,7 +52,7 @@ export class WcHomescreen extends BasePage {
 	}
 
 	async clickOnTaskList( taskTitle: string ) {
-		const item = await waitForElementByText( 'span', taskTitle );
+		const item = await waitForElementByText( '*', taskTitle );
 
 		if ( ! item ) {
 			throw new Error(
@@ -62,5 +62,12 @@ export class WcHomescreen extends BasePage {
 			await item.click();
 			await waitForElementByText( 'h1', taskTitle );
 		}
+	}
+
+	async waitForNotesRequestToBeLoaded() {
+		return await this.page.waitForResponse( ( response ) => {
+			const url = encodeURIComponent( response.url() );
+			return url.includes( '/wc-analytics/admin/notes' ) && response.ok();
+		} );
 	}
 }
