@@ -1,0 +1,4 @@
+Significance: minor
+Type: Tweak
+
+Add utm_medium query string to outgoing woocommerce.com links
