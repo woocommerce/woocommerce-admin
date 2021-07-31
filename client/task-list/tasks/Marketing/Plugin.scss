@@ -1,7 +1,7 @@
 .woocommerce-plugin-list__plugin {
 	display: flex;
 	padding: $gap-large;
-	border-top: 1px solid #e5e5e5;
+	border-top: 1px solid $gray-200;
 
 	&:first-child {
 		border-top: 0;
@@ -16,7 +16,6 @@
 	p {
 		color: $gray-700;
 		font-weight: 400;
-		color: #3c434a;
 	}
 }
 
