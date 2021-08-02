@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
+use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\DefaultFreeExtensions;
 
 /**
  * Remote Payment Methods engine.
@@ -53,8 +54,17 @@ class Init {
 
 		// Fetch specs if they don't yet exist.
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
-			// We are running too early, need to poll data sources first.
+			if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+				return DefaultFreeExtensions::get_all();
+			}
+
 			$specs = DataSourcePoller::read_specs_from_data_sources();
+
+			// Fall back to default specs if polling failed.
+			if ( ! $specs ) {
+				return DefaultFreeExtensions::get_all();
+			}
+
 			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
 		}
 
