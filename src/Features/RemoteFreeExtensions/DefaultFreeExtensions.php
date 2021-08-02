@@ -28,9 +28,10 @@ class DefaultFreeExtensions {
 					[
 						'key'         => 'woocommerce-payments',
 						'description' => sprintf(
-							/* translators: %s = product URL */
-							__( 'Accept credit cards with <a href="%s" target="_blank">WooCommerce Payments</a>', 'woocommerce-admin' ),
-							'https://woocommerce.com/products/woocommerce-payments'
+							/* translators: 1: opening product link tag. 2: closing link tag */
+							__( 'Accept credit cards with %1$sWooCommerce Payments%2$s', 'woocommerce-admin' ),
+							'<a href="https://woocommerce.com/products/woocommerce-payments" target="_blank">',
+							'</a>'
 						),
 						'is_visible'  => [
 							[
@@ -125,9 +126,10 @@ class DefaultFreeExtensions {
 					[
 						'key'         => 'woocommerce-services:shipping',
 						'description' => sprintf(
-							/* translators: %s = product URL */
-							__( 'Print shipping labels with <a href="%s" target="_blank">WooCommerce Shipping</a>', 'woocommerce-admin' ),
-							'https://woocommerce.com/products/shipping'
+							/* translators: 1: opening product link tag. 2: closing link tag */
+							__( 'Print shipping labels with %1$sWooCommerce Shipping%2$s', 'woocommerce-admin' ),
+							'<a href="https://woocommerce.com/products/shipping" target="_blank">',
+							'</a>'
 						),
 						'is_visible'  => [
 							[
@@ -191,9 +193,10 @@ class DefaultFreeExtensions {
 					[
 						'key'         => 'woocommerce-services:tax',
 						'description' => sprintf(
-							/* translators: %s = product URL */
-							__( 'Get automated sales tax with <a href="%s" target="_blank">WooCommerce Tax</a>', 'woocommerce-admin' ),
-							'https://woocommerce.com/products/tax'
+							/* translators: 1: opening product link tag. 2: closing link tag */
+							__( 'Get automated sales tax with %1$sWooCommerce Tax%2$s', 'woocommerce-admin' ),
+							'<a href="https://woocommerce.com/products/tax" target="_blank">',
+							'</a>'
 						),
 						'is_visible'  => [
 							[
@@ -270,9 +273,10 @@ class DefaultFreeExtensions {
 					[
 						'key'         => 'jetpack',
 						'description' => sprintf(
-							/* translators: %s = product URL */
-							__( 'Enhance speed and security with <a href="%s" target="_blank">Jetpack</a>', 'woocommerce-admin' ),
-							'https://woocommerce.com/products/jetpack'
+							/* translators: 1: opening product link tag. 2: closing link tag */
+							__( 'Enhance speed and security with %1$sJetpack%2$s', 'woocommerce-admin' ),
+							'<a href="https://woocommerce.com/products/jetpack" target="_blank">',
+							'</a>'
 						),
 						'is_visible'  => [
 							[
@@ -291,9 +295,10 @@ class DefaultFreeExtensions {
 						'name'        => __( 'MailPoet', 'woocommerce-admin' ),
 						'description' => __( 'Level up your email marketing with {{link}}MailPoet{{/link}}', 'woocommerce-admin' ),
 						'description' => sprintf(
-							/* translators: %s = product URL */
-							__( 'Level up your email marketing with <a href="%s" target="_blank">MailPoet</a>', 'woocommerce-admin' ),
-							'https://woocommerce.com/products/mailpoet'
+							/* translators: 1: opening product link tag. 2: closing link tag */
+							__( 'Level up your email marketing with %1$sMailPoet%2$s', 'woocommerce-admin' ),
+							'<a href="https://woocommerce.com/products/mailpoet" target="_blank">',
+							'</a>'
 						),
 						'image_url'   => plugins_url( 'images/mailpoet.png', WCCOM_OBW_FREE_EXTENSIONS_PLUGIN_FILE ),
 						'manage_url'  => 'admin.php?page=mailpoet-newsletters',
