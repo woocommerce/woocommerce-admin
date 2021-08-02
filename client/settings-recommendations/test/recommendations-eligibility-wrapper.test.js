@@ -34,7 +34,7 @@ describe( 'RecommendationsEligibilityWrapper', () => {
 		useSelect.mockImplementation( ( fn ) =>
 			fn( () => ( {
 				getOption: () => 'yes',
-				isResolving: () => false,
+				hasFinishedResolution: () => true,
 			} ) )
 		);
 	} );
@@ -62,7 +62,7 @@ describe( 'RecommendationsEligibilityWrapper', () => {
 		useSelect.mockImplementation( ( fn ) =>
 			fn( () => ( {
 				getOption: () => 'yes',
-				isResolving: () => true,
+				hasFinishedResolution: () => false,
 			} ) )
 		);
 
@@ -72,11 +72,11 @@ describe( 'RecommendationsEligibilityWrapper', () => {
 			screen.queryByText( 'mocked children' )
 		).not.toBeInTheDocument();
 
-		// changing the "isResolving" to return `false` will render the children
+		// changing the "hasFinishedResolution" to return `false` will render the children
 		useSelect.mockImplementation( ( fn ) =>
 			fn( () => ( {
 				getOption: () => 'yes',
-				isResolving: () => false,
+				hasFinishedResolution: () => true,
 			} ) )
 		);
 		rerender( <RecommendationsEligibilityMock /> );
@@ -87,7 +87,7 @@ describe( 'RecommendationsEligibilityWrapper', () => {
 		useSelect.mockImplementation( ( fn ) =>
 			fn( () => ( {
 				getOption: () => 'yes',
-				isResolving: () => false,
+				hasFinishedResolution: () => true,
 			} ) )
 		);
 		useUser.mockReturnValue( {
