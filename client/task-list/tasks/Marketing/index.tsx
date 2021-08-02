@@ -23,6 +23,20 @@ import { PluginProps } from './Plugin';
 
 const ALLOWED_PLUGIN_LISTS = [ 'reach', 'grow' ];
 
+export type ExtensionList = {
+	key: string;
+	title: string;
+	plugins: Extension[];
+};
+
+export type Extension = {
+	description: string;
+	key: string;
+	image_url: string;
+	manage_url: string;
+	name: string;
+};
+
 export const transformExtensionToPlugin = (
 	extension: Extension,
 	activePlugins: string[],
@@ -42,10 +56,10 @@ export const transformExtensionToPlugin = (
 };
 
 export const getMarketingExtensionLists = (
-	freeExtensions: Extension[],
+	freeExtensions: ExtensionList[],
 	activePlugins: string[],
 	installedPlugins: string[]
-) => {
+): [ PluginProps[], PluginListProps[] ] => {
 	const installed: PluginProps[] = [];
 	const lists: PluginListProps[] = [];
 	freeExtensions.forEach( ( list ) => {
