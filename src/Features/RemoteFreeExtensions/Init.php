@@ -28,15 +28,27 @@ class Init {
 	 * Go through the specs and run them.
 	 */
 	public static function get_extensions() {
-		$methods = array();
+		$bundles = array();
 		$specs   = self::get_specs();
 
 		foreach ( $specs as $spec ) {
-			$method    = EvaluateExtension::evaluate( $spec );
-			$methods[] = $method;
+			$bundle            = $spec;
+			$bundle['plugins'] = array();
+			$extensions        = array();
+			$spec              = (object) $spec;
+
+			foreach ( $spec->plugins as $plugin ) {
+				$extension = EvaluateExtension::evaluate( (object) $plugin );
+
+				if ( ! property_exists( $extension, 'is_visible' ) || $extension->is_visible ) {
+					$bundle['plugins'][] = $extension;
+				}
+			}
+
+			$bundles[] = $bundle;
 		}
 
-		return $methods;
+		return $bundles;
 	}
 
 	/**
