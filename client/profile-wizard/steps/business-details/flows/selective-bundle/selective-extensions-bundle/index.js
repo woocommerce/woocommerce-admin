@@ -114,6 +114,23 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 };
 
 const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
+	const recordProductLinkClick = ( event ) => {
+		const link = event.target.closest( 'a' );
+		if (
+			! link ||
+			! event.currentTarget.contains( link ) ||
+			! link.href.startsWith( 'https://woocommerce.com/products/' )
+		) {
+			return;
+		}
+
+		recordEvent( 'storeprofiler_store_business_features_link_click', {
+			extension_name: link.href.split(
+				'https://woocommerce.com/products/'
+			)[ 1 ],
+		} );
+	};
+
 	return (
 		<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
 			<CheckboxControl
@@ -121,10 +138,17 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 				checked={ isChecked }
 				onChange={ onChange }
 			/>
+			{
+				// Disable reason: This click handler checks for interaction with anchor tags on
+				// dynamically inserted HTML and records clicks only on interaction with those items.
+				/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
+			 }
 			<p
 				className="woocommerce-admin__business-details__selective-extensions-bundle__description"
 				dangerouslySetInnerHTML={ sanitizeHTML( description ) }
+				onClick={ recordProductLinkClick }
 			/>
+			{ /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */ }
 			<FreeBadge />
 		</div>
 	);
