@@ -1,5 +1,4 @@
 Significance: patch
 Type: Tweak
-Comment: This is a slight refactor on how the recommendations on the payment settings are displayed. I extracted the eligibility part to a separate component, to be reused in an upcoming PR.
 
-
+Refactor on payment settings recommendations eligibility component for reuse.
