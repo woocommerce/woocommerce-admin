@@ -1,4 +1,4 @@
-== 2.5.0 07/26/2021 == 
+== 2.5.0 08/03/2021 == 
 
 - Add: Add a delete option to completed tasks #7300
 - Add: Add unit tests around extended payment gateway controller #7133
@@ -53,6 +53,7 @@
 - Tweak: Removed unused feature flags #7233 and #7273
 - Tweak: Render a spinner while woocommerce_setup_jetpack_opted_in is being loaded #7269
 - Tweak: Repurpose disable wc-admin filter to remove optional features #7232
+- Update: Add additional countries to WCPay for business features and payment task fallback #7436
 - Update: Notes to use a date range. #7222
 - Update: Remove facebook extension from onboarding extensions fallback list #7287
 - Performance: Add lazy loading by checking panel open status #7379
