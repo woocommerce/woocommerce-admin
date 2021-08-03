@@ -32,10 +32,8 @@ class Init {
 		$specs   = self::get_specs();
 
 		foreach ( $specs as $spec ) {
-			$bundle            = $spec;
+			$bundle            = (array) $spec;
 			$bundle['plugins'] = array();
-			$extensions        = array();
-			$spec              = (object) $spec;
 
 			foreach ( $spec->plugins as $plugin ) {
 				$extension = EvaluateExtension::evaluate( (object) $plugin );
