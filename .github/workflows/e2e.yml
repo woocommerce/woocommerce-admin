@@ -16,9 +16,7 @@ jobs:
               with:
                   php-version: '7.3'
             - name: Install PHP dependencies
-              run: |
-                  composer self-update 2.0.6
-                  composer i
+              run: composer i
             - name: Setup Node.js
               uses: actions/setup-node@v2-beta
               with:
