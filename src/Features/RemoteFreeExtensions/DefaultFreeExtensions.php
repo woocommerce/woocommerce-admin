@@ -302,6 +302,17 @@ class DefaultFreeExtensions {
 						),
 						'image_url'   => plugins_url( 'images/mailpoet.png', WCCOM_OBW_FREE_EXTENSIONS_PLUGIN_FILE ),
 						'manage_url'  => 'admin.php?page=mailpoet-newsletters',
+						'is_visible'  => [
+							[
+								'type'    => 'not',
+								'operand' => [
+									[
+										'type'    => 'plugins_activated',
+										'plugins' => [ 'mailpoet' ],
+									],
+								],
+							],
+						],
 					],
 				],
 			],
