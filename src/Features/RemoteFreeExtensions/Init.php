@@ -32,6 +32,7 @@ class Init {
 		$specs   = self::get_specs();
 
 		foreach ( $specs as $spec ) {
+			$spec              = (object) $spec;
 			$bundle            = (array) $spec;
 			$bundle['plugins'] = array();
 
@@ -71,7 +72,7 @@ class Init {
 			$specs = DataSourcePoller::read_specs_from_data_sources();
 
 			// Fall back to default specs if polling failed.
-			if ( ! $specs ) {
+			if ( ! $specs || is_empty( $specs ) ) {
 				return DefaultFreeExtensions::get_all();
 			}
 

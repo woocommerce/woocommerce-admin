@@ -20,7 +20,7 @@ class DefaultFreeExtensions {
 	 * @return array Default specs.
 	 */
 	public static function get_all() {
-		return [
+		$bundles = [
 			[
 				'key'     => 'basics',
 				'title'   => __( 'Get the basics', 'woocommerce-admin' ),
@@ -300,7 +300,6 @@ class DefaultFreeExtensions {
 							'<a href="https://woocommerce.com/products/mailpoet" target="_blank">',
 							'</a>'
 						),
-						'image_url'   => plugins_url( 'images/mailpoet.png', WCCOM_OBW_FREE_EXTENSIONS_PLUGIN_FILE ),
 						'manage_url'  => 'admin.php?page=mailpoet-newsletters',
 						'is_visible'  => [
 							[
@@ -317,5 +316,8 @@ class DefaultFreeExtensions {
 				],
 			],
 		];
+
+		$bundles = wp_json_encode( $bundles );
+		return json_decode( $bundles );
 	}
 }
