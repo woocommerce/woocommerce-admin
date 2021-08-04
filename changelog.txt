@@ -6,7 +6,7 @@
 - Fix: Update status values in CSV download to match the table #7284
 - Add: Add boolean isReverseTrend prop to SummaryNumber to show "positive" delta for negative numbers. #7357
 - Add: Adding links to help panel for marketing task #7384
-- Add: Add installed marketing extensions card to extensions task #7314
+- Add: Add installed marketing extensions card to extensions task #7419
 - Add: Add marketing extensions task to task list #7383
 - Update: Add locale param as part of free extensions request #7391
 - Update: Increase per_page value for search results on the Analytics pages. #7385
