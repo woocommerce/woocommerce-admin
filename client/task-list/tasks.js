@@ -9,7 +9,7 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { Fragment, useMemo } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -159,14 +159,10 @@ export function getAllTasks( {
 		);
 	}
 
-	const [ installedMarketingExtensions ] = useMemo(
-		() =>
-			getMarketingExtensionLists(
-				freeExtensions,
-				activePlugins,
-				installedPlugins
-			),
-		[ freeExtensions, activePlugins, installedPlugins ]
+	const [ installedMarketingExtensions ] = getMarketingExtensionLists(
+		freeExtensions,
+		activePlugins,
+		installedPlugins
 	);
 
 	const tasks = [
