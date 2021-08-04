@@ -64,7 +64,9 @@ export const DismissableList: React.FC< {
 			dismissOptionName,
 		] );
 
-		return hasFinishedResolving && getOption( dismissOptionName ) !== 'yes';
+		const isDismissed = getOption( dismissOptionName ) === 'yes';
+
+		return hasFinishedResolving && ! isDismissed;
 	} );
 
 	if ( ! isVisible ) {
