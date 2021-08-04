@@ -72,7 +72,7 @@ class Init {
 			$specs = DataSourcePoller::read_specs_from_data_sources();
 
 			// Fall back to default specs if polling failed.
-			if ( ! $specs || is_empty( $specs ) ) {
+			if ( ! $specs || empty( $specs ) ) {
 				return DefaultFreeExtensions::get_all();
 			}
 
