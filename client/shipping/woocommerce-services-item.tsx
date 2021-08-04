@@ -8,7 +8,7 @@ import { Pill } from '@woocommerce/components';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
-const WooCommerceShippingItem: React.FC< {
+const WooCommerceServicesItem: React.FC< {
 	pluginsBeingSetup: Array< string >;
 	onSetupClick: ( slugs: string[] ) => PromiseLike< void >;
 } > = ( { onSetupClick, pluginsBeingSetup } ) => {
@@ -82,4 +82,4 @@ const WooCommerceShippingItem: React.FC< {
 	);
 };
 
-export default WooCommerceShippingItem;
+export default WooCommerceServicesItem;

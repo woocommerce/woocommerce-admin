@@ -1,8 +1,12 @@
 .woocommerce-recommended-shipping-extensions {
-	margin: 0 15px 10px 0;
-	animation: isLoaded;
-	animation-duration: 250ms;
+	&__more_options_cta {
+		// adding some breathing room between the "external" icon and the text
+		.gridicon {
+			margin-left: $gap-smallest;
+		}
+	}
 
+	// overwriting the list's default colors/behavior
 	.woocommerce-list__item {
 		> .woocommerce-list__item-inner {
 			align-items: flex-start;
@@ -10,6 +14,7 @@
 
 		&:hover {
 			background-color: $white;
+
 			.woocommerce-list__item-title {
 				color: $gray-900;
 			}
@@ -22,37 +27,16 @@
 		font-weight: 600;
 	}
 
-	.woocommerce-review-activity-card__section-controls {
-		text-align: center;
-	}
-
 	.woocommerce-pill {
-		margin-left: 4px;
+		margin-left: $gap-smallest;
+		margin-top: $gap-smallest;
+		margin-bottom: $gap-smallest;
 		padding: 2px 8px;
-	}
 
-	@media (max-width: #{ ($break-mobile) }) {
-		.woocommerce-pill {
-			margin-top: 4px;
-			margin-bottom: 4px;
+		@media (min-width: #{ ($break-mobile) }) {
+			margin-top: 0;
+			margin-bottom: 0;
 		}
-	}
-
-	.components-card__footer {
-		.gridicon {
-			margin-left: $gap-smallest;
-		}
-	}
-
-	.woocommerce-list__item-enter {
-		opacity: 0;
-		max-height: 100vh;
-		transform: none;
-	}
-
-	.woocommerce-list__item-enter-active {
-		opacity: 1;
-		transition: opacity 200ms;
 	}
 
 	.woocommerce-list__item-after .components-button {
@@ -62,11 +46,5 @@
 	.woocommerce-list__item-text,
 	.woocommerce-recommended-shipping__header-heading {
 		max-width: 749px;
-	}
-}
-
-@media (max-width: #{ ($break-medium) }) {
-	.woocommerce-recommended-shipping-card {
-		margin: 0 0 10px 0;
 	}
 }
