@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.6.0
+
 ### Fix WC Home crash when the Analytics is disabled.
 
 1. Navigate to WooCommerce -> Settings -> Advanced -> Features. Uncheck Analytics and save the changes.

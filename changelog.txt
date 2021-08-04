@@ -1,4 +1,41 @@
-== 2.5.0 07/8/2021 ==
+== 2.6.0 08/04/2021 == 
+
+- Fix: Add limit clause to coupons data store query
+- Fix: Fix analytics filter Gutenberg CSS conflict #7410
+- Fix: Fixed OBW - Business details style #7353
+- Fix: Fixes action button mis-alignment within card footer. #7412
+- Fix: Fix Gutenberg CardBody styles for task card
+- Fix: Fixing issues with ReportTable component data not populating correctly #7355
+- Fix: Fix links on the dismiss dropdown are not clickable #7342
+- Fix: Fix orders panel not displaying any orders when analytics is disabled #7395
+- Fix: Fix recommended card Gutenberg CSS conflict #7409
+- Fix: Fix tracks events for payment gateway suggestions #7304
+- Fix: Fix undefined method error when setting up WC Tax #7344
+- Fix: Set default value for performanceIndicators variable #7343
+- Fix: Update status values in CSV download to match the table #7284
+- Fix: Update tooltip styling to fix new Gutenberg updates. #7414
+- Add: Add boolean isReverseTrend prop to SummaryNumber to show "positive" delta for negative numbers.
+- Add: Adding links to help panel for marketing task
+- Add: Add installed marketing extensions card to extensions task
+- Add: Add marketing extensions task to task list
+- Add: Add TableSummaryPlaceholder to support skeleton loading #7294
+- Update: Add additional countries to WCPay for business features and payment task fallback #7436
+- Update: Add locale param as part of free extensions request
+- Update: Increase per_page value for search results on the Analytics pages. #7385
+- Update: Remove facebook extension from onboarding extensions fallback list
+- Update: Removing grow section from local free extensions in OBW
+- Dev: Added utm_medium=product to woocommerce.com links. #7408
+- Dev: Allow packages to be build independently, fix commonjs module builds. #7286
+- Dev: Point the changelog linter to updated changelog entry location #7318
+- Dev: Update Jest to version 27. #7430
+- Tweak: Refactor on payment settings recommendations eligibility component for reuse. #7447
+- Tweak: Register wc-admin page for all users and handle authorization in client
+- Tweak: Render a spinner while woocommerce_setup_jetpack_opted_in is being loaded
+- Performance: Add a new low stock products endpoint to improve the performance. #7377
+- Performance: Add cache-control header to low stock REST API response
+- Performance: Add lazy loading by checking panel open status
+
+== 2.5.0 07/08/2021 == 
 
 - Add: Add a delete option to completed tasks #7300
 - Add: Add unit tests around extended payment gateway controller #7133
@@ -15,15 +52,15 @@
 - Fix: Include onboarding settings on the analytic pages #7109
 - Fix: Load Analytics API only when feature is turned on #7193
 - Fix: Localize string for description #7219
-- Fix: Filters: On update respect all other queries, not just persistedQueries #7155
+- Fix: Filters
 - Fix: Use saved form values if available when switching tabs #7226
 - Fix: Skip schedule customer data deletion on site deletion #7214
 - Fix: WCPay not working in local payments task #7151
 - Fix: Report export filtering bug. #7165
 - Fix: Add padding on table header button #7213
-- Fix:  Use tab char for the CSV injection prevention. #7154
+- Fix: Use tab char for the CSV injection prevention. #7154
 - Fix: Add height auto on autocomplete popover button #7225
-- Fix: Make WooCommerce-admin full-screen minimum height 100vh important #7230
+- Fix: Make WooCommerceadmin fullscreen minimum height 100vh important #7230
 - Fix: Cache product/variation revenue query results. #7067
 - Fix: Transient overlapping adjacent content. #7302
 - Fix: Unused feature preloaded options #7299
@@ -31,17 +68,18 @@
 - Fix: Add missing translation strings in the business features section #7268
 - Fix: Fix inbox note dismiss dropdown not closing on Safari #7278
 - Fix: Create workable defaults for Reports that don’t have AdvancedFilters #7186
-- Sync the category lookup table when a new category gets created #7290
 - Tweak: Remove performance indicators when Analytics Flag disabled #7234
 - Tweak: Change event name when installing Google Listings and Ads. #7276
 - Tweak: Removed unused feature flags #7233 and #7273
-- Tweak: Repurpose disable wc-admin filter to remove optional features #7232
+- Tweak: Repurpose disable wcadmin filter to remove optional features #7232
 - Update: Notes to use a date range. #7222
 
-== 2.4.1 7/1/2021 ==
+== 2.4.1 07/01/2021 == 
+
 - Fix: Fix and refactor explat polling to use setTimeout #7274
 
-== 2.4.0 6/29/2021 ==
+== 2.4.0 06/29/2021 == 
+
 - Add: SlotFill to Abbreviated Notification panel #7091
 - Add: Consume remote payment methods on frontend #6867
 - Add: Extend payment gateways REST endpoint #6919
@@ -71,7 +109,7 @@
 - Dev: Add Jetpack Backup admin note #6738
 - Dev: Reduce the specificity and complexity of the ReportError component #6846
 - Dev: Converting <SettingsForm /> component to TypeScript. #6981
-- Dev: Update package-lock to fix versioning of local packages. #6843
+- Dev: Update packagelock to fix versioning of local packages. #6843
 - Dev: Use rule processing for remote payment methods #6830
 - Dev: Update E2E jest config, so it correctly creates screenshots on failure. #6858
 - Dev: Fixed storybook build script #6875
@@ -80,21 +118,21 @@
 - Dev: Add payment method selector to onboarding store #6921
 - Dev: Add disabled prop to SelectControl #6902
 - Dev: Add filter variation to tracks data in products analytics. #6913
-- Dev: Offload remote inbox notifications engine run using action-scheduler. #6995
+- Dev: Offload remote inbox notifications engine run using actionscheduler. #6995
 - Dev: Add source param support for notes query. #6979
 - Dev: Remove the use of Dashicons and replace with @wordpress/icons or gridicons. #7020
 - Dev: Refactor inbox panel components and moved to experimental package. #7006
 - Dev: Business features uncheck creative mail by default #7139
 - Dev: Remove support for IE11. #7112
 - Dev: Drop styling support for IE11. #7137
-- Dev: Remove react-docgen docs in favor of Storybook #7055
+- Dev: Remove reactdocgen docs in favor of Storybook #7055
 - Enhancement: Add expand/collapse to extendable task list. #6910
 - Enhancement: Add task hierarchy support to extended task list. #6916
 - Enhancement: Add remind me later option to task list. #6923
 - Enhancement: Enable Remote Free Extensions List #7144
 - Enhancement: Adding Slotfills for remote payments and SettingsForm component. #6932
-- Fix: Update the wordpress/babel-preset to avoid crashes in WP5.8 beta2 #7202
-- Fix: Add fallback for the select/dispatch data-controls for older WP versions #7204
+- Fix: Update the wordpress/babelpreset to avoid crashes in WP5.8 beta2 #7202
+- Fix: Add fallback for the select/dispatch datacontrols for older WP versions #7204
 - Fix: RemoteFreeExtension hide bundle when all of its plugins are not visible #7182
 - Fix: Issue where summary stats were not showing in Analytics > Stock. #7161
 - Fix: Rule Processing Transformer to handle dotNotation default value #7009
@@ -106,19 +144,17 @@
 - Fix: Get currency from CurrencyContext #6723
 - Fix: Correct the left position of transient notices when the new nav is used. #6914
 - Fix: Exclude WC Shipping for store that are only offering downloadable products #6917
-- Fix: SelectControl focus and de-focus bug #6906
+- Fix: SelectControl focus and defocus bug #6906
 - Fix: Multiple preload tag output bug. #6998
 - Fix: Call existing filters for leaderboards in analytics. #6626
 - Fix: Set target to blank for the external links #6999
-- Fix style regression with the Chart header. #7002
-- Fix styling of the advanced filter operator selection. #7005
-- Fix: Deprecated warnings from select control @wordpress/data-controls. #7007
+- Fix: Deprecated warnings from select control @wordpress/datacontrols. #7007
 - Fix: Bug with Orders Report coupon exclusion filter. #7021
 - Fix: Show Google Listing and Ads in installed marketing extensions section. #7029
 - Fix: Notices not dissapearing. #7077
 - Fix: Keyboard accessibility on the free features tab. #7149
 - Fix: Fix error handling when remote free extension API returns empty array. #7147
-- Fix: Transformer casing is incorrect and creates an error on case-sensitive systems #7104
+- Fix: Transformer casing is incorrect and creates an error on casesensitive systems #7104
 - Fix: Preventing redundant notices when installing plugins via payments task list. #7026
 - Fix: Autocompleter for custom Search in CompareFilter #6911
 - Fix: Add target to the button to open it in a new tab  #7110
