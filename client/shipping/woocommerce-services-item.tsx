@@ -60,7 +60,8 @@ const WooCommerceServicesItem: React.FC< {
 					{ __(
 						'Print USPS and DHL Express labels straight from your WooCommerce dashboard and save on shipping.',
 						'woocommerce-admin'
-					) }{ ' ' }
+					) }
+					<br />
 					<ExternalLink href="https://woocommerce.com/woocommerce-shipping/">
 						{ __( 'Learn more', 'woocommerce-admin' ) }
 					</ExternalLink>
