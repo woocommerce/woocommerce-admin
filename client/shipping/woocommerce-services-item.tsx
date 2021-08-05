@@ -6,12 +6,18 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { Button, ExternalLink } from '@wordpress/components';
 import { Pill } from '@woocommerce/components';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+/**
+ * Internal dependencies
+ */
+import './woocommerce-services-item.scss';
+import WooIcon from './woo-icon.svg';
 
 const WooCommerceServicesItem: React.FC< {
 	pluginsBeingSetup: Array< string >;
 	onSetupClick: ( slugs: string[] ) => PromiseLike< void >;
 } > = ( { onSetupClick, pluginsBeingSetup } ) => {
+	const wcAdminAssetUrl = getSetting( 'wcAdminAssetUrl', '' );
 	const { createSuccessNotice } = useDispatch( 'core/notices' );
 
 	const isSiteConnectedToJetpack = useSelect( ( select ) =>
@@ -44,10 +50,11 @@ const WooCommerceServicesItem: React.FC< {
 	};
 
 	return (
-		<div className="woocommerce-list__item-inner">
+		<div className="woocommerce-list__item-inner woocommerce-services-item">
 			<div className="woocommerce-list__item-before">
 				<img
-					src="https://woocommerce.com/wp-content/plugins/wccom-plugins/marketplace-suggestions/icons/woocommerce.svg"
+					className="woocommerce-services-item__logo"
+					src={ WooIcon }
 					alt=""
 				/>
 			</div>
