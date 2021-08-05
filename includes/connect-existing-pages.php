@@ -34,6 +34,10 @@ function wc_admin_get_core_pages_to_connect() {
 			'title' => __( 'Settings', 'woocommerce-admin' ),
 			'tabs'  => apply_filters( 'woocommerce_settings_tabs_array', array() ),
 		),
+		'wc-subscriptions'   => array(
+			'title' => __( 'My Subscriptions', 'woocommerce-admin' ),
+			'tabs'  => array(),
+		),
 		'wc-status'   => array(
 			'title' => __( 'Status', 'woocommerce-admin' ),
 			'tabs'  => apply_filters(

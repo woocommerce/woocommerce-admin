@@ -265,6 +265,7 @@ class PageController {
 				'wc-settings' => 'general',
 				'wc-status'   => 'status',
 				'wc-addons'   => 'browse-extensions',
+				'wc-subscriptions' => 'helper',
 			)
 		);
 
