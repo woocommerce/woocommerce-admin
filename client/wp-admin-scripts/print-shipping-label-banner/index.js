@@ -15,7 +15,7 @@ const args =
 
 // Render the header.
 const HydratedShippingBanner = withPluginsHydration( {
-	...window.wcSettings.plugins,
-	jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+	...window.wcSettings.admin.plugins,
+	jetpackStatus: window.wcSettings.admin.dataEndpoints.jetpackStatus,
 } )( ShippingBanner );
 render( <HydratedShippingBanner itemsCount={ args.items } />, metaBox );

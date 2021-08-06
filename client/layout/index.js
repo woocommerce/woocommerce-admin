@@ -202,10 +202,10 @@ _Layout.propTypes = {
 
 const Layout = compose(
 	withPluginsHydration( {
-		...( window.wcSettings.plugins || {} ),
+		...( window.wcSettings.admin.plugins || {} ),
 		jetpackStatus:
-			( window.wcSettings.dataEndpoints &&
-				window.wcSettings.dataEndpoints.jetpackStatus ) ||
+			( window.wcSettings.admin.dataEndpoints &&
+				window.wcSettings.admin.dataEndpoints.jetpackStatus ) ||
 			false,
 	} ),
 	withSelect( ( select, { isEmbedded } ) => {
@@ -260,7 +260,7 @@ const _PageLayout = () => {
 export const PageLayout = compose(
 	window.wcSettings.preloadOptions
 		? withOptionsHydration( {
-				...window.wcSettings.preloadOptions,
+				...window.wcSettings.admin.preloadOptions,
 		  } )
 		: identity
 )( _PageLayout );
@@ -275,9 +275,9 @@ const _EmbedLayout = () => (
 );
 
 export const EmbedLayout = compose(
-	window.wcSettings.preloadOptions
+	window.wcSettings.admin.preloadOptions
 		? withOptionsHydration( {
-				...window.wcSettings.preloadOptions,
+				...window.wcSettings.admin.preloadOptions,
 		  } )
 		: identity
 )( _EmbedLayout );

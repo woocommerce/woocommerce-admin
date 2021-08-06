@@ -10,6 +10,7 @@ use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 use Automattic\WooCommerce\Admin\API\Plugins;
 use Automattic\WooCommerce\Admin\Features\Features;
+use Automattic\WooCommerce\Admin\WCAdminSettingsRegistry;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 use WC_Marketplace_Suggestions;
 
@@ -69,6 +70,7 @@ class Loader {
 	 */
 	public function __construct() {
 		Features::get_instance();
+		WCAdminSettingsRegistry::get_instance();
 		add_action( 'init', array( __CLASS__, 'define_tables' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );
@@ -76,7 +78,7 @@ class Loader {
 		// Old settings injection.
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'add_component_settings' ) );
 		// New settings injection.
-		add_filter( 'woocommerce_shared_settings', array( __CLASS__, 'add_component_settings' ) );
+		add_filter( 'woocommerce_admin_shared_settings', array( __CLASS__, 'add_component_settings' ) );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_page_handler' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_store_details_page' ) );

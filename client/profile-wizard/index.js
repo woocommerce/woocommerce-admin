@@ -328,10 +328,11 @@ export default compose(
 			updateProfileItems,
 		};
 	} ),
-	window.wcSettings.plugins
+	window.wcSettings.admin.plugins
 		? withPluginsHydration( {
-				...window.wcSettings.plugins,
-				jetpackStatus: window.wcSettings.dataEndpoints.jetpackStatus,
+				...window.wcSettings.admin.plugins,
+				jetpackStatus:
+					window.wcSettings.admin.dataEndpoints.jetpackStatus,
 		  } )
 		: identity
 )( ProfileWizard );

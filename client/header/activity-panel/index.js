@@ -292,7 +292,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			icon: <Icon icon={ external } />,
 			visible: query.page === 'wc-admin' && query.task === 'appearance',
 			onClick: () => {
-				window.open( window.wcSettings.siteUrl );
+				window.open( window.wcSettings.admin.siteUrl );
 				recordEvent(
 					'wcadmin_tasklist_previewsite',
 					previewSiteBtnTrackData

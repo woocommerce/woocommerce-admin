@@ -51,23 +51,8 @@ class Homescreen {
 		}
 		add_filter( 'woocommerce_admin_preload_options', array( $this, 'preload_options' ) );
 
-		add_filter( 'woocommerce_shared_settings', array( $this, 'component_settings' ), 20 );
-		\Automattic\WooCommerce\Admin\WCAdminSettingsRegistry::instance()->add( 'orderCount', array( $this, 'component_settings_order_count' ) );
+		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 20 );
 	}
-
-	/**
-	 * Add data to the shared component settings.
-	 */
-	public function component_settings_order_count() {
-		$allowed_statuses = Loader::get_order_statuses( wc_get_order_statuses() );
-
-		// Remove the Draft Order status (from the Checkout Block).
-		unset( $allowed_statuses['checkout-draft'] );
-
-		$status_counts = array_map( 'wc_orders_count', array_keys( $allowed_statuses ) );
-		return array_sum( $status_counts );
-	}
-
 
 	/**
 	 * Add data to the shared component settings.
