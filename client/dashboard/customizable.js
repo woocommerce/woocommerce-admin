@@ -52,8 +52,9 @@ const mergeSectionsWithDefaults = ( prefSections ) => {
 		if ( ! defaultSection ) {
 			return;
 		}
-		const prefSection =
-			prefSections.find( ( section ) => section.key === key ) || {};
+		const prefSection = prefSections.find(
+			( section ) => section.key === key
+		);
 		// Not defined by a string anymore.
 		if ( prefSection ) {
 			delete prefSection.icon;
