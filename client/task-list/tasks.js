@@ -17,6 +17,7 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import Appearance from './tasks/appearance';
 import { getCategorizedOnboardingProducts } from '../dashboard/utils';
+import { Marketing, getMarketingExtensionLists } from './tasks/Marketing';
 import { Products } from './tasks/products';
 import Shipping from './tasks/shipping';
 import Tax from './tasks/tax';
@@ -48,6 +49,7 @@ export function getAllTasks( {
 	activePlugins,
 	countryCode,
 	createNotice,
+	freeExtensions,
 	installAndActivatePlugins,
 	installedPlugins,
 	isJetpackConnected,
@@ -156,6 +158,15 @@ export function getAllTasks( {
 			'woocommerce-admin'
 		);
 	}
+
+	const [
+		installedMarketingExtensions,
+		marketingExtensionsLists,
+	] = getMarketingExtensionLists(
+		freeExtensions,
+		activePlugins,
+		installedPlugins
+	);
 
 	const tasks = [
 		{
@@ -325,6 +336,26 @@ export function getAllTasks( {
 			visible:
 				( productTypes && productTypes.includes( 'physical' ) ) ||
 				hasPhysicalProducts,
+			time: __( '1 minute', 'woocommerce-admin' ),
+			type: 'setup',
+		},
+		{
+			key: 'marketing',
+			title: __( 'Set up marketing tools', 'woocommerce-admin' ),
+			content: __(
+				'Add recommended marketing tools to reach new customers and grow your business',
+				'woocommerce-admin'
+			),
+			container: <Marketing />,
+			onClick: () => {
+				onTaskSelect( 'marketing' );
+				updateQueryString( { task: 'marketing' } );
+			},
+			completed: !! installedMarketingExtensions.length,
+			visible:
+				window.wcAdminFeatures &&
+				window.wcAdminFeatures[ 'remote-free-extensions' ] &&
+				!! marketingExtensionsLists.length,
 			time: __( '1 minute', 'woocommerce-admin' ),
 			type: 'setup',
 		},
