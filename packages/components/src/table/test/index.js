@@ -154,4 +154,21 @@ describe( 'TableCard', () => {
 			'is-left-aligned'
 		);
 	} );
+	it( 'should render headers having class is-left-aligned if isLeftAligned is not set and isNumeric is false', () => {
+		mockHeaders[ 3 ].isNumeric = false;
+
+		render(
+			<TableCard
+				title="Revenue"
+				headers={ mockHeaders }
+				isLoading={ false }
+				rowsPerPage={ 5 }
+				totalRows={ 5 }
+			/>
+		);
+
+		expect( screen.getAllByRole( 'columnheader' )[ 3 ] ).toHaveClass(
+			'is-left-aligned'
+		);
+	} );
 } );
