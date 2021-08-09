@@ -1,4 +1,4 @@
-== 2.5.0 08/03/2021 == 
+== 2.5.0 08/09/2021 == 
 
 - Add: Add a delete option to completed tasks #7300
 - Add: Add unit tests around extended payment gateway controller #7133
@@ -48,6 +48,10 @@
 - Fix: Fix orders panel not displaying any orders when analytics is disabled #7395
 - Fix: Fix recommended card Gutenberg CSS conflict #7409
 - Fix: Update tooltip styling to fix new Gutenberg updates. #7414
+- Fix: Allow super admins all capabilities within WooCommerce Admin
+- Fix: Fix analytics overview re-arrangement on initial load. #7475
+- Fix: Fixes action button mis-alignment within card footer. #7412
+- Fix: Fix up onboarding profiler not working when opted out of tracking
 - Tweak: Remove performance indicators when Analytics Flag disabled #7234
 - Tweak: Change event name when installing Google Listings and Ads. #7276
 - Tweak: Removed unused feature flags #7233 and #7273
