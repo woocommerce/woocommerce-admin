@@ -22,19 +22,19 @@ function wc_admin_get_core_pages_to_connect() {
 	}
 
 	return array(
-		'wc-addons'        => array(
+		'wc-addons'   => array(
 			'title' => __( 'Marketplace', 'woocommerce-admin' ),
 			'tabs'  => array(),
 		),
-		'wc-reports'       => array(
+		'wc-reports'  => array(
 			'title' => __( 'Reports', 'woocommerce-admin' ),
 			'tabs'  => $report_tabs,
 		),
-		'wc-settings'      => array(
+		'wc-settings' => array(
 			'title' => __( 'Settings', 'woocommerce-admin' ),
 			'tabs'  => apply_filters( 'woocommerce_settings_tabs_array', array() ),
 		),
-		'wc-status'        => array(
+		'wc-status'   => array(
 			'title' => __( 'Status', 'woocommerce-admin' ),
 			'tabs'  => apply_filters(
 				'woocommerce_admin_status_tabs',
@@ -44,10 +44,6 @@ function wc_admin_get_core_pages_to_connect() {
 					'logs'   => __( 'Logs', 'woocommerce-admin' ),
 				)
 			),
-		),
-		'wc-subscriptions' => array(
-			'title' => __( 'My Subscriptions', 'woocommerce-admin' ),
-			'tabs'  => array(),
 		),
 	);
 }
@@ -60,7 +56,6 @@ function wc_admin_get_core_pages_to_connect() {
  */
 function wc_admin_filter_core_page_breadcrumbs( $breadcrumbs ) {
 	$screen_id              = PageController::get_instance()->get_current_screen_id();
-	$screen_id              = fix_helper_screen_id( $screen_id );
 	$pages_to_connect       = wc_admin_get_core_pages_to_connect();
 	$woocommerce_breadcrumb = array(
 		'admin.php?page=wc-admin',
@@ -111,7 +106,6 @@ function wc_admin_filter_core_page_breadcrumbs( $breadcrumbs ) {
 function wc_admin_connect_core_pages( $is_connected, $current_page ) {
 	if ( false === $is_connected && false === $current_page ) {
 		$screen_id        = PageController::get_instance()->get_current_screen_id();
-		$screen_id        = fix_helper_screen_id( $screen_id );
 		$pages_to_connect = wc_admin_get_core_pages_to_connect();
 
 		foreach ( $pages_to_connect as $page_id => $page_data ) {
@@ -127,21 +121,6 @@ function wc_admin_connect_core_pages( $is_connected, $current_page ) {
 }
 
 add_filter( 'woocommerce_navigation_is_connected_page', 'wc_admin_connect_core_pages', 10, 2 );
-
-/**
- * Set a special screen ID for My Subscriptions page.
- * We want to maintain existing page URL wc-addons&section=helper, so it can't be set the usual way.
- *
- * @param string $screen_id ID of the current page.
- * @return string ID of the current page.
- */
-function fix_helper_screen_id( $screen_id ) {
-	if ( 'woocommerce_page_wc-addons-browse-extensions-helper' === $screen_id ) {
-		$screen_id = 'woocommerce_page_wc-subscriptions-helper';
-	}
-
-	return $screen_id;
-}
 
 $posttype_list_base = 'edit.php';
 
@@ -313,5 +292,15 @@ wc_admin_connect_page(
 		'parent'    => 'woocommerce-products',
 		'screen_id' => 'product_page_product_attribute-edit',
 		'title'     => __( 'Edit attribute', 'woocommerce-admin' ),
+	)
+);
+
+// WooCommerce > My Subscriptions.
+wc_admin_connect_page(
+	array(
+		'id'        => 'wc-subscriptions',
+		'screen_id' => 'woocommerce_page_wc-addons-browse-extensions-helper',
+		'title'     => __( 'My Subscriptions', 'woocommerce-admin' ),
+		'path'      => 'admin.php?page=wc-addons&section=helper',
 	)
 );
