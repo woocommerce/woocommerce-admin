@@ -1,0 +1,4 @@
+Significance: patch
+Type: Fix
+
+Fix blank screen on analytics categories when searching #7482
