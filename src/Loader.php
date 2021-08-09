@@ -1070,10 +1070,6 @@ class Loader {
 		$user_response     = $user_controller->get_current_item( $request );
 		$current_user_data = is_wp_error( $user_response ) ? (object) array() : $user_response->get_data();
 
-		if ( isset( $current_user_data['id'] ) ) {
-			$current_user_data['is_super_admin'] = is_super_admin( $current_user_data['id'] );
-		}
-
 		$settings['currentUserData']      = $current_user_data;
 		$settings['reviewsEnabled']       = get_option( 'woocommerce_enable_reviews' );
 		$settings['manageStock']          = get_option( 'woocommerce_manage_stock' );
@@ -1262,6 +1258,16 @@ class Loader {
 	 * Registers WooCommerce specific user data to the WordPress user API.
 	 */
 	public static function register_user_data() {
+		register_rest_field(
+			'user',
+			'is_super_admin',
+			array(
+				'get_callback' => function() {
+					return is_super_admin();
+				},
+				'schema'       => null,
+			)
+		);
 		register_rest_field(
 			'user',
 			'woocommerce_meta',
