@@ -17,6 +17,7 @@ import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { withDispatch } from '@wordpress/data';
 import { H, Spinner } from '@woocommerce/components';
+import { isWpVersion } from '@woocommerce/settings';
 
 class ThemeUploader extends Component {
 	constructor() {
@@ -68,10 +69,13 @@ class ThemeUploader extends Component {
 		const classes = classnames( 'woocommerce-theme-uploader', className, {
 			'is-uploading': isUploading,
 		} );
+		const DropZoneWrapper = isWpVersion( '5.8', '>=' )
+			? Fragment
+			: DropZoneProvider;
 
 		return (
 			<Card className={ classes }>
-				<DropZoneProvider>
+				<DropZoneWrapper>
 					{ ! isUploading ? (
 						<Fragment>
 							<FormFileUpload
@@ -114,7 +118,7 @@ class ThemeUploader extends Component {
 							</p>
 						</Fragment>
 					) }
-				</DropZoneProvider>
+				</DropZoneWrapper>
 			</Card>
 		);
 	}
