@@ -65,7 +65,7 @@
 - Fix: Invalidate task status when enabling a payment gateway #7330
 - Fix: Redirect to homescreen after payment gateway setup #7332
 - Fix: Create workable defaults for Reports that don’t have AdvancedFilters #7186
-- Sync the category lookup table when a new category gets created #7290
+- Fix: Sync the category lookup table when a new category gets created #7290
 - Fix: Set default value for performanceIndicators variable #7343
 - Fix: Add limit clause to coupons data store query #7399
 - Fix: Fix analytics filter Gutenberg CSS conflict #7410
