@@ -73,10 +73,10 @@
 - Fix: Fix orders panel not displaying any orders when analytics is disabled #7395
 - Fix: Fix recommended card Gutenberg CSS conflict #7409
 - Fix: Update tooltip styling to fix new Gutenberg updates. #7414
-- Fix: Allow super admins all capabilities within WooCommerce Admin
+- Fix: Allow super admins all capabilities within WooCommerce Admin #7489
 - Fix: Fix analytics overview re-arrangement on initial load. #7475
 - Fix: Fixes action button mis-alignment within card footer. #7412
-- Fix: Fix up onboarding profiler not working when opted out of tracking
+- Fix: Fix up onboarding profiler not working when opted out of tracking #7490
 - Tweak: Remove performance indicators when Analytics Flag disabled #7234
 - Tweak: Change event name when installing Google Listings and Ads. #7276
 - Tweak: Removed unused feature flags #7233 and #7273
