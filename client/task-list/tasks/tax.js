@@ -506,7 +506,7 @@ export default compose(
 		const { getSettings, isUpdateSettingsRequesting } = select(
 			SETTINGS_STORE_NAME
 		);
-		const { getOption, isResolving: isOptionResolving } = select(
+		const { getOption, hasFinishedResolution } = select(
 			OPTIONS_STORE_NAME
 		);
 		const {
@@ -546,10 +546,10 @@ export default compose(
 			isUpdateSettingsRequesting( 'general' );
 		const isResolving =
 			isPluginsRequesting( 'getJetpackConnectUrl' ) ||
-			isOptionResolving( 'getOption', [
+			! hasFinishedResolution( 'getOption', [
 				'woocommerce_setup_jetpack_opted_in',
 			] ) ||
-			isOptionResolving( 'getOption', [ 'wc_connect_options' ] ) ||
+			! hasFinishedResolution( 'getOption', [ 'wc_connect_options' ] ) ||
 			jetpackOptIn === undefined ||
 			connectOptions === undefined;
 

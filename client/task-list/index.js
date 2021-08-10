@@ -31,7 +31,7 @@ import TaskListPlaceholder from './placeholder';
 const taskDashboardSelect = ( select ) => {
 	const { getProfileItems, getTasksStatus } = select( ONBOARDING_STORE_NAME );
 	const { getSettings } = select( SETTINGS_STORE_NAME );
-	const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
+	const { getOption, hasFinishedResolution } = select( OPTIONS_STORE_NAME );
 	const {
 		getActivePlugins,
 		getInstalledPlugins,
@@ -81,21 +81,25 @@ const taskDashboardSelect = ( select ) => {
 		trackedCompletedTasks,
 		hasCompleteAddress,
 		isResolving:
-			isResolving( 'getOption', [ 'woocommerce_task_list_complete' ] ) ||
-			isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] ) ||
-			isResolving( 'getOption', [
+			! hasFinishedResolution( 'getOption', [
+				'woocommerce_task_list_complete',
+			] ) ||
+			! hasFinishedResolution( 'getOption', [
+				'woocommerce_task_list_hidden',
+			] ) ||
+			! hasFinishedResolution( 'getOption', [
 				'woocommerce_extended_task_list_complete',
 			] ) ||
-			isResolving( 'getOption', [
+			! hasFinishedResolution( 'getOption', [
 				'woocommerce_extended_task_list_hidden',
 			] ) ||
-			isResolving( 'getOption', [
+			! hasFinishedResolution( 'getOption', [
 				'woocommerce_task_list_remind_me_later_tasks',
 			] ) ||
-			isResolving( 'getOption', [
+			! hasFinishedResolution( 'getOption', [
 				'woocommerce_task_list_tracked_completed_tasks',
 			] ) ||
-			isResolving( 'getOption', [
+			! hasFinishedResolution( 'getOption', [
 				'woocommerce_task_list_dismissed_tasks',
 			] ),
 	};

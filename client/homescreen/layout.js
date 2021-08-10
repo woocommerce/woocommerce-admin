@@ -184,7 +184,7 @@ Layout.propTypes = {
 export default compose(
 	withSelect( ( select ) => {
 		const { isNotesRequesting } = select( NOTES_STORE_NAME );
-		const { getOption, isResolving, hasFinishedResolution } = select(
+		const { getOption, hasFinishedResolution } = select(
 			OPTIONS_STORE_NAME
 		);
 
@@ -234,9 +234,7 @@ export default compose(
 				isTaskListHidden &&
 				getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes',
 			taskListComplete:
-				! isResolving( 'getOption', [
-					'woocommerce_task_list_complete',
-				] ) && getOption( 'woocommerce_task_list_complete' ) === 'yes',
+				getOption( 'woocommerce_task_list_complete' ) === 'yes',
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {

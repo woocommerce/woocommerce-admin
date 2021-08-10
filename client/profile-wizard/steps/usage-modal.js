@@ -177,14 +177,16 @@ export default compose(
 			getOption,
 			getOptionsUpdatingError,
 			isOptionsUpdating,
-			isResolving,
+			hasFinishedResolution,
 		} = select( OPTIONS_STORE_NAME );
 
 		return {
 			allowTracking: getOption( 'woocommerce_allow_tracking' ) === 'yes',
 			isRequesting: Boolean( isOptionsUpdating() ),
 			isResolving:
-				isResolving( 'getOption', [ 'woocommerce_allow_tracking' ] ) ||
+				! hasFinishedResolution( 'getOption', [
+					'woocommerce_allow_tracking',
+				] ) ||
 				typeof getOption( 'woocommerce_allow_tracking' ) ===
 					'undefined',
 			hasErrors: Boolean( getOptionsUpdatingError() ),
