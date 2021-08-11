@@ -25,3 +25,5 @@ Please add your test instructions to `/TESTING-INSTRUCTIONS.md`.
 <!--- Please add a Changelog note
 
 Enter a changelog note using the following CLI command `npm run changelogger -- add` and commit changes. --->
+
+- [ ] Include test instructions in the release
