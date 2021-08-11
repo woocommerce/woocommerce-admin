@@ -4,7 +4,7 @@
 
 ### Making business details sticky in OBW #7426
 
-1. Start out with fresh store
+1. Start out with a fresh store
 2. Start the on-boarding wizard and move through to the "Business details" step
 3. Fill out items, and then hit Continue to move to "Free features" tab
 4. Then, before hitting Continue again, click "Business details" tab above to move back to that step
