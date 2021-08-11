@@ -55,7 +55,7 @@ const useInstallPlugin = () => {
 const ShippingRecommendationsList: React.FC = ( { children } ) => (
 	<DismissableList
 		className="woocommerce-recommended-shipping-extensions"
-		dismissOptionName="woocommerce_setting_shipping_recommendations_hidden"
+		dismissOptionName="woocommerce_settings_shipping_recommendations_hidden"
 	>
 		<DismissableListHeading>
 			<Text variant="title.small" as="p" size="20" lineHeight="28px">
