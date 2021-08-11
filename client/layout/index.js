@@ -200,13 +200,12 @@ _Layout.propTypes = {
 	} ).isRequired,
 };
 
+const dataEndpoints = getSetting( 'dataEndpoints' );
 const Layout = compose(
 	withPluginsHydration( {
-		...( window.wcSettings.admin.plugins || {} ),
+		...getSetting( 'plugins', {} ),
 		jetpackStatus:
-			( window.wcSettings.admin.dataEndpoints &&
-				window.wcSettings.admin.dataEndpoints.jetpackStatus ) ||
-			false,
+			( dataEndpoints && dataEndpoints.jetpackStatus ) || false,
 	} ),
 	withSelect( ( select, { isEmbedded } ) => {
 		// Embedded pages don't send plugin info to Tracks.
@@ -260,7 +259,7 @@ const _PageLayout = () => {
 export const PageLayout = compose(
 	window.wcSettings.preloadOptions
 		? withOptionsHydration( {
-				...window.wcSettings.admin.preloadOptions,
+				...getSetting( 'preloadOptions', {} ),
 		  } )
 		: identity
 )( _PageLayout );
@@ -275,9 +274,9 @@ const _EmbedLayout = () => (
 );
 
 export const EmbedLayout = compose(
-	window.wcSettings.admin.preloadOptions
+	getSetting( 'preloadOptions' )
 		? withOptionsHydration( {
-				...window.wcSettings.admin.preloadOptions,
+				...getSetting( 'preloadOptions' ),
 		  } )
 		: identity
 )( _EmbedLayout );

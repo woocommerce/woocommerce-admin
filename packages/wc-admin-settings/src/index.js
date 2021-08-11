@@ -5,14 +5,18 @@ import { __ } from '@wordpress/i18n';
 
 // Remove mutable data from settings object to prevent access. Data stores should be used instead.
 const mutableSources = [ 'wcAdminSettings', 'preloadSettings' ];
-const settings =
-	typeof wcSettings === 'object' && wcSettings.admin ? wcSettings.admin : {};
+const settings = typeof wcSettings === 'object' && wcSettings ? wcSettings : {};
 const SOURCE = Object.keys( settings ).reduce( ( source, key ) => {
 	if ( ! mutableSources.includes( key ) ) {
 		source[ key ] = settings[ key ];
 	}
 	return source;
 }, {} );
+Object.keys( settings.admin || {} ).forEach( ( key ) => {
+	if ( ! mutableSources.includes( key ) ) {
+		SOURCE[ key ] = settings.admin[ key ];
+	}
+} );
 
 export const ADMIN_URL = SOURCE.adminUrl;
 export const COUNTRIES = SOURCE.countries;

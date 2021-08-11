@@ -33,5 +33,5 @@ const MarketingOverview = () => {
 };
 
 export default withOptionsHydration( {
-	...( window.wcSettings.admin.preloadOptions || {} ),
+	...getSetting( 'preloadOptions', {} ),
 } )( MarketingOverview );

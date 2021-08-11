@@ -21,7 +21,7 @@ import {
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -328,11 +328,10 @@ export default compose(
 			updateProfileItems,
 		};
 	} ),
-	window.wcSettings.admin.plugins
+	getSetting( 'plugins' )
 		? withPluginsHydration( {
-				...window.wcSettings.admin.plugins,
-				jetpackStatus:
-					window.wcSettings.admin.dataEndpoints.jetpackStatus,
+				...getSetting( 'plugins' ),
+				jetpackStatus: getSetting( 'dataEndpoints', {} ).jetpackStatus,
 		  } )
 		: identity
 )( ProfileWizard );

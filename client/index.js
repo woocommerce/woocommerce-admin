@@ -7,6 +7,7 @@ import {
 	withCurrentUserHydration,
 	withSettingsHydration,
 } from '@woocommerce/data';
+import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
@@ -23,20 +24,21 @@ __webpack_public_path__ = global.wcAdminAssets.path;
 const appRoot = document.getElementById( 'root' );
 const embeddedRoot = document.getElementById( 'woocommerce-embedded-root' );
 const settingsGroup = 'wc_admin';
-const hydrateUser = window.wcSettings.admin.currentUserData;
+const hydrateUser = getSetting( 'currentUserData' );
 
 if ( appRoot ) {
 	let HydratedPageLayout = withSettingsHydration(
 		settingsGroup,
 		window.wcSettings.admin
 	)( PageLayout );
-	const hydrateSettings =
-		window.wcSettings.admin.preloadSettings &&
-		window.wcSettings.admin.preloadSettings.general;
+	const preloadSettings = window.wcSettings.admin
+		? window.wcSettings.admin.preloadSettings
+		: false;
+	const hydrateSettings = preloadSettings && preloadSettings.general;
 
 	if ( hydrateSettings ) {
 		HydratedPageLayout = withSettingsHydration( 'general', {
-			general: window.wcSettings.admin.preloadSettings.general,
+			general: preloadSettings.general,
 		} )( HydratedPageLayout );
 	}
 	if ( hydrateUser ) {

@@ -54,7 +54,7 @@ export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 export const getPages = () => {
 	const pages = [];
 	const initialBreadcrumbs = [
-		[ '', wcSettings.admin.woocommerceTranslation ],
+		[ '', getSetting( 'woocommerceTranslation' ) ],
 	];
 
 	pages.push( {
