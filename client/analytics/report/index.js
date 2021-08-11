@@ -7,7 +7,7 @@ import { withSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import { getQuery, getSearchWords } from '@woocommerce/navigation';
-import { searchItemsByString, ITEMS_STORE_NAME } from '@woocommerce/data';
+import { searchItemsByString } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -89,9 +89,6 @@ export default compose(
 		const query = getQuery();
 		const { search } = query;
 
-		/* eslint @wordpress/no-unused-vars-before-return: "off" */
-		const itemsSelector = select( ITEMS_STORE_NAME );
-
 		if ( ! search ) {
 			return {};
 		}
@@ -104,9 +101,12 @@ export default compose(
 				? 'products'
 				: report;
 		const itemsResult = searchItemsByString(
-			itemsSelector,
+			select,
 			mappedReport,
-			searchWords
+			searchWords,
+			{
+				per_page: 100,
+			}
 		);
 		const { isError, isRequesting, items } = itemsResult;
 		const ids = Object.keys( items );

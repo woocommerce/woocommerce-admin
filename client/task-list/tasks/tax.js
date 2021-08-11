@@ -386,7 +386,7 @@ class Tax extends Component {
 									components: {
 										link: (
 											<Link
-												href="https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/#section-1"
+												href="https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/?utm_medium=product#section-1"
 												target="_blank"
 												type="external"
 											/>
@@ -506,10 +506,9 @@ export default compose(
 		const { getSettings, isUpdateSettingsRequesting } = select(
 			SETTINGS_STORE_NAME
 		);
-		const { getOption, isResolving: isOptionResolving } = select(
+		const { getOption, hasFinishedResolution } = select(
 			OPTIONS_STORE_NAME
 		);
-
 		const {
 			getActivePlugins,
 			isJetpackConnected,
@@ -547,10 +546,12 @@ export default compose(
 			isUpdateSettingsRequesting( 'general' );
 		const isResolving =
 			isPluginsRequesting( 'getJetpackConnectUrl' ) ||
-			isOptionResolving( 'getOption', [
+			! hasFinishedResolution( 'getOption', [
 				'woocommerce_setup_jetpack_opted_in',
 			] ) ||
-			jetpackOptIn === undefined;
+			! hasFinishedResolution( 'getOption', [ 'wc_connect_options' ] ) ||
+			jetpackOptIn === undefined ||
+			connectOptions === undefined;
 
 		return {
 			countryCode,

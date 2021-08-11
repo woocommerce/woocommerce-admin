@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\SpecRunner;
+use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\DefaultFreeExtensions;
 
 /**
  * Remote Payment Methods engine.
@@ -21,21 +22,33 @@ class Init {
 	 */
 	public function __construct() {
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
+		add_action( 'woocommerce_admin_updated', array( __CLASS__, 'delete_specs_transient' ) );
 	}
 
 	/**
 	 * Go through the specs and run them.
 	 */
 	public static function get_extensions() {
-		$methods = array();
+		$bundles = array();
 		$specs   = self::get_specs();
 
 		foreach ( $specs as $spec ) {
-			$method    = EvaluateExtension::evaluate( $spec );
-			$methods[] = $method;
+			$spec              = (object) $spec;
+			$bundle            = (array) $spec;
+			$bundle['plugins'] = array();
+
+			foreach ( $spec->plugins as $plugin ) {
+				$extension = EvaluateExtension::evaluate( (object) $plugin );
+
+				if ( ! property_exists( $extension, 'is_visible' ) || $extension->is_visible ) {
+					$bundle['plugins'][] = $extension;
+				}
+			}
+
+			$bundles[] = $bundle;
 		}
 
-		return $methods;
+		return $bundles;
 	}
 
 	/**
@@ -53,48 +66,20 @@ class Init {
 
 		// Fetch specs if they don't yet exist.
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
-			// We are running too early, need to poll data sources first.
+			if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+				return DefaultFreeExtensions::get_all();
+			}
+
 			$specs = DataSourcePoller::read_specs_from_data_sources();
-			// Localize top level.
-			$specs = self::localize( $specs );
-			// Localize plugins.
-			foreach ( $specs as $spec ) {
-				$spec->plugins = self::localize( $spec->plugins );
+
+			// Fall back to default specs if polling failed.
+			if ( ! $specs || empty( $specs ) ) {
+				return DefaultFreeExtensions::get_all();
 			}
 
 			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
 		}
 
 		return $specs;
-	}
-
-	/**
-	 * Localize the provided method.
-	 *
-	 * @param array $specs The specs to localize.
-	 * @return array Localized specs.
-	 */
-	public static function localize( $specs ) {
-		$localized_specs = array();
-
-		foreach ( $specs as $spec ) {
-			if ( ! isset( $spec->locales ) ) {
-				continue;
-			}
-
-			$locale = SpecRunner::get_locale( $spec->locales );
-
-			// Skip specs where no matching locale is found.
-			if ( ! $locale ) {
-				continue;
-			}
-
-			$data = (object) array_merge( (array) $locale, (array) $spec );
-			unset( $data->locales );
-
-			$localized_specs[] = $data;
-		}
-
-		return $localized_specs;
 	}
 }

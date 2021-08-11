@@ -2,7 +2,18 @@
 
 ## Unreleased
 
-### Fix WC Home crash when the Analytics is disabled.
+### Match stock status value in CSV download to the table #7284
+
+1. Clone this branch and run npm start
+2. Add some products and set stock value.
+3. Place an order and make it completed.
+4. Navigate to Analytics -> Stocks
+5. Click the Download button.
+6. Open the downloaded file and confirm the status values match the table.
+
+## 2.5.0
+
+### Fix WC Home crash when the Analytics is disabled #7339
 
 1. Navigate to WooCommerce -> Settings -> Advanced -> Features. Uncheck Analytics and save the changes.
 2. Navigate to WooCommerce -> Home and confirm the page loads without an error.
@@ -72,6 +83,7 @@ Please make sure to test it on Safari as well.
 4. Go to WooCommerce->Home.
 5. Click on "Set up Tax" option on Task list.
 6. TOS should not blink. 
+
 
 ### Use saved values if available when switching tabs #7226
 

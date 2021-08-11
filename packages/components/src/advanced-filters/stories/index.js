@@ -145,6 +145,32 @@ const advancedFilters = {
 				type: 'currency',
 			},
 		},
+		date: {
+			labels: {
+				add: 'Date',
+				remove: 'Remove date filter',
+				rule: 'Select a date filter match',
+				title: '{{title}}Date{{/title}} {{rule /}} {{filter /}}',
+				filter: 'Select a transaction date',
+			},
+			rules: [
+				{
+					value: 'before',
+					label: 'Before',
+				},
+				{
+					value: 'after',
+					label: 'After',
+				},
+				{
+					value: 'between',
+					label: 'Between',
+				},
+			],
+			input: {
+				component: 'Date',
+			},
+		},
 	},
 };
 
