@@ -4,7 +4,7 @@ Test Instruction Logger retrives test instructions from the PRs in the `changelo
 
 ## Prerequisites
 
-Test Instruction Logger requires Github username and perosnal access token to use Github REST API.
+Test Instruction Logger requires Github username and a personal access token to use the Github REST API.
 
 1. Follow this [guide](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create a new personal access token.
 2. Run `npm run test-instruction-logger github-credentials`. Enter your Github username and the perosnal access token. The data will be saved in `$HOME/.wca-test-instruction-logger.json`
