@@ -151,11 +151,21 @@ class BusinessDetails extends Component {
 		};
 
 		// Remove possible empty values like `revenue` and `other_platform`.
-		Object.keys( updates ).forEach(
-			( key ) => updates[ key ] === '' && delete updates[ key ]
+		const finalUpdates = Object.entries( updates ).reduce(
+			( acc, [ key, val ] ) => {
+				if ( val !== '' ) {
+					return {
+						...acc,
+						[ key ]: val,
+					};
+				}
+
+				return acc;
+			},
+			{}
 		);
 
-		return updateProfileItems( updates ).catch( () => {
+		return updateProfileItems( finalUpdates ).catch( () => {
 			throw new Error();
 		} );
 	}
