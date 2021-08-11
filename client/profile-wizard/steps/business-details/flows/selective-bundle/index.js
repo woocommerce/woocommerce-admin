@@ -96,7 +96,7 @@ class BusinessDetails extends Component {
 		} );
 
 		const promises = [
-			this.pushProfileUpdates( {
+			this.persistProfileItems( {
 				business_extensions: businessExtensions,
 			} ),
 		];
@@ -129,7 +129,7 @@ class BusinessDetails extends Component {
 			} );
 	}
 
-	async pushProfileUpdates( additions = {} ) {
+	async persistProfileItems( additions = {} ) {
 		const { updateProfileItems } = this.props;
 
 		const {
@@ -379,7 +379,10 @@ class BusinessDetails extends Component {
 								<CardFooter isBorderless justify="center">
 									<Button
 										isPrimary
-										onClick={ handleSubmit }
+										onClick={ () => {
+											this.persistProfileItems();
+											handleSubmit();
+										} }
 										disabled={ ! isValidForm }
 										isBusy={ isInstallingActivating }
 									>
@@ -396,7 +399,7 @@ class BusinessDetails extends Component {
 									{ hasInstallActivateError && (
 										<Button
 											onClick={ () => {
-												this.pushProfileUpdates();
+												this.persistProfileItems();
 												goToNextStep();
 											} }
 										>
