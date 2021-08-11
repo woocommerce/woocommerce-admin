@@ -1,6 +1,6 @@
 @import './stylesheets/variables';
-@import './components/container/style';
-@import './components/header/style';
+@import './components/container/container';
+@import './components/header/header';
 
 .woocommerce-navigation {
 	position: relative;
@@ -28,12 +28,12 @@
 	position: absolute;
 	top: $header-height;
 	width: 100%;
-	height: calc(100vh - #{$header-height + $adminbar-height});
+	height: calc( 100vh - #{$header-height + $adminbar-height} );
 	overflow-y: auto;
 }
 
 .is-wp-toolbar-disabled .woocommerce-navigation__wrapper {
-	height: calc(100vh - #{$header-height});
+	height: calc( 100vh - #{$header-height} );
 }
 
 body.is-wc-nav-expanded {
@@ -43,7 +43,7 @@ body.is-wc-nav-expanded {
 	}
 
 	font > .xdebug-error {
-		margin-left: calc(#{$navigation-width} + #{$gap});
+		margin-left: calc( #{$navigation-width} + #{$gap} );
 	}
 }
 
@@ -132,7 +132,7 @@ body.is-wc-nav-folded {
 		margin-bottom: -$adminbar-height;
 	}
 
-	&:not(.is-wp-toolbar-disabled) {
+	&:not( .is-wp-toolbar-disabled ) {
 		#wpbody-content {
 			margin-top: $adminbar-height;
 		}
