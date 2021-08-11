@@ -6,7 +6,7 @@
 
 1. Start out with a fresh store
 2. Start the on-boarding wizard and move through to the "Business details" step
-3. Fill out items, and then hit Continue to move to "Free features" tab
+3. Fill out items, and then hit Continue to move to the "Free features" tab
 4. Then, before hitting Continue again, click the "Business details" tab above to move back to that step
 5. Confirm that the previously selected values are still correct
 
