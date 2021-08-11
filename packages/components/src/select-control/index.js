@@ -539,6 +539,10 @@ SelectControl.propTypes = {
 	 * Render results list positioned statically instead of absolutely.
 	 */
 	staticList: PropTypes.bool,
+	/**
+	 * autocomplete prop for the Control input field.
+	 */
+	autoComplete: PropTypes.string,
 };
 
 SelectControl.defaultProps = {
@@ -559,6 +563,7 @@ SelectControl.defaultProps = {
 	showClearButton: false,
 	hideBeforeSearch: false,
 	staticList: false,
+	autoComplete: 'off',
 };
 
 export default compose( [

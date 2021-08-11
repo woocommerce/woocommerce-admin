@@ -40,6 +40,7 @@ const DEFAULT_OPTIONS = [
 	{ key: 'CA:AB', label: 'Canada — Alberta' },
 	{ key: 'CA:BC', label: 'Canada — British Columbia' },
 	{ key: 'CA:MB', label: 'Canada — Manitoba' },
+	{ key: 'US:CA', label: 'United States - California' },
 ];
 describe( 'useGetCountryStateAutofill', () => {
 	it( 'should render a country and state inputs with autoComplete', () => {
@@ -62,6 +63,22 @@ describe( 'useGetCountryStateAutofill', () => {
 		expect( inputs.length ).toBe( 2 );
 		expect( inputs[ 0 ].value ).toEqual( 'Canada' );
 		expect( inputs[ 1 ].value ).toEqual( 'Manitoba' );
+	} );
+
+	it( 'should select region by key if abbreviation is used', () => {
+		const onChange = jest.fn();
+		const { queryAllByRole } = render(
+			<AutofillWrapper
+				options={ [ ...DEFAULT_OPTIONS ] }
+				onChange={ onChange }
+			/>
+		);
+		const inputs = queryAllByRole( 'textbox' );
+		fireEvent.change( inputs[ 0 ], { target: { value: 'United States' } } );
+		fireEvent.change( inputs[ 1 ], {
+			target: { value: 'CA' },
+		} );
+		expect( onChange ).toHaveBeenCalledWith( { countryState: 'US:CA' } );
 	} );
 
 	it( 'should update the value if the auto complete fields changed', () => {

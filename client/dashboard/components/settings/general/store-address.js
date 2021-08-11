@@ -111,12 +111,15 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
 		}
 		if ( autofillCountry.length && autofillState.length ) {
 			const stateSearch = new RegExp(
-				escapeRegExp( autofillState.replace( /\s/g, '' ) ),
+				escapeRegExp( autofillState.replace( /\s/g, '' ) ) + '$', // Always match the end of string for region.
 				'i'
 			);
+			const isStateAbbreviation = autofillState.length < 3;
 			filteredOptions = filteredOptions.filter( ( option ) =>
 				stateSearch.test(
-					option.label.replace( '-', '' ).replace( /\s/g, '' )
+					( isStateAbbreviation ? option.key : option.label )
+						.replace( '-', '' )
+						.replace( /\s/g, '' )
 				)
 			);
 
@@ -212,6 +215,7 @@ export function StoreAddress( props ) {
 			<SelectControl
 				label={ __( 'Country / Region', 'woocommerce-admin' ) }
 				required
+				autoComplete="new-password" // disable autocomplete and autofill
 				options={ countryStateOptions }
 				excludeSelectedOptions={ false }
 				showAllOnFocus
