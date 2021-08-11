@@ -28,19 +28,33 @@ class RuleEvaluator {
 	 * Evaluate the given rules as an AND operation - return false early if a
 	 * rule evaluates to false.
 	 *
-	 * @param array|object          $rules The rule or rules being processed.
-	 * @param object|null           $stored_state Stored state.
-	 * @param EvaluationLogger|null $evaluation_logger logger to use.
+	 * @param array|object $rules The rule or rules being processed.
+	 * @param object|null  $stored_state Stored state.
+	 * @param array        $logger_args arguments for the event logger. slug is required.
+	 *
+	 * @throws \InvalidArgumentException Thrown when $logger_args is missing slug.
 	 *
 	 * @return bool The result of the operation.
 	 */
-	public function evaluate( $rules, $stored_state = null, EvaluationLogger $evaluation_logger = null ) {
+	public function evaluate( $rules, $stored_state = null, $logger_args = array() ) {
 		if ( ! is_array( $rules ) ) {
 			$rules = array( $rules );
 		}
 
 		if ( 0 === count( $rules ) ) {
 			return false;
+		}
+
+		$evaluation_logger = null;
+
+		if ( count( $logger_args ) ) {
+			if ( ! array_key_exists( 'slug', $logger_args ) ) {
+				throw new \InvalidArgumentException( 'Missing required field: slug in $logger_args.' );
+			}
+
+			array_key_exists( 'source', $logger_args ) ? $source = $logger_args['source'] : $source = null;
+
+			$evaluation_logger = new EvaluationLogger( $logger_args['slug'], $source );
 		}
 
 		foreach ( $rules as $rule ) {
@@ -52,6 +66,11 @@ class RuleEvaluator {
 				return false;
 			}
 		}
+
+		defined( 'WC_ADMIN_DEBUG_RULE_EVALUATOR' )
+		&& true === WC_ADMIN_DEBUG_RULE_EVALUATOR
+		&& $evaluation_logger
+		&& $evaluation_logger->log();
 
 		return true;
 	}

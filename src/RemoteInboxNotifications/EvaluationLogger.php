@@ -30,15 +30,27 @@ class EvaluationLogger {
 	private $logger;
 
 	/**
+	 * Logger source.
+	 *
+	 * @var string logger source.
+	 */
+	private $source = 'remote-inbox-notifications';
+
+	/**
 	 * EvaluationLogger constructor.
 	 *
-	 * @param string                   $slug Slug of a spec that is being evaluated.
-	 * @param WC_Logger_Interface|null $logger Logger class to use.
+	 * @param string               $slug Slug of a spec that is being evaluated.
+	 * @param null                 $source Logger source.
+	 * @param \WC_Logger_Interface $logger Logger class to use.
 	 */
-	public function __construct( $slug, \WC_Logger_Interface $logger = null ) {
+	public function __construct( $slug, $source = null, \WC_Logger_Interface $logger = null ) {
 		$this->slug = $slug;
 		if ( null === $logger ) {
 			$logger = wc_get_logger();
+		}
+
+		if ( $source ) {
+			$this->source = $source;
 		}
 
 		$this->logger = $logger;
@@ -67,7 +79,7 @@ class EvaluationLogger {
 		foreach ( $this->results as $result ) {
 			$this->logger->debug(
 				"[{$this->slug}] {$result['rule']}: {$result['result']}",
-				array( 'source' => 'remote-inbox-notifications' )
+				array( 'source' => $this->source )
 			);
 		}
 		$this->logger->debug( "\n" );
