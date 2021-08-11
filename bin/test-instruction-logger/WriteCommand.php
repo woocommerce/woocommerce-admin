@@ -202,6 +202,11 @@ class WriteCommand extends Command {
 		$prs = $this->extractPrNumbers( $entry->getChanges() );
 		$prContents = $this->getPrContents( $prs );
 
+		if ( count($prContents) === 0 ) {
+			$output->writeln("<error>PRs in the version {$version} doesn't any test instructions.</>");
+			return 0;
+		}
+
 		$testingInstructionsPath = $this->config->getOutputFilePath();
 		$testingInstructions = $this->buildTestInstructions( $testingInstructionsPath, $prContents, $version );
 
@@ -361,10 +366,15 @@ class WriteCommand extends Command {
 			}
 
 			$body = json_decode ($response->body );
+			$testInstruction = $this->getTestInstructions( $body->body );
+			if ( '' == $testInstruction ) {
+				continue;
+			}
+
 			$contents[ $body->number ] = array(
 				'title' => $body->title,
 				'number' => $body->number,
-				'testInstructions' => $this->getTestInstructions( $body->body )
+				'testInstructions' => $testInstruction
 			);
 		}
 

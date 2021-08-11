@@ -32,7 +32,12 @@ class Config {
 	}
 
 	public function getConfig() {
-		return json_decode(file_get_contents(getenv('HOME') . '/' . self::CONFIG_FILENAME));
+		$filepath = getenv('HOME') . '/' . self::CONFIG_FILENAME;
+		if ( ! file_exists( $filepath ) ) {
+			return new stdClass();
+		}
+
+		return json_decode( file_get_contents( $filepath ) );
 	}
 
 	public function saveGithubToken($username, $token) {

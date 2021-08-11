@@ -80,7 +80,7 @@
 		"wp-env-mysql-port": "node ./docker/wc-admin-wp-env/mysql-port.js",
 		"create-hook-reference": "node ./bin/hook-reference/index.js",
 		"changelogger": "./vendor/bin/changelogger",
-		"testing-instructions": "./bin/testing-instructions/bin/testing-instructions"
+		"test-instruction-logger": "./bin/test-instruction-logger/bin/test-instruction-logger"
 	},
 	"husky": {
 		"hooks": {
