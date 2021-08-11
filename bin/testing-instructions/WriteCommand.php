@@ -242,7 +242,7 @@ class WriteCommand extends Command {
 		array_push( $output, '## '.$version );
 
 		foreach ( $prContents as $pr => $prContent ) {
-			if ( false === $this->shouldIncludeTestInstructions( $prContent )) {
+			if ( empty( $prContent['testInstructions'] ) ) {
 				continue;
 			}
 			array_push( $output, '### '.$prContent[ 'title' ].' #'.$pr );
@@ -254,7 +254,7 @@ class WriteCommand extends Command {
 			array_push( $output, $testingInstruction );
 		}
 
-		return implode( ',', $output);
+		return implode( "\n", $output);
 	}
 
 	/**
@@ -276,14 +276,6 @@ class WriteCommand extends Command {
 	}
 
 	/**
-	 * See if the given test instructions should be included.
-	 * @return bool
-	 */
-	protected function shouldIncludeTestInstructions( $prContent ) {
-	    return true;
-	}
-
-	/**
 	 * Extract testing instructions from the PR description.
 	 *
 	 * @param string $body PR description body.
@@ -297,9 +289,17 @@ class WriteCommand extends Command {
 		preg_match( $pattern, $body, $matches );
 
 		if ( 3 === count( $matches ) ) {
+
+			$shouldInclude = strpos($matches[2], '- [x] Include test instructions in the release');
+			if ( false === $shouldInclude ) {
+				return '';
+			}
+
 			$matches[2] = strtr($matches[2], array(
 				'No changelog required.' => '',
-				'No changelog required' => ''
+				'No changelog required' => '',
+				'- [x] Include test instructions in the release' => '',
+				'- [ ] Include test instructions in the release' => ''
 			));
 
 			//Remove <!-- --> or <!--- ---> comments.
@@ -337,6 +337,7 @@ class WriteCommand extends Command {
 	 * @param array $prs PR numbers.
 	 *
 	 * @return array
+	 * @throws Exception
 	 */
 	protected function getPrContents( array $prs ) {
 		$authorization = 'Basic '. base64_encode(
@@ -364,12 +365,13 @@ class WriteCommand extends Command {
 
 		foreach ( $responses as $response ) {
 			if ( 200 !== $response->status_code ) {
-				// handle error
+				throw new Exception("Unable to retrieve content for the PR from {$response->url}");
 			}
 
 			$body = json_decode ($response->body );
 			$contents[ $body->number ] = array(
 				'title' => $body->title,
+				'number' => $body->number,
 				'testInstructions' => $this->getTestInstructions( $body->body )
 			);
 		}
