@@ -3,7 +3,7 @@
 
 class Config {
 
-	const CONFIG_FILENAME = '.wca-testing-instructions.json';
+	const CONFIG_FILENAME = '.wca-test-instruction-logger.json';
 	const CHANGELOG_FILENAME = 'changelog.txt';
 	const REPOSITORY_PATH = 'woocommerce/woocommerce-admin';
 	const OUTPUT_FILENAME = 'TESTING-INSTRUCTIONS.md';

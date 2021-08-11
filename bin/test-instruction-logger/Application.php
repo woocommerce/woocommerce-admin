@@ -15,7 +15,7 @@ class Application extends SymfonyApplication {
 	 * Constructor.
 	 */
 	public function __construct() {
-		parent::__construct( 'Testing Instructions', self::VERSION );
+		parent::__construct( 'Test Instruction Logger', self::VERSION );
 	}
 
 	/**

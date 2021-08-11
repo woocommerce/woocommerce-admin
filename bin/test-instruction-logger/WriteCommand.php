@@ -50,7 +50,7 @@ class WriteCommand extends Command {
 	 * Configures the command.
 	 */
 	protected function configure() {
-		$this->setDescription( 'Generate testing instructions from a given version.' )
+		$this->setDescription( 'Generate test instructions from a given version.' )
 			->addArgument( 'version', InputArgument::REQUIRED, 'Release version from changelog.txt.' )
 			->addOption( 'save-to', null, InputOption::VALUE_REQUIRED, 'Specificity a file path to save the output.' );
 	}
@@ -203,11 +203,11 @@ class WriteCommand extends Command {
 		$prContents = $this->getPrContents( $prs );
 
 		$testingInstructionsPath = $this->config->getOutputFilePath();
-		$testingInstructions = $this->buildTestingInstructions( $testingInstructionsPath, $prContents, $version );
+		$testingInstructions = $this->buildTestInstructions( $testingInstructionsPath, $prContents, $version );
 
 
 		file_put_contents( $saveTo, $testingInstructions );
-		$output->writeln("Successfully saved to {$saveTo}");
+		$output->writeln( "Successfully saved to {$saveTo}" );
 
 		return 0;
 	}
@@ -221,7 +221,7 @@ class WriteCommand extends Command {
 	 *
 	 * @return string
 	 */
-	protected function buildTestingInstructions( $testingInstructionsPath, $prContents, $version ) {
+	protected function buildTestInstructions( $testingInstructionsPath, $prContents, $version ) {
 		// Get the content of the existing TESTING-INSTRUCTIONS.md.
 		$testingInstructions = file( $testingInstructionsPath );
 
