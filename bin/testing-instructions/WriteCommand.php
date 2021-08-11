@@ -1,12 +1,4 @@
 <?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase
-/**
- * "Add" command for the changelogger tool CLI.
- *
- * @package automattic/jetpack-changelogger
- */
-
-// phpcs:disable WordPress.NamingConventions.ValidVariableName
-
 
 use Automattic\Jetpack\Changelog\ChangeEntry;
 use Automattic\Jetpack\Changelog\Changelog;
