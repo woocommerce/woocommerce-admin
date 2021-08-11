@@ -10,7 +10,6 @@ use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore;
 use Automattic\WooCommerce\Admin\API\Plugins;
 use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Admin\WCAdminSettingsRegistry;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 use WC_Marketplace_Suggestions;
 
@@ -70,7 +69,7 @@ class Loader {
 	 */
 	public function __construct() {
 		Features::get_instance();
-		WCAdminSettingsRegistry::get_instance();
+		WCAdminSharedSettings::get_instance();
 		add_action( 'init', array( __CLASS__, 'define_tables' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );

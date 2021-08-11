@@ -8,19 +8,25 @@ namespace Automattic\WooCommerce\Admin;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * \Automattic\WooCommerce\Admin\CategoryLookup class.
+ * \Automattic\WooCommerce\Admin\WCAdminSharedSettings class.
  */
-class WCAdminSettingsRegistry {
+class WCAdminSharedSettings {
+	/**
+	 * Settings prefix used for the window.wcSettings object.
+	 *
+	 * @var string
+	 */
 	private $settings_prefix = 'admin';
+
 	/**
 	 * Class instance.
 	 *
-	 * @var Homescreen instance
+	 * @var WCAdminSharedSettings instance
 	 */
 	protected static $instance = null;
 
 	/**
-	 * Hook into WooCommerce.
+	 * Hook into WooCommerce Blocks.
 	 */
 	protected function __construct() {
 		if ( did_action( 'woocommerce_blocks_loaded' ) ) {
@@ -43,7 +49,7 @@ class WCAdminSettingsRegistry {
 	}
 
 	/**
-	 * Setup plugin once all other plugins are loaded.
+	 * Adds settings to the Blocks AssetDataRegistry when woocommerce_blocks is loaded.
 	 *
 	 * @return void
 	 */
@@ -52,7 +58,6 @@ class WCAdminSettingsRegistry {
 			\Automattic\WooCommerce\Blocks\Package::container()->get( \Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class )->add(
 				$this->settings_prefix,
 				function() {
-					error_log('called shared_settings hook');
 					return apply_filters( 'woocommerce_admin_shared_settings', array() );
 				},
 				true
