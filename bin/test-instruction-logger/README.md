@@ -1,6 +1,6 @@
 # Test Instruction Logger
 
-Test Instruction Logger retrives test instructions from the PRs from the `changelog.txt` and write them into TESTING-INSTRUCTION.md.
+Test Instruction Logger retrives test instructions from the PRs in the `changelog.txt` and write them into TESTING-INSTRUCTION.md.
 
 ## Prerequisites
 
