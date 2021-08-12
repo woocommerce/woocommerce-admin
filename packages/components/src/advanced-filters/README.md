@@ -1,4 +1,4 @@
-# Advanced filters
+# Advanced Filters
 
 Displays a configurable set of filters which can modify query parameters. Display, behavior, and types of filters can be designated by a configuration object.
 

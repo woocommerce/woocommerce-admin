@@ -4,7 +4,7 @@ The Downloads Report provides insight into the performance of your store's downl
 
 ### All Downloads View
 
-By default, the Downloads Report displays the unfiltered All downloads View. Each download is represented in the table and chart.
+By default, the Downloads Report displays the unfiltered `All downloads` View. Each download is represented in the table and chart.
 
 ![Downloads Report All downloads View](images/analytics-downloads-report.png)
 

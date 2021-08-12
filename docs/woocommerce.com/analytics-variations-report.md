@@ -4,7 +4,7 @@ The Variations Report provides insight into the sales performance of each Produc
 
 ### All Variations View
 
-By default, the Variations Report displays the All variations view. All variations that have had sales in the specified date range will be shown.
+By default, the Variations Report displays the `All variations` view. All variations that have had sales in the specified date range will be shown.
 
 ![Variations Report All variations View](images/analytics-variations-report.png)
 
