@@ -28,6 +28,7 @@ import { PluginArea } from '@wordpress/plugins';
 import './style.scss';
 import { Controller, getPages } from './controller';
 import { Header } from '../header';
+import { NoMatch } from './NoMatch';
 import Notices from './notices';
 import TransientNotices from './transient-notices';
 import './navigation';
@@ -255,6 +256,9 @@ const _PageLayout = () => {
 							/>
 						);
 					} ) }
+				<Route path="*">
+					<NoMatch />
+				</Route>
 			</Switch>
 		</Router>
 	);
