@@ -9,7 +9,7 @@ import { createElement } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { FavoriteButton } from '../';
+import { FavoriteButton } from '..';
 
 jest.mock( '@wordpress/data', () => {
 	// Require the original module to not be mocked...

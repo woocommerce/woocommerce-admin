@@ -7,7 +7,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { IntroModal, INTRO_MODAL_DISMISSED_OPTION_NAME } from '../';
+import { IntroModal, INTRO_MODAL_DISMISSED_OPTION_NAME } from '..';
 
 global.window.wcNavigation = {};
 
