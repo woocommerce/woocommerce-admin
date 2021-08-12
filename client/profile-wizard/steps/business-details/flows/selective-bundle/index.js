@@ -130,7 +130,7 @@ class BusinessDetails extends Component {
 	}
 
 	async persistProfileItems( additions = {} ) {
-		const { updateProfileItems } = this.props;
+		const { updateProfileItems, createNotice } = this.props;
 
 		const {
 			other_platform: otherPlatform,
@@ -166,7 +166,13 @@ class BusinessDetails extends Component {
 		);
 
 		return updateProfileItems( finalUpdates ).catch( () => {
-			throw new Error();
+			createNotice(
+				'error',
+				__(
+					'There was a problem updating your business details',
+					'woocommerce-admin'
+				)
+			);
 		} );
 	}
 
