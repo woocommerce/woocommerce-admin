@@ -264,30 +264,3 @@ exports[`Leaderboard should render correct data in the table 1`] = `
   </div>
 </div>
 `;
-
-exports[`Leaderboard should render empty message when there are no rows 1`] = `
-<div>
-  <div
-    class="components-card is-size-medium woocommerce-leaderboard css-1xs3c37-CardUI e1q7k77g0"
-  >
-    <div
-      class="components-flex components-card__header is-size-medium e1q7k77g1 css-1ufeymn-Flex-HeaderUI eboqfv50"
-    >
-      <h3
-        class="css-1ahfdc3-Text e15wbhsk0"
-        size="20"
-      />
-    </div>
-    <div
-      class="components-card__body css-xmjzce-BodyUI e1q7k77g3"
-    >
-      <div
-        class="woocommerce-table is-empty"
-        style="--number-of-rows: 5;"
-      >
-        No data recorded for the selected time period.
-      </div>
-    </div>
-  </div>
-</div>
-`;

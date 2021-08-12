@@ -16,7 +16,7 @@ const { formatAmount, formatDecimal } = CurrencyFactory( CURRENCY );
 
 describe( 'Leaderboard', () => {
 	test( 'should render empty message when there are no rows', () => {
-		const { container } = render(
+		const { queryByText } = render(
 			<Leaderboard
 				id="products"
 				title={ '' }
@@ -26,7 +26,9 @@ describe( 'Leaderboard', () => {
 			/>
 		);
 
-		expect( container ).toMatchSnapshot();
+		expect(
+			queryByText( 'No data recorded for the selected time period.' )
+		).toBeInTheDocument();
 	} );
 
 	test( 'should render correct data in the table', () => {
