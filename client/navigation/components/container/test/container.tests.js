@@ -11,7 +11,7 @@ import { createElement } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import Container from '..';
+import { Container } from '..';
 
 jest.mock( '@wordpress/data', () => {
 	// Require the original module to not be mocked...

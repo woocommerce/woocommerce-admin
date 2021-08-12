@@ -7,7 +7,7 @@ import { createElement } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import CategoryTitle from '..';
+import { CategoryTitle } from '..';
 
 describe( 'CategoryTitle', () => {
 	test( 'should render the category title without the option to favorite for the primary menu', () => {

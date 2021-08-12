@@ -5,7 +5,7 @@ import { NavigationItem, useSlot } from '@woocommerce/experimental';
 import { recordEvent } from '@woocommerce/tracks';
 import { WooNavigationItem } from '@woocommerce/navigation';
 
-const Item = ( { item } ) => {
+export const Item = ( { item } ) => {
 	const slot = useSlot( 'woocommerce_navigation_' + item.id );
 	const hasFills = Boolean( slot?.fills?.length );
 
@@ -43,5 +43,3 @@ const Item = ( { item } ) => {
 	);
 	/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 };
-
-export default Item;

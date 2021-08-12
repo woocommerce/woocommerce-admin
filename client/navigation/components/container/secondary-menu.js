@@ -6,8 +6,8 @@ import { NavigationMenu, NavigationGroup } from '@woocommerce/experimental';
 /**
  * Internal dependencies
  */
-import CategoryTitle from '../category-title';
-import Item from '../../components/Item';
+import { CategoryTitle } from '../category-title';
+import { Item } from '../Item';
 
 export const SecondaryMenu = ( { category, items, onBackClick } ) => {
 	if ( ! items.length ) {

@@ -7,7 +7,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import Header from '../';
+import { Header } from '../';
 
 global.window.wcNavigation = {};
 

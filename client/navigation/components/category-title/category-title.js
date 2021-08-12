@@ -22,5 +22,3 @@ export const CategoryTitle = ( { category } ) => {
 
 	return <span className={ className }>{ title }</span>;
 };
-
-export default CategoryTitle;

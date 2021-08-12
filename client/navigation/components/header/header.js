@@ -17,7 +17,7 @@ import { addHistoryListener } from '@woocommerce/navigation';
  */
 import useIsScrolled from '../../../hooks/useIsScrolled';
 
-const Header = () => {
+export const Header = () => {
 	const siteTitle = getSetting( 'siteTitle', '' );
 	const homeUrl = getSetting( 'homeUrl', '' );
 	const isScrolled = useIsScrolled();
@@ -126,5 +126,3 @@ const Header = () => {
 		</div>
 	);
 };
-
-export default Header;

@@ -13,11 +13,11 @@ import { addHistoryListener } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { getMappedItemsCategories, getMatchingItem } from '../../utils';
-import Header from '../header';
+import { Header } from '../header';
 import { PrimaryMenu } from './primary-menu';
 import { SecondaryMenu } from './secondary-menu';
 
-const Container = () => {
+export const Container = () => {
 	const { menuItems } = useSelect( ( select ) => {
 		return {
 			menuItems: select( NAVIGATION_STORE_NAME ).getMenuItems(),
@@ -125,5 +125,3 @@ const Container = () => {
 		</div>
 	);
 };
-
-export default Container;

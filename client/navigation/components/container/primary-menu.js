@@ -8,8 +8,8 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Internal dependencies
  */
-import CategoryTitle from '../category-title';
-import Item from '../../components/Item';
+import { CategoryTitle } from '../category-title';
+import { Item } from '../Item';
 
 export const PrimaryMenu = ( {
 	category,

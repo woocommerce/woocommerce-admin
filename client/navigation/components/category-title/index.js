@@ -1,1 +1,1 @@
-export { default } from './category-title';
+export * from './category-title';
