@@ -93,4 +93,27 @@ export class WcHomescreen extends BasePage {
 			return url.includes( '/wc-analytics/admin/notes' ) && response.ok();
 		} );
 	}
+
+	async isActivityPanelShown() {
+		return !! ( await this.page.$( '.woocommerce-activity-panel' ) );
+	}
+
+	async getActivityPanels() {
+		const panelContainer = await page.waitForSelector(
+			'.woocommerce-activity-panel'
+		);
+		const list = await panelContainer.$$eval( 'h2', ( items ) =>
+			items.map( ( item ) => item.textContent )
+		);
+		return list.map( ( item: string | null ) => {
+			const match = item?.match( /([a-zA-Z]+)([0-9]+)/ );
+			if ( match && match.length > 2 ) {
+				return {
+					title: match[ 1 ],
+					count: parseInt( match[ 2 ], 10 ),
+				};
+			}
+			return { title: item };
+		} );
+	}
 }

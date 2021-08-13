@@ -9,20 +9,17 @@ import { takeScreenshotFor } from '@woocommerce/e2e-environment';
 import { Login } from '../../pages/Login';
 import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { WcHomescreen } from '../../pages/WcHomescreen';
-import { TaskTitles } from '../../constants/taskTitles';
-import { HelpMenu } from '../../elements/HelpMenu';
-import { WcSettings } from '../../pages/WcSettings';
+// import { addProducts, removeAllProducts } from '../../fixtures';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
+const { createSimpleProduct } = require( '@woocommerce/e2e-utils' );
 const { afterAll, beforeAll, describe, it } = require( '@jest/globals' );
 /* eslint-enable @typescript-eslint/no-var-requires */
 
-const testAdminHomescreenTasklist = () => {
-	describe( 'Homescreen task list', () => {
+const testAdminHomescreenActivityPanel = () => {
+	describe( 'Homescreen activity panel', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const homeScreen = new WcHomescreen( page );
-		const helpMenu = new HelpMenu( page );
-		const settings = new WcSettings( page );
 		const login = new Login( page );
 
 		beforeAll( async () => {
@@ -37,36 +34,35 @@ const testAdminHomescreenTasklist = () => {
 
 			await homeScreen.isDisplayed();
 			await homeScreen.possiblyDismissWelcomeModal();
-			await takeScreenshotFor( 'WooCommerce Admin Home Screen' );
 		} );
 
 		afterAll( async () => {
+			// await removeAllProducts();
 			await login.logout();
 		} );
 
-		it( 'should show 6 tasks on the home screen', async () => {
-			const tasks = await homeScreen.getTaskList();
-			expect( tasks.length ).toBe( 6 );
-			expect( tasks ).toContain( TaskTitles.storeDetails );
-			expect( tasks ).toContain( TaskTitles.addProducts );
-			expect( tasks ).toContain( TaskTitles.taxSetup );
-			expect( tasks ).toContain( TaskTitles.personalizeStore );
+		it( 'should not show activity panel while task list is displayed', async () => {
+			expect( await homeScreen.isActivityPanelShown() ).toBe( false );
 		} );
 
-		it( 'should be able to hide the task list', async () => {
+		it( 'should not show panels when there are no orders or products yet with task list hidden', async () => {
 			await homeScreen.hideTaskList();
 			expect( await homeScreen.isTaskListDisplayed() ).toBe( false );
+			expect( await homeScreen.isActivityPanelShown() ).toBe( false );
 		} );
 
-		it( 'should be able to show the task list again through the help menu', async () => {
-			await settings.navigate();
-			await helpMenu.openHelpMenu();
-			await helpMenu.enableTaskList();
-			await homeScreen.navigate();
-			await homeScreen.isDisplayed();
-			expect( await homeScreen.isTaskListDisplayed() ).toBe( true );
+		it.only( 'should show Stock panel when we have at-least one product', async () => {
+			// await addProducts();
+			await createSimpleProduct();
+			await page.reload( {
+				waitUntil: [ 'networkidle0', 'domcontentloaded' ],
+			} );
+			const activityPanels = await homeScreen.getActivityPanels();
+			expect(
+				activityPanels.findIndex( ( p ) => p.title === 'Stock' )
+			).toBeGreaterThanOrEqual( 0 );
 		} );
 	} );
 };
 
-module.exports = { testAdminHomescreenTasklist };
+module.exports = { testAdminHomescreenActivityPanel };
