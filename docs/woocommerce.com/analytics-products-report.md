@@ -10,7 +10,7 @@ By default, the Products Report displays the `All products` view. All products t
 
 ### Single Product View
 
-![Products Report Single product Search](images/analytics-products-report-single-product-search.png)
+![Products Report Single Product Search](images/analytics-products-report-single-product-search.png)
 
 By selecting "Single product", you can search for a single product to display report data for.
 
