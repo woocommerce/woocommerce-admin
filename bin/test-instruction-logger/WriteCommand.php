@@ -37,12 +37,20 @@ class WriteCommand extends Command {
 	protected $githubCredentials;
 
 	/**
+	 * Jetpack Changelog formatter for WCA changelog.
+	 *
+	 * @var WCAdminFormatter
+	 */
+	protected $changeloggerFormatter;
+
+	/**
 	 * WriteCommand constructor.
 	 *
 	 * @param Config $config
 	 */
 	public function __construct(Config $config) {
 	    $this->config = $config;
+	    $this->changeloggerFormatter = new WCAdminFormatter();
 		parent::__construct();
 	}
 
@@ -53,110 +61,6 @@ class WriteCommand extends Command {
 		$this->setDescription( 'Generate test instructions from a given version.' )
 			->addArgument( 'version', InputArgument::REQUIRED, 'Release version from changelog.txt.' )
 			->addOption( 'save-to', null, InputOption::VALUE_REQUIRED, 'Specificity a file path to save the output.' );
-	}
-
-	/**
-	 * Get changelog entires.
-	 * Borrowed from Jetpack Changelogger.
-	 *
-	 * @param $path
-	 *
-	 * @return Changelog
-	 */
-	protected function getChangelog($path) {
-		$changelog =  file_get_contents($path);
-		$ret = new Changelog();
-
-		// Fix newlines and expand tabs.
-		$changelog = strtr( $changelog, array( "\r\n" => "\n" ) );
-		$changelog = strtr( $changelog, array( "\r" => "\n" ) );
-		while ( strpos( $changelog, "\t" ) !== false ) {
-			$changelog = preg_replace_callback(
-				'/^([^\t\n]*)\t/m',
-				function ( $m ) {
-					return $m[1] . str_repeat( ' ', 4 - ( mb_strlen( $m[1] ) % 4 ) );
-				},
-				$changelog
-			);
-		}
-
-		// Entries make up the rest of the document.
-		$entries = array();
-		preg_match_all( '/^\=\=\s+([^\n=]+)\s+\=\=((?:(?!^\=\=).)+)/ms', $changelog, $matches );
-
-		foreach ( $matches[0] as $section ) {
-			$heading_pattern = '/^== +(\[?[^] ]+\]?) (.+?) ==/';
-			// Parse the heading and create a ChangelogEntry for it.
-			preg_match( $heading_pattern, $section, $heading );
-			if ( ! count( $heading ) ) {
-				throw new InvalidArgumentException( "Invalid heading: $heading" );
-			}
-
-			$version   = $heading[1];
-			$timestamp = $heading[2];
-
-			try {
-				$timestamp = new DateTime( $timestamp, new DateTimeZone( 'UTC' ) );
-			} catch ( \Exception $ex ) {
-				throw new InvalidArgumentException( "Heading has an invalid timestamp: $heading", 0, $ex );
-			}
-			if ( strtotime( $heading[2], 0 ) !== strtotime( $heading[2], 1000000000 ) ) {
-				throw new InvalidArgumentException( "Heading has a relative timestamp: $heading" );
-			}
-			$entry_timestamp = $timestamp;
-
-
-			$entry = new ChangelogEntry(
-				$version,
-				array(
-					'timestamp' => $timestamp,
-				)
-			);
-
-			$entries[] = $entry;
-			$content   = trim( preg_replace( $heading_pattern, '', $section ) );
-
-			if ( '' === $content ) {
-				// Huh, no changes.
-				continue;
-			}
-
-			// Now parse all the subheadings and changes.
-			while ( '' !== $content ) {
-				$changes = array();
-				$rows    = explode( "\n", $content );
-				foreach ( $rows as $row ) {
-					$row          = trim( $row );
-					$row = preg_replace( '/' . $this->bullet . '/', '', $row, 1 );
-					$row_segments = explode( ':', $row );
-					array_push(
-						$changes,
-						array(
-							'subheading' => trim( $row_segments[0] ),
-							'content'    => trim( $row_segments[1] ),
-						)
-					);
-				}
-
-				foreach ( $changes as $change ) {
-					$entry->appendChange(
-						new ChangeEntry(
-							array(
-								'subheading' => $change['subheading'],
-								'content'    => $change['content'],
-								'timestamp'  => $entry_timestamp,
-							)
-						)
-					);
-				}
-				$content = '';
-			}
-		}
-
-		$ret->setEntries( $entries );
-
-		return $ret;
-
 	}
 
 	/**
@@ -175,7 +79,7 @@ class WriteCommand extends Command {
 			$saveTo = $this->config->getOutputFilePath();
 		}
 
-		$changelog = $this->getChangelog( $this->config->getChangelogFilepath() );
+		$changelog = $this->changeloggerFormatter->parse( file_get_contents( $this->config->getChangelogFilepath() ) );
 		$this->githubCredentials = $this->config->getGithubCredentials();
 
 		if ( null === $this->githubCredentials['token'] ) {
@@ -203,7 +107,7 @@ class WriteCommand extends Command {
 		$prContents = $this->getPrContents( $prs );
 
 		if ( count($prContents) === 0 ) {
-			$output->writeln("<error>PRs in the version {$version} doesn't any test instructions.</>");
+			$output->writeln("<error>PRs in version {$version} doesn't have any test instructions</>");
 			return 0;
 		}
 
@@ -286,12 +190,6 @@ class WriteCommand extends Command {
 		preg_match( $pattern, $body, $matches );
 
 		if ( 3 === count( $matches ) ) {
-
-			$shouldInclude = strpos($matches[2], '- [x] Include test instructions in the release');
-			if ( false === $shouldInclude ) {
-				return '';
-			}
-
 			$matches[2] = strtr($matches[2], array(
 				'No changelog required.' => '',
 				'No changelog required' => '',
@@ -361,11 +259,16 @@ class WriteCommand extends Command {
 		$contents = array();
 
 		foreach ( $responses as $response ) {
+
 			if ( 200 !== $response->status_code ) {
 				throw new Exception("Unable to retrieve content for the PR from {$response->url}");
 			}
 
 			$body = json_decode ($response->body );
+			if ( false === $this->shouldIncludeTestInstructions($body) ) {
+				continue;
+			}
+
 			$testInstruction = $this->getTestInstructions( $body->body );
 			if ( '' == $testInstruction ) {
 				continue;
@@ -379,5 +282,15 @@ class WriteCommand extends Command {
 		}
 
 		return $contents;
+	}
+
+	protected function shouldIncludeTestInstructions( $body ) {
+		foreach ( $body->labels as $label ) {
+			if ( 'no release testing instructions' === $label->name ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

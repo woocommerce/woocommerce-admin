@@ -18,6 +18,7 @@ require_once __DIR__ . '/../Config.php';
 require_once __DIR__ . '/../Application.php';
 require_once __DIR__ . '/../WriteCommand.php';
 require_once __DIR__ . '/../SetGithubCredentialsCommand.php';
+require_once __DIR__ . '/../../changelogger/WCAdminFormatter.php';
 
 $config = new Config;
 
