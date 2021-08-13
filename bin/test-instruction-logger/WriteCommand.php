@@ -239,44 +239,44 @@ class WriteCommand extends Command {
 			$this->githubCredentials['username'].':'.$this->githubCredentials['token']
 		);
 
-		$prs = array_map( function( $pr ) use ( $authorization ) {
-			return array(
-				'url' => "https://api.github.com/repos/" . $this->config->getRepositoryPath() . "/pulls/{$pr}",
-				'headers' => array (
-					'Authorization' => $authorization
-				)
-			);
+		$prs = array_map( function( $pr ) {
+			return "https://api.github.com/repos/" . $this->config->getRepositoryPath() . "/pulls/{$pr}";
 		}, $prs );
+
+		$header = array(
+			"Authorization: {$authorization}"
+		);
 
 		$responses = array();
 		foreach ( array_chunk( $prs, 5 ) as $chunk ) {
-			$chunk_responses = Requests::request_multiple( $chunk );
+			$chunk_responses = $this->multiRequest($chunk, array(
+				CURLOPT_HTTPHEADER => $header,
+				CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0'
+			));
 			foreach ( $chunk_responses as $chunk_response ) {
-				array_push( $responses, $chunk_response );
+				array_push( $responses, json_decode( $chunk_response, false ) );
 			}
 		}
 
 		$contents = array();
 
 		foreach ( $responses as $response ) {
-
-			if ( 200 !== $response->status_code ) {
+			if ( false === isset( $response->url ) ) {
 				throw new Exception("Unable to retrieve content for the PR from {$response->url}");
 			}
 
-			$body = json_decode ($response->body );
-			if ( false === $this->shouldIncludeTestInstructions($body) ) {
+			if ( false === $this->shouldIncludeTestInstructions( $response->labels ) ) {
 				continue;
 			}
 
-			$testInstruction = $this->getTestInstructions( $body->body );
+			$testInstruction = $this->getTestInstructions( $response->body );
 			if ( '' == $testInstruction ) {
 				continue;
 			}
 
-			$contents[ $body->number ] = array(
-				'title' => $body->title,
-				'number' => $body->number,
+			$contents[ $response->number ] = array(
+				'title' => $response->title,
+				'number' => $response->number,
 				'testInstructions' => $testInstruction
 			);
 		}
@@ -284,13 +284,83 @@ class WriteCommand extends Command {
 		return $contents;
 	}
 
-	protected function shouldIncludeTestInstructions( $body ) {
-		foreach ( $body->labels as $label ) {
+	/**
+	 * Determine if the given PR's test instructions should be included.
+	 *
+	 * @param Array $labels Labels from a PR.
+	 *
+	 * @return bool
+	 */
+	protected function shouldIncludeTestInstructions( $labels ) {
+		foreach ( $labels as $label ) {
 			if ( 'no release testing instructions' === $label->name ) {
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Make multiple curl requests.
+	 *
+	 * @param array $data
+	 * @param array $options
+	 *
+	 * @return array
+	 */
+	protected function multiRequest( array $data, $options = array() ) {
+		// array of curl handles
+		$curly = array();
+		// data to be returned
+		$result = array();
+
+		// multi handle
+		$mh = curl_multi_init();
+
+		// loop through $data and create curl handles
+		// then add them to the multi-handle
+		foreach ( $data as $id => $d ) {
+
+			$curly[$id] = curl_init();
+
+			$url = ( is_array( $d ) && ! empty( $d['url'] ) ) ? $d['url'] : $d;
+			curl_setopt( $curly[$id], CURLOPT_URL, $url );
+			curl_setopt( $curly[$id], CURLOPT_HEADER, 0 );
+			curl_setopt( $curly[$id], CURLOPT_RETURNTRANSFER, 1 );
+
+			// post?
+			if ( is_array( $d ) ) {
+				if ( ! empty( $d['post'] ) ) {
+					curl_setopt( $curly[$id], CURLOPT_POST, 1 );
+					curl_setopt( $curly[$id], CURLOPT_POSTFIELDS, $d['post'] );
+				}
+			}
+
+			// extra options?
+			if ( ! empty( $options ) ) {
+				curl_setopt_array( $curly[$id], $options );
+			}
+
+			curl_multi_add_handle( $mh, $curly[$id] );
+		}
+
+		// execute the handles
+		$running = null;
+		do {
+			curl_multi_exec( $mh, $running );
+		} while( $running > 0 );
+
+
+		// get content and remove handles
+		foreach( $curly as $id => $c ) {
+			$result[$id] = curl_multi_getcontent( $c );
+			curl_multi_remove_handle( $mh, $c );
+		}
+
+		// all done
+		curl_multi_close( $mh );
+
+		return $result;
 	}
 }
