@@ -227,13 +227,13 @@ function OrdersPanel( { countUnreadOrders, orderStatuses } ) {
 		} ),
 		[ orderStatuses ]
 	);
-	const { orders, isRequesting, isError } = useSelect( ( select ) => {
+	const { orders = [], isRequesting, isError } = useSelect( ( select ) => {
 		const { getItems, getItemsError, isResolving } = select(
 			ITEMS_STORE_NAME
 		);
 
 		if ( ! orderStatuses.length && countUnreadOrders === 0 ) {
-			return { isRequesting: false, orders: [] };
+			return { isRequesting: false };
 		}
 
 		/* eslint-disable @wordpress/no-unused-vars-before-return */
@@ -253,7 +253,6 @@ function OrdersPanel( { countUnreadOrders, orderStatuses } ) {
 				isError: Boolean(
 					getItemsError( 'orders', actionableOrdersQuery )
 				),
-				orders: [],
 				isRequesting: true,
 				orderStatuses,
 			};
