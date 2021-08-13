@@ -26,7 +26,7 @@ The following fields can be used for filtering:
 - Refunds
 - Tax Rates
 
-![Customers Report Advanced filters](images/analytics-orders-report-advanced-filters.png)
+![Customers Report Advanced Filters](images/analytics-orders-report-advanced-filters.png)
 
 ### Report Sorting
 

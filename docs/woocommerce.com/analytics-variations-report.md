@@ -6,11 +6,11 @@ The Variations Report provides insight into the sales performance of each Produc
 
 By default, the Variations Report displays the `All variations` view. All variations that have had sales in the specified date range will be shown.
 
-![Variations Report All variations View](images/analytics-variations-report.png)
+![Variations Report All Variations View](images/analytics-variations-report.png)
 
 ### Single Variation View
 
-![Variations Report Single variation Search](images/analytics-variations-report-single-variation-search.png)
+![Variations Report Single Variation Search](images/analytics-variations-report-single-variation-search.png)
 
 By selecting "Single variation", you can search for a single variation to display report data for.
 

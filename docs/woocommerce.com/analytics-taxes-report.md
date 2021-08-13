@@ -2,11 +2,11 @@
 
 The Taxes Report provides insight into taxes collected on your store.
 
-### All taxes View
+### All Taxes View
 
 By default, the Taxes Report displays the `All taxes` view. All taxes that have been collected in the specified date range will be shown.
 
-![Taxes Report All taxes View](images/analytics-taxes-report.png)
+![Taxes Report All Taxes View](images/analytics-taxes-report.png)
 
 ### Comparison Mode
 

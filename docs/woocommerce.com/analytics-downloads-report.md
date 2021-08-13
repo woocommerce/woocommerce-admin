@@ -6,7 +6,7 @@ The Downloads Report provides insight into the performance of your store's downl
 
 By default, the Downloads Report displays the unfiltered `All downloads` View. Each download is represented in the table and chart.
 
-![Downloads Report All downloads View](images/analytics-downloads-report.png)
+![Downloads Report All Downloads View](images/analytics-downloads-report.png)
 
 ### Advanced Filters
 
@@ -17,7 +17,7 @@ There are several filters available to the Downloads Report:
 - Order number
 - IP Address
 
-![Downloads Report Advanced filters](images/analytics-downloads-report-advanced-filters.png)
+![Downloads Report Advanced Filters](images/analytics-downloads-report-advanced-filters.png)
 
 ### Report Sorting
 

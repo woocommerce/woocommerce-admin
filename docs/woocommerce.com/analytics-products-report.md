@@ -6,7 +6,7 @@ The Products Report provides insight into the sales performance of each product 
 
 By default, the Products Report displays the `All products` view. All products that have had sales in the specified date range will be shown.
 
-![Products Report All products View](images/analytics-products-report.png)
+![Products Report All Products View](images/analytics-products-report.png)
 
 ### Single Product View
 
@@ -14,7 +14,7 @@ By default, the Products Report displays the `All products` view. All products t
 
 By selecting "Single product", you can search for a single product to display report data for.
 
-![Products Report Single product View](images/analytics-products-report-single-product.png)
+![Products Report Single Product View](images/analytics-products-report-single-product.png)
 
 ### Comparison Mode
 

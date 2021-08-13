@@ -26,7 +26,7 @@ There are several filters available to the Customers Report:
 - Registered
 - Last Active
 
-![Customers Report Advanced filters](images/analytics-customers-report-advanced-filters.png)
+![Customers Report Advanced Filters](images/analytics-customers-report-advanced-filters.png)
 
 A special note about the Name, Username, Country / Region, and Email filters:
 
