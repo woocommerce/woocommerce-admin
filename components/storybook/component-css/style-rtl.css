@@ -368,12 +368,7 @@ body.admin-color-sunrise {
   width: 100%;
 }
 .woocommerce-chart .woocommerce-chart__header .woocommerce-chart__title {
-  height: 18px;
-  color: #24292d;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 18px;
-  margin-right: 16px;
+  margin-right: 24px;
   margin-left: 16px;
 }
 .woocommerce-chart .woocommerce-chart__body {
