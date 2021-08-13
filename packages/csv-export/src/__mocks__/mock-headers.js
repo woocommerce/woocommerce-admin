@@ -36,7 +36,7 @@ export default [
 		key: 'net_revenue',
 	},
 	{
-		label: 'Negative Number',
+		label: 'Negative number',
 		key: 'neg_num',
 	},
 ];
