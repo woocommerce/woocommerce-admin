@@ -3,7 +3,9 @@
  */
 import {
 	waitForElementByText,
+	getElementByAttributeAndValue,
 	waitForElementByTextWithoutThrow,
+	getElementByText,
 } from '../utils/actions';
 import { BasePage } from './BasePage';
 
@@ -51,6 +53,13 @@ export class WcHomescreen extends BasePage {
 		} );
 	}
 
+	async isTaskListDisplayed() {
+		return !! ( await getElementByText(
+			'*',
+			'Get ready to start selling'
+		) );
+	}
+
 	async clickOnTaskList( taskTitle: string ) {
 		const item = await waitForElementByText( '*', taskTitle );
 
@@ -62,6 +71,20 @@ export class WcHomescreen extends BasePage {
 			await item.click();
 			await waitForElementByText( 'h1', taskTitle );
 		}
+	}
+
+	async hideTaskList() {
+		const taskListOptions = await getElementByAttributeAndValue(
+			'button',
+			'title',
+			'Task List Options'
+		);
+		await taskListOptions?.click();
+		const hideThisButton = await waitForElementByText(
+			'button',
+			'Hide this'
+		);
+		await hideThisButton?.click();
 	}
 
 	async waitForNotesRequestToBeLoaded() {
