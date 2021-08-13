@@ -253,6 +253,7 @@ function OrdersPanel( { countUnreadOrders, orderStatuses } ) {
 				isError: Boolean(
 					getItemsError( 'orders', actionableOrdersQuery )
 				),
+				orders: [],
 				isRequesting: true,
 				orderStatuses,
 			};
