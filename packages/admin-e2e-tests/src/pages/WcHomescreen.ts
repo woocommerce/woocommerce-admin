@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { ElementHandle } from 'puppeteer';
+
+/**
  * Internal dependencies
  */
 import {
@@ -12,12 +17,12 @@ import { BasePage } from './BasePage';
 export class WcHomescreen extends BasePage {
 	url = 'wp-admin/admin.php?page=wc-admin';
 
-	async isDisplayed() {
+	async isDisplayed(): Promise< void > {
 		// Wait for Benefits section to appear
 		await waitForElementByText( 'h1', 'Home' );
 	}
 
-	async possiblyDismissWelcomeModal() {
+	async possiblyDismissWelcomeModal(): Promise< void > {
 		const modalText = 'Welcome to your WooCommerce store’s online HQ!';
 		const modal = await waitForElementByTextWithoutThrow(
 			'h2',
@@ -35,7 +40,7 @@ export class WcHomescreen extends BasePage {
 		}
 	}
 
-	async getTaskList() {
+	async getTaskList(): Promise< Array< string | null > > {
 		await page.waitForSelector(
 			'.woocommerce-task-card .woocommerce-task-list__item-title'
 		);
@@ -53,14 +58,14 @@ export class WcHomescreen extends BasePage {
 		} );
 	}
 
-	async isTaskListDisplayed() {
+	async isTaskListDisplayed(): Promise< boolean > {
 		return !! ( await getElementByText(
 			'*',
 			'Get ready to start selling'
 		) );
 	}
 
-	async clickOnTaskList( taskTitle: string ) {
+	async clickOnTaskList( taskTitle: string ): Promise< void > {
 		const item = await waitForElementByText( '*', taskTitle );
 
 		if ( ! item ) {
@@ -73,7 +78,7 @@ export class WcHomescreen extends BasePage {
 		}
 	}
 
-	async hideTaskList() {
+	async hideTaskList(): Promise< void > {
 		const taskListOptions = await getElementByAttributeAndValue(
 			'button',
 			'title',
@@ -87,33 +92,48 @@ export class WcHomescreen extends BasePage {
 		await hideThisButton?.click();
 	}
 
-	async waitForNotesRequestToBeLoaded() {
-		return await this.page.waitForResponse( ( response ) => {
+	async waitForNotesRequestToBeLoaded(): Promise< void > {
+		await this.page.waitForResponse( ( response ) => {
 			const url = encodeURIComponent( response.url() );
 			return url.includes( '/wc-analytics/admin/notes' ) && response.ok();
 		} );
 	}
 
-	async isActivityPanelShown() {
+	async isActivityPanelShown(): Promise< boolean > {
 		return !! ( await this.page.$( '.woocommerce-activity-panel' ) );
 	}
 
-	async getActivityPanels() {
+	async getActivityPanels(): Promise<
+		Array< { title: string; count?: number; element?: ElementHandle } >
+	> {
 		const panelContainer = await page.waitForSelector(
 			'.woocommerce-activity-panel'
 		);
-		const list = await panelContainer.$$eval( 'h2', ( items ) =>
-			items.map( ( item ) => item.textContent )
+		const list = await panelContainer.$$( 'h2' );
+		return Promise.all(
+			list.map( async ( item: ElementHandle ) => {
+				const textContent = await page.evaluate(
+					( el ) => el.textContent,
+					item
+				);
+				const match = textContent?.match( /([a-zA-Z]+)([0-9]+)/ );
+				if ( match && match.length > 2 ) {
+					return {
+						title: match[ 1 ],
+						count: parseInt( match[ 2 ], 10 ),
+						element: item,
+					};
+				}
+				return { title: textContent };
+			} )
 		);
-		return list.map( ( item: string | null ) => {
-			const match = item?.match( /([a-zA-Z]+)([0-9]+)/ );
-			if ( match && match.length > 2 ) {
-				return {
-					title: match[ 1 ],
-					count: parseInt( match[ 2 ], 10 ),
-				};
-			}
-			return { title: item };
-		} );
+	}
+
+	async expandActivityPanel( title: string ): Promise< void > {
+		const activityPanels = await this.getActivityPanels();
+		const panel = activityPanels.find( ( p ) => p.title === title );
+		if ( panel ) {
+			await panel.element?.click();
+		}
 	}
 }
