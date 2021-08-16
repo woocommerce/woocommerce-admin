@@ -49,6 +49,7 @@ const testAdminHomescreenActivityPanel = () => {
 		} );
 
 		it( 'should not show activity panel while task list is displayed', async () => {
+			expect( await homeScreen.isTaskListDisplayed() ).toBe( true );
 			expect( await homeScreen.isActivityPanelShown() ).toBe( false );
 		} );
 
