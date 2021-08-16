@@ -86,9 +86,14 @@ export class WcHomescreen extends BasePage {
 			'Task List Options'
 		);
 		await taskListOptions?.click();
-		const hideThisButton = await waitForElementByText( '*', 'Hide this' );
-		takeScreenshotFor( 'hide-task-list-' + Date.now() );
-		await hideThisButton?.click();
+		const hideThisButtonVisible = await waitForElementByTextWithoutThrow(
+			'*',
+			'Hide this'
+		);
+		if ( hideThisButtonVisible ) {
+			const hideThisButton = await getElementByText( '*', 'Hide this' );
+			await hideThisButton?.click();
+		}
 	}
 
 	async waitForNotesRequestToBeLoaded(): Promise< void > {
