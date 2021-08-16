@@ -27,6 +27,7 @@ export class HelpMenu extends BaseElement {
 
 	async enableTaskList() {
 		await this.openSetupWizardTab();
+
 		const enableLink = await getElementByText(
 			'*',
 			'Enable',

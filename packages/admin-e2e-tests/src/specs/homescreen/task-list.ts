@@ -64,7 +64,7 @@ const testAdminHomescreenTasklist = () => {
 			await settings.navigate();
 			await helpMenu.openHelpMenu();
 			await helpMenu.enableTaskList();
-			await homeScreen.navigate();
+			// redirects to homescreen
 			await homeScreen.isDisplayed();
 			expect( await homeScreen.isTaskListDisplayed() ).toBe( true );
 		} );

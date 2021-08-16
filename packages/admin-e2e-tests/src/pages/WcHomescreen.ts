@@ -59,7 +59,7 @@ export class WcHomescreen extends BasePage {
 	}
 
 	async isTaskListDisplayed(): Promise< boolean > {
-		return !! ( await getElementByText(
+		return !! ( await waitForElementByTextWithoutThrow(
 			'*',
 			'Get ready to start selling'
 		) );
