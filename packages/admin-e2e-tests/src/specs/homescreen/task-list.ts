@@ -12,6 +12,7 @@ import { WcHomescreen } from '../../pages/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
 import { HelpMenu } from '../../elements/HelpMenu';
 import { WcSettings } from '../../pages/WcSettings';
+import { updateOption } from '../../fixtures';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { afterAll, beforeAll, describe, it } = require( '@jest/globals' );
@@ -41,12 +42,13 @@ const testAdminHomescreenTasklist = () => {
 		} );
 
 		afterAll( async () => {
+			await updateOption( 'woocommerce_task_list_hidden', 'no' );
 			await login.logout();
 		} );
 
-		it( 'should show 6 tasks on the home screen', async () => {
+		it( 'should show 6 or more tasks on the home screen', async () => {
 			const tasks = await homeScreen.getTaskList();
-			expect( tasks.length ).toBe( 6 );
+			expect( tasks.length ).toBeGreaterThanOrEqual( 6 );
 			expect( tasks ).toContain( TaskTitles.storeDetails );
 			expect( tasks ).toContain( TaskTitles.addProducts );
 			expect( tasks ).toContain( TaskTitles.taxSetup );
