@@ -395,9 +395,9 @@ class BusinessDetails extends Component {
 								<CardFooter isBorderless justify="center">
 									<Button
 										isPrimary
-										onClick={ () => {
+										onClick={ async () => {
+											await handleSubmit();
 											this.persistProfileItems();
-											handleSubmit();
 										} }
 										disabled={ ! isValidForm }
 										isBusy={ isInstallingActivating }
