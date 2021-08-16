@@ -747,7 +747,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 						),
 						'actionLabel'   => __( 'Purchase & install now', 'woocommerce-admin' ),
 						'actionUrl'     => '/setup-wizard',
-						'isComplete'    => count( array_diff( $purchase_products, $installed_plugins ) ) > 0,
+						'isComplete'    => count( array_diff( $purchase_products, $installed_plugins ) ) < 1,
 						'isVisible'     => count( $purchase_products ) > 0,
 						'time'          => __( '2 minutes', 'woocommerce-admin' ),
 						'isDismissable' => true,
@@ -787,9 +787,11 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 						),
 						'isComplete' => ! empty( $enabled_gateways ),
 						'isVisible'  => Features::is_enabled( 'payment-gateway-suggestions' ) &&
-							! in_array( 'woocommerce-payments', $business_extensions, true ) &&
-							! in_array( 'woocommerce-payments', $installed_plugins, true ) &&
-							! in_array( WC()->countries->get_base_country(), OnboardingTasksFeature::get_woocommerce_payments_supported_countries(), true ),
+							(
+								! in_array( 'woocommerce-payments', $business_extensions, true ) ||
+								! in_array( 'woocommerce-payments', $installed_plugins, true ) ||
+								! in_array( WC()->countries->get_base_country(), OnboardingTasksFeature::get_woocommerce_payments_supported_countries(), true )
+							),
 						'time'       => __( '2 minutes', 'woocommerce-admin' ),
 					),
 					array(
