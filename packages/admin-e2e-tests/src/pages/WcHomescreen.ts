@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { ElementHandle } from 'puppeteer';
+import { takeScreenshotFor } from '@woocommerce/e2e-environment';
 
 /**
  * Internal dependencies
@@ -86,6 +87,7 @@ export class WcHomescreen extends BasePage {
 		);
 		await taskListOptions?.click();
 		const hideThisButton = await waitForElementByText( '*', 'Hide this' );
+		takeScreenshotFor( 'hide-task-list-' + Date.now() );
 		await hideThisButton?.click();
 	}
 
