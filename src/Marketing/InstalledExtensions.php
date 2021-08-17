@@ -174,7 +174,7 @@ class InstalledExtensions {
 		$data['icon'] = plugins_url( 'images/marketing/pinterest.svg', WC_ADMIN_PLUGIN_FILE );
 
 		// TODO: Finalise docs url.
-		$data['docsUrl'] = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/';
+		$data['docsUrl'] = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/?utm_medium=product';
 
 		if ( 'activated' === $data['status'] && class_exists( 'Pinterest_For_Woocommerce' ) ) {
 			// TODO: Get onboarded status from pinterest plugin.
