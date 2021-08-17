@@ -1,6 +1,6 @@
 {
 	"name": "woocommerce/woocommerce-admin",
-	"version": "2.6.0-beta.2",
+	"version": "2.6.0-rc.1",
 	"description": "A modern, javascript-driven WooCommerce Admin experience.",
 	"homepage": "https://github.com/woocommerce/woocommerce-admin",
 	"type": "wordpress-plugin",
