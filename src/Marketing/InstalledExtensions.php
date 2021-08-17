@@ -175,10 +175,9 @@ class InstalledExtensions {
 
 		if ( 'activated' === $data['status'] ) {
 			// TODO: Get onboarded status from pinterest plugin.
-			// TODO: Finalise settings url.
 			// TODO: Finalise docs url.
 			$data['status']      = 'configured';
-			$data['settingsUrl'] = admin_url( 'admin.php?page=pinterest-for-woocommerce-setup-guide' );
+			$data['settingsUrl'] = admin_url( 'admin.php?page=wc-admin&path=/pinterest/settings' );
 			$data['docsUrl']     = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/';
 		}
 
