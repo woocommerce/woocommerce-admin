@@ -4,6 +4,13 @@
 - Fix: Fixing issues with ReportTable component data not populating correctly #7355
 - Fix: Fix tracks events for payment gateway suggestions #7304
 - Fix: Update status values in CSV download to match the table #7284
+- Fix: Allow super admins all capabilities within WooCommerce Admin #7489
+- Fix: Fix blank screen by setting a default value #7506
+- Fix: Fix analytics overview re-arrangement on initial load. #7475
+- Fix: Fix up onboarding profiler not working when opted out of tracking #7490
+- Fix: Fix blank screen on analytics screens when searching #7482
+- Fix: Fix all links with hash to behind query parameters #7483
+- Fix: Fix Stats module CSS issue introduced by Gutenberg #7488
 - Add: Add boolean isReverseTrend prop to SummaryNumber to show "positive" delta for negative numbers. #7357
 - Add: Adding links to help panel for marketing task #7384
 - Add: Add installed marketing extensions card to extensions task #7419
