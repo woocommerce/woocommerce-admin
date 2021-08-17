@@ -173,12 +173,18 @@ class InstalledExtensions {
 		$data         = self::get_extension_base_data( $slug );
 		$data['icon'] = plugins_url( 'images/marketing/pinterest.svg', WC_ADMIN_PLUGIN_FILE );
 
-		if ( 'activated' === $data['status'] ) {
+		// TODO: Finalise docs url.
+		$data['docsUrl'] = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/';
+
+		if ( 'activated' === $data['status'] && class_exists( 'Pinterest_For_Woocommerce' ) ) {
 			// TODO: Get onboarded status from pinterest plugin.
-			// TODO: Finalise docs url.
-			$data['status']      = 'configured';
-			$data['settingsUrl'] = admin_url( 'admin.php?page=wc-admin&path=/pinterest/settings' );
-			$data['docsUrl']     = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/';
+			$pinterest_onboarding_completed = Pinterest_For_Woocommerce()::is_setup_complete();
+			if ( $pinterest_onboarding_completed ) {
+				$data['status']      = 'configured';
+				$data['settingsUrl'] = admin_url( 'admin.php?page=wc-admin&path=/pinterest/settings' );
+			} else {
+				$data['settingsUrl'] = admin_url( 'admin.php?page=wc-admin&path=/pinterest/landing' );
+			}
 		}
 
 		return $data;
