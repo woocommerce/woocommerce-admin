@@ -181,6 +181,7 @@
 		"@woocommerce/notices": "file:packages/notices",
 		"@woocommerce/number": "file:packages/number",
 		"@woocommerce/onboarding": "file:packages/onboarding",
+		"@woocommerce/style-build": "file:packages/style-build",
 		"@woocommerce/tracks": "file:packages/tracks",
 		"@woocommerce/wc-admin-settings": "file:packages/wc-admin-settings",
 		"@wordpress/babel-plugin-makepot": "2.1.3",

@@ -1,6 +1,6 @@
 /**
  * Internal dependencies
  */
-const styleConfig = require( '../webpack.style.js' );
+const { webpackConfig } = require( '@woocommerce/style-build' );
 
-module.exports = styleConfig( __dirname );
+module.exports = webpackConfig( __dirname );

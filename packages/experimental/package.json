@@ -49,6 +49,7 @@
 		"@testing-library/user-event": "13.1.9",
 		"@types/dompurify": "2.2.2",
 		"@types/react-transition-group": "4.4.1",
+		"@woocommerce/style-build": "file:../style-build",
 		"concurrently": "5.3.0"
 	},
 	"scripts": {

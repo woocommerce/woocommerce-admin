@@ -39,7 +39,7 @@ const webpackConfig = ( packageDir ) => ( {
 								includePaths: [
 									path.resolve(
 										__dirname,
-										'../client/stylesheets/abstracts'
+										'../../client/stylesheets/abstracts'
 									),
 								],
 							},
@@ -68,4 +68,4 @@ const webpackConfig = ( packageDir ) => ( {
 	],
 } );
 
-module.exports = webpackConfig;
+module.exports = { webpackConfig };
