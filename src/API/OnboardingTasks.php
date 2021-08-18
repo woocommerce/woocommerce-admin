@@ -648,10 +648,23 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_tasks() {
-		$profiler_data       = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
-		$installed_plugins   = PluginsHelper::get_installed_plugin_slugs();
-		$product_types       = $profiler_data['product_types'];
-		$purchase_products   = $profiler_data['product_types']; // @todo This should use the product names.
+		$profiler_data         = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$installed_plugins     = PluginsHelper::get_installed_plugin_slugs();
+		$product_types         = $profiler_data['product_types'];
+		$allowed_product_types = Onboarding::get_allowed_product_types();
+		$purchaseable_products = array();
+		$remaining_products    = array();
+		foreach ( $product_types as $product_type ) {
+			if ( ! isset( $allowed_product_types[ $product_type ]['slug'] ) ) {
+				continue;
+			}
+
+			$purchaseable_products[] = $allowed_product_types[ $product_type ];
+
+			if ( ! in_array( $allowed_product_types[ $product_type ]['slug'], $installed_plugins, true ) ) {
+				$remaining_products[] = $allowed_product_types[ $product_type ]['label'];
+			}
+		}
 		$business_extensions = $profiler_data['business_extensions'];
 		$product_query       = new \WC_Product_Query(
 			array(
@@ -722,33 +735,34 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 					),
 					array(
 						'id'            => 'purchase',
-						'title'         => count( $purchase_products ) === 1
+						'title'         => count( $remaining_products ) === 1
 							? sprintf(
 								/* translators: %1$s: list of product names comma separated, %2%s the last product name */
 								__(
 									'Add %s to my store',
 									'woocommerce-admin'
 								),
-								$purchase_products[0]
+								$remaining_products[0]
 							)
 							: __(
 								'Add paid extensions to my store',
 								'woocommerce-admin'
 							),
-						'content'       => sprintf(
-							// @todo This content should be updated based on products.
-							/* translators: %1$s: list of product names comma separated, %2%s the last product name */
-							__(
-								'Good choice! You chose to add %1$s and %2$s to your store.',
-								'woocommerce-admin'
+						'content'       => count( $remaining_products ) === 1
+							? $purchaseable_products[0]['description']
+							: sprintf(
+								/* translators: %1$s: list of product names comma separated, %2%s the last product name */
+								__(
+									'Good choice! You chose to add %1$s and %2$s to your store.',
+									'woocommerce-admin'
+								),
+								implode( ', ', array_slice( $remaining_products, 0, -1 ) ) . ( count( $remaining_products ) > 2 ? ',' : '' ),
+								end( $remaining_products )
 							),
-							$purchase_products[0],
-							$purchase_products[0]
-						),
 						'actionLabel'   => __( 'Purchase & install now', 'woocommerce-admin' ),
 						'actionUrl'     => '/setup-wizard',
-						'isComplete'    => count( array_diff( $purchase_products, $installed_plugins ) ) < 1,
-						'isVisible'     => count( $purchase_products ) > 0,
+						'isComplete'    => count( $remaining_products ) === 0,
+						'isVisible'     => count( $purchaseable_products ) > 0,
 						'time'          => __( '2 minutes', 'woocommerce-admin' ),
 						'isDismissable' => true,
 					),
