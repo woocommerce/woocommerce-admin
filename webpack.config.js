@@ -133,7 +133,7 @@ const webpackConfig = {
 								includePaths: [
 									path.resolve(
 										__dirname,
-										'client/stylesheets/abstracts'
+										'packages/style-build/abstracts'
 									),
 								],
 							},

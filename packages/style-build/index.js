@@ -37,13 +37,10 @@ const webpackConfig = ( packageDir ) => ( {
 						options: {
 							sassOptions: {
 								includePaths: [
-									path.resolve(
-										__dirname,
-										'../../client/stylesheets/abstracts'
-									),
+									path.resolve( __dirname, 'abstracts' ),
 								],
 							},
-							// webpackImporter: true,
+							webpackImporter: true,
 							additionalData:
 								'@use "sass:math";' +
 								'@import "_colors"; ' +
