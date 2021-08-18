@@ -17,6 +17,7 @@ use WC_Marketplace_Suggestions;
  * Loader Class.
  */
 class Loader {
+
 	/**
 	 * App entry point.
 	 */
@@ -103,6 +104,7 @@ class Loader {
 		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 
 		// Combine JSON translation files (from chunks) when language packs are updated.
+		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'combine_translation_chunk_files' ), 10, 2 );
 
 		// Handler for WooCommerce and WooCommerce Admin plugin activation.
