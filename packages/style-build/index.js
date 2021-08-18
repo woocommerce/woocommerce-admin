@@ -12,10 +12,10 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpackConfig = ( packageDir ) => ( {
 	mode: NODE_ENV,
 	entry: {
-		style: path.join( packageDir, 'src/style.scss' ),
+		'build-style': path.join( packageDir, 'src/style.scss' ),
 	},
 	output: {
-		path: path.join( packageDir, 'build-style' ),
+		path: packageDir,
 	},
 	module: {
 		rules: [
@@ -56,10 +56,11 @@ const webpackConfig = ( packageDir ) => ( {
 	plugins: [
 		new FixStyleOnlyEntriesPlugin(),
 		new MiniCssExtractPlugin( {
-			filename: 'style.css',
+			filename: '[name]/style.css',
+			chunkFilename: 'chunks/[id].style.css',
 		} ),
 		new WebpackRTLPlugin( {
-			filename: 'style-rtl.css',
+			filename: '[name]/style-rtl.css',
 			minify: NODE_ENV === 'development' ? false : { safe: true },
 		} ),
 	],
