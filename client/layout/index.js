@@ -257,7 +257,7 @@ const _PageLayout = () => {
 };
 
 export const PageLayout = compose(
-	window.wcSettings.preloadOptions
+	window.wcSettings.admin
 		? withOptionsHydration( {
 				...getSetting( 'preloadOptions', {} ),
 		  } )
