@@ -650,7 +650,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function get_tasks() {
 		$profiler_data         = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
 		$installed_plugins     = PluginsHelper::get_installed_plugin_slugs();
-		$product_types         = $profiler_data['product_types'];
+		$product_types         = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
 		$allowed_product_types = Onboarding::get_allowed_product_types();
 		$purchaseable_products = array();
 		$remaining_products    = array();
