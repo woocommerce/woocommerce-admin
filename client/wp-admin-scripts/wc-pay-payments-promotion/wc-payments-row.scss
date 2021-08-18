@@ -1,0 +1,16 @@
+[data-gateway_id='psuedo_woocommerce_payments'] {
+	> .status a {
+		visibility: hidden !important;
+	}
+
+	.psuedo-wcpay_name {
+		display: flex;
+		justify-content: space-between;
+
+		.psuedo-wcpay_accepted > svg {
+			height: 24px;
+			width: auto;
+			margin-left: 4px;
+		}
+	}
+}

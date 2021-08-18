@@ -7,6 +7,8 @@ namespace Automattic\WooCommerce\Admin\Features\WCPayPromotion;
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Admin\Loader;
+
 /**
  * WC Pay Promotion engine.
  */
@@ -25,6 +27,23 @@ class Init {
 		add_filter( 'woocommerce_payment_gateways', array( __CLASS__, 'possibly_register_psuedo_wc_pay_gateway' ) );
 		add_filter( 'option_woocommerce_gateway_order', [ __CLASS__, 'set_gateway_top_of_list' ] );
 		add_filter( 'default_option_woocommerce_gateway_order', [ __CLASS__, 'set_gateway_top_of_list' ] );
+
+		$rtl = is_rtl() ? '.rtl' : '';
+
+		wp_enqueue_style(
+			'wc-admin-wc-pay-payments-promotion',
+			Loader::get_url( "wc-pay-payments-promotion/style{$rtl}", 'css' ),
+			array( 'wp-components' ),
+			Loader::get_file_version( 'css' )
+		);
+
+		wp_enqueue_script(
+			'wc-admin-wc-pay-payments-promotion',
+			Loader::get_url( 'wp-admin-scripts/wc-pay-payments-promotion', 'js' ),
+			array( 'wp-i18n', 'wp-element', WC_ADMIN_APP ),
+			Loader::get_file_version( 'js' ),
+			true
+		);
 	}
 
 	/**

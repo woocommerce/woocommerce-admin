@@ -25,9 +25,8 @@ class WCPaymentGatewayPsuedoWCPay extends \WC_Payment_Gateway {
 	 */
 	public function __construct() {
 		$this->id                 = static::GATEWAY_ID;
-		$this->method_title       = __( 'WooCommerce Payments', 'woocommerce-admin' );
+		$this->title              = __( 'WooCommerce Payments', 'woocommerce-admin' );
 		$this->method_description = __( 'Accept payments via credit card.', 'woocommerce-admin' );
-		$this->title              = __( 'Credit card / debit card (psuedo)', 'woocommerce-admin' );
 		$this->has_fields         = false;
 
 		// Get setting values.
