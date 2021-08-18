@@ -84,7 +84,7 @@
 		"build": "npm run build:js && npm run build:css",
 		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"build:css": "webpack",
-		"clean": "npx rimraf build build-*",
+		"clean": "npx rimraf tsconfig.tsbuildinfo build build-*",
 		"prepack": "npm run clean && npm run build",
 		"start": "../../node_modules/.bin/concurrently \"tsc --build --watch\" \"webpack --watch\"",
 		"test": "lerna run build && npm run test:nobuild",
