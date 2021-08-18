@@ -9,15 +9,8 @@ const postcssPlugins = require( '@wordpress/postcss-plugins-preset' );
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-const webpackConfig = ( packageDir ) => ( {
-	mode: NODE_ENV,
-	entry: {
-		'build-style': path.join( packageDir, 'src/style.scss' ),
-	},
-	output: {
-		path: packageDir,
-	},
-	module: {
+module.exports = {
+	webpackConfig: {
 		rules: [
 			{
 				test: /\.s?css$/,
@@ -52,18 +45,16 @@ const webpackConfig = ( packageDir ) => ( {
 				],
 			},
 		],
+		plugins: [
+			new FixStyleOnlyEntriesPlugin(),
+			new MiniCssExtractPlugin( {
+				filename: '[name]/style.css',
+				chunkFilename: 'chunks/[id].style.css',
+			} ),
+			new WebpackRTLPlugin( {
+				filename: '[name]/style-rtl.css',
+				minify: NODE_ENV === 'development' ? false : { safe: true },
+			} ),
+		],
 	},
-	plugins: [
-		new FixStyleOnlyEntriesPlugin(),
-		new MiniCssExtractPlugin( {
-			filename: '[name]/style.css',
-			chunkFilename: 'chunks/[id].style.css',
-		} ),
-		new WebpackRTLPlugin( {
-			filename: '[name]/style-rtl.css',
-			minify: NODE_ENV === 'development' ? false : { safe: true },
-		} ),
-	],
-} );
-
-module.exports = { webpackConfig };
+};

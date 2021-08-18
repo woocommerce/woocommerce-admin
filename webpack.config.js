@@ -16,7 +16,7 @@ const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
  */
 const AsyncChunkSrcVersionParameterPlugin = require( './chunk-src-version-param' );
 const UnminifyWebpackPlugin = require( './unminify' );
-const { webpackConfig: getStyleConfig } = require( '@woocommerce/style-build' );
+const { webpackConfig: styleConfig } = require( '@woocommerce/style-build' );
 const WooCommerceDependencyExtractionWebpackPlugin = require( './packages/dependency-extraction-webpack-plugin/src/index' );
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -56,8 +56,6 @@ const wpAdminScripts = [
 wpAdminScripts.forEach( ( name ) => {
 	entryPoints[ name ] = `./client/wp-admin-scripts/${ name }`;
 } );
-
-const styleConfig = getStyleConfig( __dirname );
 
 const suffix = WC_ADMIN_PHASE === 'core' ? '' : '.min';
 
@@ -111,7 +109,7 @@ const webpackConfig = {
 				test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/,
 				loader: 'url-loader',
 			},
-			...styleConfig.module.rules,
+			...styleConfig.rules,
 		],
 	},
 	resolve: {
