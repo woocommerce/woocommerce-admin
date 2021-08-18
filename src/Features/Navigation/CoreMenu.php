@@ -110,10 +110,10 @@ class CoreMenu {
 				'order' => 40,
 			),
 			array(
-				'title'      => __( 'Marketplace', 'woocommerce-admin' ),
-				'id'         => 'woocommerce-marketplace',
-				'menuId'     => 'secondary',
-				'order'      => 10,
+				'title'  => __( 'Marketplace', 'woocommerce-admin' ),
+				'id'     => 'woocommerce-marketplace',
+				'menuId' => 'secondary',
+				'order'  => 10,
 			),
 			array(
 				'title'  => __( 'Settings', 'woocommerce-admin' ),
