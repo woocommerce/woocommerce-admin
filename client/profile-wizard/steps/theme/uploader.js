@@ -32,7 +32,11 @@ const DropZoneWrapper = ( { children, className } ) => {
 	if ( isDropzoneProviderDepreciated ) {
 		return <div className={ className }>{ children }</div>;
 	}
-	return <DropZoneProvider>{ children }</DropZoneProvider>;
+	return (
+		<DropZoneProvider>
+			<div className={ className }>{ children }</div>
+		</DropZoneProvider>
+	);
 };
 
 class ThemeUploader extends Component {

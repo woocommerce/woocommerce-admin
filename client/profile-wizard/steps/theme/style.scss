@@ -87,12 +87,10 @@ p.woocommerce-profile-wizard__themes-skip-this-step {
 	margin: 0;
 	position: relative;
 
-	&.is-uploading .components-drop-zone__provider,
 	&.is-uploading .woocommerce-theme-uploader__dropzone-wrapper {
 		min-height: 382px;
 	}
 
-	.components-drop-zone__provider,
 	.woocommerce-theme-uploader__dropzone-wrapper {
 		display: flex;
 		flex-direction: column;
