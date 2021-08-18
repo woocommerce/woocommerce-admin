@@ -465,6 +465,7 @@ class Loader {
 			array(),
 			$css_file_version
 		);
+		wp_style_add_data( 'wc-onboarding', 'rtl', 'replace' );
 	}
 
 	/**
