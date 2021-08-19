@@ -85,6 +85,7 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Fix: Fix obsolete key property in gateway defaults #7229
 - Fix: Fixing button state logic for remote payment gateways #7200
 - Add: Add a logger to Remote Inbox Notifications #7194
+- Add: Add a logger to the rule evaluator #7194
 - Fix: WCPay not working in local payments task #7151
 - Fix: Include onboarding settings on the analytic pages #7109
 - Fix: Load Analytics API only when feature is turned on #7193
