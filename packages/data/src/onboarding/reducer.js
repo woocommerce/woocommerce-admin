@@ -37,6 +37,7 @@ const onboarding = (
 		error,
 		isRequesting,
 		selector,
+		taskLists,
 		tasksStatus,
 	}
 ) => {
@@ -86,6 +87,19 @@ const onboarding = (
 			return {
 				...state,
 				freeExtensions,
+			};
+		case TYPES.GET_TASK_LISTS_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					getTaskLists: error,
+				},
+			};
+		case TYPES.GET_TASK_LISTS_SUCCESS:
+			return {
+				...state,
+				taskLists,
 			};
 		default:
 			return state;

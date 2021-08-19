@@ -47,6 +47,20 @@ export function setProfileItems( profileItems, replace = false ) {
 	};
 }
 
+export function getTaskListsError( error ) {
+	return {
+		type: TYPES.GET_TASK_LISTS_ERROR,
+		error,
+	};
+}
+
+export function getTaskListsSuccess( taskLists ) {
+	return {
+		type: TYPES.GET_TASK_LISTS_SUCCESS,
+		taskLists,
+	};
+}
+
 export function setTasksStatus( tasksStatus ) {
 	return {
 		type: TYPES.SET_TASKS_STATUS,
