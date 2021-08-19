@@ -45,7 +45,7 @@
 		"build": "npm run build:js && npm run build:css",
 		"build:js": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"build:css": "webpack",
-		"start": "../../node_modules/.bin/concurrently \"tsc --build --watch\" \"webpack --watch\"",
+		"start": "concurrently \"tsc --build --watch\" \"webpack --watch\"",
 		"prepack": "npm run clean && npm run build",
 		"test": "lerna run build && npm run test:nobuild",
 		"test:nobuild": "jest --config ./jest.config.json",
