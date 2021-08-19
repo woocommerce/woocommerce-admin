@@ -30,7 +30,7 @@ class RuleEvaluator {
 	 *
 	 * @param array|object $rules The rule or rules being processed.
 	 * @param object|null  $stored_state Stored state.
-	 * @param array        $logger_args arguments for the event logger. slug is required.
+	 * @param array        $logger_args Arguments for the event logger. `slug` is required.
 	 *
 	 * @throws \InvalidArgumentException Thrown when $logger_args is missing slug.
 	 *
