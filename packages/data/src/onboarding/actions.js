@@ -83,6 +83,28 @@ export function snoozeTaskSuccess( taskId ) {
 	};
 }
 
+export function dismissTaskError( taskId, error ) {
+	return {
+		type: TYPES.DISMISS_TASK_ERROR,
+		taskId,
+		error,
+	};
+}
+
+export function dismissTaskRequest( taskId ) {
+	return {
+		type: TYPES.DISMISS_TASK_REQUEST,
+		taskId,
+	};
+}
+
+export function dismissTaskSuccess( taskId ) {
+	return {
+		type: TYPES.DISMISS_TASK_SUCCESS,
+		taskId,
+	};
+}
+
 export function setTasksStatus( tasksStatus ) {
 	return {
 		type: TYPES.SET_TASKS_STATUS,
@@ -133,6 +155,22 @@ export function* snoozeTask( id ) {
 		snoozeTaskSuccess();
 	} catch ( error ) {
 		snoozeTaskError( id, error );
+		throw new Error();
+	}
+}
+
+export function* dismissTask( id ) {
+	yield dismissTaskRequest( id );
+
+	try {
+		yield apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/dismiss`,
+			method: 'POST',
+		} );
+
+		dismissTaskSuccess();
+	} catch ( error ) {
+		dismissTaskError( id, error );
 		throw new Error();
 	}
 }

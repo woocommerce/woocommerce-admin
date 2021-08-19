@@ -102,6 +102,58 @@ const onboarding = (
 				...state,
 				taskLists,
 			};
+		case TYPES.DISMISS_TASK_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					dismissTask: error,
+				},
+				taskLists: state.taskLists.map( ( taskList ) => {
+					return {
+						...taskList,
+						tasks: taskList.tasks.map( ( task ) => {
+							if ( taskId === task.id ) {
+								return {
+									...task,
+									isDismissed: false,
+								};
+							}
+							return task;
+						} ),
+					};
+				} ),
+			};
+		case TYPES.DISMISS_TASK_REQUEST:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					dismissTask: true,
+				},
+				taskLists: state.taskLists.map( ( taskList ) => {
+					return {
+						...taskList,
+						tasks: taskList.tasks.map( ( task ) => {
+							if ( taskId === task.id ) {
+								return {
+									...task,
+									isDismissed: true,
+								};
+							}
+							return task;
+						} ),
+					};
+				} ),
+			};
+		case TYPES.DISMISS_TASK_SUCCESS:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					dismissTask: false,
+				},
+			};
 		case TYPES.SNOOZE_TASK_ERROR:
 			return {
 				...state,
