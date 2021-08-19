@@ -61,6 +61,28 @@ export function getTaskListsSuccess( taskLists ) {
 	};
 }
 
+export function snoozeTaskError( taskId, error ) {
+	return {
+		type: TYPES.SNOOZE_TASK_ERROR,
+		taskId,
+		error,
+	};
+}
+
+export function snoozeTaskRequest( taskId ) {
+	return {
+		type: TYPES.SNOOZE_TASK_REQUEST,
+		taskId,
+	};
+}
+
+export function snoozeTaskSuccess( taskId ) {
+	return {
+		type: TYPES.SNOOZE_TASK_SUCCESS,
+		taskId,
+	};
+}
+
 export function setTasksStatus( tasksStatus ) {
 	return {
 		type: TYPES.SET_TASKS_STATUS,
@@ -95,6 +117,22 @@ export function* updateProfileItems( items ) {
 	} catch ( error ) {
 		yield setError( 'updateProfileItems', error );
 		yield setIsRequesting( 'updateProfileItems', false );
+		throw new Error();
+	}
+}
+
+export function* snoozeTask( id ) {
+	yield snoozeTaskRequest( id );
+
+	try {
+		yield apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/snooze`,
+			method: 'POST',
+		} );
+
+		snoozeTaskSuccess();
+	} catch ( error ) {
+		snoozeTaskError( id, error );
 		throw new Error();
 	}
 }

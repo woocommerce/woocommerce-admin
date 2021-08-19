@@ -37,6 +37,7 @@ const onboarding = (
 		error,
 		isRequesting,
 		selector,
+		taskId,
 		taskLists,
 		tasksStatus,
 	}
@@ -100,6 +101,58 @@ const onboarding = (
 			return {
 				...state,
 				taskLists,
+			};
+		case TYPES.SNOOZE_TASK_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					snoozeTask: error,
+				},
+				taskLists: state.taskLists.map( ( taskList ) => {
+					return {
+						...taskList,
+						tasks: taskList.tasks.map( ( task ) => {
+							if ( taskId === task.id ) {
+								return {
+									...task,
+									isSnoozed: false,
+								};
+							}
+							return task;
+						} ),
+					};
+				} ),
+			};
+		case TYPES.SNOOZE_TASK_REQUEST:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					snoozeTask: true,
+				},
+				taskLists: state.taskLists.map( ( taskList ) => {
+					return {
+						...taskList,
+						tasks: taskList.tasks.map( ( task ) => {
+							if ( taskId === task.id ) {
+								return {
+									...task,
+									isSnoozed: true,
+								};
+							}
+							return task;
+						} ),
+					};
+				} ),
+			};
+		case TYPES.SNOOZE_TASK_SUCCESS:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					snoozeTask: false,
+				},
 			};
 		default:
 			return state;
