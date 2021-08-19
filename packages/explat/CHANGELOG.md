@@ -1,3 +1,10 @@
+# 1.1.2
+
+- Fix missing build-module folder
+# 1.1.1
+
+- Update add woo_country_code param when fetching an assignment #7533
+
 # 1.1.0
 
 -   Fix commonjs module build, allow package to be built in isolation. #7286
