@@ -1,4 +1,4 @@
-== 2.6.0 08/04/2021 == 
+== 2.6.0 08/31/2021 == 
 
 - Fix: Fixes action button mis-alignment within card footer. #7412
 - Fix: Fixing issues with ReportTable component data not populating correctly #7355
