@@ -34,7 +34,7 @@ class EvaluationLogger {
 	 *
 	 * @var string logger source.
 	 */
-	private $source = 'remote-inbox-notifications';
+	private $source = '';
 
 	/**
 	 * EvaluationLogger constructor.
