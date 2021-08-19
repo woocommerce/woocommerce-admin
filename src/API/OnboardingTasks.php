@@ -127,11 +127,11 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<id>[a-z0-9_\-]+)/undismiss',
+			'/' . $this->rest_base . '/(?P<id>[a-z0-9_\-]+)/undo_dismiss',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'undismiss_task' ),
+					'callback'            => array( $this, 'undo_dismiss_task' ),
 					'permission_callback' => array( $this, 'get_tasks_permission_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
@@ -709,6 +709,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$dismissed[] = $id;
 		$update      = update_option( 'woocommerce_task_list_dismissed_tasks', array_unique( $dismissed ) );
 
+		if ( $update ) {
+			wc_admin_record_tracks_event( 'tasklist_dismiss_task', array( 'task_name' => $id ) );
+		}
+
 		return rest_ensure_response( $update );
 	}
 
@@ -718,12 +722,16 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Request|WP_Error
 	 */
-	public function undismiss_task( $request ) {
+	public function undo_dismiss_task( $request ) {
 		$id = $request->get_param( 'id' );
 
 		$dismissed = get_option( 'woocommerce_task_list_dismissed_tasks', array() );
 		$dismissed = array_diff( $dismissed, array( $id ) );
 		$update    = update_option( 'woocommerce_task_list_dismissed_tasks', $dismissed );
+
+		if ( $update ) {
+			wc_admin_record_tracks_event( 'tasklist_undo_dismiss_task', array( 'task_name' => $id ) );
+		}
 
 		return rest_ensure_response( $update );
 	}
