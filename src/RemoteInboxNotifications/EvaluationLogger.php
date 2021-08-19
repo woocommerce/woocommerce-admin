@@ -76,12 +76,15 @@ class EvaluationLogger {
 	 * Log the results.
 	 */
 	public function log() {
+		if ( false === defined( 'WC_ADMIN_DEBUG_RULE_EVALUATOR' ) || true !== constant( 'WC_ADMIN_DEBUG_RULE_EVALUATOR' ) ) {
+			return;
+		}
+
 		foreach ( $this->results as $result ) {
 			$this->logger->debug(
 				"[{$this->slug}] {$result['rule']}: {$result['result']}",
 				array( 'source' => $this->source )
 			);
 		}
-		$this->logger->debug( "\n" );
 	}
 }

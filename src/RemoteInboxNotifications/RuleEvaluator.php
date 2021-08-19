@@ -63,14 +63,12 @@ class RuleEvaluator {
 			$evaluation_logger && $evaluation_logger->add_result( $rule->type, $processor_result );
 
 			if ( ! $processor_result ) {
+				$evaluation_logger && $evaluation_logger->log();
 				return false;
 			}
 		}
 
-		defined( 'WC_ADMIN_DEBUG_RULE_EVALUATOR' )
-		&& true === WC_ADMIN_DEBUG_RULE_EVALUATOR
-		&& $evaluation_logger
-		&& $evaluation_logger->log();
+		$evaluation_logger && $evaluation_logger->log();
 
 		return true;
 	}
