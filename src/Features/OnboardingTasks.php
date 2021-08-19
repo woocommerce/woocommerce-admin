@@ -49,6 +49,7 @@ class OnboardingTasks {
 		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
+		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_dismissal' ), 20 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -713,5 +714,25 @@ class OnboardingTasks {
 		);
 
 		return apply_filters( 'woocommerce_admin_onboarding_tasks', $task_lists );
+	}
+
+	/**
+	 * Add the dismissal status to each task.
+	 *
+	 * @param array $task_lists Task lists.
+	 * @return array
+	 */
+	public function add_task_dismissal( $task_lists ) {
+		$dismissed = get_option( 'woocommerce_task_list_dismissed_tasks', array() );
+
+		foreach ( $task_lists as $task_list_key => $task_list ) {
+			foreach ( $task_list['tasks'] as $task_key => $task ) {
+				if ( isset( $task['isDismissable'] ) && in_array( $task['id'], $dismissed, true ) ) {
+					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['isDismissed'] = true;
+				}
+			}
+		}
+
+		return $task_lists;
 	}
 }
