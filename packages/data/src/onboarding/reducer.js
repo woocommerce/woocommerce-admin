@@ -26,6 +26,23 @@ export const defaultState = {
 	tasksStatus: {},
 };
 
+const getUpdatedTaskLists = ( taskLists, args ) => {
+	return taskLists.map( ( taskList ) => {
+		return {
+			...taskList,
+			tasks: taskList.tasks.map( ( task ) => {
+				if ( args.id === task.id ) {
+					return {
+						...task,
+						...args,
+					};
+				}
+				return task;
+			} ),
+		};
+	} );
+};
+
 const onboarding = (
 	state = defaultState,
 	{
@@ -109,19 +126,9 @@ const onboarding = (
 					...state.errors,
 					dismissTask: error,
 				},
-				taskLists: state.taskLists.map( ( taskList ) => {
-					return {
-						...taskList,
-						tasks: taskList.tasks.map( ( task ) => {
-							if ( taskId === task.id ) {
-								return {
-									...task,
-									isDismissed: false,
-								};
-							}
-							return task;
-						} ),
-					};
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isDismissed: false,
 				} ),
 			};
 		case TYPES.DISMISS_TASK_REQUEST:
@@ -131,19 +138,9 @@ const onboarding = (
 					...state.requesting,
 					dismissTask: true,
 				},
-				taskLists: state.taskLists.map( ( taskList ) => {
-					return {
-						...taskList,
-						tasks: taskList.tasks.map( ( task ) => {
-							if ( taskId === task.id ) {
-								return {
-									...task,
-									isDismissed: true,
-								};
-							}
-							return task;
-						} ),
-					};
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isDismissed: true,
 				} ),
 			};
 		case TYPES.DISMISS_TASK_SUCCESS:
@@ -161,19 +158,9 @@ const onboarding = (
 					...state.errors,
 					snoozeTask: error,
 				},
-				taskLists: state.taskLists.map( ( taskList ) => {
-					return {
-						...taskList,
-						tasks: taskList.tasks.map( ( task ) => {
-							if ( taskId === task.id ) {
-								return {
-									...task,
-									isSnoozed: false,
-								};
-							}
-							return task;
-						} ),
-					};
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isSnoozed: false,
 				} ),
 			};
 		case TYPES.SNOOZE_TASK_REQUEST:
@@ -183,19 +170,9 @@ const onboarding = (
 					...state.requesting,
 					snoozeTask: true,
 				},
-				taskLists: state.taskLists.map( ( taskList ) => {
-					return {
-						...taskList,
-						tasks: taskList.tasks.map( ( task ) => {
-							if ( taskId === task.id ) {
-								return {
-									...task,
-									isSnoozed: true,
-								};
-							}
-							return task;
-						} ),
-					};
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isSnoozed: true,
 				} ),
 			};
 		case TYPES.SNOOZE_TASK_SUCCESS:
