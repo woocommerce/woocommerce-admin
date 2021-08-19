@@ -1,6 +1,6 @@
 # Unreleased
 
-# 2.2.1
+# 2.2.2
 
 -   Fix missing build-module folder
 # 2.2.0
