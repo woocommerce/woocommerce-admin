@@ -34,6 +34,17 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	protected $rest_base = 'onboarding/tasks';
 
 	/**
+	 * Duration to milisecond mapping.
+	 *
+	 * @var string
+	 */
+	protected $duration_to_ms = array(
+		'day'  => 24 * 60 * 60 * 1000,
+		'hour' => 60 * 60 * 1000,
+		'week' => 7 * 24 * 60 * 60 * 1000,
+	);
+
+	/**
 	 * Register routes.
 	 */
 	public function register_routes() {
@@ -190,6 +201,20 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function get_tasks_permission_check( $request ) {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to retrieve onboarding tasks.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a given request has access to manage woocommerce.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function snooze_task_permissions_check( $request ) {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to snooze onboarding tasks.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -736,4 +761,66 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		return rest_ensure_response( $update );
 	}
+
+	/**
+	 * Retrieve single task.
+	 *
+	 * @param String $task_id Task ID.
+	 *
+	 * @return Object
+	 */
+	protected function get_task_by_id( $task_id ) {
+		$tasks_res = $this->get_tasks()->data;
+		$task_list = (object) $tasks_res[0];
+		$tasks     = $task_list->tasks;
+
+		$selected = array_filter(
+			$tasks,
+			function( $task ) use ( $task_id ) {
+				return $task['id'] === $task_id;
+			}
+		);
+
+		if ( ! count( $selected ) ) {
+			return null;
+		}
+
+		return array_shift( $selected );
+	}
+
+	/**
+	 * Snooze an onboarding task.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function snooze_task( $request ) {
+
+		$task_id         = $request->get_param( 'id' );
+		$snooze_duration = $request->get_param( 'duration' );
+
+		$snooze_task = $this->get_task_by_id( $task_id );
+
+		if ( is_null( $snooze_task ) ) {
+			return $this->prepare_error(
+				new \WP_Error(
+					'woocommerce_tasks_invalid_task',
+					__( 'You must provide a valid task ID', 'woocommerce-admin' )
+				)
+			);
+		}
+
+		$snooze_option = get_option( 'woocommerce_task_list_remind_me_later_tasks' );
+		$duration      = is_null( $snooze_duration ) ? 'day' : $snooze_duration;
+
+		$snooze_option[ $task_id ] = $this->duration_to_ms[ $duration ];
+
+		update_option( 'woocommerce_task_list_remind_me_later_tasks', $snooze_option );
+		$snooze_task['isSnoozed'] = true;
+
+		return rest_ensure_response( $snooze_task );
+	}
+
+
 }
