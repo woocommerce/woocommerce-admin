@@ -24,9 +24,10 @@ class WCPaymentGatewayPsuedoWCPay extends \WC_Payment_Gateway {
 	 * Constructor
 	 */
 	public function __construct() {
+		$wc_pay_spec              = Init::get_wc_pay_promotion_spec();
 		$this->id                 = static::GATEWAY_ID;
-		$this->title              = __( 'WooCommerce Payments', 'woocommerce-admin' );
-		$this->method_description = __( 'Accept payments via credit card.', 'woocommerce-admin' );
+		$this->title              = $wc_pay_spec->title;
+		$this->method_description = $wc_pay_spec->copy;
 		$this->has_fields         = false;
 
 		// Get setting values.

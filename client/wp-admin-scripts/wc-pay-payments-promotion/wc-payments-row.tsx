@@ -13,6 +13,7 @@ import {
 	ApplePay,
 	GooglePay,
 } from '@woocommerce/onboarding';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { __ } from '@wordpress/i18n';
 import _ from 'lodash';
 
@@ -23,11 +24,13 @@ import './wc-payments-row.scss';
 
 type WCPaymentsRowProps = {
 	sortColumnContent: string;
+	descriptionColumnContent: string;
 };
 
 const WC_PAY_SLUG = 'woocommerce-payments';
 export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 	sortColumnContent,
+	descriptionColumnContent,
 } ) => {
 	const [ installing, setInstalling ] = useState( false );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
@@ -42,9 +45,9 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 		// } );
 		installAndActivatePlugins( [ WC_PAY_SLUG ] )
 			.then( () => {
-				// window.location.href = getAdminLink(
-				// 	plugin[ 'setup-link' ].replace( '/wp-admin/', '' )
-				// );
+				window.location.href = getAdminLink(
+					'admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments'
+				);
 			} )
 			.catch( ( response: { errors: Record< string, string > } ) => {
 				// createNoticesFromResponse( response );
@@ -81,13 +84,17 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 				</div>
 			</td>
 			<td key="status" className="psuedo-status"></td>
-			<td className="description"></td>
+			<td
+				className="description"
+				dangerouslySetInnerHTML={ {
+					__html: descriptionColumnContent,
+				} }
+			></td>
 			<td className="action">
 				<Button
 					className="button alignright"
 					onClick={ () => installWCPay() }
 					isBusy={ installing }
-					disabled={ !! installing }
 				>
 					{ __( 'Install', 'woocommerce-admin' ) }
 				</Button>

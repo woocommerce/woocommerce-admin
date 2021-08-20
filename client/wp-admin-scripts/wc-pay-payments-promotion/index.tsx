@@ -14,5 +14,12 @@ const container = document.querySelector(
 
 if ( container ) {
 	const sortColumn = container.children[ 0 ].innerHTML;
-	render( <WCPaymentsRow sortColumnContent={ sortColumn } />, container );
+	const descriptionColumn = container.children[ 3 ].innerHTML;
+	render(
+		<WCPaymentsRow
+			sortColumnContent={ sortColumn }
+			descriptionColumnContent={ descriptionColumn }
+		/>,
+		container
+	);
 }
