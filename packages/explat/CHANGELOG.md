@@ -1,4 +1,8 @@
-# 1.1.3
+# 1.1.3 
+
+- Retry fix for missing build-module folder
+
+# 1.1.2
 
 - Fix missing build-module folder
 # 1.1.1

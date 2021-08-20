@@ -2,6 +2,10 @@
 
 # 2.2.2
 
+- Retry fix for missing build-module folder
+
+# 2.2.1
+
 -   Fix missing build-module folder
 # 2.2.0
 
