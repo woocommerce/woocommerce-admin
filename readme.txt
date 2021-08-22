@@ -79,7 +79,6 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 - Add: Add payment gateway suggestion unit tests #7142
 - Add: Feature toggle to disable Analytics UI #7168
 - Add: SlotFill to Abbreviated Notification panel #7091
-- Add: Show Pinterest in installed marketing extensions (if installed) #7417
 - Dev: Add `woocommerce_admin_export_id` filter for customizing the export file name #7178
 - Dev: Remove old payment gateway task components #7224
 - Fix: Currency display on Orders activity card on homescreen #7181
