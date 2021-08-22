@@ -177,7 +177,6 @@ class InstalledExtensions {
 		$data['docsUrl'] = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/?utm_medium=product';
 
 		if ( 'activated' === $data['status'] && class_exists( 'Pinterest_For_Woocommerce' ) ) {
-			// TODO: Get onboarded status from pinterest plugin.
 			$pinterest_onboarding_completed = Pinterest_For_Woocommerce()::is_setup_complete();
 			if ( $pinterest_onboarding_completed ) {
 				$data['status']      = 'configured';
