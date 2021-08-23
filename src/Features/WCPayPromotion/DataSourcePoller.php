@@ -21,7 +21,7 @@ class DataSourcePoller {
 	 * Default data sources array.
 	 */
 	const DATA_SOURCES = array(
-		'http://woocommerce.test/wp-json/wccom/marketplace-suggestions/1.0/payment-method-promotions.json',
+		'https://woocommerce.com/wp-json/wccom/marketplace-suggestions/1.0/payment-method-promotions.json',
 	);
 
 	/**
