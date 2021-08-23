@@ -1,0 +1,37 @@
+[data-gateway_id='psuedo_woocommerce_payments'] {
+	> .status a {
+		visibility: hidden !important;
+	}
+
+	> .action {
+		.is-secondary,
+		&.is-secondary:hover {
+			box-shadow: none;
+		}
+
+		a {
+			position: relative;
+			&::after {
+				content: 'Install';
+				position: absolute;
+				top: 0;
+				left: $gap-smallest;
+				right: $gap-smallest;
+				bottom: 0;
+				background: inherit;
+				text-align: center;
+			}
+		}
+	}
+
+	.psuedo-wcpay_name {
+		display: flex;
+		justify-content: space-between;
+
+		.psuedo-wcpay_accepted > svg {
+			height: 24px;
+			width: auto;
+			margin-left: 4px;
+		}
+	}
+}
