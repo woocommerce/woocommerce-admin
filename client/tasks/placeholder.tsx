@@ -1,16 +1,19 @@
 /**
  * Internal dependencies
  */
- import './placeholder.scss';
+import './placeholder.scss';
 
- export type TasksPlaceholderProps = {
+export type TasksPlaceholderProps = {
 	numTasks?: number;
 	query: {
-		task?: string
+		task?: string;
 	};
 };
 
-export const TasksPlaceholder: React.FC< TasksPlaceholderProps > = ( { numTasks = 5, query } ) => {
+export const TasksPlaceholder: React.FC< TasksPlaceholderProps > = ( {
+	numTasks = 5,
+	query,
+} ) => {
 	const isSingleTask = Boolean( query.task );
 
 	if ( isSingleTask ) {
@@ -59,5 +62,4 @@ export const TasksPlaceholder: React.FC< TasksPlaceholderProps > = ( { numTasks 
 	);
 };
 
- export default TasksPlaceholder;
- 
+export default TasksPlaceholder;
