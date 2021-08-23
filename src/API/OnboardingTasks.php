@@ -688,6 +688,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		foreach ( OnboardingTasksFeature::get_task_lists() as $task_list ) {
 			foreach ( $task_list['tasks'] as $task ) {
+				// @todo Use the reusable methods to get the task introduced in https://github.com/woocommerce/woocommerce-admin/pull/7539
 				if ( $id === $task['id'] && isset( $task['isDismissable'] ) && $task['isDismissable'] ) {
 					$is_dismissable = true;
 					break;
