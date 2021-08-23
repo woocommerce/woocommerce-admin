@@ -3,6 +3,20 @@
 		visibility: hidden !important;
 	}
 
+	> .action a {
+		position: relative;
+		&::after {
+			content: 'Install';
+			position: absolute;
+			top: 0;
+			left: $gap-smallest;
+			right: $gap-smallest;
+			bottom: 0;
+			background: inherit;
+			text-align: center;
+		}
+	}
+
 	.psuedo-wcpay_name {
 		display: flex;
 		justify-content: space-between;
