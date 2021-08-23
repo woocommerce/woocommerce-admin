@@ -22,6 +22,7 @@ interface StoreDetails {
 	countryRegion?: string;
 	city?: string;
 	postcode?: string;
+	storeEmail?: string;
 }
 
 export class StoreDetailsSection extends BasePage {
@@ -66,6 +67,12 @@ export class StoreDetailsSection extends BasePage {
 				config.get( 'addresses.admin.store.postcode' )
 		);
 
+		// Fill store's email address
+		await this.fillEmailAddress(
+			storeDetails.storeEmail ||
+				config.get( 'addresses.admin.store.email' )
+		);
+
 		// Verify that checkbox next to "I'm setting up a store for a client" is not selected
 		await this.checkClientSetupCheckbox( false );
 	}
@@ -93,6 +100,10 @@ export class StoreDetailsSection extends BasePage {
 
 	async fillPostalCode( postalCode: string ) {
 		await clearAndFillInput( '#inspector-text-control-3', postalCode );
+	}
+
+	async fillEmailAddress( email: string ) {
+		await clearAndFillInput( '#inspector-text-control-4', email );
 	}
 
 	async selectSetupForClient() {
