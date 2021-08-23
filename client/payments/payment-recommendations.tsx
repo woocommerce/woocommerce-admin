@@ -19,7 +19,6 @@ import {
 import { recordEvent } from '@woocommerce/tracks';
 import ExternalIcon from 'gridicons/dist/external';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
-import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
