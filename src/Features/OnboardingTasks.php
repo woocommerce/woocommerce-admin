@@ -799,7 +799,7 @@ class OnboardingTasks {
 
 		foreach ( $task_lists as $task_list_key => $task_list ) {
 			foreach ( $task_list['tasks'] as $task_key => $task ) {
-				if ( in_array( $task['id'], array_keys( $snoozed_tasks ), true ) ) {
+				if ( isset( $task['isSnoozeable'] ) && in_array( $task['id'], array_keys( $snoozed_tasks ), true ) ) {
 					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['isSnoozed']    = true;
 					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['snoozedUntil'] = $snoozed_tasks[ $task['id'] ];
 				}

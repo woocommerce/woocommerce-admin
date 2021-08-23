@@ -802,12 +802,18 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task_list_id    = $request->get_param( 'task_list_id' );
 		$snooze_duration = $request->get_param( 'duration' );
 
+		$is_snoozeable = false;
+
 		$snooze_task = OnboardingTasksFeature::get_task_by_id( $task_id, $task_list_id );
 
-		if ( is_null( $snooze_task ) ) {
+		if ( $snooze_task && isset( $snooze_task['isSnoozeable'] ) && $snooze_task['isSnoozeable'] ) {
+			$is_snoozeable = true;
+		}
+
+		if ( ! $is_snoozeable ) {
 			return new \WP_Error(
 				'woocommerce_tasks_invalid_task',
-				__( 'You must provide a valid task ID', 'woocommerce-admin' )
+				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' )
 			);
 		}
 
