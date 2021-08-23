@@ -259,13 +259,6 @@ export function StoreAddress( props ) {
 				autoComplete="postal-code"
 				{ ...getInputProps( 'postCode' ) }
 			/>
-
-			<TextControl
-				label={ __( 'Email address', 'woocommerce-admin' ) }
-				required
-				autoComplete="email"
-				{ ...getInputProps( 'storeEmail' ) }
-			/>
 		</div>
 	);
 }

@@ -14,7 +14,7 @@ import {
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { Form } from '@woocommerce/components';
+import { Form, TextControl } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	ONBOARDING_STORE_NAME,
@@ -74,7 +74,14 @@ class StoreDetails extends Component {
 			countryState,
 			postCode: settings.woocommerce_store_postcode || '',
 			isClient: profileItems.setup_client || false,
-			storeEmail: profileItems.store_email || '', // We should default to Jetpack email if set, and maybe WP settings as fallback.
+			isAgreeMarketing:
+				profileItems.is_agree_marketing !== undefined
+					? profileItems.is_agree_marketing
+					: true,
+			storeEmail:
+				profileItems.store_email !== undefined // An empty value is considered valid.
+					? profileItems.store_email
+					: '', // We should default to Jetpack email if set, and maybe WP settings as fallback.
 		};
 
 		this.onContinue = this.onContinue.bind( this );
@@ -150,6 +157,7 @@ class StoreDetails extends Component {
 
 		const profileItemsToUpdate = {
 			setup_client: values.isClient,
+			is_agree_marketing: values.isAgreeMarketing,
 			store_email: values.storeEmail,
 		};
 
@@ -192,6 +200,28 @@ class StoreDetails extends Component {
 				)
 			);
 		}
+	}
+
+	validateStoreDetails( values ) {
+		const errors = validateStoreAddress( values );
+
+		if ( values.isAgreeMarketing && ! values.storeEmail.trim().length ) {
+			errors.storeEmail = __(
+				'Please add an email address',
+				'woocommerce-admin'
+			);
+		}
+		if (
+			values.storeEmail.trim().length &&
+			values.storeEmail.indexOf( '@' ) === -1
+		) {
+			errors.storeEmail = __(
+				'Invalid email address',
+				'woocommerce-admin'
+			);
+		}
+
+		return errors;
 	}
 
 	render() {
@@ -265,7 +295,7 @@ class StoreDetails extends Component {
 				<Form
 					initialValues={ this.initialValues }
 					onSubmit={ this.onSubmit }
-					validate={ validateStoreAddress }
+					validate={ this.validateStoreDetails }
 				>
 					{ ( {
 						getInputProps,
@@ -297,6 +327,16 @@ class StoreDetails extends Component {
 									getInputProps={ getInputProps }
 									setValue={ setValue }
 								/>
+
+								<TextControl
+									label={ __(
+										'Email address',
+										'woocommerce-admin'
+									) }
+									required
+									autoComplete="email"
+									{ ...getInputProps( 'storeEmail' ) }
+								/>
 							</CardBody>
 
 							<CardFooter>
@@ -304,10 +344,12 @@ class StoreDetails extends Component {
 									<div className="woocommerce-profile-wizard__client">
 										<CheckboxControl
 											label={ __(
-												"I'm setting up a store for a client",
+												'Get tips, product updates and inspiration straight to your mailbox',
 												'woocommerce-admin'
 											) }
-											{ ...getInputProps( 'isClient' ) }
+											{ ...getInputProps(
+												'isAgreeMarketing'
+											) }
 										/>
 									</div>
 								</FlexItem>
