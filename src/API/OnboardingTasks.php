@@ -742,14 +742,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		$is_dismissable = false;
 
-		foreach ( OnboardingTasksFeature::get_task_lists() as $task_list ) {
-			foreach ( $task_list['tasks'] as $task ) {
-				// @todo Use the reusable methods to get the task introduced in https://github.com/woocommerce/woocommerce-admin/pull/7539
-				if ( $id === $task['id'] && isset( $task['isDismissable'] ) && $task['isDismissable'] ) {
-					$is_dismissable = true;
-					break;
-				}
-			}
+		$dismiss_task = OnboardingTasksFeature::get_task_by_id( $id );
+
+		if ( $dismiss_task && isset( $dismiss_task['isDismissable'] ) && $dismiss_task['isDismissable'] ) {
+			$is_dismissable = true;
 		}
 
 		if ( ! $is_dismissable ) {
@@ -820,8 +816,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$snoozed_until = $this->duration_to_ms[ $duration ] + ( time() * 1000 );
 
 		$snooze_option[ $task_id ] = $snoozed_until;
-
-		$update = update_option( 'woocommerce_task_list_remind_me_later_tasks', $snooze_option );
+		$update                    = update_option( 'woocommerce_task_list_remind_me_later_tasks', $snooze_option );
 
 		if ( $update ) {
 			wc_admin_record_tracks_event( 'tasklist_remindmelater_task', array( 'task_name' => $task_id ) );

@@ -741,7 +741,7 @@ class OnboardingTasks {
 	 *
 	 * @return Object
 	 */
-	public static function get_task_by_id( $task_id, $task_list_id ) {
+	public static function get_task_by_id( $task_id, $task_list_id = null ) {
 
 		$task_list = $task_list_id ? self::get_task_list_by_id( $task_list_id ) : null;
 
