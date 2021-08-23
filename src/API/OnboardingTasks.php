@@ -39,9 +39,9 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @var string
 	 */
 	protected $duration_to_ms = array(
-		'day'  => 24 * 60 * 60 * 1000,
-		'hour' => 60 * 60 * 1000,
-		'week' => 7 * 24 * 60 * 60 * 1000,
+		'day'  => DAY_IN_SECONDS * 1000,
+		'hour' => HOUR_IN_SECONDS * 1000,
+		'week' => WEEK_IN_SECONDS * 1000,
 	);
 
 	/**
