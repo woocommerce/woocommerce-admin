@@ -148,6 +148,37 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/(?P<id>[a-z0-9_-]+)/snooze',
+			array(
+				'args'   => array(
+					'task_id'      => array(
+						'description' => __( 'Unique ID for the resource.', 'woocommerce-admin' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+					'duration'     => array(
+						'description'       => __( 'Time period to snooze the task.', 'woocommerce-admin' ),
+						'type'              => 'string',
+						'validate_callback' => function( $param, $request, $key ) {
+							return in_array( $param, array_keys( $this->duration_to_ms ), true );
+						},
+					),
+					'task_list_id' => array(
+						'description' => __( 'Optional parameter to query specific task list.', 'woocommerce-admin' ),
+						'type'        => 'string',
+					),
+				),
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'snooze_task' ),
+					'permission_callback' => array( $this, 'snooze_task_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -763,32 +794,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Retrieve single task.
-	 *
-	 * @param String $task_id Task ID.
-	 *
-	 * @return Object
-	 */
-	protected function get_task_by_id( $task_id ) {
-		$tasks_res = $this->get_tasks()->data;
-		$task_list = (object) $tasks_res[0];
-		$tasks     = $task_list->tasks;
-
-		$selected = array_filter(
-			$tasks,
-			function( $task ) use ( $task_id ) {
-				return $task['id'] === $task_id;
-			}
-		);
-
-		if ( ! count( $selected ) ) {
-			return null;
-		}
-
-		return array_shift( $selected );
-	}
-
-	/**
 	 * Snooze an onboarding task.
 	 *
 	 * @param WP_REST_Request $request Request data.
@@ -797,17 +802,16 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function snooze_task( $request ) {
 
-		$task_id         = $request->get_param( 'id' );
+		$task_id         = $request->get_param( 'task_id' );
+		$task_list_id    = $request->get_param( 'task_list_id' );
 		$snooze_duration = $request->get_param( 'duration' );
 
-		$snooze_task = $this->get_task_by_id( $task_id );
+		$snooze_task = OnboardingTasksFeature::get_task_by_id( $task_id, $task_list_id );
 
 		if ( is_null( $snooze_task ) ) {
-			return $this->prepare_error(
-				new \WP_Error(
-					'woocommerce_tasks_invalid_task',
-					__( 'You must provide a valid task ID', 'woocommerce-admin' )
-				)
+			return new \WP_Error(
+				'woocommerce_tasks_invalid_task',
+				__( 'You must provide a valid task ID', 'woocommerce-admin' )
 			);
 		}
 

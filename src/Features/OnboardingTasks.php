@@ -717,6 +717,57 @@ class OnboardingTasks {
 	}
 
 	/**
+	 * Retrieve a task list by ID.
+	 *
+	 * @param String $task_list_id Task list ID.
+	 *
+	 * @return Object
+	 */
+	public static function get_task_list_by_id( $task_list_id ) {
+		foreach ( self::get_task_lists() as $task_list ) {
+			if ( $task_list['id'] === $task_list_id ) {
+				return $task_list;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Retrieve single task.
+	 *
+	 * @param String $task_id Task ID.
+	 * @param String $task_list_id Task list ID.
+	 *
+	 * @return Object
+	 */
+	public static function get_task_by_id( $task_id, $task_list_id ) {
+
+		$task_list = $task_list_id ? self::get_task_list_by_id( $task_list_id ) : null;
+
+		if ( $task_list_id && ! $task_list ) {
+			return null;
+		}
+
+		$tasks_to_search = $task_list_id ? $task_list['tasks'] : array_reduce(
+			self::get_task_lists(),
+			function ( $all, $curr ) {
+
+				return array_merge( $all, $curr['tasks'] );
+			},
+			array()
+		);
+
+		foreach ( $tasks_to_search as $task ) {
+			if ( $task_id === $task['id'] ) {
+				return $task;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Add the dismissal status to each task.
 	 *
 	 * @param array $task_lists Task lists.
