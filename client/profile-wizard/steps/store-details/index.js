@@ -74,6 +74,7 @@ class StoreDetails extends Component {
 			countryState,
 			postCode: settings.woocommerce_store_postcode || '',
 			isClient: profileItems.setup_client || false,
+			storeEmail: profileItems.store_email || '', // We should default to Jetpack email if set, and maybe WP settings as fallback.
 		};
 
 		this.onContinue = this.onContinue.bind( this );
@@ -147,7 +148,11 @@ class StoreDetails extends Component {
 			},
 		} );
 
-		const profileItemsToUpdate = { setup_client: values.isClient };
+		const profileItemsToUpdate = {
+			setup_client: values.isClient,
+			store_email: values.storeEmail,
+		};
+
 		const region = getCurrencyRegion( values.countryState );
 
 		/**
@@ -375,19 +380,19 @@ export default compose(
 			getSettingsError,
 			isUpdateSettingsRequesting,
 		} = select( SETTINGS_STORE_NAME );
-		const {
-			getOnboardingError,
-			getProfileItems,
-			isOnboardingRequesting,
-		} = select( ONBOARDING_STORE_NAME );
+		const { getOnboardingError, isOnboardingRequesting } = select(
+			ONBOARDING_STORE_NAME
+		);
 		const { isResolving } = select( OPTIONS_STORE_NAME );
 
-		const profileItems = getProfileItems();
 		const isProfileItemsError = Boolean(
 			getOnboardingError( 'updateProfileItems' )
 		);
 
 		const { general: settings = {} } = getSettings( 'general' );
+		const {
+			onboarding: { profile: profileItems },
+		} = getSettings( 'wc_admin' );
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isBusy =
 			isOnboardingRequesting( 'updateProfileItems' ) ||

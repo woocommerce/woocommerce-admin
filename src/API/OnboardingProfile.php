@@ -360,6 +360,14 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'readonly'          => true,
 				'validate_callback' => 'rest_validate_request_arg',
 			),
+			'store_email'         => array(
+				'type'              => 'string',
+				'format'            => 'email',
+				'description'       => __( 'Store email address.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+			),
 		);
 
 		return apply_filters( 'woocommerce_rest_onboarding_profile_properties', $properties );
