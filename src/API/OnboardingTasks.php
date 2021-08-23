@@ -821,7 +821,11 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		$snooze_option[ $task_id ] = $snoozed_until;
 
-		update_option( 'woocommerce_task_list_remind_me_later_tasks', $snooze_option );
+		$update = update_option( 'woocommerce_task_list_remind_me_later_tasks', $snooze_option );
+
+		if ( $update ) {
+			wc_admin_record_tracks_event( 'tasklist_remindmelater_task', array( 'task_name' => $task_id ) );
+		}
 
 		$snooze_task['isSnoozed']    = true;
 		$snooze_task['snoozedUntil'] = $snoozed_until;
