@@ -50,6 +50,7 @@ class OnboardingTasks {
 		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_dismissal' ), 20 );
+		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_snoozed' ), 20 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -785,5 +786,27 @@ class OnboardingTasks {
 		}
 
 		return $task_lists;
+	}
+
+	/**
+	 * Add the snoozed status to each task.
+	 *
+	 * @param array $task_lists Task lists.
+	 * @return array
+	 */
+	public function add_task_snoozed( $task_lists ) {
+		$snoozed_tasks = get_option( 'woocommerce_task_list_remind_me_later_tasks' );
+
+		foreach ( $task_lists as $task_list_key => $task_list ) {
+			foreach ( $task_list['tasks'] as $task_key => $task ) {
+				if ( in_array( $task['id'], array_keys( $snoozed_tasks ), true ) ) {
+					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['isSnoozed']    = true;
+					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['snoozedUntil'] = $snoozed_tasks[ $task['id'] ];
+				}
+			}
+		}
+
+		return $task_lists;
+
 	}
 }
