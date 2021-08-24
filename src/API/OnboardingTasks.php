@@ -154,11 +154,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			'/' . $this->rest_base . '/(?P<id>[a-z0-9_-]+)/snooze',
 			array(
 				'args'   => array(
-					'task_id'      => array(
-						'description' => __( 'Unique ID for the resource.', 'woocommerce-admin' ),
-						'type'        => 'string',
-						'required'    => true,
-					),
 					'duration'     => array(
 						'description'       => __( 'Time period to snooze the task.', 'woocommerce-admin' ),
 						'type'              => 'string',
@@ -798,7 +793,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function snooze_task( $request ) {
 
-		$task_id         = $request->get_param( 'task_id' );
+		$task_id         = $request->get_param( 'id' );
 		$task_list_id    = $request->get_param( 'task_list_id' );
 		$snooze_duration = $request->get_param( 'duration' );
 
