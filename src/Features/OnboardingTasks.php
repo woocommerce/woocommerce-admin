@@ -750,10 +750,9 @@ class OnboardingTasks {
 			return null;
 		}
 
-		$tasks_to_search = $task_list_id ? $task_list['tasks'] : array_reduce(
+		$tasks_to_search = $task_list ? $task_list['tasks'] : array_reduce(
 			self::get_task_lists(),
 			function ( $all, $curr ) {
-
 				return array_merge( $all, $curr['tasks'] );
 			},
 			array()
