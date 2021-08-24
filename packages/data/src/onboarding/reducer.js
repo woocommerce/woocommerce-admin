@@ -23,6 +23,7 @@ export const defaultState = {
 	},
 	paymentMethods: [],
 	requesting: {},
+	taskLists: [],
 	tasksStatus: {},
 };
 
