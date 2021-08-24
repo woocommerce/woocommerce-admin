@@ -3,9 +3,9 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
+import { Card, CardBody, CardHeader } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { EllipsisMenu, Badge } from '@woocommerce/components';
+import { Badge } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text, List, CollapsibleList } from '@woocommerce/experimental';
@@ -14,6 +14,7 @@ import { Text, List, CollapsibleList } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { TaskListItem } from './task-list-item';
+import { TaskListMenu } from './task-list-menu';
 import './task-list.scss';
 
 export const getEventPrefix = ( id: string ): string => {
@@ -100,23 +101,6 @@ export const TaskList: React.FC< TaskListProps > = ( {
 		}
 	}, [ query ] );
 
-	const renderMenu = () => {
-		return (
-			<div className="woocommerce-card__menu woocommerce-card__header-item">
-				<EllipsisMenu
-					label={ __( 'Task List Options', 'woocommerce-admin' ) }
-					renderContent={ () => (
-						<div className="woocommerce-task-card__section-controls">
-							<Button onClick={ () => hideTaskList( id ) }>
-								{ __( 'Hide this', 'woocommerce-admin' ) }
-							</Button>
-						</div>
-					) }
-				/>
-			</div>
-		);
-	};
-
 	if ( ! visibleTasks.length ) {
 		return <div className="woocommerce-task-dashboard__container"></div>;
 	}
@@ -163,7 +147,7 @@ export const TaskList: React.FC< TaskListProps > = ( {
 							</Text>
 							<Badge count={ incompleteTasks.length } />
 						</div>
-						{ renderMenu() }
+						<TaskListMenu id={ id } />
 					</CardHeader>
 					<CardBody>
 						<ListComp animation="custom" { ...listProps }>
