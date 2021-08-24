@@ -83,6 +83,28 @@ export function snoozeTaskSuccess( taskId ) {
 	};
 }
 
+export function undoSnoozeTaskError( taskId, error ) {
+	return {
+		type: TYPES.UNDO_SNOOZE_TASK_ERROR,
+		taskId,
+		error,
+	};
+}
+
+export function undoSnoozeTaskRequest( taskId ) {
+	return {
+		type: TYPES.UNDO_SNOOZE_TASK_REQUEST,
+		taskId,
+	};
+}
+
+export function undoSnoozeTaskSuccess( taskId ) {
+	return {
+		type: TYPES.UNDO_SNOOZE_TASK_SUCCESS,
+		taskId,
+	};
+}
+
 export function dismissTaskError( taskId, error ) {
 	return {
 		type: TYPES.DISMISS_TASK_ERROR,
@@ -101,6 +123,28 @@ export function dismissTaskRequest( taskId ) {
 export function dismissTaskSuccess( taskId ) {
 	return {
 		type: TYPES.DISMISS_TASK_SUCCESS,
+		taskId,
+	};
+}
+
+export function undoDismissTaskError( taskId, error ) {
+	return {
+		type: TYPES.UNDO_DISMISS_TASK_ERROR,
+		taskId,
+		error,
+	};
+}
+
+export function undoDismissTaskRequest( taskId ) {
+	return {
+		type: TYPES.UNDO_DISMISS_TASK_REQUEST,
+		taskId,
+	};
+}
+
+export function undoDismissTaskSuccess( taskId ) {
+	return {
+		type: TYPES.UNDO_DISMISS_TASK_SUCCESS,
 		taskId,
 	};
 }
@@ -152,9 +196,25 @@ export function* snoozeTask( id ) {
 			method: 'POST',
 		} );
 
-		snoozeTaskSuccess();
+		yield snoozeTaskSuccess();
 	} catch ( error ) {
-		snoozeTaskError( id, error );
+		yield snoozeTaskError( id, error );
+		throw new Error();
+	}
+}
+
+export function* undoSnoozeTask( id ) {
+	yield undoSnoozeTaskRequest( id );
+
+	try {
+		yield apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/undo_snooze`,
+			method: 'POST',
+		} );
+
+		yield undoSnoozeTaskSuccess();
+	} catch ( error ) {
+		yield undoSnoozeTaskError( id, error );
 		throw new Error();
 	}
 }
@@ -168,9 +228,25 @@ export function* dismissTask( id ) {
 			method: 'POST',
 		} );
 
-		dismissTaskSuccess();
+		yield dismissTaskSuccess();
 	} catch ( error ) {
-		dismissTaskError( id, error );
+		yield dismissTaskError( id, error );
+		throw new Error();
+	}
+}
+
+export function* undoDismissTask( id ) {
+	yield undoDismissTaskRequest( id );
+
+	try {
+		yield apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/undo_dismiss`,
+			method: 'POST',
+		} );
+
+		yield undoDismissTaskSuccess();
+	} catch ( error ) {
+		yield undoDismissTaskError( id, error );
 		throw new Error();
 	}
 }
