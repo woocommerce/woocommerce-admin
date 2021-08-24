@@ -5,6 +5,7 @@ import { Link } from '@woocommerce/components';
 import { Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch } from '@wordpress/data';
 import {
 	Visa,
@@ -40,9 +41,9 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 			return;
 		}
 		setInstalling( true );
-		// recordEvent( 'settings_payments_recommendations_setup', {
-		// 	extension_selected: plugin.product,
-		// } );
+		recordEvent( 'settings_payments_recommendations_setup', {
+			extension_selected: 'woocommerce-payments',
+		} );
 		installAndActivatePlugins( [ WC_PAY_SLUG ] )
 			.then( () => {
 				window.location.href = getAdminLink(

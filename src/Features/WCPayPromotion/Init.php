@@ -39,10 +39,13 @@ class Init {
 			Loader::get_file_version( 'css' )
 		);
 
+		$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'wc-pay-payments-promotion' );
+		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
+
 		wp_enqueue_script(
 			'wc-admin-wc-pay-payments-promotion',
 			Loader::get_url( 'wp-admin-scripts/wc-pay-payments-promotion', 'js' ),
-			array( 'wp-i18n', 'wp-element', WC_ADMIN_APP ),
+			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
 			Loader::get_file_version( 'js' ),
 			true
 		);
