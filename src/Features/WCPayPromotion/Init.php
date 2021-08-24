@@ -69,9 +69,12 @@ class Init {
 	 */
 	public static function possibly_filter_recommended_payment_gateways( $payment_methods ) {
 		if ( self::register_psuedo_wc_pay_gateway() ) {
-			return array_filter( $payment_methods, function($payment_method) {
-				return $payment_method['product'] !== 'woocommerce-payments';
-			});
+			return array_filter(
+				$payment_methods,
+				function( $payment_method ) {
+					return $payment_method['product'] !== 'woocommerce-payments';
+				}
+			);
 		}
 		return $payment_methods;
 	}
@@ -81,7 +84,7 @@ class Init {
 	 *
 	 * @return boolean if psuedo gateway should be registered.
 	 */
-	public static function register_psuedo_wc_pay_gateway( ) {
+	public static function register_psuedo_wc_pay_gateway() {
 		// Check if WC Pay is enabled.
 		if ( class_exists( '\WC_Payments' ) ) {
 			return false;
