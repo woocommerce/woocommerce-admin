@@ -152,6 +152,38 @@ const onboarding = (
 					dismissTask: false,
 				},
 			};
+		case TYPES.UNDO_DISMISS_TASK_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					undoDismissTask: error,
+				},
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isDismissed: true,
+				} ),
+			};
+		case TYPES.UNDO_DISMISS_TASK_REQUEST:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					undoDismissTask: true,
+				},
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isDismissed: false,
+				} ),
+			};
+		case TYPES.UNDO_DISMISS_TASK_SUCCESS:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					undoDismissTask: false,
+				},
+			};
 		case TYPES.SNOOZE_TASK_ERROR:
 			return {
 				...state,
@@ -182,6 +214,38 @@ const onboarding = (
 				requesting: {
 					...state.requesting,
 					snoozeTask: false,
+				},
+			};
+		case TYPES.UNDO_SNOOZE_TASK_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					undoSnoozeTask: error,
+				},
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isSnoozed: true,
+				} ),
+			};
+		case TYPES.UNDO_SNOOZE_TASK_REQUEST:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					undoSnoozeTask: true,
+				},
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isSnoozed: false,
+				} ),
+			};
+		case TYPES.UNDO_SNOOZE_TASK_SUCCESS:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					undoSnoozeTask: false,
 				},
 			};
 		default:
