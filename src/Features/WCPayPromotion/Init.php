@@ -72,7 +72,7 @@ class Init {
 			return array_filter(
 				$payment_methods,
 				function( $payment_method ) {
-					return $payment_method['product'] !== 'woocommerce-payments';
+					return 'woocommerce-payments' !== $payment_method['product'];
 				}
 			);
 		}
