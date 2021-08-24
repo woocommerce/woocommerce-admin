@@ -742,9 +742,9 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		$is_dismissable = false;
 
-		$dismiss_task = OnboardingTasksFeature::get_task_by_id( $id );
+		$task = OnboardingTasksFeature::get_task_by_id( $id );
 
-		if ( $dismiss_task && isset( $dismiss_task['isDismissable'] ) && $dismiss_task['isDismissable'] ) {
+		if ( $task && isset( $task['isDismissable'] ) && $task['isDismissable'] ) {
 			$is_dismissable = true;
 		}
 
