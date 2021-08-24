@@ -9,17 +9,21 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\PaymentPlugins;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\EvaluateSuggestion;
 
 /**
  * WC Pay Promotion engine.
  */
 class Init {
+	const SPECS_TRANSIENT_NAME = 'woocommerce_admin_payment_method_promotion_specs';
+
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		include_once __DIR__ . '/WCPaymentGatewayPreInstallWCPayPromotion.php';
 
+		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
 		add_filter( PaymentPlugins::FILTER_NAME, array( __CLASS__, 'possibly_filter_recommended_payment_gateways' ) );
 
 		if ( ! isset( $_GET['page'] ) || 'wc-settings' !== $_GET['page'] || ! isset( $_GET['tab'] ) || 'checkout' !== $_GET['tab'] ) { // phpcs:ignore WordPress.Security.NonceVerification
@@ -95,6 +99,11 @@ class Init {
 		if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
 			return false;
 		}
+		$wc_pay_spec = self::get_wc_pay_promotion_spec();
+
+		if ( ! $wc_pay_spec ) {
+			return false;
+		}
 		return true;
 	}
 
@@ -115,6 +124,73 @@ class Init {
 			$ordering[ $id ] = $is_empty ? 0 : ( min( $ordering ) - 1 );
 		}
 		return $ordering;
+	}
+
+	/**
+	 * Get WC Pay promotion spec.
+	 */
+	public static function get_wc_pay_promotion_spec() {
+		$promotions = self::get_promotions();
+		$index      = array_search( 'woocommerce-payments', array_column( $promotions, 'product' ), true );
+		if ( false !== $index ) {
+			return $promotions[ $index ];
+		}
+		return false;
+	}
+
+	/**
+	 * Go through the specs and run them.
+	 */
+	public static function get_promotions() {
+		$suggestions = array();
+		$specs       = self::get_specs();
+
+		foreach ( $specs as $spec ) {
+			$suggestion    = EvaluateSuggestion::evaluate( $spec );
+			$suggestions[] = $suggestion;
+		}
+
+		return array_values(
+			array_filter(
+				$suggestions,
+				function( $suggestion ) {
+					return ! property_exists( $suggestion, 'is_visible' ) || $suggestion->is_visible;
+				}
+			)
+		);
+
+	}
+
+	/**
+	 * Delete the specs transient.
+	 */
+	public static function delete_specs_transient() {
+		delete_transient( self::SPECS_TRANSIENT_NAME );
+	}
+
+	/**
+	 * Get specs or fetch remotely if they don't exist.
+	 */
+	public static function get_specs() {
+		$specs = get_transient( self::SPECS_TRANSIENT_NAME );
+
+		// Fetch specs if they don't yet exist.
+		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
+			if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+				return array();
+			}
+
+			$specs = DataSourcePoller::read_specs_from_data_sources();
+
+			// Fall back to default specs if polling failed.
+			if ( ! $specs ) {
+				return array();
+			}
+
+			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
+		}
+
+		return $specs;
 	}
 }
 
