@@ -8,11 +8,6 @@ if ( 'cli' !== php_sapi_name() ) {
 	return;
 }
 
-define('WP_USE_THEMES', false);
-
-$wc_admin_root = __DIR__ . '/../../../';
-require_once $wc_admin_root . '/../../../wp-load.php';
-
 require_once __DIR__ . '/../../../vendor/autoload.php';
 require_once __DIR__ . '/../Config.php';
 require_once __DIR__ . '/../Application.php';
