@@ -795,7 +795,7 @@ class OnboardingTasks {
 	 * @return array
 	 */
 	public function add_task_snoozed( $task_lists ) {
-		$snoozed_tasks = get_option( 'woocommerce_task_list_remind_me_later_tasks' );
+		$snoozed_tasks = get_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
 
 		foreach ( $task_lists as $task_list_key => $task_list ) {
 			foreach ( $task_list['tasks'] as $task_key => $task ) {

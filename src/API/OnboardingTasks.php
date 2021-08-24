@@ -808,11 +808,14 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		if ( ! $is_snoozeable ) {
 			return new \WP_Error(
 				'woocommerce_tasks_invalid_task',
-				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' )
+				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
+				array(
+					'status' => 404,
+				)
 			);
 		}
 
-		$snooze_option = get_option( 'woocommerce_task_list_remind_me_later_tasks' );
+		$snooze_option = get_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
 		$duration      = is_null( $snooze_duration ) ? 'day' : $snooze_duration;
 		$snoozed_until = $this->duration_to_ms[ $duration ] + ( time() * 1000 );
 
