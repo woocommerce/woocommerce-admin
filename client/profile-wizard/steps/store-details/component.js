@@ -133,7 +133,8 @@ class StoreDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
-			derived_currency: currencySettings.currency_code,
+			derived_currency:
+				currencySettings.currency_code ?? currencySettings.code,
 			email_signup: values.isAgreeMarketing,
 		} );
 
@@ -435,9 +436,6 @@ export default compose(
 		);
 
 		const { general: settings = {} } = getSettings( 'general' );
-		// const {
-		// 	onboarding: { profile: profileItems },
-		// } = getSettings( 'wc_admin' );
 		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isBusy =
 			isOnboardingRequesting( 'updateProfileItems' ) ||
