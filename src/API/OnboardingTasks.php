@@ -125,6 +125,19 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/(?P<id>[a-z0-9_\-]+)/hide',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'hide_task_list' ),
+					'permission_callback' => array( $this, 'hide_task_list_permission_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[a-z0-9_\-]+)/dismiss',
 			array(
 				array(
@@ -240,6 +253,20 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function get_tasks_permission_check( $request ) {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return new \WP_Error( 'woocommerce_rest_cannot_create', __( 'Sorry, you are not allowed to retrieve onboarding tasks.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if a given request has permission to hide task lists.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return WP_Error|boolean
+	 */
+	public function hide_task_list_permission_check( $request ) {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return new \WP_Error( 'woocommerce_rest_cannot_update', __( 'Sorry, you are not allowed to hide task lists.', 'woocommerce-admin' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
 		return true;
@@ -877,6 +904,55 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		}
 
 		return rest_ensure_response( OnboardingTasksFeature::get_task_by_id( $id ) );
+	}
+
+	/**
+	 * Hide a task list.
+	 *
+	 * @param WP_REST_Request $request Request data.
+	 *
+	 * @return WP_REST_Response|WP_Error
+	 */
+	public function hide_task_list( $request ) {
+		$id            = $request->get_param( 'id' );
+		$task_lists    = OnboardingTasksFeature::get_task_lists();
+		$task_list_key = array_search( $id, array_column( $task_lists, 'id' ), true );
+
+		if ( ! is_int( $task_list_key ) ) {
+			return new \WP_Error(
+				'woocommerce_tasks_invalid_task_list',
+				__( 'Sorry, that task list was not found', 'woocommerce-admin' ),
+				array(
+					'status' => 404,
+				)
+			);
+		}
+		$task_list = $task_lists[ $task_list_key ];
+
+		$update = update_option( 'woocommerce_' . $id . '_task_list_hidden', 'yes' );
+
+		if ( $update ) {
+			$completed_task_count = array_reduce(
+				$task_list['tasks'],
+				function( $total, $task ) {
+					return $task['isComplete'] ? $total + 1 : $total;
+				},
+				0
+			);
+
+			wc_admin_record_tracks_event(
+				$id . '_completed',
+				array(
+					'action'                => 'remove_card',
+					'completed_task_count'  => $completed_task_count,
+					'incomplete_task_count' => count( $task_list['tasks'] ) - $completed_task_count,
+				)
+			);
+		}
+
+		$task_list['isHidden'] = true;
+
+		return rest_ensure_response( $task_list );
 	}
 
 }
