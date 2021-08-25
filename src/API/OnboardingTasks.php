@@ -761,7 +761,9 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			wc_admin_record_tracks_event( 'tasklist_dismiss_task', array( 'task_name' => $id ) );
 		}
 
-		return rest_ensure_response( $update );
+		$task = OnboardingTasksFeature::get_task_by_id( $id );
+
+		return rest_ensure_response( $task );
 	}
 
 	/**
@@ -781,7 +783,9 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			wc_admin_record_tracks_event( 'tasklist_undo_dismiss_task', array( 'task_name' => $id ) );
 		}
 
-		return rest_ensure_response( $update );
+		$task = OnboardingTasksFeature::get_task_by_id( $id );
+
+		return rest_ensure_response( $task );
 	}
 
 	/**

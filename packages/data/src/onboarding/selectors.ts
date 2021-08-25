@@ -21,8 +21,10 @@ export const getTasksStatus = (
 	return state.tasksStatus || {};
 };
 
+const initialTaskLists: TaskList[] = [];
+
 export const getTaskLists = ( state: OnboardingState ): TaskList[] => {
-	return state.taskLists || [];
+	return state.taskLists || initialTaskLists;
 };
 
 export const getPaymentGatewaySuggestions = (

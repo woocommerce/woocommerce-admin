@@ -55,6 +55,7 @@ const onboarding = (
 		error,
 		isRequesting,
 		selector,
+		task,
 		taskId,
 		taskLists,
 		tasksStatus,
@@ -151,6 +152,7 @@ const onboarding = (
 					...state.requesting,
 					dismissTask: false,
 				},
+				taskLists: getUpdatedTaskLists( state.taskLists, task ),
 			};
 		case TYPES.UNDO_DISMISS_TASK_ERROR:
 			return {
@@ -183,6 +185,7 @@ const onboarding = (
 					...state.requesting,
 					undoDismissTask: false,
 				},
+				taskLists: getUpdatedTaskLists( state.taskLists, task ),
 			};
 		case TYPES.SNOOZE_TASK_ERROR:
 			return {
@@ -215,6 +218,7 @@ const onboarding = (
 					...state.requesting,
 					snoozeTask: false,
 				},
+				taskLists: getUpdatedTaskLists( state.taskLists, task ),
 			};
 		case TYPES.UNDO_SNOOZE_TASK_ERROR:
 			return {
@@ -247,6 +251,7 @@ const onboarding = (
 					...state.requesting,
 					undoSnoozeTask: false,
 				},
+				taskLists: getUpdatedTaskLists( state.taskLists, task ),
 			};
 		default:
 			return state;
