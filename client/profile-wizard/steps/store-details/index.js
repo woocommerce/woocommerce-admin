@@ -14,7 +14,7 @@ import {
 } from '@wordpress/components';
 import { Component } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
-import { withDispatch, withSelect, useSelect } from '@wordpress/data';
+import { withDispatch, withSelect } from '@wordpress/data';
 import { Form, TextControl } from '@woocommerce/components';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
@@ -49,40 +49,21 @@ const FlextItemSubstitute = ( { children, align } ) => {
 };
 const FlexItem = MaybeFlexItem || FlextItemSubstitute;
 
+const LoadingPlaceholder = () => (
+	<div className="woocommerce-admin__store-details__spinner">
+		<Spinner />
+	</div>
+);
+
 class StoreDetails extends Component {
 	constructor( props ) {
 		super( props );
-		const { profileItems, settings } = props;
 
 		this.state = {
 			showUsageModal: false,
 			skipping: false,
 			isStoreDetailsPopoverVisible: false,
 			isSkipSetupPopoverVisible: false,
-		};
-
-		// Check if a store address is set so that we don't default
-		// to WooCommerce's default country of the UK.
-		const countryState =
-			( settings.woocommerce_store_address &&
-				settings.woocommerce_default_country ) ||
-			'';
-
-		this.initialValues = {
-			addressLine1: settings.woocommerce_store_address || '',
-			addressLine2: settings.woocommerce_store_address_2 || '',
-			city: settings.woocommerce_store_city || '',
-			countryState,
-			postCode: settings.woocommerce_store_postcode || '',
-			isClient: profileItems.setup_client || false,
-			isAgreeMarketing:
-				profileItems.is_agree_marketing !== undefined
-					? profileItems.is_agree_marketing
-					: true,
-			storeEmail:
-				profileItems.store_email !== undefined // An empty value is considered valid.
-					? profileItems.store_email
-					: '', // We should default to Jetpack email if set, and maybe WP settings as fallback.
 		};
 
 		this.onContinue = this.onContinue.bind( this );
@@ -214,6 +195,7 @@ class StoreDetails extends Component {
 			);
 		}
 		if (
+			values.storeEmail &&
 			values.storeEmail.trim().length &&
 			values.storeEmail.indexOf( '@' ) === -1
 		) {
@@ -233,7 +215,7 @@ class StoreDetails extends Component {
 			isStoreDetailsPopoverVisible,
 			isSkipSetupPopoverVisible,
 		} = this.state;
-		const { skipProfiler, isBusy } = this.props;
+		const { skipProfiler, isLoading, isBusy, initialValues } = this.props;
 
 		/* eslint-disable @wordpress/i18n-no-collapsible-whitespace */
 		const skipSetupText = __(
@@ -247,8 +229,16 @@ class StoreDetails extends Component {
 		);
 		/* eslint-enable @wordpress/i18n-no-collapsible-whitespace */
 
+		if ( isLoading ) {
+			return (
+				<div className="woocommerce-profile-wizard__store-details">
+					<LoadingPlaceholder />
+				</div>
+			);
+		}
+
 		return (
-			<>
+			<div className="woocommerce-profile-wizard__store-details">
 				<div className="woocommerce-profile-wizard__step-header">
 					<Text
 						variant="title.small"
@@ -295,7 +285,7 @@ class StoreDetails extends Component {
 				</div>
 
 				<Form
-					initialValues={ this.initialValues }
+					initialValues={ initialValues }
 					onSubmit={ this.onSubmit }
 					validate={ this.validateStoreDetails }
 				>
@@ -410,14 +400,14 @@ class StoreDetails extends Component {
 						</Popover>
 					) }
 				</div>
-			</>
+			</div>
 		);
 	}
 }
 
 StoreDetails.contextType = CurrencyContext;
 
-const ConnectedStoreDetails = compose(
+export default compose(
 	withSelect( ( select ) => {
 		const {
 			getSettings,
@@ -428,10 +418,11 @@ const ConnectedStoreDetails = compose(
 			getOnboardingError,
 			getProfileItems,
 			isOnboardingRequesting,
+			hasFinishedResolution: hasFinishedResolutionOnboarding,
 		} = select( ONBOARDING_STORE_NAME );
 		const { isResolving } = select( OPTIONS_STORE_NAME );
-		const profileItems = getProfileItems();
 
+		const profileItems = getProfileItems();
 		const isProfileItemsError = Boolean(
 			getOnboardingError( 'updateProfileItems' )
 		);
@@ -442,8 +433,37 @@ const ConnectedStoreDetails = compose(
 			isOnboardingRequesting( 'updateProfileItems' ) ||
 			isUpdateSettingsRequesting( 'general' ) ||
 			isResolving( 'getOption', [ 'woocommerce_allow_tracking' ] );
+		const isLoading = ! hasFinishedResolutionOnboarding(
+			'getProfileItems'
+		);
+
+		// Check if a store address is set so that we don't default
+		// to WooCommerce's default country of the UK.
+		const countryState =
+			( settings.woocommerce_store_address &&
+				settings.woocommerce_default_country ) ||
+			'';
+
+		const initialValues = {
+			addressLine1: settings.woocommerce_store_address || '',
+			addressLine2: settings.woocommerce_store_address_2 || '',
+			city: settings.woocommerce_store_city || '',
+			countryState,
+			postCode: settings.woocommerce_store_postcode || '',
+			isClient: profileItems.setup_client || false,
+			isAgreeMarketing:
+				typeof profileItems.is_agree_marketing === 'boolean'
+					? profileItems.is_agree_marketing
+					: true,
+			storeEmail:
+				typeof profileItems.store_email === 'string'
+					? profileItems.store_email
+					: '',
+		};
 
 		return {
+			initialValues,
+			isLoading,
 			isProfileItemsError,
 			isSettingsError,
 			profileItems,
@@ -465,31 +485,3 @@ const ConnectedStoreDetails = compose(
 		};
 	} )
 )( StoreDetails );
-
-const LoadingPlaceholder = () => (
-	<div className="woocommerce-admin__store-details__spinner">
-		<Spinner />
-	</div>
-);
-
-export default ( props ) => {
-	const { isLoading } = useSelect( ( select ) => {
-		// Prime profile items into store.
-		select( ONBOARDING_STORE_NAME ).getProfileItems();
-		return {
-			isLoading: ! select( ONBOARDING_STORE_NAME ).hasFinishedResolution(
-				'getProfileItems'
-			),
-		};
-	} );
-
-	return (
-		<div className="woocommerce-profile-wizard__store-details">
-			{ isLoading ? (
-				<LoadingPlaceholder />
-			) : (
-				<ConnectedStoreDetails { ...props } />
-			) }
-		</div>
-	);
-};
