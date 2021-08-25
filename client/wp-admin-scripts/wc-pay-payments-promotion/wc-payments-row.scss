@@ -26,12 +26,14 @@
 
 	.psuedo-wcpay_name {
 		display: flex;
-		justify-content: space-between;
 
-		.psuedo-wcpay_accepted > svg {
-			height: 24px;
-			width: auto;
-			margin-left: 4px;
+		.psuedo-wcpay_accepted {
+			margin-left: $gap;
+			> svg {
+				height: 24px;
+				width: auto;
+				margin-left: 4px;
+			}
 		}
 	}
 }
