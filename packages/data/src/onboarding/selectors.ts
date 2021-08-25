@@ -128,6 +128,8 @@ export type ProfileItemsState = {
 	skipped: boolean | null;
 	theme: string | null;
 	wccom_connected: boolean | null;
+	is_agree_marketing: boolean | null;
+	store_email: string | null;
 };
 
 export type FieldLocale = {
