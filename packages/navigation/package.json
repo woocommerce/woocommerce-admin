@@ -21,17 +21,22 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@wordpress/api-fetch": "2.2.8",
-		"@wordpress/compose": "3.23.1",
-		"@wordpress/notices": "1.12.0",
-		"@wordpress/components": "11.1.3",
-		"@wordpress/hooks": "2.11.0",
+		"@wordpress/api-fetch": "5.2.1",
+		"@wordpress/compose": "4.2.0",
+		"@wordpress/notices": "3.2.0",
+		"@wordpress/components": "14.1.0",
+		"@wordpress/hooks": "3.2.0",
 		"@wordpress/url": "2.21.0",
 		"history": "4.10.1",
 		"qs": "6.9.6"
 	},
+	"devDependencies": {
+		"jest": "27.0.6",
+		"ts-jest": "27.0.0",
+		"typescript": "4.2.4"
+	},
 	"peerDependencies": {
-		"lodash": "^4.17.0"
+		"lodash": "4.17.21"
 	},
 	"publishConfig": {
 		"access": "public"

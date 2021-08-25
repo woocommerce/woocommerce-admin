@@ -22,13 +22,18 @@
 	"react-native": "src/index",
 	"dependencies": {
 		"@woocommerce/number": "file:../number",
-		"@wordpress/deprecated": "^2.9.0",
-		"@wordpress/element": "2.19.0",
+		"@wordpress/deprecated": "3.2.1",
+		"@wordpress/element": "3.2.0",
 		"@wordpress/html-entities": "2.10.0",
-		"@wordpress/i18n": "3.17.0"
+		"@wordpress/i18n": "4.2.1"
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"devDependencies": {
+		"jest": "27.0.6",
+		"ts-jest": "27.0.0",
+		"typescript": "4.2.4"
 	},
 	"scripts": {
 		"clean": "npx rimraf tsconfig.tsbuildinfo build build-*",

@@ -21,16 +21,19 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@wordpress/date": "3.13.0",
-		"@wordpress/i18n": "3.17.0",
+		"@wordpress/date": "4.2.1",
+		"@wordpress/i18n": "4.2.1",
 		"moment": "2.29.1",
 		"qs": "6.9.6"
 	},
 	"devDependencies": {
-		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings"
+		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings",
+		"jest": "27.0.6",
+		"ts-jest": "27.0.0",
+		"typescript": "4.2.4"
 	},
 	"peerDependencies": {
-		"lodash": "^4.17.0"
+		"lodash": "4.17.21"
 	},
 	"publishConfig": {
 		"access": "public"

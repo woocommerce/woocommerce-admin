@@ -19,5 +19,11 @@
 		"build": "tsc --build",
 		"clean": "npx rimraf tsconfig.tsbuildinfo build build-*",
 		"prepack": "npm run clean && npm run build"
+	},
+	"dependencies": {
+		"@testing-library/jest-dom": "5.14.1",
+		"@wordpress/i18n": "4.2.1",
+		"@wordpress/jest-console": "^4.1.0",
+		"typescript": "4.2.4"
 	}
 }

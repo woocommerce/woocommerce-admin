@@ -23,26 +23,32 @@
 	"dependencies": {
 		"@woocommerce/date": "file:../date",
 		"@woocommerce/navigation": "file:../navigation",
-		"@wordpress/api-fetch": "2.2.8",
-		"@wordpress/compose": "3.23.1",
+		"@wordpress/api-fetch": "5.2.1",
+		"@wordpress/compose": "4.2.0",
 		"@wordpress/core-data": "3.0.0",
-		"@wordpress/element": "2.19.0",
-		"@wordpress/hooks": "2.11.0",
-		"@wordpress/data": "5.0.0",
+		"@wordpress/data": "5.2.0",
 		"@wordpress/data-controls": "2.0.0",
-		"@wordpress/i18n": "3.17.0",
+		"@wordpress/element": "3.2.0",
+		"@wordpress/hooks": "3.2.0",
+		"@wordpress/i18n": "4.2.1",
 		"@wordpress/url": "2.21.0",
+		"lodash": "4.17.21",
 		"md5": "^2.3.0",
 		"rememo": "^3.0.0"
 	},
 	"devDependencies": {
-		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings"
+		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings",
+		"@testing-library/react-hooks": "7.0.1",
+		"@types/lodash": "4.14.172",
+		"@types/wordpress__data-controls": "~1.0.5",
+		"jest": "27.0.6",
+		"react": "17.0.2",
+		"react-test-renderer": "17.0.2",
+		"ts-jest": "27.0.0",
+		"typescript": "4.2.4"
 	},
 	"publishConfig": {
 		"access": "public"
-	},
-	"peerDependencies": {
-		"@wordpress/core-data": "^3.0.0"
 	},
 	"scripts": {
 		"clean": "npx rimraf tsconfig.tsbuildinfo build build-*",
