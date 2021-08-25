@@ -188,7 +188,11 @@ class StoreDetails extends Component {
 	validateStoreDetails( values ) {
 		const errors = validateStoreAddress( values );
 
-		if ( values.isAgreeMarketing && ! values.storeEmail.trim().length ) {
+		if (
+			values.isAgreeMarketing &&
+			values.storeEmail &&
+			! values.storeEmail.trim().length
+		) {
 			errors.storeEmail = __(
 				'Please add an email address',
 				'woocommerce-admin'
@@ -436,7 +440,6 @@ export default compose(
 		const isLoading = ! hasFinishedResolutionOnboarding(
 			'getProfileItems'
 		);
-
 		// Check if a store address is set so that we don't default
 		// to WooCommerce's default country of the UK.
 		const countryState =
