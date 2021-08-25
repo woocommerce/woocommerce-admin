@@ -805,7 +805,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function snooze_task( $request ) {
-
 		$task_id         = $request->get_param( 'id' );
 		$task_list_id    = $request->get_param( 'task_list_id' );
 		$snooze_duration = $request->get_param( 'duration' );
@@ -837,9 +836,11 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( $update ) {
 			wc_admin_record_tracks_event( 'tasklist_remindmelater_task', array( 'task_name' => $task_id ) );
+			$snooze_task['isSnoozed']    = true;
+			$snooze_task['snoozedUntil'] = $snoozed_until;
 		}
 
-		return rest_ensure_response( $update );
+		return rest_ensure_response( $snooze_task );
 	}
 
 	/**
@@ -871,7 +872,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			wc_admin_record_tracks_event( 'tasklist_undo_remindmelater_task', array( 'task_name' => $id ) );
 		}
 
-		return rest_ensure_response( $update );
+		return rest_ensure_response( OnboardingTasksFeature::get_task_by_id( $id ) );
 	}
 
 }
