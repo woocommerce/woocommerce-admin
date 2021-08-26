@@ -3,7 +3,7 @@
  * Handles polling and storage of specs
  */
 
-namespace Automattic\WooCommerce\Admin\Features\WCPayPromotion;
+namespace Automattic\WooCommerce\Admin\Features\WcPayPromotion;
 
 defined( 'ABSPATH' ) || exit;
 
