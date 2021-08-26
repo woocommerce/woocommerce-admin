@@ -53,6 +53,8 @@ class OnboardingTasks {
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_snoozed' ), 20 );
 		add_filter( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_list_hidden' ), 20 );
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'record_completed_tasks' ), PHP_INT_MAX );
+		add_filter( 'pre_option_woocommerce_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
+		add_filter( 'pre_option_woocommerce_extended_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -836,7 +838,7 @@ class OnboardingTasks {
 	}
 
 	/**
-	 * Add the snoozed status to each task.
+	 * Add the task list isHidden attribute to each list.
 	 *
 	 * @param array $task_lists Task lists.
 	 * @return array
@@ -849,5 +851,22 @@ class OnboardingTasks {
 		}
 
 		return $task_lists;
+	}
+
+	/**
+	 * Get the values from the correct source when attempting to retrieve deprecated options.
+	 *
+	 * @param string $pre_option Pre option value.
+	 * @param string $option Option name.
+	 * @return string
+	 */
+	public function get_deprecated_options( $pre_option, $option ) {
+		$hidden = get_option( 'woocommerce_task_list_hidden_lists', array() );
+		switch ( $option ) {
+			case 'woocommerce_task_list_hidden':
+				return in_array( 'setup', $hidden, true ) ? 'yes' : 'no';
+			case 'woocommerce_extended_task_list_hidden':
+				return in_array( 'extended', $hidden, true ) ? 'yes' : 'no';
+		}
 	}
 }
