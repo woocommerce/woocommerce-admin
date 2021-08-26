@@ -46,6 +46,10 @@ class MailchimpScheduler {
 
 		$profile_data = get_option( 'woocommerce_onboarding_profile' );
 
+		if ( ! isset( $profile_data['is_agree_marketing'] ) || false === $profile_data['is_agree_marketing'] ) {
+			return;
+		}
+
 		// Abort if store_email doesn't exist.
 		if ( ! isset( $profile_data['store_email'] ) ) {
 			return;
