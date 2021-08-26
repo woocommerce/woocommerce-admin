@@ -266,7 +266,7 @@ class TaskLists {
 	public static function get_list( $id ) {
 		foreach ( self::get_all() as $task_list ) {
 			if ( $task_list['id'] === $id ) {
-				return $task_list;
+				return new TaskList( $task_list );
 			}
 		}
 

@@ -914,11 +914,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function hide_task_list( $request ) {
-		$id            = $request->get_param( 'id' );
-		$task_lists    = TaskLists::get_all();
-		$task_list_key = array_search( $id, array_column( $task_lists, 'id' ), true );
+		$id        = $request->get_param( 'id' );
+		$task_list = TaskLists::get_list( $id );
 
-		if ( ! is_int( $task_list_key ) ) {
+		if ( ! $task_list ) {
 			return new \WP_Error(
 				'woocommerce_tasks_invalid_task_list',
 				__( 'Sorry, that task list was not found', 'woocommerce-admin' ),
@@ -927,15 +926,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				)
 			);
 		}
-		$task_list = $task_lists[ $task_list_key ];
 
-		$hidden   = get_option( 'woocommerce_task_list_hidden_lists', array() );
-		$hidden[] = $id;
-		$update   = update_option( 'woocommerce_task_list_hidden_lists', array_unique( $hidden ) );
+		$update = $task_list->hide();
+		$json   = $task_list->get_json();
 
 		if ( $update ) {
 			$completed_task_count = array_reduce(
-				$task_list['tasks'],
+				$json['tasks'],
 				function( $total, $task ) {
 					return $task['isComplete'] ? $total + 1 : $total;
 				},
@@ -947,14 +944,12 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 				array(
 					'action'                => 'remove_card',
 					'completed_task_count'  => $completed_task_count,
-					'incomplete_task_count' => count( $task_list['tasks'] ) - $completed_task_count,
+					'incomplete_task_count' => count( $json['tasks'] ) - $completed_task_count,
 				)
 			);
 		}
 
-		$task_list['isHidden'] = true;
-
-		return rest_ensure_response( $task_list );
+		return rest_ensure_response( $json );
 	}
 
 }
