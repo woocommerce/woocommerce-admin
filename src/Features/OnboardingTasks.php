@@ -861,6 +861,10 @@ class OnboardingTasks {
 	 * @return string
 	 */
 	public function get_deprecated_options( $pre_option, $option ) {
+		if ( defined( 'WC_ADMIN_INSTALLING' ) && WC_ADMIN_INSTALLING ) {
+			return $pre_option;
+		};
+
 		$hidden = get_option( 'woocommerce_task_list_hidden_lists', array() );
 		switch ( $option ) {
 			case 'woocommerce_task_list_hidden':
