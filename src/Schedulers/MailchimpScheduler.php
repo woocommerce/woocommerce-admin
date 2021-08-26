@@ -58,7 +58,10 @@ class MailchimpScheduler {
 		$response = $this->make_request( $profile_data['store_email'] );
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
-			$this->logger->error( 'Error getting a response from Mailchimp API.', self::LOGGER_CONTEXT );
+			$this->logger->error(
+				'Error getting a response from Mailchimp API.',
+				array( 'source' => self::LOGGER_CONTEXT )
+			);
 			return false;
 		} else {
 			$body = json_decode( $response['body'] );
@@ -68,8 +71,8 @@ class MailchimpScheduler {
 			} else {
 				$this->logger->error(
 					// phpcs:ignore
-					'Incorrect response from Mailchimp API: ' . print_r( $body, true ),
-					self::LOGGER_CONTEXT
+					'Incorrect response from Mailchimp API with: ' . print_r( $body, true ),
+					array( 'source' => self::LOGGER_CONTEXT )
 				);
 				return false;
 			}
