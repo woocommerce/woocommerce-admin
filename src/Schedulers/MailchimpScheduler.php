@@ -41,34 +41,37 @@ class MailchimpScheduler {
 	public function run() {
 		// Abort if we've already subscribed to MailChimp.
 		if ( 'yes' === get_option( self::SUBSCRIBED_OPTION_NAME ) ) {
-			return;
+			return false;
 		}
 
 		$profile_data = get_option( 'woocommerce_onboarding_profile' );
 
 		if ( ! isset( $profile_data['is_agree_marketing'] ) || false === $profile_data['is_agree_marketing'] ) {
-			return;
+			return false;
 		}
 
 		// Abort if store_email doesn't exist.
 		if ( ! isset( $profile_data['store_email'] ) ) {
-			return;
+			return false;
 		}
 
 		$response = $this->make_request( $profile_data['store_email'] );
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
 			$this->logger->error( 'Error getting a response from Mailchimp API.', self::LOGGER_CONTEXT );
+			return false;
 		} else {
 			$body = json_decode( $response['body'] );
 			if ( isset( $body->success ) && true === $body->success ) {
 				update_option( self::SUBSCRIBED_OPTION_NAME, 'yes' );
+				return true;
 			} else {
 				$this->logger->error(
 					// phpcs:ignore
 					'Incorrect response from Mailchimp API: ' . print_r( $body, true ),
 					self::LOGGER_CONTEXT
 				);
+				return false;
 			}
 		}
 	}
