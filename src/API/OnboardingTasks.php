@@ -929,7 +929,9 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		}
 		$task_list = $task_lists[ $task_list_key ];
 
-		$update = update_option( 'woocommerce_' . $id . '_task_list_hidden', 'yes' );
+		$hidden   = get_option( 'woocommerce_task_list_hidden_lists', array() );
+		$hidden[] = $id;
+		$update   = update_option( 'woocommerce_task_list_hidden_lists', array_unique( $hidden ) );
 
 		if ( $update ) {
 			$completed_task_count = array_reduce(

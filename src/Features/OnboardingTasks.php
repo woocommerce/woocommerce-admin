@@ -51,6 +51,7 @@ class OnboardingTasks {
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_dismissal' ), 20 );
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_snoozed' ), 20 );
+		add_filter( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_list_hidden' ), 20 );
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'record_completed_tasks' ), PHP_INT_MAX );
 
 		if ( ! is_admin() ) {
@@ -579,7 +580,6 @@ class OnboardingTasks {
 			array(
 				'id'         => 'setup',
 				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
-				'isHidden'   => get_option( 'woocommerce_task_list_hidden' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
 					array(
@@ -833,6 +833,21 @@ class OnboardingTasks {
 		}
 
 		return $task_lists;
+	}
 
+	/**
+	 * Add the snoozed status to each task.
+	 *
+	 * @param array $task_lists Task lists.
+	 * @return array
+	 */
+	public function add_task_list_hidden( $task_lists ) {
+		$hidden = get_option( 'woocommerce_task_list_hidden_lists', array() );
+
+		foreach ( $task_lists as $key => $task_list ) {
+			$task_lists[ $key ]['isHidden'] = in_array( $task_list['id'], $hidden, true );
+		}
+
+		return $task_lists;
 	}
 }
