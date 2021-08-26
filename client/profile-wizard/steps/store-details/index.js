@@ -12,7 +12,7 @@ import {
 	Spinner,
 	Popover,
 } from '@wordpress/components';
-import { Component } from '@wordpress/element';
+import { Component, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Form, TextControl } from '@woocommerce/components';
@@ -99,12 +99,11 @@ class StoreDetails extends Component {
 		const {
 			createNotice,
 			goToNextStep,
-			isSettingsError,
 			updateProfileItems,
-			isProfileItemsError,
 			updateAndPersistSettingsForGroup,
 			profileItems,
 			settings,
+			errors,
 		} = this.props;
 
 		const currencySettings = this.deriveCurrencySettings(
@@ -169,9 +168,14 @@ class StoreDetails extends Component {
 			profileItemsToUpdate.industry = trimmedIndustries;
 		}
 
-		await updateProfileItems( profileItemsToUpdate );
+		try {
+			await updateProfileItems( profileItemsToUpdate );
+		} catch ( _ ) {}
 
-		if ( ! isSettingsError && ! isProfileItemsError ) {
+		if (
+			! Boolean( errors.current.settings ) &&
+			! Boolean( errors.current.onboarding )
+		) {
 			goToNextStep();
 		} else {
 			createNotice(
@@ -425,12 +429,8 @@ export default compose(
 		const { isResolving } = select( OPTIONS_STORE_NAME );
 
 		const profileItems = getProfileItems();
-		const isProfileItemsError = Boolean(
-			getOnboardingError( 'updateProfileItems' )
-		);
 
 		const { general: settings = {} } = getSettings( 'general' );
-		const isSettingsError = Boolean( getSettingsError( 'general' ) );
 		const isBusy =
 			isOnboardingRequesting( 'updateProfileItems' ) ||
 			isUpdateSettingsRequesting( 'general' ) ||
@@ -438,6 +438,14 @@ export default compose(
 		const isLoading = ! hasFinishedResolutionOnboarding(
 			'getProfileItems'
 		);
+		const errors = useRef( {
+			settings: null,
+			onboarding: null,
+		} );
+		errors.current = {
+			settings: getSettingsError( 'general' ),
+			onboarding: getOnboardingError( 'updateProfileItems' ),
+		};
 		// Check if a store address is set so that we don't default
 		// to WooCommerce's default country of the UK.
 		const countryState =
@@ -464,11 +472,10 @@ export default compose(
 		return {
 			initialValues,
 			isLoading,
-			isProfileItemsError,
-			isSettingsError,
 			profileItems,
 			isBusy,
 			settings,
+			errors,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
