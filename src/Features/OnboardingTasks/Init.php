@@ -447,12 +447,38 @@ class Init {
 	}
 
 	/**
+	 * Record the tasks that are marked complete.
+	 *
+	 * @param array $task_lists Array of task lists.
+	 */
+	public static function record_completed_tasks( $task_lists ) {
+		$completed_tasks      = array_reduce(
+			$task_lists,
+			function( $acc, $task_list ) {
+				foreach ( $task_list['tasks'] as $task ) {
+					if ( $task['isComplete'] ) {
+						$acc[] = $task['id'];
+					}
+				}
+				return $acc;
+			},
+			array()
+		);
+		$previously_completed = get_option( 'woocommerce_task_list_tracked_completed_tasks', array() );
+		$new_value            = array_unique( array_merge( $previously_completed, $completed_tasks ) );
+
+		update_option( 'woocommerce_task_list_tracked_completed_tasks', $new_value );
+
+		return $task_lists;
+	}
+
+	/**
 	 * Records an event for individual task completion.
 	 *
 	 * @param mixed $old_value Old value.
 	 * @param mixed $new_value New value.
 	 */
-	public static function track_task_completion( $old_value, $new_value ) {
+	public static function possibly_track_completed_tasks( $old_value, $new_value ) {
 		$old_value       = is_array( $old_value ) ? $old_value : array();
 		$new_value       = is_array( $new_value ) ? $new_value : array();
 		$untracked_tasks = array_diff( $new_value, $old_value );

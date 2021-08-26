@@ -5,7 +5,7 @@
  * @package Automattic\WooCommerce\Admin\Features
  */
 
-use \Automattic\WooCommerce\Admin\Features\OnboardingTasks;
+use \Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
 use \Automattic\WooCommerce\Admin\PageController;
 
 /**

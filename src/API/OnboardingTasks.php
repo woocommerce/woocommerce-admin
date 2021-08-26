@@ -7,9 +7,9 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
-use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks as OnboardingTasksFeature;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasksFeature;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -762,7 +762,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_tasks() {
-		$task_lists = OnboardingTasksFeature::get_task_lists();
+		$task_lists = TaskLists::get_all();
 		return rest_ensure_response( $task_lists );
 	}
 
@@ -915,7 +915,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function hide_task_list( $request ) {
 		$id            = $request->get_param( 'id' );
-		$task_lists    = OnboardingTasksFeature::get_task_lists();
+		$task_lists    = TaskLists::get_all();
 		$task_list_key = array_search( $id, array_column( $task_lists, 'id' ), true );
 
 		if ( ! is_int( $task_list_key ) ) {
