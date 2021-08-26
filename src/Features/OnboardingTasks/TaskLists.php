@@ -261,7 +261,7 @@ class TaskLists {
 	 *
 	 * @param String $id Task list ID.
 	 *
-	 * @return Object
+	 * @return TaskList|null
 	 */
 	public static function get_list( $id ) {
 		foreach ( self::get_all() as $task_list ) {

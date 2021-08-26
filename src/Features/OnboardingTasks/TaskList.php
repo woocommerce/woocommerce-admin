@@ -85,7 +85,7 @@ class TaskList {
 	 *
 	 * @return bool
 	 */
-	public function undo_hide() {
+	public function show() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
 		$hidden = array_diff( $hidden, array( $this->id ) );
 		return update_option( self::HIDDEN_OPTION, $hidden );
@@ -104,6 +104,8 @@ class TaskList {
 
 	/**
 	 * Get the list for use in JSON.
+	 *
+	 * @return array
 	 */
 	public function get_json() {
 		return array(
