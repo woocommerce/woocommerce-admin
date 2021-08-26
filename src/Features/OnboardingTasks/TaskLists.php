@@ -255,6 +255,18 @@ class TaskLists {
 		return apply_filters( 'woocommerce_admin_onboarding_tasks', $task_lists );
 	}
 
+	/**
+	 * Get visible task lists.
+	 */
+	public static function get_visible() {
+		return array_filter(
+			self::get_all(),
+			function ( $task_list ) {
+				return ! $task_list['isHidden'];
+			}
+		);
+	}
+
 
 	/**
 	 * Retrieve a task list by ID.

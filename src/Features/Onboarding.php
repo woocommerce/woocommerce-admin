@@ -59,10 +59,7 @@ class Onboarding {
 	public function __construct() {
 		$this->add_toggle_actions();
 
-		// Include WC Admin Onboarding classes.
-		if ( self::should_show_tasks() ) {
-			OnboardingTasks::get_instance();
-		}
+		OnboardingTasks::get_instance();
 
 		// Add actions and filters.
 		$this->add_actions();
@@ -359,17 +356,6 @@ class Onboarding {
 		// @todo When merging to WooCommerce Core, we should set the `completed` flag to true during the upgrade progress.
 		// https://github.com/woocommerce/woocommerce-admin/pull/2300#discussion_r287237498.
 		return ! $is_completed && ! $is_skipped;
-	}
-
-	/**
-	 * Returns true if the task list should be displayed (not completed or hidden off the dashboard).
-	 *
-	 * @return bool
-	 */
-	public static function should_show_tasks() {
-		$setup_list    = TaskLists::get_list( 'setup' );
-		$extended_list = TaskLists::get_list( 'extended' );
-		return ( $extended_list && ! $extended_list->is_hidden() ) || ( $setup_list && ! $setup_list->is_hidden() );
 	}
 
 	/**
@@ -671,7 +657,7 @@ class Onboarding {
 		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown
 		// or the current page is one of the WooCommerce Admin pages.
 		if (
-			( ! self::should_show_profiler() && ! self::should_show_tasks()
+			( ! self::should_show_profiler() && ! count( TaskLists::get_visible() )
 			||
 			! $this->is_wc_pages()
 		)
@@ -945,8 +931,11 @@ class Onboarding {
 	 * @todo Once URL params are added to the redirect, we can check those instead of the referer.
 	 */
 	public static function redirect_wccom_install() {
+		$task_list = TaskLists::get_list( 'setup' );
+
 		if (
-			! self::should_show_tasks() ||
+			! $task_list ||
+			$task_list->is_hidden() ||
 			! isset( $_SERVER['HTTP_REFERER'] ) ||
 			0 !== strpos( $_SERVER['HTTP_REFERER'], 'https://woocommerce.com/checkout?utm_medium=product' ) // phpcs:ignore sanitization ok.
 		) {
