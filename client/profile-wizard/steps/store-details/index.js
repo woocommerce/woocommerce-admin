@@ -189,8 +189,7 @@ class StoreDetails extends Component {
 
 		if (
 			values.isAgreeMarketing &&
-			values.storeEmail &&
-			! values.storeEmail.trim().length
+			( ! values.storeEmail || ! values.storeEmail.trim().length )
 		) {
 			errors.storeEmail = __(
 				'Please add an email address',
