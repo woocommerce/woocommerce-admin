@@ -20,6 +20,8 @@ export const defaultState = {
 		skipped: null,
 		theme: null,
 		wccom_connected: null,
+		is_agree_marketing: null,
+		store_email: null,
 	},
 	paymentMethods: [],
 	requesting: {},
