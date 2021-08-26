@@ -114,8 +114,7 @@ class StoreDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
-			derived_currency:
-				currencySettings.currency_code ?? currencySettings.code,
+			derived_currency: currencySettings.currency_code,
 			email_signup: values.isAgreeMarketing,
 		} );
 
