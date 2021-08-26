@@ -103,7 +103,7 @@ class StoreDetails extends Component {
 			updateAndPersistSettingsForGroup,
 			profileItems,
 			settings,
-			errors,
+			errorsRef,
 		} = this.props;
 
 		const currencySettings = this.deriveCurrencySettings(
@@ -173,8 +173,8 @@ class StoreDetails extends Component {
 		} catch ( _ ) {}
 
 		if (
-			! Boolean( errors.current.settings ) &&
-			! Boolean( errors.current.onboarding )
+			! Boolean( errorsRef.current.settings ) &&
+			! Boolean( errorsRef.current.onboarding )
 		) {
 			goToNextStep();
 		} else {
@@ -438,11 +438,11 @@ export default compose(
 		const isLoading = ! hasFinishedResolutionOnboarding(
 			'getProfileItems'
 		);
-		const errors = useRef( {
+		const errorsRef = useRef( {
 			settings: null,
 			onboarding: null,
 		} );
-		errors.current = {
+		errorsRef.current = {
 			settings: getSettingsError( 'general' ),
 			onboarding: getOnboardingError( 'updateProfileItems' ),
 		};
@@ -475,7 +475,7 @@ export default compose(
 			profileItems,
 			isBusy,
 			settings,
-			errors,
+			errorsRef,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
