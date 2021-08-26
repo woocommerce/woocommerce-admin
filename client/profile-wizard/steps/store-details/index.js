@@ -139,7 +139,6 @@ class StoreDetails extends Component {
 		} );
 
 		const profileItemsToUpdate = {
-			setup_client: values.isClient,
 			is_agree_marketing: values.isAgreeMarketing,
 			store_email: values.storeEmail,
 		};
@@ -337,7 +336,7 @@ class StoreDetails extends Component {
 
 							<CardFooter>
 								<FlexItem>
-									<div className="woocommerce-profile-wizard__client">
+									<div>
 										<CheckboxControl
 											label={ __(
 												'Get tips, product updates and inspiration straight to your mailbox',
@@ -453,7 +452,6 @@ export default compose(
 			city: settings.woocommerce_store_city || '',
 			countryState,
 			postCode: settings.woocommerce_store_postcode || '',
-			isClient: profileItems.setup_client || false,
 			isAgreeMarketing:
 				typeof profileItems.is_agree_marketing === 'boolean'
 					? profileItems.is_agree_marketing
