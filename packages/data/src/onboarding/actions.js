@@ -63,6 +63,7 @@ export function setPaymentMethods( paymentMethods ) {
 
 export function* updateProfileItems( items ) {
 	yield setIsRequesting( 'updateProfileItems', true );
+	yield setError( 'updateProfileItems', null );
 
 	try {
 		const results = yield apiFetch( {
