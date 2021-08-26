@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\API;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use \Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
 
 /**
  * Onboarding Profile controller.
@@ -56,6 +57,18 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 					'callback'            => array( $this, 'update_items' ),
 					'permission_callback' => array( $this, 'update_items_permissions_check' ),
 					'args'                => $this->get_collection_params(),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/get_email_prefill',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_email_prefill' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -150,6 +163,36 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 		$data     = $this->prepare_response_for_collection( $response );
 
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Returns a default email to be pre-filled in OBW. Prioritizes Jetpack if connected,
+	 * otherwise will default to WordPress general settings.
+	 *
+	 * @param  WP_REST_Request $request Request data.
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_email_prefill( $request ) {
+		$result = array(
+			'email' => '',
+		);
+
+		// Attempt to get email from Jetpack.
+		if ( class_exists( Jetpack_Connection_Manager::class ) ) {
+			$jetpack_connection_manager = new Jetpack_Connection_Manager();
+			if ( $jetpack_connection_manager->is_active() ) {
+				$jetpack_user = $jetpack_connection_manager->get_connected_user_data();
+
+				$result['email'] = $jetpack_user['email'];
+			}
+		}
+
+		// Attempt to get email from WordPress general settings.
+		if ( empty( $result['email'] ) ) {
+			$result['email'] = get_option( 'admin_email' );
+		}
+
+		return rest_ensure_response( $result );
 	}
 
 	/**
