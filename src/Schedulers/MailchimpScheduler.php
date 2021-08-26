@@ -51,24 +51,10 @@ class MailchimpScheduler {
 			return;
 		}
 
-		if ( 'development' === constant( 'WP_ENVIRONMENT_TYPE' ) ) {
-			$subscribe_endpoint = self::SUBSCRIBE_ENDPOINT_DEV;
-		} else {
-			$subscribe_endpoint = self::SUBSCRIBE_ENDPOINT;
-		}
-
-		$response = wp_remote_post(
-			$subscribe_endpoint,
-			array(
-				'method' => 'POST',
-				'body'   => array(
-					'email' => $profile_data['store_email'],
-				),
-			)
-		);
+		$response = $this->make_request( $profile_data['store_email'] );
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
-			$this->logger->error( "Error getting a response from {$subscribe_endpoint}.", self::LOGGER_CONTEXT );
+			$this->logger->error( 'Error getting a response from Mailchimp API.', self::LOGGER_CONTEXT );
 		} else {
 			$body = json_decode( $response['body'] );
 			if ( isset( $body->success ) && true === $body->success ) {
@@ -76,10 +62,35 @@ class MailchimpScheduler {
 			} else {
 				$this->logger->error(
 					// phpcs:ignore
-					"Incorrect response from {$subscribe_endpoint}: " . print_r( $body, true ),
+					'Incorrect response from Mailchimp API: ' . print_r( $body, true ),
 					self::LOGGER_CONTEXT
 				);
 			}
 		}
+	}
+
+	/**
+	 * Make an HTTP request to the API.
+	 *
+	 * @param string $store_email Email address to subscribe.
+	 *
+	 * @return mixed
+	 */
+	public function make_request( $store_email ) {
+		if ( 'development' === constant( 'WP_ENVIRONMENT_TYPE' ) ) {
+			$subscribe_endpoint = self::SUBSCRIBE_ENDPOINT_DEV;
+		} else {
+			$subscribe_endpoint = self::SUBSCRIBE_ENDPOINT;
+		}
+
+		return wp_remote_post(
+			$subscribe_endpoint,
+			array(
+				'method' => 'POST',
+				'body'   => array(
+					'email' => $store_email,
+				),
+			)
+		);
 	}
 }
