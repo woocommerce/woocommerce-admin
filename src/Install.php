@@ -59,6 +59,7 @@ class Install {
 		),
 		'2.7.0'  => array(
 			'wc_admin_update_270_update_task_list_options',
+			'wc_admin_update_270_db_version',
 		),
 	);
 

@@ -6,6 +6,7 @@
  */
 
 use \Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
+use \Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 use \Automattic\WooCommerce\Admin\PageController;
 
 /**

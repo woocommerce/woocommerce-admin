@@ -171,3 +171,10 @@ function wc_admin_update_270_update_task_list_options() {
 	delete_option( 'woocommerce_task_list_hidden' );
 	delete_option( 'woocommerce_extended_task_list_hidden' );
 }
+
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_270_db_version() {
+	Installer::update_db_version( '2.7.0' );
+}

@@ -39,7 +39,7 @@ class TaskLists {
 				$remaining_products[] = $allowed_product_types[ $product_type ]['label'];
 			}
 		}
-		$business_extensions = $profiler_data['business_extensions'];
+		$business_extensions = isset( $profiler_data['business_extensions'] ) ? $profiler_data['business_extensions'] : array();
 		$product_query       = new \WC_Product_Query(
 			array(
 				'limit'  => 1,
