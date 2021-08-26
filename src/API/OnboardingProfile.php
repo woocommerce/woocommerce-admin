@@ -369,15 +369,32 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 			),
 			'store_email'         => array(
 				'type'              => 'string',
-				'format'            => 'email',
 				'description'       => __( 'Store email address.', 'woocommerce-admin' ),
 				'context'           => array( 'view' ),
 				'readonly'          => true,
-				'validate_callback' => 'rest_validate_request_arg',
+				'validate_callback' => array( __CLASS__, 'rest_validate_marketing_email' ),
 			),
 		);
 
 		return apply_filters( 'woocommerce_rest_onboarding_profile_properties', $properties );
+	}
+
+	/**
+	 * Optionally validates email if user agreed to marketing or if email is not empty.
+	 *
+	 * @param mixed           $value Email value.
+	 * @param WP_REST_Request $request Request object.
+	 * @param string          $param Parameter name.
+	 * @return true|WP_Error
+	 */
+	public static function rest_validate_marketing_email( $value, $request, $param ) {
+		$is_agree_marketing = $request->get_param( 'is_agree_marketing' );
+		if (
+			( $is_agree_marketing || ! empty( $value ) ) &&
+			! is_email( $value ) ) {
+			return new \WP_Error( 'rest_invalid_email', __( 'Invalid email address', 'woocommerce-admin' ) );
+		};
+		return true;
 	}
 
 	/**
