@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { render, cloneElement } from '@wordpress/element';
+import { render } from '@wordpress/element';
 
 /**
  * Internal dependencies

@@ -3,7 +3,7 @@
  * Handles wcpay promotion
  */
 
-namespace Automattic\WooCommerce\Admin\Features\WCPayPromotion;
+namespace Automattic\WooCommerce\Admin\Features\WcPayPromotion;
 
 defined( 'ABSPATH' ) || exit;
 

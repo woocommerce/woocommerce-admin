@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin
  */
 
-namespace Automattic\WooCommerce\Admin\Features\WCPayPromotion;
+namespace Automattic\WooCommerce\Admin\Features\WcPayPromotion;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
