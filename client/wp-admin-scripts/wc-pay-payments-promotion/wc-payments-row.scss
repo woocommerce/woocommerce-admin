@@ -15,12 +15,23 @@
 		}
 	}
 
+	> .name {
+		.pre-install-wcpay_name {
+			display: inline-flex;
+			img {
+				height: 24px;
+				width: auto;
+				margin-left: 4px;
+			}
+		}
+	}
+
 	.pre-install-wcpay_name {
 		display: flex;
 
-		.pre-install-wcpay_accepted {
+		.pre-install-wcpay_subtitle {
 			margin-left: $gap;
-			> svg {
+			> img {
 				height: 24px;
 				width: auto;
 				margin-left: 4px;

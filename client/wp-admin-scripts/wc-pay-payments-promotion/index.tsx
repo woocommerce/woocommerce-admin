@@ -15,10 +15,15 @@ const container = document.querySelector(
 if ( container ) {
 	const sortColumn = container.children[ 0 ].innerHTML;
 	const descriptionColumn = container.children[ 3 ].innerHTML;
+	const subTitle = container.getElementsByClassName( 'gateway-subtitle' );
+
 	render(
 		<WCPaymentsRow
 			sortColumnContent={ sortColumn }
 			descriptionColumnContent={ descriptionColumn }
+			subTitleContent={
+				subTitle.length === 1 ? subTitle[ 0 ].innerHTML : undefined
+			}
 		/>,
 		container
 	);

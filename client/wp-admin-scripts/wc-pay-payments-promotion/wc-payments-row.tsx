@@ -10,13 +10,6 @@ import {
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
-import {
-	Visa,
-	MasterCard,
-	Amex,
-	ApplePay,
-	GooglePay,
-} from '@woocommerce/onboarding';
 import { __ } from '@wordpress/i18n';
 import _ from 'lodash';
 
@@ -28,12 +21,14 @@ import './wc-payments-row.scss';
 type WCPaymentsRowProps = {
 	sortColumnContent: string;
 	descriptionColumnContent: string;
+	subTitleContent?: string;
 };
 
 const WC_PAY_SLUG = 'woocommerce-payments';
 export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 	sortColumnContent,
 	descriptionColumnContent,
+	subTitleContent,
 } ) => {
 	const [ installing, setInstalling ] = useState( false );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
@@ -109,13 +104,14 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 					>
 						{ __( 'WooCommerce Payments', 'woocommerce-admin' ) }
 					</Link>
-					<div className="pre-install-wcpay_accepted">
-						<Visa />
-						<MasterCard />
-						<Amex />
-						<GooglePay />
-						<ApplePay />
-					</div>
+					{ subTitleContent ? (
+						<div
+							className="pre-install-wcpay_subtitle"
+							dangerouslySetInnerHTML={ {
+								__html: subTitleContent,
+							} }
+						></div>
+					) : null }
 				</div>
 			</td>
 			<td className="pre-install-wcpay_status"></td>
