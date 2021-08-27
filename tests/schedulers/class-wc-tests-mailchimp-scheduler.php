@@ -20,26 +20,26 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 	/**
 	 * @var \PHPUnit\Framework\MockObject\MockObject WC_Logger_Interface mock
 	 */
-	private $logger_mcok;
+	private $logger_mock;
 
 	/**
 	 * Overridden setUp() method.
 	 */
 	public function setUp() {
-		$this->logger_mcok = $this->getMockBuilder( \WC_Logger_Interface::class )->getMock();
+		$this->logger_mock = $this->getMockBuilder( \WC_Logger_Interface::class )->getMock();
 
 		$this->instance = $this->getMockBuilder( MailchimpScheduler::class )
-								->setConstructorArgs( array( $this->logger_mcok ) )
+								->setConstructorArgs( array( $this->logger_mock ) )
 								->setMethods( array( 'make_request' ) )
 								->getMock();
 
-		update_option( MailchimpScheduler::SUBSCRIBED_OPTION_NAME, 'no' );
+		delete_option( MailchimpScheduler::SUBSCRIBED_OPTION_NAME );
 
 		parent::setUp();
 	}
 
 	/**
-	 * When woocommerce_onboarding_subscribed_to_mailchimp vakye us 'yes'.
+	 * When woocommerce_onboarding_subscribed_to_mailchimp value us 'yes'.
 	 * Then it should abort.
 	 */
 	public function test_it_aborts_if_already_subscribed() {
@@ -51,7 +51,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * When is_agree_marekting is missing or value is false.
+	 * When is_agree_marketing is missing or value is false.
 	 * Then it should abort.
 	 */
 	public function test_it_aborts_if_is_agree_marketing_is_false_or_missing() {
@@ -101,7 +101,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 		$this->instance->method( 'make_request' )->willReturn( $wp_error );
 
 		// Then.
-		$this->logger_mcok->expects( $this->exactly( 2 ) )
+		$this->logger_mock->expects( $this->exactly( 2 ) )
 							->method( 'error' )
 							->with( 'Error getting a response from Mailchimp API.', array( 'source' => MailchimpScheduler::LOGGER_CONTEXT ) );
 
@@ -130,7 +130,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 		$this->instance->method( 'make_request' )->willReturn( array( 'body' => $body ) );
 
 		// Then.
-		$this->logger_mcok->expects( $this->once() )
+		$this->logger_mock->expects( $this->once() )
 						->method( 'error' )
 						->with(
 		                  // phpcs:ignore
