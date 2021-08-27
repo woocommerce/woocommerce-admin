@@ -113,13 +113,17 @@ const PaymentRecommendations: React.FC = () => {
 			triggeredPageViewRef.current = true;
 			const eventProps = ( recommendedPlugins || [] ).reduce(
 				( props, plugin ) => {
-					return {
-						...props,
-						[ plugin.product + '-displayed' ]: true,
-					};
+					if ( plugin.product ) {
+						return {
+							...props,
+							[ plugin.product.replace( /\-/g, '_' ) +
+							'_displayed' ]: true,
+						};
+					}
+					return props;
 				},
 				{
-					'woocommerce-payments-displayed': !! WcPayPromotionGateway,
+					woocommerce_payments_displayed: !! WcPayPromotionGateway,
 				}
 			);
 			recordEvent(
