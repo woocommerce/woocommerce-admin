@@ -34,13 +34,15 @@
 		"@wordpress/url": "2.21.0",
 		"lodash": "4.17.21",
 		"md5": "^2.3.0",
+		"moment": "2.29.1",
 		"rememo": "^3.0.0"
 	},
 	"devDependencies": {
-		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings",
+		"@testing-library/react": "12.0.0",
 		"@testing-library/react-hooks": "7.0.1",
 		"@types/lodash": "4.14.172",
 		"@types/wordpress__data-controls": "~1.0.5",
+		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings",
 		"jest": "27.0.6",
 		"react": "17.0.2",
 		"react-test-renderer": "17.0.2",

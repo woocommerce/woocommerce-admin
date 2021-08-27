@@ -22,21 +22,20 @@
 	"react-native": "src/index",
 	"dependencies": {
 		"@wordpress/api-fetch": "5.2.1",
-		"@wordpress/compose": "4.2.0",
-		"@wordpress/notices": "3.2.0",
 		"@wordpress/components": "14.1.0",
+		"@wordpress/compose": "4.2.0",
+		"@wordpress/element": "3.2.0",
+		"@wordpress/notices": "3.2.0",
 		"@wordpress/hooks": "3.2.0",
 		"@wordpress/url": "2.21.0",
 		"history": "4.10.1",
+		"lodash": "4.17.21",
 		"qs": "6.9.6"
 	},
 	"devDependencies": {
 		"jest": "27.0.6",
 		"ts-jest": "27.0.0",
 		"typescript": "4.2.4"
-	},
-	"peerDependencies": {
-		"lodash": "4.17.21"
 	},
 	"publishConfig": {
 		"access": "public"

@@ -20,7 +20,8 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"locutus": "2.0.15"
+		"locutus": "2.0.15",
+		"lodash": "4.17.21"
 	},
 	"devDependencies": {
 		"jest": "27.0.6",
