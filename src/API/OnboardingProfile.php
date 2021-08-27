@@ -37,7 +37,6 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_onboarding_profile_data_updated', array( $this, 'on_profile_data_updated' ), 10, 2 );
-		parent::__construct();
 	}
 
 	/**
