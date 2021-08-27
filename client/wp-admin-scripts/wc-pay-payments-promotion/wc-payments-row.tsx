@@ -3,10 +3,13 @@
  */
 import { Link } from '@woocommerce/components';
 import { Button } from '@wordpress/components';
-import { useState } from '@wordpress/element';
-import { PLUGINS_STORE_NAME } from '@woocommerce/data';
+import { useState, useEffect } from '@wordpress/element';
+import {
+	PLUGINS_STORE_NAME,
+	PAYMENT_GATEWAYS_STORE_NAME,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	Visa,
 	MasterCard,
@@ -14,7 +17,6 @@ import {
 	ApplePay,
 	GooglePay,
 } from '@woocommerce/onboarding';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { __ } from '@wordpress/i18n';
 import _ from 'lodash';
 
@@ -35,6 +37,40 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 } ) => {
 	const [ installing, setInstalling ] = useState( false );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+	const { createNotice } = useDispatch( 'core/notices' );
+	const wcPayInstallationInfo = useSelect( ( select ) => {
+		const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
+		const activePlugins: string[] = select(
+			PLUGINS_STORE_NAME
+		).getActivePlugins();
+		const isWCPayActive =
+			activePlugins && activePlugins.includes( WC_PAY_SLUG );
+		let wcPayGateway;
+		if ( isWCPayActive ) {
+			wcPayGateway = getPaymentGateway(
+				WC_PAY_SLUG.replace( /\-/g, '_' )
+			);
+		}
+
+		return {
+			isWCPayActive,
+			wcPayGateway,
+		};
+	} );
+
+	useEffect( () => {
+		if (
+			wcPayInstallationInfo.isWCPayActive &&
+			wcPayInstallationInfo.wcPayGateway &&
+			wcPayInstallationInfo.wcPayGateway.settings_url
+		) {
+			window.location.href =
+				wcPayInstallationInfo.wcPayGateway.settings_url;
+		}
+	}, [
+		wcPayInstallationInfo.isWCPayActive,
+		wcPayInstallationInfo.wcPayGateway,
+	] );
 
 	const installWCPay = () => {
 		if ( installing ) {
@@ -42,18 +78,16 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 		}
 		setInstalling( true );
 		recordEvent( 'settings_payments_recommendations_setup', {
-			extension_selected: 'woocommerce-payments',
+			extension_selected: WC_PAY_SLUG,
 		} );
-		installAndActivatePlugins( [ WC_PAY_SLUG ] )
-			.then( () => {
-				window.location.href = getAdminLink(
-					'admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments'
-				);
-			} )
-			.catch( ( response: { errors: Record< string, string > } ) => {
-				// createNoticesFromResponse( response );
+		installAndActivatePlugins( [ WC_PAY_SLUG ] ).catch(
+			( response: { message?: string } ) => {
+				if ( response.message ) {
+					createNotice( 'error', response.message );
+				}
 				setInstalling( false );
-			} );
+			}
+		);
 	};
 
 	return (
@@ -66,7 +100,7 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 				} }
 			></td>
 			<td className="name">
-				<div className="psuedo-wcpay_name">
+				<div className="pre-install-wcpay_name">
 					<Link
 						target="_blank"
 						type="external"
@@ -75,7 +109,7 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 					>
 						{ __( 'WooCommerce Payments', 'woocommerce-admin' ) }
 					</Link>
-					<div className="psuedo-wcpay_accepted">
+					<div className="pre-install-wcpay_accepted">
 						<Visa />
 						<MasterCard />
 						<Amex />
@@ -84,7 +118,7 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 					</div>
 				</div>
 			</td>
-			<td key="status" className="psuedo-status"></td>
+			<td className="pre-install-wcpay_status"></td>
 			<td
 				className="description"
 				dangerouslySetInnerHTML={ {

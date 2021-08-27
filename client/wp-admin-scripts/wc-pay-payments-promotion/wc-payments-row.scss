@@ -1,4 +1,4 @@
-[data-gateway_id='psuedo_woocommerce_payments'] {
+[data-gateway_id='pre_install_woocommerce_payments_promotion'] {
 	> .status a {
 		visibility: hidden !important;
 	}
@@ -11,23 +11,14 @@
 
 		a {
 			position: relative;
-			&::after {
-				content: 'Install';
-				position: absolute;
-				top: 0;
-				left: $gap-smallest;
-				right: $gap-smallest;
-				bottom: 0;
-				background: inherit;
-				text-align: center;
-			}
+			display: none;
 		}
 	}
 
-	.psuedo-wcpay_name {
+	.pre-install-wcpay_name {
 		display: flex;
 
-		.psuedo-wcpay_accepted {
+		.pre-install-wcpay_accepted {
 			margin-left: $gap;
 			> svg {
 				height: 24px;

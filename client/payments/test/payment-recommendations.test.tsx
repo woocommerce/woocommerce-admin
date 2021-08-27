@@ -269,7 +269,7 @@ describe( 'Payment recommendations', () => {
 		);
 	} );
 
-	it( 'should set woocommerce-payments-displayed prop to true if psuedo wc pay gateway is displayed', () => {
+	it( 'should set woocommerce-payments-displayed prop to true if pre install wc pay promotion gateway is displayed', () => {
 		( isWCPaySupported as jest.Mock ).mockReturnValue( true );
 		( useSelect as jest.Mock ).mockReturnValue( {
 			displayable: true,
@@ -279,7 +279,7 @@ describe( 'Payment recommendations', () => {
 		} );
 		const { container } = render(
 			<div>
-				<div data-gateway_id="psuedo_woocommerce_payments"></div>
+				<div data-gateway_id="pre_install_woocommerce_payments_promotion"></div>
 				<PaymentRecommendations />
 			</div>
 		);

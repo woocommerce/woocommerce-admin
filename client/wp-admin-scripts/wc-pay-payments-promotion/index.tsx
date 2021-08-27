@@ -9,7 +9,7 @@ import { render } from '@wordpress/element';
 import { WCPaymentsRow } from './wc-payments-row';
 
 const container = document.querySelector(
-	'[data-gateway_id="psuedo_woocommerce_payments"]'
+	'[data-gateway_id="pre_install_woocommerce_payments_promotion"]'
 );
 
 if ( container ) {

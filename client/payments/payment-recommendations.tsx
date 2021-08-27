@@ -46,7 +46,7 @@ export function getPaymentRecommendationData(
 ): {
 	displayable: boolean;
 	recommendedPlugins?: Plugin[];
-	loading: boolean;
+	isLoading: boolean;
 } {
 	const { getOption, isResolving: isResolvingOption } = select(
 		OPTIONS_STORE_NAME
@@ -74,7 +74,7 @@ export function getPaymentRecommendationData(
 		// don't get recommended plugins until it is displayable.
 		plugins = getRecommendedPlugins( 'payments' );
 	}
-	const loading =
+	const isLoading =
 		isRequestingOptions ||
 		hidden === undefined ||
 		settings === undefined ||
@@ -83,12 +83,12 @@ export function getPaymentRecommendationData(
 	return {
 		displayable,
 		recommendedPlugins: plugins,
-		loading,
+		isLoading,
 	};
 }
 
 const WcPayPromotionGateway = document.querySelector(
-	'[data-gateway_id="psuedo_woocommerce_payments"]'
+	'[data-gateway_id="pre_install_woocommerce_payments_promotion"]'
 );
 
 const PaymentRecommendations: React.FC = () => {
@@ -97,7 +97,7 @@ const PaymentRecommendations: React.FC = () => {
 	);
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
-	const { displayable, recommendedPlugins, loading } = useSelect(
+	const { displayable, recommendedPlugins, isLoading } = useSelect(
 		getPaymentRecommendationData
 	);
 	const triggeredPageViewRef = useRef( false );
@@ -107,7 +107,7 @@ const PaymentRecommendations: React.FC = () => {
 	useEffect( () => {
 		if (
 			( shouldShowRecommendations ||
-				( WcPayPromotionGateway && ! loading ) ) &&
+				( WcPayPromotionGateway && ! isLoading ) ) &&
 			! triggeredPageViewRef.current
 		) {
 			triggeredPageViewRef.current = true;
@@ -127,7 +127,7 @@ const PaymentRecommendations: React.FC = () => {
 				eventProps
 			);
 		}
-	}, [ shouldShowRecommendations, WcPayPromotionGateway, loading ] );
+	}, [ shouldShowRecommendations, WcPayPromotionGateway, isLoading ] );
 
 	if ( ! shouldShowRecommendations ) {
 		return null;

@@ -16,9 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @extends WC_Payment_Gateway
  */
-class WCPaymentGatewayPsuedoWCPay extends \WC_Payment_Gateway {
+class WCPaymentGatewayPreInstallWCPayPromotion extends \WC_Payment_Gateway {
 
-	const GATEWAY_ID = 'psuedo_woocommerce_payments';
+	const GATEWAY_ID = 'pre_install_woocommerce_payments_promotion';
 
 	/**
 	 * Constructor
@@ -26,7 +26,7 @@ class WCPaymentGatewayPsuedoWCPay extends \WC_Payment_Gateway {
 	public function __construct() {
 		$this->id                 = static::GATEWAY_ID;
 		$this->title              = __( 'WooCommerce Payments', 'woocommerce-admin' );
-		$this->method_description = __( 'Copy', 'woocommerce-admin' ); // will be replaced by wc.com data.
+		$this->method_description = ''; // will be replaced by wc.com data.
 		$this->has_fields         = false;
 
 		// Get setting values.
