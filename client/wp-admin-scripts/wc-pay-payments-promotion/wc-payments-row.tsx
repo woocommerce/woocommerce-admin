@@ -7,6 +7,8 @@ import { useState, useEffect } from '@wordpress/element';
 import {
 	PLUGINS_STORE_NAME,
 	PAYMENT_GATEWAYS_STORE_NAME,
+	WCDataSelector,
+	PluginsStoreActions,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -31,9 +33,11 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 	subTitleContent,
 } ) => {
 	const [ installing, setInstalling ] = useState( false );
-	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
+	const { installAndActivatePlugins }: PluginsStoreActions = useDispatch(
+		PLUGINS_STORE_NAME
+	);
 	const { createNotice } = useDispatch( 'core/notices' );
-	const wcPayInstallationInfo = useSelect( ( select ) => {
+	const wcPayInstallationInfo = useSelect( ( select: WCDataSelector ) => {
 		const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
 		const activePlugins: string[] = select(
 			PLUGINS_STORE_NAME
