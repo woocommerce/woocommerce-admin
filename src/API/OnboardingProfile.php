@@ -168,7 +168,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	 * @param array $existing_data Existing option data.
 	 * @param array $updating_data Updating option data.
 	 */
-	protected function on_profile_data_updated( $existing_data, $updating_data ) {
+	public function on_profile_data_updated( $existing_data, $updating_data ) {
 		if (
 			isset( $existing_data['store_email'] ) &&
 			isset( $updating_data['store_email'] ) &&
