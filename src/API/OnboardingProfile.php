@@ -10,6 +10,7 @@ namespace Automattic\WooCommerce\Admin\API;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
 
 /**
  * Onboarding Profile controller.
@@ -30,6 +31,14 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	 * @var string
 	 */
 	protected $rest_base = 'onboarding/profile';
+
+	/**
+	 * OnboardingProfile constructor.
+	 */
+	public function __construct() {
+		add_action( 'woocommerce_onboarding_profile_data_updated', array( $this, 'on_profile_data_updated' ), 10, 2 );
+		parent::__construct();
+	}
 
 	/**
 	 * Register routes.
@@ -139,7 +148,9 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 		$params          = $request->get_json_params();
 		$query_args      = $this->prepare_objects_query( $params );
 		$onboarding_data = (array) get_option( Onboarding::PROFILE_DATA_OPTION, array() );
-		update_option( Onboarding::PROFILE_DATA_OPTION, array_merge( $onboarding_data, $query_args ) );
+		$profile_data    = array_merge( $onboarding_data, $query_args );
+		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		do_action( 'woocommerce_onboarding_profile_data_updated', $onboarding_data, $query_args );
 
 		$result = array(
 			'status'  => 'success',
@@ -150,6 +161,22 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 		$data     = $this->prepare_response_for_collection( $response );
 
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Delete MailchimpScheduler::SUBSCRIBED_OPTION_NAME option if profile data is being updated with a new email.
+	 *
+	 * @param array $existing_data Existing option data.
+	 * @param array $updating_data Updating option data.
+	 */
+	protected function on_profile_data_updated( $existing_data, $updating_data ) {
+		if (
+			isset( $existing_data['store_email'] ) &&
+			isset( $updating_data['store_email'] ) &&
+			$existing_data['store_email'] !== $updating_data['store_email']
+		) {
+			delete_option( MailchimpScheduler::SUBSCRIBED_OPTION_NAME );
+		}
 	}
 
 	/**
