@@ -263,8 +263,8 @@ describe( 'Payment recommendations', () => {
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'settings_payments_recommendations_pageview',
 			{
-				'test-displayed': true,
-				'woocommerce-payments-displayed': false,
+				test_displayed: true,
+				woocommerce_payments_displayed: false,
 			}
 		);
 	} );
@@ -288,8 +288,8 @@ describe( 'Payment recommendations', () => {
 		expect( recordEvent ).toHaveBeenCalledWith(
 			'settings_payments_recommendations_pageview',
 			{
-				'test-displayed': true,
-				'woocommerce-payments-displayed': false,
+				test_displayed: true,
+				woocommerce_payments_displayed: false,
 			}
 		);
 	} );
