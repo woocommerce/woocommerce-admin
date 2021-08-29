@@ -59,6 +59,7 @@ export function getAllTasks( {
 	toggleCartModal,
 	onTaskSelect,
 	hasCompleteAddress,
+	visitedTasks,
 } ) {
 	const {
 		hasPaymentGateway,
@@ -351,7 +352,9 @@ export function getAllTasks( {
 				onTaskSelect( 'marketing' );
 				updateQueryString( { task: 'marketing' } );
 			},
-			completed: !! installedMarketingExtensions.length,
+			completed:
+				!! installedMarketingExtensions.length &&
+				visitedTasks.includes( 'marketing' ),
 			visible:
 				window.wcAdminFeatures &&
 				window.wcAdminFeatures[ 'remote-free-extensions' ] &&

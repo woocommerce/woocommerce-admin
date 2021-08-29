@@ -28,6 +28,7 @@ import { DisplayOption } from '../header/activity-panel/display-options';
 import { TaskStep } from './task-step';
 import TaskListPlaceholder from './placeholder';
 
+const EMPTY_ARRAY = [];
 const taskDashboardSelect = ( select ) => {
 	const { getFreeExtensions, getProfileItems, getTasksStatus } = select(
 		ONBOARDING_STORE_NAME
@@ -42,7 +43,11 @@ const taskDashboardSelect = ( select ) => {
 	const profileItems = getProfileItems();
 
 	const trackedCompletedTasks =
-		getOption( 'woocommerce_task_list_tracked_completed_tasks' ) || [];
+		getOption( 'woocommerce_task_list_tracked_completed_tasks' ) ||
+		EMPTY_ARRAY;
+
+	const visitedTasks =
+		getOption( 'woocommerce_task_list_visited_tasks' ) || EMPTY_ARRAY;
 
 	const { general: generalSettings = {} } = getSettings( 'general' );
 	const countryCode = getCountryCode(
@@ -79,6 +84,7 @@ const taskDashboardSelect = ( select ) => {
 		isTaskListComplete:
 			getOption( 'woocommerce_task_list_complete' ) === 'yes',
 		installedPlugins,
+		visitedTasks,
 		onboardingStatus,
 		profileItems,
 		trackedCompletedTasks,
@@ -128,6 +134,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		isExtendedTaskListHidden,
 		isExtendedTaskListComplete,
 		hasCompleteAddress,
+		visitedTasks,
 		isResolving,
 	} = useSelect( taskDashboardSelect );
 
@@ -173,6 +180,14 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		recordEvent( 'tasklist_click', {
 			task_name: taskName,
 		} );
+		if ( visitedTasks && ! visitedTasks.includes( taskName ) ) {
+			updateOptions( {
+				woocommerce_task_list_visited_tasks: [
+					...visitedTasks,
+					taskName,
+				],
+			} );
+		}
 		if ( ! isTaskCompleted( taskName ) ) {
 			updateTrackStartedCount( taskName, trackStartedCount + 1 );
 		}
@@ -239,6 +254,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		toggleCartModal,
 		onTaskSelect,
 		hasCompleteAddress,
+		visitedTasks,
 	} );
 
 	const { extension, setup: setupTasks } = allTasks;
