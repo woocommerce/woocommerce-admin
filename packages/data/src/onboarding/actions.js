@@ -191,7 +191,7 @@ export function* updateProfileItems( items ) {
 	} catch ( error ) {
 		yield setError( 'updateProfileItems', error );
 		yield setIsRequesting( 'updateProfileItems', false );
-		throw new Error();
+		throw error;
 	}
 }
 
