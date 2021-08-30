@@ -87,7 +87,7 @@ const freeExtensions = [
 describe( 'Selective extensions bundle', () => {
 	it( 'should list installable free extensions in footer only basics', () => {
 		useSelect.mockReturnValue( {
-			freeExtensions: freeExtensions,
+			freeExtensions,
 			isResolving: false,
 		} );
 		const { getByText, queryByText } = render(
@@ -111,7 +111,7 @@ describe( 'Selective extensions bundle', () => {
 
 	it( 'should list installable extensions when dropdown is clicked', () => {
 		useSelect.mockReturnValue( {
-			freeExtensions: freeExtensions,
+			freeExtensions,
 			isResolving: false,
 		} );
 		const { getAllByRole, getByText, queryByText } = render(
