@@ -167,13 +167,19 @@ class StoreDetails extends Component {
 			profileItemsToUpdate.industry = trimmedIndustries;
 		}
 
+		let errorMessages = [];
 		try {
 			await updateProfileItems( profileItemsToUpdate );
-		} catch ( _ ) {}
+		} catch ( error ) {
+			// Array of error messages obtained from API response.
+			if ( error?.data?.params ) {
+				errorMessages = Object.values( error.data.params );
+			}
+		}
 
 		if (
 			! Boolean( errorsRef.current.settings ) &&
-			! Boolean( errorsRef.current.onboarding )
+			! errorMessages.length
 		) {
 			goToNextStep();
 		} else {
@@ -183,6 +189,10 @@ class StoreDetails extends Component {
 					'There was a problem saving your store details',
 					'woocommerce-admin'
 				)
+			);
+
+			errorMessages.forEach( ( message ) =>
+				createNotice( 'error', message )
 			);
 		}
 	}
@@ -420,7 +430,6 @@ export default compose(
 			isUpdateSettingsRequesting,
 		} = select( SETTINGS_STORE_NAME );
 		const {
-			getOnboardingError,
 			getProfileItems,
 			isOnboardingRequesting,
 			getEmailPrefill,
@@ -440,11 +449,9 @@ export default compose(
 			! hasFinishedResolutionOnboarding( 'getEmailPrefill' );
 		const errorsRef = useRef( {
 			settings: null,
-			onboarding: null,
 		} );
 		errorsRef.current = {
 			settings: getSettingsError( 'general' ),
-			onboarding: getOnboardingError( 'updateProfileItems' ),
 		};
 		// Check if a store address is set so that we don't default
 		// to WooCommerce's default country of the UK.
