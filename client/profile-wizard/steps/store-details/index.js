@@ -423,6 +423,7 @@ export default compose(
 			getOnboardingError,
 			getProfileItems,
 			isOnboardingRequesting,
+			getEmailPrefill,
 			hasFinishedResolution: hasFinishedResolutionOnboarding,
 		} = select( ONBOARDING_STORE_NAME );
 		const { isResolving } = select( OPTIONS_STORE_NAME );
@@ -434,9 +435,9 @@ export default compose(
 			isOnboardingRequesting( 'updateProfileItems' ) ||
 			isUpdateSettingsRequesting( 'general' ) ||
 			isResolving( 'getOption', [ 'woocommerce_allow_tracking' ] );
-		const isLoading = ! hasFinishedResolutionOnboarding(
-			'getProfileItems'
-		);
+		const isLoading =
+			! hasFinishedResolutionOnboarding( 'getProfileItems' ) ||
+			! hasFinishedResolutionOnboarding( 'getEmailPrefill' );
 		const errorsRef = useRef( {
 			settings: null,
 			onboarding: null,
@@ -465,7 +466,7 @@ export default compose(
 			storeEmail:
 				typeof profileItems.store_email === 'string'
 					? profileItems.store_email
-					: '',
+					: getEmailPrefill(),
 		};
 
 		return {

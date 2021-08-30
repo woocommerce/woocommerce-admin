@@ -163,6 +163,13 @@ export function setPaymentMethods( paymentMethods ) {
 	};
 }
 
+export function setEmailPrefill( email ) {
+	return {
+		type: TYPES.SET_EMAIL_PREFILL,
+		emailPrefill: email,
+	};
+}
+
 export function* updateProfileItems( items ) {
 	yield setIsRequesting( 'updateProfileItems', true );
 	yield setError( 'updateProfileItems', null );

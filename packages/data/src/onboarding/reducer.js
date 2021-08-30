@@ -23,6 +23,7 @@ export const defaultState = {
 		is_agree_marketing: null,
 		store_email: null,
 	},
+	emailPrefill: '',
 	paymentMethods: [],
 	requesting: {},
 	taskLists: [],
@@ -52,6 +53,7 @@ const onboarding = (
 		freeExtensions,
 		type,
 		profileItems,
+		emailPrefill,
 		paymentMethods,
 		replace,
 		error,
@@ -70,6 +72,11 @@ const onboarding = (
 				profileItems: replace
 					? profileItems
 					: { ...state.profileItems, ...profileItems },
+			};
+		case TYPES.SET_EMAIL_PREFILL:
+			return {
+				...state,
+				emailPrefill,
 			};
 		case TYPES.SET_TASKS_STATUS:
 			return {
