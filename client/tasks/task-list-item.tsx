@@ -7,7 +7,8 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { ONBOARDING_STORE_NAME, useUserPreferences } from '@woocommerce/data';
+import { recordEvent } from '@woocommerce/tracks';
 import { TaskItem } from '@woocommerce/experimental';
 import { useDispatch } from '@wordpress/data';
 
@@ -37,6 +38,8 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		undoDismissTask,
 		undoSnoozeTask,
 	} = useDispatch( ONBOARDING_STORE_NAME );
+	const userPreferences = useUserPreferences();
+
 	const {
 		actionLabel,
 		actionUrl,
@@ -77,7 +80,38 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		);
 	};
 
+	const getTaskStartedCount = () => {
+		const trackedStartedTasks =
+			userPreferences.task_list_tracked_started_tasks;
+		if ( ! trackedStartedTasks || ! trackedStartedTasks[ id ] ) {
+			return 0;
+		}
+		return trackedStartedTasks[ id ];
+	};
+
+	// @todo This would be better as a task endpoint that handles updating the count.
+	const updateTrackStartedCount = () => {
+		const newCount = getTaskStartedCount() + 1;
+		const trackedStartedTasks =
+			userPreferences.task_list_tracked_started_tasks || {};
+
+		userPreferences.updateUserPreferences( {
+			task_list_tracked_started_tasks: {
+				...( trackedStartedTasks || {} ),
+				[ id ]: newCount,
+			},
+		} );
+	};
+
 	const onClick = () => {
+		recordEvent( 'tasklist_click', {
+			task_name: id,
+		} );
+
+		if ( ! isComplete ) {
+			updateTrackStartedCount();
+		}
+
 		if ( actionUrl ) {
 			if ( actionUrl.startsWith( 'http' ) ) {
 				window.location.href = actionUrl;
