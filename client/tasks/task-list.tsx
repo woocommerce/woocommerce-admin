@@ -27,11 +27,18 @@ export const getEventPrefix = ( id: string ): string => {
 };
 
 export type TaskProps = {
+	actionLabel?: string;
+	actionUrl?: string;
+	content: string;
 	id: string;
 	isComplete: boolean;
+	isDismissable: boolean;
 	isDismissed: boolean;
 	isVisible: boolean;
+	isSnoozable: boolean;
 	snoozedUntil: number;
+	time: string;
+	title: string;
 };
 
 export type TaskListProps = {
@@ -149,19 +156,17 @@ export const TaskList: React.FC< TaskListProps > = ( {
 						</div>
 						<TaskListMenu id={ id } />
 					</CardHeader>
-					<CardBody>
-						<ListComp animation="custom" { ...listProps }>
-							{ visibleTasks.map( ( task ) => (
-								<TaskListItem
-									key={ task.id }
-									isExpanded={ expandedTask === task.id }
-									isExpandable={ isExpandable }
-									task={ task }
-									setExpandedTask={ setExpandedTask }
-								/>
-							) ) }
-						</ListComp>
-					</CardBody>
+					<ListComp animation="custom" { ...listProps }>
+						{ visibleTasks.map( ( task ) => (
+							<TaskListItem
+								key={ task.id }
+								isExpanded={ expandedTask === task.id }
+								isExpandable={ isExpandable }
+								task={ task }
+								setExpandedTask={ setExpandedTask }
+							/>
+						) ) }
+					</ListComp>
 				</Card>
 			</div>
 		</>

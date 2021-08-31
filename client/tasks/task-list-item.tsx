@@ -2,9 +2,14 @@
  * External dependencies
  */
 import { __, _n } from '@wordpress/i18n';
-import { getHistory, getNewPath } from '@woocommerce/navigation';
-import { ONBOARDING_STORE_NAME, useDispatch } from '@wordpress/data';
+import {
+	getHistory,
+	getNewPath,
+	updateQueryString,
+} from '@woocommerce/navigation';
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { TaskItem } from '@woocommerce/experimental';
+import { useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -19,18 +24,38 @@ export type TaskListItemProps = {
 	task: TaskProps;
 };
 
-export const TaskListItem: React.FC< TaskListItemProps > = ( { isExpandable = false, isExpanded = false, setExpandedTask, task } ) => {
+export const TaskListItem: React.FC< TaskListItemProps > = ( {
+	isExpandable = false,
+	isExpanded = false,
+	setExpandedTask,
+	task,
+} ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
-	const { dismissTask, snoozeTask, undoDismissTask, undoSnoozeTask } = useDispatch( ONBOARDING_STORE_NAME );
-	const { actionLabel, actionUrl, content, id, isComplete, isDismissable, isSnoozable, time, title,  } = task;
+	const {
+		dismissTask,
+		snoozeTask,
+		undoDismissTask,
+		undoSnoozeTask,
+	} = useDispatch( ONBOARDING_STORE_NAME );
+	const {
+		actionLabel,
+		actionUrl,
+		content,
+		id,
+		isComplete,
+		isDismissable,
+		isSnoozable,
+		time,
+		title,
+	} = task;
 
-	const onDismiss = ( { key, onDismiss } ) => {
+	const onDismiss = () => {
 		dismissTask();
 		createNotice( 'success', __( 'Task dismissed' ), {
 			actions: [
 				{
 					label: __( 'Undo', 'woocommerce-admin' ),
-					onClick: () => undoDismissTask( key ),
+					onClick: () => undoDismissTask( id ),
 				},
 			],
 		} );
@@ -53,14 +78,17 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( { isExpandable = fa
 	};
 
 	const onClick = () => {
-		if ( actionUrl.startsWith( 'http' ) ) {
-			window.location = actionUrl;
-		} else {
-			getHistory().push(
-				getNewPath( {}, actionUrl, {} )
-			);
+		if ( actionUrl ) {
+			if ( actionUrl.startsWith( 'http' ) ) {
+				window.location.href = actionUrl;
+			} else {
+				getHistory().push( getNewPath( {}, actionUrl, {} ) );
+			}
+			return;
 		}
-	}
+
+		updateQueryString( { task: id } );
+	};
 
 	return (
 		<TaskItem
