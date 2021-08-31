@@ -1,3 +1,33 @@
+== 2.7.0 08/31/2021 == 
+
+- Fix: Allow super admins all capabilities within WooCommerce Admin
+- Fix: Fix end date for last periods
+- Fix: Fix up onboarding profiler not working when opted out of tracking
+- Fix: Making Business Details sticky in onboarding wizard
+- Fix: Missing RTL for onboarding styles. #7531
+- Fix: No changelog necessary as it is in the component package. #7423
+- Fix: Skip scheduling action if Action Scheduler tables have not been set up #7521
+- Fix: Update country region typeahead for better autofill support. #7497
+- Fix: Use installable extensions for local state versus free extensions. #7585
+- Add: Add: Show Pinterest in installed marketing extensions (if installed) #7417
+- Add: Added MailchimpScheduler that runs daily to subscribe store_email in the profile data #7579
+- Add: Added shipping plugin recommendations to settings page (#7446).
+- Add: Adding endpoint to snooze onboarding task
+- Add: Adding undo snooze task endpoint
+- Add: Add task dismissal endpoints #7538
+- Update: Add HK and SG countries to WC Pay intl support. #7558
+- Update: Create task list REST API endpoint #7512
+- Update: Deleted OnboardingEmailMarketing note class #7595
+- Update: Removes the use of the depreciated woocommerce_shared_settings hook. #7480
+- Update: Updating eway logo in payment suggestions defaults
+- Dev: Add email address field to OBW #7552
+- Tweak: Add navigation items for the Marketplace menu. #7529
+- Tweak: Change all analytics strings and labels to sentence case. #6501
+- Tweak: Delete unneeded double spaces in text strings. #7502
+- Tweak: Remove the preloaded onboarding options
+- Tweak: Update analytics card header text styles #6506
+- Enhancement: Update: Align Table fields with the fallback on isNumeric. #7431
+
 == 2.6.0 08/31/2021 == 
 
 - Fix: Fixes action button mis-alignment within card footer. #7412
@@ -35,7 +65,7 @@
 
 - Fix: Fix blank screen by setting a default value #7506
 
-== 2.5.0 08/09/2021 ==
+== 2.5.0 08/09/2021 == 
 
 - Add: Add a delete option to completed tasks #7300
 - Add: Add unit tests around extended payment gateway controller #7133
@@ -100,20 +130,25 @@
 - Update: Remove facebook extension from onboarding extensions fallback list #7287
 - Performance: Add lazy loading by checking panel open status #7379
 
-== 2.4.4 7/21/2021 ==
+== 2.4.4 07/21/2021 == 
+
 - Fix: Fix homepage stock panel regression in 2.4.3. #7389
 
-== 2.4.3 7/21/2021 ==
+== 2.4.3 07/21/2021 == 
+
 - Fix: Add a new low stock products endpoint to improve the performance. #7377
 
-== 2.4.2 7/19/2021 ==
+== 2.4.2 07/19/2021 == 
+
 - Fix: Add lazy loading by checking panel open status #7376
 - Fix: Add cache-control header to low stock REST API response #7364
 
-== 2.4.1 7/1/2021 ==
+== 2.4.1 07/01/2021 == 
+
 - Fix: Fix and refactor explat polling to use setTimeout #7274
 
-== 2.4.0 6/29/2021 ==
+== 2.4.0 06/29/2021 == 
+
 - Add: SlotFill to Abbreviated Notification panel #7091
 - Add: Consume remote payment methods on frontend #6867
 - Add: Extend payment gateways REST endpoint #6919
