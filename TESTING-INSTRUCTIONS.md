@@ -4,7 +4,7 @@
 
 ### Add Newsletter Signup #7601
 
-- Start OBW and set up your browser console to monitor tracks. To do this, run `localStorage.setItem( 'debug', 'wc-admin:tracks' );`
+- Start OBW and set up your browser console to monitor tracks. To do this, run `localStorage.setItem( 'debug', 'wc-admin:*' )`
 - Observe "Get tips, product updates and inspiration straight to your mailbox" checkbox and "Email address" field in the Store Details step.
 - Checking the checkbox should make the email field required, you should not be able to continue if it's not filled.
 - Fill in the email address field with a valid email and click on continue.
