@@ -16,6 +16,7 @@ interface admin {
 
 interface wcSettings {
 	admin: admin;
+	preloadSettings: preloadSettings;
 }
 
 declare global {
