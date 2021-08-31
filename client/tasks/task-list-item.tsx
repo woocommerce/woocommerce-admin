@@ -121,6 +121,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 			return;
 		}
 
+		window.document.documentElement.scrollTop = 0;
 		updateQueryString( { task: id } );
 	};
 
