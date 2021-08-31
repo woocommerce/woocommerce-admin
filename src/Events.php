@@ -117,7 +117,6 @@ class Events {
 		NewSalesRecord::possibly_add_note();
 		MobileApp::possibly_add_note();
 		TrackingOptIn::possibly_add_note();
-		OnboardingEmailMarketing::possibly_add_note();
 		OnboardingPayments::possibly_add_note();
 		PersonalizeStore::possibly_add_note();
 		WooCommercePayments::possibly_add_note();
