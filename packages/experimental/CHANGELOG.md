@@ -1,5 +1,9 @@
 # Unreleased
 
+-   Adjust task-item css class to prevent css conflicts. #7593
+
+# 1.5.1
+
 -   Fix animations for collapsible list. #7429
 
 # 1.5.0
