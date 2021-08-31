@@ -22,7 +22,7 @@ export const fetchExperimentAssignment = async ( {
 		experiment_name: experimentName,
 		anon_id: anonId ?? undefined,
 		woo_country_code:
-			window.wcSettings.preloadSettings.general
+			window.wcSettings.admin.preloadSettings.general
 				.woocommerce_default_country,
 	} );
 

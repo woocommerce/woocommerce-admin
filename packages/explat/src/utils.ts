@@ -10,10 +10,14 @@ interface generalSettings {
 interface preloadSettings {
 	general: generalSettings;
 }
-
-interface wcSettings {
+interface admin {
 	preloadSettings: preloadSettings;
 }
+
+interface wcSettings {
+	admin: admin;
+}
+
 declare global {
 	interface Window {
 		wcSettings: wcSettings;
