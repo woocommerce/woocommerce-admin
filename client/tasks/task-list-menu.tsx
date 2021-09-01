@@ -4,7 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
 import { EllipsisMenu } from '@woocommerce/components';
-import { ONBOARDING_STORE_NAME, useDispatch } from '@wordpress/data';
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { useDispatch } from '@wordpress/data';
 
 export type TaskListMenuProps = {
 	id: string;

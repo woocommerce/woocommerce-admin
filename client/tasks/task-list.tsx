@@ -3,10 +3,10 @@
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { Card, CardBody, CardHeader } from '@wordpress/components';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { Card, CardHeader } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 import { Badge } from '@woocommerce/components';
-import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { ONBOARDING_STORE_NAME, TaskListType } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text, List, CollapsibleList } from '@woocommerce/experimental';
 
@@ -26,28 +26,7 @@ export const getEventPrefix = ( id: string ): string => {
 	return `${ id }_tasklist_`;
 };
 
-export type TaskProps = {
-	actionLabel?: string;
-	actionUrl?: string;
-	content: string;
-	id: string;
-	isComplete: boolean;
-	isDismissable: boolean;
-	isDismissed: boolean;
-	isVisible: boolean;
-	isSnoozable: boolean;
-	snoozedUntil: number;
-	time: string;
-	title: string;
-};
-
-export type TaskListProps = {
-	id: string;
-	isCollapsible?: boolean;
-	isComplete: boolean;
-	isExpandable?: boolean;
-	tasks: TaskProps[];
-	title: string;
+export type TaskListProps = TaskListType & {
 	query: {
 		task: string;
 	};
@@ -61,7 +40,6 @@ export const TaskList: React.FC< TaskListProps > = ( {
 	isExpandable = false,
 	query,
 } ) => {
-	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
 	const { profileItems } = useSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 

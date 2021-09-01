@@ -7,22 +7,26 @@ import {
 	getNewPath,
 	updateQueryString,
 } from '@woocommerce/navigation';
-import { ONBOARDING_STORE_NAME, useUserPreferences } from '@woocommerce/data';
+import {
+	ONBOARDING_STORE_NAME,
+	TaskType,
+	useUserPreferences,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { TaskItem } from '@woocommerce/experimental';
+import { useCallback } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { TaskProps } from './task-list';
 import './task-list.scss';
 
 export type TaskListItemProps = {
 	isExpandable: boolean;
 	isExpanded: boolean;
 	setExpandedTask: ( id: string ) => void;
-	task: TaskProps;
+	task: TaskType;
 };
 
 export const TaskListItem: React.FC< TaskListItemProps > = ( {
@@ -52,7 +56,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		title,
 	} = task;
 
-	const onDismiss = () => {
+	const onDismiss = useCallback( () => {
 		dismissTask();
 		createNotice( 'success', __( 'Task dismissed' ), {
 			actions: [
@@ -62,9 +66,9 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 				},
 			],
 		} );
-	};
+	}, [ id ] );
 
-	const onSnooze = () => {
+	const onSnooze = useCallback( () => {
 		snoozeTask();
 		createNotice(
 			'success',
@@ -78,7 +82,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 				],
 			}
 		);
-	};
+	}, [ id ] );
 
 	const getTaskStartedCount = () => {
 		const trackedStartedTasks =
@@ -103,7 +107,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		} );
 	};
 
-	const onClick = () => {
+	const onClick = useCallback( () => {
 		recordEvent( 'tasklist_click', {
 			task_name: id,
 		} );
@@ -123,7 +127,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 
 		window.document.documentElement.scrollTop = 0;
 		updateQueryString( { task: id } );
-	};
+	}, [ id, isComplete, actionUrl ] );
 
 	return (
 		<TaskItem
