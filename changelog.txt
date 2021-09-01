@@ -27,6 +27,7 @@
 - Update: Delete free extensions transient on WCA update #7454
 - Update: Update business details to use extensions data store #7452
 - Update: Split Extensions page into Marketplace and My Subscriptions. #7471
+- Update: Update marketing task completion logic. #7586
 - Dev: Added utm_medium=product to woocommerce.com links. #7408
 - Dev: Update Jest to version 27. #7430
 - Tweak: Refactor on payment settings recommendations eligibility component for reuse. #7447
