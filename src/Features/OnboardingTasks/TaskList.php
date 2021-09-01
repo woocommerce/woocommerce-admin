@@ -97,7 +97,6 @@ class TaskList {
 	 * @return bool
 	 */
 	public function is_complete() {
-		// @todo This option is not yet being used to track completion.
 		$complete = get_option( self::COMPLETED_OPTION, array() );
 		return in_array( $this->id, $complete, true );
 	}

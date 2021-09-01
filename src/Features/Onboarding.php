@@ -359,6 +359,21 @@ class Onboarding {
 	}
 
 	/**
+	 * Returns true if the task list should be displayed (not completed or hidden off the dashboard).
+	 *
+	 * @deprecated 2.7.0
+	 * @return bool
+	 */
+	public static function should_show_tasks() {
+		wc_deprecated_function( 'should_show_tasks', '4.4', '\Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists::get_list( $list_id )->is_hidden()' );
+
+		$setup_list    = TaskLists::get_list( 'setup' );
+		$extended_list = TaskLists::get_list( 'extended' );
+
+		return ( $setup_list && ! $setup_list->is_hidden() ) || ( $extended_list && ! $extended_list->is_hidden() );
+	}
+
+	/**
 	 * Get a list of allowed industries for the onboarding wizard.
 	 *
 	 * @return array
