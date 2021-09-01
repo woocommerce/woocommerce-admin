@@ -59,7 +59,7 @@ export function getAllTasks( {
 	toggleCartModal,
 	onTaskSelect,
 	hasCompleteAddress,
-	visitedTasks,
+	trackedCompletedActions,
 } ) {
 	const {
 		hasPaymentGateway,
@@ -347,14 +347,20 @@ export function getAllTasks( {
 				'Add recommended marketing tools to reach new customers and grow your business',
 				'woocommerce-admin'
 			),
-			container: <Marketing />,
+			container: (
+				<Marketing
+					trackedCompletedActions={ trackedCompletedActions }
+				/>
+			),
 			onClick: () => {
 				onTaskSelect( 'marketing' );
 				updateQueryString( { task: 'marketing' } );
 			},
 			completed:
 				!! installedMarketingExtensions.length &&
-				visitedTasks.includes( 'marketing' ),
+				trackedCompletedActions.includes(
+					'marketing_task_installed_extension_via_task'
+				),
 			visible:
 				window.wcAdminFeatures &&
 				window.wcAdminFeatures[ 'remote-free-extensions' ] &&
