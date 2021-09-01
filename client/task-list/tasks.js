@@ -357,8 +357,9 @@ export function getAllTasks( {
 				updateQueryString( { task: 'marketing' } );
 			},
 			completed:
-				!! installedMarketingExtensions.length &&
-				trackedCompletedActions.includes( 'marketing' ),
+				( !! installedMarketingExtensions.length &&
+					trackedCompletedActions.includes( 'marketing' ) ) ||
+				! marketingExtensionsLists.length,
 			visible:
 				window.wcAdminFeatures &&
 				window.wcAdminFeatures[ 'remote-free-extensions' ] &&
