@@ -149,12 +149,16 @@ export const Marketing: React.FC< MarketingProps > = ( {
 						( extension ) => extension.slug
 					),
 				} );
-				updateOptions( {
-					woocommerce_task_list_tracked_completed_actions: [
-						...trackedCompletedActions,
-						'marketing',
-					],
-				} );
+
+				if ( ! trackedCompletedActions.includes( 'marketing' ) ) {
+					updateOptions( {
+						woocommerce_task_list_tracked_completed_actions: [
+							...trackedCompletedActions,
+							'marketing',
+						],
+					} );
+				}
+
 				createNoticesFromResponse( response );
 				setCurrentPlugin( null );
 			} )
