@@ -66,7 +66,7 @@ export type OnboardingSelectors = {
 export type OnboardingState = {
 	freeExtensions: ExtensionList[];
 	profileItems: ProfileItemsState;
-	taskLists: TaskList[];
+	taskLists: TaskListType[];
 	tasksStatus: TasksStatusState;
 	paymentMethods: PaymentMethodsState[];
 	emailPrefill: string;
