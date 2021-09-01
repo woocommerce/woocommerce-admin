@@ -152,7 +152,7 @@ export const Marketing: React.FC< MarketingProps > = ( {
 				updateOptions( {
 					woocommerce_task_list_tracked_completed_actions: [
 						...trackedCompletedActions,
-						'marketing_task_installed_extension_via_task',
+						'marketing',
 					],
 				} );
 				createNoticesFromResponse( response );

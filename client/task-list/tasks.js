@@ -358,9 +358,7 @@ export function getAllTasks( {
 			},
 			completed:
 				!! installedMarketingExtensions.length &&
-				trackedCompletedActions.includes(
-					'marketing_task_installed_extension_via_task'
-				),
+				trackedCompletedActions.includes( 'marketing' ),
 			visible:
 				window.wcAdminFeatures &&
 				window.wcAdminFeatures[ 'remote-free-extensions' ] &&
