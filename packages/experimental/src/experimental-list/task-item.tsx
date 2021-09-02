@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { createElement, Fragment } from '@wordpress/element';
+import { createElement, Fragment, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, check } from '@wordpress/icons';
 import { Button, Tooltip } from '@wordpress/components';
@@ -114,9 +114,11 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	actionLabel,
 	...listItemProps
 } ) => {
+	const [ isTaskExpanded, setTaskExpanded ] = useState( expanded );
+
 	const className = classnames( 'woocommerce-task-list__item', {
 		complete: completed,
-		expanded,
+		isTaskExpanded,
 		'level-2': level === 2 && ! completed,
 		'level-1': level === 1 && ! completed,
 	} );
@@ -128,11 +130,17 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 		( ( onDismiss || remindMeLater ) && ! completed ) ||
 		( onDelete && completed );
 
+	const toggleActionVisibility = () => {
+		setTaskExpanded( ! isTaskExpanded );
+	};
+
 	return (
 		<ListItem
 			disableGutters
 			className={ className }
-			onClick={ onClick }
+			onClick={
+				expandable && ! onClick ? toggleActionVisibility : onClick
+			}
 			{ ...listItemProps }
 		>
 			<OptionalTaskTooltip level={ level } completed={ completed }>
@@ -159,7 +167,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 					</span>
 					<OptionalExpansionWrapper
 						expandable={ expandable }
-						expanded={ expanded }
+						expanded={ isTaskExpanded }
 					>
 						<div className="woocommerce-task-list__item-expandable-content">
 							{ content }

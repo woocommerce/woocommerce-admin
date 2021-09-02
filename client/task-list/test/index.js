@@ -92,6 +92,9 @@ describe( 'TaskDashboard and TaskList', () => {
 				type: 'setup',
 				action: 'CTA (optional)',
 				content: 'This is the optional task content',
+				additionalInfo: 'This is the task additional info',
+				expandable: true,
+				expanded: true,
 			},
 			{
 				key: 'required',
@@ -104,6 +107,8 @@ describe( 'TaskDashboard and TaskList', () => {
 				type: 'setup',
 				action: 'CTA (required)',
 				content: 'This is the required task content',
+				additionalInfo: 'This is the required task additional info',
+				expandable: false,
 			},
 			{
 				key: 'completed',
@@ -746,9 +751,8 @@ describe( 'TaskDashboard and TaskList', () => {
 
 			// Expect the second not to be.
 			expect(
-				queryByText( 'This is the required task content' ).parentElement
-					.style.maxHeight
-			).toBe( '0' );
+				queryByText( 'This is the required task additional info' )
+			).not.toBeNull();
 		} );
 	} );
 
