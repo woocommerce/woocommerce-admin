@@ -82,7 +82,7 @@ class Init {
 	 * @return array
 	 */
 	public function use_old_tasks_for_e2e( $features ) {
-		if ( 'WooCommerce Core E2E Test Suite' === get_bloginfo() ) {
+		if ( 'http://localhost:8084' === rtrim( get_site_url(), '/' ) ) {
 			$features = array_diff( $features, array( 'tasks' ) );
 		}
 
