@@ -66,7 +66,9 @@ const testAdminHomescreenTasklist = () => {
 			await helpMenu.enableTaskList();
 			// redirects to homescreen
 			await homeScreen.isDisplayed();
-			expect( await homeScreen.isTaskListDisplayed() ).toBe( true );
+			await expect( homeScreen.isTaskListDisplayed() ).resolves.toBe(
+				true
+			);
 		} );
 	} );
 };

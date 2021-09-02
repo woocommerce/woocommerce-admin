@@ -27,10 +27,6 @@ const testAdminHomescreenActivityPanel = () => {
 		beforeAll( async () => {
 			await login.login();
 
-			// This makes this test more isolated, by always navigating to the
-			// profile wizard and skipping, this behaves the same as if the
-			// profile wizard had not been run yet and the user is redirected
-			// to it when trying to go to wc-admin.
 			await withRestApi.deleteAllProducts();
 			await removeAllOrders();
 			await updateOption( 'woocommerce_task_list_hidden', 'no' );
@@ -49,14 +45,22 @@ const testAdminHomescreenActivityPanel = () => {
 		} );
 
 		it( 'should not show activity panel while task list is displayed', async () => {
-			expect( await homeScreen.isTaskListDisplayed() ).toBe( true );
-			expect( await homeScreen.isActivityPanelShown() ).toBe( false );
+			await expect( homeScreen.isTaskListDisplayed() ).resolves.toBe(
+				true
+			);
+			await expect( homeScreen.isActivityPanelShown() ).resolves.toBe(
+				false
+			);
 		} );
 
 		it( 'should not show panels when there are no orders or products yet with task list hidden', async () => {
 			await homeScreen.hideTaskList();
-			expect( await homeScreen.isTaskListDisplayed() ).toBe( false );
-			expect( await homeScreen.isActivityPanelShown() ).toBe( false );
+			await expect( homeScreen.isTaskListDisplayed() ).resolves.toBe(
+				false
+			);
+			await expect( homeScreen.isActivityPanelShown() ).resolves.toBe(
+				false
+			);
 		} );
 
 		it( 'should show Reviews panel when we have at-least one product', async () => {
@@ -65,10 +69,12 @@ const testAdminHomescreenActivityPanel = () => {
 				waitUntil: [ 'networkidle0', 'domcontentloaded' ],
 			} );
 			const activityPanels = await homeScreen.getActivityPanels();
-			expect( activityPanels.length ).toBe( 1 );
-			expect(
-				activityPanels.findIndex( ( p ) => p.title === 'Reviews' )
-			).toBeGreaterThanOrEqual( 0 );
+			expect( activityPanels ).toHaveLength( 1 );
+			expect( activityPanels ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( { title: 'Reviews' } ),
+				] )
+			);
 		} );
 
 		it( 'should show Orders and Stock panels when at-least one order is added', async () => {
@@ -77,13 +83,17 @@ const testAdminHomescreenActivityPanel = () => {
 				waitUntil: [ 'networkidle0', 'domcontentloaded' ],
 			} );
 			const activityPanels = await homeScreen.getActivityPanels();
-			expect( activityPanels.length ).toBe( 3 );
-			expect(
-				activityPanels.findIndex( ( p ) => p.title === 'Orders' )
-			).toBeGreaterThanOrEqual( 0 );
-			expect(
-				activityPanels.findIndex( ( p ) => p.title === 'Stock' )
-			).toBeGreaterThanOrEqual( 0 );
+			expect( activityPanels ).toHaveLength( 3 );
+			expect( activityPanels ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( { title: 'Orders' } ),
+				] )
+			);
+			expect( activityPanels ).toEqual(
+				expect.arrayContaining( [
+					expect.objectContaining( { title: 'Stock' } ),
+				] )
+			);
 		} );
 
 		describe( 'Orders panel', () => {
@@ -100,7 +110,7 @@ const testAdminHomescreenActivityPanel = () => {
 				await homeScreen.navigate();
 				await homeScreen.expandActivityPanel( 'Orders' );
 				const orders = await ordersPanel.getDisplayedOrders();
-				expect( orders.length ).toBe( 2 );
+				expect( orders ).toHaveLength( 2 );
 				expect( orders ).toContain( `Order #${ order1.id }` );
 				expect( orders ).toContain( `Order #${ order2.id }` );
 			} );

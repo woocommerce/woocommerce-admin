@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { ElementHandle } from 'puppeteer';
-import { takeScreenshotFor } from '@woocommerce/e2e-environment';
 
 /**
  * Internal dependencies
@@ -86,14 +85,10 @@ export class WcHomescreen extends BasePage {
 			'Task List Options'
 		);
 		await taskListOptions?.click();
-		const hideThisButtonVisible = await waitForElementByTextWithoutThrow(
-			'*',
-			'Hide this'
-		);
-		if ( hideThisButtonVisible ) {
-			const hideThisButton = await getElementByText( '*', 'Hide this' );
-			await hideThisButton?.click();
-		}
+		await waitForElementByText( 'button', 'Hide this' );
+		const hideThisButton = await getElementByText( 'button', 'Hide this' );
+		await hideThisButton?.click();
+		await this.page.waitFor( 500 );
 	}
 
 	async waitForNotesRequestToBeLoaded(): Promise< void > {
