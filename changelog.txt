@@ -1,3 +1,7 @@
+== 2.6.1 09/01/2021 ==
+
+- Update: Update marketing task completion logic. #7586
+
 == 2.6.0 08/31/2021 == 
 
 - Fix: Fixes action button mis-alignment within card footer. #7412
