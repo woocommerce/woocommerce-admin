@@ -81,7 +81,6 @@ class Install {
 		'woocommerce_task_list_hidden'             => 'woocommerce_task_list_hidden',
 		'woocommerce_extended_task_list_complete'  => 'woocommerce_extended_task_list_complete',
 		'woocommerce_extended_task_list_hidden'    => 'woocommerce_extended_task_list_hidden',
-		'woocommerce_setup_task_list_hidden'       => 'woocommerce_task_list_hidden',
 	);
 
 	/**
