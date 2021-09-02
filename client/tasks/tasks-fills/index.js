@@ -3,3 +3,4 @@
  */
 import './PaymentGatewaySuggestions';
 import './shipping';
+import './Marketing';

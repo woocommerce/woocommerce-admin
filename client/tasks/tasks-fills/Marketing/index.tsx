@@ -13,6 +13,8 @@ import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
 import { useMemo, useState } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { registerPlugin } from '@wordpress/plugins';
+import { WooOnboardingTask } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies
@@ -23,6 +25,7 @@ import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 
 const ALLOWED_PLUGIN_LISTS = [ 'reach', 'grow' ];
+const EMPTY_ARRAY = [];
 
 export type ExtensionList = {
 	key: string;
@@ -100,9 +103,7 @@ export type MarketingProps = {
 	trackedCompletedActions: string[];
 };
 
-export const Marketing: React.FC< MarketingProps > = ( {
-	trackedCompletedActions,
-} ) => {
+const Marketing: React.FC = () => {
 	const [ currentPlugin, setCurrentPlugin ] = useState< string | null >(
 		null
 	);
@@ -113,6 +114,7 @@ export const Marketing: React.FC< MarketingProps > = ( {
 		freeExtensions,
 		installedPlugins,
 		isResolving,
+		trackedCompletedActions,
 	} = useSelect( ( select: WCDataSelector ) => {
 		const { getActivePlugins, getInstalledPlugins } = select(
 			PLUGINS_STORE_NAME
@@ -121,11 +123,26 @@ export const Marketing: React.FC< MarketingProps > = ( {
 			ONBOARDING_STORE_NAME
 		);
 
+		const {
+			getOption,
+			hasFinishedResolution: optionFinishedResolution,
+		} = select( OPTIONS_STORE_NAME );
+
+		const completedActions =
+			getOption( 'woocommerce_task_list_tracked_completed_actions' ) ||
+			EMPTY_ARRAY;
+
 		return {
 			activePlugins: getActivePlugins(),
 			freeExtensions: getFreeExtensions(),
 			installedPlugins: getInstalledPlugins(),
-			isResolving: ! hasFinishedResolution( 'getFreeExtensions' ),
+			isResolving: ! (
+				hasFinishedResolution( 'getFreeExtensions' ) &&
+				optionFinishedResolution( 'getOption', [
+					'woocommerce_task_list_tracked_completed_actions',
+				] )
+			),
+			trackedCompletedActions: completedActions,
 		};
 	} );
 
@@ -231,3 +248,12 @@ export const Marketing: React.FC< MarketingProps > = ( {
 		</div>
 	);
 };
+
+registerPlugin( 'wc-admin-onboarding-task-marketing', {
+	scope: 'woocommerce-admin',
+	render: () => (
+		<WooOnboardingTask id="marketing">
+			<Marketing />;
+		</WooOnboardingTask>
+	),
+} );
