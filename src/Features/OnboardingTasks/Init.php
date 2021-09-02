@@ -54,7 +54,6 @@ class Init {
 		add_filter( 'pre_option_woocommerce_extended_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
 		add_action( 'pre_update_option_woocommerce_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
 		add_action( 'pre_update_option_woocommerce_extended_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
-		add_action( 'woocommerce_admin_features', array( $this, 'use_old_tasks_for_e2e' ) );
 
 		if ( ! is_admin() ) {
 			return;
@@ -72,21 +71,6 @@ class Init {
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_import_notice_admin_script' ) );
-	}
-
-	/**
-	 * Temporarily use old tasks for e2e tests.
-	 * This can be removed once the new tasks feature is complete.
-	 *
-	 * @param array $features Array of features.
-	 * @return array
-	 */
-	public function use_old_tasks_for_e2e( $features ) {
-		if ( 'http://localhost:8084' === rtrim( get_site_url(), '/' ) ) {
-			$features = array_diff( $features, array( 'tasks' ) );
-		}
-
-		return $features;
 	}
 
 	/**
