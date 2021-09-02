@@ -13,9 +13,10 @@ import {
 	useUserPreferences,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { TaskItem } from '@woocommerce/experimental';
+import { TaskItem, useSlot } from '@woocommerce/experimental';
 import { useCallback } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
+import { WooOnboardingTaskListItem } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies
@@ -36,6 +37,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 	task,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
+
 	const {
 		dismissTask,
 		snoozeTask,
@@ -55,6 +57,9 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		time,
 		title,
 	} = task;
+
+	const slot = useSlot( `woocommerce_onboarding_task_list_item_${ id }` );
+	const hasFills = Boolean( slot?.fills?.length );
 
 	const onDismiss = useCallback( () => {
 		dismissTask();
@@ -129,24 +134,40 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		updateQueryString( { task: id } );
 	}, [ id, isComplete, actionUrl ] );
 
-	return (
+	const taskItemProps = {
+		expandable: isExpandable,
+		expanded: isExpandable && isExpanded,
+		completed: isComplete,
+		onSnooze: isSnoozable && onSnooze,
+		onDismiss: isDismissable && onDismiss,
+	};
+
+	const defaultTaskItem = (
 		<TaskItem
 			key={ id }
 			title={ title }
-			completed={ isComplete }
 			content={ content }
 			onClick={
 				! isExpandable || isComplete
 					? onClick
 					: () => setExpandedTask( id )
 			}
-			expandable={ isExpandable }
-			expanded={ isExpandable && isExpanded }
-			onDismiss={ isDismissable && onDismiss }
-			remindMeLater={ isSnoozable && onSnooze }
 			time={ time }
 			action={ onClick }
 			actionLabel={ actionLabel }
+			{ ...taskItemProps }
 		/>
+	);
+
+	return hasFills ? (
+		<WooOnboardingTaskListItem.Slot
+			id={ id }
+			fillProps={ {
+				defaultTaskItem,
+				...taskItemProps,
+			} }
+		/>
+	) : (
+		defaultTaskItem
 	);
 };
