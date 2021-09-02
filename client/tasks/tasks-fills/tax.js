@@ -19,6 +19,9 @@ import {
 } from '@woocommerce/data';
 import { recordEvent, queueRecordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
+import { registerPlugin } from '@wordpress/plugins';
+import { WooOnboardingTask } from '@woocommerce/onboarding';
+
 /**
  * Internal dependencies
  */
@@ -501,7 +504,7 @@ class Tax extends Component {
 	}
 }
 
-export default compose(
+const TaxWrapper = compose(
 	withSelect( ( select ) => {
 		const { getSettings, isUpdateSettingsRequesting } = select(
 			SETTINGS_STORE_NAME
@@ -585,3 +588,12 @@ export default compose(
 		};
 	} )
 )( Tax );
+
+registerPlugin( 'wc-admin-onboarding-task-tax', {
+	scope: 'woocommerce-admin',
+	render: () => (
+		<WooOnboardingTask id="tax">
+			{ ( { query } ) => <TaxWrapper query={ query } /> }
+		</WooOnboardingTask>
+	),
+} );

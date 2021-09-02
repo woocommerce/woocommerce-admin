@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import Products from './products';
+import './products';
 import ProductTemplateModal from './product-template-modal';
 
-export { Products, ProductTemplateModal };
+export { ProductTemplateModal };

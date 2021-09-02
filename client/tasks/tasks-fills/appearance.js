@@ -17,6 +17,8 @@ import {
 	WC_ADMIN_NAMESPACE,
 } from '@woocommerce/data';
 import { queueRecordEvent, recordEvent } from '@woocommerce/tracks';
+import { registerPlugin } from '@wordpress/plugins';
+import { WooOnboardingTask } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies
@@ -415,7 +417,7 @@ class Appearance extends Component {
 	}
 }
 
-export default compose(
+const AppearanceWrapper = compose(
 	withSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
 		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
@@ -442,3 +444,12 @@ export default compose(
 		};
 	} )
 )( Appearance );
+
+registerPlugin( 'wc-admin-onboarding-task-appearance', {
+	scope: 'woocommerce-admin',
+	render: () => (
+		<WooOnboardingTask id="appearance">
+			<AppearanceWrapper />
+		</WooOnboardingTask>
+	),
+} );

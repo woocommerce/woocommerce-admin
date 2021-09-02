@@ -9,6 +9,8 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { omit } from 'lodash';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { ONBOARDING_STORE_NAME, WC_ADMIN_NAMESPACE } from '@woocommerce/data';
+import { registerPlugin } from '@wordpress/plugins';
+import { WooOnboardingTask } from '@woocommerce/onboarding';
 
 class Connect extends Component {
 	componentDidMount() {
@@ -116,7 +118,7 @@ class Connect extends Component {
 	}
 }
 
-export default compose(
+const ConnectWrapper = compose(
 	withSelect( ( select ) => {
 		const { getOnboardingError } = select( ONBOARDING_STORE_NAME );
 
@@ -135,3 +137,12 @@ export default compose(
 		};
 	} )
 )( Connect );
+
+registerPlugin( 'wc-admin-onboarding-task-connect', {
+	scope: 'woocommerce-admin',
+	render: () => (
+		<WooOnboardingTask id="connect">
+			<ConnectWrapper />
+		</WooOnboardingTask>
+	),
+} );

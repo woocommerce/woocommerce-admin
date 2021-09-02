@@ -15,6 +15,8 @@ import {
 import { List, Pill } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
+import { registerPlugin } from '@wordpress/plugins';
+import { WooOnboardingTask } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies
@@ -88,7 +90,7 @@ const subTasks = [
 	},
 ];
 
-export default function Products() {
+const Products = () => {
 	const [ selectTemplate, setSelectTemplate ] = useState( null );
 
 	const onTaskClick = ( task ) => {
@@ -117,4 +119,13 @@ export default function Products() {
 			) : null }
 		</Fragment>
 	);
-}
+};
+
+registerPlugin( 'wc-admin-onboarding-task-products', {
+	scope: 'woocommerce-admin',
+	render: () => (
+		<WooOnboardingTask id="products">
+			<Products />
+		</WooOnboardingTask>
+	),
+} );
