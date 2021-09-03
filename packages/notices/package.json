@@ -22,7 +22,7 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@wordpress/a11y": "2.15.2",
+		"@wordpress/a11y": "2.15.3",
 		"@wordpress/data": "4.27.3",
 		"@wordpress/notices": "1.12.0"
 	},

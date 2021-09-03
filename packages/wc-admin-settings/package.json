@@ -20,7 +20,7 @@
 	"module": "build-module/index.js",
 	"private": true,
 	"dependencies": {
-		"@wordpress/i18n": "3.17.0"
+		"@wordpress/i18n": "3.20.0"
 	},
 	"scripts": {
 		"clean": "npx rimraf tsconfig.tsbuildinfo build build-*",

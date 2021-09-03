@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@automattic/color-studio": "2.5.0",
 		"@automattic/mini-css-extract-plugin-with-rtl": "0.8.0",
-		"@wordpress/base-styles": "3.3.0",
+		"@wordpress/base-styles": "3.6.0",
 		"@wordpress/postcss-plugins-preset": "1.6.0",
 		"css-loader": "3.6.0",
 		"postcss-loader": "3.0.0",
