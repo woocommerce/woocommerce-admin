@@ -183,12 +183,15 @@ class WooCommercePayments {
 		$this->install_and_activate_wcpay();
 
 		// WooCommerce Payments is installed at this point, so link straight into the onboarding flow.
-		$connect_url = add_query_arg(
-			array(
-				'wcpay-connect' => '1',
-				'_wpnonce'      => wp_create_nonce( 'wcpay-connect' ),
-			),
-			admin_url()
+		$connect_url = admin_url(
+			add_query_arg(
+				array(
+					'page'    => 'wc-settings',
+					'tab'     => 'checkout',
+					'section' => 'woocommerce_payments',
+				),
+				'admin.php'
+			)
 		);
 		wp_safe_redirect( $connect_url );
 		exit;
