@@ -345,8 +345,8 @@ export const TaskList = ( {
 								title={ task.title }
 								completed={ task.completed }
 								content={ task.content }
-								expandable={ expandingItems && task.expandable }
-								expanded={ expandingItems && task.expanded }
+								expandable={ task.expandable }
+								expanded={ task.expanded }
 								onClick={ task.onClick }
 								onDismiss={
 									task.isDismissable
