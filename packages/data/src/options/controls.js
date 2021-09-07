@@ -29,14 +29,7 @@ export const controls = {
 				const names = optionNames.join( ',' );
 				if ( fetches[ names ] ) {
 					return fetches[ names ].then( ( result ) => {
-						resolve(
-							names.split( ',' ).reduce( ( optionData, name ) => {
-								return {
-									...optionData,
-									[ name ]: result[ name ],
-								};
-							}, {} )
-						);
+						resolve( result );
 					} );
 				}
 
