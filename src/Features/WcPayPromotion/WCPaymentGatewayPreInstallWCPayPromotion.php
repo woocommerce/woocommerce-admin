@@ -1,6 +1,6 @@
 <?php
 /**
- * Class WC_Payment_Gateway_Psuedo_WCPay
+ * Class WCPaymentGatewayPreInstallWCPayPromotion
  *
  * @package WooCommerce\Admin
  */
