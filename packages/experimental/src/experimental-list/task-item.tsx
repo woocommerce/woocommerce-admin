@@ -139,7 +139,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 			disableGutters
 			className={ className }
 			onClick={
-				expandable && ! onClick ? toggleActionVisibility : onClick
+				expandable && showActionButton
+					? toggleActionVisibility
+					: onClick
 			}
 			{ ...listItemProps }
 		>
