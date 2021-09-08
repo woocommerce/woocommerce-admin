@@ -106,8 +106,8 @@ describe( 'TaskDashboard and TaskList', () => {
 				isDismissable: false,
 				type: 'setup',
 				action: 'CTA (required)',
+				actionLabel: 'This is the action label',
 				content: 'This is the required task content',
-				additionalInfo: 'This is the required task additional info',
 				expandable: false,
 			},
 			{
@@ -735,24 +735,15 @@ describe( 'TaskDashboard and TaskList', () => {
 			},
 		] );
 		await act( async () => {
-			const { container, queryByText } = render(
-				<TaskDashboard query={ {} } />
-			);
+			const { queryByText } = render( <TaskDashboard query={ {} } /> );
 
 			// Expect the first incomplete task to be expanded
 			expect(
-				(
-					await findByText(
-						container,
-						'This is the optional task content'
-					)
-				 ).parentElement.style.maxHeight
-			).not.toBe( '0' );
+				queryByText( 'This is the optional task content' )
+			).not.toBeNull();
 
 			// Expect the second not to be.
-			expect(
-				queryByText( 'This is the required task additional info' )
-			).not.toBeNull();
+			expect( queryByText( 'This is the action label' ) ).toBeNull();
 		} );
 	} );
 
