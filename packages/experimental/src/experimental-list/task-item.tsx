@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import { createElement, Fragment, useState } from '@wordpress/element';
+import {
+	createElement,
+	Fragment,
+	useEffect,
+	useState,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, check } from '@wordpress/icons';
 import { Button, Tooltip } from '@wordpress/components';
@@ -119,6 +124,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	...listItemProps
 } ) => {
 	const [ isTaskExpanded, setTaskExpanded ] = useState( expanded );
+	useEffect( () => {
+		setTaskExpanded( ! isTaskExpanded );
+	}, [ expanded ] );
 
 	const className = classnames( 'woocommerce-task-list__item', {
 		complete: completed,
