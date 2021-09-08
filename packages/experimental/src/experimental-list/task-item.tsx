@@ -35,8 +35,10 @@ type TaskItemProps = {
 	title: string;
 	completed: boolean;
 	onClick: () => void;
+	onCollapse?: () => void;
 	onDelete?: () => void;
 	onDismiss?: () => void;
+	onExpand?: () => void;
 	remindMeLater?: () => void;
 	additionalInfo?: string;
 	time?: string;
@@ -100,7 +102,9 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 	completed,
 	title,
 	onDelete,
+	onCollapse,
 	onDismiss,
+	onExpand,
 	remindMeLater,
 	onClick,
 	additionalInfo,
@@ -132,6 +136,12 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 
 	const toggleActionVisibility = () => {
 		setTaskExpanded( ! isTaskExpanded );
+		if ( isTaskExpanded && onExpand ) {
+			onExpand();
+		}
+		if ( ! isTaskExpanded && onCollapse ) {
+			onCollapse();
+		}
 	};
 
 	return (
