@@ -24,7 +24,7 @@ import './payment-promotion-row.scss';
 function sanitizeHTML( html: string ) {
 	return {
 		__html: sanitize( html, {
-			ALLOWED_TAGS: [ 'a', 'img' ],
+			ALLOWED_TAGS: [ 'a', 'img', 'br' ],
 			ALLOWED_ATTR: [ 'href', 'src', 'class', 'alt', 'target' ],
 		} ),
 	};
