@@ -12,24 +12,39 @@ import {
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { sanitize } from 'dompurify';
 import { __ } from '@wordpress/i18n';
 import _ from 'lodash';
 
 /**
  * Internal dependencies
  */
-import './wc-payments-row.scss';
+import './payment-promotion-row.scss';
 
-type WCPaymentsRowProps = {
+function sanitizeHTML( html: string ) {
+	return {
+		__html: sanitize( html, {
+			ALLOWED_TAGS: [ 'a', 'img' ],
+			ALLOWED_ATTR: [ 'href', 'src', 'class', 'alt', 'target' ],
+		} ),
+	};
+}
+
+type PaymentPromotionRowProps = {
+	pluginSlug: string;
 	sortColumnContent: string;
 	descriptionColumnContent: string;
+	titleLink: string;
+	title: string;
 	subTitleContent?: string;
 };
 
-const WC_PAY_SLUG = 'woocommerce-payments';
-export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
+export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
+	pluginSlug,
 	sortColumnContent,
 	descriptionColumnContent,
+	title,
+	titleLink,
 	subTitleContent,
 } ) => {
 	const [ installing, setInstalling ] = useState( false );
@@ -37,49 +52,44 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 		PLUGINS_STORE_NAME
 	);
 	const { createNotice } = useDispatch( 'core/notices' );
-	const wcPayInstallationInfo = useSelect( ( select: WCDataSelector ) => {
+	const installationInfo = useSelect( ( select: WCDataSelector ) => {
 		const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
 		const activePlugins: string[] = select(
 			PLUGINS_STORE_NAME
 		).getActivePlugins();
-		const isWCPayActive =
-			activePlugins && activePlugins.includes( WC_PAY_SLUG );
-		let wcPayGateway;
-		if ( isWCPayActive ) {
-			wcPayGateway = getPaymentGateway(
-				WC_PAY_SLUG.replace( /\-/g, '_' )
+		const isActive = activePlugins && activePlugins.includes( pluginSlug );
+		let paymentGateway;
+		if ( isActive ) {
+			paymentGateway = getPaymentGateway(
+				pluginSlug.replace( /\-/g, '_' )
 			);
 		}
 
 		return {
-			isWCPayActive,
-			wcPayGateway,
+			isActive,
+			paymentGateway,
 		};
 	} );
 
 	useEffect( () => {
 		if (
-			wcPayInstallationInfo.isWCPayActive &&
-			wcPayInstallationInfo.wcPayGateway &&
-			wcPayInstallationInfo.wcPayGateway.settings_url
+			installationInfo.isActive &&
+			installationInfo.paymentGateway &&
+			installationInfo.paymentGateway.settings_url
 		) {
-			window.location.href =
-				wcPayInstallationInfo.wcPayGateway.settings_url;
+			window.location.href = installationInfo.paymentGateway.settings_url;
 		}
-	}, [
-		wcPayInstallationInfo.isWCPayActive,
-		wcPayInstallationInfo.wcPayGateway,
-	] );
+	}, [ installationInfo.isActive, installationInfo.paymentGateway ] );
 
-	const installWCPay = () => {
+	const installPaymentGateway = () => {
 		if ( installing ) {
 			return;
 		}
 		setInstalling( true );
 		recordEvent( 'settings_payments_recommendations_setup', {
-			extension_selected: WC_PAY_SLUG,
+			extension_selected: pluginSlug,
 		} );
-		installAndActivatePlugins( [ WC_PAY_SLUG ] ).catch(
+		installAndActivatePlugins( [ pluginSlug ] ).catch(
 			( response: { message?: string } ) => {
 				if ( response.message ) {
 					createNotice( 'error', response.message );
@@ -104,31 +114,31 @@ export const WCPaymentsRow: React.FC< WCPaymentsRowProps > = ( {
 						target="_blank"
 						type="external"
 						rel="noreferrer"
-						href="https://woocommerce.com/payments/?utm_medium=product"
+						href={ titleLink }
 					>
-						{ __( 'WooCommerce Payments', 'woocommerce-admin' ) }
+						{ title }
 					</Link>
 					{ subTitleContent ? (
 						<div
-							className="pre-install-wcpay_subtitle"
-							dangerouslySetInnerHTML={ {
-								__html: subTitleContent,
-							} }
+							className="pre-install-payment-gateway_subtitle"
+							dangerouslySetInnerHTML={ sanitizeHTML(
+								subTitleContent
+							) }
 						></div>
 					) : null }
 				</div>
 			</td>
-			<td className="pre-install-wcpay_status"></td>
+			<td className="pre-install-payment-gateway_status"></td>
 			<td
 				className="description"
-				dangerouslySetInnerHTML={ {
-					__html: descriptionColumnContent,
-				} }
+				dangerouslySetInnerHTML={ sanitizeHTML(
+					descriptionColumnContent
+				) }
 			></td>
 			<td className="action">
 				<Button
 					className="button alignright"
-					onClick={ () => installWCPay() }
+					onClick={ () => installPaymentGateway() }
 					isSecondary
 					isBusy={ installing }
 					aria-disabled={ installing }

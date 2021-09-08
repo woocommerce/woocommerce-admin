@@ -37,18 +37,18 @@ class Init {
 		$rtl = is_rtl() ? '.rtl' : '';
 
 		wp_enqueue_style(
-			'wc-admin-wc-pay-payments-promotion',
-			Loader::get_url( "wc-pay-payments-promotion/style{$rtl}", 'css' ),
+			'wc-admin-payment-method-promotions',
+			Loader::get_url( "payment-method-promotions/style{$rtl}", 'css' ),
 			array( 'wp-components' ),
 			Loader::get_file_version( 'css' )
 		);
 
-		$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'wc-pay-payments-promotion' );
+		$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'payment-method-promotions' );
 		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
 
 		wp_enqueue_script(
-			'wc-admin-wc-pay-payments-promotion',
-			Loader::get_url( 'wp-admin-scripts/wc-pay-payments-promotion', 'js' ),
+			'wc-admin-payment-method-promotions',
+			Loader::get_url( 'wp-admin-scripts/payment-method-promotions', 'js' ),
 			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
 			Loader::get_file_version( 'js' ),
 			true
@@ -130,13 +130,17 @@ class Init {
 	 * Get WC Pay promotion spec.
 	 */
 	public static function get_wc_pay_promotion_spec() {
-		$promotions = self::get_promotions();
-		$index      = array_search( 'woocommerce-payments', array_column( $promotions, 'product' ), true );
+		$promotions            = self::get_promotions();
+		$wc_pay_promotion_spec = array_values(
+			array_filter(
+				$promotions,
+				function( $promotion ) {
+					return isset( $promotion->plugins ) && in_array( 'woocommerce-payments', $promotion->plugins, true );
+				}
+			)
+		);
 
-		if ( false !== $index ) {
-			return $promotions[ $index ];
-		}
-		return false;
+		return current( $wc_pay_promotion_spec );
 	}
 
 	/**
