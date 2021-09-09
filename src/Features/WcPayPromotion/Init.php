@@ -101,7 +101,7 @@ class Init {
 		}
 		$wc_pay_spec = self::get_wc_pay_promotion_spec();
 
-		if ( ! $wc_pay_spec ) {
+		if ( ! $wc_pay_spec || ! isset( $wc_pay_spec->additional_info ) ) {
 			return false;
 		}
 
@@ -113,7 +113,7 @@ class Init {
 			$allow_tracking
 		);
 
-		$variation_name = $abtest->get_variation( 'woocommerce_wc_pay_promotion_payment_methods_table_' . $wc_pay_spec->version );
+		$variation_name = $abtest->get_variation( 'woocommerce_wc_pay_promotion_payment_methods_table_' . $wc_pay_spec->additional_info->experiment_version );
 
 		if ( 'treatment' === $variation_name ) {
 			return true;
