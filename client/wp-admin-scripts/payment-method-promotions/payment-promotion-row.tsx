@@ -52,34 +52,37 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 		PLUGINS_STORE_NAME
 	);
 	const { createNotice } = useDispatch( 'core/notices' );
-	const installationInfo = useSelect( ( select: WCDataSelector ) => {
-		const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
-		const activePlugins: string[] = select(
-			PLUGINS_STORE_NAME
-		).getActivePlugins();
-		const isActive = activePlugins && activePlugins.includes( pluginSlug );
-		let paymentGateway;
-		if ( isActive ) {
-			paymentGateway = getPaymentGateway(
-				pluginSlug.replace( /\-/g, '_' )
-			);
-		}
+	const { gatewayIsActive, paymentGateway } = useSelect(
+		( select: WCDataSelector ) => {
+			const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
+			const activePlugins: string[] = select(
+				PLUGINS_STORE_NAME
+			).getActivePlugins();
+			const isActive =
+				activePlugins && activePlugins.includes( pluginSlug );
+			let paymentGatewayData;
+			if ( isActive ) {
+				paymentGatewayData = getPaymentGateway(
+					pluginSlug.replace( /\-/g, '_' )
+				);
+			}
 
-		return {
-			isActive,
-			paymentGateway,
-		};
-	} );
+			return {
+				gatewayIsActive: isActive,
+				paymentGateway: paymentGatewayData,
+			};
+		}
+	);
 
 	useEffect( () => {
 		if (
-			installationInfo.isActive &&
-			installationInfo.paymentGateway &&
-			installationInfo.paymentGateway.settings_url
+			gatewayIsActive &&
+			paymentGateway &&
+			paymentGateway.settings_url
 		) {
-			window.location.href = installationInfo.paymentGateway.settings_url;
+			window.location.href = paymentGateway.settings_url;
 		}
-	}, [ installationInfo.isActive, installationInfo.paymentGateway ] );
+	}, [ gatewayIsActive, paymentGateway ] );
 
 	const installPaymentGateway = () => {
 		if ( installing ) {
@@ -109,7 +112,7 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 				} }
 			></td>
 			<td className="name">
-				<div className="pre-install-wcpay_name">
+				<div className="wc-payment-gateway-method_name">
 					<Link
 						target="_blank"
 						type="external"
