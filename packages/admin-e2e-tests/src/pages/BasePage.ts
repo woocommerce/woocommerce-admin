@@ -133,7 +133,7 @@ export abstract class BasePage {
 	}
 
 	async waitForTimeout( timeout: number ) {
-		await new Promise( resolve => setTimeout( resolve, timeout ) );
+		await new Promise( ( resolve ) => setTimeout( resolve, timeout ) );
 	}
 
 	protected async goto( url: string ) {

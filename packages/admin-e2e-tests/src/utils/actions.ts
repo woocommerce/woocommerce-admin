@@ -153,7 +153,7 @@ export const waitForElementByTextWithoutThrow = async (
 		if ( selected ) {
 			break;
 		}
-		await new Promise( resolve => setTimeout( resolve, 1000 ) );
+		await new Promise( ( resolve ) => setTimeout( resolve, 1000 ) );
 		selected = await getElementByText( element, text );
 	}
 	return Boolean( selected );
