@@ -53,7 +53,7 @@
 		"changelogger": {
 			"changelog": "./changelog.txt",
 			"formatter": {
-				"filename": "bin/changelogger/WCAdminFormatter.php"
+				"filename": "bin/changelogger/TestFormatter.php"
 			},
 			"versioning": "semver",
 			"changes-dir": "./changelogs",
