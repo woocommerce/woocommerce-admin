@@ -1,7 +1,5 @@
 <?php
 
-use Automattic\Jetpack\Changelogger\FormatterPlugin;
-use Automattic\Jetpack\Changelogger\PluginTrait;
 require_once 'WCAdminFormatter.php';
 
 class TestFormatter extends WCAdminFormatter {
