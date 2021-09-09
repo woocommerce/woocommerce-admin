@@ -244,6 +244,7 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 						);
 						return (
 							<div
+								className="woocommerce-experimental-list-wrapper"
 								ref={ collapseContainerRef }
 								style={ transitionStyles }
 							>
