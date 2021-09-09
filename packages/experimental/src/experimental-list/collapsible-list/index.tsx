@@ -223,11 +223,9 @@ export const ExperimentalCollapsibleList: React.FC< CollapsibleListProps > = ( {
 		'woocommerce-experimental-list'
 	);
 
-	const wrapperClasses = classnames(
-		{
-			'woocommerce-experimental-list-wrapper': ! isCollapsed,
-		}
-	)
+	const wrapperClasses = classnames( {
+		'woocommerce-experimental-list-wrapper': ! isCollapsed,
+	} )
 
 	return (
 		<ExperimentalList { ...listProps } className={ listClasses }>
