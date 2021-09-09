@@ -364,6 +364,8 @@ export const TaskList = ( {
 								actionLabel={ task.actionLabel }
 								additionalInfo={ task.additionalInfo }
 								showActionButton={ task.showActionButton }
+								onExpand={ task.onExpand }
+								onCollapse={ task.onCollapse }
 							/>
 						) ) }
 					</ListComp>
