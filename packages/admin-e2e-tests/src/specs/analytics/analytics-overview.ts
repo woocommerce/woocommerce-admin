@@ -11,11 +11,7 @@ const testAdminAnalyticsOverview = () => {
 	describe( 'Analytics pages', () => {
 		const analyticsPage = new AnalyticsOverview( page );
 		const login = new Login( page );
-		const sectionTitles = [
-			'Performance',
-			'Charts',
-			'Leaderboards',
-		];
+		const sectionTitles = [ 'Performance', 'Charts', 'Leaderboards' ];
 		const titlesString = sectionTitles.join( ', ' );
 
 		beforeAll( async () => {
@@ -34,7 +30,7 @@ const testAdminAnalyticsOverview = () => {
 			await login.logout();
 		} );
 
-		it( `a user should see ${sectionTitles.length} sections by default - ${titlesString}`, async () => {
+		it( `a user should see ${ sectionTitles.length } sections by default - ${ titlesString }`, async () => {
 			const sections = await analyticsPage.getSectionTitles();
 			for ( let t = 0; t < sectionTitles.length; t++ ) {
 				expect( sections ).toContain( sectionTitles[ t ] );
