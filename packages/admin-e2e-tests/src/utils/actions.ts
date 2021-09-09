@@ -192,7 +192,7 @@ const deactivateAndDeleteExtension = async ( extension: string ) => {
  *
  * Uses the native http.request to avoid adding dependencies.
  */
-const resetWooCommerceState = async () => {
+const resetWooCommerceStateOutdated = async () => {
 	const options = {
 		host: 'localhost',
 		port: '8084',
@@ -261,5 +261,4 @@ export {
 	waitForTimeout,
 	deactivateAndDeleteExtension,
 	addReviewToProduct,
-	resetWooCommerceState,
 };
