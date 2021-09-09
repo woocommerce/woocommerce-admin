@@ -4,11 +4,11 @@
 import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
-import { resetWooCommerceState } from '../../utils/actions';
 import { Login } from '../../pages/Login';
 import { WcSettings } from '../../pages/WcSettings';
 import { ProductsSetup } from '../../pages/ProductsSetup';
 import { deactivateAndDeleteExtension } from '../../utils/actions';
+import { resetWooCommerceState } from '../../fixtures/reset';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
@@ -27,20 +27,19 @@ const { verifyValueOfInputField } = require( '@woocommerce/e2e-utils' );
  * This tests a default, happy path for the onboarding wizard.
  */
 const testAdminOnboardingWizard = () => {
-	describe( 'Store owner can complete onboarding wizard', () => {
+	describe.only( 'Store owner can complete onboarding wizard', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
 
 		beforeAll( async () => {
 			await login.login();
+			// await resetWooCommerceState();
 		} );
 		afterAll( async () => {
 			await login.logout();
 		} );
 
 		it( 'can start the profile wizard', async () => {
-			await resetWooCommerceState();
-
 			await profileWizard.navigate();
 		} );
 
@@ -57,7 +56,6 @@ const testAdminOnboardingWizard = () => {
 		it( 'can complete the industry section', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed( 7, 8 );
-			await profileWizard.industry.uncheckIndustries();
 
 			// Select just "fashion" and "health/beauty" to get the single checkbox business section when
 			// filling out details for a US store.
@@ -71,7 +69,7 @@ const testAdminOnboardingWizard = () => {
 
 		it( 'can complete the product types section', async () => {
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
+			// await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
 			await profileWizard.productTypes.selectProduct(
@@ -127,6 +125,7 @@ const testSelectiveBundleWCPay = () => {
 
 		beforeAll( async () => {
 			await login.login();
+			await resetWooCommerceState();
 		} );
 		afterAll( async () => {
 			await login.logout();
@@ -154,14 +153,14 @@ const testSelectiveBundleWCPay = () => {
 		it( 'can choose the "Other" industry', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
-			await profileWizard.industry.uncheckIndustries();
+			// await profileWizard.industry.uncheckIndustries();
 			await profileWizard.industry.selectIndustry( 'Other' );
 			await profileWizard.continue();
 		} );
 
 		it( 'can complete the product types section', async () => {
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
+			// await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
 			await profileWizard.productTypes.selectProduct(
