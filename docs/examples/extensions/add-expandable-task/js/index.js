@@ -95,11 +95,13 @@ addFilter(
 				onDismiss: () => console.log( 'The task was dismissed' ),
 				allowRemindMeLater: true,
 				remindMeLater: () => console.log( 'Remind me later' ),
-				action: () => console.log("This is an action!"),
+				action: () => console.log( 'This is an action!' ),
                 actionLabel: __( 'My action button', 'plugin-domain' ),
 				level: 1,
                 expandable: true,
                 expanded: false,
+				onExpand: ()=> console.log( 'onExpand callback' ),
+				onCollapse: ()=> console.log( 'onCollapse callback' ),
 			},
 		];
 	}
