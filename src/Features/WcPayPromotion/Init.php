@@ -101,7 +101,7 @@ class Init {
 		}
 		$wc_pay_spec = self::get_wc_pay_promotion_spec();
 
-		if ( ! $wc_pay_spec || ! isset( $wc_pay_spec->additional_info ) ) {
+		if ( ! $wc_pay_spec || ! isset( $wc_pay_spec->additional_info ) || ! isset( $wc_pay_spec->additional_info->experiment_version ) ) {
 			return false;
 		}
 

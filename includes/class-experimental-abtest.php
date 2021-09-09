@@ -1,5 +1,8 @@
 <?php
 /**
+ * NOTE: this is a temporary class and can be replaced by jetpack-abtest after
+ * https://github.com/Automattic/jetpack/issues/19596 has been fixed.
+ *
  * A class that interacts with Explat A/B tests.
  *
  * This class is experimental. It is a fork of the jetpack-abtest package and
