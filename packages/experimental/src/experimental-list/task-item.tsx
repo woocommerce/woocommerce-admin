@@ -125,7 +125,7 @@ export const TaskItem: React.FC< TaskItemProps > = ( {
 } ) => {
 	const [ isTaskExpanded, setTaskExpanded ] = useState( expanded );
 	useEffect( () => {
-		setTaskExpanded( ! isTaskExpanded );
+		setTaskExpanded( expanded );
 	}, [ expanded ] );
 
 	const className = classnames( 'woocommerce-task-list__item', {
