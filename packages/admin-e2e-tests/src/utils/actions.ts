@@ -3,6 +3,11 @@
  */
 import { ElementHandle } from 'puppeteer';
 
+/**
+ * Internal dependencies
+ */
+import { NewOrder } from '../pages/NewOrder';
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { expect } = require( '@jest/globals' );
 /* eslint-enable @typescript-eslint/no-var-requires */
@@ -29,8 +34,9 @@ const verifyPublishAndTrash = async (
 	publishVerification: string,
 	trashVerification: string
 ) => {
+	const newOrder = new NewOrder( page );
 	// Wait for auto save
-	await page.waitFor( 2000 );
+	await newOrder.waitForTimeout( 2000 );
 	// Publish
 	await page.click( button );
 
@@ -147,7 +153,7 @@ export const waitForElementByTextWithoutThrow = async (
 		if ( selected ) {
 			break;
 		}
-		await page.waitFor( 1000 );
+		await new Promise( resolve => setTimeout( resolve, 1000 ) );
 		selected = await getElementByText( element, text );
 	}
 	return Boolean( selected );

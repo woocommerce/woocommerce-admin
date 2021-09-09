@@ -32,11 +32,11 @@ export class WcHomescreen extends BasePage {
 
 		if ( modal ) {
 			await this.clickButtonWithText( 'Next' );
-			await this.page.waitFor( 1000 );
+			await this.waitForTimeout( 1000 );
 			await this.clickButtonWithText( 'Next' );
-			await this.page.waitFor( 1000 );
+			await this.waitForTimeout( 1000 );
 			await this.click( '.components-guide__finish-button' );
-			await this.page.waitFor( 500 );
+			await this.waitForTimeout( 500 );
 		}
 	}
 
@@ -88,7 +88,7 @@ export class WcHomescreen extends BasePage {
 		await waitForElementByText( 'button', 'Hide this' );
 		const hideThisButton = await getElementByText( 'button', 'Hide this' );
 		await hideThisButton?.click();
-		await this.page.waitFor( 500 );
+		await this.waitForTimeout( 500 );
 	}
 
 	async waitForNotesRequestToBeLoaded(): Promise< void > {
