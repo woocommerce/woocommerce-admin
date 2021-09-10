@@ -27,13 +27,13 @@ const { verifyValueOfInputField } = require( '@woocommerce/e2e-utils' );
  * This tests a default, happy path for the onboarding wizard.
  */
 const testAdminOnboardingWizard = () => {
-	describe.only( 'Store owner can complete onboarding wizard', () => {
+	describe( 'Store owner can complete onboarding wizard', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
 
 		beforeAll( async () => {
 			await login.login();
-			// await resetWooCommerceState();
+			await resetWooCommerceState();
 		} );
 		afterAll( async () => {
 			await login.logout();

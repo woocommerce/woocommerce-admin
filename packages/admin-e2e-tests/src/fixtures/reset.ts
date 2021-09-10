@@ -6,6 +6,7 @@ import { withRestApi } from '@woocommerce/e2e-utils';
  * Internal dependencies
  */
 import { httpClient } from './http-client';
+import { resetSettingsGroupToDefault } from './settings';
 
 const resetEndpoint = '/woocommerce-reset/v1/state';
 
