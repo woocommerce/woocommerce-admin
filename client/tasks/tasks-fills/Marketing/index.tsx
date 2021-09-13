@@ -253,7 +253,7 @@ registerPlugin( 'wc-admin-onboarding-task-marketing', {
 	scope: 'woocommerce-admin',
 	render: () => (
 		<WooOnboardingTask id="marketing">
-			<Marketing />;
+			<Marketing />
 		</WooOnboardingTask>
 	),
 } );

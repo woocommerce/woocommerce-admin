@@ -377,7 +377,7 @@ registerPlugin( 'wc-admin-onboarding-task-shipping', {
 	scope: 'woocommerce-admin',
 	render: () => (
 		<WooOnboardingTask id="shipping">
-			<ShippingWrapper />;
+			<ShippingWrapper />
 		</WooOnboardingTask>
 	),
 } );
