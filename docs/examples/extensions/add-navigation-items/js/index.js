@@ -20,4 +20,7 @@ const MyPlugin = () => {
 	);
 };
 
-registerPlugin( 'my-plugin', { render: MyPlugin, scope: 'woocommerce-admin' } );
+registerPlugin( 'my-plugin', {
+	render: MyPlugin,
+	scope: 'woocommerce-navigation',
+} );
