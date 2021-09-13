@@ -83,8 +83,7 @@ The types we use currently are: "Fix", "Add", "Update", "Dev", "Tweak", "Perform
 ### Testing Instructions
 
 Every release we do some manual testing of new features, workflows and major bugfixes. For these kind of changes we need to include
-testing instructions. If your pull request requires testing instructions you'll need to add them under the `## Unreleased` heading in
-`TESTING-INSTRUCTIONS.md`. Add a detailed set of testing instructions to test your change.
+testing instructions. If your pull request requires testing instructions you'll need to add `include testing instructions` label to your pull request. We'll copy the `Detailed test instructions:` section of your pull request during the release process when your pull request has `include testing instructions` label.
 
 ### When to Add Testing Instructions
 
