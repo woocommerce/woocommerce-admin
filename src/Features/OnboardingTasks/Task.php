@@ -87,6 +87,31 @@ class Task {
 	protected $snoozed_until = null;
 
 	/**
+	 * Name of the dismiss option.
+	 *
+	 * @var string
+	 */
+	const DISMISSED_OPTION = 'woocommerce_task_list_dismissed_tasks';
+
+	/**
+	 * Name of the snooze option.
+	 *
+	 * @var string
+	 */
+	const SNOOZED_OPTION = 'woocommerce_task_list_remind_me_later_tasks';
+
+	/**
+	 * Duration to milisecond mapping.
+	 *
+	 * @var string
+	 */
+	protected $duration_to_ms = array(
+		'day'  => DAY_IN_SECONDS * 1000,
+		'hour' => HOUR_IN_SECONDS * 1000,
+		'week' => WEEK_IN_SECONDS * 1000,
+	);
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $data Task list data.
@@ -127,32 +152,119 @@ class Task {
 
 	/**
 	 * Bool for task dismissal.
+	 *
+	 * @return bool
 	 */
 	public function is_dismissed() {
 		if ( ! $this->is_dismissable ) {
 			return false;
 		}
 
-		$dismissed = get_option( 'woocommerce_task_list_dismissed_tasks', array() );
+		$dismissed = get_option( self::DISMISSED_OPTION, array() );
 
 		return in_array( $this->id, $dismissed, true );
 	}
 
 	/**
+	 * Dismiss the task.
+	 *
+	 * @return bool
+	 */
+	public function dismiss() {
+		if ( ! $this->is_dismissable ) {
+			return false;
+		}
+
+		$dismissed   = get_option( self::DISMISSED_OPTION, array() );
+		$dismissed[] = $this->id;
+		$update      = update_option( self::DISMISSED_OPTION, array_unique( $dismissed ) );
+
+		if ( $update ) {
+			wc_admin_record_tracks_event( 'tasklist_dismiss_task', array( 'task_name' => $this->id ) );
+		}
+
+		return $update;
+	}
+
+	/**
+	 * Undo task dismissal.
+	 *
+	 * @return bool
+	 */
+	public function undo_dismiss() {
+		$dismissed = get_option( self::DISMISSED_OPTION, array() );
+		$dismissed = array_diff( $dismissed, array( $this->id ) );
+		$update    = update_option( self::DISMISSED_OPTION, $dismissed );
+
+		if ( $update ) {
+			wc_admin_record_tracks_event( 'tasklist_undo_dismiss_task', array( 'task_name' => $this->id ) );
+		}
+
+		return $update;
+	}
+
+	/**
 	 * Bool for task snoozed.
+	 *
+	 * @return bool
 	 */
 	public function is_snoozed() {
 		if ( ! $this->is_snoozeable ) {
 			return false;
 		}
 
-		$snoozed = get_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
+		$snoozed = get_option( self::SNOOZED_OPTION, array() );
 
 		return in_array( $this->id, $snoozed, true );
 	}
 
 	/**
+	 * Snooze the task.
+	 *
+	 * @param string $duration Duration to snooze. day|hour|week.
+	 * @return bool
+	 */
+	public function snooze( $duration = 'day' ) {
+		if ( ! $this->is_snoozeable ) {
+			return false;
+		}
+
+		$snoozed              = get_option( self::SNOOZED_OPTION, array() );
+		$snoozed_until        = $this->duration_to_ms[ $duration ] + ( time() * 1000 );
+		$snoozed[ $this->id ] = $snoozed_until;
+		$update               = update_option( self::SNOOZED_OPTION, $snoozed );
+
+		if ( $update ) {
+			if ( $update ) {
+				wc_admin_record_tracks_event( 'tasklist_remindmelater_task', array( 'task_name' => $this->id ) );
+				$this->snoozed_until = $snoozed_until;
+			}
+		}
+
+		return $update;
+	}
+
+	/**
+	 * Undo task snooze.
+	 *
+	 * @return bool
+	 */
+	public function undo_snooze() {
+		unset( $snoozed[ $this->id ] );
+
+		$update = update_option( self::SNOOZED_OPTION, $snoozed );
+
+		if ( $update ) {
+			wc_admin_record_tracks_event( 'tasklist_undo_remindmelater_task', array( 'task_name' => $this->id ) );
+		}
+
+		return $update;
+	}
+
+	/**
 	 * Bool for task visibility.
+	 *
+	 * @return bool
 	 */
 	public function is_visible() {
 		return $this->can_view && ! $this->is_snoozed() && ! $this->is_dismissed();
@@ -160,6 +272,8 @@ class Task {
 
 	/**
 	 * Get the task as JSON.
+	 *
+	 * @return array
 	 */
 	public function get_json() {
 		return array(
