@@ -112,7 +112,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		} );
 	};
 
-	const onClick = useCallback( () => {
+	const onClickActions = useCallback( () => {
 		recordEvent( 'tasklist_click', {
 			task_name: id,
 		} );
@@ -120,6 +120,10 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		if ( ! isComplete ) {
 			updateTrackStartedCount();
 		}
+	}, [ id, isComplete ] );
+
+	const onClick = useCallback( () => {
+		onClickActions();
 
 		if ( actionUrl ) {
 			if ( actionUrl.startsWith( 'http' ) ) {
@@ -164,6 +168,8 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 			id={ id }
 			fillProps={ {
 				defaultTaskItem,
+				isComplete,
+				onClickActions,
 				...taskItemProps,
 			} }
 		/>
