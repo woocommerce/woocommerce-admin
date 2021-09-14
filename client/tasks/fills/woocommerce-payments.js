@@ -40,6 +40,6 @@ const WoocommercePaymentsTaskItem = () => {
 };
 
 registerPlugin( 'woocommerce-admin-task-wcpay', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: WoocommercePaymentsTaskItem,
 } );

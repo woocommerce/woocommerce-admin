@@ -68,6 +68,6 @@ const PurchaseTaskItem = () => {
 };
 
 registerPlugin( 'woocommerce-admin-task-purchase', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: PurchaseTaskItem,
 } );

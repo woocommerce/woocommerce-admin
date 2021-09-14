@@ -446,7 +446,7 @@ const AppearanceWrapper = compose(
 )( Appearance );
 
 registerPlugin( 'wc-admin-onboarding-task-appearance', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="appearance">
 			<AppearanceWrapper />

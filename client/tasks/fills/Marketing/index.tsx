@@ -250,7 +250,7 @@ const Marketing: React.FC = () => {
 };
 
 registerPlugin( 'wc-admin-onboarding-task-marketing', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="marketing">
 			<Marketing />

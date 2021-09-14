@@ -590,7 +590,7 @@ const TaxWrapper = compose(
 )( Tax );
 
 registerPlugin( 'wc-admin-onboarding-task-tax', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="tax">
 			{ ( { query } ) => <TaxWrapper query={ query } /> }

@@ -239,7 +239,7 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 };
 
 registerPlugin( 'wc-admin-onboarding-task-payments', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="payments">
 			{ ( { query } ) => <PaymentGatewaySuggestions query={ query } /> }

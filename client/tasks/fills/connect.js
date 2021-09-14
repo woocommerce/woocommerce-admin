@@ -139,7 +139,7 @@ const ConnectWrapper = compose(
 )( Connect );
 
 registerPlugin( 'wc-admin-onboarding-task-connect', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="connect">
 			<ConnectWrapper />

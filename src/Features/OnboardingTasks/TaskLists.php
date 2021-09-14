@@ -237,7 +237,9 @@ class TaskLists {
 						'actionLabel' => __( 'Finish setup', 'woocommerce-admin' ),
 						'expanded'    => true,
 						'isComplete'  => $wc_pay_is_connected,
-						'isVisible'   => true,
+						'isVisible'   => in_array( 'woocommerce-payments', $business_extensions, true ) &&
+							in_array( 'woocommerce-payments', $installed_plugins, true ) &&
+							in_array( WC()->countries->get_base_country(), OnboardingTasks::get_woocommerce_payments_supported_countries(), true ),
 						'time'        => __( '2 minutes', 'woocommerce-admin' ),
 					),
 					array(

@@ -122,7 +122,7 @@ const Products = () => {
 };
 
 registerPlugin( 'wc-admin-onboarding-task-products', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="products">
 			<Products />

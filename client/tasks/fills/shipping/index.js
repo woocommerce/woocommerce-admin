@@ -374,7 +374,7 @@ const ShippingWrapper = compose(
 )( Shipping );
 
 registerPlugin( 'wc-admin-onboarding-task-shipping', {
-	scope: 'woocommerce-admin',
+	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="shipping">
 			<ShippingWrapper />
