@@ -1,3 +1,7 @@
+== 2.6.2 09/14/2021 ==
+
+- Fix Update task-item logic to only display content when expanded is true. #7611
+
 == 2.6.1 09/01/2021 ==
 
 - Update: Update marketing task completion logic. #7586
