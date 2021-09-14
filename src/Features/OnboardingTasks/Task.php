@@ -14,35 +14,35 @@ class Task {
 	 *
 	 * @var string
 	 */
-	protected $id = '';
+	public $id = '';
 
 	/**
 	 * Title.
 	 *
 	 * @var string
 	 */
-	protected $title = '';
+	public $title = '';
 
 	/**
 	 * Title.
 	 *
 	 * @var string
 	 */
-	protected $content = '';
+	public $content = '';
 
 	/**
 	 * Action label.
 	 *
 	 * @var string
 	 */
-	protected $action_label = '';
+	public $action_label = '';
 
 	/**
 	 * Action URL.
 	 *
 	 * @var string|null
 	 */
-	protected $action_url = null;
+	public $action_url = null;
 
 	/**
 	 * Task completion.
@@ -63,7 +63,7 @@ class Task {
 	 *
 	 * @var string|null
 	 */
-	protected $time = null;
+	public $time = null;
 
 	/**
 	 * Dismissability.
@@ -84,7 +84,7 @@ class Task {
 	 *
 	 * @var string|null
 	 */
-	protected $snoozed_until = null;
+	public $snoozed_until = null;
 
 	/**
 	 * Name of the dismiss option.
@@ -133,7 +133,7 @@ class Task {
 
 		$data = wp_parse_args( $data, $defaults );
 
-		$this->id             = (int) $data['id'];
+		$this->id             = (string) $data['id'];
 		$this->title          = (string) $data['title'];
 		$this->content        = (string) $data['content'];
 		$this->action_label   = (string) $data['action_label'];
@@ -144,7 +144,7 @@ class Task {
 		$this->is_dismissable = (bool) $data['is_dismissable'];
 		$this->is_snoozeable  = (bool) $data['is_snoozeable'];
 
-		$snoozed_tasks = get_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
+		$snoozed_tasks = get_option( self::SNOOZED_OPTION, array() );
 		if ( isset( $snoozed_tasks[ $this->id ] ) ) {
 			$this->snoozed_until = $snoozed_tasks[ $this->id ];
 		}
@@ -215,7 +215,7 @@ class Task {
 
 		$snoozed = get_option( self::SNOOZED_OPTION, array() );
 
-		return in_array( $this->id, $snoozed, true );
+		return isset( $snoozed[ $this->id ] ) && $snoozed > ( time() * 1000 );
 	}
 
 	/**
@@ -250,8 +250,8 @@ class Task {
 	 * @return bool
 	 */
 	public function undo_snooze() {
+		$snoozed = get_option( self::SNOOZED_OPTION, array() );
 		unset( $snoozed[ $this->id ] );
-
 		$update = update_option( self::SNOOZED_OPTION, $snoozed );
 
 		if ( $update ) {
