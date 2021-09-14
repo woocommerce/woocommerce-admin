@@ -21,7 +21,7 @@ const WoocommercePaymentsTaskItem = () => {
 			{ ( { defaultTaskItem, onClickActions } ) => (
 				<>
 					{ React.cloneElement( defaultTaskItem, {
-						onClick: async () => {
+						onClick: () => {
 							onClickActions();
 
 							return new Promise( ( resolve, reject ) => {

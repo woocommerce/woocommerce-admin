@@ -9,3 +9,4 @@ import './appearance';
 import './connect';
 import './tax';
 import './woocommerce-payments';
+import './purchase';
