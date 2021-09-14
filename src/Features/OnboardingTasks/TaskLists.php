@@ -83,7 +83,7 @@ class TaskLists {
 		self::add_list(
 			array(
 				'id'    => 'setup',
-				'title' => 'Get ready to start selling',
+				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
 			)
 		);
 
