@@ -19,6 +19,7 @@ import {
 	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
+import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -44,6 +45,10 @@ const Tasks = lazy( () =>
 	import( /* webpackChunkName: "tasks" */ '../tasks' )
 );
 
+const TwoColumnTasks = lazy( () =>
+	import( /* webpackChunkName: "two-column-tasks" */ '../two-column-tasks' )
+);
+
 export const Layout = ( {
 	defaultHomescreenLayout,
 	isBatchUpdating,
@@ -66,6 +71,7 @@ export const Layout = ( {
 
 	const isTaskListEnabled = bothTaskListsHidden === false;
 	const isDashboardShown = ! query.task;
+	const [ isLoadingExperiment = false, experimentAssignment = 'test' ] = [];
 
 	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
@@ -100,7 +106,9 @@ export const Layout = ( {
 						) }
 					/>
 					<ActivityPanel />
-					{ isTaskListEnabled && renderTaskList() }
+					{ isTaskListEnabled &&
+						experimentAssignment !== 'test' &&
+						renderTaskList() }
 					<InboxPanel />
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
@@ -112,6 +120,27 @@ export const Layout = ( {
 	};
 
 	const renderTaskList = () => {
+		const isSingleTask = Boolean( query.task );
+
+		if ( twoColumns && experimentAssignment === 'test' ) {
+			return (
+				<Suspense fallback={ <TaskListPlaceholder /> }>
+					<TwoColumnTasks
+						query={ query }
+						userPreferences={ userPrefs }
+					/>
+				</Suspense>
+			);
+		}
+
+		if ( window.wcAdminFeatures && window.wcAdminFeatures.tasks ) {
+			return (
+				<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
+					<Tasks query={ query } />
+				</Suspense>
+			);
+		}
+
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
 				<Tasks query={ query } />
@@ -120,61 +149,41 @@ export const Layout = ( {
 	};
 
 	return (
-		<div
-			className={ classnames( 'woocommerce-homescreen', {
-				'two-columns': twoColumns,
-			} ) }
-		>
-			{ isDashboardShown ? renderColumns() : renderTaskList() }
-			{ shouldShowWelcomeModal && (
-				<WelcomeModal
-					onClose={ () => {
-						updateOptions( {
-							[ WELCOME_MODAL_DISMISSED_OPTION_NAME ]: 'yes',
-						} );
-					} }
-				/>
-			) }
-			{ shouldShowWelcomeFromCalypsoModal && (
-				<WelcomeFromCalypsoModal
-					onClose={ () => {
-						updateOptions( {
-							[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]:
-								'yes',
-						} );
-					} }
-				/>
-			) }
-			{ window.wcAdminFeatures.navigation && <NavigationIntroModal /> }
-		</div>
+		<>
+			{ twoColumns &&
+				experimentAssignment === 'test' &&
+				renderTaskList() }
+			<div
+				className={ classnames( 'woocommerce-homescreen', {
+					'two-columns': twoColumns,
+				} ) }
+			>
+				{ isDashboardShown ? renderColumns() : renderTaskList() }
+				{ shouldShowWelcomeModal && (
+					<WelcomeModal
+						onClose={ () => {
+							updateOptions( {
+								[ WELCOME_MODAL_DISMISSED_OPTION_NAME ]: 'yes',
+							} );
+						} }
+					/>
+				) }
+				{ shouldShowWelcomeFromCalypsoModal && (
+					<WelcomeFromCalypsoModal
+						onClose={ () => {
+							updateOptions( {
+								[ WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME ]:
+									'yes',
+							} );
+						} }
+					/>
+				) }
+				{ window.wcAdminFeatures.navigation && (
+					<NavigationIntroModal />
+				) }
+			</div>
+		</>
 	);
-};
-
-Layout.propTypes = {
-	/**
-	 * If the task list has been completed.
-	 */
-	taskListComplete: PropTypes.bool,
-	/**
-	 * If the task list is hidden.
-	 */
-	bothTaskListsHidden: PropTypes.bool,
-	/**
-	 * Page query, used to determine the current task if any.
-	 */
-	query: PropTypes.object.isRequired,
-	/**
-	 * If the welcome modal should display
-	 */
-	shouldShowWelcomeModal: PropTypes.bool,
-	/**
-	 * If the welcome from Calypso modal should display.
-	 */
-	shouldShowWelcomeFromCalypsoModal: PropTypes.bool,
-	/**
-	 * Dispatch an action to update an option
-	 */
-	updateOptions: PropTypes.func.isRequired,
 };
 
 export default compose(
