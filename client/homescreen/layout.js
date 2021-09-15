@@ -156,8 +156,6 @@ export const Layout = ( {
 			);
 		}
 
-		const isSingleTask = Boolean( query.task );
-
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
 				<Tasks query={ query } />
@@ -201,33 +199,6 @@ export const Layout = ( {
 			</div>
 		</>
 	);
-};
-
-Layout.propTypes = {
-	/**
-	 * If the task list has been completed.
-	 */
-	taskListComplete: PropTypes.bool,
-	/**
-	 * If the task list is hidden.
-	 */
-	bothTaskListsHidden: PropTypes.bool,
-	/**
-	 * Page query, used to determine the current task if any.
-	 */
-	query: PropTypes.object.isRequired,
-	/**
-	 * If the welcome modal should display
-	 */
-	shouldShowWelcomeModal: PropTypes.bool,
-	/**
-	 * If the welcome from Calypso modal should display.
-	 */
-	shouldShowWelcomeFromCalypsoModal: PropTypes.bool,
-	/**
-	 * Dispatch an action to update an option
-	 */
-	updateOptions: PropTypes.func.isRequired,
 };
 
 export default compose(
