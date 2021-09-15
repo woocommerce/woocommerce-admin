@@ -324,15 +324,15 @@ export const TaskList = ( {
 						{ renderMenu() }
 					</CardHeader>
 					<List animation="custom">
-						{ listTasks.map( ( task ) => {
+						{ listTasks.map( ( task, index ) => {
+							++index;
 							const className = classnames(
-								'woocommerce-task-list__item',
+								'woocommerce-task-list__item index-' + index,
 								{
 									complete: task.completed,
 									'is-active': task.key === activeTaskKey,
 								}
 							);
-
 							return (
 								<TaskItem
 									key={ task.key }
