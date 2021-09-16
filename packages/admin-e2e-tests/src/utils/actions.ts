@@ -22,6 +22,15 @@ const uiUnblocked = async () => {
 };
 
 /**
+ * Suspend processing for the specified time
+ *
+ * @param {number} timeout in milliseconds
+ */
+const waitForTimeout = async ( timeout: number ) => {
+	await new Promise( ( resolve ) => setTimeout( resolve, timeout ) );
+};
+
+/**
  * Publish, verify that item was published. Trash, verify that item was trashed.
  *
  * @param {string} button (Publish)
@@ -34,9 +43,8 @@ const verifyPublishAndTrash = async (
 	publishVerification: string,
 	trashVerification: string
 ) => {
-	const newOrder = new NewOrder( page );
 	// Wait for auto save
-	await newOrder.waitForTimeout( 2000 );
+	await waitForTimeout( 2000 );
 	// Publish
 	await page.click( button );
 
@@ -153,7 +161,7 @@ export const waitForElementByTextWithoutThrow = async (
 		if ( selected ) {
 			break;
 		}
-		await new Promise( ( resolve ) => setTimeout( resolve, 1000 ) );
+		await waitForTimeout( 1000 );
 		selected = await getElementByText( element, text );
 	}
 	return Boolean( selected );
@@ -168,4 +176,5 @@ export {
 	getElementByAttributeAndValue,
 	waitForElementByText,
 	hasClass,
+	waitForTimeout,
 };

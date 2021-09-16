@@ -132,10 +132,6 @@ export abstract class BasePage {
 		await this.goto( this.url );
 	}
 
-	async waitForTimeout( timeout: number ) {
-		await new Promise( ( resolve ) => setTimeout( resolve, timeout ) );
-	}
-
 	protected async goto( url: string ) {
 		const fullUrl = baseUrl + url;
 		try {
