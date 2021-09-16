@@ -130,6 +130,7 @@ export const Layout = ( {
 					<TwoColumnTasks
 						query={ query }
 						userPreferences={ userPrefs }
+						twoColumns={ twoColumns }
 					/>
 				</Suspense>
 			);
