@@ -111,7 +111,7 @@ const taskDashboardSelect = ( select ) => {
 	};
 };
 
-const TaskDashboard = ( { userPreferences, query } ) => {
+const TaskDashboard = ( { userPreferences, query, twoColumns } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
@@ -251,6 +251,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 					<TaskList
 						name="task_list"
 						eventName="tasklist"
+						twoColumns={ twoColumns }
 						expandingItems={
 							experimentAssignment?.variationName === 'treatment'
 						}

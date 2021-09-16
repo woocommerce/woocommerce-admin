@@ -32,6 +32,7 @@ export const TaskList = ( {
 	onComplete,
 	onHide,
 	expandingItems = false,
+	twoColumns,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
@@ -312,7 +313,12 @@ export const TaskList = ( {
 
 	return (
 		<>
-			<div className="woocommerce-task-dashboard__container two-column-experiment">
+			<div
+				className={ classnames(
+					'woocommerce-task-dashboard__container two-column-experiment',
+					{ 'two-columns': twoColumns !== false }
+				) }
+			>
 				<Card
 					size="large"
 					className="woocommerce-task-card woocommerce-homescreen-card"
