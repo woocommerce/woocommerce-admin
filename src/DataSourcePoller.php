@@ -1,28 +1,32 @@
 <?php
-/**
- * Handles polling and storage of specs
- */
 
-namespace Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions;
-
-defined( 'ABSPATH' ) || exit;
+namespace Automattic\WooCommerce\Admin;
 
 /**
  * Specs data source poller class.
- * This handles polling specs from JSON endpoints.
+ * This handles polling specs from JSON endpoints, and
+ * stores the specs in to the database as an option.
  */
 class DataSourcePoller {
+
 	/**
 	 * Name of data sources filter.
 	 */
-	const FILTER_NAME = 'woocommerce_admin_payment_gateway_suggestions_data_sources';
+	const FILTER_NAME = 'data_source_poller_data_sources';
 
 	/**
 	 * Default data sources array.
+	 *
+	 * @var array
 	 */
-	const DATA_SOURCES = array(
-		'https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/suggestions.json',
-	);
+	protected $data_sources = array();
+
+	/**
+	 * Key for the spec id.
+	 *
+	 * @var string
+	 */
+	protected $spec_key = 'id';
 
 	/**
 	 * The logger instance.
@@ -32,11 +36,22 @@ class DataSourcePoller {
 	protected static $logger = null;
 
 	/**
+	 * Constructor.
+	 *
+	 * @param array  $data_sources urls for data sources.
+	 * @param string $spec_key Optional key used as the spec identifier.
+	 */
+	public function __construct( $data_sources, $spec_key = 'id' ) {
+		$this->data_sources = $data_sources;
+		$this->spec_key     = $spec_key;
+	}
+
+	/**
 	 * Get the logger instance.
 	 *
 	 * @return WC_Logger
 	 */
-	private static function get_logger() {
+	protected static function get_logger() {
 		if ( is_null( self::$logger ) ) {
 			self::$logger = wc_get_logger();
 		}
@@ -45,19 +60,33 @@ class DataSourcePoller {
 	}
 
 	/**
+	 * Returns the key identifier of spec, this can easily be overwritten. Defaults to id.
+	 *
+	 * @param mixed $spec a JSON parsed spec coming from the JSON feed.
+	 * @return string|boolean
+	 */
+	protected function get_spec_key( $spec ) {
+		$key = $this->spec_key;
+		if ( isset( $spec->$key ) ) {
+			return $spec->$key;
+		}
+		return false;
+	}
+
+	/**
 	 * Reads the data sources for specs and persists those specs.
 	 *
 	 * @return bool Whether any specs were read.
 	 */
-	public static function read_specs_from_data_sources() {
+	public function read_specs_from_data_sources() {
 		$specs        = array();
-		$data_sources = apply_filters( self::FILTER_NAME, self::DATA_SOURCES );
+		$data_sources = apply_filters( self::FILTER_NAME, $this->data_sources );
 
 		// Note that this merges the specs from the data sources based on the
 		// id - last one wins.
 		foreach ( $data_sources as $url ) {
 			$specs_from_data_source = self::read_data_source( $url );
-			self::merge_specs( $specs_from_data_source, $specs, $url );
+			$this->merge_specs( $specs_from_data_source, $specs, $url );
 		}
 
 		return $specs;
@@ -70,7 +99,7 @@ class DataSourcePoller {
 	 *
 	 * @return array The specs that have been read from the data source.
 	 */
-	private static function read_data_source( $url ) {
+	protected static function read_data_source( $url ) {
 		$logger_context = array( 'source' => $url );
 		$logger         = self::get_logger();
 		$response       = wp_remote_get(
@@ -83,7 +112,7 @@ class DataSourcePoller {
 
 		if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
 			$logger->error(
-				'Error getting remote payment method data feed',
+				'Error getting data feed',
 				$logger_context
 			);
 			// phpcs:ignore
@@ -97,7 +126,7 @@ class DataSourcePoller {
 
 		if ( null === $specs ) {
 			$logger->error(
-				'Empty response in remote payment method data feed',
+				'Empty response in data feed',
 				$logger_context
 			);
 
@@ -106,7 +135,7 @@ class DataSourcePoller {
 
 		if ( ! is_array( $specs ) ) {
 			$logger->error(
-				'Remote payment method data feed is not an array',
+				'Data feed is not an array',
 				$logger_context
 			);
 
@@ -123,13 +152,13 @@ class DataSourcePoller {
 	 * @param Array  $specs             The list of specs being merged into.
 	 * @param string $url               The url of the feed being merged in (for error reporting).
 	 */
-	private static function merge_specs( $specs_to_merge_in, &$specs, $url ) {
+	protected function merge_specs( $specs_to_merge_in, &$specs, $url ) {
 		foreach ( $specs_to_merge_in as $spec ) {
-			if ( ! self::validate_spec( $spec, $url ) ) {
+			if ( ! $this->validate_spec( $spec, $url ) ) {
 				continue;
 			}
 
-			$id           = $spec->id;
+			$id           = $this->get_spec_key( $spec );
 			$specs[ $id ] = $spec;
 		}
 	}
@@ -142,11 +171,11 @@ class DataSourcePoller {
 	 *
 	 * @return bool The result of the validation.
 	 */
-	private static function validate_spec( $spec, $url ) {
+	protected function validate_spec( $spec, $url ) {
 		$logger         = self::get_logger();
 		$logger_context = array( 'source' => $url );
 
-		if ( ! isset( $spec->id ) ) {
+		if ( ! $this->get_spec_key( $spec ) ) {
 			$logger->error(
 				'Spec is invalid because the id is missing in feed',
 				$logger_context

@@ -19,6 +19,20 @@ class Init {
 	const EXPLAT_VARIATION_PREFIX = 'woocommerce_wc_pay_promotion_payment_methods_table_';
 
 	/**
+	 * Default data sources array.
+	 */
+	const DATA_SOURCES = array(
+		'https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/payment-method/promotions.json',
+	);
+
+	/**
+	 * DataSourcePoller Class instance.
+	 *
+	 * @var DataSourcePoller instance
+	 */
+	protected static $data_source_poller_instance = null;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -54,6 +68,16 @@ class Init {
 			Loader::get_file_version( 'js' ),
 			true
 		);
+	}
+
+	/**
+	 * Get class instance.
+	 */
+	public static function get_data_source_poller_instance() {
+		if ( ! self::$data_source_poller_instance ) {
+			self::$data_source_poller_instance = new \Automattic\WooCommerce\Admin\DataSourcePoller( self::DATA_SOURCES );
+		}
+		return self::$data_source_poller_instance;
 	}
 
 	/**
@@ -201,7 +225,8 @@ class Init {
 				return array();
 			}
 
-			$specs = DataSourcePoller::read_specs_from_data_sources();
+			$data_source_poller = self::get_data_source_poller_instance();
+			$specs              = $data_source_poller->read_specs_from_data_sources();
 
 			// Fall back to default specs if polling failed.
 			if ( ! $specs ) {

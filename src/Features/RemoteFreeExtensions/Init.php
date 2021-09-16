@@ -17,12 +17,33 @@ use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\DefaultFreeExtens
 class Init {
 	const SPECS_TRANSIENT_NAME = 'woocommerce_admin_remote_free_extensions_specs';
 
+	const DATA_SOURCES = array(
+		'https://woocommerce.com/wp-json/wccom/obw-free-extensions/2.0/extensions.json',
+	);
+
+	/**
+	 * DataSourcePoller Class instance.
+	 *
+	 * @var DataSourcePoller instance
+	 */
+	protected static $data_source_poller_instance = null;
+
 	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
 		add_action( 'woocommerce_admin_updated', array( __CLASS__, 'delete_specs_transient' ) );
+	}
+
+	/**
+	 * Get data source poller class instance.
+	 */
+	public static function get_data_source_poller_instance() {
+		if ( ! self::$data_source_poller_instance ) {
+			self::$data_source_poller_instance = new \Automattic\WooCommerce\Admin\DataSourcePoller( self::DATA_SOURCES, 'key' );
+		}
+		return self::$data_source_poller_instance;
 	}
 
 	/**
@@ -77,7 +98,8 @@ class Init {
 				return DefaultFreeExtensions::get_all();
 			}
 
-			$specs = DataSourcePoller::read_specs_from_data_sources();
+			$data_source_poller = self::get_data_source_poller_instance();
+			$specs              = $data_source_poller->read_specs_from_data_sources();
 
 			// Fall back to default specs if polling failed.
 			if ( ! $specs || empty( $specs ) ) {
