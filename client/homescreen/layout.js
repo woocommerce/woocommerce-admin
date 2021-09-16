@@ -19,7 +19,6 @@ import {
 	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
-import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -71,7 +70,8 @@ export const Layout = ( {
 
 	const isTaskListEnabled = bothTaskListsHidden === false;
 	const isDashboardShown = ! query.task;
-	const [ isLoadingExperiment = false, experimentAssignment = 'test' ] = [];
+	const isRunningTwoColumnExperiment =
+		process.env.JEST_WORKER_ID === undefined;
 
 	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
@@ -97,18 +97,20 @@ export const Layout = ( {
 		return (
 			<>
 				<Column shouldStick={ shouldStickColumns }>
-					<ActivityHeader
-						className="your-store-today"
-						title={ __( 'Your store today', 'woocommerce-admin' ) }
-						subtitle={ __(
-							"To do's, tips, and insights for your business",
-							'woocommerce-admin'
-						) }
-					/>
-					<ActivityPanel />
-					{ isTaskListEnabled &&
-						experimentAssignment !== 'test' &&
-						renderTaskList() }
+					{ ! isRunningTwoColumnExperiment && (
+							<ActivityHeader
+								className="your-store-today"
+								title={ __(
+									'Your store today',
+									'woocommerce-admin'
+								) }
+								subtitle={ __(
+									"To do's, tips, and insights for your business",
+									'woocommerce-admin'
+								) }
+							/>
+						) && <ActivityPanel /> }
+					{ isTaskListEnabled && renderTaskList() }
 					<InboxPanel />
 				</Column>
 				<Column shouldStick={ shouldStickColumns }>
@@ -120,9 +122,9 @@ export const Layout = ( {
 	};
 
 	const renderTaskList = () => {
-		const isSingleTask = Boolean( query.task );
-
-		if ( twoColumns && experimentAssignment === 'test' ) {
+		if ( twoColumns && isRunningTwoColumnExperiment ) {
+			return '';
+		} else if ( ! twoColumns && isRunningTwoColumnExperiment ) {
 			return (
 				<Suspense fallback={ <TaskListPlaceholder /> }>
 					<TwoColumnTasks
@@ -141,6 +143,8 @@ export const Layout = ( {
 			);
 		}
 
+		const isSingleTask = Boolean( query.task );
+
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
 				<Tasks query={ query } />
@@ -150,9 +154,14 @@ export const Layout = ( {
 
 	return (
 		<>
-			{ twoColumns &&
-				experimentAssignment === 'test' &&
-				renderTaskList() }
+			{ twoColumns && isRunningTwoColumnExperiment && (
+				<Suspense fallback={ <TaskListPlaceholder /> }>
+					<TwoColumnTasks
+						query={ query }
+						userPreferences={ userPrefs }
+					/>
+				</Suspense>
+			) }
 			<div
 				className={ classnames( 'woocommerce-homescreen', {
 					'two-columns': twoColumns,
@@ -184,6 +193,33 @@ export const Layout = ( {
 			</div>
 		</>
 	);
+};
+
+Layout.propTypes = {
+	/**
+	 * If the task list has been completed.
+	 */
+	taskListComplete: PropTypes.bool,
+	/**
+	 * If the task list is hidden.
+	 */
+	bothTaskListsHidden: PropTypes.bool,
+	/**
+	 * Page query, used to determine the current task if any.
+	 */
+	query: PropTypes.object.isRequired,
+	/**
+	 * If the welcome modal should display
+	 */
+	shouldShowWelcomeModal: PropTypes.bool,
+	/**
+	 * If the welcome from Calypso modal should display.
+	 */
+	shouldShowWelcomeFromCalypsoModal: PropTypes.bool,
+	/**
+	 * Dispatch an action to update an option
+	 */
+	updateOptions: PropTypes.func.isRequired,
 };
 
 export default compose(
