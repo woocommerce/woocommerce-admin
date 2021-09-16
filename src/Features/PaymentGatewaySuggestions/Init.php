@@ -89,7 +89,7 @@ class Init {
 			return DefaultPaymentGateways::get_all();
 		}
 		$data_source_poller = self::get_data_source_poller_instance();
-		$specs              = $data_source_poller->read_specs_from_data_sources();
+		$specs              = $data_source_poller->get_specs_from_data_sources();
 
 		// Fetch specs if they don't yet exist.
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {

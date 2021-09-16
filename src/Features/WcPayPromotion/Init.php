@@ -222,7 +222,7 @@ class Init {
 			return array();
 		}
 		$data_source_poller = self::get_data_source_poller_instance();
-		return $data_source_poller->read_specs_from_data_sources();
+		return $data_source_poller->get_specs_from_data_sources();
 	}
 }
 
