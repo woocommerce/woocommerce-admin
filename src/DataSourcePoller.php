@@ -29,6 +29,13 @@ class DataSourcePoller {
 	protected $spec_key = 'id';
 
 	/**
+	 * Key for the spec id.
+	 *
+	 * @var string
+	 */
+	protected $transient_name = '';
+
+	/**
 	 * The logger instance.
 	 *
 	 * @var WC_Logger|null
@@ -39,11 +46,13 @@ class DataSourcePoller {
 	 * Constructor.
 	 *
 	 * @param array  $data_sources urls for data sources.
+	 * @param string $transient_name name of transient.
 	 * @param string $spec_key Optional key used as the spec identifier.
 	 */
-	public function __construct( $data_sources, $spec_key = 'id' ) {
-		$this->data_sources = $data_sources;
-		$this->spec_key     = $spec_key;
+	public function __construct( $data_sources, $transient_name, $spec_key = 'id' ) {
+		$this->data_sources   = $data_sources;
+		$this->transient_name = $transient_name;
+		$this->spec_key       = $spec_key;
 	}
 
 	/**
@@ -76,6 +85,21 @@ class DataSourcePoller {
 	/**
 	 * Reads the data sources for specs and persists those specs.
 	 *
+	 * @return array list of specs.
+	 */
+	public function get_specs_from_data_sources() {
+		$specs = get_transient( $this->transient_name );
+
+		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
+			$this->read_specs_from_data_sources();
+			$specs = get_transient( $this->transient_name );
+		}
+		return false !== $specs ? $specs : array();
+	}
+
+	/**
+	 * Reads the data sources for specs and persists those specs.
+	 *
 	 * @return bool Whether any specs were read.
 	 */
 	public function read_specs_from_data_sources() {
@@ -89,7 +113,23 @@ class DataSourcePoller {
 			$this->merge_specs( $specs_from_data_source, $specs, $url );
 		}
 
-		return $specs;
+		// Persist the specs as a transient.
+		set_transient(
+			$this->transient_name,
+			$specs,
+			7 * DAY_IN_SECONDS
+		);
+
+		return 0 !== count( $specs );
+	}
+
+	/**
+	 * Delete the specs transient.
+	 *
+	 * @return bool success of failure of transient deletion.
+	 */
+	public function delete_specs_transient() {
+		return delete_transient( $this->transient_name );
 	}
 
 	/**

@@ -45,7 +45,7 @@ class Init {
 	 */
 	public static function get_data_source_poller_instance() {
 		if ( ! self::$data_source_poller_instance ) {
-			self::$data_source_poller_instance = new \Automattic\WooCommerce\Admin\DataSourcePoller( self::DATA_SOURCES );
+			self::$data_source_poller_instance = new \Automattic\WooCommerce\Admin\DataSourcePoller( self::DATA_SOURCES, self::SPECS_TRANSIENT_NAME );
 		}
 		return self::$data_source_poller_instance;
 	}
@@ -77,30 +77,23 @@ class Init {
 	 * Delete the specs transient.
 	 */
 	public static function delete_specs_transient() {
-		delete_transient( self::SPECS_TRANSIENT_NAME );
+		$data_source_poller = self::get_data_source_poller_instance();
+		$data_source_poller->delete_specs_transient();
 	}
 
 	/**
 	 * Get specs or fetch remotely if they don't exist.
 	 */
 	public static function get_specs() {
-		$specs = get_transient( self::SPECS_TRANSIENT_NAME );
+		if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
+			return DefaultPaymentGateways::get_all();
+		}
+		$data_source_poller = self::get_data_source_poller_instance();
+		$specs              = $data_source_poller->read_specs_from_data_sources();
 
 		// Fetch specs if they don't yet exist.
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
-			if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
-				return DefaultPaymentGateways::get_all();
-			}
-
-			$data_source_poller = self::get_data_source_poller_instance();
-			$specs              = $data_source_poller->read_specs_from_data_sources();
-
-			// Fall back to default specs if polling failed.
-			if ( ! $specs ) {
-				return DefaultPaymentGateways::get_all();
-			}
-
-			set_transient( self::SPECS_TRANSIENT_NAME, $specs, 7 * DAY_IN_SECONDS );
+			return DefaultPaymentGateways::get_all();
 		}
 
 		return $specs;
