@@ -1,5 +1,5 @@
 const TaxHeader = ( task ) => {
-	return <div>Tax Header</div>;
+	return <div>{ task.key } Header</div>;
 };
 
 export default TaxHeader;
