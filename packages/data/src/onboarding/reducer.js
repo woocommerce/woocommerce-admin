@@ -286,7 +286,7 @@ const onboarding = (
 				...state,
 				requesting: {
 					...state.requesting,
-					undoSnoozeTask: true,
+					hideTaskList: true,
 				},
 				taskLists: state.taskLists.map( ( list ) => {
 					if ( taskListId === list.id ) {
@@ -303,7 +303,7 @@ const onboarding = (
 				...state,
 				requesting: {
 					...state.requesting,
-					undoSnoozeTask: false,
+					hideTaskList: false,
 				},
 				taskLists: state.taskLists.map( ( list ) => {
 					return taskListId === list.id ? taskList : list;
