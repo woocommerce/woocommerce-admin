@@ -16,6 +16,7 @@ import classnames from 'classnames';
  */
 import '../tasks/task-list.scss';
 import taskHeaders from './task-headers';
+import DismissModal from './dissmiss-modal';
 
 export const TaskList = ( {
 	query,
@@ -38,6 +39,7 @@ export const TaskList = ( {
 
 	const [ headerContent, setHeaderContent ] = useState( '' );
 	const [ activeTaskId, setActiveTaskId ] = useState( '' );
+	const [ showDismissModal, setShowDismissModal ] = useState( false );
 
 	const prevQueryRef = useRef( query );
 	useEffect( () => {
@@ -100,12 +102,12 @@ export const TaskList = ( {
 		const updateOptionsParams = {
 			[ `woocommerce_${ name }_hidden` ]: 'yes',
 		};
-
 		recordEvent( `${ eventName }_completed`, {
 			action,
 			completed_task_count: completedTaskKeys.length,
 			incomplete_task_count: incompleteTasks.length,
 		} );
+
 		updateOptions( {
 			...updateOptionsParams,
 		} );
@@ -120,10 +122,17 @@ export const TaskList = ( {
 			<div className="woocommerce-card__menu woocommerce-card__header-item">
 				<EllipsisMenu
 					label={ __( 'Task List Options', 'woocommerce-admin' ) }
-					renderContent={ () => (
+					renderContent={ ( { onToggle } ) => (
 						<div className="woocommerce-task-card__section-controls">
 							<Button
-								onClick={ () => hideTaskCard( 'remove_card' ) }
+								onClick={ () => {
+									if ( incompleteTasks.length > 0 ) {
+										setShowDismissModal( true );
+										onToggle();
+									} else {
+										hideTaskCard( 'remove_card' );
+									}
+								} }
 							>
 								{ __( 'Hide this', 'woocommerce-admin' ) }
 							</Button>
@@ -168,6 +177,13 @@ export const TaskList = ( {
 
 	return (
 		<>
+			{ showDismissModal && (
+				<DismissModal
+					showDismissModal={ showDismissModal }
+					setShowDismissModal={ setShowDismissModal }
+					hideTaskCard={ hideTaskCard }
+				/>
+			) }
 			<div
 				className={ classnames(
 					'woocommerce-task-dashboard__container two-column-experiment',
