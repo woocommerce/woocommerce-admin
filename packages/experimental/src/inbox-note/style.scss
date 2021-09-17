@@ -128,6 +128,11 @@
 	}
 	.components-dropdown {
 		display: inline;
+		/**
+		This is necessary to fix wrong positioning on safari.
+		Do not remove. See https://github.com/woocommerce/woocommerce-admin/issues/7672
+		 */
+		position: absolute;
 
 		.components-popover__content {
 			min-width: 195px;
