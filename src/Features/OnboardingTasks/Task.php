@@ -215,7 +215,7 @@ class Task {
 
 		$snoozed = get_option( self::SNOOZED_OPTION, array() );
 
-		return isset( $snoozed[ $this->id ] ) && $snoozed > ( time() * 1000 );
+		return isset( $snoozed[ $this->id ] ) && $snoozed[ $this->id ] > ( time() * 1000 );
 	}
 
 	/**

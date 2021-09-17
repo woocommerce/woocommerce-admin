@@ -181,7 +181,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Tests a non snoozeable task cannot be snoozed.
+	 * Tests that a non snoozeable task cannot be snoozed.
 	 */
 	public function test_not_snoozeable() {
 		$task = new Task(
@@ -192,6 +192,25 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		);
 
 		$task->snooze();
+		$this->assertEquals( false, $task->is_snoozed() );
+	}
+
+	/**
+	 * Tests that a task is no longer consider snoozed after the time has passed.
+	 */
+	public function test_snooze_time() {
+		$task = new Task(
+			array(
+				'id'            => 'wc-unit-test-snoozeable-task',
+				'is_snoozeable' => true,
+			)
+		);
+
+		$time                                    = time() * 1000 - 1;
+		$snoozed                                 = get_option( Task::SNOOZED_OPTION, array() );
+		$snoozed['wc-unit-test-snoozeable-task'] = $time;
+		update_option( Task::SNOOZED_OPTION, $snoozed );
+
 		$this->assertEquals( false, $task->is_snoozed() );
 	}
 
