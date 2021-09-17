@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### Fix safari inbox-notice dropdown position #7673
+- On wp-admin go to  WooCommerce > Home
+- Find a notice
+- Click on Dismiss
+- Validate that it look exactly like this(notice the spacing on top of the dropdown)
+<img width="699" alt="Captura de Tela 2021-09-17 às 11 05 35" src="https://user-images.githubusercontent.com/6342964/133796125-decf00ec-8401-403d-b65f-a613de42ff60.png">
+
 ### Add Newsletter Signup #7601
 
 - Start OBW and set up your browser console to monitor tracks. To do this, run `localStorage.setItem( 'debug', 'wc-admin:*' );`
