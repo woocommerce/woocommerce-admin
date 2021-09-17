@@ -7,7 +7,7 @@
 
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\Init as PaymentGatewaySuggestions;
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\DefaultPaymentGateways;
-use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\DataSourcePoller;
+use Automattic\WooCommerce\Admin\DataSourcePoller;
 
 /**
  * class WC_Tests_PaymentGatewaySuggestions_Init
