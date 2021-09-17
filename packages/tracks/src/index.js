@@ -41,6 +41,7 @@ const validRegExp = new RegExp( validRegExpString );
 function checkEventNameAndPropsCase( eventName, eventProperties ) {
 	let valid = true;
 	if ( ! validRegExp.test( eventName ) ) {
+		// eslint-disable-next-line no-console
 		console.warn(
 			`Event name ${ eventName } failed pattern ${ validRegExpString }`
 		);
@@ -49,6 +50,7 @@ function checkEventNameAndPropsCase( eventName, eventProperties ) {
 	const propertyKeys = Object.keys( eventProperties || {} );
 	for ( const key of propertyKeys ) {
 		if ( ! validRegExp.test( key ) ) {
+			// eslint-disable-next-line no-console
 			console.warn(
 				`Event prop ${ key } failed pattern ${ validRegExpString } of '${ eventName }' event`
 			);
