@@ -1,10 +1,17 @@
 .woocommerce-task-dashboard__body .woocommerce-task-dashboard__container .woocommerce-task-card {
 	max-width: none;
+	width: 100%;
 }
 
 .woocommerce-task-dashboard__container.two-column-experiment {
+	max-width: 1032px;
+	display: flex;
+	flex-direction: row;
+	margin: 0 auto;
+	justify-content: space-between;
+
 	// Single column mode
-	&:not(.two-columns) {
+	@mixin single-column {
 		ul {
 			display: block;
 			li {
@@ -23,6 +30,10 @@
 			padding: 0;
 			margin-top: 0;
 		}
+	}
+
+	&:not(.two-columns) {
+		@include single-column;
 	}
 
 	ul {
@@ -83,5 +94,9 @@
 			color: var(--wp-admin-theme-color);
 			font-weight: bold;
 		}
+	}
+
+	@include breakpoint( '<782px' ) {
+		@include single-column;
 	}
 }
