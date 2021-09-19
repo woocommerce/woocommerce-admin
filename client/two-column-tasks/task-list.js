@@ -17,6 +17,7 @@ import classnames from 'classnames';
 import '../tasks/task-list.scss';
 import taskHeaders from './task-headers';
 import DismissModal from './dissmiss-modal';
+import TaskListCompleted from './completed';
 
 export const TaskList = ( {
 	query,
@@ -173,6 +174,14 @@ export const TaskList = ( {
 
 	if ( ! visibleTasks.length ) {
 		return <div className="woocommerce-task-dashboard__container"></div>;
+	}
+
+	if ( isComplete ) {
+		return (
+			<>
+				<TaskListCompleted hideTaskCard={ hideTaskCard } />
+			</>
+		);
 	}
 
 	return (
