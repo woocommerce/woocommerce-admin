@@ -49,7 +49,22 @@
 				width: 80%;
 			}
 		}
+	}
+}
 
+.woocommerce-task-dashboard__body .woocommerce-task-dashboard__container .woocommerce-task-card.completed {
+	display: block;
+	.components-card__header {
+		display: block;
+	}
+
+	.wooocommerce-task-card__header {
+		display: block;
+		text-align: center;
+	}
+
+	button.is-secondary {
+		margin-right: 12px;
 	}
 }
 
@@ -153,6 +168,8 @@
 	@include breakpoint( '<782px' ) {
 		@include single-column;
 	}
+
+
 }
 
 .woocommerce-task-dashboard__body .woocommerce-task-dismiss-modal {
@@ -188,6 +205,6 @@
 
 		button {
 			margin-left: $gap;
-		}		
-	}	
+		}
+	}
 }
