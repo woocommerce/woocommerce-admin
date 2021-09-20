@@ -66,9 +66,15 @@ export function getLeaderboard( options ) {
  * @param  {Object}   selector    Instance of @wordpress/select response
  * @param  {string}   endpoint  Report API Endpoint
  * @param  {string[]} search    Array of search strings.
+ * @param  {Object}   options  Query options.
  * @return {Object}   Object containing API request information and the matching items.
  */
-export function searchItemsByString( selector, endpoint, search ) {
+export function searchItemsByString(
+	selector,
+	endpoint,
+	search,
+	options = {}
+) {
 	const { getItems, getItemsError, isResolving } = selector;
 
 	const items = {};
@@ -78,6 +84,7 @@ export function searchItemsByString( selector, endpoint, search ) {
 		const query = {
 			search: searchWord,
 			per_page: 10,
+			...options,
 		};
 		const newItems = getItems( endpoint, query );
 		newItems.forEach( ( item, id ) => {
