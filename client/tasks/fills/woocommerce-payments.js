@@ -18,22 +18,18 @@ const WoocommercePaymentsTaskItem = () => {
 
 	return (
 		<WooOnboardingTaskListItem id="woocommerce-payments">
-			{ ( { defaultTaskItem, onClickActions } ) => (
-				<>
-					{ React.cloneElement( defaultTaskItem, {
-						onClick: () => {
-							onClickActions();
-
-							return new Promise( ( resolve, reject ) => {
-								return installActivateAndConnectWcpay(
-									reject,
-									createNotice,
-									installAndActivatePlugins
-								);
-							} );
-						},
-					} ) }
-				</>
+			{ ( { defaultTaskItem: DefaultTaskItem } ) => (
+				<DefaultTaskItem
+					onClick={ () => {
+						return new Promise( ( resolve, reject ) => {
+							return installActivateAndConnectWcpay(
+								reject,
+								createNotice,
+								installAndActivatePlugins
+							);
+						} );
+					} }
+				/>
 			) }
 		</WooOnboardingTaskListItem>
 	);

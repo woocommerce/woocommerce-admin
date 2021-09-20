@@ -44,17 +44,15 @@ const PurchaseTaskItem = () => {
 
 	return (
 		<WooOnboardingTaskListItem id="purchase">
-			{ ( { defaultTaskItem, onClickActions } ) => (
+			{ ( { defaultTaskItem: DefaultTaskItem } ) => (
 				<>
-					{ React.cloneElement( defaultTaskItem, {
-						onClick: () => {
-							onClickActions();
-
+					<DefaultTaskItem
+						onClick={ () => {
 							if ( remainingProducts.length ) {
 								toggleCartModal();
 							}
-						},
-					} ) }
+						} }
+					/>
 					{ cartModalOpen && (
 						<CartModal
 							onClose={ () => toggleCartModal() }

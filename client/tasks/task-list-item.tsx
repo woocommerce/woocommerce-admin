@@ -112,7 +112,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		} );
 	};
 
-	const onClickActions = useCallback( () => {
+	const onClickTracking = () => {
 		recordEvent( 'tasklist_click', {
 			task_name: id,
 		} );
@@ -120,10 +120,10 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		if ( ! isComplete ) {
 			updateTrackStartedCount();
 		}
-	}, [ id, isComplete ] );
+	};
 
 	const onClick = useCallback( () => {
-		onClickActions();
+		onClickTracking();
 
 		if ( actionUrl ) {
 			if ( actionUrl.startsWith( 'http' ) ) {
@@ -146,34 +146,47 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		onDismiss: isDismissable && onDismiss,
 	};
 
-	const defaultTaskItem = (
-		<TaskItem
-			key={ id }
-			title={ title }
-			content={ content }
-			onClick={
-				! isExpandable || isComplete
-					? onClick
-					: () => setExpandedTask( id )
-			}
-			time={ time }
-			action={ onClick }
-			actionLabel={ actionLabel }
-			{ ...taskItemProps }
-		/>
+	const DefaultTaskItem = useCallback(
+		( props ) => {
+			const onClickActions = () => {
+				if ( props.onClick ) {
+					onClickTracking();
+					return props.onClick();
+				}
+
+				return onClick();
+			};
+			return (
+				<TaskItem
+					key={ id }
+					title={ title }
+					content={ content }
+					time={ time }
+					action={ onClickActions }
+					actionLabel={ actionLabel }
+					{ ...taskItemProps }
+					{ ...props }
+					onClick={
+						! isExpandable || isComplete
+							? onClickActions
+							: () => setExpandedTask( id )
+					}
+				/>
+			);
+		},
+		[ id, title, content, time, actionLabel, isExpandable, isComplete ]
 	);
 
 	return hasFills ? (
 		<WooOnboardingTaskListItem.Slot
 			id={ id }
 			fillProps={ {
-				defaultTaskItem,
+				defaultTaskItem: DefaultTaskItem,
 				isComplete,
-				onClickActions,
 				...taskItemProps,
 			} }
 		/>
 	) : (
-		defaultTaskItem
+		<DefaultTaskItem />
 	);
 };
