@@ -26,6 +26,7 @@ export const TaskList = ( {
 	tasks,
 	onHide,
 	twoColumns,
+	keepCompletedTaskList,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions, dismissTask, undoDismissTask } = useDispatch(
@@ -118,6 +119,16 @@ export const TaskList = ( {
 		}
 	};
 
+	const keepTaskCard = () => {
+		const updateOptionsParams = {
+			woocommerce_task_list_keep_completed: 'yes',
+		};
+
+		updateOptions( {
+			...updateOptionsParams,
+		} );
+	};
+
 	const renderMenu = () => {
 		return (
 			<div className="woocommerce-card__menu woocommerce-card__header-item">
@@ -176,10 +187,13 @@ export const TaskList = ( {
 		return <div className="woocommerce-task-dashboard__container"></div>;
 	}
 
-	if ( isComplete ) {
+	if ( isComplete && ! keepCompletedTaskList ) {
 		return (
 			<>
-				<TaskListCompleted hideTaskCard={ hideTaskCard } />
+				<TaskListCompleted
+					hideTaskCard={ hideTaskCard }
+					keepTaskCard={ keepTaskCard }
+				/>
 			</>
 		);
 	}

@@ -11,7 +11,11 @@ import { __ } from '@wordpress/i18n';
 import '../task-list/task-list.scss';
 import HeaderImage from './completed.svg';
 
-export const TaskListCompleted = ( { twoColumns, hideTaskCard } ) => {
+export const TaskListCompleted = ( {
+	twoColumns,
+	hideTaskCard,
+	keepTaskCard,
+} ) => {
 	return (
 		<>
 			<div
@@ -33,7 +37,7 @@ export const TaskListCompleted = ( { twoColumns, hideTaskCard } ) => {
 									'woocommerce-admin'
 								) }
 							</h2>
-							<Button isSecondary>
+							<Button isSecondary onClick={ keepTaskCard }>
 								{ __( 'Keep list', 'woocommerce-admin' ) }
 							</Button>
 							<Button isPrimary onClick={ hideTaskCard }>
