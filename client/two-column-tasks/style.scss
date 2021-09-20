@@ -10,6 +10,10 @@
 	margin: 0 auto;
 	justify-content: space-between;
 
+	ul li.complete .woocommerce-task-list__item-title {
+		font-weight: normal;
+	}
+
 	// Single column mode
 	@mixin single-column {
 		ul {
