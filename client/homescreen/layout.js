@@ -19,6 +19,8 @@ import {
 	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
+import moment from 'moment';
+import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -70,8 +72,16 @@ export const Layout = ( {
 
 	const isTaskListEnabled = bothTaskListsHidden === false;
 	const isDashboardShown = ! query.task;
+
+	const [
+		isLoadingExperimentAssignment,
+		experimentAssignment,
+	] = useExperiment(
+		'woocommerce_tasklist_progression_headercard_' + moment().format( 'MM' )
+	);
+
 	const isRunningTwoColumnExperiment =
-		process.env.JEST_WORKER_ID === undefined;
+		experimentAssignment?.variationName === 'treatment';
 
 	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
@@ -124,7 +134,11 @@ export const Layout = ( {
 	const renderTaskList = () => {
 		if ( twoColumns && isRunningTwoColumnExperiment ) {
 			return '';
-		} else if ( ! twoColumns && isRunningTwoColumnExperiment ) {
+		} else if (
+			! twoColumns &&
+			isRunningTwoColumnExperiment &&
+			! isLoadingExperimentAssignment
+		) {
 			return (
 				<Suspense fallback={ <TaskListPlaceholder /> }>
 					<TwoColumnTasks
