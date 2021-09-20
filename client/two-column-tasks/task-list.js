@@ -297,15 +297,19 @@ export const TaskList = ( {
 		}
 	};
 
-	const firstIncompleteTask = listTasks.find(
+	let selectedHeaderCard = listTasks.find(
 		( listTask ) => listTask.completed === false
 	);
 
+	if ( ! selectedHeaderCard ) {
+		selectedHeaderCard = listTasks[ 0 ];
+	}
+
 	useEffect( () => {
-		if ( firstIncompleteTask ) {
-			onTaskSelected( firstIncompleteTask );
+		if ( selectedHeaderCard ) {
+			onTaskSelected( selectedHeaderCard );
 		}
-	}, [ firstIncompleteTask ] );
+	}, [ selectedHeaderCard ] );
 
 	if ( ! listTasks.length ) {
 		return <div className="woocommerce-task-dashboard__container"></div>;
