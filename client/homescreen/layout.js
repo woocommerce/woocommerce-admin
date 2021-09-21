@@ -140,13 +140,11 @@ export const Layout = ( {
 			! isLoadingExperimentAssignment
 		) {
 			return (
-				<Suspense fallback={ <TaskListPlaceholder /> }>
-					<TwoColumnTasks
-						query={ query }
-						userPreferences={ userPrefs }
-						twoColumns={ twoColumns }
-					/>
-				</Suspense>
+				<TwoColumnTasks
+					query={ query }
+					userPreferences={ userPrefs }
+					twoColumns={ twoColumns }
+				/>
 			);
 		}
 
@@ -170,12 +168,7 @@ export const Layout = ( {
 	return (
 		<>
 			{ twoColumns && isRunningTwoColumnExperiment && (
-				<Suspense fallback={ <TaskListPlaceholder /> }>
-					<TwoColumnTasks
-						query={ query }
-						userPreferences={ userPrefs }
-					/>
-				</Suspense>
+				<TwoColumnTasks query={ query } userPreferences={ userPrefs } />
 			) }
 			<div
 				className={ classnames( 'woocommerce-homescreen', {
