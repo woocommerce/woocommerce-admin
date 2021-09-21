@@ -10,6 +10,7 @@ use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Purchase;
 use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init as RemoteFreeExtensions;
 use Automattic\WooCommerce\Admin\PluginsHelper;
@@ -90,6 +91,7 @@ class TaskLists {
 
 		self::add_task( 'setup', StoreDetails::get_task() );
 		self::add_task( 'setup', Purchase::get_task() );
+		self::add_task( 'setup', Products::get_task() );
 	}
 
 	/**
@@ -172,17 +174,6 @@ class TaskLists {
 				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
-					array(
-						'id'         => 'products',
-						'title'      => __( 'Add my products', 'woocommerce-admin' ),
-						'content'    => __(
-							'Start by adding the first product to your store. You can add your products manually, via CSV, or import them from another service.',
-							'woocommerce-admin'
-						),
-						'isComplete' => 0 !== count( $products ),
-						'isVisible'  => true,
-						'time'       => __( '1 minute per product', 'woocommerce-admin' ),
-					),
 					array(
 						'id'          => 'woocommerce-payments',
 						'title'       => __( 'Get paid with WooCommerce Payments', 'woocommerce-admin' ),
