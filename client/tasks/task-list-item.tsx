@@ -112,7 +112,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		} );
 	};
 
-	const onClickTracking = () => {
+	const trackClick = () => {
 		recordEvent( 'tasklist_click', {
 			task_name: id,
 		} );
@@ -122,9 +122,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		}
 	};
 
-	const onClick = useCallback( () => {
-		onClickTracking();
-
+	const onClickDefault = useCallback( () => {
 		if ( actionUrl ) {
 			if ( actionUrl.startsWith( 'http' ) ) {
 				window.location.href = actionUrl;
@@ -149,12 +147,13 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 	const DefaultTaskItem = useCallback(
 		( props ) => {
 			const onClickActions = () => {
+				trackClick();
+
 				if ( props.onClick ) {
-					onClickTracking();
 					return props.onClick();
 				}
 
-				return onClick();
+				return onClickDefault();
 			};
 			return (
 				<TaskItem
