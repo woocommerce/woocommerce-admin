@@ -15,7 +15,6 @@ const tracksDebug = debug( 'wc-admin:tracks' );
  * @param {Object} eventProperties event properties to include in the event
  */
 export function recordEvent( eventName, eventProperties ) {
-	checkEventNameAndPropsCase( eventName, eventProperties );
 	tracksDebug( 'recordevent %s %o', 'wcadmin_' + eventName, eventProperties, {
 		_tqk: window._tkq,
 		shouldRecord:
@@ -34,30 +33,6 @@ export function recordEvent( eventName, eventProperties ) {
 	}
 
 	window.wcTracks.recordEvent( eventName, eventProperties );
-}
-
-const validRegExpString = '^[a-z_][a-z0-9_]*$';
-const validRegExp = new RegExp( validRegExpString );
-function checkEventNameAndPropsCase( eventName, eventProperties ) {
-	let valid = true;
-	if ( ! validRegExp.test( eventName ) ) {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`Event name ${ eventName } failed pattern ${ validRegExpString }`
-		);
-		valid = false;
-	}
-	const propertyKeys = Object.keys( eventProperties || {} );
-	for ( const key of propertyKeys ) {
-		if ( ! validRegExp.test( key ) ) {
-			// eslint-disable-next-line no-console
-			console.warn(
-				`Event prop ${ key } failed pattern ${ validRegExpString } of '${ eventName }' event`
-			);
-			valid = false;
-		}
-	}
-	return valid;
 }
 
 const tracksQueue = {
