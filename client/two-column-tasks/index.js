@@ -22,7 +22,7 @@ import { getAllTasks, taskSort } from '../task-list/tasks';
 import { getCountryCode } from '../dashboard/utils';
 import TaskList from './task-list';
 import { TaskStep } from '../task-list/task-step';
-import TaskListPlaceholder from '../task-list/placeholder';
+import TaskListPlaceholder from './placeholder';
 
 const EMPTY_ARRAY = [];
 const taskDashboardSelect = ( select ) => {
