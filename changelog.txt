@@ -1,3 +1,7 @@
+== 2.6.4 09/21/2021 ==
+
+- Fix: Use installable extensions for local state versus free extensions. #7585
+
 == 2.6.3 09/21/2021 ==
 
 - Fix unsecured reports
