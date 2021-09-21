@@ -12,6 +12,7 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTask
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Purchase;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
 use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init as RemoteFreeExtensions;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
@@ -92,6 +93,8 @@ class TaskLists {
 		self::add_task( 'setup', StoreDetails::get_task() );
 		self::add_task( 'setup', Purchase::get_task() );
 		self::add_task( 'setup', Products::get_task() );
+		self::add_task( 'setup', WooCommercePayments::get_task() );
+
 	}
 
 	/**
@@ -129,13 +132,7 @@ class TaskLists {
 			)
 		);
 		$products            = $product_query->get_products();
-		$wc_pay_is_connected = false;
-		if ( class_exists( '\WC_Payments' ) ) {
-			$wc_payments_gateway = \WC_Payments::get_gateway();
-			$wc_pay_is_connected = method_exists( $wc_payments_gateway, 'is_connected' )
-				? $wc_payments_gateway->is_connected()
-				: false;
-		}
+
 		$gateways                = WC()->payment_gateways->get_available_payment_gateways();
 		$enabled_gateways        = array_filter(
 			$gateways,
@@ -174,21 +171,6 @@ class TaskLists {
 				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
-					array(
-						'id'          => 'woocommerce-payments',
-						'title'       => __( 'Get paid with WooCommerce Payments', 'woocommerce-admin' ),
-						'content'     => __(
-							"You're only one step away from getting paid. Verify your business details to start managing transactions with WooCommerce Payments.",
-							'woocommerce-admin'
-						),
-						'actionLabel' => __( 'Finish setup', 'woocommerce-admin' ),
-						'expanded'    => true,
-						'isComplete'  => $wc_pay_is_connected,
-						'isVisible'   => in_array( 'woocommerce-payments', $business_extensions, true ) &&
-							in_array( 'woocommerce-payments', $installed_plugins, true ) &&
-							in_array( WC()->countries->get_base_country(), OnboardingTasks::get_woocommerce_payments_supported_countries(), true ),
-						'time'        => __( '2 minutes', 'woocommerce-admin' ),
-					),
 					array(
 						'id'         => 'payments',
 						'title'      => __( 'Set up payments', 'woocommerce-admin' ),

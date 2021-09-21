@@ -2,9 +2,6 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\PluginsHelper;
-
 /**
  * Products Task
  */
