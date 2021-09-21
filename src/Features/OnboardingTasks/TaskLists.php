@@ -10,6 +10,7 @@ use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Purchase;
 use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init as RemoteFreeExtensions;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
@@ -88,6 +89,7 @@ class TaskLists {
 		);
 
 		self::add_task( 'setup', StoreDetails::get_task() );
+		self::add_task( 'setup', Purchase::get_task() );
 	}
 
 	/**
@@ -170,52 +172,6 @@ class TaskLists {
 				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
-					array(
-						'id'          => 'store_details',
-						'title'       => __( 'Store details', 'woocommerce-admin' ),
-						'content'     => __(
-							'Your store address is required to set the origin country for shipping, currencies, and payment options.',
-							'woocommerce-admin'
-						),
-						'actionLabel' => __( "Let's go", 'woocommerce-admin' ),
-						'actionUrl'   => '/setup-wizard',
-						'isComplete'  => isset( $profiler_data['completed'] ) && true === $profiler_data['completed'],
-						'isVisible'   => true,
-						'time'        => __( '4 minutes', 'woocommerce-admin' ),
-					),
-					array(
-						'id'            => 'purchase',
-						'title'         => count( $remaining_products ) === 1
-							? sprintf(
-								/* translators: %1$s: list of product names comma separated, %2%s the last product name */
-								__(
-									'Add %s to my store',
-									'woocommerce-admin'
-								),
-								$remaining_products[0]
-							)
-							: __(
-								'Add paid extensions to my store',
-								'woocommerce-admin'
-							),
-						'content'       => count( $remaining_products ) === 1
-							? $purchaseable_products[0]['description']
-							: sprintf(
-								/* translators: %1$s: list of product names comma separated, %2%s the last product name */
-								__(
-									'Good choice! You chose to add %1$s and %2$s to your store.',
-									'woocommerce-admin'
-								),
-								implode( ', ', array_slice( $remaining_products, 0, -1 ) ) . ( count( $remaining_products ) > 2 ? ',' : '' ),
-								end( $remaining_products )
-							),
-						'actionLabel'   => __( 'Purchase & install now', 'woocommerce-admin' ),
-						'actionUrl'     => '/setup-wizard',
-						'isComplete'    => count( $remaining_products ) === 0,
-						'isVisible'     => count( $purchaseable_products ) > 0,
-						'time'          => __( '2 minutes', 'woocommerce-admin' ),
-						'isDismissable' => true,
-					),
 					array(
 						'id'         => 'products',
 						'title'      => __( 'Add my products', 'woocommerce-admin' ),
