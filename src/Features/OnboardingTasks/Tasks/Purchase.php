@@ -18,8 +18,8 @@ class Purchase {
 		$products = self::get_products();
 
 		return array(
-			'id'            => 'purchase',
-			'title'         => count( $products['remaining'] ) === 1
+			'id'             => 'purchase',
+			'title'          => count( $products['remaining'] ) === 1
 				? sprintf(
 					/* translators: %1$s: list of product names comma separated, %2%s the last product name */
 					__(
@@ -32,7 +32,7 @@ class Purchase {
 					'Add paid extensions to my store',
 					'woocommerce-admin'
 				),
-			'content'       => count( $products['remaining'] ) === 1
+			'content'        => count( $products['remaining'] ) === 1
 				? $products['purchaseable'][0]['description']
 				: sprintf(
 					/* translators: %1$s: list of product names comma separated, %2%s the last product name */
@@ -43,12 +43,12 @@ class Purchase {
 					implode( ', ', array_slice( $products['remaining'], 0, -1 ) ) . ( count( $products['remaining'] ) > 2 ? ',' : '' ),
 					end( $products['remaining'] )
 				),
-			'actionLabel'   => __( 'Purchase & install now', 'woocommerce-admin' ),
-			'actionUrl'     => '/setup-wizard',
-			'isComplete'    => count( $products['remaining'] ) === 0,
-			'isVisible'     => count( $products['purchaseable'] ) > 0,
-			'time'          => __( '2 minutes', 'woocommerce-admin' ),
-			'isDismissable' => true,
+			'action_label'   => __( 'Purchase & install now', 'woocommerce-admin' ),
+			'action_url'     => '/setup-wizard',
+			'is_complete'    => count( $products['remaining'] ) === 0,
+			'is_visible'     => count( $products['purchaseable'] ) > 0,
+			'time'           => __( '2 minutes', 'woocommerce-admin' ),
+			'is_dismissable' => true,
 		);
 	}
 

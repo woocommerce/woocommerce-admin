@@ -13,15 +13,15 @@ class Products {
 	 */
 	public static function get_task() {
 		return array(
-			'id'         => 'products',
-			'title'      => __( 'Add my products', 'woocommerce-admin' ),
-			'content'    => __(
+			'id'          => 'products',
+			'title'       => __( 'Add my products', 'woocommerce-admin' ),
+			'content'     => __(
 				'Start by adding the first product to your store. You can add your products manually, via CSV, or import them from another service.',
 				'woocommerce-admin'
 			),
-			'isComplete' => self::has_products(),
-			'isVisible'  => true,
-			'time'       => __( '1 minute per product', 'woocommerce-admin' ),
+			'is_complete' => self::has_products(),
+			'is_visible'  => true,
+			'time'        => __( '1 minute per product', 'woocommerce-admin' ),
 		);
 	}
 

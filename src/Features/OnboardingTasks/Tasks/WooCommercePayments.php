@@ -16,19 +16,19 @@ class WooCommercePayments {
 	 */
 	public static function get_task() {
 		return array(
-			'id'          => 'woocommerce-payments',
-			'title'       => __( 'Get paid with WooCommerce Payments', 'woocommerce-admin' ),
-			'content'     => __(
+			'id'           => 'woocommerce-payments',
+			'title'        => __( 'Get paid with WooCommerce Payments', 'woocommerce-admin' ),
+			'content'      => __(
 				"You're only one step away from getting paid. Verify your business details to start managing transactions with WooCommerce Payments.",
 				'woocommerce-admin'
 			),
-			'actionLabel' => __( 'Finish setup', 'woocommerce-admin' ),
-			'expanded'    => true,
-			'isComplete'  => self::is_connected(),
-			'isVisible'   => self::is_requested() &&
+			'action_label' => __( 'Finish setup', 'woocommerce-admin' ),
+			'expanded'     => true,
+			'is_complete'  => self::is_connected(),
+			'is_visible'   => self::is_requested() &&
 				self::is_installed() &&
 				in_array( WC()->countries->get_base_country(), OnboardingTasks::get_woocommerce_payments_supported_countries(), true ),
-			'time'        => __( '2 minutes', 'woocommerce-admin' ),
+			'time'         => __( '2 minutes', 'woocommerce-admin' ),
 		);
 	}
 
