@@ -231,7 +231,7 @@ function _defineProperty(obj, key, value) {
 
 /***/ }),
 
-/***/ 68:
+/***/ 67:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2139,7 +2139,7 @@ var with_current_user_hydration_withCurrentUserHydration = function withCurrentU
   };
 };
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(68);
+var asyncToGenerator = __webpack_require__(67);
 
 // CONCATENATED MODULE: ./packages/data/build-module/user-preferences/use-user-preferences.js
 
@@ -2221,27 +2221,77 @@ var use_user_preferences_getWooCommerceMeta = function getWooCommerceMeta(user) 
 
 var use_user_preferences_useUserPreferences = function useUserPreferences() {
   // Get our dispatch methods now - this can't happen inside the callback below.
-  var _useDispatch = Object(external_this_wp_data_["useDispatch"])(user_preferences_constants_STORE_NAME),
-      receiveCurrentUser = _useDispatch.receiveCurrentUser,
-      saveUser = _useDispatch.saveUser;
+  var dispatch = Object(external_this_wp_data_["useDispatch"])(user_preferences_constants_STORE_NAME);
+  var addEntities = dispatch.addEntities,
+      receiveCurrentUser = dispatch.receiveCurrentUser,
+      saveEntityRecord = dispatch.saveEntityRecord;
+  var saveUser = dispatch.saveUser;
 
   var _useSelect = Object(external_this_wp_data_["useSelect"])(function (select) {
     var _select = select(user_preferences_constants_STORE_NAME),
         getCurrentUser = _select.getCurrentUser,
+        getEntity = _select.getEntity,
+        getEntityRecord = _select.getEntityRecord,
         getLastEntitySaveError = _select.getLastEntitySaveError,
         hasStartedResolution = _select.hasStartedResolution,
-        hasFinishedResolution = _select.hasFinishedResolution; // Use getCurrentUser() to get WooCommerce meta values.
+        hasFinishedResolution = _select.hasFinishedResolution; // WP 5.3.x doesn't have the User entity defined.
+
+
+    if (typeof saveUser !== 'function') {
+      // Polyfill saveUser() - wrapper of saveEntityRecord.
+      saveUser = /*#__PURE__*/function () {
+        var _ref = Object(asyncToGenerator["a" /* default */])( /*#__PURE__*/regeneratorRuntime.mark(function _callee(userToSave) {
+          var entityDefined;
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  entityDefined = Boolean(getEntity('root', 'user'));
+
+                  if (entityDefined) {
+                    _context.next = 4;
+                    break;
+                  }
+
+                  _context.next = 4;
+                  return addEntities([{
+                    name: 'user',
+                    kind: 'root',
+                    baseURL: '/wp/v2/users',
+                    plural: 'users'
+                  }]);
+
+                case 4:
+                  _context.next = 6;
+                  return saveEntityRecord('root', 'user', userToSave);
+
+                case 6:
+                  return _context.abrupt("return", getEntityRecord('root', 'user', userToSave.id));
+
+                case 7:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+
+        return function saveUser(_x) {
+          return _ref.apply(this, arguments);
+        };
+      }();
+    } // Use getCurrentUser() to get WooCommerce meta values.
 
 
     var user = getCurrentUser();
     var userData = use_user_preferences_getWooCommerceMeta(user); // Create wrapper for updating user's `woocommerce_meta`.
 
     var updateUserPrefs = /*#__PURE__*/function () {
-      var _ref = Object(asyncToGenerator["a" /* default */])( /*#__PURE__*/regeneratorRuntime.mark(function _callee(userPrefs) {
+      var _ref2 = Object(asyncToGenerator["a" /* default */])( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(userPrefs) {
         var userDataFields, metaData, updatedUser, error, updatedUserResponse;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 // @todo Handle unresolved getCurrentUser() here.
                 // Whitelist our meta fields.
@@ -2250,11 +2300,11 @@ var use_user_preferences_useUserPreferences = function useUserPreferences() {
                 metaData = Object(external_lodash_["mapValues"])(Object(external_lodash_["pick"])(userPrefs, userDataFields), JSON.stringify);
 
                 if (!(Object.keys(metaData).length === 0)) {
-                  _context.next = 4;
+                  _context2.next = 4;
                   break;
                 }
 
-                return _context.abrupt("return", {
+                return _context2.abrupt("return", {
                   error: new Error('No valid woocommerce_meta keys were provided for update.'),
                   updatedUser: undefined
                 });
@@ -2265,23 +2315,23 @@ var use_user_preferences_useUserPreferences = function useUserPreferences() {
                   woocommerce_meta: use_user_preferences_objectSpread(use_user_preferences_objectSpread({}, user.woocommerce_meta), metaData)
                 })); // Use saveUser() to update WooCommerce meta values.
 
-                _context.next = 7;
+                _context2.next = 7;
                 return saveUser({
                   id: user.id,
                   woocommerce_meta: metaData
                 });
 
               case 7:
-                updatedUser = _context.sent;
+                updatedUser = _context2.sent;
 
                 if (!(undefined === updatedUser)) {
-                  _context.next = 11;
+                  _context2.next = 11;
                   break;
                 } // Return the encountered error to the caller.
 
 
                 error = getLastEntitySaveError('root', 'user', user.id);
-                return _context.abrupt("return", {
+                return _context2.abrupt("return", {
                   error: error,
                   updatedUser: updatedUser
                 });
@@ -2291,20 +2341,20 @@ var use_user_preferences_useUserPreferences = function useUserPreferences() {
                 updatedUserResponse = use_user_preferences_objectSpread(use_user_preferences_objectSpread({}, updatedUser), {}, {
                   woocommerce_meta: use_user_preferences_getWooCommerceMeta(updatedUser)
                 });
-                return _context.abrupt("return", {
+                return _context2.abrupt("return", {
                   updatedUser: updatedUserResponse
                 });
 
               case 13:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee);
+        }, _callee2);
       }));
 
-      return function updateUserPrefs(_x) {
-        return _ref.apply(this, arguments);
+      return function updateUserPrefs(_x2) {
+        return _ref2.apply(this, arguments);
       };
     }();
 
