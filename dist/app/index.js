@@ -37,6 +37,9 @@ this["wc"] = this["wc"] || {}; this["wc"]["app"] =
 /******/ 	var installedCssChunks = {
 /******/ 		19: 0
 /******/ 	}
+/******/ 	var isCssRtlEnabled = function() {
+/******/ 		return document.dir === 'rtl';
+/******/ 	}
 /******/
 /******/ 	// object to store loaded and loading chunks
 /******/ 	// undefined = chunk not loaded, null = chunk preloaded/prefetched
@@ -49,7 +52,7 @@ this["wc"] = this["wc"] || {}; this["wc"]["app"] =
 /******/
 /******/ 	// script path function
 /******/ 	function jsonpScriptSrc(chunkId) {
-/******/ 		return __webpack_require__.p + "chunks/" + ({"0":"analytics-report-categories~analytics-report-coupons~analytics-report-customers~analytics-report-dow~99eefb40","1":"vendors~analytics-report-categories~analytics-report-coupons~analytics-report-downloads~analytics-re~2579715d","2":"vendors~activity-panels-inbox~activity-panels-orders~activity-panels-stock~dashboard-charts~devdocs~~f6270017","3":"vendors~activity-panels-inbox~leaderboards~store-alerts~task-list","4":"analytics-report-categories~analytics-report-products","5":"vendors~profile-wizard~task-list","6":"activity-panels-inbox","7":"activity-panels-orders","8":"activity-panels-stock","9":"analytics-report-categories","10":"analytics-report-coupons","11":"analytics-report-customers","12":"analytics-report-downloads","13":"analytics-report-orders","14":"analytics-report-products","15":"analytics-report-revenue","16":"analytics-report-stock","17":"analytics-report-taxes","18":"analytics-settings","23":"customizable-dashboard","24":"dashboard","25":"dashboard-charts","28":"devdocs","29":"homepage","31":"leaderboards","32":"marketing-overview","40":"profile-wizard","41":"store-alerts","42":"store-performance","43":"task-list","44":"vendors~devdocs","45":"vendors~marketing-overview"}[chunkId]||chunkId) + "." + {"0":"14e64a592bdaa342c3a7","1":"3c56dd5478f01faa4b26","2":"20e4990156e0a34c18b0","3":"dd09e8a86b0bcaa9aff7","4":"b94ffcec7f813ed34edb","5":"114a8214ba34dbd3c0f0","6":"99246a03e7b8aa1b8b26","7":"7b32de0acca079abb2bc","8":"6c1332749a67d65f449a","9":"13b966705db9cfeb4814","10":"43d42c8cb52eecf8abdf","11":"86adf07632d91914c6c6","12":"70ac0d2cc5bff1ecc84d","13":"f2d90c48c3f4b0a88512","14":"28c933e5937d420efe22","15":"edcb0bfb0b19d47c76b8","16":"2939053e1a82a2ae848c","17":"d538eaf5233c6bc713b6","18":"8c382b88264494e5d4eb","23":"0857e5e4c0df1171e886","24":"c96cd95056189481403f","25":"d100272c0e3ae443b829","28":"1eb85d89a9e04d20a4c1","29":"e069e25f913b20f89b53","31":"7186f133618817f88e04","32":"c105acbfa46d79f7a6d6","40":"314f6a9f9e0ee86eb8bf","41":"a6374b7de173331a7254","42":"26c7ca1b51a55e317e81","43":"52fe0e41a24d55f1b9b1","44":"e38a65da5bf9ffb4b567","45":"d1653cdc07670674a95f"}[chunkId] + ".js"
+/******/ 		return __webpack_require__.p + "chunks/" + chunkId + "." + {"0":"14e64a592bdaa342c3a7","1":"3c56dd5478f01faa4b26","2":"20e4990156e0a34c18b0","3":"dd09e8a86b0bcaa9aff7","4":"b94ffcec7f813ed34edb","5":"114a8214ba34dbd3c0f0","6":"99246a03e7b8aa1b8b26","7":"2eb145fe8d6d73093386","8":"339c74aee4cd645690ca","9":"02f4facd9176e0ea6e0a","10":"56ca8e03dceb770c657e","11":"fd724db984ec85c4acb4","12":"78fc0cd185fadcfabd60","13":"30a43bc4e07111ea05c9","14":"e6eec63cf9a29751635b","15":"6038d0db43b0dbc6a868","16":"2939053e1a82a2ae848c","17":"bbfe7f043a98d06cc429","18":"df9e5476385261b65933","23":"c9275cdb19816fe60363","24":"c96cd95056189481403f","25":"d100272c0e3ae443b829","28":"1eb85d89a9e04d20a4c1","29":"e069e25f913b20f89b53","31":"1052ef0a62eecf4b5f4a","32":"e9024fa95c3a496faa27","40":"314f6a9f9e0ee86eb8bf","41":"4efcfa4b8a4e3adf327f","42":"26c7ca1b51a55e317e81","43":"52fe0e41a24d55f1b9b1","44":"e38a65da5bf9ffb4b567","45":"3def7d0e1c4cf927153e"}[chunkId] + ".js"
 /******/ 	}
 /******/
 /******/ 	// The require function
@@ -87,7 +90,7 @@ this["wc"] = this["wc"] || {}; this["wc"]["app"] =
 /******/ 		if(installedCssChunks[chunkId]) promises.push(installedCssChunks[chunkId]);
 /******/ 		else if(installedCssChunks[chunkId] !== 0 && cssChunks[chunkId]) {
 /******/ 			promises.push(installedCssChunks[chunkId] = new Promise(function(resolve, reject) {
-/******/ 				var href = "./" + ({"0":"analytics-report-categories~analytics-report-coupons~analytics-report-customers~analytics-report-dow~99eefb40","1":"vendors~analytics-report-categories~analytics-report-coupons~analytics-report-downloads~analytics-re~2579715d","2":"vendors~activity-panels-inbox~activity-panels-orders~activity-panels-stock~dashboard-charts~devdocs~~f6270017","3":"vendors~activity-panels-inbox~leaderboards~store-alerts~task-list","4":"analytics-report-categories~analytics-report-products","5":"vendors~profile-wizard~task-list","6":"activity-panels-inbox","7":"activity-panels-orders","8":"activity-panels-stock","9":"analytics-report-categories","10":"analytics-report-coupons","11":"analytics-report-customers","12":"analytics-report-downloads","13":"analytics-report-orders","14":"analytics-report-products","15":"analytics-report-revenue","16":"analytics-report-stock","17":"analytics-report-taxes","18":"analytics-settings","23":"customizable-dashboard","24":"dashboard","25":"dashboard-charts","28":"devdocs","29":"homepage","31":"leaderboards","32":"marketing-overview","40":"profile-wizard","41":"store-alerts","42":"store-performance","43":"task-list","44":"vendors~devdocs","45":"vendors~marketing-overview"}[chunkId]||chunkId) + "/style.css";
+/******/ 				var href = true && isCssRtlEnabled() ? "./chunks/" + chunkId + ".style.rtl.css" : "./chunks/" + chunkId + ".style.css";
 /******/ 				var fullhref = __webpack_require__.p + href;
 /******/ 				var existingLinkTags = document.getElementsByTagName("link");
 /******/ 				for(var i = 0; i < existingLinkTags.length; i++) {
@@ -104,6 +107,7 @@ this["wc"] = this["wc"] || {}; this["wc"]["app"] =
 /******/ 				var linkTag = document.createElement("link");
 /******/ 				linkTag.rel = "stylesheet";
 /******/ 				linkTag.type = "text/css";
+/******/ 				linkTag.setAttribute("data-webpack", true);
 /******/ 				linkTag.onload = resolve;
 /******/ 				linkTag.onerror = function(event) {
 /******/ 					var request = event && event.target && event.target.src || fullhref;
@@ -5146,31 +5150,31 @@ var manageStock = Object(_settings__WEBPACK_IMPORTED_MODULE_3__[/* getSetting */
  */
 
 var RevenueReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-revenue */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(15)]).then(__webpack_require__.bind(null, 728));
+  return Promise.all(/* import() | analytics-report-revenue */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(15)]).then(__webpack_require__.bind(null, 726));
 });
 var ProductsReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-products */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(14)]).then(__webpack_require__.bind(null, 731));
+  return Promise.all(/* import() | analytics-report-products */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(14)]).then(__webpack_require__.bind(null, 727));
 });
 var OrdersReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-orders */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(13)]).then(__webpack_require__.bind(null, 725));
+  return Promise.all(/* import() | analytics-report-orders */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(13)]).then(__webpack_require__.bind(null, 728));
 });
 var CategoriesReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-categories */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, 724));
+  return Promise.all(/* import() | analytics-report-categories */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(4), __webpack_require__.e(9)]).then(__webpack_require__.bind(null, 723));
 });
 var CouponsReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-coupons */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(10)]).then(__webpack_require__.bind(null, 730));
+  return Promise.all(/* import() | analytics-report-coupons */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(10)]).then(__webpack_require__.bind(null, 729));
 });
 var TaxesReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-taxes */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(17)]).then(__webpack_require__.bind(null, 729));
+  return Promise.all(/* import() | analytics-report-taxes */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(17)]).then(__webpack_require__.bind(null, 730));
 });
 var DownloadsReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-downloads */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(12)]).then(__webpack_require__.bind(null, 727));
+  return Promise.all(/* import() | analytics-report-downloads */[__webpack_require__.e(1), __webpack_require__.e(0), __webpack_require__.e(12)]).then(__webpack_require__.bind(null, 731));
 });
 var StockReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
   return Promise.all(/* import() | analytics-report-stock */[__webpack_require__.e(0), __webpack_require__.e(16)]).then(__webpack_require__.bind(null, 722));
 });
 var CustomersReport = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["lazy"])(function () {
-  return Promise.all(/* import() | analytics-report-customers */[__webpack_require__.e(0), __webpack_require__.e(11)]).then(__webpack_require__.bind(null, 723));
+  return Promise.all(/* import() | analytics-report-customers */[__webpack_require__.e(0), __webpack_require__.e(11)]).then(__webpack_require__.bind(null, 724));
 });
 
 /* harmony default export */ __webpack_exports__["a"] = (function () {
@@ -6862,10 +6866,10 @@ var InboxPanel = Object(external_this_wp_element_["lazy"])(function () {
   return Promise.all(/* import() | activity-panels-inbox */[__webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, 909));
 });
 var OrdersPanel = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | activity-panels-orders */[__webpack_require__.e(2), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, 911));
+  return Promise.all(/* import() | activity-panels-orders */[__webpack_require__.e(2), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, 912));
 });
 var StockPanel = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | activity-panels-stock */[__webpack_require__.e(2), __webpack_require__.e(8)]).then(__webpack_require__.bind(null, 914));
+  return Promise.all(/* import() | activity-panels-stock */[__webpack_require__.e(2), __webpack_require__.e(8)]).then(__webpack_require__.bind(null, 913));
 });
 var ReviewsPanel = Object(external_this_wp_element_["lazy"])(function () {
   return Promise.all(/* import() | activity-panels-inbox */[__webpack_require__.e(2), __webpack_require__.e(3), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, 902));
@@ -7658,7 +7662,7 @@ function layout_isNativeReflectConstruct() { if (typeof Reflect === "undefined" 
 
 
 var StoreAlerts = Object(external_this_wp_element_["lazy"])(function () {
-  return Promise.all(/* import() | store-alerts */[__webpack_require__.e(3), __webpack_require__.e(41)]).then(__webpack_require__.bind(null, 912));
+  return Promise.all(/* import() | store-alerts */[__webpack_require__.e(3), __webpack_require__.e(41)]).then(__webpack_require__.bind(null, 911));
 });
 
 var layout_PrimaryLayout = /*#__PURE__*/function (_Component) {
