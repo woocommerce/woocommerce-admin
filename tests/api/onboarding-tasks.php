@@ -6,6 +6,7 @@
  */
 
 use \Automattic\WooCommerce\Admin\API\OnboardingTasks;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 
 /**
  * WC Tests API Onboarding Tasks
@@ -164,6 +165,113 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$data     = $response->get_data();
 
 		$this->assertSame( 'Custom post content', get_the_content( null, null, $data['post_id'] ) );
+	}
+
+
+	/**
+	 * Test that a task can be snoozed
+	 */
+	public function test_task_can_be_snoozed() {
+		wp_set_current_user( $this->user );
+
+		TaskLists::add_list(
+			array(
+				'id' => 'testlist',
+			)
+		);
+
+		TaskLists::add_task(
+			'testlist',
+			array(
+				'id'            => 'testtask',
+				'title'         => 'Test Task',
+				'is_snoozeable' => true,
+			)
+		);
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/testtask/snooze' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$task = TaskLists::get_task( 'testtask' );
+
+		$this->assertEquals( $data['isSnoozed'], true );
+		$this->assertEquals( isset( $data['snoozedUntil'] ), true );
+		$this->assertEquals( $task->is_snoozed(), true );
+		$this->assertEquals( isset( $task->snoozed_until ), true );
+
+	}
+
+	/**
+	 * Test that a task can be snoozed
+	 */
+	public function test_task_can_be_snoozed_with_list_id() {
+		wp_set_current_user( $this->user );
+
+		TaskLists::add_list(
+			array(
+				'id' => 'testlist',
+			)
+		);
+
+		TaskLists::add_task(
+			'testlist',
+			array(
+				'id'            => 'testtask',
+				'title'         => 'Test Task',
+				'is_snoozeable' => true,
+			)
+		);
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/testtask/snooze' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'task_list_id' => 'testlist' ) ) );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$task = TaskLists::get_task( 'testtask' );
+
+		$this->assertEquals( $data['isSnoozed'], true );
+		$this->assertEquals( isset( $data['snoozedUntil'] ), true );
+		$this->assertEquals( $task->is_snoozed(), true );
+		$this->assertEquals( isset( $task->snoozed_until ), true );
+
+	}
+
+	/**
+	 * Test that a task can be snoozed
+	 */
+	public function test_task_can_be_snoozed_with_duration() {
+		wp_set_current_user( $this->user );
+
+		TaskLists::add_list(
+			array(
+				'id' => 'testlist',
+			)
+		);
+
+		TaskLists::add_task(
+			'testlist',
+			array(
+				'id'            => 'testtask',
+				'title'         => 'Test Task',
+				'is_snoozeable' => true,
+			)
+		);
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/testtask/snooze' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$request->set_body( wp_json_encode( array( 'duration' => 'week' ) ) );
+		$response = $this->server->dispatch( $request );
+		$data     = $response->get_data();
+
+		$task = TaskLists::get_task( 'testtask' );
+
+		$week_in_ms = WEEK_IN_SECONDS * 1000;
+
+		$this->assertEquals( $data['snoozedUntil'] >= ( ( time() * 1000 ) + $week_in_ms ), true );
+
 	}
 
 
