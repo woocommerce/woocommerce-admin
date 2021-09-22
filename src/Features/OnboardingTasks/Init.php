@@ -48,9 +48,6 @@ class Init {
 		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
-		add_filter( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_dismissal' ), 20 );
-		add_filter( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_snoozed' ), 20 );
-		add_filter( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_list_hidden' ), 20 );
 		add_filter( 'pre_option_woocommerce_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
 		add_filter( 'pre_option_woocommerce_extended_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
 		add_action( 'pre_update_option_woocommerce_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
@@ -469,63 +466,6 @@ class Init {
 			}
 			$extended_list->show();
 		}
-	}
-
-	/**
-	 * Add the dismissal status to each task.
-	 *
-	 * @param array $task_lists Task lists.
-	 * @return array
-	 */
-	public function add_task_dismissal( $task_lists ) {
-		$dismissed = get_option( 'woocommerce_task_list_dismissed_tasks', array() );
-
-		foreach ( $task_lists as $task_list_key => $task_list ) {
-			foreach ( $task_list['tasks'] as $task_key => $task ) {
-				if ( isset( $task['isDismissable'] ) && in_array( $task['id'], $dismissed, true ) ) {
-					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['isDismissed'] = true;
-				}
-			}
-		}
-
-		return $task_lists;
-	}
-
-	/**
-	 * Add the snoozed status to each task.
-	 *
-	 * @param array $task_lists Task lists.
-	 * @return array
-	 */
-	public function add_task_snoozed( $task_lists ) {
-		$snoozed_tasks = get_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
-
-		foreach ( $task_lists as $task_list_key => $task_list ) {
-			foreach ( $task_list['tasks'] as $task_key => $task ) {
-				if ( isset( $task['isSnoozeable'] ) && in_array( $task['id'], array_keys( $snoozed_tasks ), true ) ) {
-					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['isSnoozed']    = $snoozed_tasks[ $task['id'] ] > ( time() * 1000 );
-					$task_lists[ $task_list_key ]['tasks'][ $task_key ]['snoozedUntil'] = $snoozed_tasks[ $task['id'] ];
-				}
-			}
-		}
-
-		return $task_lists;
-	}
-
-	/**
-	 * Add the task list isHidden attribute to each list.
-	 *
-	 * @param array $task_lists Task lists.
-	 * @return array
-	 */
-	public function add_task_list_hidden( $task_lists ) {
-		$hidden = get_option( 'woocommerce_task_list_hidden_lists', array() );
-
-		foreach ( $task_lists as $key => $task_list ) {
-			$task_lists[ $key ]['isHidden'] = in_array( $task_list['id'], $hidden, true );
-		}
-
-		return $task_lists;
 	}
 
 	/**
