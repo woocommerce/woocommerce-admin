@@ -73,6 +73,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 2.1.6 2021-09-21 =
+
+- Fix unsecured reports
+
+
 == 2.1.4 3/29/2021  ==
 
 - Fix: Adding New Zealand and Ireland to selective bundle option, previously missed. #6649
