@@ -70,6 +70,8 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+= 1.5.1 2021-09-21 =
+- Fix unsecured reports
 
 = 1.5.0 2020-08-07 =
 - Dev: New notification: Don't forget to test your checkout. #4805
