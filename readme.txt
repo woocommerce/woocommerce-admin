@@ -73,6 +73,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 2.2.7 2021-09-21 =
+
+- Fix unsecured reports
+
+
 == 2.2.6 5/7/2021 ==
 - Fix: Address an issue with OBW when installing only WooCommerce payments and Jetpack. #6957
 

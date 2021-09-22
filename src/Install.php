@@ -57,6 +57,10 @@ class Install {
 			'wc_admin_update_170_homescreen_layout',
 			'wc_admin_update_170_db_version',
 		),
+		'2.2.7'  => array(
+			'wc_admin_update_227_delete_report_downloads',
+			'wc_admin_update_227_db_version',
+		),
 	);
 
 	/**
