@@ -73,6 +73,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.9.1 2021-09-21 =
+
+- Fix unsecured reports
+
+
 == 1.9.0 1/15/2021 ==
 
 - Fix: Add Customer Type column to the Orders report table. #5820
