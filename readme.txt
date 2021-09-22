@@ -73,6 +73,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 2.3.2 2021-09-21 =
+ 
+- Fix unsecured reports
+
 == 2.3.1 5/24/2021 ==
 - Tweak: Store profiler - Changed MailPoet's title and description #6990
 - Update: Payment recommendation screen transition and add external link icon. #7022
