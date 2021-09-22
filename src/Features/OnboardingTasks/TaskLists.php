@@ -8,10 +8,11 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Payments;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Purchase;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Shipping;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Tax;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
 use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init as RemoteFreeExtensions;
@@ -97,6 +98,7 @@ class TaskLists {
 		self::add_task( 'setup', WooCommercePayments::get_task() );
 		self::add_task( 'setup', Payments::get_task() );
 		self::add_task( 'setup', Tax::get_task() );
+		self::add_task( 'setup', Shipping::get_task() );
 	}
 
 	/**
@@ -126,14 +128,6 @@ class TaskLists {
 		}
 
 		$business_extensions = isset( $profiler_data['business_extensions'] ) ? $profiler_data['business_extensions'] : array();
-		$product_query       = new \WC_Product_Query(
-			array(
-				'limit'  => 1,
-				'return' => 'ids',
-				'status' => array( 'publish' ),
-			)
-		);
-		$products            = $product_query->get_products();
 
 		$marketing_extension_bundles        = RemoteFreeExtensions::get_extensions(
 			array(
@@ -163,29 +157,6 @@ class TaskLists {
 				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
-					array(
-						'id'          => 'shipping',
-						'title'       => __( 'Set up shipping', 'woocommerce-admin' ),
-						'content'     => __(
-							"Set your store location and where you'll ship to.",
-							'woocommerce-admin'
-						),
-						'actionUrl'   => count( \WC_Shipping_Zones::get_zones() ) > 0
-							? admin_url( 'admin.php?page=wc-settings&tab=shipping' )
-							: null,
-						'actionLabel' => __( "Let's go", 'woocommerce-admin' ),
-						'isComplete'  => count( \WC_Shipping_Zones::get_zones() ) > 0,
-						'isVisible'   => in_array( 'physical', $product_types, true ) ||
-							count(
-								wc_get_products(
-									array(
-										'virtual' => false,
-										'limit'   => 1,
-									)
-								)
-							) > 0,
-						'time'        => __( '1 minute', 'woocommerce-admin' ),
-					),
 					array(
 						'id'         => 'marketing',
 						'title'      => __( 'Set up marketing tools', 'woocommerce-admin' ),
