@@ -73,6 +73,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.8.4 2021-09-21 =
+ 
+- Fix unsecured reports
+
 == 1.8.3 1/5/2021 ==
 
 - Fix: Compile the debug module so it can be used in older browsers like IE11. #5987
