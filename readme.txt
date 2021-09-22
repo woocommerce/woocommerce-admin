@@ -75,6 +75,9 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Unreleased ==
 
+= 2.4.5 2021-09-21 =
+- Fix unsecured reports
+
 == 2.4.4 7/21/2021 ==
 - Fix: Fix homepage stock panel regression in 2.4.3. #7389
 
