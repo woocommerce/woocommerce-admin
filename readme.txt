@@ -70,6 +70,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 3. Analytics
 
 == Changelog ==
+
+= 1.4.1 2021-09-21 =
+
+- Fix unsecured reports
+
 = 1.4.0 2020-07-22 =
 - Fix: Update returning customer total to include customers whose first order was within the report date range #4430
 - Fix: Fix an error in the Analytics/Orders table when there is an order deleted directly from the database #4630
