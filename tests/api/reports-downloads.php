@@ -92,7 +92,7 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( $this->user, $download_report['user_id'] );
 		$this->assertEquals( '1.2.3.4', $download_report['ip_address'] );
 		$this->assertEquals( 'help.png', $download_report['file_name'] );
-		$this->assertEquals( esc_url( WC_ABSPATH .  'assets/images/help.png' ), $download_report['file_path'] );
+		$this->assertEquals( WC_ABSPATH . 'assets/images/help.png', $download_report['file_path'] );
 	}
 
 	/**
