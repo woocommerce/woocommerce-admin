@@ -75,6 +75,22 @@ class WooCommercePayments {
 	 * @return bool
 	 */
 	public static function is_supported() {
-		return in_array( WC()->countries->get_base_country(), OnboardingTasks::get_woocommerce_payments_supported_countries(), true );
+		return in_array(
+			WC()->countries->get_base_country(),
+			array(
+				'US',
+				'PR',
+				'AU',
+				'CA',
+				'DE',
+				'ES',
+				'FR',
+				'GB',
+				'IE',
+				'IT',
+				'NZ',
+			),
+			true
+		);
 	}
 }

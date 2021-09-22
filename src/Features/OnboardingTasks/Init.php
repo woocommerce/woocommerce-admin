@@ -122,7 +122,6 @@ class Init {
 		$settings['isAppearanceComplete']           = get_option( 'woocommerce_task_list_appearance_complete' );
 		$settings['isTaxComplete']                  = self::check_task_completion( 'tax' );
 		$settings['shippingZonesCount']             = count( \WC_Shipping_Zones::get_zones() );
-		$settings['stripeSupportedCountries']       = self::get_stripe_supported_countries();
 		$settings['stylesheet']                     = get_option( 'stylesheet' );
 		$settings['taxJarActivated']                = class_exists( 'WC_Taxjar' );
 		$settings['themeMods']                      = get_theme_mods();
@@ -332,78 +331,6 @@ class Init {
 				true
 			);
 		}
-	}
-
-	/**
-	 * Returns a list of Stripe supported countries. This method can be removed once merged to core.
-	 *
-	 * @return array
-	 */
-	public static function get_stripe_supported_countries() {
-		// https://stripe.com/global.
-		return array(
-			'AU',
-			'AT',
-			'BE',
-			'BG',
-			'BR',
-			'CA',
-			'CY',
-			'CZ',
-			'DK',
-			'EE',
-			'FI',
-			'FR',
-			'DE',
-			'GR',
-			'HK',
-			'IN',
-			'IE',
-			'IT',
-			'JP',
-			'LV',
-			'LT',
-			'LU',
-			'MY',
-			'MT',
-			'MX',
-			'NL',
-			'NZ',
-			'NO',
-			'PL',
-			'PT',
-			'RO',
-			'SG',
-			'SK',
-			'SI',
-			'ES',
-			'SE',
-			'CH',
-			'GB',
-			'US',
-			'PR',
-		);
-	}
-
-	/**
-	 * Returns a list of WooCommerce Payments supported countries.
-	 *
-	 * @return array
-	 */
-	public static function get_woocommerce_payments_supported_countries() {
-		return array(
-			'US',
-			'PR',
-			'AU',
-			'CA',
-			'DE',
-			'ES',
-			'FR',
-			'GB',
-			'IE',
-			'IT',
-			'NZ',
-		);
 	}
 
 	/**
