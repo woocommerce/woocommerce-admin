@@ -5,9 +5,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
-use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Marketing;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Payments;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Purchase;
@@ -15,8 +13,6 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Shipping;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Tax;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
-use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init as RemoteFreeExtensions;
-use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Task Lists class.
@@ -99,6 +95,7 @@ class TaskLists {
 		self::add_task( 'setup', Payments::get_task() );
 		self::add_task( 'setup', Tax::get_task() );
 		self::add_task( 'setup', Shipping::get_task() );
+		self::add_task( 'setup', Marketing::get_task() );
 	}
 
 	/**
@@ -107,84 +104,7 @@ class TaskLists {
 	 * @return array
 	 */
 	public static function get_all() {
-		$profiler_data         = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
-		$installed_plugins     = PluginsHelper::get_installed_plugin_slugs();
-		$product_types         = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
-		$allowed_product_types = Onboarding::get_allowed_product_types();
-		$purchaseable_products = array();
-		$remaining_products    = array();
-
-		foreach ( $product_types as $product_type ) {
-
-			if ( ! isset( $allowed_product_types[ $product_type ]['slug'] ) ) {
-				continue;
-			}
-
-			$purchaseable_products[] = $allowed_product_types[ $product_type ];
-
-			if ( ! in_array( $allowed_product_types[ $product_type ]['slug'], $installed_plugins, true ) ) {
-				$remaining_products[] = $allowed_product_types[ $product_type ]['label'];
-			}
-		}
-
-		$business_extensions = isset( $profiler_data['business_extensions'] ) ? $profiler_data['business_extensions'] : array();
-
-		$marketing_extension_bundles        = RemoteFreeExtensions::get_extensions(
-			array(
-				'reach',
-				'grow',
-			)
-		);
-		$has_installed_marketing_extensions = array_reduce(
-			$marketing_extension_bundles,
-			function( $has_installed, $bundle ) {
-				if ( $has_installed ) {
-					return true;
-				}
-				foreach ( $bundle['plugins'] as $plugin ) {
-					if ( $plugin->is_installed ) {
-						return true;
-					}
-				}
-				return false;
-			},
-			false
-		);
-
-		$task_lists = array(
-			array(
-				'id'         => 'setup',
-				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
-				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
-				'tasks'      => array(
-					array(
-						'id'         => 'marketing',
-						'title'      => __( 'Set up marketing tools', 'woocommerce-admin' ),
-						'content'    => __(
-							'Add recommended marketing tools to reach new customers and grow your business',
-							'woocommerce-admin'
-						),
-						'isComplete' => $has_installed_marketing_extensions,
-						'isVisible'  => Features::is_enabled( 'remote-free-extensions' ) && count( $marketing_extension_bundles ) > 0,
-						'time'       => __( '1 minute', 'woocommerce-admin' ),
-					),
-					array(
-						'id'          => 'appearance',
-						'title'       => __( 'Personalize my store', 'woocommerce-admin' ),
-						'content'     => __(
-							'Add your logo, create a homepage, and start designing your store.',
-							'woocommerce-admin'
-						),
-						'actionLabel' => __( "Let's go", 'woocommerce-admin' ),
-						'isComplete'  => get_option( 'woocommerce_task_list_appearance_complete' ),
-						'isVisible'   => true,
-						'time'        => __( '2 minutes', 'woocommerce-admin' ),
-					),
-				),
-			),
-		);
-
-		return apply_filters( 'woocommerce_admin_onboarding_tasks', $task_lists );
+		return self::$lists;
 	}
 
 	/**
