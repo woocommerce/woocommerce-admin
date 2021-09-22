@@ -72,6 +72,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.7.4 2021-09-21 =
+
+- Fix unsecured reports
+
 = 1.7.3 12/03/2020 =
 
 - Fix: Don't show Store Setup link on home screen #5801
