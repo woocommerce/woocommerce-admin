@@ -73,6 +73,11 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 2.0.4 2021-09-21 =
+
+- Fix unsecured reports
+
+
 == 2.0.3 03/10/2021 ==
 
 - Fix: Crash of Analytics > Settings page when Gutenberg is installed. #6540
