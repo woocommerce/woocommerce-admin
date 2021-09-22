@@ -1,3 +1,7 @@
+== 2.5.2 09/21/2021 ==
+
+- Fix unsecured reports
+
 == 2.5.1 08/16/2021 == 
 
 - Fix: Fix blank screen by setting a default value #7506
