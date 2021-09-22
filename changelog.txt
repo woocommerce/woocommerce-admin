@@ -1,3 +1,7 @@
+== 2.6.5 09/22/2021 ==
+
+- Fix: Add filters to get new hidden options #7698
+
 == 2.6.4 09/21/2021 ==
 
 - Fix: Use installable extensions for local state versus free extensions. #7585
