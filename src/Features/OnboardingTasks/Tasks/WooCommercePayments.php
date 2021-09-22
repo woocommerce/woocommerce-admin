@@ -27,7 +27,7 @@ class WooCommercePayments {
 			'is_complete'  => self::is_connected(),
 			'is_visible'   => self::is_requested() &&
 				self::is_installed() &&
-				in_array( WC()->countries->get_base_country(), OnboardingTasks::get_woocommerce_payments_supported_countries(), true ),
+				self::is_supported(),
 			'time'         => __( '2 minutes', 'woocommerce-admin' ),
 		);
 	}
@@ -67,5 +67,14 @@ class WooCommercePayments {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if the store is in a supported country.
+	 *
+	 * @return bool
+	 */
+	public static function is_supported() {
+		return in_array( WC()->countries->get_base_country(), OnboardingTasks::get_woocommerce_payments_supported_countries(), true );
 	}
 }

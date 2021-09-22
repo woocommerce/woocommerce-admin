@@ -10,6 +10,7 @@ use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Payments;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Purchase;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
@@ -94,7 +95,7 @@ class TaskLists {
 		self::add_task( 'setup', Purchase::get_task() );
 		self::add_task( 'setup', Products::get_task() );
 		self::add_task( 'setup', WooCommercePayments::get_task() );
-
+		self::add_task( 'setup', Payments::get_task() );
 	}
 
 	/**
@@ -133,13 +134,6 @@ class TaskLists {
 		);
 		$products            = $product_query->get_products();
 
-		$gateways                = WC()->payment_gateways->get_available_payment_gateways();
-		$enabled_gateways        = array_filter(
-			$gateways,
-			function( $gateway ) {
-				return 'yes' === $gateway->enabled;
-			}
-		);
 		$can_use_automated_taxes = ! class_exists( 'WC_Taxjar' ) &&
 			in_array( WC()->countries->get_base_country(), OnboardingTasks::get_automated_tax_supported_countries(), true );
 
@@ -171,22 +165,6 @@ class TaskLists {
 				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
-					array(
-						'id'         => 'payments',
-						'title'      => __( 'Set up payments', 'woocommerce-admin' ),
-						'content'    => __(
-							'Choose payment providers and enable payment methods at checkout.',
-							'woocommerce-admin'
-						),
-						'isComplete' => ! empty( $enabled_gateways ),
-						'isVisible'  => Features::is_enabled( 'payment-gateway-suggestions' ) &&
-							(
-								! in_array( 'woocommerce-payments', $business_extensions, true ) ||
-								! in_array( 'woocommerce-payments', $installed_plugins, true ) ||
-								! in_array( WC()->countries->get_base_country(), OnboardingTasks::get_woocommerce_payments_supported_countries(), true )
-							),
-						'time'       => __( '2 minutes', 'woocommerce-admin' ),
-					),
 					array(
 						'id'          => 'tax',
 						'title'       => __( 'Set up tax', 'woocommerce-admin' ),
