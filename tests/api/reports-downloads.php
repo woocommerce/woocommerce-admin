@@ -249,7 +249,7 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $reports ) );
-		$this->assertEquals( 'test.png', $download_report['file_name'] );
+		$this->assertEquals( 'help.png', $download_report['file_name'] );
 	}
 
 	/**
@@ -292,7 +292,7 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $reports ) );
-		$this->assertEquals( 'test.png', $download_report['file_name'] );
+		$this->assertEquals( 'help.png', $download_report['file_name'] );
 	}
 
 	/**
@@ -338,7 +338,7 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $reports ) );
-		$this->assertEquals( 'test.png', $download_report['file_name'] );
+		$this->assertEquals( 'help.png', $download_report['file_name'] );
 		$this->assertEquals( 2, $download_report['user_id'] );
 	}
 
@@ -376,7 +376,7 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $reports ) );
-		$this->assertEquals( 'test.png', $download_report['file_name'] );
+		$this->assertEquals( 'help.png', $download_report['file_name'] );
 	}
 
 	/**
@@ -397,7 +397,7 @@ class WC_Tests_API_Reports_Downloads extends WC_REST_Unit_Test_Case {
 		// Verify the first product's download info is blank.
 		$this->assertEquals( '', $reports[0]['file_name'] );
 		$this->assertEquals( '', $reports[0]['file_path'] );
-		$this->assertEquals( 'test.png', $reports[1]['file_name'] );
+		$this->assertEquals( 'help.png', $reports[1]['file_name'] );
 	}
 
 	/**
