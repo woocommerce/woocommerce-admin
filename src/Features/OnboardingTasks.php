@@ -493,7 +493,7 @@ class OnboardingTasks {
 				if ( 'yes' === $value ) {
 					$hidden[] = 'setup';
 				} else {
-					array_diff( $hidden, array( 'setup' ) );
+					$hidden = array_diff( $hidden, array( 'setup' ) );
 				}
 				update_option( 'woocommerce_task_list_hidden_lists', array_unique( $hidden ) );
 				delete_option( 'woocommerce_task_list_hidden' );
@@ -503,7 +503,7 @@ class OnboardingTasks {
 				if ( 'yes' === $value ) {
 					$hidden[] = 'extended';
 				} else {
-					array_diff( $hidden, array( 'extended' ) );
+					$hidden = array_diff( $hidden, array( 'extended' ) );
 				}
 				update_option( 'woocommerce_task_list_hidden_lists', array_unique( $hidden ) );
 				delete_option( 'woocommerce_extended_task_list_hidden' );
