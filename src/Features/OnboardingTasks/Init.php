@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
 use \Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\API\Reports\Taxes\Stats\DataStore as TaxDataStore;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Tax;
 
 /**
  * Contains the logic for completing onboarding tasks.
@@ -108,7 +109,7 @@ class Init {
 
 		// @todo We may want to consider caching some of these and use to check against
 		// task completion along with cache busting for active tasks.
-		$settings['automatedTaxSupportedCountries'] = self::get_automated_tax_supported_countries();
+		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_tax_supported_countries();
 		$settings['hasHomepage']                    = self::check_task_completion( 'homepage' ) || 'classic' === get_option( 'classic-editor-replace' );
 		$settings['hasPaymentGateway']              = ! empty( $enabled_gateways );
 		$settings['enabledPaymentGateways']         = array_keys( $enabled_gateways );
@@ -334,21 +335,6 @@ class Init {
 				true
 			);
 		}
-	}
-
-	/**
-	 * Get an array of countries that support automated tax.
-	 *
-	 * @return array
-	 */
-	public static function get_automated_tax_supported_countries() {
-		// https://developers.taxjar.com/api/reference/#countries .
-		$tax_supported_countries = array_merge(
-			array( 'US', 'CA', 'AU' ),
-			WC()->countries->get_european_union_countries()
-		);
-
-		return $tax_supported_countries;
 	}
 
 	/**

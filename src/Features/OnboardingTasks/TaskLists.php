@@ -5,7 +5,6 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
-use Automattic\WooCommerce\Admin\API\Reports\Taxes\Stats\DataStore as TaxDataStore;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
@@ -13,6 +12,7 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Payments;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Purchase;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Tax;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
 use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init as RemoteFreeExtensions;
 use Automattic\WooCommerce\Admin\PluginsHelper;
@@ -96,6 +96,7 @@ class TaskLists {
 		self::add_task( 'setup', Products::get_task() );
 		self::add_task( 'setup', WooCommercePayments::get_task() );
 		self::add_task( 'setup', Payments::get_task() );
+		self::add_task( 'setup', Tax::get_task() );
 	}
 
 	/**
@@ -134,9 +135,6 @@ class TaskLists {
 		);
 		$products            = $product_query->get_products();
 
-		$can_use_automated_taxes = ! class_exists( 'WC_Taxjar' ) &&
-			in_array( WC()->countries->get_base_country(), OnboardingTasks::get_automated_tax_supported_countries(), true );
-
 		$marketing_extension_bundles        = RemoteFreeExtensions::get_extensions(
 			array(
 				'reach',
@@ -165,27 +163,6 @@ class TaskLists {
 				'isComplete' => get_option( 'woocommerce_task_list_complete' ) === 'yes',
 				'title'      => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'      => array(
-					array(
-						'id'          => 'tax',
-						'title'       => __( 'Set up tax', 'woocommerce-admin' ),
-						'content'     => $can_use_automated_taxes
-							? __(
-								'Good news! WooCommerce Services and Jetpack can automate your sales tax calculations for you.',
-								'woocommerce-admin'
-							)
-							: __(
-								'Set your store location and configure tax rate settings.',
-								'woocommerce-admin'
-							),
-						'actionLabel' => $can_use_automated_taxes
-							? __( 'Yes please', 'woocommerce-admin' )
-							: __( "Let's go", 'woocommerce-admin' ),
-						'isComplete'  => get_option( 'wc_connect_taxes_enabled' ) ||
-							count( TaxDataStore::get_taxes( array() ) ) > 0 ||
-							false !== get_option( 'woocommerce_no_sales_tax' ),
-						'isVisible'   => true,
-						'time'        => __( '1 minute', 'woocommerce-admin' ),
-					),
 					array(
 						'id'          => 'shipping',
 						'title'       => __( 'Set up shipping', 'woocommerce-admin' ),
