@@ -71,6 +71,10 @@ Release and roadmap notes are available on the [WooCommerce Developers Blog](htt
 
 == Changelog ==
 
+= 1.3.3 2021-09-21 =
+
+- Fix unsecured reports
+
 = 1.3.2 2020-07-29 =
 - Fix: bug preventing saving user preferences on WP 5.3. #4869
 
