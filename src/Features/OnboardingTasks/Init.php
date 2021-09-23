@@ -52,7 +52,6 @@ class Init {
 		add_filter( 'pre_option_woocommerce_extended_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
 		add_action( 'pre_update_option_woocommerce_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
 		add_action( 'pre_update_option_woocommerce_extended_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
-		TaskLists::add_defaults();
 
 		if ( ! is_admin() ) {
 			return;
@@ -78,8 +77,6 @@ class Init {
 	public function add_media_scripts() {
 		wp_enqueue_media();
 	}
-
-
 
 	/**
 	 * Get task item data for settings filter.

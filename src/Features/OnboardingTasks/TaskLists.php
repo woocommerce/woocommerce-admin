@@ -13,6 +13,7 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Shipping;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Tax;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
+use Automattic\WooCommerce\Admin\Loader;
 
 /**
  * Task Lists class.
@@ -80,7 +81,13 @@ class TaskLists {
 	/**
 	 * Add default task lists.
 	 */
-	public static function add_defaults() {
+	public static function maybe_add_default_tasks() {
+		$added = isset( self::$lists['setup'] );
+
+		if ( ! apply_filters( 'woocommerce_admin_onboarding_tasks_add_default_tasks', ! $added ) ) {
+			return;
+		}
+
 		self::add_list(
 			array(
 				'id'    => 'setup',
@@ -103,7 +110,8 @@ class TaskLists {
 	 *
 	 * @return array
 	 */
-	public static function get_all() {
+	public static function get_lists() {
+		self::maybe_add_default_tasks();
 		return self::$lists;
 	}
 
@@ -112,7 +120,7 @@ class TaskLists {
 	 */
 	public static function get_visible() {
 		return array_filter(
-			self::get_all(),
+			self::get_lists(),
 			function ( $task_list ) {
 				return ! $task_list->is_hidden();
 			}
@@ -128,7 +136,7 @@ class TaskLists {
 	 * @return TaskList|null
 	 */
 	public static function get_list( $id ) {
-		foreach ( self::get_all() as $task_list ) {
+		foreach ( self::get_lists() as $task_list ) {
 			if ( $task_list->id === $id ) {
 				return $task_list;
 			}
@@ -153,7 +161,7 @@ class TaskLists {
 		}
 
 		$tasks_to_search = $task_list ? $task_list['tasks'] : array_reduce(
-			self::get_all(),
+			self::get_lists(),
 			function ( $all, $curr ) {
 				return array_merge( $all, $curr['tasks'] );
 			},

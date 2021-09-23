@@ -753,7 +753,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_tasks() {
-		$lists = TaskLists::get_all();
+		$lists = TaskLists::get_lists();
 		$json  = array_map(
 			function( $list ) {
 				return $list->get_json();
