@@ -23,7 +23,7 @@ class Payments {
 				'woocommerce-admin'
 			),
 			'is_complete' => self::has_gateways(),
-			'is_visible'  => Features::is_enabled( 'payment-gateway-suggestions' ) &&
+			'can_view'    => Features::is_enabled( 'payment-gateway-suggestions' ) &&
 				(
 					! WooCommercePayments::is_requested() ||
 					! WooCommercePayments::is_installed() ||

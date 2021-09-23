@@ -25,7 +25,7 @@ class WooCommercePayments {
 			'action_label' => __( 'Finish setup', 'woocommerce-admin' ),
 			'expanded'     => true,
 			'is_complete'  => self::is_connected(),
-			'is_visible'   => self::is_requested() &&
+			'can_view'     => self::is_requested() &&
 				self::is_installed() &&
 				self::is_supported(),
 			'time'         => __( '2 minutes', 'woocommerce-admin' ),

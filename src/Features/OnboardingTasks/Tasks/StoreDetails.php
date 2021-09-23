@@ -26,7 +26,7 @@ class StoreDetails {
 			'action_label' => __( "Let's go", 'woocommerce-admin' ),
 			'action_url'   => '/setup-wizard',
 			'is_complete'  => isset( $profiler_data['completed'] ) && true === $profiler_data['completed'],
-			'is_visible'   => true,
+			'can_view'     => true,
 			'time'         => __( '4 minutes', 'woocommerce-admin' ),
 		);
 	}

@@ -23,7 +23,7 @@ class Marketing {
 				'woocommerce-admin'
 			),
 			'is_complete' => self::has_installed_extensions(),
-			'is_visible'  => Features::is_enabled( 'remote-free-extensions' ) && count( self::get_bundles() ) > 0,
+			'can_view'    => Features::is_enabled( 'remote-free-extensions' ) && count( self::get_bundles() ) > 0,
 			'time'        => __( '1 minute', 'woocommerce-admin' ),
 		);
 	}

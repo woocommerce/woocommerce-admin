@@ -26,7 +26,7 @@ class Shipping {
 				: null,
 			'action_label' => __( "Let's go", 'woocommerce-admin' ),
 			'is_complete'  => self::has_shipping_zones(),
-			'is_visible'   => self::has_physical_products(),
+			'can_view'     => self::has_physical_products(),
 			'time'         => __( '1 minute', 'woocommerce-admin' ),
 		);
 	}

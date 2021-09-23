@@ -20,7 +20,7 @@ class Products {
 				'woocommerce-admin'
 			),
 			'is_complete' => self::has_products(),
-			'is_visible'  => true,
+			'can_view'    => true,
 			'time'        => __( '1 minute per product', 'woocommerce-admin' ),
 		);
 	}

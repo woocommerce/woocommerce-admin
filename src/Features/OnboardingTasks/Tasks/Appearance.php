@@ -21,7 +21,7 @@ class Appearance {
 			),
 			'action_label' => __( "Let's go", 'woocommerce-admin' ),
 			'is_complete'  => get_option( 'woocommerce_task_list_appearance_complete' ),
-			'is_visible'   => true,
+			'can_view'     => true,
 			'time'         => __( '2 minutes', 'woocommerce-admin' ),
 		);
 	}

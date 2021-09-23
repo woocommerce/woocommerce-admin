@@ -46,7 +46,7 @@ class Purchase {
 			'action_label'   => __( 'Purchase & install now', 'woocommerce-admin' ),
 			'action_url'     => '/setup-wizard',
 			'is_complete'    => count( $products['remaining'] ) === 0,
-			'is_visible'     => count( $products['purchaseable'] ) > 0,
+			'can_view'       => count( $products['purchaseable'] ) > 0,
 			'time'           => __( '2 minutes', 'woocommerce-admin' ),
 			'is_dismissable' => true,
 		);
