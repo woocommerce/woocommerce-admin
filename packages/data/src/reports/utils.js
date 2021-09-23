@@ -353,14 +353,11 @@ export function getReportChartData( options ) {
 	const { endpoint } = options;
 	let reportSelectors = options.selector;
 	if ( options.select && ! options.selector ) {
-		deprecated(
-			'option.select is depreciated, please use option.selector',
-			{
-				version: '1.7.0',
-				hint:
-					'You can pass the report selectors through option.selector now.',
-			}
-		);
+		deprecated( 'option.select', {
+			version: '1.7.0',
+			hint:
+				'You can pass the report selectors through option.selector now.',
+		} );
 		reportSelectors = options.select( STORE_NAME );
 	}
 	const {
@@ -515,14 +512,11 @@ export function getReportTableData( options ) {
 	const { endpoint } = options;
 	let reportSelectors = options.selector;
 	if ( options.select && ! options.selector ) {
-		deprecated(
-			'option.select is depreciated, please use option.selector',
-			{
-				version: '1.7.0',
-				hint:
-					'You can pass the report selectors through option.selector now.',
-			}
-		);
+		deprecated( 'option.select', {
+			version: '1.7.0',
+			hint:
+				'You can pass the report selectors through option.selector now.',
+		} );
 		reportSelectors = options.select( STORE_NAME );
 	}
 	const {
