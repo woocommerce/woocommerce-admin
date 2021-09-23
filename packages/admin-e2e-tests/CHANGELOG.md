@@ -2,6 +2,11 @@
 
 # 0.1.1
 
+-   Allow packages to be built in isolation. #7286
+-   Add scope to BACS slotfill #7405
+-   Update e2e matcher for tasklist header #7406
+-   Update homescreen, utils, payment task, payments setup. #7338
+-   Refactor package style builds #7531
 -   Updated onboarding tests to include email prefill and move client setup checkbox to business step.
 -   Payment task update. #7577
 -   Add test cases for the home screen tasklist and activity panels. #7509
