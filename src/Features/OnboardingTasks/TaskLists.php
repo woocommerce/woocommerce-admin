@@ -114,7 +114,7 @@ class TaskLists {
 		return array_filter(
 			self::get_all(),
 			function ( $task_list ) {
-				return ! $task_list['isHidden'];
+				return ! $task_list->is_hidden();
 			}
 		);
 	}
@@ -129,8 +129,8 @@ class TaskLists {
 	 */
 	public static function get_list( $id ) {
 		foreach ( self::get_all() as $task_list ) {
-			if ( $task_list['id'] === $id ) {
-				return new TaskList( $task_list );
+			if ( $task_list->id === $id ) {
+				return $task_list;
 			}
 		}
 
