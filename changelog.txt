@@ -1,4 +1,4 @@
-== 2.7.0 09/21/2021 == 
+== 2.7.1 09/23/2021 == 
 
 - Fix: Allow super admins all capabilities within WooCommerce Admin
 - Fix: Fix end date for last periods
@@ -23,6 +23,7 @@
 - Update: Deleted OnboardingEmailMarketing note class #7595
 - Update: Removes the use of the depreciated woocommerce_shared_settings hook. #7480
 - Update: Updating eway logo in payment suggestions defaults
+- Update: Update marketing task completion logic. #7586
 - Dev: Add email address field to OBW #7552
 - Tweak: Add navigation items for the Marketplace menu. #7529
 - Tweak: Change all analytics strings and labels to sentence case. #6501

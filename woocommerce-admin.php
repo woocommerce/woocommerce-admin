@@ -7,7 +7,7 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 2.7.0-rc.1
+ * Version: 2.7.1-rc.1
  * Requires at least: 5.4
  * Requires PHP: 7.0
  *
