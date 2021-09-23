@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Prevent nesting div elements inside p element #7704
+
+- go to wp-admin > Analytics > Orders > Select Advanced filters
+- Inspect elements on the select element inside the filter (the one with options All, Any) and validate if "Orders match " is not inside a p element
+
 ### Add Newsletter Signup #7601
 
 - Start OBW and set up your browser console to monitor tracks. To do this, run `localStorage.setItem( 'debug', 'wc-admin:*' );`
