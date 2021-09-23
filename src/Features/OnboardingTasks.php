@@ -52,6 +52,10 @@ class OnboardingTasks {
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_dismissal' ), 20 );
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'add_task_snoozed' ), 20 );
 		add_action( 'woocommerce_admin_onboarding_tasks', array( $this, 'record_completed_tasks' ), PHP_INT_MAX );
+		add_filter( 'pre_option_woocommerce_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
+		add_filter( 'pre_option_woocommerce_extended_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
+		add_action( 'pre_update_option_woocommerce_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
+		add_action( 'pre_update_option_woocommerce_extended_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
 
 		if ( ! is_admin() ) {
 			return;
@@ -77,8 +81,6 @@ class OnboardingTasks {
 	public function add_media_scripts() {
 		wp_enqueue_media();
 	}
-
-
 
 	/**
 	 * Get task item data for settings filter.
@@ -834,5 +836,60 @@ class OnboardingTasks {
 
 		return $task_lists;
 
+	}
+
+	/**
+	 * Get the values from the correct source when attempting to retrieve deprecated options.
+	 *
+	 * @param string $pre_option Pre option value.
+	 * @param string $option Option name.
+	 * @return string
+	 */
+	public function get_deprecated_options( $pre_option, $option ) {
+		if ( defined( 'WC_ADMIN_INSTALLING' ) && WC_ADMIN_INSTALLING ) {
+			return $pre_option;
+		};
+
+		$hidden = get_option( 'woocommerce_task_list_hidden_lists', array() );
+		switch ( $option ) {
+			case 'woocommerce_task_list_hidden':
+				return in_array( 'setup', $hidden, true ) ? 'yes' : 'no';
+			case 'woocommerce_extended_task_list_hidden':
+				return in_array( 'extended', $hidden, true ) ? 'yes' : 'no';
+		}
+	}
+
+	/**
+	 * Updates the new option names when deprecated options are updated.
+	 * This is a temporary fallback until we can fully remove the old task list components.
+	 *
+	 * @param string $value New value.
+	 * @param string $old_value Old value.
+	 * @param string $option Option name.
+	 * @return string
+	 */
+	public function update_deprecated_options( $value, $old_value, $option ) {
+		switch ( $option ) {
+			case 'woocommerce_task_list_hidden':
+				$hidden = get_option( 'woocommerce_task_list_hidden_lists', array() );
+				if ( 'yes' === $value ) {
+					$hidden[] = 'setup';
+				} else {
+					$hidden = array_diff( $hidden, array( 'setup' ) );
+				}
+				update_option( 'woocommerce_task_list_hidden_lists', array_unique( $hidden ) );
+				delete_option( 'woocommerce_task_list_hidden' );
+				return false;
+			case 'woocommerce_extended_task_list_hidden':
+				$hidden = get_option( 'woocommerce_task_list_hidden_lists', array() );
+				if ( 'yes' === $value ) {
+					$hidden[] = 'extended';
+				} else {
+					$hidden = array_diff( $hidden, array( 'extended' ) );
+				}
+				update_option( 'woocommerce_task_list_hidden_lists', array_unique( $hidden ) );
+				delete_option( 'woocommerce_extended_task_list_hidden' );
+				return false;
+		}
 	}
 }
