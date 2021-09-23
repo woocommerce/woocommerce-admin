@@ -188,12 +188,9 @@ class CategoryLookup {
 		foreach ( $ancestors as $ancestor ) {
 			$inserts[] = $this->get_insert_sql( $category_id, $ancestor );
 
-			foreach ( $children as $child ) {
-				$inserts[] = $this->get_insert_sql( $child->category_id, $ancestor );
-			}
-			/*foreach ( $children_ids as $child_category_id ) {
+			foreach ( $children_ids as $child_category_id ) {
 				$inserts[] = $this->get_insert_sql( $child_category_id, $ancestor );
-			}*/
+			}
 		}
 
 		$insert_string = implode( ',', $inserts );
