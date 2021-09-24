@@ -15,8 +15,8 @@ use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\EvaluateSugg
  * WC Pay Promotion engine.
  */
 class Init {
-	const SPECS_TRANSIENT_NAME = 'woocommerce_admin_payment_method_promotion_specs';
-	const EXPLAT_VARIATION_PREFIX = 'woocommerce_wc_pay_promotion_payment_methods_table_';
+	const SPECS_TRANSIENT_NAME    = 'woocommerce_admin_payment_method_promotion_specs';
+	const EXPLAT_VARIATION_PREFIX = 'explat_test_v4_woocommerce_wc_pay_promotion_payment_methods_table_';
 
 	/**
 	 * Constructor.
