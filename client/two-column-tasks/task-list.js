@@ -31,7 +31,6 @@ export const TaskList = ( {
 	trackedCompletedTasks: totalTrackedCompletedTasks,
 	onComplete,
 	onHide,
-	expandingItems = false,
 	twoColumns,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
@@ -350,10 +349,6 @@ export const TaskList = ( {
 									title={ task.title }
 									completed={ task.isComplete }
 									content={ task.content }
-									expandable={
-										expandingItems && task.expandable
-									}
-									expanded={ expandingItems && task.expanded }
 									onClick={ () => {
 										onTaskSelected( task );
 									} }
