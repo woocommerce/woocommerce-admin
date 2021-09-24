@@ -5,6 +5,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Appearance;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Marketing;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Payments;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
@@ -103,6 +104,7 @@ class TaskLists {
 		self::add_task( 'setup', Tax::get_task() );
 		self::add_task( 'setup', Shipping::get_task() );
 		self::add_task( 'setup', Marketing::get_task() );
+		self::add_task( 'setup', Appearance::get_task() );
 	}
 
 	/**
