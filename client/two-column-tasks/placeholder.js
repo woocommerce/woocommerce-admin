@@ -8,7 +8,7 @@ const TaskListPlaceholder = ( props ) => {
 	return (
 		<div className="woocommerce-task-dashboard__container two-column-experiment two-columns">
 			<div className="components-card is-size-large woocommerce-task-card woocommerce-homescreen-card is-loading">
-				<div className="components-flex components-card__header is-size-medium">
+				<div className="components-card__header is-size-medium">
 					<div className="wooocommerce-task-card__header">
 						<div className="is-placeholder"> </div>
 					</div>

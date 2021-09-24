@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	ONBOARDING_STORE_NAME,
@@ -11,14 +11,12 @@ import {
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { useExperiment } from '@woocommerce/explat';
-import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import '../task-list/style.scss';
 import './style.scss';
-import { getAllTasks, taskSort } from '../task-list/tasks';
 import { getCountryCode } from '../dashboard/utils';
 import TaskList from './task-list';
 import { TaskStep } from '../task-list/task-step';
@@ -111,29 +109,16 @@ const taskDashboardSelect = ( select ) => {
 	};
 };
 
-const TaskDashboard = ( { userPreferences, query, twoColumns } ) => {
-	const { createNotice } = useDispatch( 'core/notices' );
+const TaskDashboard = ( { query, twoColumns } ) => {
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
-	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
 	const {
 		trackedCompletedTasks,
-		activePlugins,
-		countryCode,
-		freeExtensions,
-		installedPlugins,
-		isJetpackConnected,
-		onboardingStatus,
-		profileItems,
 		isSetupTaskListHidden,
 		dismissedTasks,
 		remindMeLaterTasks,
 		isTaskListComplete,
-		hasCompleteAddress,
-		trackedCompletedActions,
-		isResolving,
 	} = useSelect( taskDashboardSelect );
 
-	const [ isCartModalOpen, setIsCartModalOpen ] = useState( false );
 	const [ isLoadingExperiment, experimentAssignment ] = useExperiment(
 		'woocommerce_tasklist_progression'
 	);
@@ -143,55 +128,9 @@ const TaskDashboard = ( { userPreferences, query, twoColumns } ) => {
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
 	}, [] );
 
-	const getTaskStartedCount = ( taskName ) => {
-		const trackedStartedTasks =
-			userPreferences.task_list_tracked_started_tasks;
-		if ( ! trackedStartedTasks || ! trackedStartedTasks[ taskName ] ) {
-			return 0;
-		}
-		return trackedStartedTasks[ taskName ];
-	};
-
-	const updateTrackStartedCount = ( taskName, newCount ) => {
-		const trackedStartedTasks =
-			userPreferences.task_list_tracked_started_tasks || {};
-		userPreferences.updateUserPreferences( {
-			task_list_tracked_started_tasks: {
-				...( trackedStartedTasks || {} ),
-				[ taskName ]: newCount,
-			},
-		} );
-	};
-
-	const isTaskCompleted = ( taskName ) => {
-		if ( ! trackedCompletedTasks ) {
-			return false;
-		}
-		return trackedCompletedTasks.includes( taskName );
-	};
-
-	const onTaskSelect = ( taskName ) => {
-		const trackStartedCount = getTaskStartedCount( taskName );
-		recordEvent( 'tasklist_click', {
-			task_name: taskName,
-		} );
-
-		if ( ! isTaskCompleted( taskName ) ) {
-			updateTrackStartedCount( taskName, trackStartedCount + 1 );
-		}
-	};
-
-	const toggleCartModal = () => {
-		if ( ! isCartModalOpen ) {
-			recordEvent( 'tasklist_purchase_extensions' );
-		}
-
-		setIsCartModalOpen( ! isCartModalOpen );
-	};
-
 	const getCurrentTask = ( tasks ) => {
 		const { task } = query;
-		const currentTask = tasks.find( ( s ) => s.key === task );
+		const currentTask = tasks.find( ( s ) => s.id === task );
 
 		if ( ! currentTask ) {
 			return null;
@@ -200,45 +139,32 @@ const TaskDashboard = ( { userPreferences, query, twoColumns } ) => {
 		return currentTask;
 	};
 
-	const allTasks = getAllTasks( {
-		activePlugins,
-		countryCode,
-		createNotice,
-		freeExtensions,
-		installAndActivatePlugins,
-		installedPlugins,
-		isJetpackConnected,
-		onboardingStatus,
-		profileItems,
-		query,
-		toggleCartModal,
-		onTaskSelect,
-		hasCompleteAddress,
-		trackedCompletedActions,
-	} );
-
-	const { extension, setup: setupTasks } = allTasks;
 	const { task } = query;
 
-	const extensionTasks =
-		Array.isArray( extension ) && extension.sort( taskSort );
+	const { isResolving, taskList } = useSelect( ( select ) => {
+		return {
+			taskList: select( ONBOARDING_STORE_NAME ).getTaskLists(),
+			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
+				'getTaskLists'
+			),
+		};
+	} );
 
-	const currentTask = getCurrentTask( [
-		...( extensionTasks || [] ),
-		...( setupTasks || [] ),
-	] );
+	if ( isResolving || taskList.length === 0 ) {
+		return <TaskListPlaceholder />;
+	}
+
+	const setupTasks = taskList[ 0 ].tasks;
+	const currentTask = getCurrentTask( setupTasks || [] );
 
 	if ( task && ! currentTask ) {
 		return null;
 	}
+
 	if ( currentTask ) {
 		return (
 			<TaskStep taskContainer={ currentTask.container } query={ query } />
 		);
-	}
-
-	if ( isResolving ) {
-		return <TaskListPlaceholder />;
 	}
 
 	return (

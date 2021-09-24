@@ -67,22 +67,22 @@ export const TaskList = ( {
 	const nowTimestamp = Date.now();
 	const visibleTasks = tasks.filter(
 		( task ) =>
-			task.visible &&
-			task.key !== 'store_details' &&
-			! dismissedTasks.includes( task.key ) &&
-			( ! remindMeLaterTasks[ task.key ] ||
-				remindMeLaterTasks[ task.key ] < nowTimestamp )
+			task.isVisible &&
+			task.id !== 'store_details' &&
+			! dismissedTasks.includes( task.id ) &&
+			( ! remindMeLaterTasks[ task.id ] ||
+				remindMeLaterTasks[ task.id ] < nowTimestamp )
 	);
 
 	const completedTaskKeys = visibleTasks
-		.filter( ( task ) => task.completed )
-		.map( ( task ) => task.key );
+		.filter( ( task ) => task.isComplete )
+		.map( ( task ) => task.id );
 
 	const incompleteTasks = tasks.filter(
 		( task ) =>
-			task.visible &&
-			! task.completed &&
-			! dismissedTasks.includes( task.key )
+			task.isVisible &&
+			! task.isComplete &&
+			! dismissedTasks.includes( task.id )
 	);
 
 	const possiblyCompleteTaskList = () => {
@@ -112,10 +112,10 @@ export const TaskList = ( {
 		return visibleTasks
 			.filter(
 				( task ) =>
-					allTrackedTask.includes( task.key ) &&
-					! partialCompletedTasks.includes( task.key )
+					allTrackedTask.includes( task.id ) &&
+					! partialCompletedTasks.includes( task.id )
 			)
-			.map( ( task ) => task.key );
+			.map( ( task ) => task.id );
 	};
 
 	const possiblyTrackCompletedTasks = () => {
@@ -276,14 +276,14 @@ export const TaskList = ( {
 		if ( ! task.onClick ) {
 			task.onClick = ( e ) => {
 				recordEvent( `${ eventName }_click`, {
-					task_name: task.key,
+					task_name: task.id,
 				} );
 				if ( e.target.nodeName === 'A' ) {
 					// This is a nested link, so don't activate this task.
 					return false;
 				}
 
-				updateQueryString( { task: task.key } );
+				updateQueryString( { task: task.id } );
 			};
 		}
 
@@ -291,14 +291,14 @@ export const TaskList = ( {
 	} );
 
 	const onTaskSelected = ( task ) => {
-		if ( taskHeaders[ task.key ] ) {
-			setHeaderContent( taskHeaders[ task.key ]( task ) );
-			setActiveTaskKey( task.key );
+		if ( taskHeaders[ task.id ] ) {
+			setHeaderContent( taskHeaders[ task.id ]( task ) );
+			setActiveTaskKey( task.id );
 		}
 	};
 
 	let selectedHeaderCard = listTasks.find(
-		( listTask ) => listTask.completed === false
+		( listTask ) => listTask.isComplete === false
 	);
 
 	if ( ! selectedHeaderCard ) {
@@ -339,16 +339,16 @@ export const TaskList = ( {
 							const className = classnames(
 								'woocommerce-task-list__item index-' + index,
 								{
-									complete: task.completed,
-									'is-active': task.key === activeTaskKey,
+									complete: task.isComplete,
+									'is-active': task.id === activeTaskKey,
 								}
 							);
 							return (
 								<TaskItem
-									key={ task.key }
+									key={ task.id }
 									className={ className }
 									title={ task.title }
-									completed={ task.completed }
+									completed={ task.isComplete }
 									content={ task.content }
 									expandable={
 										expandingItems && task.expandable
@@ -359,7 +359,7 @@ export const TaskList = ( {
 									} }
 									onDismiss={
 										task.isDismissable
-											? () => dismissTask( task.key )
+											? () => dismissTask( task.id )
 											: undefined
 									}
 									remindMeLater={
