@@ -7,7 +7,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import { createElement, Component } from '@wordpress/element';
 import { Dropdown, DatePicker as WpDatePicker } from '@wordpress/components';
 import { partial } from 'lodash';
-import { TAB } from '@wordpress/keycodes';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { dateValidationMessages, toMoment } from '@woocommerce/date';
@@ -24,12 +23,6 @@ class DatePicker extends Component {
 
 		this.onDateChange = this.onDateChange.bind( this );
 		this.onInputChange = this.onInputChange.bind( this );
-	}
-
-	handleKeyDown( isOpen, onToggle, { keyCode } ) {
-		if ( TAB === keyCode && isOpen ) {
-			onToggle();
-		}
 	}
 
 	handleFocus( isOpen, onToggle ) {
@@ -119,11 +112,6 @@ class DatePicker extends Component {
 						) }
 						aria-expanded={ isOpen }
 						focusOnMount={ false }
-						onKeyDown={ partial(
-							this.handleKeyDown,
-							isOpen,
-							onToggle
-						) }
 						errorPosition="top center"
 					/>
 				) }
