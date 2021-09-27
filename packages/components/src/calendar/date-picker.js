@@ -38,6 +38,26 @@ class DatePicker extends Component {
 		}
 	}
 
+	handleBlur( isOpen, onToggle, event ) {
+		if ( ! isOpen ) {
+			return;
+		}
+
+		const relatedTargetParent = event.relatedTarget?.closest(
+				'.components-dropdown'
+			),
+			currentTargetParent = event.currentTarget?.closest(
+				'.components-dropdown'
+			);
+
+		if (
+			! relatedTargetParent ||
+			relatedTargetParent !== currentTargetParent
+		) {
+			onToggle();
+		}
+	}
+
 	onDateChange( onToggle, dateString ) {
 		const { onUpdate, dateFormat } = this.props;
 		const date = moment( dateString );
@@ -81,6 +101,7 @@ class DatePicker extends Component {
 						disabled={ disabled }
 						value={ text }
 						onChange={ this.onInputChange }
+						onBlur={ partial( this.handleBlur, isOpen, onToggle ) }
 						dateFormat={ dateFormat }
 						label={ __( 'Choose a date', 'woocommerce-admin' ) }
 						error={ error }
