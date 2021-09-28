@@ -156,17 +156,16 @@ class TaskLists {
 	 * @return Object
 	 */
 	public static function get_task( $id, $task_list_id = null ) {
-		$task_list = $task_list_id ? self::get_task_list_by_id( $task_list_id ) : null;
+		$task_list = $task_list_id ? self::get_list( $task_list_id ) : null;
 
 		if ( $task_list_id && ! $task_list ) {
 			return null;
 		}
 
-		$tasks_to_search = $task_list ? $task_list['tasks'] : array_reduce(
+		$tasks_to_search = $task_list ? $task_list->get_json()['tasks'] : array_reduce(
 			self::get_lists(),
 			function ( $all, $curr ) {
-				$json = $curr->get_json();
-				return array_merge( $all, $json['tasks'] );
+				return array_merge( $all, $curr->get_json()['tasks'] );
 			},
 			array()
 		);
