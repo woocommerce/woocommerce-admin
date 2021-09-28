@@ -794,19 +794,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function undo_dismiss_task( $request ) {
-		$id = $request->get_param( 'id' );
-
-		$dismissed = get_option( 'woocommerce_task_list_dismissed_tasks', array() );
-		$dismissed = array_diff( $dismissed, array( $id ) );
-		$update    = update_option( 'woocommerce_task_list_dismissed_tasks', $dismissed );
-
-		if ( $update ) {
-			wc_admin_record_tracks_event( 'tasklist_undo_dismiss_task', array( 'task_name' => $id ) );
-		}
-
+		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
-
-		return rest_ensure_response( $task );
+		$task->undo_dismiss();
+		return rest_ensure_response( $task->get_json() );
 	}
 
 	/**
@@ -844,29 +835,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function undo_snooze_task( $request ) {
-		$id = $request->get_param( 'id' );
-
-		$snoozed = get_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
-
-		if ( ! isset( $snoozed[ $id ] ) ) {
-			return new \WP_Error(
-				'woocommerce_tasks_invalid_task',
-				__( 'Sorry, no snoozed task with that ID was found.', 'woocommerce-admin' ),
-				array(
-					'status' => 404,
-				)
-			);
-		}
-
-		unset( $snoozed[ $id ] );
-
-		$update = update_option( 'woocommerce_task_list_remind_me_later_tasks', $snoozed );
-
-		if ( $update ) {
-			wc_admin_record_tracks_event( 'tasklist_undo_remindmelater_task', array( 'task_name' => $id ) );
-		}
-
-		return rest_ensure_response( TaskLists::get_task( $id ) );
+		$id   = $request->get_param( 'id' );
+		$task = TaskLists::get_task( $id );
+		$task->undo_snooze();
+		return rest_ensure_response( $task->get_json() );
 	}
 
 	/**
