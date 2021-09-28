@@ -165,7 +165,8 @@ class TaskLists {
 		$tasks_to_search = $task_list ? $task_list['tasks'] : array_reduce(
 			self::get_lists(),
 			function ( $all, $curr ) {
-				return array_merge( $all, $curr['tasks'] );
+				$json = $curr->get_json();
+				return array_merge( $all, $json['tasks'] );
 			},
 			array()
 		);
