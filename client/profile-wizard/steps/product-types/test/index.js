@@ -32,6 +32,7 @@ describe( 'ProductTypes', () => {
 
 	afterEach( () => {
 		setSetting( 'onboarding', {} );
+		window.wcAdminFeatures.subscriptions = false;
 	} );
 
 	test( 'should render product types', () => {
@@ -85,5 +86,25 @@ describe( 'ProductTypes', () => {
 			expect( mockUpdateProfileItems ).toHaveBeenCalled();
 			expect( mockGoToNextStep ).toHaveBeenCalled();
 		} );
+	} );
+	test( 'should show Subscriptions as free', () => {
+		setSetting( 'onboarding', {
+			productTypes: {
+				subscriptions: {
+					yearly_price: 2400,
+					label: 'Subscriptions',
+					description: 'Product type description',
+					more_url: 'https://woocommerce.com/paid-product',
+					product: 100,
+					slug: 'subscriptions',
+				},
+			},
+		} );
+		window.wcAdminFeatures.subscriptions = true;
+
+		render( <ProductTypes /> );
+		expect(
+			screen.queryByText( '$200 per month' )
+		).not.toBeInTheDocument();
 	} );
 } );
