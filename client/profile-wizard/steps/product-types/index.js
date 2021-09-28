@@ -68,6 +68,8 @@ export class ProductTypes extends Component {
 	}
 
 	onContinue() {
+		const { selected } = this.state;
+
 		if ( ! this.validateField() ) {
 			return;
 		}
@@ -80,10 +82,14 @@ export class ProductTypes extends Component {
 		} = this.props;
 
 		recordEvent( 'storeprofiler_store_product_type_continue', {
-			product_type: this.state.selected,
+			product_type: selected,
 		} );
 
-		if ( this.state.selected.includes( 'subscriptions' ) ) {
+		if (
+			window.wcAdminFeatures &&
+			window.wcAdminFeatures.subscriptions &&
+			selected.includes( 'subscriptions' )
+		) {
 			installPlugins( [ 'woocommerce-payments' ] )
 				.then( ( response ) => {
 					createNoticesFromResponse( response );
@@ -94,7 +100,7 @@ export class ProductTypes extends Component {
 				} );
 		}
 
-		updateProfileItems( { product_types: this.state.selected } )
+		updateProfileItems( { product_types: selected } )
 			.then( () => goToNextStep() )
 			.catch( () =>
 				createNotice(
@@ -228,8 +234,10 @@ export class ProductTypes extends Component {
 							'woocommerce-admin'
 						) }
 					</Text>
-					{ ! installedPlugins.includes( 'woocommerce-payments' ) &&
-						this.state.selected.includes( 'subscriptions' ) && (
+					{ window.wcAdminFeatures &&
+						window.wcAdminFeatures.subscriptions &&
+						! installedPlugins.includes( 'woocommerce-payments' ) &&
+						selected.includes( 'subscriptions' ) && (
 							<Text
 								variant="body"
 								size="12"
