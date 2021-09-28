@@ -16,12 +16,13 @@ import { includes, filter, get } from 'lodash';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { ONBOARDING_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { Text } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
  */
+import { createNoticesFromResponse } from '~/lib/notices';
 import ProductTypeLabel from './label';
 import './style.scss';
 
@@ -71,11 +72,27 @@ export class ProductTypes extends Component {
 			return;
 		}
 
-		const { createNotice, goToNextStep, updateProfileItems } = this.props;
+		const {
+			createNotice,
+			goToNextStep,
+			installPlugins,
+			updateProfileItems,
+		} = this.props;
 
 		recordEvent( 'storeprofiler_store_product_type_continue', {
 			product_type: this.state.selected,
 		} );
+
+		if ( this.state.selected.includes( 'subscriptions' ) ) {
+			installPlugins( [ 'woocommerce-payments' ] )
+				.then( ( response ) => {
+					createNoticesFromResponse( response );
+				} )
+				.catch( ( error ) => {
+					createNoticesFromResponse( error );
+					throw new Error();
+				} );
+		}
 
 		updateProfileItems( { product_types: this.state.selected } )
 			.then( () => goToNextStep() )
@@ -114,7 +131,7 @@ export class ProductTypes extends Component {
 	render() {
 		const { productTypes = {} } = getSetting( 'onboarding', {} );
 		const { error, isMonthlyPricing, selected } = this.state;
-		const { isProfileItemsRequesting } = this.props;
+		const { installedPlugins = [], isProfileItemsRequesting } = this.props;
 
 		return (
 			<div className="woocommerce-profile-wizard__product-types">
@@ -211,6 +228,20 @@ export class ProductTypes extends Component {
 							'woocommerce-admin'
 						) }
 					</Text>
+					{ ! installedPlugins.includes( 'woocommerce-payments' ) &&
+						this.state.selected.includes( 'subscriptions' ) && (
+							<Text
+								variant="body"
+								size="12"
+								lineHeight="16px"
+								as="p"
+							>
+								{ __(
+									'The following extensions will be added to your site for free: WooCommerce Payments. An account is required to use this feature.',
+									'woocommerce-admin'
+								) }
+							</Text>
+						) }
 				</div>
 			</div>
 		);
@@ -224,6 +255,7 @@ export default compose(
 			getOnboardingError,
 			isOnboardingRequesting,
 		} = select( ONBOARDING_STORE_NAME );
+		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
 
 		return {
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
@@ -231,14 +263,17 @@ export default compose(
 			isProfileItemsRequesting: isOnboardingRequesting(
 				'updateProfileItems'
 			),
+			installedPlugins: getInstalledPlugins(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
+		const { installPlugins } = dispatch( PLUGINS_STORE_NAME );
 
 		return {
 			createNotice,
+			installPlugins,
 			updateProfileItems,
 		};
 	} )
