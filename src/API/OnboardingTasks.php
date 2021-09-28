@@ -770,17 +770,10 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function dismiss_task( $request ) {
-		$id = $request->get_param( 'id' );
-
-		$is_dismissable = false;
-
+		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
 
-		if ( $task && isset( $task['isDismissable'] ) && $task['isDismissable'] ) {
-			$is_dismissable = true;
-		}
-
-		if ( ! $is_dismissable ) {
+		if ( ! $task || ! $task->is_dismissable ) {
 			return new \WP_Error(
 				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no dismissable task with that ID was found.', 'woocommerce-admin' ),
@@ -790,17 +783,8 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			);
 		}
 
-		$dismissed   = get_option( 'woocommerce_task_list_dismissed_tasks', array() );
-		$dismissed[] = $id;
-		$update      = update_option( 'woocommerce_task_list_dismissed_tasks', array_unique( $dismissed ) );
-
-		if ( $update ) {
-			wc_admin_record_tracks_event( 'tasklist_dismiss_task', array( 'task_name' => $id ) );
-		}
-
-		$task = TaskLists::get_task( $id );
-
-		return rest_ensure_response( $task );
+		$task->dismiss();
+		return rest_ensure_response( $task->get_json() );
 	}
 
 	/**
