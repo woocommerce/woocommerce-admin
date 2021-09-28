@@ -162,16 +162,16 @@ class TaskLists {
 			return null;
 		}
 
-		$tasks_to_search = $task_list ? $task_list->get_json()['tasks'] : array_reduce(
+		$tasks_to_search = $task_list ? $task_list->tasks : array_reduce(
 			self::get_lists(),
 			function ( $all, $curr ) {
-				return array_merge( $all, $curr->get_json()['tasks'] );
+				return array_merge( $all, $curr->tasks );
 			},
 			array()
 		);
 
 		foreach ( $tasks_to_search as $task ) {
-			if ( $id === $task['id'] ) {
+			if ( $id === $task->id ) {
 				return $task;
 			}
 		}

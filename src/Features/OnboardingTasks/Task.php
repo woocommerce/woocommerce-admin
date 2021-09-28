@@ -70,14 +70,14 @@ class Task {
 	 *
 	 * @var bool
 	 */
-	protected $is_dismissable = false;
+	public $is_dismissable = false;
 
 	/**
 	 * Snoozeability.
 	 *
 	 * @var bool
 	 */
-	protected $is_snoozeable = false;
+	public $is_snoozeable = false;
 
 	/**
 	 * Snoozeability.
