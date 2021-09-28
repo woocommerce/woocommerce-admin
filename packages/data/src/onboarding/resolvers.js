@@ -106,6 +106,8 @@ function* mergeWithFilteredTasks( taskLists ) {
 			'getOption',
 			'woocommerce_task_list_remind_me_later_tasks'
 		) || {};
+
+		// Format the old task items with the new format.
 		for ( const task of filteredTasks ) {
 			task.level = task.level ? parseInt( task.level, 10 ) : 3;
 			task.type = task.type || 'extended';
