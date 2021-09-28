@@ -279,6 +279,7 @@ class Task {
 		return array(
 			'id'            => $this->id,
 			'title'         => $this->title,
+			'canView'       => $this->can_view,
 			'content'       => $this->content,
 			'actionLabel'   => $this->action_label,
 			'actionUrl'     => $this->action_url,
