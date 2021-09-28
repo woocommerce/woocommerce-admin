@@ -9,6 +9,7 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { ONBOARDING_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { useExperiment } from '@woocommerce/explat';
 import { recordEvent } from '@woocommerce/tracks';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -31,11 +32,21 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	);
 
 	const { isResolving, taskLists } = useSelect( ( select ) => {
+		const taskListsData = select( ONBOARDING_STORE_NAME ).getTaskLists();
+		if ( taskListsData ) {
+			// const filteredTasks = applyFilters(
+			// 	'woocommerce_admin_onboarding_task_list',
+			// 	[],
+			// 	query
+			// );
+			// for (const filteredTask of filteredTasks) {
+			// }
+		}
 		return {
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
 				'getTaskLists'
 			),
-			taskLists: select( ONBOARDING_STORE_NAME ).getTaskLists(),
+			taskLists: taskListsData,
 		};
 	} );
 
@@ -115,6 +126,10 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 			title,
 			tasks,
 		} = taskList;
+
+		if ( isHidden ) {
+			return null;
+		}
 
 		return (
 			<Fragment key={ id }>

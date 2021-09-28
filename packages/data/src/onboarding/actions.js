@@ -217,6 +217,22 @@ export function* updateProfileItems( items ) {
 	}
 }
 
+function possiblyPruneTaskData( task, keys ) {
+	if ( ! task.time && ! task.title ) {
+		// client side task
+		return keys.reduce(
+			( simplifiedTask, key ) => {
+				return {
+					...simplifiedTask,
+					[ key ]: task[ key ],
+				};
+			},
+			{ id: task.id }
+		);
+	}
+	return task;
+}
+
 export function* snoozeTask( id ) {
 	yield snoozeTaskRequest( id );
 
@@ -226,7 +242,9 @@ export function* snoozeTask( id ) {
 			method: 'POST',
 		} );
 
-		yield snoozeTaskSuccess( task );
+		yield snoozeTaskSuccess(
+			possiblyPruneTaskData( task, [ 'isSnoozed', 'isDismissed' ] )
+		);
 	} catch ( error ) {
 		yield snoozeTaskError( id, error );
 		throw new Error();
@@ -242,7 +260,9 @@ export function* undoSnoozeTask( id ) {
 			method: 'POST',
 		} );
 
-		yield undoSnoozeTaskSuccess( task );
+		yield undoSnoozeTaskSuccess(
+			possiblyPruneTaskData( task, [ 'isSnoozed', 'isDismissed' ] )
+		);
 	} catch ( error ) {
 		yield undoSnoozeTaskError( id, error );
 		throw new Error();
@@ -258,7 +278,9 @@ export function* dismissTask( id ) {
 			method: 'POST',
 		} );
 
-		yield dismissTaskSuccess( task );
+		yield dismissTaskSuccess(
+			possiblyPruneTaskData( task, [ 'isDismissed', 'isSnoozed' ] )
+		);
 	} catch ( error ) {
 		yield dismissTaskError( id, error );
 		throw new Error();
@@ -274,7 +296,9 @@ export function* undoDismissTask( id ) {
 			method: 'POST',
 		} );
 
-		yield undoDismissTaskSuccess( task );
+		yield undoDismissTaskSuccess(
+			possiblyPruneTaskData( task, [ 'isDismissed', 'isSnoozed' ] )
+		);
 	} catch ( error ) {
 		yield undoDismissTaskError( id, error );
 		throw new Error();

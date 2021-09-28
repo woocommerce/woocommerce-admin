@@ -96,6 +96,13 @@ class TaskLists {
 			)
 		);
 
+		self::add_list(
+			array(
+				'id'    => 'extended',
+				'title' => __( 'Things to do next', 'woocommerce-admin' ),
+			)
+		);
+
 		self::add_task( 'setup', StoreDetails::get_task() );
 		self::add_task( 'setup', Purchase::get_task() );
 		self::add_task( 'setup', Products::get_task() );
