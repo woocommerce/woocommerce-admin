@@ -30,10 +30,16 @@ const subTasks = [
 				<Pill>{ __( 'Recommended', 'woocommerce-admin' ) }</Pill>
 			</>
 		),
-		content: __(
-			'Use a template to add physical, digital, and variable products',
-			'woocommerce-admin'
-		),
+		content:
+			window.wcAdminFeatures && window.wcAdminFeatures.subscriptions
+				? __(
+						'Use a template to add physical, digital, variable, and subscription products',
+						'woocommerce-admin'
+				  )
+				: __(
+						'Use a template to add physical, digital, and variable products',
+						'woocommerce-admin'
+				  ),
 		before: <Icon icon={ sidebar }></Icon>,
 		after: <Icon icon={ chevronRight } />,
 		onClick: () =>
