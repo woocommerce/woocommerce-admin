@@ -833,19 +833,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function snooze_task( $request ) {
-		$task_id         = $request->get_param( 'id' );
-		$task_list_id    = $request->get_param( 'task_list_id' );
-		$snooze_duration = $request->get_param( 'duration' );
+		$task_id      = $request->get_param( 'id' );
+		$task_list_id = $request->get_param( 'task_list_id' );
+		$duration     = $request->get_param( 'duration' );
 
-		$is_snoozeable = false;
+		$task = TaskLists::get_task( $task_id, $task_list_id );
 
-		$snooze_task = TaskLists::get_task( $task_id, $task_list_id );
-
-		if ( $snooze_task && isset( $snooze_task['isSnoozeable'] ) && $snooze_task['isSnoozeable'] ) {
-			$is_snoozeable = true;
-		}
-
-		if ( ! $is_snoozeable ) {
+		if ( ! $task || ! $task->is_snoozeable ) {
 			return new \WP_Error(
 				'woocommerce_tasks_invalid_task',
 				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
@@ -855,20 +849,8 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			);
 		}
 
-		$snooze_option = get_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
-		$duration      = is_null( $snooze_duration ) ? 'day' : $snooze_duration;
-		$snoozed_until = $this->duration_to_ms[ $duration ] + ( time() * 1000 );
-
-		$snooze_option[ $task_id ] = $snoozed_until;
-		$update                    = update_option( 'woocommerce_task_list_remind_me_later_tasks', $snooze_option );
-
-		if ( $update ) {
-			wc_admin_record_tracks_event( 'tasklist_remindmelater_task', array( 'task_name' => $task_id ) );
-			$snooze_task['isSnoozed']    = true;
-			$snooze_task['snoozedUntil'] = $snoozed_until;
-		}
-
-		return rest_ensure_response( $snooze_task );
+		$task->snooze( isset( $duration ) ? $duration : 'day' );
+		return rest_ensure_response( $task->get_json() );
 	}
 
 	/**
