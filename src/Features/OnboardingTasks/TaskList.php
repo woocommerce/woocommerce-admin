@@ -115,12 +115,12 @@ class TaskList {
 	/**
 	 * Get only visible tasks in list.
 	 */
-	public function get_visible_tasks() {
+	public function get_viewable_tasks() {
 		return array_values(
 			array_filter(
 				$this->tasks,
 				function( $task ) {
-					return $task->is_visible();
+					return $task->can_view;
 				}
 			)
 		);
@@ -129,10 +129,10 @@ class TaskList {
 	/**
 	 * Get the list for use in JSON.
 	 *
-	 * @param boolean $only_visible Only display visible tasks.
+	 * @param boolean $only_viewable Only display visible tasks.
 	 * @return array
 	 */
-	public function get_json( $only_visible = false ) {
+	public function get_json( $only_viewable = false ) {
 		return array(
 			'id'         => $this->id,
 			'title'      => $this->title,
@@ -142,7 +142,7 @@ class TaskList {
 				function( $task ) {
 					return $task->get_json();
 				},
-				$only_visible ? $this->get_visible_tasks() : $this->tasks
+				$only_viewable ? $this->get_viewable_tasks() : $this->tasks
 			),
 
 		);

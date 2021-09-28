@@ -94,7 +94,7 @@ export const TaskList: React.FC< TaskListProps > = ( {
 		_n(
 			'Show %d more task.',
 			'Show %d more tasks.',
-			tasks.length - 2,
+			visibleTasks.length - 2,
 			'woocommerce-admin'
 		),
 		visibleTasks.length - 2
