@@ -285,6 +285,7 @@ class Task {
 			'actionUrl'     => $this->action_url,
 			'isComplete'    => $this->is_complete,
 			'isVisible'     => $this->is_visible(),
+			'canView'       => $this->can_view,
 			'time'          => $this->time,
 			'isDismissed'   => $this->is_dismissed(),
 			'isDismissable' => $this->is_dismissable,

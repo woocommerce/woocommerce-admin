@@ -114,6 +114,12 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			$this->namespace,
 			'/' . $this->rest_base,
 			array(
+				'args'   => array(
+					'only_visible' => array(
+						'description' => __( 'Only return visible tasks. Defaults to true.', 'woocommerce-admin' ),
+						'type'        => 'boolean',
+					),
+				),
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_tasks' ),
@@ -750,13 +756,16 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	/**
 	 * Get the onboarding tasks.
 	 *
+	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function get_tasks() {
+	public function get_tasks( $request ) {
+		$only_visible = null !== $request->get_param( 'only_visible' ) ? $request->get_param( 'only_visible' ) : true;
+
 		$lists = TaskLists::get_lists();
 		$json  = array_map(
-			function( $list ) {
-				return $list->get_json();
+			function( $list ) use ( $only_visible ) {
+				return $list->get_json( $only_visible );
 			},
 			$lists
 		);
