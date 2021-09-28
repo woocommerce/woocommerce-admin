@@ -14,12 +14,15 @@ export type TaskProps = {
 
 export const Task: React.FC< TaskProps > = ( { query } ) => {
 	const id = query.task;
-	const { optimisticallyCompleteTask } = useDispatch( ONBOARDING_STORE_NAME );
+	const {
+		invalidateResolutionForStoreSelector,
+		optimisticallyCompleteTask,
+	} = useDispatch( ONBOARDING_STORE_NAME );
 
 	const onComplete = useCallback( () => {
 		optimisticallyCompleteTask( id );
 		getHistory().push( getNewPath( {}, '/', {} ) );
-		// @todo Invalidate cache store to double check?
+		invalidateResolutionForStoreSelector( 'getTaskLists' );
 	}, [ id ] );
 
 	return (
