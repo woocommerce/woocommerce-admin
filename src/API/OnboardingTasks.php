@@ -796,6 +796,17 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function undo_dismiss_task( $request ) {
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
+
+		if ( ! $task || ! $task->is_dismissable ) {
+			return new \WP_Error(
+				'woocommerce_rest_invalid_task',
+				__( 'Sorry, no dismissable task with that ID was found.', 'woocommerce-admin' ),
+				array(
+					'status' => 404,
+				)
+			);
+		}
+
 		$task->undo_dismiss();
 		return rest_ensure_response( $task->get_json() );
 	}
@@ -837,6 +848,17 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function undo_snooze_task( $request ) {
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
+
+		if ( ! $task || ! $task->is_snoozeable ) {
+			return new \WP_Error(
+				'woocommerce_tasks_invalid_task',
+				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
+				array(
+					'status' => 404,
+				)
+			);
+		}
+
 		$task->undo_snooze();
 		return rest_ensure_response( $task->get_json() );
 	}

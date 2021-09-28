@@ -156,7 +156,7 @@ class TaskLists {
 	 * @return Object
 	 */
 	public static function get_task( $id, $task_list_id = null ) {
-		$task_list = $task_list_id ? self::get_task_list_by_id( $task_list_id ) : null;
+		$task_list = $task_list_id ? self::get_list( $task_list_id ) : null;
 
 		if ( $task_list_id && ! $task_list ) {
 			return null;
