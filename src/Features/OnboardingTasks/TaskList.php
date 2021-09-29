@@ -114,6 +114,8 @@ class TaskList {
 
 	/**
 	 * Get only visible tasks in list.
+	 *
+	 * @return array
 	 */
 	public function get_viewable_tasks() {
 		return array_values(
