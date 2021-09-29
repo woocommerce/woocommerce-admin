@@ -93,19 +93,10 @@ class Init {
 				: false;
 		}
 
-		$gateways         = WC()->payment_gateways->get_available_payment_gateways();
-		$enabled_gateways = array_filter(
-			$gateways,
-			function( $gateway ) {
-				return 'yes' === $gateway->enabled;
-			}
-		);
-
 		// @todo We may want to consider caching some of these and use to check against
 		// task completion along with cache busting for active tasks.
 		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_tax_supported_countries();
 		$settings['hasHomepage']                    = self::check_task_completion( 'homepage' ) || 'classic' === get_option( 'classic-editor-replace' );
-		$settings['hasPaymentGateway']              = ! empty( $enabled_gateways );
 		$settings['enabledPaymentGateways']         = array_keys( $enabled_gateways );
 		$settings['hasPhysicalProducts']            = count(
 			wc_get_products(
@@ -116,13 +107,9 @@ class Init {
 			)
 		) > 0;
 		$settings['hasProducts']                    = self::check_task_completion( 'products' );
-		$settings['isAppearanceComplete']           = get_option( 'woocommerce_task_list_appearance_complete' );
-		$settings['isTaxComplete']                  = self::check_task_completion( 'tax' );
-		$settings['shippingZonesCount']             = count( \WC_Shipping_Zones::get_zones() );
 		$settings['stylesheet']                     = get_option( 'stylesheet' );
 		$settings['taxJarActivated']                = class_exists( 'WC_Taxjar' );
 		$settings['themeMods']                      = get_theme_mods();
-		$settings['wcPayIsConnected']               = $wc_pay_is_connected;
 
 		return $settings;
 	}
