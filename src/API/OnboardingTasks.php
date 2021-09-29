@@ -756,16 +756,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	/**
 	 * Get the onboarding tasks.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function get_tasks( $request ) {
-		$only_viewable = null !== $request->get_param( 'only_viewable' ) ? $request->get_param( 'only_viewable' ) : true;
-
+	public function get_tasks() {
 		$lists = TaskLists::get_lists();
 		$json  = array_map(
-			function( $list ) use ( $only_viewable ) {
-				return $list->get_json( $only_viewable );
+			function( $list ) {
+				return $list->get_json();
 			},
 			$lists
 		);

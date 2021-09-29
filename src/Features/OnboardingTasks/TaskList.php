@@ -129,10 +129,9 @@ class TaskList {
 	/**
 	 * Get the list for use in JSON.
 	 *
-	 * @param boolean $only_viewable Only display visible tasks.
 	 * @return array
 	 */
-	public function get_json( $only_viewable = false ) {
+	public function get_json() {
 		return array(
 			'id'         => $this->id,
 			'title'      => $this->title,
@@ -142,7 +141,7 @@ class TaskList {
 				function( $task ) {
 					return $task->get_json();
 				},
-				$only_viewable ? $this->get_viewable_tasks() : $this->tasks
+				$this->get_viewable_tasks()
 			),
 
 		);
