@@ -36,16 +36,6 @@ export class ProductTypes extends Component {
 			( key ) => !! productTypes[ key ].default
 		);
 
-		if (
-			window.wcAdminFeatures &&
-			window.wcAdminFeatures.subscriptions &&
-			productTypes.subscriptions
-		) {
-			productTypes.subscriptions = {
-				label: productTypes?.subscriptions?.label,
-			};
-		}
-
 		this.state = {
 			error: null,
 			isMonthlyPricing: true,
