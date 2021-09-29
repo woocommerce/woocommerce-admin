@@ -114,12 +114,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			$this->namespace,
 			'/' . $this->rest_base,
 			array(
-				'args'   => array(
-					'only_viewable' => array(
-						'description' => __( 'Only return visible tasks. Defaults to true.', 'woocommerce-admin' ),
-						'type'        => 'boolean',
-					),
-				),
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_tasks' ),
