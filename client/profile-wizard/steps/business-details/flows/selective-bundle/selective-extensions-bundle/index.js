@@ -8,7 +8,11 @@ import { Link } from '@woocommerce/components';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
-import { pluginNames, ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import {
+	pluginNames,
+	ONBOARDING_STORE_NAME,
+	PLUGINS_STORE_NAME,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useSelect } from '@wordpress/data';
 
@@ -189,11 +193,37 @@ export const SelectiveExtensionsBundle = ( {
 		};
 	} );
 
+	const { installedPlugins = [] } = useSelect( ( select ) => {
+		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
+
+		return {
+			installedPlugins: getInstalledPlugins(),
+		};
+	} );
+
 	const installableExtensions = useMemo( () => {
 		return freeExtensions.filter( ( list ) => {
 			return ALLOWED_PLUGIN_LISTS.includes( list.key );
 		} );
 	}, [ freeExtensions ] );
+
+	const removeWCPayFromInstallableExtensions = () => {
+		installableExtensions.foreach( ( extensions ) => {
+			const { plugins } = extensions;
+			extensions.plugins = plugins.filter(
+				( plugin ) => plugin.key !== 'woocommerce-payments'
+			);
+		} );
+	};
+
+	if (
+		window.wcAdminFeatures &&
+		window.wcAdminFeatures.subscriptions &&
+		!! installableExtensions.length &&
+		installedPlugins.includes( 'woocommerce-payments' )
+	) {
+		removeWCPayFromInstallableExtensions();
+	}
 
 	useEffect( () => {
 		const initialValues = createInitialValues( installableExtensions );
