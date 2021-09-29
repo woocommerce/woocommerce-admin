@@ -17,4 +17,15 @@
 			color: $gray-700;
 		}
 	}
+
+	.woocommerce-plugin-list__title {
+		background: inherit;
+		padding-top: $gap-larger;
+		padding-bottom: $gap-large;
+	}
+
+	.woocommerce-plugin-list__plugin {
+		border-top: none;
+		border-bottom: 1px solid #e0e0e0;
+	}
 }
