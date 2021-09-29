@@ -68,7 +68,7 @@ export class ProductTypes extends Component {
 		const {
 			createNotice,
 			goToNextStep,
-			installPlugins,
+			installAndActivatePlugins,
 			updateProfileItems,
 		} = this.props;
 
@@ -82,7 +82,7 @@ export class ProductTypes extends Component {
 			! installedPlugins.includes( 'woocommerce-payments' ) &&
 			selected.includes( 'subscriptions' )
 		) {
-			installPlugins( [ 'woocommerce-payments' ] )
+			installAndActivatePlugins( [ 'woocommerce-payments' ] )
 				.then( ( response ) => {
 					createNoticesFromResponse( response );
 				} )
@@ -269,11 +269,11 @@ export default compose(
 	withDispatch( ( dispatch ) => {
 		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
 		const { createNotice } = dispatch( 'core/notices' );
-		const { installPlugins } = dispatch( PLUGINS_STORE_NAME );
+		const { installAndActivatePlugins } = dispatch( PLUGINS_STORE_NAME );
 
 		return {
 			createNotice,
-			installPlugins,
+			installAndActivatePlugins,
 			updateProfileItems,
 		};
 	} )
