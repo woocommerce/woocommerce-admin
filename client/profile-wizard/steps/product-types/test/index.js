@@ -107,4 +107,32 @@ describe( 'ProductTypes', () => {
 			screen.queryByText( '$200 per month' )
 		).not.toBeInTheDocument();
 	} );
+	test( 'should show a warning message at the bottom of the step', () => {
+		setSetting( 'onboarding', {
+			productTypes: {
+				subscriptions: {
+					yearly_price: 2400,
+					label: 'Subscriptions',
+					description: 'Product type description',
+					more_url: 'https://woocommerce.com/paid-product',
+					product: 100,
+					slug: 'subscriptions',
+				},
+			},
+		} );
+		window.wcAdminFeatures.subscriptions = true;
+
+		render( <ProductTypes /> );
+
+		const subscription = screen.getByText( 'Subscriptions', {
+			selector: 'label',
+		} );
+		userEvent.click( subscription );
+
+		expect(
+			screen.queryByText(
+				'The following extensions will be added to your site for free: WooCommerce Payments. An account is required to use this feature.'
+			)
+		).toBeInTheDocument();
+	} );
 } );
