@@ -36,7 +36,7 @@ class TaskList {
 	public $title = '';
 
 	/**
-	 * Title.
+	 * Tasks.
 	 *
 	 * @var array
 	 */
