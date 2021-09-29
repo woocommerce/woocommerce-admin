@@ -146,7 +146,7 @@ export const TaskItemExample: Story = ( args ) => (
 				// eslint-disable-next-line no-console
 				console.log( 'Task dismissed' )
 			}
-			remindMeLater={ () =>
+			onSnooze={ () =>
 				// eslint-disable-next-line no-console
 				console.log( 'Task snoozed' )
 			}
@@ -168,7 +168,7 @@ export const TaskItemExample: Story = ( args ) => (
 				// eslint-disable-next-line no-console
 				console.log( 'Task dismissed' )
 			}
-			remindMeLater={ () =>
+			onSnooze={ () =>
 				// eslint-disable-next-line no-console
 				console.log( 'Task snoozed' )
 			}
