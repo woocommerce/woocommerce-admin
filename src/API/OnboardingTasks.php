@@ -716,12 +716,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 					'context'     => array( 'view' ),
 					'readonly'    => true,
 				),
-				'hasPhysicalProducts'            => array(
-					'type'        => 'boolean',
-					'description' => __( 'If the store has any physical (non-virtual) products.', 'woocommerce-admin' ),
-					'context'     => array( 'view' ),
-					'readonly'    => true,
-				),
 				'hasProducts'                    => array(
 					'type'        => 'boolean',
 					'description' => __( 'If the store has any products.', 'woocommerce-admin' ),

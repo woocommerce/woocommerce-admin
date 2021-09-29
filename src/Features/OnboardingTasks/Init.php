@@ -97,15 +97,6 @@ class Init {
 		// task completion along with cache busting for active tasks.
 		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_tax_supported_countries();
 		$settings['hasHomepage']                    = self::check_task_completion( 'homepage' ) || 'classic' === get_option( 'classic-editor-replace' );
-		$settings['enabledPaymentGateways']         = array_keys( $enabled_gateways );
-		$settings['hasPhysicalProducts']            = count(
-			wc_get_products(
-				array(
-					'virtual' => false,
-					'limit'   => 1,
-				)
-			)
-		) > 0;
 		$settings['hasProducts']                    = self::check_task_completion( 'products' );
 		$settings['stylesheet']                     = get_option( 'stylesheet' );
 		$settings['taxJarActivated']                = class_exists( 'WC_Taxjar' );

@@ -77,9 +77,7 @@ export type OnboardingState = {
 
 export type TasksStatusState = {
 	automatedTaxSupportedCountries: string[];
-	enabledPaymentGateways: string[];
 	hasHomepage: boolean;
-	hasPhysicalProducts: boolean;
 	hasProducts: boolean;
 	stylesheet: string;
 	taxJarActivated: boolean;
