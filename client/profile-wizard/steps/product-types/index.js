@@ -69,6 +69,7 @@ export class ProductTypes extends Component {
 
 	onContinue() {
 		const { selected } = this.state;
+		const { installedPlugins = [] } = this.props;
 
 		if ( ! this.validateField() ) {
 			return;
@@ -88,6 +89,7 @@ export class ProductTypes extends Component {
 		if (
 			window.wcAdminFeatures &&
 			window.wcAdminFeatures.subscriptions &&
+			! installedPlugins.includes( 'woocommerce-payments' ) &&
 			selected.includes( 'subscriptions' )
 		) {
 			installPlugins( [ 'woocommerce-payments' ] )
