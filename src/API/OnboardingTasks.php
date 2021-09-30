@@ -120,6 +120,26 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 					'callback'            => array( $this, 'get_tasks' ),
 					'permission_callback' => array( $this, 'get_tasks_permission_check' ),
 				),
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'get_tasks' ),
+					'permission_callback' => array( $this, 'get_tasks_permission_check' ),
+					'args'                => array(
+						'extended_tasks' => array(
+							'description'       => __( 'List of extended deprecated tasks from the client side filter.', 'woocommerce-admin' ),
+							'type'              => 'array',
+							'validate_callback' => function( $param, $request, $key ) {
+								$has_valid_keys = true;
+								foreach ( $param as $task ) {
+									if ( $has_valid_keys ) {
+										$has_valid_keys = array_key_exists( 'list_id', $task ) && array_key_exists( 'id', $task );
+									}
+								}
+								return $has_valid_keys;
+							},
+						),
+					),
+				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
@@ -751,11 +771,13 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	/**
 	 * Get the onboarding tasks.
 	 *
+	 * @param WP_REST_Request $request Full details about the request.
 	 * @return WP_REST_Response|WP_Error
 	 */
-	public function get_tasks() {
-		$lists = TaskLists::get_lists();
-		$json  = array_map(
+	public function get_tasks( $request ) {
+		$extended_tasks = $request->get_param( 'extended_tasks' );
+		$lists          = TaskLists::get_lists( $extended_tasks );
+		$json           = array_map(
 			function( $list ) {
 				return $list->get_json();
 			},
