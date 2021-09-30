@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, Modal, RadioControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
-import { applyFilters } from '@wordpress/hooks';
+import { addFilter, applyFilters } from '@wordpress/hooks';
 import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
@@ -41,6 +41,14 @@ const PRODUCT_TEMPLATES = [
 		title: __( 'Variable product', 'woocommerce-admin' ),
 		subtitle: __(
 			'Products with several versions that customers can choose from',
+			'woocommerce-admin'
+		),
+	},
+	{
+		key: 'subscription',
+		title: __( 'Subscription product', 'woocommerce-admin' ),
+		subtitle: __(
+			'Products that customers receive or gain access to regularly by paying in advance',
 			'woocommerce-admin'
 		),
 	},
@@ -83,6 +91,19 @@ export default function ProductTemplateModal( { onClose } ) {
 			onClose();
 		}
 	};
+
+	if ( window.wcAdminFeatures && ! window.wcAdminFeatures.subscriptions ) {
+		// this filter should be removed after removing the `subscriptions` flag
+		addFilter(
+			ONBOARDING_PRODUCT_TEMPLATES_FILTER,
+			'woocommerce-admin',
+			( productTemplates ) => {
+				return productTemplates.filter(
+					( template ) => template.key !== 'subscription'
+				);
+			}
+		);
+	}
 
 	const templates = applyFilters(
 		ONBOARDING_PRODUCT_TEMPLATES_FILTER,
