@@ -13,6 +13,7 @@ class Appearance {
 	 * Initialize.
 	 */
 	public static function init() {
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'add_media_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'possibly_add_return_notice_script' ) );
 	}
 
@@ -35,6 +36,20 @@ class Appearance {
 			'time'         => __( '2 minutes', 'woocommerce-admin' ),
 		);
 	}
+
+	/**
+	 * Add media scripts for image uploader.
+	 */
+	public function add_media_scripts() {
+		$task = new Task( self::get_task() );
+
+		if ( ! $task->can_view ) {
+			return;
+		}
+
+		wp_enqueue_media();
+	}
+
 
 	/**
 	 * Adds a return to task list notice when completing the task.

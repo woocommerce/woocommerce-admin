@@ -36,7 +36,6 @@ class Init {
 	 * Constructor
 	 */
 	public function __construct() {
-		// This hook needs to run when options are updated via REST.
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
 		DeprecatedOptions::init();
 		TaskLists::init();
@@ -45,19 +44,11 @@ class Init {
 			return;
 		}
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_media_scripts' ) );
 		// Old settings injection.
 		// Run after Onboarding.
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'component_settings' ), 30 );
 		// New settings injection.
 		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 30 );
-	}
-
-	/**
-	 * Enqueue scripts and styles.
-	 */
-	public function add_media_scripts() {
-		wp_enqueue_media();
 	}
 
 	/**
