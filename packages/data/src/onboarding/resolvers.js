@@ -83,7 +83,7 @@ function getQuery() {
  *
  * @param {Array} taskLists array of task lists.
  */
-function* mergeWithFilteredTasks( taskLists ) {
+function* mergeWithTasksFromDeprecatedFilter( taskLists ) {
 	const filteredTasks = applyFilters(
 		'woocommerce_admin_onboarding_task_list',
 		[],
@@ -110,18 +110,18 @@ function* mergeWithFilteredTasks( taskLists ) {
 		// Format the old task items with the new format.
 		for ( const task of filteredTasks ) {
 			task.level = task.level ? parseInt( task.level, 10 ) : 3;
-			task.type = task.type || 'extended';
+			task.listId = task.type || 'extended';
 			task.isVisible = task.isVisible || task.visible;
 			task.id = task.id || task.key;
 			task.isDismissed = dismissedTasks.includes( task.id );
 			task.isSnoozed =
 				snoozedTasks[ task.id ] && snoozedTasks[ task.id ] > Date.now();
 			task.snoozedUntil = snoozedTasks[ task.id ];
-			task.isSnoozable = task.isSnoozable || task.allowRemindMeLater;
+			task.isSnoozeable = task.isSnoozeable || task.allowRemindMeLater;
 		}
 		for ( const taskList of taskLists ) {
 			const filteredTaskItems = filteredTasks.filter(
-				( task ) => task.type === taskList.id
+				( task ) => task.listId === taskList.id
 			);
 			taskList.tasks.push( ...filteredTaskItems );
 		}
@@ -136,7 +136,9 @@ export function* getTaskLists() {
 			method: 'GET',
 		} );
 
-		const taskLists = yield mergeWithFilteredTasks( results || [] );
+		const taskLists = yield mergeWithTasksFromDeprecatedFilter(
+			results || []
+		);
 
 		yield getTaskListsSuccess( taskLists );
 	} catch ( error ) {

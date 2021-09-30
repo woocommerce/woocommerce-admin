@@ -775,7 +775,16 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
 
-		if ( $task && ! $task->is_dismissable ) {
+		if ( ! $task && $id ) {
+			$task = new Task(
+				array(
+					'id'             => $id,
+					'is_dismissable' => true,
+				)
+			);
+		}
+
+		if ( ! $task || ! $task->is_dismissable ) {
 			return new \WP_Error(
 				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no dismissable task with that ID was found.', 'woocommerce-admin' ),
@@ -799,7 +808,16 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
 
-		if ( $task && ! $task->is_dismissable ) {
+		if ( ! $task && $id ) {
+			$task = new Task(
+				array(
+					'id'             => $id,
+					'is_dismissable' => true,
+				)
+			);
+		}
+
+		if ( ! $task || ! $task->is_dismissable ) {
 			return new \WP_Error(
 				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no dismissable task with that ID was found.', 'woocommerce-admin' ),
@@ -807,10 +825,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 					'status' => 404,
 				)
 			);
-		}
-
-		if ( ! $task && $id ) {
-			$task = new Task( array( 'id' => $id ) );
 		}
 
 		$task->undo_dismiss();
@@ -833,7 +847,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $task_id, $task_list_id );
 
 		if ( ! $task && $task_id ) {
-			$snooze_task = new Task(
+			$task = new Task(
 				array(
 					'id'            => $task_id,
 					'is_snoozeable' => true,
@@ -841,7 +855,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			);
 		}
 
-		if ( $task && ! $task->is_snoozeable ) {
+		if ( ! $task || ! $task->is_snoozeable ) {
 			return new \WP_Error(
 				'woocommerce_tasks_invalid_task',
 				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
@@ -864,6 +878,15 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function undo_snooze_task( $request ) {
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
+
+		if ( ! $task && $id ) {
+			$task = new Task(
+				array(
+					'id'            => $id,
+					'is_snoozeable' => true,
+				)
+			);
+		}
 
 		if ( ! $task || ! $task->is_snoozeable ) {
 			return new \WP_Error(

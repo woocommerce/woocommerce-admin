@@ -217,6 +217,13 @@ export function* updateProfileItems( items ) {
 	}
 }
 
+/**
+ * Used to keep backwards compatibility with the extended task list filter on the client.
+ * This can be removed after version WC Admin 2.10 (see deprecated notice in resolvers.js).
+ *
+ * @param {Object} task the returned task object.
+ * @param {Array}  keys the keeps to keep in the task object.
+ */
 function possiblyPruneTaskData( task, keys ) {
 	if ( ! task.time && ! task.title ) {
 		// client side task
@@ -243,7 +250,11 @@ export function* snoozeTask( id ) {
 		} );
 
 		yield snoozeTaskSuccess(
-			possiblyPruneTaskData( task, [ 'isSnoozed', 'isDismissed' ] )
+			possiblyPruneTaskData( task, [
+				'isSnoozed',
+				'isDismissed',
+				'snoozedUntil',
+			] )
 		);
 	} catch ( error ) {
 		yield snoozeTaskError( id, error );
@@ -261,7 +272,11 @@ export function* undoSnoozeTask( id ) {
 		} );
 
 		yield undoSnoozeTaskSuccess(
-			possiblyPruneTaskData( task, [ 'isSnoozed', 'isDismissed' ] )
+			possiblyPruneTaskData( task, [
+				'isSnoozed',
+				'isDismissed',
+				'snoozedUntil',
+			] )
 		);
 	} catch ( error ) {
 		yield undoSnoozeTaskError( id, error );
