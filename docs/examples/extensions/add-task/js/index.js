@@ -91,7 +91,6 @@ addFilter(
 				),
 				time: __( '2 minutes', 'woocommerce-admin' ),
 				isDismissable: true,
-				isSnoozeable: true,
 				onDelete: () => console.log( 'The task was deleted' ),
 				onDismiss: () => console.log( 'The task was dismissed' ),
 				allowRemindMeLater: true,
