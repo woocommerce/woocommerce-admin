@@ -21,7 +21,11 @@
 	.woocommerce-plugin-list__title {
 		background: inherit;
 		padding-top: $gap-larger;
-		padding-bottom: $gap-large;
+		padding-bottom: $gap;
+
+		h3 {
+			text-transform: uppercase;
+		}
 	}
 
 	.woocommerce-plugin-list__plugin {
