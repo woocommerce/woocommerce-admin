@@ -208,7 +208,7 @@ export const SelectiveExtensionsBundle = ( {
 	}, [ freeExtensions ] );
 
 	const removeWCPayFromInstallableExtensions = () => {
-		installableExtensions.foreach( ( extensions ) => {
+		installableExtensions.forEach( ( extensions ) => {
 			const { plugins } = extensions;
 			extensions.plugins = plugins.filter(
 				( plugin ) => plugin.key !== 'woocommerce-payments'
