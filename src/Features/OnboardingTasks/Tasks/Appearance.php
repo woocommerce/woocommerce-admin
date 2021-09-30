@@ -64,4 +64,24 @@ class Appearance {
 			true
 		);
 	}
+
+	/**
+	 * Check if the site has a homepage set up.
+	 */
+	public static function has_homepage() {
+		if ( 'classic' === get_option( 'classic-editor-replace' ) ) {
+			return true;
+		}
+
+		$homepage_id = get_option( 'woocommerce_onboarding_homepage_post_id', false );
+
+		if ( ! $homepage_id ) {
+			return false;
+		}
+
+		$post      = get_post( $homepage_id );
+		$completed = $post && 'publish' === $post->post_status;
+
+		return $completed;
+	}
 }

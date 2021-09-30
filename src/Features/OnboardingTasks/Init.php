@@ -77,11 +77,9 @@ class Init {
 				: false;
 		}
 
-		// @todo We may want to consider caching some of these and use to check against
-		// task completion along with cache busting for active tasks.
 		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_tax_supported_countries();
-		$settings['hasHomepage']                    = self::check_task_completion( 'homepage' ) || 'classic' === get_option( 'classic-editor-replace' );
-		$settings['hasProducts']                    = self::check_task_completion( 'products' );
+		$settings['hasHomepage']                    = Appearance::has_homepage();
+		$settings['hasProducts']                    = Products::has_products();
 		$settings['stylesheet']                     = get_option( 'stylesheet' );
 		$settings['taxJarActivated']                = class_exists( 'WC_Taxjar' );
 		$settings['themeMods']                      = get_theme_mods();
@@ -117,33 +115,6 @@ class Init {
 		);
 
 		return $settings;
-	}
-
-	/**
-	 * Check for task completion of a given task.
-	 *
-	 * @param string $task Name of task.
-	 * @return bool
-	 */
-	public static function check_task_completion( $task ) {
-		switch ( $task ) {
-			case 'products':
-				$products = wp_count_posts( 'product' );
-				return (int) $products->publish > 0;
-			case 'homepage':
-				$homepage_id = get_option( 'woocommerce_onboarding_homepage_post_id', false );
-				if ( ! $homepage_id ) {
-					return false;
-				}
-				$post      = get_post( $homepage_id );
-				$completed = $post && 'publish' === $post->post_status;
-				return $completed;
-			case 'tax':
-				return 'yes' === get_option( 'wc_connect_taxes_enabled' ) ||
-					count( TaxDataStore::get_taxes( array() ) ) > 0 ||
-					false !== get_option( 'woocommerce_no_sales_tax' );
-		}
-		return false;
 	}
 
 	/**
