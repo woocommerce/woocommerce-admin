@@ -47,7 +47,7 @@ export const ActivityPanel = () => {
 			countUnreadOrders,
 			manageStock,
 			isTaskListHidden: Boolean( taskLists.length )
-				? taskLists.find( ( list ) => list.id === 'setup' ).isHidden
+				? ! taskLists.find( ( list ) => list.id === 'setup' ).isVisible
 				: null,
 			publishedProductCount,
 			reviewsEnabled,
@@ -66,7 +66,7 @@ export const ActivityPanel = () => {
 					acc[ panelId ] = true;
 					return acc;
 				},
-				{ task_list: panelsData.isTaskListHidden !== 'yes' }
+				{ task_list: ! panelsData.isTaskListHidden }
 			);
 			recordEvent( 'activity_panel_visible_panels', visiblePanels );
 		}

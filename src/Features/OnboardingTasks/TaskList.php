@@ -138,6 +138,7 @@ class TaskList {
 			'id'         => $this->id,
 			'title'      => $this->title,
 			'isHidden'   => $this->is_hidden(),
+			'isVisible'  => ! $this->is_hidden(),
 			'isComplete' => $this->is_complete(),
 			'tasks'      => array_map(
 				function( $task ) {
