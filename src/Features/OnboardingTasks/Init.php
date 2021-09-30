@@ -43,8 +43,6 @@ class Init {
 	 */
 	public function __construct() {
 		// This hook needs to run when options are updated via REST.
-		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
-		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
 		add_filter( 'pre_option_woocommerce_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
 		add_filter( 'pre_option_woocommerce_extended_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
@@ -303,22 +301,6 @@ class Init {
 				WC_ADMIN_VERSION_NUMBER,
 				true
 			);
-		}
-	}
-
-	/**
-	 * Records an event for individual task completion.
-	 *
-	 * @param mixed $old_value Old value.
-	 * @param mixed $new_value New value.
-	 */
-	public static function track_task_completion( $old_value, $new_value ) {
-		$old_value       = is_array( $old_value ) ? $old_value : array();
-		$new_value       = is_array( $new_value ) ? $new_value : array();
-		$untracked_tasks = array_diff( $new_value, $old_value );
-
-		foreach ( $untracked_tasks as $task ) {
-			wc_admin_record_tracks_event( 'tasklist_task_completed', array( 'task_name' => $task ) );
 		}
 	}
 

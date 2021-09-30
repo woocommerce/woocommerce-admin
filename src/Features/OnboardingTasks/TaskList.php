@@ -12,12 +12,12 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
  */
 class TaskList {
 	/**
-	 * Option name hidden task lists.
+	 * Option name of hidden task lists.
 	 */
 	const HIDDEN_OPTION = 'woocommerce_task_list_hidden_lists';
 
 	/**
-	 * Option name completed task lists.
+	 * Option name of completed task lists.
 	 */
 	const COMPLETED_OPTION = 'woocommerce_task_list_completed_lists';
 
