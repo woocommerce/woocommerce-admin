@@ -85,7 +85,7 @@ class TaskLists {
 
 		$task_id = sanitize_title_with_dashes( wp_unslash( $_GET[ Task::ACTIVE_TASK_TRANSIENT ] ) ); // phpcs:ignore csrf ok.
 
-		self::get_task( $task_id );
+		$task = self::get_task( $task_id );
 
 		if ( ! $task ) {
 			return;

@@ -53,11 +53,6 @@ class Init {
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'component_settings' ), 30 );
 		// New settings injection.
 		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 30 );
-
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_notice_admin_script' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_import_notice_admin_script' ) );
 	}
 
 	/**
@@ -125,35 +120,6 @@ class Init {
 	}
 
 	/**
-	 * Get the name of the active task.
-	 *
-	 * @return string
-	 */
-	public static function get_active_task() {
-		return get_transient( self::ACTIVE_TASK_TRANSIENT );
-	}
-
-	/**
-	 * Check for active task completion, and clears the transient.
-	 *
-	 * @return bool
-	 */
-	public static function is_active_task_complete() {
-		$active_task = self::get_active_task();
-
-		if ( ! $active_task ) {
-			return false;
-		}
-
-		if ( self::check_task_completion( $active_task ) ) {
-			delete_transient( self::ACTIVE_TASK_TRANSIENT );
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Check for task completion of a given task.
 	 *
 	 * @param string $task Name of task.
@@ -178,104 +144,6 @@ class Init {
 					false !== get_option( 'woocommerce_no_sales_tax' );
 		}
 		return false;
-	}
-
-	/**
-	 * Hooks into the product page to add a notice to return to the task list if a product was added.
-	 *
-	 * @param string $hook Page hook.
-	 */
-	public static function add_onboarding_product_notice_admin_script( $hook ) {
-		global $post;
-		if (
-			'post.php' !== $hook ||
-			'product' !== $post->post_type ||
-			'products' !== self::get_active_task() ||
-			! self::is_active_task_complete()
-		) {
-			return;
-		}
-
-		$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-product-notice' );
-		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
-
-		wp_enqueue_script(
-			'onboarding-product-notice',
-			Loader::get_url( 'wp-admin-scripts/onboarding-product-notice', 'js' ),
-			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
-			WC_ADMIN_VERSION_NUMBER,
-			true
-		);
-	}
-
-	/**
-	 * Hooks into the post page to display a different success notice and sets the active page as the site's home page if visted from onboarding.
-	 *
-	 * @param string $hook Page hook.
-	 */
-	public static function add_onboarding_homepage_notice_admin_script( $hook ) {
-		global $post;
-		if ( 'post.php' === $hook && 'page' === $post->post_type && isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) && 'homepage' === $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) { // phpcs:ignore csrf ok.
-			$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-homepage-notice' );
-			$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
-
-			wp_enqueue_script(
-				'onboarding-homepage-notice',
-				Loader::get_url( 'wp-admin-scripts/onboarding-homepage-notice', 'js' ),
-				array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
-				WC_ADMIN_VERSION_NUMBER,
-				true
-			);
-		}
-	}
-
-	/**
-	 * Adds a notice to return to the task list when the save button is clicked on tax settings pages.
-	 */
-	public static function add_onboarding_tax_notice_admin_script() {
-		$page = isset( $_GET['page'] ) ? $_GET['page'] : ''; // phpcs:ignore csrf ok, sanitization ok.
-		$tab  = isset( $_GET['tab'] ) ? $_GET['tab'] : ''; // phpcs:ignore csrf ok, sanitization ok.
-
-		if (
-			'wc-settings' === $page &&
-			'tax' === $tab &&
-			'tax' === self::get_active_task() &&
-			! self::is_active_task_complete()
-		) {
-			$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-tax-notice' );
-			$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
-
-			wp_enqueue_script(
-				'onboarding-tax-notice',
-				Loader::get_url( 'wp-admin-scripts/onboarding-tax-notice', 'js' ),
-				array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
-				WC_ADMIN_VERSION_NUMBER,
-				true
-			);
-		}
-	}
-
-	/**
-	 * Adds a notice to return to the task list when the product importeris done running.
-	 *
-	 * @param string $hook Page hook.
-	 */
-	public function add_onboarding_product_import_notice_admin_script( $hook ) {
-		$step = isset( $_GET['step'] ) ? $_GET['step'] : ''; // phpcs:ignore csrf ok, sanitization ok.
-		if ( 'product_page_product_importer' === $hook && 'done' === $step && 'product-import' === self::get_active_task() ) {
-			delete_transient( self::ACTIVE_TASK_TRANSIENT );
-
-			$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-product-import-notice' );
-			$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
-
-			wp_enqueue_script(
-				'onboarding-product-import-notice',
-				Loader::get_url( 'wp-admin-scripts/onboarding-product-import-notice', 'js' ),
-				array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
-				WC_ADMIN_VERSION_NUMBER,
-				true
-			);
-		}
 	}
 
 	/**
