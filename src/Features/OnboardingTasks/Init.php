@@ -43,8 +43,6 @@ class Init {
 	 */
 	public function __construct() {
 		// This hook needs to run when options are updated via REST.
-		add_action( 'add_option_woocommerce_task_list_complete', array( $this, 'track_completion' ), 10, 2 );
-		add_action( 'add_option_woocommerce_extended_task_list_complete', array( $this, 'track_extended_completion' ), 10, 2 );
 		add_action( 'add_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'update_option_woocommerce_task_list_tracked_completed_tasks', array( $this, 'track_task_completion' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
@@ -305,30 +303,6 @@ class Init {
 				WC_ADMIN_VERSION_NUMBER,
 				true
 			);
-		}
-	}
-
-	/**
-	 * Records an event when all tasks are completed in the task list.
-	 *
-	 * @param mixed $old_value Old value.
-	 * @param mixed $new_value New value.
-	 */
-	public static function track_completion( $old_value, $new_value ) {
-		if ( $new_value ) {
-			wc_admin_record_tracks_event( 'tasklist_tasks_completed' );
-		}
-	}
-
-	/**
-	 * Records an event when all tasks are completed in the extended task list.
-	 *
-	 * @param mixed $old_value Old value.
-	 * @param mixed $new_value New value.
-	 */
-	public static function track_extended_completion( $old_value, $new_value ) {
-		if ( $new_value ) {
-			wc_admin_record_tracks_event( 'extended_tasklist_tasks_completed' );
 		}
 	}
 
