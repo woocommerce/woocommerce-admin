@@ -462,7 +462,7 @@ class Onboarding {
 			),
 		);
 		if ( ! Features::is_enabled( 'subscriptions' ) ) {
-			array_push( $products['subscriptions'], array( 'product' => 27147 ) );
+			$products['subscriptions']['product'] = 27147;
 		}
 		$product_types = self::append_product_data( $products );
 
