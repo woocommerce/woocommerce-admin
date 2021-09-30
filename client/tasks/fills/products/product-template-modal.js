@@ -64,6 +64,12 @@ export default function ProductTemplateModal( { onClose } ) {
 		recordEvent( 'tasklist_product_template_selection', {
 			product_type: selectedTemplate,
 		} );
+		if ( selectedTemplate === 'subscription' ) {
+			window.location = getAdminLink(
+				'post-new.php?post_type=product&subscription_pointers=true'
+			);
+			return;
+		}
 		if ( selectedTemplate ) {
 			createProductFromTemplate(
 				{
