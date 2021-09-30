@@ -22,13 +22,6 @@ class Init {
 	protected static $instance = null;
 
 	/**
-	 * Name of the active task transient.
-	 *
-	 * @var string
-	 */
-	const ACTIVE_TASK_TRANSIENT = 'wc_onboarding_active_task';
-
-	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -48,6 +41,7 @@ class Init {
 		add_filter( 'pre_option_woocommerce_extended_task_list_hidden', array( $this, 'get_deprecated_options' ), 10, 2 );
 		add_action( 'pre_update_option_woocommerce_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
 		add_action( 'pre_update_option_woocommerce_extended_task_list_hidden', array( $this, 'update_deprecated_options' ), 10, 3 );
+		TaskLists::init();
 
 		if ( ! is_admin() ) {
 			return;
@@ -60,7 +54,6 @@ class Init {
 		// New settings injection.
 		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 30 );
 
-		add_action( 'admin_init', array( $this, 'set_active_task' ), 5 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_product_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_homepage_notice_admin_script' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_onboarding_tax_notice_admin_script' ) );
@@ -129,25 +122,6 @@ class Init {
 		);
 
 		return $settings;
-	}
-
-	/**
-	 * Temporarily store the active task to persist across page loads when neccessary (such as publishing a product). Most tasks do not need to do this.
-	 */
-	public static function set_active_task() {
-		if ( isset( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) ) { // phpcs:ignore csrf ok.
-			$task = sanitize_title_with_dashes( wp_unslash( $_GET[ self::ACTIVE_TASK_TRANSIENT ] ) ); // phpcs:ignore csrf ok.
-
-			if ( self::check_task_completion( $task ) ) {
-				return;
-			}
-
-			set_transient(
-				self::ACTIVE_TASK_TRANSIENT,
-				$task,
-				DAY_IN_SECONDS
-			);
-		}
 	}
 
 	/**

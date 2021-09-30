@@ -5,6 +5,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Appearance;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Marketing;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Payments;
@@ -43,6 +44,33 @@ class TaskLists {
 			static::$instance = new static();
 		}
 		return static::$instance;
+	}
+
+	/**
+	 * Initialize the task lists.
+	 */
+	public static function init() {
+		add_action( 'admin_init', array( __CLASS__, 'set_active_task' ), 5 );
+	}
+
+	/**
+	 * Temporarily store the active task to persist across page loads when neccessary.
+	 * Most tasks do not need this.
+	 */
+	public static function set_active_task() {
+		if ( ! isset( $_GET[ Task::ACTIVE_TASK_TRANSIENT ] ) ) { // phpcs:ignore csrf ok.
+			return;
+		}
+
+		$task_id = sanitize_title_with_dashes( wp_unslash( $_GET[ Task::ACTIVE_TASK_TRANSIENT ] ) ); // phpcs:ignore csrf ok.
+
+		self::get_task( $task_id );
+
+		if ( ! $task ) {
+			return;
+		}
+
+		$task->set_active();
 	}
 
 	/**
