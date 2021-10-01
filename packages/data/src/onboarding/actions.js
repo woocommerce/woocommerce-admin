@@ -222,7 +222,8 @@ export function* updateProfileItems( items ) {
  * This can be removed after version WC Admin 2.10 (see deprecated notice in resolvers.js).
  *
  * @param {Object} task the returned task object.
- * @param {Array}  keys the keeps to keep in the task object.
+ * @param {Array}  keys to keep in the task object.
+ * @return {Object} task with the keys specified.
  */
 function possiblyPruneTaskData( task, keys ) {
 	if ( ! task.time && ! task.title ) {
