@@ -110,7 +110,7 @@ const testAdminOnboardingWizard = () => {
 		it( 'can select the right currency on settings page related to the onboarding country', async () => {
 			const settingsScreen = new WcSettings( page );
 			await settingsScreen.navigate();
-			verifyValueOfInputField( '#wc_currency', 'USD' );
+			verifyValueOfInputField( '#woocommerce_currency', 'USD' );
 		} );
 	} );
 };
@@ -214,7 +214,7 @@ const testSelectiveBundleWCPay = () => {
 		it( 'can select the right currency on settings page related to the onboarding country', async () => {
 			const settingsScreen = new WcSettings( page );
 			await settingsScreen.navigate();
-			verifyValueOfInputField( '#wc_currency', 'JPY' );
+			verifyValueOfInputField( '#woocommerce_currency', 'JPY' );
 		} );
 	} );
 };
