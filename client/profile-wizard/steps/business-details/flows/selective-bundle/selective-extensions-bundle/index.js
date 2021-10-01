@@ -206,7 +206,7 @@ export const SelectiveExtensionsBundle = ( {
 						( extension ) =>
 							extension.key !== 'woocommerce-payments' ||
 							( extension.key === 'woocommerce-payments' &&
-								! extension.is_installed )
+								! extension.is_activated )
 					);
 				}
 			}
