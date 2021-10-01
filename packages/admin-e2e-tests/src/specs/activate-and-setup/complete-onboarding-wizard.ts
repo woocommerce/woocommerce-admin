@@ -5,6 +5,7 @@ import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { TaskTitles } from '../../constants/taskTitles';
 import { Login } from '../../pages/Login';
+import { WcSettings } from '../../pages/WcSettings';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
@@ -103,6 +104,14 @@ const testAdminOnboardingWizard = () => {
 			await profileWizard.themes.isDisplayed();
 			await profileWizard.themes.continueWithActiveTheme();
 		} );
+
+		it( 'can select the right currency on settings page related to the onboarding country', async () => {
+			const settingsScreen = new WcSettings( page );
+			const currencySettings = settingsScreen.getDropdownField(
+				'#woocommerce_currency'
+			);
+			await currencySettings.checkSelected( 'USD' );
+		} );
 	} );
 };
 
@@ -199,6 +208,14 @@ const testSelectiveBundleWCPay = () => {
 			const tasks = await homescreen.getTaskList();
 			expect( tasks ).toContain( TaskTitles.addPayments );
 			expect( tasks ).not.toContain( TaskTitles.wooPayments );
+		} );
+
+		it( 'can select the right currency on settings page related to the onboarding country', async () => {
+			const settingsScreen = new WcSettings( page );
+			const currencySettings = settingsScreen.getDropdownField(
+				'#woocommerce_currency'
+			);
+			await currencySettings.checkSelected( 'JPY' );
 		} );
 	} );
 };
