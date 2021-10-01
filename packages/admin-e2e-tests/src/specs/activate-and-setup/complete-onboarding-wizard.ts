@@ -210,7 +210,6 @@ const testSelectiveBundleWCPay = () => {
 			expect( tasks ).not.toContain( TaskTitles.wooPayments );
 		} );
 
-
 		it( 'can select the right currency on settings page related to the onboarding country', async () => {
 			const settingsScreen = new WcSettings( page );
 			await settingsScreen.navigate();
@@ -219,7 +218,143 @@ const testSelectiveBundleWCPay = () => {
 	} );
 };
 
+const testDifferentStoreCurrenciesWCPay = () => {
+	describe( 'A store can onboard with any country and have the correct currency selected after onboarding.', () => {
+		const profileWizard = new OnboardingWizard( page );
+		const login = new Login( page );
+
+		beforeAll( async () => {
+			await login.login();
+		} );
+		afterAll( async () => {
+			await login.logout();
+		} );
+
+		const testCountryCurrencyPairs = [
+			{
+				countryRegionSubstring: 'australia',
+				countryRegionSelector: 'AU\\:QLD',
+				countryRegion: 'Australia — Queensland',
+				expectedCurrency: 'AUD',
+			},
+			{
+				countryRegionSubstring: 'canada',
+				countryRegionSelector: 'CA\\:QC',
+				countryRegion: 'Canada — Quebec',
+				expectedCurrency: 'CAD',
+			},
+			{
+				countryRegionSubstring: 'china',
+				countryRegionSelector: 'CN\\:CN2',
+				countryRegion: 'China — Beijing Shi',
+				expectedCurrency: 'CNY',
+			},
+			{
+				countryRegionSubstring: 'spain',
+				countryRegionSelector: 'ES\\:CO',
+				countryRegion: 'Spain — Cordoba',
+				expectedCurrency: 'EUR',
+			},
+			{
+				countryRegionSubstring: 'india',
+				countryRegionSelector: 'IN\\:DL',
+				countryRegion: 'India — Delhi',
+				expectedCurrency: 'INR',
+			},
+			{
+				countryRegionSubstring: 'united-kingdom',
+				countryRegionSelector: 'UK',
+				countryRegion: 'United Kingdom (UK)',
+				expectedCurrency: 'GBP',
+			},
+		];
+
+		testCountryCurrencyPairs.forEach( ( spec ) => {
+			it(
+				'can complete the profile wizard with selecting "' +
+					spec.countryRegion +
+					'" as the country',
+				async () => {
+					await profileWizard.navigate();
+					await profileWizard.storeDetails.completeStoreDetailsSection(
+						{
+							countryRegionSubstring: spec.countryRegionSubstring,
+							countryRegionSelector: spec.countryRegionSelector,
+							countryRegion: spec.countryRegion,
+						}
+					);
+
+					// Wait for "Continue" button to become active
+					await profileWizard.continue();
+
+					// Wait for usage tracking pop-up window to appear
+					await profileWizard.optionallySelectUsageTracking();
+					// Query for the industries checkboxes
+					await profileWizard.industry.isDisplayed();
+					await profileWizard.industry.uncheckIndustries();
+					await profileWizard.industry.selectIndustry( 'Other' );
+					await profileWizard.continue();
+					await profileWizard.productTypes.isDisplayed( 7 );
+					await profileWizard.productTypes.uncheckProducts();
+					await profileWizard.productTypes.selectProduct(
+						'Physical products'
+					);
+					await profileWizard.productTypes.selectProduct(
+						'Downloads'
+					);
+
+					await profileWizard.continue();
+					await page.waitForNavigation( {
+						waitUntil: 'networkidle0',
+					} );
+					await profileWizard.business.isDisplayed();
+
+					await profileWizard.business.selectProductNumber(
+						config.get( 'onboardingwizard.numberofproducts' )
+					);
+					await profileWizard.business.selectCurrentlySelling(
+						config.get( 'onboardingwizard.sellingelsewhere' )
+					);
+
+					await profileWizard.continue();
+					await profileWizard.business.freeFeaturesIsDisplayed();
+					// Add WC Pay check
+					await profileWizard.business.expandRecommendedBusinessFeatures();
+
+					expect( page ).not.toMatchElement( 'a', {
+						text: 'WooCommerce Payments',
+					} );
+
+					await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
+					await profileWizard.continue();
+					await profileWizard.themes.isDisplayed();
+
+					//  This navigates to the home screen
+					await profileWizard.themes.continueWithActiveTheme();
+				}
+			);
+
+			it(
+				'can select "' +
+					spec.expectedCurrency +
+					'" as the currency for "' +
+					spec.countryRegion +
+					'"',
+				async () => {
+					const settingsScreen = new WcSettings( page );
+					await settingsScreen.navigate();
+					verifyValueOfInputField(
+						'#woocommerce_currency',
+						spec.expectedCurrency
+					);
+				}
+			);
+		} );
+	} );
+};
+
 module.exports = {
 	testAdminOnboardingWizard,
 	testSelectiveBundleWCPay,
+	testDifferentStoreCurrenciesWCPay,
 };
