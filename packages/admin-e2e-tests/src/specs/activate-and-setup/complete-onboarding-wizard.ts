@@ -219,57 +219,57 @@ const testSelectiveBundleWCPay = () => {
 };
 
 const testDifferentStoreCurrenciesWCPay = () => {
-	describe( 'A store can onboard with any country and have the correct currency selected after onboarding.', () => {
-		const profileWizard = new OnboardingWizard( page );
-		const login = new Login( page );
+	const testCountryCurrencyPairs = [
+		{
+			countryRegionSubstring: 'australia',
+			countryRegionSelector: 'AU\\:QLD',
+			countryRegion: 'Australia — Queensland',
+			expectedCurrency: 'AUD',
+		},
+		{
+			countryRegionSubstring: 'canada',
+			countryRegionSelector: 'CA\\:QC',
+			countryRegion: 'Canada — Quebec',
+			expectedCurrency: 'CAD',
+		},
+		{
+			countryRegionSubstring: 'china',
+			countryRegionSelector: 'CN\\:CN2',
+			countryRegion: 'China — Beijing Shi',
+			expectedCurrency: 'CNY',
+		},
+		{
+			countryRegionSubstring: 'spain',
+			countryRegionSelector: 'ES\\:CO',
+			countryRegion: 'Spain — Cordoba',
+			expectedCurrency: 'EUR',
+		},
+		{
+			countryRegionSubstring: 'india',
+			countryRegionSelector: 'IN\\:DL',
+			countryRegion: 'India — Delhi',
+			expectedCurrency: 'INR',
+		},
+		{
+			countryRegionSubstring: 'united-kingdom',
+			countryRegionSelector: 'UK',
+			countryRegion: 'United Kingdom (UK)',
+			expectedCurrency: 'GBP',
+		},
+	];
 
-		beforeAll( async () => {
-			await login.login();
-		} );
-		afterAll( async () => {
-			await login.logout();
-		} );
+	testCountryCurrencyPairs.forEach( ( spec ) => {
+		describe( 'A store can onboard with any country and have the correct currency selected after onboarding.', () => {
+			const profileWizard = new OnboardingWizard( page );
+			const login = new Login( page );
 
-		const testCountryCurrencyPairs = [
-			{
-				countryRegionSubstring: 'australia',
-				countryRegionSelector: 'AU\\:QLD',
-				countryRegion: 'Australia — Queensland',
-				expectedCurrency: 'AUD',
-			},
-			{
-				countryRegionSubstring: 'canada',
-				countryRegionSelector: 'CA\\:QC',
-				countryRegion: 'Canada — Quebec',
-				expectedCurrency: 'CAD',
-			},
-			{
-				countryRegionSubstring: 'china',
-				countryRegionSelector: 'CN\\:CN2',
-				countryRegion: 'China — Beijing Shi',
-				expectedCurrency: 'CNY',
-			},
-			{
-				countryRegionSubstring: 'spain',
-				countryRegionSelector: 'ES\\:CO',
-				countryRegion: 'Spain — Cordoba',
-				expectedCurrency: 'EUR',
-			},
-			{
-				countryRegionSubstring: 'india',
-				countryRegionSelector: 'IN\\:DL',
-				countryRegion: 'India — Delhi',
-				expectedCurrency: 'INR',
-			},
-			{
-				countryRegionSubstring: 'united-kingdom',
-				countryRegionSelector: 'UK',
-				countryRegion: 'United Kingdom (UK)',
-				expectedCurrency: 'GBP',
-			},
-		];
+			beforeAll( async () => {
+				await login.login();
+			} );
+			afterAll( async () => {
+				await login.logout();
+			} );
 
-		testCountryCurrencyPairs.forEach( ( spec ) => {
 			it(
 				'can complete the profile wizard with selecting "' +
 					spec.countryRegion +
