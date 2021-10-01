@@ -5,7 +5,6 @@
 - Fix: Fix up onboarding profiler not working when opted out of tracking #7490
 - Fix: Making Business Details sticky in onboarding wizard #7426
 - Fix: Missing RTL for onboarding styles. #7531
-- Fix: No changelog necessary as it is in the component package. #7423
 - Fix: Skip scheduling action if Action Scheduler tables have not been set up #7521
 - Fix: Update country region typeahead for better autofill support. #7497
 - Fix: Use installable extensions for local state versus free extensions. #7585
