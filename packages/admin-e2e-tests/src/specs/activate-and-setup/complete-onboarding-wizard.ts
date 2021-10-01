@@ -16,6 +16,8 @@ const {
 	expect,
 } = require( '@jest/globals' );
 const config = require( 'config' );
+
+const { verifyValueOfInputField } = require( '@woocommerce/e2e-utils' );
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 /**
@@ -108,10 +110,7 @@ const testAdminOnboardingWizard = () => {
 		it( 'can select the right currency on settings page related to the onboarding country', async () => {
 			const settingsScreen = new WcSettings( page );
 			await settingsScreen.navigate();
-			const currencySettings = settingsScreen.getDropdownField(
-				'#woocommerce_currency'
-			);
-			await currencySettings.checkSelected( 'USD' );
+			verifyValueOfInputField( '#wc_currency', 'USD' );
 		} );
 	} );
 };
@@ -211,13 +210,11 @@ const testSelectiveBundleWCPay = () => {
 			expect( tasks ).not.toContain( TaskTitles.wooPayments );
 		} );
 
+
 		it( 'can select the right currency on settings page related to the onboarding country', async () => {
 			const settingsScreen = new WcSettings( page );
 			await settingsScreen.navigate();
-			const currencySettings = settingsScreen.getDropdownField(
-				'#woocommerce_currency'
-			);
-			await currencySettings.checkSelected( 'JPY' );
+			verifyValueOfInputField( '#wc_currency', 'JPY' );
 		} );
 	} );
 };
