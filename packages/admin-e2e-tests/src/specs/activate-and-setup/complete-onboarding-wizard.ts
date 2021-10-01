@@ -107,6 +107,7 @@ const testAdminOnboardingWizard = () => {
 
 		it( 'can select the right currency on settings page related to the onboarding country', async () => {
 			const settingsScreen = new WcSettings( page );
+			await settingsScreen.navigate();
 			const currencySettings = settingsScreen.getDropdownField(
 				'#woocommerce_currency'
 			);
@@ -212,6 +213,7 @@ const testSelectiveBundleWCPay = () => {
 
 		it( 'can select the right currency on settings page related to the onboarding country', async () => {
 			const settingsScreen = new WcSettings( page );
+			await settingsScreen.navigate();
 			const currencySettings = settingsScreen.getDropdownField(
 				'#woocommerce_currency'
 			);
