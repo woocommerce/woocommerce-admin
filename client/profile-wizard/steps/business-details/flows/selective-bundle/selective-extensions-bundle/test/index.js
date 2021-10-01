@@ -84,11 +84,14 @@ const freeExtensions = [
 	},
 ];
 
+const profileItems = { product_types: [] };
+
 describe( 'Selective extensions bundle', () => {
 	it( 'should list installable free extensions in footer only basics', () => {
 		useSelect.mockReturnValue( {
 			freeExtensions,
 			isResolving: false,
+			profileItems,
 		} );
 		const { getByText, queryByText } = render(
 			<SelectiveExtensionsBundle isInstallingActivating={ false } />
@@ -113,6 +116,7 @@ describe( 'Selective extensions bundle', () => {
 		useSelect.mockReturnValue( {
 			freeExtensions,
 			isResolving: false,
+			profileItems,
 		} );
 		const { getAllByRole, getByText, queryByText } = render(
 			<SelectiveExtensionsBundle isInstallingActivating={ false } />

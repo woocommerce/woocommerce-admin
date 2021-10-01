@@ -8,11 +8,7 @@ import { Link } from '@woocommerce/components';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
-import {
-	pluginNames,
-	ONBOARDING_STORE_NAME,
-	PLUGINS_STORE_NAME,
-} from '@woocommerce/data';
+import { pluginNames, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { useSelect } from '@wordpress/data';
 
@@ -182,48 +178,41 @@ export const SelectiveExtensionsBundle = ( {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ values, setValues ] = useState( baseValues );
 
-	const { freeExtensions, isResolving } = useSelect( ( select ) => {
-		const { getFreeExtensions, hasFinishedResolution } = select(
-			ONBOARDING_STORE_NAME
-		);
+	const { freeExtensions, isResolving, profileItems } = useSelect(
+		( select ) => {
+			const {
+				getFreeExtensions,
+				getProfileItems,
+				hasFinishedResolution,
+			} = select( ONBOARDING_STORE_NAME );
 
-		return {
-			freeExtensions: getFreeExtensions(),
-			isResolving: ! hasFinishedResolution( 'getFreeExtensions' ),
-		};
-	} );
-
-	const { installedPlugins = [] } = useSelect( ( select ) => {
-		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
-
-		return {
-			installedPlugins: getInstalledPlugins(),
-		};
-	} );
+			return {
+				freeExtensions: getFreeExtensions(),
+				isResolving: ! hasFinishedResolution( 'getFreeExtensions' ),
+				profileItems: getProfileItems(),
+			};
+		}
+	);
 
 	const installableExtensions = useMemo( () => {
+		const { product_types: productTypes } = profileItems;
 		return freeExtensions.filter( ( list ) => {
+			if (
+				window.wcAdminFeatures &&
+				window.wcAdminFeatures.subscriptions
+			) {
+				if ( productTypes.includes( 'subscriptions' ) ) {
+					list.plugins = list.plugins.filter(
+						( extension ) =>
+							extension.key !== 'woocommerce-payments' ||
+							( extension.key === 'woocommerce-payments' &&
+								! extension.is_installed )
+					);
+				}
+			}
 			return ALLOWED_PLUGIN_LISTS.includes( list.key );
 		} );
-	}, [ freeExtensions ] );
-
-	const removeWCPayFromInstallableExtensions = () => {
-		installableExtensions.forEach( ( extensions ) => {
-			const { plugins } = extensions;
-			extensions.plugins = plugins.filter(
-				( plugin ) => plugin.key !== 'woocommerce-payments'
-			);
-		} );
-	};
-
-	if (
-		window.wcAdminFeatures &&
-		window.wcAdminFeatures.subscriptions &&
-		!! installableExtensions.length &&
-		installedPlugins.includes( 'woocommerce-payments' )
-	) {
-		removeWCPayFromInstallableExtensions();
-	}
+	}, [ freeExtensions, profileItems ] );
 
 	useEffect( () => {
 		const initialValues = createInitialValues( installableExtensions );
