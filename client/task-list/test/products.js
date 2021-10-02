@@ -90,15 +90,5 @@ describe( 'products', () => {
 				screen.queryByText( 'Variable product' )
 			).toBeInTheDocument();
 		} );
-
-		it( 'should render a Subscription product type', () => {
-			window.wcAdminFeatures.subscriptions = true;
-
-			render( <ProductTemplateModal /> );
-
-			expect(
-				screen.queryByText( 'Subscription product' )
-			).toBeInTheDocument();
-		} );
 	} );
 } );

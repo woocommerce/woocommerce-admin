@@ -4,9 +4,13 @@
 import { __ } from '@wordpress/i18n';
 import { Button, Modal, RadioControl } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { useDispatch } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import { ITEMS_STORE_NAME } from '@woocommerce/data';
+import {
+	ITEMS_STORE_NAME,
+	ONBOARDING_STORE_NAME,
+	PLUGINS_STORE_NAME,
+} from '@woocommerce/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -58,6 +62,20 @@ export default function ProductTemplateModal( { onClose } ) {
 	const [ selectedTemplate, setSelectedTemplate ] = useState( null );
 	const [ isRedirecting, setIsRedirecting ] = useState( false );
 	const { createProductFromTemplate } = useDispatch( ITEMS_STORE_NAME );
+	const { profileItems } = useSelect( ( select ) => {
+		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
+
+		return {
+			profileItems: getProfileItems(),
+		};
+	} );
+	const { installedPlugins } = useSelect( ( select ) => {
+		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
+
+		return {
+			installedPlugins: getInstalledPlugins(),
+		};
+	} );
 
 	const createTemplate = () => {
 		setIsRedirecting( true );
@@ -98,8 +116,11 @@ export default function ProductTemplateModal( { onClose } ) {
 		}
 	};
 
-	if ( window.wcAdminFeatures && ! window.wcAdminFeatures.subscriptions ) {
-		// this filter should be removed after removing the `subscriptions` flag
+	if (
+		( window.wcAdminFeatures && ! window.wcAdminFeatures.subscriptions ) ||
+		! profileItems.product_types.includes( 'subscriptions' ) ||
+		! installedPlugins.includes( 'woocommerce-payments' )
+	) {
 		addFilter(
 			ONBOARDING_PRODUCT_TEMPLATES_FILTER,
 			'woocommerce-admin',
