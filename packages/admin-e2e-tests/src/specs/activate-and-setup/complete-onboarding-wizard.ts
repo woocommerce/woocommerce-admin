@@ -251,8 +251,8 @@ const testDifferentStoreCurrenciesWCPay = () => {
 			expectedCurrency: 'INR',
 		},
 		{
-			countryRegionSubstring: 'united-kingdom',
-			countryRegionSelector: 'UK',
+			countryRegionSubstring: 'kingd',
+			countryRegionSelector: 'GB',
 			countryRegion: 'United Kingdom (UK)',
 			expectedCurrency: 'GBP',
 		},
