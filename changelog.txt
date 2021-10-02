@@ -1,7 +1,7 @@
 == 2.6.5 09/22/2021 ==
 
 - Fix: Add filters to get new hidden options #7698
-- Add: E2E tests for checking store currency if it matches the onboarded country #7712
+- Add: E2E tests for checking store currency if it matches the onboarded country. #7712
 
 == 2.6.4 09/21/2021 ==
 
