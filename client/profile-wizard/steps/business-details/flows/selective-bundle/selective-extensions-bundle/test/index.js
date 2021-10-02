@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { createElement } from '@wordpress/element';
 import { render } from '@testing-library/react';
 import { useSelect } from '@wordpress/data';
 import userEvent from '@testing-library/user-event';
