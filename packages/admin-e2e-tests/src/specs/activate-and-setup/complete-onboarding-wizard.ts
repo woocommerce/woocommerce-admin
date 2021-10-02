@@ -235,13 +235,13 @@ const testDifferentStoreCurrenciesWCPay = () => {
 		{
 			countryRegionSubstring: 'china',
 			countryRegionSelector: 'CN\\:CN2',
-			countryRegion: 'China — Beijing Shi',
+			countryRegion: 'China — Beijing',
 			expectedCurrency: 'CNY',
 		},
 		{
 			countryRegionSubstring: 'spain',
 			countryRegionSelector: 'ES\\:CO',
-			countryRegion: 'Spain — Cordoba',
+			countryRegion: 'Spain — Córdoba',
 			expectedCurrency: 'EUR',
 		},
 		{
