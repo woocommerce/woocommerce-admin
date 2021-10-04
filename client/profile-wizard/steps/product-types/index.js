@@ -76,23 +76,27 @@ export class ProductTypes extends Component {
 			product_type: selected,
 		} );
 
+		const promises = [ updateProfileItems( { product_types: selected } ) ];
+
 		if (
 			window.wcAdminFeatures &&
 			window.wcAdminFeatures.subscriptions &&
 			! installedPlugins.includes( 'woocommerce-payments' ) &&
 			selected.includes( 'subscriptions' )
 		) {
-			installAndActivatePlugins( [ 'woocommerce-payments' ] )
-				.then( ( response ) => {
-					createNoticesFromResponse( response );
-				} )
-				.catch( ( error ) => {
-					createNoticesFromResponse( error );
-					throw new Error();
-				} );
+			promises.push(
+				installAndActivatePlugins( [ 'woocommerce-payments' ] )
+					.then( ( response ) => {
+						createNoticesFromResponse( response );
+					} )
+					.catch( ( error ) => {
+						createNoticesFromResponse( error );
+						throw new Error();
+					} )
+			);
 		}
 
-		updateProfileItems( { product_types: selected } )
+		Promise.all( promises )
 			.then( () => goToNextStep() )
 			.catch( () =>
 				createNotice(
@@ -129,7 +133,11 @@ export class ProductTypes extends Component {
 	render() {
 		const { productTypes = {} } = getSetting( 'onboarding', {} );
 		const { error, isMonthlyPricing, selected } = this.state;
-		const { installedPlugins = [], isProfileItemsRequesting } = this.props;
+		const {
+			installedPlugins = [],
+			isInstallingActivating,
+			isProfileItemsRequesting,
+		} = this.props;
 
 		return (
 			<div className="woocommerce-profile-wizard__product-types">
@@ -191,9 +199,14 @@ export class ProductTypes extends Component {
 						<Button
 							isPrimary
 							onClick={ this.onContinue }
-							isBusy={ isProfileItemsRequesting }
+							isBusy={
+								isProfileItemsRequesting ||
+								isInstallingActivating
+							}
 							disabled={
-								! selected.length || isProfileItemsRequesting
+								! selected.length ||
+								isProfileItemsRequesting ||
+								isInstallingActivating
 							}
 						>
 							{ __( 'Continue', 'woocommerce-admin' ) }
@@ -255,7 +268,9 @@ export default compose(
 			getOnboardingError,
 			isOnboardingRequesting,
 		} = select( ONBOARDING_STORE_NAME );
-		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
+		const { getInstalledPlugins, isPluginsRequesting } = select(
+			PLUGINS_STORE_NAME
+		);
 
 		return {
 			isError: Boolean( getOnboardingError( 'updateProfileItems' ) ),
@@ -264,6 +279,9 @@ export default compose(
 				'updateProfileItems'
 			),
 			installedPlugins: getInstalledPlugins(),
+			isInstallingActivating:
+				isPluginsRequesting( 'installPlugins' ) ||
+				isPluginsRequesting( 'activatePlugins' ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
