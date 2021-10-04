@@ -46,3 +46,5 @@ WooOnboardingTask.Slot = ( { id, fillProps } ) => {
 		/>
 	);
 };
+
+export { WooOnboardingTask };
