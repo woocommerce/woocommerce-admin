@@ -304,6 +304,7 @@ class Task {
 			'canView'        => $this->can_view,
 			'time'           => $this->time,
 			'level'          => $this->level,
+			'isActioned'     => $this->is_actioned(),
 			'isDismissed'    => $this->is_dismissed(),
 			'isDismissable'  => $this->is_dismissable,
 			'isSnoozed'      => $this->is_snoozed(),
@@ -320,7 +321,8 @@ class Task {
 	public function mark_actioned() {
 		$actioned = get_option( self::ACTIONED_OPTION, array() );
 
-		$update = update_option( self::ACTIONED_OPTION, array_unique( $actioned, array( $this->id ) ) );
+		$actioned[] = $this->id;
+		$update     = update_option( self::ACTIONED_OPTION, array_unique( $actioned ) );
 
 		if ( $update ) {
 			wc_admin_record_tracks_event( 'tasklist_actioned_task', array( 'task_name' => $this->id ) );
