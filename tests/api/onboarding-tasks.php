@@ -339,7 +339,7 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
-	 * Test that a task can be snoozed with determined duration
+	 * Test that a task can be dismissed.
 	 * @group tasklist
 	 */
 	public function test_task_can_be_dismissed() {
@@ -409,10 +409,10 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( $task_after_request->is_dismissed(), false );
 	}
 
-		/**
-		 * Test that dismiss endpoint returns error for invalid task.
-		 * @group tasklist
-		 */
+	/**
+	 * Test that dismiss endpoint returns error for invalid task.
+	 * @group tasklist
+	 */
 	public function test_dismissed_task_invalid() {
 		wp_set_current_user( $this->user );
 
@@ -423,6 +423,55 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( $response_data['data']['status'], 404 );
 		$this->assertEquals( $response_data['code'], 'woocommerce_rest_invalid_task' );
+	}
+
+	/**
+	 * Test that a task list can be hidden.
+	 * @group tasklist
+	 */
+	public function test_task_list_can_be_hidden() {
+		wp_set_current_user( $this->user );
+
+		TaskLists::add_list(
+			array(
+				'id' => 'test-list',
+			)
+		);
+
+		TaskLists::add_task(
+			'test-list',
+			array(
+				'id'             => 'test-task',
+				'title'          => 'Test Task',
+				'is_dismissable' => true,
+			)
+		);
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/test-list/hide' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$response      = $this->server->dispatch( $request );
+		$response_data = $response->get_data();
+
+		$list = TaskLists::get_list( 'test-list' );
+
+		$this->assertEquals( $list->is_hidden(), true );
+		$this->assertEquals( $response_data['isHidden'], true );
+	}
+
+	/**
+	 * Test that hide endpoint returns error for invalid task.
+	 * @group tasklist
+	 */
+	public function test_task_list_hidden_invalid_list() {
+		wp_set_current_user( $this->user );
+
+		$request = new WP_REST_Request( 'POST', $this->endpoint . '/test-list/hide' );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$response      = $this->server->dispatch( $request );
+		$response_data = $response->get_data();
+
+		$this->assertEquals( $response_data['data']['status'], 404 );
+		$this->assertEquals( $response_data['code'], 'woocommerce_rest_invalid_task_list' );
 	}
 
 }
