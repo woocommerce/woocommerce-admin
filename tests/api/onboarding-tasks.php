@@ -474,4 +474,51 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( $response_data['code'], 'woocommerce_rest_invalid_task_list' );
 	}
 
+
+	/**
+	 * Test that task lists can be fetched.
+	 * @group tasklist
+	 */
+	public function test_task_list_can_be_fetched() {
+		wp_set_current_user( $this->user );
+
+		TaskLists::add_list(
+			array(
+				'id' => 'test-list',
+			)
+		);
+
+		TaskLists::add_task(
+			'test-list',
+			array(
+				'id'             => 'test-task',
+				'title'          => 'Test Task',
+				'is_dismissable' => true,
+			)
+		);
+
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_headers( array( 'content-type' => 'application/json' ) );
+		$response      = $this->server->dispatch( $request );
+		$response_data = $response->get_data();
+
+		$setup_list = null;
+		$test_list  = null;
+
+		foreach ( $response_data as $task_list ) {
+			if ( 'setup' === $task_list['id'] ) {
+				$setup_list = $task_list;
+			}
+			if ( 'test-list' === $task_list['id'] ) {
+				$test_list = $task_list;
+			}
+		}
+
+		$test_task = $test_list['tasks'][0];
+
+		$this->assertGreaterThan( 0, count( $setup_list ), true );
+		$this->assertEquals( $test_task['id'], 'test-task' );
+		$this->assertEquals( $test_task['isDismissable'], true );
+	}
+
 }
