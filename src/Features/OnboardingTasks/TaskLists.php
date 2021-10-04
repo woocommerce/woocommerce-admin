@@ -193,6 +193,14 @@ class TaskLists {
 	}
 
 	/**
+	 * Clear all task lists.
+	 */
+	public static function clear_lists() {
+		self::$lists = array();
+		return self::$lists;
+	}
+
+	/**
 	 * Get visible task lists.
 	 */
 	public static function get_visible() {

@@ -874,7 +874,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( ! $task || ! $task->is_snoozeable ) {
 			return new \WP_Error(
-				'woocommerce_tasks_invalid_task',
+				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
 				array(
 					'status' => 404,
@@ -908,7 +908,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( ! $task || ! $task->is_snoozeable ) {
 			return new \WP_Error(
-				'woocommerce_tasks_invalid_task',
+				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
 				array(
 					'status' => 404,
@@ -933,7 +933,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		if ( ! $task_list ) {
 			return new \WP_Error(
-				'woocommerce_tasks_invalid_task_list',
+				'woocommerce_rest_invalid_task_list',
 				__( 'Sorry, that task list was not found', 'woocommerce-admin' ),
 				array(
 					'status' => 404,
