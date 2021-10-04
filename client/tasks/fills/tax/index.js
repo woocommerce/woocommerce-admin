@@ -24,10 +24,11 @@ import { WooOnboardingTask } from '@woocommerce/onboarding';
 /**
  * Internal dependencies
  */
-import Connect from '../../dashboard/components/connect';
-import { createNoticesFromResponse } from '../../lib/notices';
-import { getCountryCode } from '../../dashboard/utils';
-import StoreLocation from './steps/location';
+import Connect from '../../../dashboard/components/connect';
+import { createNoticesFromResponse } from '../../../lib/notices';
+import { getCountryCode } from '../../../dashboard/utils';
+import StoreLocation from '../steps/location';
+import './tax.scss';
 
 class Tax extends Component {
 	constructor( props ) {
