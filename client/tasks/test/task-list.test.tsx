@@ -2,12 +2,16 @@
  * External dependencies
  */
 import { render } from '@testing-library/react';
+import { recordEvent } from '@woocommerce/tracks';
 
 /**
  * Internal dependencies
  */
 import { TaskList } from '../task-list';
 
+jest.mock( '@woocommerce/tracks', () => ( {
+	recordEvent: jest.fn(),
+} ) );
 jest.mock( '../task-list-item', () => ( {
 	TaskListItem: ( props ) => <div>{ props.task.title }</div>,
 } ) );
@@ -80,7 +84,36 @@ const tasks = {
 };
 
 describe( 'TaskList', () => {
-	beforeEach( () => {} );
+	beforeEach( () => {
+		jest.clearAllMocks();
+	} );
+
+	it( 'should trigger tasklist_view event on initial render for setup task list', () => {
+		render(
+			<TaskList id="setup" tasks={ [] } title="List title" query={ {} } />
+		);
+		expect( recordEvent ).toHaveBeenCalledTimes( 1 );
+		expect( recordEvent ).toHaveBeenCalledWith( 'tasklist_view', {
+			number_tasks: 0,
+			store_connected: null,
+		} );
+	} );
+
+	it( 'should trigger {id}_tasklist_view event on initial render for setup task list if id is not setup', () => {
+		render(
+			<TaskList
+				id="extended"
+				tasks={ [] }
+				title="List title"
+				query={ {} }
+			/>
+		);
+		expect( recordEvent ).toHaveBeenCalledTimes( 1 );
+		expect( recordEvent ).toHaveBeenCalledWith( 'extended_tasklist_view', {
+			number_tasks: 0,
+			store_connected: null,
+		} );
+	} );
 
 	it( 'should render the task title and incomplete task number', () => {
 		const { queryByText } = render(
