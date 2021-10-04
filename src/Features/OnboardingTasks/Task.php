@@ -217,7 +217,7 @@ class Task {
 		$update      = update_option( self::DISMISSED_OPTION, array_unique( $dismissed ) );
 
 		if ( $update ) {
-			$this->record_tracks_event( 'tasklist_dismiss_task', array( 'task_name' => $this->id ) );
+			$this->record_tracks_event( 'dismiss_task', array( 'task_name' => $this->id ) );
 		}
 
 		return $update;
@@ -234,7 +234,7 @@ class Task {
 		$update    = update_option( self::DISMISSED_OPTION, $dismissed );
 
 		if ( $update ) {
-			$this->record_tracks_event( 'tasklist_undo_dismiss_task', array( 'task_name' => $this->id ) );
+			$this->record_tracks_event( 'undo_dismiss_task', array( 'task_name' => $this->id ) );
 		}
 
 		return $update;
@@ -273,7 +273,7 @@ class Task {
 
 		if ( $update ) {
 			if ( $update ) {
-				$this->record_tracks_event( 'tasklist_remindmelater_task', array( 'task_name' => $this->id ) );
+				$this->record_tracks_event( 'remindmelater_task', array( 'task_name' => $this->id ) );
 				$this->snoozed_until = $snoozed_until;
 			}
 		}
@@ -292,7 +292,7 @@ class Task {
 		$update = update_option( self::SNOOZED_OPTION, $snoozed );
 
 		if ( $update ) {
-			$this->record_tracks_event( 'tasklist_undo_remindmelater_task', array( 'task_name' => $this->id ) );
+			$this->record_tracks_event( 'undo_remindmelater_task', array( 'task_name' => $this->id ) );
 		}
 
 		return $update;
