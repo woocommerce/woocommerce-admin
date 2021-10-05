@@ -41,7 +41,6 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 			)
 		);
 
-		$list->prefix_event( 'event' );
 		$this->assertEquals( 'tasklist_event', $list->prefix_event( 'event' ) );
 	}
 
@@ -49,7 +48,6 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	 * Tests that tracks events are correctly prefixed on the other lists.
 	 */
 	public function test_event_prefixing() {
-		$this->list->prefix_event( 'event' );
 		$this->assertEquals( 'my_list_tasklist_event', $list->prefix_event( 'event' ) );
 	}
 
