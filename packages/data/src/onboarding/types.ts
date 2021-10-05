@@ -13,11 +13,14 @@ export type TaskType = {
 	title: string;
 };
 
+type TaskSortType = 'isComplete' | 'level';
+
 export type TaskListType = {
 	id: string;
 	isCollapsible?: boolean;
 	isComplete: boolean;
 	isExpandable?: boolean;
 	tasks: TaskType[];
+	sortBy: TaskSortType[];
 	title: string;
 };

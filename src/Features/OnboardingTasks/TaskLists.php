@@ -99,8 +99,9 @@ class TaskLists {
 
 		self::add_list(
 			array(
-				'id'    => 'extended',
-				'title' => __( 'Things to do next', 'woocommerce-admin' ),
+				'id'      => 'extended',
+				'title'   => __( 'Things to do next', 'woocommerce-admin' ),
+				'sort_by' => array( 'isComplete', 'level' ),
 			)
 		);
 

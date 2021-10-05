@@ -43,22 +43,31 @@ class TaskList {
 	public $tasks = array();
 
 	/**
+	 * Sort keys.
+	 *
+	 * @var array
+	 */
+	public $sort_by = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $data Task list data.
 	 */
 	public function __construct( $data = array() ) {
 		$defaults = array(
-			'id'    => null,
-			'title' => '',
-			'tasks' => array(),
+			'id'      => null,
+			'title'   => '',
+			'tasks'   => array(),
+			'sort_by' => array(),
 		);
 
 		$data = wp_parse_args( $data, $defaults );
 
-		$this->id    = $data['id'];
-		$this->title = $data['title'];
-		$this->tasks = $data['tasks'];
+		$this->id      = $data['id'];
+		$this->title   = $data['title'];
+		$this->tasks   = $data['tasks'];
+		$this->sort_by = $data['sort_by'];
 	}
 
 	/**
@@ -213,6 +222,7 @@ class TaskList {
 			'isHidden'   => $this->is_hidden(),
 			'isVisible'  => ! $this->is_hidden(),
 			'isComplete' => $this->is_complete(),
+			'sortBy'     => $this->sort_by,
 			'tasks'      => array_map(
 				function( $task ) {
 					return $task->get_json();
