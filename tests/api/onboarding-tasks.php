@@ -7,6 +7,7 @@
 
 use \Automattic\WooCommerce\Admin\API\OnboardingTasks;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**
  * WC Tests API Onboarding Tasks
@@ -40,8 +41,8 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		}
 
 		// Resetting task list options and lists.
-		update_option( 'woocommerce_task_list_dismissed_tasks', array() );
-		update_option( 'woocommerce_task_list_remind_me_later_tasks', array() );
+		update_option( Task::DISMISSED_OPTION, array() );
+		update_option( Task::SNOOZED_OPTION, array() );
 		TaskLists::clear_lists();
 
 	}

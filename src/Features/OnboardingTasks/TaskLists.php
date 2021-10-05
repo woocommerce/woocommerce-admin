@@ -174,8 +174,10 @@ class TaskLists {
 	 *
 	 * @param array $extended_tasks list of extended tasks.
 	 */
-	public static function maybe_add_extended_tasks( $extended_tasks = array() ) {
-		foreach ( $extended_tasks as $extended_task ) {
+	public static function maybe_add_extended_tasks( $extended_tasks ) {
+		$tasks = $extended_tasks ? $extended_tasks : array();
+
+		foreach ( $tasks as $extended_task ) {
 			self::add_task( $extended_task['list_id'], $extended_task );
 		}
 	}
@@ -183,12 +185,10 @@ class TaskLists {
 	/**
 	 * Get all task lists.
 	 *
-	 * @param array $extended_tasks array of optional extended tasks.
 	 * @return array
 	 */
-	public static function get_lists( $extended_tasks = array() ) {
+	public static function get_lists() {
 		self::maybe_add_default_tasks();
-		self::maybe_add_extended_tasks( $extended_tasks );
 		return self::$lists;
 	}
 
