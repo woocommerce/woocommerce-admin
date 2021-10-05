@@ -110,7 +110,7 @@ function getTasksFromDeprecatedFilter() {
 			} ) ),
 		};
 	}
-	return { original: [], parsed: [] };
+	return { original: {}, parsed: [] };
 }
 
 export function* getTaskLists() {
@@ -125,7 +125,7 @@ export function* getTaskLists() {
 			},
 		} );
 
-		if ( tasksFromDeprecatedFilter.original.length > 0 ) {
+		if ( tasksFromDeprecatedFilter.parsed.length > 0 ) {
 			for ( const taskList of results ) {
 				// Merge any extended task list items, to keep the callback functions around.
 				taskList.tasks = taskList.tasks.map( ( task ) => {
@@ -136,6 +136,10 @@ export function* getTaskLists() {
 						return {
 							...tasksFromDeprecatedFilter.original[ task.id ],
 							...task,
+							isComplete:
+								task.isComplete ||
+								tasksFromDeprecatedFilter.original[ task.id ]
+									.completed,
 						};
 					}
 					return task;
