@@ -380,7 +380,7 @@ export function* actionTask( id ) {
 		} );
 
 		yield actionTaskSuccess(
-			possiblyPruneTaskData( task, [ 'isDismissed', 'isSnoozed' ] )
+			possiblyPruneTaskData( task, [ 'isActioned' ] )
 		);
 	} catch ( error ) {
 		yield actionTaskError( id, error );
