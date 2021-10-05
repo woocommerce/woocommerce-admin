@@ -187,7 +187,7 @@ class TaskList {
 		$completed_lists   = get_option( self::COMPLETED_OPTION, array() );
 		$completed_lists[] = $this->id;
 		update_option( self::COMPLETED_OPTION, $completed_lists );
-		wc_admin_record_tracks_event( $this->prefix_event( 'tasklist_tasks_completed' ) );
+		$this->record_tracks_event( 'tasks_completed' );
 	}
 
 	/**

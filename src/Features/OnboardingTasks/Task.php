@@ -327,7 +327,7 @@ class Task {
 		$completed_tasks   = get_option( self::COMPLETED_OPTION, array() );
 		$completed_tasks[] = $this->id;
 		update_option( self::COMPLETED_OPTION, $completed_tasks );
-		wc_admin_record_tracks_event( 'tasklist_task_completed', array( 'task_name' => $this->id ) );
+		$this->record_tracks_event( 'task_completed', array( 'task_name' => $this->id ) );
 	}
 
 
@@ -372,7 +372,7 @@ class Task {
 		$update     = update_option( self::ACTIONED_OPTION, array_unique( $actioned ) );
 
 		if ( $update ) {
-			wc_admin_record_tracks_event( 'tasklist_actioned_task', array( 'task_name' => $this->id ) );
+			$this->record_tracks_event( 'actioned_task', array( 'task_name' => $this->id ) );
 		}
 
 		return $update;
