@@ -5,8 +5,8 @@ import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { WooOnboardingTaskListItem } from '@woocommerce/onboarding';
 import { SlotFillProvider } from '@wordpress/components';
-import { useSlot } from '@woocommerce/experimental';
 import { useDispatch } from '@wordpress/data';
+import { useSlot } from '@woocommerce/experimental';
 
 /**
  * Internal dependencies
@@ -165,12 +165,9 @@ describe( 'TaskListItem', () => {
 	} );
 
 	it( 'should not render task if slotfill is registered for id', () => {
-		// ( useSlot as jest.Mock ).mockReturnValue( { fills: [ 'test' ] } );
+		( useSlot as jest.Mock ).mockReturnValue( { fills: [ 'test' ] } );
 		const { queryByText } = render(
 			<SlotFillProvider>
-				<WooOnboardingTaskListItem>
-					{ () => <div>Test</div> }
-				</WooOnboardingTaskListItem>
 				<div>
 					<TaskListItem
 						task={ { ...task, id: 'test' } }

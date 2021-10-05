@@ -1,39 +1,78 @@
 /**
  * External dependencies
  */
-import { act, render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
+import { useDispatch } from '@wordpress/data';
 import userEvent from '@testing-library/user-event';
+import { getHistory } from '@woocommerce/navigation';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
-import { SlotFillProvider, Fill, Slot } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import { Task } from '../task';
 
-describe( 'Task', () => {
-	// beforeEach( () => {
-	// 	jest.clearAllMocks();
-	// } );
+jest.mock( '@wordpress/data' );
 
-	it.only( 'should render the registered fill for the slot id', () => {
-		const { queryByText, debug, rerender } = render(
-			<SlotFillProvider>
+jest.mock( '@woocommerce/navigation', () => ( {
+	getHistory: jest.fn(),
+	getNewPath: () => 'new-path',
+} ) );
+
+jest.mock( '@woocommerce/onboarding', () => ( {
+	WooOnboardingTask: {
+		Slot: jest.fn(),
+	},
+} ) );
+
+describe( 'Task', () => {
+	const invalidateResolutionForStoreSelector = jest.fn();
+	const optimisticallyCompleteTask = jest.fn();
+	beforeEach( () => {
+		( useDispatch as jest.Mock ).mockImplementation( () => ( {
+			invalidateResolutionForStoreSelector,
+			optimisticallyCompleteTask,
+		} ) );
+		( WooOnboardingTask.Slot as jest.Mock ).mockImplementation(
+			( { id, fillProps } ) => (
 				<div>
-					<Slot name="woocommerce_onboarding_task_test" />
-					<Task query={ { task: 'test' } } />
+					{ id }
+					<button onClick={ fillProps.onComplete } name="complete">
+						complete
+					</button>
 				</div>
-				<Fill name="woocommerce_onboarding_task_test">
-					<div>Test Onboarding Task</div>
-				</Fill>
-				<WooOnboardingTask id="test">
-					{ ( { onComplete } ) => {
-						return <button onClick={ onComplete }>Complete</button>;
-					} }
-				</WooOnboardingTask>
-			</SlotFillProvider>
+			)
 		);
-		debug();
-		expect( queryByText( 'Test Onboarding Task' ) ).toBeInTheDocument();
+	} );
+
+	it( 'should pass the task name as id to the OnboardingTask.Slot', () => {
+		const { queryByText } = render(
+			<div>
+				<Task query={ { task: 'test' } } />
+			</div>
+		);
+		expect( queryByText( 'test' ) ).toBeInTheDocument();
+	} );
+
+	it( 'should update history and invalidate store selector onComplete', () => {
+		const historyPushMock = jest.fn();
+		( getHistory as jest.Mock ).mockImplementation( () => {
+			return {
+				push: historyPushMock,
+			};
+		} );
+		const { getByRole } = render(
+			<div>
+				<Task query={ { task: 'test' } } />
+			</div>
+		);
+		act( () => {
+			userEvent.click( getByRole( 'button', { name: 'complete' } ) );
+		} );
+		expect( optimisticallyCompleteTask ).toHaveBeenCalledWith( 'test' );
+		expect( invalidateResolutionForStoreSelector ).toHaveBeenCalledWith(
+			'getTaskLists'
+		);
+		expect( historyPushMock ).toHaveBeenCalledWith( 'new-path' );
 	} );
 } );

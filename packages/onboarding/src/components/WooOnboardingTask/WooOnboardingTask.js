@@ -28,7 +28,7 @@ export const trackView = ( taskId ) => {
 	} );
 };
 
-export const WooOnboardingTask = ( { id, ...props } ) => {
+const WooOnboardingTask = ( { id, ...props } ) => {
 	return <Fill name={ 'woocommerce_onboarding_task_' + id } { ...props } />;
 };
 
