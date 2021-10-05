@@ -28,7 +28,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 			)
 		);
 
-		$this->assertEquals( true, $task->is_visible() );
+		$this->assertEquals( true, $task->can_view );
 	}
 
 	/**
@@ -42,7 +42,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 			)
 		);
 
-		$this->assertEquals( false, $task->is_visible() );
+		$this->assertEquals( false, $task->can_view );
 	}
 
 	/**
@@ -96,20 +96,6 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$this->assertNotContains( $task->id, $dismissed );
 	}
 
-	/**
-	 * Tests that a dismissed task is not visible.
-	 */
-	public function test_dismissed_visibility() {
-		$task = new Task(
-			array(
-				'id'             => 'wc-unit-test-task',
-				'is_dismissable' => true,
-			)
-		);
-
-		$task->dismiss();
-		$this->assertEquals( false, $task->is_visible() );
-	}
 
 	/**
 	 * Tests that a task can be snoozed.
@@ -143,21 +129,6 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$task->undo_snooze();
 		$snoozed = get_option( Task::SNOOZED_OPTION, array() );
 		$this->assertArrayNotHasKey( $task->id, $snoozed );
-	}
-
-	/**
-	 * Tests that a task is not visible when snoozed.
-	 */
-	public function test_snoozed_visibility() {
-		$task = new Task(
-			array(
-				'id'            => 'wc-unit-test-snoozeable-task',
-				'is_snoozeable' => true,
-			)
-		);
-
-		$task->snooze();
-		$this->assertEquals( false, $task->is_visible() );
 	}
 
 	/**
@@ -233,13 +204,29 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$this->assertArrayHasKey( 'actionLabel', $json );
 		$this->assertArrayHasKey( 'actionUrl', $json );
 		$this->assertArrayHasKey( 'isComplete', $json );
-		$this->assertArrayHasKey( 'isVisible', $json );
+		$this->assertArrayHasKey( 'canView', $json );
 		$this->assertArrayHasKey( 'time', $json );
 		$this->assertArrayHasKey( 'isDismissed', $json );
 		$this->assertArrayHasKey( 'isDismissable', $json );
 		$this->assertArrayHasKey( 'isSnoozed', $json );
 		$this->assertArrayHasKey( 'isSnoozeable', $json );
 		$this->assertArrayHasKey( 'snoozedUntil', $json );
+	}
+
+	/**
+	 * Tests that a task can be actioned.
+	 */
+	public function test_action_task() {
+		$task = new Task(
+			array(
+				'id' => 'wc-unit-test-task',
+			)
+		);
+
+		$update   = $task->mark_actioned();
+		$actioned = get_option( Task::ACTIONED_OPTION, array() );
+		$this->assertEquals( true, $update );
+		$this->assertContains( $task->id, $actioned );
 	}
 
 }

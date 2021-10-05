@@ -275,7 +275,7 @@ const onboarding = (
 					if ( taskListId === list.id ) {
 						return {
 							...list,
-							isHidden: false,
+							isVisible: true,
 						};
 					}
 					return list;
@@ -292,7 +292,7 @@ const onboarding = (
 					if ( taskListId === list.id ) {
 						return {
 							...list,
-							isHidden: true,
+							isVisible: false,
 						};
 					}
 					return list;
@@ -308,6 +308,47 @@ const onboarding = (
 				taskLists: state.taskLists.map( ( list ) => {
 					return taskListId === list.id ? taskList : list;
 				} ),
+			};
+		case TYPES.OPTIMISTICALLY_COMPLETE_TASK_REQUEST:
+			return {
+				...state,
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isComplete: true,
+				} ),
+			};
+		case TYPES.ACTION_TASK_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					actionTask: error,
+				},
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isActioned: false,
+				} ),
+			};
+		case TYPES.ACTION_TASK_REQUEST:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					actionTask: true,
+				},
+				taskLists: getUpdatedTaskLists( state.taskLists, {
+					id: taskId,
+					isActioned: true,
+				} ),
+			};
+		case TYPES.ACTION_TASK_SUCCESS:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					actionTask: false,
+				},
+				taskLists: getUpdatedTaskLists( state.taskLists, task ),
 			};
 		default:
 			return state;

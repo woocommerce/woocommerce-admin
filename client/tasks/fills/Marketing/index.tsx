@@ -100,21 +100,20 @@ export const getMarketingExtensionLists = (
 };
 
 export type MarketingProps = {
-	trackedCompletedActions: string[];
+	onComplete: ( bool: boolean ) => void;
 };
 
-const Marketing: React.FC = () => {
+const Marketing: React.FC< MarketingProps > = ( { onComplete } ) => {
 	const [ currentPlugin, setCurrentPlugin ] = useState< string | null >(
 		null
 	);
+	const { actionTask } = useDispatch( ONBOARDING_STORE_NAME );
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const {
 		activePlugins,
 		freeExtensions,
 		installedPlugins,
 		isResolving,
-		trackedCompletedActions,
 	} = useSelect( ( select: WCDataSelector ) => {
 		const { getActivePlugins, getInstalledPlugins } = select(
 			PLUGINS_STORE_NAME
@@ -123,26 +122,11 @@ const Marketing: React.FC = () => {
 			ONBOARDING_STORE_NAME
 		);
 
-		const {
-			getOption,
-			hasFinishedResolution: optionFinishedResolution,
-		} = select( OPTIONS_STORE_NAME );
-
-		const completedActions =
-			getOption( 'woocommerce_task_list_tracked_completed_actions' ) ||
-			EMPTY_ARRAY;
-
 		return {
 			activePlugins: getActivePlugins(),
 			freeExtensions: getFreeExtensions(),
 			installedPlugins: getInstalledPlugins(),
-			isResolving: ! (
-				hasFinishedResolution( 'getFreeExtensions' ) &&
-				optionFinishedResolution( 'getOption', [
-					'woocommerce_task_list_tracked_completed_actions',
-				] )
-			),
-			trackedCompletedActions: completedActions,
+			isResolving: ! hasFinishedResolution( 'getFreeExtensions' ),
 		};
 	} );
 
@@ -158,6 +142,7 @@ const Marketing: React.FC = () => {
 
 	const installAndActivate = ( slug: string ) => {
 		setCurrentPlugin( slug );
+		actionTask( 'marketing' );
 		installAndActivatePlugins( [ slug ] )
 			.then( ( response: { errors: Record< string, string > } ) => {
 				recordEvent( 'tasklist_marketing_install', {
@@ -167,17 +152,9 @@ const Marketing: React.FC = () => {
 					),
 				} );
 
-				if ( ! trackedCompletedActions.includes( 'marketing' ) ) {
-					updateOptions( {
-						woocommerce_task_list_tracked_completed_actions: [
-							...trackedCompletedActions,
-							'marketing',
-						],
-					} );
-				}
-
 				createNoticesFromResponse( response );
 				setCurrentPlugin( null );
+				onComplete();
 			} )
 			.catch( ( response: { errors: Record< string, string > } ) => {
 				createNoticesFromResponse( response );
@@ -207,6 +184,7 @@ const Marketing: React.FC = () => {
 					</CardHeader>
 					<PluginList
 						currentPlugin={ currentPlugin }
+						installAndActivate={ installAndActivate }
 						plugins={ installedExtensions }
 					/>
 				</Card>
@@ -253,7 +231,9 @@ registerPlugin( 'wc-admin-onboarding-task-marketing', {
 	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="marketing">
-			<Marketing />
+			{ ( { onComplete } ) => {
+				return <Marketing onComplete={ onComplete } />;
+			} }
 		</WooOnboardingTask>
 	),
 } );

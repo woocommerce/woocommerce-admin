@@ -53,16 +53,18 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		id,
 		isComplete,
 		isDismissable,
-		isSnoozable,
+		isSnoozeable,
 		time,
 		title,
+		level,
+		additionalInfo,
 	} = task;
 
 	const slot = useSlot( `woocommerce_onboarding_task_list_item_${ id }` );
 	const hasFills = Boolean( slot?.fills?.length );
 
 	const onDismiss = useCallback( () => {
-		dismissTask();
+		dismissTask( id );
 		createNotice( 'success', __( 'Task dismissed' ), {
 			actions: [
 				{
@@ -74,7 +76,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 	}, [ id ] );
 
 	const onSnooze = useCallback( () => {
-		snoozeTask();
+		snoozeTask( id );
 		createNotice(
 			'success',
 			__( 'Task postponed until tomorrow', 'woocommerce-admin' ),
@@ -140,7 +142,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		expandable: isExpandable,
 		expanded: isExpandable && isExpanded,
 		completed: isComplete,
-		onSnooze: isSnoozable && onSnooze,
+		onSnooze: isSnoozeable && onSnooze,
 		onDismiss: isDismissable && onDismiss,
 	};
 
@@ -160,8 +162,10 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 					key={ id }
 					title={ title }
 					content={ content }
+					additionalInfo={ additionalInfo }
 					time={ time }
 					action={ onClickActions }
+					level={ level }
 					actionLabel={ actionLabel }
 					{ ...taskItemProps }
 					{ ...props }

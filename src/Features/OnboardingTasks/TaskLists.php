@@ -14,6 +14,7 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Shipping;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\StoreDetails;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Tax;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\Loader;
 
 /**
@@ -96,6 +97,13 @@ class TaskLists {
 			)
 		);
 
+		self::add_list(
+			array(
+				'id'    => 'extended',
+				'title' => __( 'Things to do next', 'woocommerce-admin' ),
+			)
+		);
+
 		self::add_task( 'setup', StoreDetails::get_task() );
 		self::add_task( 'setup', Purchase::get_task() );
 		self::add_task( 'setup', Products::get_task() );
@@ -108,12 +116,25 @@ class TaskLists {
 	}
 
 	/**
+	 * Add default extended task lists.
+	 *
+	 * @param array $extended_tasks list of extended tasks.
+	 */
+	public static function maybe_add_extended_tasks( $extended_tasks = array() ) {
+		foreach ( $extended_tasks as $extended_task ) {
+			self::add_task( $extended_task['list_id'], $extended_task );
+		}
+	}
+
+	/**
 	 * Get all task lists.
 	 *
+	 * @param array $extended_tasks array of optional extended tasks.
 	 * @return array
 	 */
-	public static function get_lists() {
+	public static function get_lists( $extended_tasks = array() ) {
 		self::maybe_add_default_tasks();
+		self::maybe_add_extended_tasks( $extended_tasks );
 		return self::$lists;
 	}
 
@@ -156,22 +177,22 @@ class TaskLists {
 	 * @return Object
 	 */
 	public static function get_task( $id, $task_list_id = null ) {
-		$task_list = $task_list_id ? self::get_task_list_by_id( $task_list_id ) : null;
+		$task_list = $task_list_id ? self::get_list( $task_list_id ) : null;
 
 		if ( $task_list_id && ! $task_list ) {
 			return null;
 		}
 
-		$tasks_to_search = $task_list ? $task_list['tasks'] : array_reduce(
+		$tasks_to_search = $task_list ? $task_list->tasks : array_reduce(
 			self::get_lists(),
 			function ( $all, $curr ) {
-				return array_merge( $all, $curr['tasks'] );
+				return array_merge( $all, $curr->tasks );
 			},
 			array()
 		);
 
 		foreach ( $tasks_to_search as $task ) {
-			if ( $id === $task['id'] ) {
+			if ( $id === $task->id ) {
 				return $task;
 			}
 		}

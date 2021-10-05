@@ -3,7 +3,6 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { getHistory, getNewPath } from '@woocommerce/navigation';
 import {
 	OPTIONS_STORE_NAME,
 	ONBOARDING_STORE_NAME,
@@ -21,11 +20,9 @@ import { List, Placeholder as ListPlaceholder } from './components/List';
 import { Setup, Placeholder as SetupPlaceholder } from './components/Setup';
 import { WCPaySuggestion } from './components/WCPay';
 import './plugins/Bacs';
+import './payment-gateway-suggestions.scss';
 
-export const PaymentGatewaySuggestions = ( { query } ) => {
-	const { invalidateResolutionForStoreSelector } = useDispatch(
-		ONBOARDING_STORE_NAME
-	);
+export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const {
 		getPaymentGateway,
@@ -118,23 +115,21 @@ export const PaymentGatewaySuggestions = ( { query } ) => {
 		updatePaymentGateway( id, {
 			enabled: true,
 		} ).then( () => {
-			invalidateResolutionForStoreSelector( 'getTasksStatus' );
+			onComplete();
 		} );
 	};
 
 	const markConfigured = useCallback(
-		async ( id, queryParams = {} ) => {
+		async ( id ) => {
 			if ( ! paymentGateways.get( id ) ) {
 				throw `Payment gateway ${ id } not found in available gateways list`;
 			}
-
-			enablePaymentGateway( id );
 
 			recordEvent( 'tasklist_payment_connect_method', {
 				payment_method: id,
 			} );
 
-			getHistory().push( getNewPath( { ...queryParams }, '/', {} ) );
+			enablePaymentGateway( id );
 		},
 		[ paymentGateways ]
 	);
@@ -242,7 +237,12 @@ registerPlugin( 'wc-admin-onboarding-task-payments', {
 	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="payments">
-			{ ( { query } ) => <PaymentGatewaySuggestions query={ query } /> }
+			{ ( { onComplete, query } ) => (
+				<PaymentGatewaySuggestions
+					onComplete={ onComplete }
+					query={ query }
+				/>
+			) }
 		</WooOnboardingTask>
 	),
 } );
