@@ -40,7 +40,7 @@ class Appearance {
 	/**
 	 * Add media scripts for image uploader.
 	 */
-	public function add_media_scripts() {
+	public static function add_media_scripts() {
 		$task = new Task( self::get_task() );
 
 		if ( ! $task->can_view ) {
