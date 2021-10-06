@@ -20,7 +20,7 @@ import { TasksPlaceholder } from './placeholder';
 import './tasks.scss';
 
 export type TasksProps = {
-	query: { task: string };
+	query: { task?: string };
 };
 
 export const Tasks: React.FC< TasksProps > = ( { query } ) => {
@@ -68,12 +68,18 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 			{}
 		);
 
-		hideTaskList();
+		hideTaskList( id );
 	};
 
 	useEffect( () => {
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
+		return () => {
+			document.body.classList.remove( 'woocommerce-onboarding' );
+			document.body.classList.remove(
+				'woocommerce-task-dashboard__body'
+			);
+		};
 	}, [] );
 
 	useEffect( () => {
@@ -111,6 +117,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		const {
 			id,
 			isComplete,
+			isHidden,
 			isVisible,
 			isToggleable,
 			title,
