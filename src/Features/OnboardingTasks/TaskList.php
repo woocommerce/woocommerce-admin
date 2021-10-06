@@ -153,7 +153,11 @@ class TaskList {
 	 * @param array $args Task properties.
 	 */
 	public function add_task( $args ) {
-		$this->tasks[] = new Task( $args );
+		$task_args     = wp_parse_args(
+			$args,
+			array( 'parent_id' => $this->id )
+		);
+		$this->tasks[] = new Task( $task_args );
 	}
 
 	/**

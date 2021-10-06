@@ -22,6 +22,13 @@ class Task {
 	public $id = '';
 
 	/**
+	 * Parent task list ID.
+	 *
+	 * @var string
+	 */
+	public $parent_id = '';
+
+	/**
 	 * Title.
 	 *
 	 * @var string
@@ -152,6 +159,7 @@ class Task {
 	public function __construct( $data = array() ) {
 		$defaults = array(
 			'id'              => null,
+			'parent_id'       => null,
 			'title'           => '',
 			'content'         => '',
 			'action_label'    => __( "Let's go", 'woocommerce-admin' ),
@@ -169,6 +177,7 @@ class Task {
 		$data = wp_parse_args( $data, $defaults );
 
 		$this->id              = (string) $data['id'];
+		$this->parent_id       = (string) $data['parent_id'];
 		$this->title           = (string) $data['title'];
 		$this->content         = (string) $data['content'];
 		$this->action_label    = (string) $data['action_label'];
@@ -341,6 +350,7 @@ class Task {
 
 		return array(
 			'id'             => $this->id,
+			'parentId'       => $this->parent_id,
 			'title'          => $this->title,
 			'canView'        => $this->can_view,
 			'content'        => $this->content,

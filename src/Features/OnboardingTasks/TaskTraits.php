@@ -18,11 +18,13 @@ trait TaskTraits {
 	 * @return string
 	 */
 	public function prefix_event( $event_name ) {
-		if ( 'setup' === $this->id ) {
+		$id = self::get_list_id();
+
+		if ( 'setup' === $id ) {
 			return 'tasklist_' . $event_name;
 		}
 
-		return 'tasklist_' . $this->id . '_' . $event_name;
+		return 'tasklist_' . $id . '_' . $event_name;
 	}
 
 	/**
@@ -31,10 +33,25 @@ trait TaskTraits {
 	 * @param string $event_name Event name.
 	 * @param array  $args Array of tracks arguments.
 	 */
-	public function record_tracks_event( $event_name, $args ) {
+	public function record_tracks_event( $event_name, $args = array() ) {
+		if ( ! $this->get_list_id() ) {
+			return;
+		}
+
 		wc_admin_record_tracks_event(
 			$this->prefix_event( $event_name ),
 			$args
 		);
+	}
+
+	/**
+	 * Get the task list ID.
+	 *
+	 * @return string
+	 */
+	public function get_list_id() {
+		$namespaced_class = get_class( $this );
+		$short_class      = substr( $namespaced_class, strrpos( $namespaced_class, '\\' ) + 1 );
+		return 'Task' === $short_class ? $this->parent_id : $this->id;
 	}
 }
