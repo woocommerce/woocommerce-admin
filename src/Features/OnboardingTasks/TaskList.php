@@ -213,9 +213,9 @@ class TaskList {
 	 *
 	 * @return TaskList returns $this, for chaining.
 	 */
-	public function sort() {
+	public function sort_tasks() {
 		if ( 0 !== count( $this->sort_by ) ) {
-			usort( $this->tasks, array( $this, 'sort_tasks' ) );
+			usort( $this->tasks, array( $this, 'sort' ) );
 		}
 		return $this;
 	}
@@ -227,7 +227,7 @@ class TaskList {
 	 * @param Task $b Task b.
 	 * @return int
 	 */
-	private function sort_tasks( $a, $b ) {
+	private function sort( $a, $b ) {
 		$result = 0;
 		foreach ( $this->sort_by as $data ) {
 			$key   = $data['key'];
