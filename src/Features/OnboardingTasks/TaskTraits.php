@@ -24,7 +24,7 @@ trait TaskTraits {
 			return 'tasklist_' . $event_name;
 		}
 
-		return 'tasklist_' . $id . '_' . $event_name;
+		return $id . '_tasklist_' . $event_name;
 	}
 
 	/**
