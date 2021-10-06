@@ -149,6 +149,35 @@ export function undoDismissTaskSuccess( task ) {
 	};
 }
 
+export function hideTaskListError( taskListId, error ) {
+	return {
+		type: TYPES.HIDE_TASK_LIST_ERROR,
+		taskListId,
+		error,
+	};
+}
+
+export function hideTaskListRequest( taskListId ) {
+	return {
+		type: TYPES.HIDE_TASK_LIST_REQUEST,
+		taskListId,
+	};
+}
+
+export function hideTaskListSuccess( taskList ) {
+	return {
+		type: TYPES.HIDE_TASK_LIST_SUCCESS,
+		taskList,
+	};
+}
+
+export function optimisticallyCompleteTaskRequest( taskId ) {
+	return {
+		type: TYPES.OPTIMISTICALLY_COMPLETE_TASK_REQUEST,
+		taskId,
+	};
+}
+
 export function setTasksStatus( tasksStatus ) {
 	return {
 		type: TYPES.SET_TASKS_STATUS,
@@ -167,6 +196,28 @@ export function setEmailPrefill( email ) {
 	return {
 		type: TYPES.SET_EMAIL_PREFILL,
 		emailPrefill: email,
+	};
+}
+
+export function actionTaskError( taskId, error ) {
+	return {
+		type: TYPES.ACTION_TASK_ERROR,
+		taskId,
+		error,
+	};
+}
+
+export function actionTaskRequest( taskId ) {
+	return {
+		type: TYPES.ACTION_TASK_REQUEST,
+		taskId,
+	};
+}
+
+export function actionTaskSuccess( task ) {
+	return {
+		type: TYPES.ACTION_TASK_SUCCESS,
+		task,
 	};
 }
 
@@ -195,6 +246,30 @@ export function* updateProfileItems( items ) {
 	}
 }
 
+/**
+ * Used to keep backwards compatibility with the extended task list filter on the client.
+ * This can be removed after version WC Admin 2.10 (see deprecated notice in resolvers.js).
+ *
+ * @param {Object} task the returned task object.
+ * @param {Array}  keys to keep in the task object.
+ * @return {Object} task with the keys specified.
+ */
+function possiblyPruneTaskData( task, keys ) {
+	if ( ! task.time && ! task.title ) {
+		// client side task
+		return keys.reduce(
+			( simplifiedTask, key ) => {
+				return {
+					...simplifiedTask,
+					[ key ]: task[ key ],
+				};
+			},
+			{ id: task.id }
+		);
+	}
+	return task;
+}
+
 export function* snoozeTask( id ) {
 	yield snoozeTaskRequest( id );
 
@@ -204,7 +279,13 @@ export function* snoozeTask( id ) {
 			method: 'POST',
 		} );
 
-		yield snoozeTaskSuccess( task );
+		yield snoozeTaskSuccess(
+			possiblyPruneTaskData( task, [
+				'isSnoozed',
+				'isDismissed',
+				'snoozedUntil',
+			] )
+		);
 	} catch ( error ) {
 		yield snoozeTaskError( id, error );
 		throw new Error();
@@ -220,7 +301,13 @@ export function* undoSnoozeTask( id ) {
 			method: 'POST',
 		} );
 
-		yield undoSnoozeTaskSuccess( task );
+		yield undoSnoozeTaskSuccess(
+			possiblyPruneTaskData( task, [
+				'isSnoozed',
+				'isDismissed',
+				'snoozedUntil',
+			] )
+		);
 	} catch ( error ) {
 		yield undoSnoozeTaskError( id, error );
 		throw new Error();
@@ -236,7 +323,9 @@ export function* dismissTask( id ) {
 			method: 'POST',
 		} );
 
-		yield dismissTaskSuccess( task );
+		yield dismissTaskSuccess(
+			possiblyPruneTaskData( task, [ 'isDismissed', 'isSnoozed' ] )
+		);
 	} catch ( error ) {
 		yield dismissTaskError( id, error );
 		throw new Error();
@@ -252,9 +341,49 @@ export function* undoDismissTask( id ) {
 			method: 'POST',
 		} );
 
-		yield undoDismissTaskSuccess( task );
+		yield undoDismissTaskSuccess(
+			possiblyPruneTaskData( task, [ 'isDismissed', 'isSnoozed' ] )
+		);
 	} catch ( error ) {
 		yield undoDismissTaskError( id, error );
+		throw new Error();
+	}
+}
+
+export function* hideTaskList( id ) {
+	yield hideTaskListRequest( id );
+
+	try {
+		const taskList = yield apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/hide`,
+			method: 'POST',
+		} );
+
+		yield hideTaskListSuccess( taskList );
+	} catch ( error ) {
+		yield hideTaskListError( id, error );
+		throw new Error();
+	}
+}
+
+export function* optimisticallyCompleteTask( id ) {
+	yield optimisticallyCompleteTaskRequest( id );
+}
+
+export function* actionTask( id ) {
+	yield actionTaskRequest( id );
+
+	try {
+		const task = yield apiFetch( {
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/action`,
+			method: 'POST',
+		} );
+
+		yield actionTaskSuccess(
+			possiblyPruneTaskData( task, [ 'isActioned' ] )
+		);
+	} catch ( error ) {
+		yield actionTaskError( id, error );
 		throw new Error();
 	}
 }

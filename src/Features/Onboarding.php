@@ -433,37 +433,38 @@ class Onboarding {
 	 * @return array
 	 */
 	public static function get_allowed_product_types() {
-		$product_types = self::append_product_data(
-			array(
-				'physical'        => array(
-					'label'   => __( 'Physical products', 'woocommerce-admin' ),
-					'default' => true,
-				),
-				'downloads'       => array(
-					'label' => __( 'Downloads', 'woocommerce-admin' ),
-				),
-				'subscriptions'   => array(
-					'label'   => __( 'Subscriptions', 'woocommerce-admin' ),
-					'product' => 27147,
-				),
-				'memberships'     => array(
-					'label'   => __( 'Memberships', 'woocommerce-admin' ),
-					'product' => 958589,
-				),
-				'bookings'        => array(
-					'label'   => __( 'Bookings', 'woocommerce-admin' ),
-					'product' => 390890,
-				),
-				'product-bundles' => array(
-					'label'   => __( 'Bundles', 'woocommerce-admin' ),
-					'product' => 18716,
-				),
-				'product-add-ons' => array(
-					'label'   => __( 'Customizable products', 'woocommerce-admin' ),
-					'product' => 18618,
-				),
-			)
+		$products = array(
+			'physical'        => array(
+				'label'   => __( 'Physical products', 'woocommerce-admin' ),
+				'default' => true,
+			),
+			'downloads'       => array(
+				'label' => __( 'Downloads', 'woocommerce-admin' ),
+			),
+			'subscriptions'   => array(
+				'label' => __( 'Subscriptions', 'woocommerce-admin' ),
+			),
+			'memberships'     => array(
+				'label'   => __( 'Memberships', 'woocommerce-admin' ),
+				'product' => 958589,
+			),
+			'bookings'        => array(
+				'label'   => __( 'Bookings', 'woocommerce-admin' ),
+				'product' => 390890,
+			),
+			'product-bundles' => array(
+				'label'   => __( 'Bundles', 'woocommerce-admin' ),
+				'product' => 18716,
+			),
+			'product-add-ons' => array(
+				'label'   => __( 'Customizable products', 'woocommerce-admin' ),
+				'product' => 18618,
+			),
 		);
+		if ( ! Features::is_enabled( 'subscriptions' ) ) {
+			$products['subscriptions']['product'] = 27147;
+		}
+		$product_types = self::append_product_data( $products );
 
 		return apply_filters( 'woocommerce_admin_onboarding_product_types', $product_types );
 	}
@@ -815,7 +816,7 @@ class Onboarding {
 		if ( $extended_list ) {
 			$help_tab['content'] .= '<h3>' . __( 'Extended task List', 'woocommerce-admin' ) . '</h3>';
 			$help_tab['content'] .= '<p>' . __( 'If you need to enable or disable the extended task lists, please click on the button below.', 'woocommerce-admin' ) . '</p>' .
-			( $extended_task->is_hidden()
+			( $extended_list->is_hidden()
 				? '<p><a href="' . wc_admin_url( '&reset_extended_task_list=1' ) . '" class="button button-primary">' . __( 'Enable', 'woocommerce-admin' ) . '</a></p>'
 				: '<p><a href="' . wc_admin_url( '&reset_extended_task_list=0' ) . '" class="button button-primary">' . __( 'Disable', 'woocommerce-admin' ) . '</a></p>'
 			);

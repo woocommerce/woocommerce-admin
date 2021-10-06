@@ -15,9 +15,9 @@
 		"payment-gateway-suggestions": true,
 		"settings": false,
 		"shipping-label-banner": true,
+		"subscriptions": false,
 		"store-alerts": true,
-		"tasks": false,
 		"transient-notices": true,
-		"wc-pay-promotion": false
+		"wc-pay-promotion": true
 	}
 }
