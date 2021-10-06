@@ -1,7 +1,5 @@
 # Testing instructions
 
-## Unreleased
-
 ## 2.8.0
 
 ### Store Profiler and Product task - include Subscriptions #7734
