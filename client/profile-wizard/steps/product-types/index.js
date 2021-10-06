@@ -40,7 +40,7 @@ export class ProductTypes extends Component {
 			error: null,
 			isMonthlyPricing: true,
 			selected: profileItems.product_types || defaultProductTypes,
-			isWCPayInstalled: false,
+			isWCPayInstalled: null,
 		};
 
 		this.onContinue = this.onContinue.bind( this );
@@ -48,12 +48,16 @@ export class ProductTypes extends Component {
 	}
 
 	componentDidMount() {
-		const { installedPlugins = [] } = this.props;
-		this.setState( {
-			isWCPayInstalled: installedPlugins.includes(
-				'woocommerce-payments'
-			),
-		} );
+		const { installedPlugins } = this.props;
+		const { isWCPayInstalled } = this.state;
+
+		if ( isWCPayInstalled === null && installedPlugins ) {
+			this.setState( {
+				isWCPayInstalled: installedPlugins.includes(
+					'woocommerce-payments'
+				),
+			} );
+		}
 	}
 
 	validateField() {
