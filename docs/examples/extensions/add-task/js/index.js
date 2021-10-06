@@ -83,7 +83,26 @@ addFilter(
 				title: __( 'Example', 'plugin-domain' ),
 				content: __( 'This is an example task.', 'plugin-domain' ),
 				container: <Task />,
-				completed: addTaskData.isComplete,
+				completed: true, // addTaskData.isComplete,
+				visible: true,
+				additionalInfo: __(
+					'Additional info here',
+					'woocommerce-admin'
+				),
+				time: __( '2 minutes', 'woocommerce-admin' ),
+				isDismissable: true,
+				onDelete: () => console.log( 'The task was deleted' ),
+				onDismiss: () => console.log( 'The task was dismissed' ),
+				allowRemindMeLater: true,
+				remindMeLater: () => console.log( 'Remind me later' ),
+			},
+			{
+				key: 'example2',
+				title: __( 'Example 2', 'plugin-domain' ),
+				content: __( 'This is an example task.', 'plugin-domain' ),
+				container: <Task />,
+				completed: true, // addTaskData.isComplete,
+				level: 1,
 				visible: true,
 				additionalInfo: __(
 					'Additional info here',

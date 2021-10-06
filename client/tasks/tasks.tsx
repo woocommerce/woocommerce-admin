@@ -115,7 +115,6 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 			isToggleable,
 			title,
 			tasks,
-			sortBy,
 		} = taskList;
 
 		if ( ! isVisible ) {
@@ -132,7 +131,6 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 					}
 					query={ query }
 					tasks={ tasks }
-					sortBy={ sortBy }
 					title={ title }
 				/>
 				{ isToggleable && (

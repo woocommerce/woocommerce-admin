@@ -107,6 +107,7 @@ function getTasksFromDeprecatedFilter() {
 				id: task.key,
 				is_snoozeable: task.allowRemindMeLater,
 				is_dismissable: task.isDismissable,
+				is_complete: task.completed,
 			} ) ),
 		};
 	}
@@ -136,10 +137,6 @@ export function* getTaskLists() {
 						return {
 							...tasksFromDeprecatedFilter.original[ task.id ],
 							...task,
-							isComplete:
-								task.isComplete ||
-								tasksFromDeprecatedFilter.original[ task.id ]
-									.completed,
 						};
 					}
 					return task;

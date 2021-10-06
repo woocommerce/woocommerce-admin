@@ -209,6 +209,44 @@ class TaskList {
 	}
 
 	/**
+	 * Sorts the attached tasks array.
+	 *
+	 * @return TaskList returns $this, for chaining.
+	 */
+	public function sort() {
+		if ( 0 !== count( $this->sort_by ) ) {
+			usort( $this->tasks, array( $this, 'sort_tasks' ) );
+		}
+		return $this;
+	}
+
+	/**
+	 * Sorting function for tasks.
+	 *
+	 * @param Task $a Task a.
+	 * @param Task $b Task b.
+	 * @return int
+	 */
+	private function sort_tasks( $a, $b ) {
+		$result = 0;
+		foreach ( $this->sort_by as $data ) {
+			$key   = $data['key'];
+			$a_val = $a->$key ?? false;
+			$b_val = $b->$key ?? false;
+			if ( 'asc' === $data['order'] ) {
+				$result = $a_val <=> $b_val;
+			} else {
+				$result = $b_val <=> $a_val;
+			}
+
+			if ( 0 !== $result ) {
+				break;
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 * Get the list for use in JSON.
 	 *
 	 * @return array
@@ -222,7 +260,6 @@ class TaskList {
 			'isHidden'   => $this->is_hidden(),
 			'isVisible'  => ! $this->is_hidden(),
 			'isComplete' => $this->is_complete(),
-			'sortBy'     => $this->sort_by,
 			'tasks'      => array_map(
 				function( $task ) {
 					return $task->get_json();

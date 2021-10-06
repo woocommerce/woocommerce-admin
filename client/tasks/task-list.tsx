@@ -6,12 +6,7 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { Card, CardHeader } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { Badge } from '@woocommerce/components';
-import {
-	ONBOARDING_STORE_NAME,
-	TaskListType,
-	TaskType,
-	TaskSortType,
-} from '@woocommerce/data';
+import { ONBOARDING_STORE_NAME, TaskListType } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text, List, CollapsibleList } from '@woocommerce/experimental';
 
@@ -31,28 +26,6 @@ export const getEventPrefix = ( id: string ): string => {
 	return `${ id }_tasklist_`;
 };
 
-export const taskSortByKey = ( keys: TaskSortType[] ) => (
-	a: TaskType,
-	b: TaskType
-) => {
-	if ( ! keys.length ) {
-		return 0;
-	}
-	if ( keys.includes( 'isComplete' ) && ( a.isComplete || b.isComplete ) ) {
-		return a.isComplete ? 1 : -1;
-	}
-	// Three is the lowest level.
-	if ( keys.includes( 'level' ) ) {
-		const aLevel = a.level || 3;
-		const bLevel = b.level || 3;
-		if ( aLevel === bLevel ) {
-			return 0;
-		}
-		return aLevel > bLevel ? 1 : -1;
-	}
-	return 0;
-};
-
 export type TaskListProps = TaskListType & {
 	query: {
 		task: string;
@@ -62,7 +35,6 @@ export type TaskListProps = TaskListType & {
 export const TaskList: React.FC< TaskListProps > = ( {
 	id,
 	tasks,
-	sortBy = [],
 	title: listTitle,
 	isCollapsible = false,
 	isExpandable = false,
@@ -83,7 +55,6 @@ export const TaskList: React.FC< TaskListProps > = ( {
 			! task.isDismissed &&
 			( ! task.isSnoozed || task.snoozedUntil < nowTimestamp )
 	);
-	visibleTasks.sort( taskSortByKey( sortBy ) );
 
 	const incompleteTasks = tasks.filter(
 		( task ) => ! task.isComplete && ! task.isDismissed
