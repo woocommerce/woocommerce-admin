@@ -302,24 +302,18 @@ class TimeInterval {
 	 * @return DateTime
 	 */
 	public static function next_day_start( $datetime, $reversed = false ) {
-		$seconds_into_day = (int) $datetime->format( 'H' ) * HOUR_IN_SECONDS + (int) $datetime->format( 'i' ) * MINUTE_IN_SECONDS + (int) $datetime->format( 's' );
+		$oneday       = new \DateInterval( 'P1D' );
+		$new_datetime = clone $datetime;
 
-		// The day boundary is actually next midnight when going in reverse, so set it to day -1 at 23:59:59.
 		if ( $reversed ) {
-			$timestamp          = (int) $datetime->format( 'U' );
-			$next_day_timestamp = $timestamp - ( $seconds_into_day + 1 );
+			$new_datetime->sub( $oneday );
+			$new_datetime->setTime( 23, 59, 59 );
 		} else {
-			$day_increment = new \DateInterval( 'P1D' ); // Plus 1 Day.
-			$next_datetime = clone $datetime;
-			$next_datetime->add( $day_increment );
-			$timestamp          = (int) $next_datetime->format( 'U' );
-			$next_day_timestamp = $timestamp - $seconds_into_day;
+			$new_datetime->add( $oneday );
+			$new_datetime->setTime( 0, 0 );
 		}
 
-		$next_day = new \DateTime();
-		$next_day->setTimestamp( $next_day_timestamp );
-		$next_day->setTimezone( new \DateTimeZone( wc_timezone_string() ) );
-		return $next_day;
+		return $new_datetime;
 	}
 
 	/**
