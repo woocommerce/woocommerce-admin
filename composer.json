@@ -1,6 +1,6 @@
 {
 	"name": "woocommerce/woocommerce-admin",
-	"version": "2.7.0-dev",
+	"version": "2.9.0-dev",
 	"description": "A modern, javascript-driven WooCommerce Admin experience.",
 	"homepage": "https://github.com/woocommerce/woocommerce-admin",
 	"type": "wordpress-plugin",
@@ -16,7 +16,8 @@
 		"woocommerce/woocommerce-sniffs": "0.1.0",
 		"suin/phpcs-psr4-sniff": "^2.2",
 		"bamarni/composer-bin-plugin": "^1.4",
-		"automattic/jetpack-changelogger": "^1.1"
+		"automattic/jetpack-changelogger": "^1.1",
+		"yoast/phpunit-polyfills": "^1.0"
 	},
 	"config": {
 		"platform": {

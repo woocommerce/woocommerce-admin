@@ -17,6 +17,7 @@ import { DisplayOption } from '../header/activity-panel/display-options';
 import { Task } from './task';
 import { TaskList } from './task-list';
 import { TasksPlaceholder } from './placeholder';
+import './tasks.scss';
 
 export type TasksProps = {
 	query: { task: string };
@@ -33,7 +34,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	const { isResolving, taskLists } = useSelect( ( select ) => {
 		return {
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
-				'getTasks'
+				'getTaskLists'
 			),
 			taskLists: select( ONBOARDING_STORE_NAME ).getTaskLists(),
 		};
@@ -71,6 +72,11 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	};
 
 	useEffect( () => {
+		document.body.classList.add( 'woocommerce-onboarding' );
+		document.body.classList.add( 'woocommerce-task-dashboard__body' );
+	}, [] );
+
+	useEffect( () => {
 		// @todo Update this when all task lists have been hidden or completed.
 		const taskListsFinished = false;
 		updateOptions( {
@@ -90,7 +96,11 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	}
 
 	if ( currentTask ) {
-		return <Task query={ query } />;
+		return (
+			<div className="woocommerce-task-dashboard__container">
+				<Task query={ query } />
+			</div>
+		);
 	}
 
 	if ( isLoadingExperiment ) {
@@ -101,11 +111,15 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		const {
 			id,
 			isComplete,
-			isHidden,
+			isVisible,
 			isToggleable,
 			title,
 			tasks,
 		} = taskList;
+
+		if ( ! isVisible ) {
+			return null;
+		}
 
 		return (
 			<Fragment key={ id }>

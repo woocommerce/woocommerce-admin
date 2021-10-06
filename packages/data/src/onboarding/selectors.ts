@@ -77,20 +77,12 @@ export type OnboardingState = {
 
 export type TasksStatusState = {
 	automatedTaxSupportedCountries: string[];
-	enabledPaymentGateways: string[];
 	hasHomepage: boolean;
-	hasPaymentGateway: boolean;
-	hasPhysicalProducts: boolean;
 	hasProducts: boolean;
-	isAppearanceComplete: boolean;
-	isTaxComplete: boolean;
-	shippingZonesCount: number;
-	stripeSupportedCountries: string[];
 	stylesheet: string;
 	taxJarActivated: boolean;
 	// TODO - fill out this type
 	themeMods: unknown;
-	wcPayIsConnected: false;
 };
 
 export type Industry = {

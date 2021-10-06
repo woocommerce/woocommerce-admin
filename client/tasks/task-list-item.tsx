@@ -13,9 +13,10 @@ import {
 	useUserPreferences,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { TaskItem } from '@woocommerce/experimental';
+import { TaskItem, useSlot } from '@woocommerce/experimental';
 import { useCallback } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
+import { WooOnboardingTaskListItem } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies
@@ -36,6 +37,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 	task,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
+
 	const {
 		dismissTask,
 		snoozeTask,
@@ -51,13 +53,18 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		id,
 		isComplete,
 		isDismissable,
-		isSnoozable,
+		isSnoozeable,
 		time,
 		title,
+		level,
+		additionalInfo,
 	} = task;
 
+	const slot = useSlot( `woocommerce_onboarding_task_list_item_${ id }` );
+	const hasFills = Boolean( slot?.fills?.length );
+
 	const onDismiss = useCallback( () => {
-		dismissTask();
+		dismissTask( id );
 		createNotice( 'success', __( 'Task dismissed' ), {
 			actions: [
 				{
@@ -69,7 +76,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 	}, [ id ] );
 
 	const onSnooze = useCallback( () => {
-		snoozeTask();
+		snoozeTask( id );
 		createNotice(
 			'success',
 			__( 'Task postponed until tomorrow', 'woocommerce-admin' ),
@@ -107,7 +114,7 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		} );
 	};
 
-	const onClick = useCallback( () => {
+	const trackClick = () => {
 		recordEvent( 'tasklist_click', {
 			task_name: id,
 		} );
@@ -115,7 +122,9 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		if ( ! isComplete ) {
 			updateTrackStartedCount();
 		}
+	};
 
+	const onClickDefault = useCallback( () => {
 		if ( actionUrl ) {
 			if ( actionUrl.startsWith( 'http' ) ) {
 				window.location.href = actionUrl;
@@ -129,24 +138,58 @@ export const TaskListItem: React.FC< TaskListItemProps > = ( {
 		updateQueryString( { task: id } );
 	}, [ id, isComplete, actionUrl ] );
 
-	return (
-		<TaskItem
-			key={ id }
-			title={ title }
-			completed={ isComplete }
-			content={ content }
-			onClick={
-				! isExpandable || isComplete
-					? onClick
-					: () => setExpandedTask( id )
-			}
-			expandable={ isExpandable }
-			expanded={ isExpandable && isExpanded }
-			onDismiss={ isDismissable && onDismiss }
-			remindMeLater={ isSnoozable && onSnooze }
-			time={ time }
-			action={ onClick }
-			actionLabel={ actionLabel }
+	const taskItemProps = {
+		expandable: isExpandable,
+		expanded: isExpandable && isExpanded,
+		completed: isComplete,
+		onSnooze: isSnoozeable && onSnooze,
+		onDismiss: isDismissable && onDismiss,
+	};
+
+	const DefaultTaskItem = useCallback(
+		( props ) => {
+			const onClickActions = () => {
+				trackClick();
+
+				if ( props.onClick ) {
+					return props.onClick();
+				}
+
+				return onClickDefault();
+			};
+			return (
+				<TaskItem
+					key={ id }
+					title={ title }
+					content={ content }
+					additionalInfo={ additionalInfo }
+					time={ time }
+					action={ onClickActions }
+					level={ level }
+					actionLabel={ actionLabel }
+					{ ...taskItemProps }
+					{ ...props }
+					onClick={
+						! isExpandable || isComplete
+							? onClickActions
+							: () => setExpandedTask( id )
+					}
+				/>
+			);
+		},
+		[ id, title, content, time, actionLabel, isExpandable, isComplete ]
+	);
+
+	return hasFills ? (
+		<WooOnboardingTaskListItem.Slot
+			id={ id }
+			fillProps={ {
+				defaultTaskItem: DefaultTaskItem,
+				isComplete,
+				...taskItemProps,
+			} }
 		/>
+	) : (
+		<DefaultTaskItem />
 	);
 };
