@@ -20,6 +20,26 @@ class TaskLists {
 	protected static $instance = null;
 
 	/**
+	 * Initialize default lists
+	 *
+	 * @return void
+	 */
+	public static function init() {
+		self::$lists['setup']    = new TaskList(
+			array(
+				'id'    => 'setup',
+				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
+			),
+		);
+		self::$lists['extended'] = new TaskList(
+			array(
+				'id'    => 'extended',
+				'title' => __( 'Things to do next', 'woocommerce-admin' ),
+			)
+		);
+	}
+
+	/**
 	 * An array of all registered lists.
 	 *
 	 * @var array
@@ -133,7 +153,7 @@ class TaskLists {
 	 * Add default task lists.
 	 */
 	public static function maybe_add_default_tasks() {
-		$added = isset( self::$lists['setup'] );
+		$added = ! empty( self::$lists['setup']->tasks );
 
 		if ( ! apply_filters( 'woocommerce_admin_onboarding_tasks_add_default_tasks', ! $added ) ) {
 			return;
@@ -188,7 +208,6 @@ class TaskLists {
 	 * @return array
 	 */
 	public static function get_lists() {
-		self::maybe_add_default_tasks();
 		return self::$lists;
 	}
 

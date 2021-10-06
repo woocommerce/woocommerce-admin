@@ -505,13 +505,9 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 		$response      = $this->server->dispatch( $request );
 		$response_data = $response->get_data();
 
-		$setup_list = null;
-		$test_list  = null;
+		$test_list = null;
 
 		foreach ( $response_data as $task_list ) {
-			if ( 'setup' === $task_list['id'] ) {
-				$setup_list = $task_list;
-			}
 			if ( 'test-list' === $task_list['id'] ) {
 				$test_list = $task_list;
 			}
@@ -519,7 +515,6 @@ class WC_Tests_API_Onboarding_Tasks extends WC_REST_Unit_Test_Case {
 
 		$test_task = $test_list['tasks'][0];
 
-		$this->assertGreaterThan( 0, count( $setup_list ), true );
 		$this->assertEquals( $test_task['id'], 'test-task' );
 		$this->assertEquals( $test_task['isDismissable'], true );
 	}
