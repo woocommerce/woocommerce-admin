@@ -8,7 +8,7 @@
 
 1. Deactivate and delete `WooCommerce Payments` if you have it installed.
 2. Go to the 3rd step of the store profiler (`Product Types`).
-3. Verify `Subscriptions` is shown as paid extension (with a price chip).
+3. Verify `Subscriptions` is shown as a paid extension (with a price chip).
 4. Check `Subscriptions` and continue with the OBW.
 5. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is visible in the setup task list.
 6. Press `Add my products` in the setup task list.
