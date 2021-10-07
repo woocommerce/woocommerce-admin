@@ -45,21 +45,23 @@ export class DeprecatedTasks {
 	}
 
 	getPostData() {
-		return {
-			extended_tasks: this.filteredTasks.map( ( task ) => ( {
-				title: task.title,
-				content: task.content,
-				additional_info: task.additionalInfo,
-				time: task.time,
-				level: task.level ? parseInt( task.level, 10 ) : 3,
-				list_id: task.type || 'extended',
-				is_visible: task.visible,
-				id: task.key,
-				is_snoozeable: task.allowRemindMeLater,
-				is_dismissable: task.isDismissable,
-				is_complete: task.completed,
-			} ) ),
-		};
+		return this.hasDeprecatedTasks()
+			? {
+					extended_tasks: this.filteredTasks.map( ( task ) => ( {
+						title: task.title,
+						content: task.content,
+						additional_info: task.additionalInfo,
+						time: task.time,
+						level: task.level ? parseInt( task.level, 10 ) : 3,
+						list_id: task.type || 'extended',
+						is_visible: task.visible,
+						id: task.key,
+						is_snoozeable: task.allowRemindMeLater,
+						is_dismissable: task.isDismissable,
+						is_complete: task.completed,
+					} ) ),
+			  }
+			: null;
 	}
 
 	mergeDeprecatedCallbackFunctions( taskLists ) {
