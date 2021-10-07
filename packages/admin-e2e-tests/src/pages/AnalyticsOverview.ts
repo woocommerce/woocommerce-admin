@@ -44,6 +44,13 @@ export class AnalyticsOverview extends Analytics {
 		return sections.filter( isSection );
 	}
 
+	async getSectionTitles() {
+		const sections = ( await this.getSections() ).map(
+			( section ) => section.title
+		);
+		return sections;
+	}
+
 	async openSectionEllipsis( sectionTitle: string ) {
 		const section = ( await this.getSections() ).find(
 			( thisSection ) => thisSection.title === sectionTitle
@@ -68,7 +75,7 @@ export class AnalyticsOverview extends Analytics {
 				'.woocommerce-ellipsis-menu .woocommerce-ellipsis-menu__toggle'
 			);
 			await ellipsisMenu?.click();
-			await page.waitFor(
+			await page.waitForFunction(
 				() =>
 					! document.querySelector(
 						'.woocommerce-ellipsis-menu div[role=menu]'

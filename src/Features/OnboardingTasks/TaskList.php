@@ -12,7 +12,12 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
  */
 class TaskList {
 	/**
-	 * Option name of hidden task lists.
+	 * Task traits.
+	 */
+	use TaskTraits;
+
+	/**
+	 * Option name hidden task lists.
 	 */
 	const HIDDEN_OPTION = 'woocommerce_task_list_hidden_lists';
 
@@ -43,36 +48,31 @@ class TaskList {
 	public $tasks = array();
 
 	/**
+	 * Sort keys.
+	 *
+	 * @var array
+	 */
+	public $sort_by = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $data Task list data.
 	 */
 	public function __construct( $data = array() ) {
 		$defaults = array(
-			'id'    => null,
-			'title' => '',
-			'tasks' => array(),
+			'id'      => null,
+			'title'   => '',
+			'tasks'   => array(),
+			'sort_by' => array(),
 		);
 
 		$data = wp_parse_args( $data, $defaults );
 
-		$this->id    = $data['id'];
-		$this->title = $data['title'];
-		$this->tasks = $data['tasks'];
-	}
-
-	/**
-	 * Prefix event for backwards compatibility with tracks event naming.
-	 *
-	 * @param string $event_name Event name.
-	 * @return string
-	 */
-	public function prefix_event( $event_name ) {
-		if ( 'setup' === $this->id ) {
-			return $event_name;
-		}
-
-		return $this->id . '_' . $event_name;
+		$this->id      = $data['id'];
+		$this->title   = $data['title'];
+		$this->tasks   = $data['tasks'];
+		$this->sort_by = $data['sort_by'];
 	}
 
 	/**
@@ -104,8 +104,8 @@ class TaskList {
 			0
 		);
 
-		wc_admin_record_tracks_event(
-			$this->prefix_event( 'tasklist_completed' ),
+		$this->record_tracks_event(
+			'completed',
 			array(
 				'action'                => 'remove_card',
 				'completed_task_count'  => $completed_count,
@@ -162,7 +162,11 @@ class TaskList {
 	 * @param array $args Task properties.
 	 */
 	public function add_task( $args ) {
-		$this->tasks[] = new Task( $args );
+		$task_args     = wp_parse_args(
+			$args,
+			array( 'parent_id' => $this->id )
+		);
+		$this->tasks[] = new Task( $task_args );
 	}
 
 	/**
@@ -196,7 +200,45 @@ class TaskList {
 		$completed_lists   = get_option( self::COMPLETED_OPTION, array() );
 		$completed_lists[] = $this->id;
 		update_option( self::COMPLETED_OPTION, $completed_lists );
-		wc_admin_record_tracks_event( $this->prefix_event( 'tasklist_tasks_completed' ) );
+		$this->record_tracks_event( 'tasks_completed' );
+	}
+
+	/**
+	 * Sorts the attached tasks array.
+	 *
+	 * @return TaskList returns $this, for chaining.
+	 */
+	public function sort_tasks() {
+		if ( 0 !== count( $this->sort_by ) ) {
+			usort( $this->tasks, array( $this, 'sort' ) );
+		}
+		return $this;
+	}
+
+	/**
+	 * Sorting function for tasks.
+	 *
+	 * @param Task $a Task a.
+	 * @param Task $b Task b.
+	 * @return int
+	 */
+	private function sort( $a, $b ) {
+		$result = 0;
+		foreach ( $this->sort_by as $data ) {
+			$key   = $data['key'];
+			$a_val = $a->$key ?? false;
+			$b_val = $b->$key ?? false;
+			if ( 'asc' === $data['order'] ) {
+				$result = $a_val <=> $b_val;
+			} else {
+				$result = $b_val <=> $a_val;
+			}
+
+			if ( 0 !== $result ) {
+				break;
+			}
+		}
+		return $result;
 	}
 
 	/**
