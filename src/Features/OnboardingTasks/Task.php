@@ -427,4 +427,15 @@ class Task {
 		return in_array( $this->id, $actioned, true );
 	}
 
+	/**
+	 * Check if a provided task ID has been actioned.
+	 *
+	 * @param string $id Task ID.
+	 * @return bool
+	 */
+	public static function is_task_actioned( $id ) {
+		$actioned = get_option( self::ACTIONED_OPTION, array() );
+		return in_array( $id, $actioned, true );
+	}
+
 }
