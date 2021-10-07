@@ -1,5 +1,7 @@
 # Unreleased
 
+-   Make unchecking free features more robust. #7761
+
 # 0.1.2
 
 -   Add Customers to analytics pages tested #7573
