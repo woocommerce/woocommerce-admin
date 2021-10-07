@@ -139,9 +139,11 @@ export abstract class BasePage {
 				waitUntil: 'networkidle0',
 				timeout: 10000,
 			} );
-		} catch ( e ) {
+		} catch ( e: unknown ) {
 			throw new Error(
-				`Could not navigate to url: ${ fullUrl } with error: ${ e.message }`
+				`Could not navigate to url: ${ fullUrl } with error: ${
+					( e as Error )?.message
+				}`
 			);
 		}
 	}
