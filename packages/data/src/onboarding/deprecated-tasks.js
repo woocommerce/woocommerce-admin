@@ -82,4 +82,28 @@ export class DeprecatedTasks {
 		}
 		return taskLists;
 	}
+
+	/**
+	 * Used to keep backwards compatibility with the extended task list filter on the client.
+	 * This can be removed after version WC Admin 2.10 (see deprecated notice in resolvers.js).
+	 *
+	 * @param {Object} task the returned task object.
+	 * @param {Array}  keys to keep in the task object.
+	 * @return {Object} task with the keys specified.
+	 */
+	static possiblyPruneTaskData( task, keys ) {
+		if ( ! task.time && ! task.title ) {
+			// client side task
+			return keys.reduce(
+				( simplifiedTask, key ) => {
+					return {
+						...simplifiedTask,
+						[ key ]: task[ key ],
+					};
+				},
+				{ id: task.id }
+			);
+		}
+		return task;
+	}
 }
