@@ -326,8 +326,12 @@ class TimeInterval {
 	public static function next_week_start( $datetime, $reversed = false ) {
 		$first_day_of_week = absint( get_option( 'start_of_week' ) );
 		$initial_week_no   = self::week_number( $datetime, $first_day_of_week );
+		$failsafe_count    = 0;
 
 		do {
+			if ( $failsafe_count++ >= 7 ) {
+				break;
+			}
 			$datetime        = self::next_day_start( $datetime, $reversed );
 			$current_week_no = self::week_number( $datetime, $first_day_of_week );
 		} while ( $current_week_no === $initial_week_no );

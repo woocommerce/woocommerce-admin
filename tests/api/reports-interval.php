@@ -689,7 +689,7 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 				0 => '2022-04-04T00:00:00',
 				1 => '2022-04-02T23:59:59',
 			),
-			'2022-04-03T23:59:00' => array( // After daylight saving starts.
+			'2022-04-03T23:59:00' => array( // After daylight saving ends.
 				0 => '2022-04-04T00:00:00',
 				1 => '2022-04-02T23:59:59',
 			),
