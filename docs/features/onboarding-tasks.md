@@ -6,7 +6,7 @@ The task list is easily extensible to allow inserting custom tasks around plugin
 
 ### Models and classes
 
-**TaskLists**
+#### TaskLists
 
 The `TaskLists` class acts as a data store for tasks and provides a way to add or retrieve tasks and lists.
 
@@ -17,7 +17,29 @@ The `TaskLists` class acts as a data store for tasks and provides a way to add o
 * `TaskLists::add_list( $args )` - Add a list with the given arguments
 * `TaskLists::add_task( $list_id, $args )` - Add a task to a given list ID
 
-**Task**
+#### Task
+
+**Arguments**
+
+```php
+$args = array(
+  'id'              => 'my-task', // A unique task ID.
+  'title'           => 'My Task', // Task title.
+  'content'         => 'Task explanation and instructions', // Content shown in the task list item.
+  'action_label'    => __( "Do the task!", 'woocommerce-admin' ), // Text used for the action button.
+  'action_url'      => 'http://wordpress.com/my/task', // URL used when clicking the task item in lieu of SlotFill.
+  'is_complete'     => get_option( 'my-task-option', false ), // Determine if the task is complete.
+  'can_view'        => 'US:CA' === wc_get_base_location(),
+  'level'           => 3, // Priority level shown for extended tasks.
+  'time'            => __( '2 minutes', 'plugin-text-domain' ), // Time string for time to complete the task.
+  'is_dismissable'  => false, // Determine if the taks is dismissable.
+  'is_snoozeable'   => true, // Determine if the taks is snoozeable.
+  'additional_info' => array( 'apples', 'oranges', 'bananas' ), // Additional info passed to the task.
+)
+$task = new Task( $args );
+```
+
+**Methods**
 
 *   `$task->dismiss()` - Dismiss the task
 *   `$task->undo_dismiss()` - Undo dismissal of a task
@@ -45,7 +67,29 @@ The `TaskLists` class acts as a data store for tasks and provides a way to add o
   * `isSnoozeable` (bool) - Whether or not a task can be snoozed.
   * `snoozedUntil` (int) - Timestamp in milliseconds that the task has been snoozed until.
 
-**TaskList**
+#### TaskList
+
+**Arguments**
+
+```php
+$args = array(
+  'id'      => 'my-list', // A unique task list ID.
+  'title'   => 'My List', // Task list title.
+  'sort_by' => array( // An array of keys to sort the tasks by.
+    array(
+      'key'   => 'is_complete',
+      'order' => 'asc',
+    ),
+    array(
+      'key'   => 'level',
+      'order' => 'asc',
+    ),
+  ),
+)
+$list = new TaskList( $args );
+```
+
+**Methods**
 
 *   `$task_list->is_hidden()` - Check if a task list is hidden
 *   `$task_list->is_visible()` - Check if a task list is visible (opposite value of `is_hidden()`)
@@ -56,16 +100,38 @@ The `TaskLists` class acts as a data store for tasks and provides a way to add o
 *   `$task_list->get_viewable_tasks()` - Get tasks that are marked as `can_view` for the store
 *   `$task_list->sort_tasks()` - Sort the tasks by provided `sort_by` value
 *   `$task_list->get_json()` - Get the camelcase JSON for use in the client
-  * `id` (int) - Task list ID.
-  * `title` (string) - Task list title.
-  * `isHidden` (bool) - If a task has been hidden.
-  * `isVisible` (bool) - If a task list is visible.
-  * `isComplete` (bool) - Whether or not all viewable tasks have been completed.
-  * `tasks` (array) - An array of `Task` objects.
+    * `id` (int) - Task list ID.
+    * `title` (string) - Task list title.
+    * `isHidden` (bool) - If a task has been hidden.
+    * `isVisible` (bool) - If a task list is visible.
+    * `isComplete` (bool) - Whether or not all viewable tasks have been completed.
+    * `tasks` (array) - An array of `Task` objects.
 
 #### Data store actions
 
-Using the `@woocommerce/data` package, the following selectors and actions are available to interact with the task lists.
+Using the `@woocommerce/data` package, the following selectors and actions are available to interact with the task lists under the onboarding store.
+
+```js
+import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { useSelect } from '@wordpress/data';
+
+const { snoozeTask } = useDispatch( ONBOARDING_STORE_NAME );
+const { taskLists } = useSelect( ( select ) => {
+  const { getTaskLists } = select( ONBOARDING_STORE_NAME );
+
+  return {
+    taskLists: getTaskLists(),
+  };
+} );
+```
+
+
+* `getTaskLists` - (select) Resolve any registered task lists with their nested tasks
+* `hideTaskList( id )` - (dispatch) Hide a task list
+* `actionTask( id )` - (dispatch) Mark a task as actioned
+* `snoozeTask( id )` - (dispatch) Snooze a task
+* `dismissTask( id )` - (dispatch) Dismiss a task
+* `optimisticallyCompleteTask( id )` - (dispatch) Optimistically mark a task as complete
 
 ### Endpoints
 
