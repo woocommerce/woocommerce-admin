@@ -30,9 +30,12 @@ import TaskListPlaceholder from './placeholder';
 
 const EMPTY_ARRAY = [];
 const taskDashboardSelect = ( select ) => {
-	const { getFreeExtensions, getProfileItems, getTasksStatus } = select(
-		ONBOARDING_STORE_NAME
-	);
+	const {
+		getFreeExtensions,
+		getProductTypes,
+		getProfileItems,
+		getTasksStatus,
+	} = select( ONBOARDING_STORE_NAME );
 	const { getSettings } = select( SETTINGS_STORE_NAME );
 	const { getOption, hasFinishedResolution } = select( OPTIONS_STORE_NAME );
 	const {
@@ -66,6 +69,7 @@ const taskDashboardSelect = ( select ) => {
 	const activePlugins = getActivePlugins();
 	const installedPlugins = getInstalledPlugins();
 	const onboardingStatus = getTasksStatus();
+	const productTypes = getProductTypes();
 
 	return {
 		activePlugins,
@@ -85,6 +89,7 @@ const taskDashboardSelect = ( select ) => {
 		isTaskListComplete:
 			getOption( 'woocommerce_task_list_complete' ) === 'yes',
 		installedPlugins,
+		productTypes,
 		trackedCompletedActions,
 		onboardingStatus,
 		profileItems,
@@ -125,6 +130,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		countryCode,
 		freeExtensions,
 		installedPlugins,
+		productTypes,
 		isJetpackConnected,
 		onboardingStatus,
 		profileItems,
@@ -249,6 +255,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		onTaskSelect,
 		hasCompleteAddress,
 		trackedCompletedActions,
+		productTypes,
 	} );
 
 	const { extension, setup: setupTasks } = allTasks;
