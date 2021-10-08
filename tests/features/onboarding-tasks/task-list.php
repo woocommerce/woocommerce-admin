@@ -48,6 +48,12 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	 * Tests that tracks events are correctly prefixed on the other lists.
 	 */
 	public function test_event_prefixing() {
+		$list = new TaskList(
+			array(
+				'id' => 'my_list',
+			)
+		);
+
 		$this->assertEquals( 'my_list_tasklist_event', $list->prefix_event( 'event' ) );
 	}
 
@@ -80,7 +86,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	 */
 	public function test_add_task() {
 		$this->list->add_task( array( 'id' => 'my-task' ) );
-		$this->assertEquals( 'my-task', $this->list->tasks[0]['id'] );
+		$this->assertEquals( 'my-task', $this->list->tasks[0]->id );
 	}
 
 	/**
@@ -101,7 +107,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$viewable_tasks = $this->list->get_viewable_tasks();
 		$this->assertCount( 1, $viewable_tasks );
-		$this->assertEquals( 'viewable-task', $viewable_tasks[0]['id'] );
+		$this->assertEquals( 'viewable-task', $viewable_tasks[0]->id );
 	}
 
 
@@ -121,7 +127,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 				'is_complete' => false,
 			)
 		);
-		$this->assertFalse( $this->is_complete() );
+		$this->assertFalse( $this->list->is_complete() );
 	}
 
 	/**
@@ -140,7 +146,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 				'is_complete' => true,
 			)
 		);
-		$this->assertTrue( $this->is_complete() );
+		$this->assertTrue( $this->list->is_complete() );
 	}
 
 	/**
@@ -159,9 +165,9 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 				'is_complete' => true,
 			)
 		);
-		$this->assertFalse( $this->has_previously_completed() );
+		$this->assertFalse( $this->list->has_previously_completed() );
 		$this->list->get_json();
-		$this->assertTrue( $this->has_previously_completed() );
+		$this->assertTrue( $this->list->has_previously_completed() );
 	}
 
 	/**
