@@ -71,4 +71,40 @@
 			padding: $gap $gap-smaller $gap-small $gap-smaller;
 		}
 	}
+
+	/*
+	 *  Override Gutenberg changes to the navigation component introduced in 11.6.0 by https://github.com/WordPress/gutenberg/pull/34885
+	 */
+	.components-navigation__menu {
+		.components-navigation__menu-title,
+		.components-navigation__group-title {
+			color: #f0f0f0;
+			opacity: 1;
+		}
+		.components-navigation__back-button {
+			color: #949494;
+			opacity: 1;
+		}
+		.components-navigation__item {
+			.components-button {
+				opacity: 1;
+			}
+
+			&:not(:hover) {
+				.components-button {
+					color: #949494;
+				}
+			}
+			&:hover {
+				.components-button {
+					color: #ddd;
+				}
+			}
+			&.is-active {
+				.components-button {
+					color: #fff;
+				}
+			}
+		}
+	}
 }
