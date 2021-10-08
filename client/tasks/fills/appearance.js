@@ -91,7 +91,7 @@ class Appearance extends Component {
 		}
 	}
 
-	completeStep() {
+	async completeStep() {
 		const { stepIndex } = this.state;
 		const { actionTask, onComplete } = this.props;
 		const nextStep = this.getSteps()[ stepIndex + 1 ];
@@ -99,7 +99,8 @@ class Appearance extends Component {
 		if ( nextStep ) {
 			this.setState( { stepIndex: stepIndex + 1 } );
 		} else {
-			actionTask( 'appearance' );
+			this.setState( { isPending: true } );
+			await actionTask( 'appearance' );
 			onComplete();
 		}
 	}

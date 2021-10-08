@@ -423,8 +423,7 @@ class Task {
 	 * @return bool
 	 */
 	public function is_actioned() {
-		$actioned = get_option( self::ACTIONED_OPTION, array() );
-		return in_array( $this->id, $actioned, true );
+		return self::is_task_actioned( $this->id );
 	}
 
 	/**
