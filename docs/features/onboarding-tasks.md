@@ -50,22 +50,22 @@ $task = new Task( $args );
 *   `$task->mark_actioned()` - Mark a task as actioned.  Optional to help determine completion
 *   `$task->is_actioned()` - Check if a task has been actioned
 *   `$task->get_json()` - Get the camelcase JSON for use in the client
-  * `id` (int) - Task ID.
-  * `title` (string) - Task title.
-  * `canView` (bool) - If a task should be viewable on a given store.
-  * `content` (string) - Task content.
-  * `additionalInfo` (object) - Additional extensible information about the task.
-  * `actionLabel` (string) - The label used for the action button.
-  * `actionUrl` (string) - The URL used when clicking the task if no task card is required.
-  * `isComplete` (bool) - If the task has been completed or not.
-  * `time` (string) - Length of time to complete the task.
-  * `level` (integer) - A priority for task list sorting.
-  * `isActioned` (bool) - If a task has been actioned.
-  * `isDismissed` (bool) - If a task has been dismissed.
-  * `isDismissable` (bool) - Whether or not a task is dismissable.
-  * `isSnoozed` (bool) - If a task has been snoozed.
-  * `isSnoozeable` (bool) - Whether or not a task can be snoozed.
-  * `snoozedUntil` (int) - Timestamp in milliseconds that the task has been snoozed until.
+    * `id` (int) - Task ID.
+    * `title` (string) - Task title.
+    * `canView` (bool) - If a task should be viewable on a given store.
+    * `content` (string) - Task content.
+    * `additionalInfo` (object) - Additional extensible information about the task.
+    * `actionLabel` (string) - The label used for the action button.
+    * `actionUrl` (string) - The URL used when clicking the task if no task card is required.
+    * `isComplete` (bool) - If the task has been completed or not.
+    * `time` (string) - Length of time to complete the task.
+    * `level` (integer) - A priority for task list sorting.
+    * `isActioned` (bool) - If a task has been actioned.
+    * `isDismissed` (bool) - If a task has been dismissed.
+    * `isDismissable` (bool) - Whether or not a task is dismissable.
+    * `isSnoozed` (bool) - If a task has been snoozed.
+    * `isSnoozeable` (bool) - Whether or not a task can be snoozed.
+    * `snoozedUntil` (int) - Timestamp in milliseconds that the task has been snoozed until.
 
 #### TaskList
 
