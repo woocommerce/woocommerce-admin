@@ -133,6 +133,48 @@ const { taskLists } = useSelect( ( select ) => {
 * `dismissTask( id )` - (dispatch) Dismiss a task
 * `optimisticallyCompleteTask( id )` - (dispatch) Optimistically mark a task as complete
 
+
+### SlotFills
+
+The task UI can be supplemented by registering plugins that fill the provided task slots.
+
+#### Task content
+
+A task list fill is required if no `action_url` is provided for the task.  This is the content shown after a task list item has been clicked.
+
+```js
+import { WooOnboardingTask } from '@woocommerce/onboarding';
+
+registerPlugin( 'my-task-plugin', {
+	scope: 'woocommerce-tasks',
+	render: () => (
+    <WooOnboardingTask id="my-task">
+      { ( { onComplete, query } ) => (
+        <MyTask onComplete={ onComplete } />
+      ) }
+    </WooOnboardingTask>
+	),
+} );
+```
+#### Task list item
+
+The items shown in the list can be customized beyond the default task list item.  This can allow for custom appearance or specific `onClick` behavior for your task.
+
+```js
+import { WooOnboardingTaskListItem } from '@woocommerce/onboarding';
+
+registerPlugin( 'my-task-list-item-plugin', {
+	scope: 'woocommerce-tasks',
+	render: () => (
+    <WooOnboardingTaskListItem id="appearance">
+      { ( { defaultTaskItem, onComplete } ) => (
+        <MyTaskListItem onComplete={ onComplete } />
+      ) }
+    </WooOnboardingTaskListItem>
+	),
+} );
+```
+
 ### Endpoints
 
 The following REST endpoints are available to interact with tasks.  For ease of use, we recommend using the data store actions above to interact with these endpoints.
