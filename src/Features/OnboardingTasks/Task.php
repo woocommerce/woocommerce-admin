@@ -173,7 +173,7 @@ class Task {
 			'action_url'      => null,
 			'is_complete'     => false,
 			'can_view'        => true,
-			'level'           => null,
+			'level'           => 3,
 			'time'            => null,
 			'is_dismissable'  => false,
 			'is_snoozeable'   => false,
