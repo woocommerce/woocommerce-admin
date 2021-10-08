@@ -310,7 +310,7 @@ class TimeInterval {
 			$new_datetime->setTime( 23, 59, 59 );
 		} else {
 			$new_datetime->add( $oneday );
-			$new_datetime->setTime( 0, 0 );
+			$new_datetime->setTime( 0, 0, 0 );
 		}
 
 		return $new_datetime;
