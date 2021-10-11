@@ -20,26 +20,6 @@ class TaskLists {
 	protected static $instance = null;
 
 	/**
-	 * Initialize default lists
-	 *
-	 * @return void
-	 */
-	public static function init() {
-		self::$lists['setup']    = new TaskList(
-			array(
-				'id'    => 'setup',
-				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
-			),
-		);
-		self::$lists['extended'] = new TaskList(
-			array(
-				'id'    => 'extended',
-				'title' => __( 'Things to do next', 'woocommerce-admin' ),
-			)
-		);
-	}
-
-	/**
 	 * An array of all registered lists.
 	 *
 	 * @var array
@@ -78,7 +58,26 @@ class TaskLists {
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'set_active_task' ), 5 );
+		add_action( 'admin_init', array( __CLASS__, 'init_default_lists' ) );
 		add_action( 'admin_init', array( __CLASS__, 'init_tasks' ) );
+	}
+
+	/**
+	 * Initialize default lists.
+	 */
+	public static function init_default_lists() {
+		self::add_list(
+			array(
+				'id'    => 'setup',
+				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
+			)
+		);
+		self::add_list(
+			array(
+				'id'    => 'extended',
+				'title' => __( 'Things to do next', 'woocommerce-admin' ),
+			)
+		);
 	}
 
 	/**
