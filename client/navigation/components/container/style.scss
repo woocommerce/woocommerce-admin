@@ -84,6 +84,11 @@
 		.components-navigation__back-button {
 			color: #949494;
 			opacity: 1;
+
+			&:hover,
+			&:hover:not(:disabled) {
+				color: #ddd;
+			}
 		}
 		.components-navigation__item {
 			.components-button {
