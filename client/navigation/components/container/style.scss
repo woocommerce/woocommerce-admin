@@ -104,6 +104,12 @@
 		color: #949494;
 		opacity: 1;
 
+		&,
+ span {
+			font-size: 13px;
+			line-height: normal;
+		}
+
 		&:hover,
 		&:hover:not(:disabled) {
 			color: #ddd;
