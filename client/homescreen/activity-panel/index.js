@@ -64,7 +64,9 @@ export const ActivityPanel = () => {
 
 	useEffect( () => {
 		if ( panelsData.isTaskListHidden !== undefined ) {
-			invalidateResolutionForStoreSelector( 'getTaskLists' );
+			if ( ! panelsData.isTaskListHidden ) {
+				invalidateResolutionForStoreSelector( 'getTaskLists' );
+			}
 			const visiblePanels = panels.reduce(
 				( acc, panel ) => {
 					const panelId = snakeCase( panel.id );
