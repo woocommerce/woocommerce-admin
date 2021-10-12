@@ -270,7 +270,7 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				await login.logout();
 			} );
 
-			it(`can complete the profile wizard with selecting ${ spec.countryRegion } as the country`,
+			it(`can complete the profile wizard with selecting ${spec.countryRegion} as the country`,
 				async () => {
 					await profileWizard.navigate();
 					await profileWizard.storeDetails.completeStoreDetailsSection(
@@ -316,11 +316,11 @@ const testDifferentStoreCurrenciesWCPay = () => {
 					await profileWizard.continue();
 					await profileWizard.business.freeFeaturesIsDisplayed();
 					// Add WC Pay check
-					await profileWizard.business.expandRecommendedBusinessFeatures();
-
-					expect( page ).not.toMatchElement( 'a', {
-						text: 'WooCommerce Payments',
-					} );
+					await profileWizard.business.expandRecommendedBusinessFeatures().then(() => {
+						expect( page ).not.toMatchElement( 'a', {
+							text: 'WooCommerce Payments',
+						} );
+					});
 
 					await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
 					await profileWizard.continue();
@@ -331,7 +331,7 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				}
 			);
 
-			it(`can select ${ spec.expectedCurrency } as the currency for ${ spec.countryRegion }`,
+			it(`can select ${spec.expectedCurrency} as the currency for ${spec.countryRegion}`,
 				async () => {
 					const settingsScreen = new WcSettings( page );
 					await settingsScreen.navigate();
