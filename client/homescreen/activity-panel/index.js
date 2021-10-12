@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useDispatch, useSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { Badge } from '@woocommerce/components';
 import {
 	Button,
@@ -56,17 +56,10 @@ export const ActivityPanel = () => {
 		};
 	} );
 
-	const { invalidateResolutionForStoreSelector } = useDispatch(
-		ONBOARDING_STORE_NAME
-	);
-
 	const panels = getAllPanels( panelsData );
 
 	useEffect( () => {
 		if ( panelsData.isTaskListHidden !== undefined ) {
-			if ( ! panelsData.isTaskListHidden ) {
-				invalidateResolutionForStoreSelector( 'getTaskLists' );
-			}
 			const visiblePanels = panels.reduce(
 				( acc, panel ) => {
 					const panelId = snakeCase( panel.id );
