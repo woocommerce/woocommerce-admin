@@ -157,9 +157,9 @@ export type MethodFields = {
 };
 
 export type Product = {
-	default: boolean;
+	default?: boolean;
 	label: string;
-	product: string;
+	product?: number;
 };
 
 export type PaymentMethodsState = {
