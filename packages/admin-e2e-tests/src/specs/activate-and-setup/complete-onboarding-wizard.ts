@@ -225,36 +225,42 @@ const testDifferentStoreCurrenciesWCPay = () => {
 			countryRegionSelector: 'AU\\:QLD',
 			countryRegion: 'Australia — Queensland',
 			expectedCurrency: 'AUD',
+			isWCPaySupported: true,
 		},
 		{
 			countryRegionSubstring: 'canada',
 			countryRegionSelector: 'CA\\:QC',
 			countryRegion: 'Canada — Quebec',
 			expectedCurrency: 'CAD',
+			isWCPaySupported: true,
 		},
 		{
 			countryRegionSubstring: 'china',
 			countryRegionSelector: 'CN\\:CN2',
 			countryRegion: 'China — Beijing',
 			expectedCurrency: 'CNY',
+			isWCPaySupported: false,
 		},
 		{
 			countryRegionSubstring: 'spain',
 			countryRegionSelector: 'ES\\:CO',
 			countryRegion: 'Spain — Córdoba',
 			expectedCurrency: 'EUR',
+			isWCPaySupported: true,
 		},
 		{
 			countryRegionSubstring: 'india',
 			countryRegionSelector: 'IN\\:DL',
 			countryRegion: 'India — Delhi',
 			expectedCurrency: 'INR',
+			isWCPaySupported: false,
 		},
 		{
 			countryRegionSubstring: 'kingd',
 			countryRegionSelector: 'GB',
 			countryRegion: 'United Kingdom (UK)',
 			expectedCurrency: 'GBP',
+			isWCPaySupported: true,
 		},
 	];
 
@@ -311,13 +317,17 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				await profileWizard.continue();
 				await profileWizard.business.freeFeaturesIsDisplayed();
 				// Add WC Pay check
-				await profileWizard.business
-					.expandRecommendedBusinessFeatures()
-					.then( () => {
-						expect( page ).not.toMatchElement( 'a', {
-							text: 'WooCommerce Payments',
-						} );
+				await profileWizard.business.expandRecommendedBusinessFeatures();
+
+				if ( spec.isWCPaySupported ) {
+					expect( page ).toMatchElement( 'a', {
+						text: 'WooCommerce Payments',
 					} );
+				} else {
+					expect( page ).not.toMatchElement( 'a', {
+						text: 'WooCommerce Payments',
+					} );
+				}
 
 				await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
 				await profileWizard.continue();
