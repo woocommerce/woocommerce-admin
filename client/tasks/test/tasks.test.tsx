@@ -139,40 +139,6 @@ describe( 'Task', () => {
 		expect( queryByText( 'Show things to do next' ) ).toBeInTheDocument();
 	} );
 
-	it( 'should add two classes to document.body on render', () => {
-		const { baseElement, rerender } = render( <div></div> );
-		expect( baseElement.className ).not.toMatch( 'woocommerce-onboarding' );
-		expect( baseElement.className ).not.toMatch(
-			'woocommerce-task-dashboard__body'
-		);
-		rerender(
-			<div>
-				<Tasks query={ {} } />
-			</div>
-		);
-		expect( baseElement.className ).toMatch( 'woocommerce-onboarding' );
-		expect( baseElement.className ).toMatch(
-			'woocommerce-task-dashboard__body'
-		);
-	} );
-
-	it( 'should remove the two classes when <Tasks /> is unmounted', () => {
-		const { baseElement, rerender } = render(
-			<div>
-				<Tasks query={ {} } />
-			</div>
-		);
-		expect( baseElement.className ).toMatch( 'woocommerce-onboarding' );
-		expect( baseElement.className ).toMatch(
-			'woocommerce-task-dashboard__body'
-		);
-		rerender( <div></div> );
-		expect( baseElement.className ).not.toMatch( 'woocommerce-onboarding' );
-		expect( baseElement.className ).not.toMatch(
-			'woocommerce-task-dashboard__body'
-		);
-	} );
-
 	it( 'should class updateOptions with default data on render', () => {
 		render(
 			<div>

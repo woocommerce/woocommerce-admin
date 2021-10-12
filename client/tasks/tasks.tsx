@@ -72,17 +72,6 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	};
 
 	useEffect( () => {
-		document.body.classList.add( 'woocommerce-onboarding' );
-		document.body.classList.add( 'woocommerce-task-dashboard__body' );
-		return () => {
-			document.body.classList.remove( 'woocommerce-onboarding' );
-			document.body.classList.remove(
-				'woocommerce-task-dashboard__body'
-			);
-		};
-	}, [] );
-
-	useEffect( () => {
 		// @todo Update this when all task lists have been hidden or completed.
 		const taskListsFinished = false;
 		updateOptions( {
