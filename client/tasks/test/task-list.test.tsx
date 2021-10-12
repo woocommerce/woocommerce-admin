@@ -7,7 +7,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { TaskList } from '../task-list';
+import { TaskList, prefixEvent } from '../task-list';
 
 jest.mock( '@woocommerce/tracks', () => ( {
 	recordEvent: jest.fn(),
@@ -181,5 +181,19 @@ describe( 'TaskList', () => {
 			<TaskList tasks={ dismissedTask } title="List title" query={ {} } />
 		);
 		expect( queryByText( dismissedTask[ 0 ].title ) ).toBeInTheDocument();
+	} );
+
+	describe( 'prefixEvent', () => {
+		it( 'should not prefix tasklist id if id is setup', () => {
+			expect( prefixEvent( 'setup', 'action' ) ).toEqual(
+				'tasklist_action'
+			);
+		} );
+
+		it( 'should prefix tasklist id if id does not equal setup', () => {
+			expect( prefixEvent( 'extended', 'action' ) ).toEqual(
+				'extended_tasklist_action'
+			);
+		} );
 	} );
 } );
