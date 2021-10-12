@@ -191,6 +191,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		$this->assertContains( 'isComplete', $json['tasks'][0] );
 	}
 
+	/**
 	 * Adds a couple tasks to the provided list.
 	 *
 	 * @param TaskList $list list to add tasks to.
