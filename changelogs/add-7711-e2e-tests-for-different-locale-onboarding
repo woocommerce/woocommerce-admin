@@ -1,4 +1,0 @@
-Significance: minor
-Type: Add
-
-Add: E2E tests for checking store currency if it matches the onboarded country. #7712
