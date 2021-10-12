@@ -37,11 +37,11 @@ class DatePicker extends Component {
 		}
 
 		const relatedTargetParent = event.relatedTarget?.closest(
-				'.components-dropdown'
-			),
-			currentTargetParent = event.currentTarget?.closest(
-				'.components-dropdown'
-			);
+			'.components-dropdown'
+		);
+		const currentTargetParent = event.currentTarget?.closest(
+			'.components-dropdown'
+		);
 
 		if (
 			! relatedTargetParent ||
