@@ -270,10 +270,7 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				await login.logout();
 			} );
 
-			it(
-				'can complete the profile wizard with selecting "' +
-					spec.countryRegion +
-					'" as the country',
+			it(`can complete the profile wizard with selecting ${ spec.countryRegion } as the country`,
 				async () => {
 					await profileWizard.navigate();
 					await profileWizard.storeDetails.completeStoreDetailsSection(
@@ -334,12 +331,7 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				}
 			);
 
-			it(
-				'can select "' +
-					spec.expectedCurrency +
-					'" as the currency for "' +
-					spec.countryRegion +
-					'"',
+			it(`can select ${ spec.expectedCurrency } as the currency for ${ spec.countryRegion }`,
 				async () => {
 					const settingsScreen = new WcSettings( page );
 					await settingsScreen.navigate();
