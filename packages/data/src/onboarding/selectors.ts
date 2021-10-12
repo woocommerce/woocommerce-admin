@@ -3,6 +3,7 @@
  */
 import { TaskListType } from './types';
 import { WPDataSelectors, RuleProcessor } from '../types';
+import { EMPTY_ARRAY } from './constants';
 
 export const getFreeExtensions = (
 	state: OnboardingState
@@ -53,7 +54,7 @@ export const getEmailPrefill = ( state: OnboardingState ): string => {
 };
 
 export const getProductTypes = ( state: OnboardingState ): Product[] => {
-	return state.productTypes || [];
+	return state.productTypes || EMPTY_ARRAY;
 };
 
 // Types
