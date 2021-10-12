@@ -38,7 +38,6 @@ class Init {
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'possibly_update_option_extended_task_list' ), 15 );
 		DeprecatedOptions::init();
 		TaskLists::init();
 
@@ -51,6 +50,13 @@ class Init {
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'component_settings' ), 30 );
 		// New settings injection.
 		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 30 );
+
+		if ( ! \Automattic\WooCommerce\Admin\Loader::is_admin_page() ) {
+			return;
+		}
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
+
 	}
 
 	/**
@@ -109,23 +115,13 @@ class Init {
 	}
 
 	/**
-	 * Update the extended task list items on admin pages.
-	 */
-	public static function possibly_update_option_extended_task_list() {
-		if (
-			! \Automattic\WooCommerce\Admin\Loader::is_admin_page() ||
-			! count( TaskLists::get_visible() )
-		) {
-			return;
-		}
-
-		self::update_option_extended_task_list();
-	}
-
-	/**
 	 * Update registered extended task list items.
 	 */
 	public static function update_option_extended_task_list() {
+		if ( ! count( TaskLists::get_visible() ) ) {
+			return;
+		}
+
 		$extended_tasks_list_items            = get_option( 'woocommerce_extended_task_list_items', array() );
 		$registered_extended_tasks_list_items = apply_filters( 'woocommerce_get_registered_extended_tasks', array() );
 		if ( $registered_extended_tasks_list_items !== $extended_tasks_list_items ) {
