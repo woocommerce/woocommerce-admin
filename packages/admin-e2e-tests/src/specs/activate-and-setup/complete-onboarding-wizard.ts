@@ -270,77 +270,71 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				await login.logout();
 			} );
 
-			it(`can complete the profile wizard with selecting ${spec.countryRegion} as the country`,
-				async () => {
-					await profileWizard.navigate();
-					await profileWizard.storeDetails.completeStoreDetailsSection(
-						{
-							countryRegionSubstring: spec.countryRegionSubstring,
-							countryRegionSelector: spec.countryRegionSelector,
-							countryRegion: spec.countryRegion,
-						}
-					);
+			it( `can complete the profile wizard with selecting ${ spec.countryRegion } as the country`, async () => {
+				await profileWizard.navigate();
+				await profileWizard.storeDetails.completeStoreDetailsSection( {
+					countryRegionSubstring: spec.countryRegionSubstring,
+					countryRegionSelector: spec.countryRegionSelector,
+					countryRegion: spec.countryRegion,
+				} );
 
-					// Wait for "Continue" button to become active
-					await profileWizard.continue();
+				// Wait for "Continue" button to become active
+				await profileWizard.continue();
 
-					// Wait for usage tracking pop-up window to appear
-					await profileWizard.optionallySelectUsageTracking();
-					// Query for the industries checkboxes
-					await profileWizard.industry.isDisplayed();
-					await profileWizard.industry.uncheckIndustries();
-					await profileWizard.industry.selectIndustry( 'Other' );
-					await profileWizard.continue();
-					await profileWizard.productTypes.isDisplayed( 7 );
-					await profileWizard.productTypes.uncheckProducts();
-					await profileWizard.productTypes.selectProduct(
-						'Physical products'
-					);
-					await profileWizard.productTypes.selectProduct(
-						'Downloads'
-					);
+				// Wait for usage tracking pop-up window to appear
+				await profileWizard.optionallySelectUsageTracking();
+				// Query for the industries checkboxes
+				await profileWizard.industry.isDisplayed();
+				await profileWizard.industry.uncheckIndustries();
+				await profileWizard.industry.selectIndustry( 'Other' );
+				await profileWizard.continue();
+				await profileWizard.productTypes.isDisplayed( 7 );
+				await profileWizard.productTypes.uncheckProducts();
+				await profileWizard.productTypes.selectProduct(
+					'Physical products'
+				);
+				await profileWizard.productTypes.selectProduct( 'Downloads' );
 
-					await profileWizard.continue();
-					await page.waitForNavigation( {
-						waitUntil: 'networkidle0',
-					} );
-					await profileWizard.business.isDisplayed();
+				await profileWizard.continue();
+				await page.waitForNavigation( {
+					waitUntil: 'networkidle0',
+				} );
+				await profileWizard.business.isDisplayed();
 
-					await profileWizard.business.selectProductNumber(
-						config.get( 'onboardingwizard.numberofproducts' )
-					);
-					await profileWizard.business.selectCurrentlySelling(
-						config.get( 'onboardingwizard.sellingelsewhere' )
-					);
+				await profileWizard.business.selectProductNumber(
+					config.get( 'onboardingwizard.numberofproducts' )
+				);
+				await profileWizard.business.selectCurrentlySelling(
+					config.get( 'onboardingwizard.sellingelsewhere' )
+				);
 
-					await profileWizard.continue();
-					await profileWizard.business.freeFeaturesIsDisplayed();
-					// Add WC Pay check
-					await profileWizard.business.expandRecommendedBusinessFeatures().then(() => {
+				await profileWizard.continue();
+				await profileWizard.business.freeFeaturesIsDisplayed();
+				// Add WC Pay check
+				await profileWizard.business
+					.expandRecommendedBusinessFeatures()
+					.then( () => {
 						expect( page ).not.toMatchElement( 'a', {
 							text: 'WooCommerce Payments',
 						} );
-					});
+					} );
 
-					await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
-					await profileWizard.continue();
-					await profileWizard.themes.isDisplayed();
+				await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
+				await profileWizard.continue();
+				await profileWizard.themes.isDisplayed();
 
-					//  This navigates to the home screen
-					await profileWizard.themes.continueWithActiveTheme();
-				}
-			);
+				//  This navigates to the home screen
+				await profileWizard.themes.continueWithActiveTheme();
+			} );
 
-			it(`can select ${spec.expectedCurrency} as the currency for ${spec.countryRegion}`,
-				async () => {
-					const settingsScreen = new WcSettings( page );
-					await settingsScreen.navigate();
-					verifyValueOfInputField(
-						'#woocommerce_currency',
-						spec.expectedCurrency
-					);
-				}
-			);
+			it( `can select ${ spec.expectedCurrency } as the currency for ${ spec.countryRegion }`, async () => {
+				const settingsScreen = new WcSettings( page );
+				await settingsScreen.navigate();
+				verifyValueOfInputField(
+					'#woocommerce_currency',
+					spec.expectedCurrency
+				);
+			} );
 		} );
 	} );
 };
