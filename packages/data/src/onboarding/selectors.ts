@@ -3,7 +3,6 @@
  */
 import { TaskListType } from './types';
 import { WPDataSelectors, RuleProcessor } from '../types';
-import { EMPTY_ARRAY } from './constants';
 
 export const getFreeExtensions = (
 	state: OnboardingState
@@ -25,6 +24,7 @@ export const getTasksStatus = (
 
 const initialTaskLists: TaskListType[] = [];
 
+const EMPTY_ARRAY: Product[] = [];
 export const getTaskLists = ( state: OnboardingState ): TaskListType[] => {
 	return state.taskLists || initialTaskLists;
 };
