@@ -27,7 +27,7 @@ is visible at the bottom when `WooCommerce Payments` is not installed.
 
 ![screenshot-one wordpress test-2021 09 30-14_12_58](https://user-images.githubusercontent.com/1314156/135506696-b7812f7e-437f-4d89-956a-b73248f70f6b.png)
 
-13. Press `Continue` and verify that the `WooCommerce Payments` plugin is installed and activated, and that it's not shown in the `Free features list`
+13. Press `Continue` and verify that the `WooCommerce Payments` plugin is installed and activated, and that it's not shown in the `Free features list`:
 
 ![screenshot-one wordpress test-2021 09 30-14_32_20](https://user-images.githubusercontent.com/1314156/135506727-d8888f2b-3424-4cf5-a4bf-b67a14a198b6.png)
 
