@@ -98,7 +98,7 @@ $list = new TaskList( $args );
 *   `$task_list->is_complete()` - Check if a task list is complete
 *   `$task_list->add_task( $args )` - Add a task to a task list
 *   `$task_list->get_viewable_tasks()` - Get tasks that are marked as `can_view` for the store
-*   `$task_list->sort_tasks()` - Sort the tasks by provided `sort_by` value
+*   `$task_list->sort_tasks( $sort_by )` - Sort the tasks by the provided `sort_by` value or the task list `sort_by` property if no argument is passed.
 *   `$task_list->get_json()` - Get the camelcase JSON for use in the client
     * `id` (int) - Task list ID.
     * `title` (string) - Task list title.
