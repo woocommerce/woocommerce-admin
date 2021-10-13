@@ -6,24 +6,18 @@
 
 ### Store Profiler and Product task - include Subscriptions #7734
 
-##### Feature: turned off
-
 1. Deactivate and delete `WooCommerce Payments` if you have it installed.
-2. Go to the step one of the store profiler and select `US` as the store `Country / Region`.
-3. Go to the step three of the store profiler (`Product Types`).
+2. Go to step one of the store profiler and select `US` as the store `Country / Region`.
+3. Go to step three of the store profiler (`Product Types`).
 4. Verify `Subscriptions` is shown as a paid extension (with a price chip).
 5. Check `Subscriptions` and continue with the OBW.
 6. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is visible in the setup task list.
 7. Press `Add my products` in the setup task list.
 8. Select `Start with a template`. Verify that the option `Subscription product` is not visible in the popup.
-
-##### Feature: turned on
-
-1. Install and activate this plugin to turn on the subscriptions inclusion -> https://gist.github.com/octaedro/455eb4c85887608c253249bad533ccb3
-2. Deactivate and delete `WooCommerce Payments` if you have it installed.
-3. Go to the step one of the store profiler and select `US` as the store `Country / Region`.
-4. Go to the step three of the store profiler (`Product Types`).
-5. Verify `Subscriptions` is shown as free (without a price chip). Also, verify that the text
+9. Deactivate and delete `WooCommerce Payments`.
+10. Go to step one of the store profiler and select `US` as the store `Country / Region`.
+11. Go to step three of the store profiler (`Product Types`).
+12. Verify `Subscriptions` is shown as free (without a price chip). Also, verify that the text
 
 ```
 The following extensions will be added to your site for free: WooCommerce Payments. An account is required to use this feature
@@ -33,29 +27,29 @@ is visible at the bottom when `WooCommerce Payments` is not installed.
 
 ![screenshot-one wordpress test-2021 09 30-14_12_58](https://user-images.githubusercontent.com/1314156/135506696-b7812f7e-437f-4d89-956a-b73248f70f6b.png)
 
-5. Press `Continue` and verify that the `WooCommerce Payments` plugin is installed and activated, and that it's not shown in the `Free features list
+13. Press `Continue` and verify that the `WooCommerce Payments` plugin is installed and activated, and that it's not shown in the `Free features list`
 
 ![screenshot-one wordpress test-2021 09 30-14_32_20](https://user-images.githubusercontent.com/1314156/135506727-d8888f2b-3424-4cf5-a4bf-b67a14a198b6.png)
 
-6. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is not visible in the setup task list.
+14. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is not visible in the setup task list.
 
 ![screenshot-one wordpress test-2021 09 30-14_39_28](https://user-images.githubusercontent.com/1314156/135506770-91571f8f-2e2e-43a7-b092-b9e5fdf56df8.png)
 
-7. Press `Add my products` in the setup task list.
-8. Select `Start with a template`. Verify that the option `Subscription product` is visible in the popup
+15. Press `Add my products` in the setup task list.
+16. Select `Start with a template`. Verify that the option `Subscription product` is visible in the popup
 
 ![screenshot-one wordpress test-2021 09 30-14_35_22](https://user-images.githubusercontent.com/1314156/135506748-0b7bdce5-b006-47f9-9289-03ed26e4950c.png)
 
-9. Select `Subscription product` and press `Ok`. You should have been redirected to `post-new.php?post_type=product&subscription_pointers=true`.
+17. Select `Subscription product` and press `Ok`. You should have been redirected to `post-new.php?post_type=product&subscription_pointers=true`.
 
 ##### Non US stores
 
-10. Now delete the `WooCommerce Payments` plugin, go to the fist step of the of the store profiler and select `France` as the store `Country / Region` (it could be any country other than `US`.
-11. Go to the step three of the store profiler (`Product Types`) and verify that the `Subscriptions` is shown as a paid extension (with a price chip).
-12. Select `Subscriptions` and press `Continue`.
-13. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is visible in the setup task list.
-14. Press `Add my products` in the setup task list.
-15. Select `Start with a template`. Verify that the option `Subscription product` is not visible in the popup.
+1. Now delete the `WooCommerce Payments` plugin, go to the fist step of the of the store profiler and select `France` as the store `Country / Region` (it could be any country other than `US`.
+2. Go to step three of the store profiler (`Product Types`) and verify that the `Subscriptions` is shown as a paid extension (with a price chip).
+3. Select `Subscriptions` and press `Continue`.
+4. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is visible in the setup task list.
+5. Press `Add my products` in the setup task list.
+6. Select `Start with a template`. Verify that the option `Subscription product` is not visible in the popup.
 
 ## 2.7.1
 
