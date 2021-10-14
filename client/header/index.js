@@ -20,7 +20,6 @@ import { recordEvent } from '@woocommerce/tracks';
 import './style.scss';
 import { MobileAppBanner } from '../mobile-banner';
 import useIsScrolled from '../hooks/useIsScrolled';
-import Navigation from '../navigation';
 import { WooHeaderItem } from './utils';
 
 const renderTaskListBackButton = () => {
@@ -164,7 +163,6 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 			) }
 
 			<div className="woocommerce-layout__header-wrapper">
-				{ window.wcAdminFeatures.navigation && <Navigation /> }
 				{ renderTaskListBackButton() }
 				<Text
 					className={ `woocommerce-layout__header-heading ${ backButtonClass }` }

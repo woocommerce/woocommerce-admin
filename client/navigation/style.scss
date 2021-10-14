@@ -8,6 +8,7 @@
 	box-sizing: border-box;
 	background-color: $gray-900;
 	z-index: 1100; //Must be greater than z-index on .woocommerce-layout__header
+	order: -1;
 
 	@media ( max-width: 960px ) {
 		width: $header-height;
