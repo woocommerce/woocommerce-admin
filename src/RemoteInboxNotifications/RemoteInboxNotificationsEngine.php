@@ -16,19 +16,8 @@ use \Automattic\WooCommerce\Admin\Features\Onboarding;
  * specs that are able to be triggered.
  */
 class RemoteInboxNotificationsEngine {
-	const SPECS_TRANSIENT_NAME     = 'wc_remote_inbox_notifications_specs';
 	const STORED_STATE_OPTION_NAME = 'wc_remote_inbox_notifications_stored_state';
 	const WCA_UPDATED_OPTION_NAME  = 'wc_remote_inbox_notifications_wca_updated';
-	const DATA_SOURCES             = array(
-		'https://woocommerce.com/wp-json/wccom/inbox-notifications/1.0/notifications.json',
-	);
-
-	/**
-	 * DataSourcePoller Class instance.
-	 *
-	 * @var DataSourcePoller instance
-	 */
-	protected static $data_source_poller_instance = null;
 
 	/**
 	 * Initialize the engine.
@@ -51,16 +40,6 @@ class RemoteInboxNotificationsEngine {
 		// Hook into WCA updated. This is hooked up here rather than in
 		// on_admin_init because that runs too late to hook into the action.
 		add_action( 'woocommerce_admin_updated', array( __CLASS__, 'run_on_woocommerce_admin_updated' ) );
-	}
-
-	/**
-	 * Get data source poller class instance.
-	 */
-	public static function get_data_source_poller_instance() {
-		if ( ! self::$data_source_poller_instance ) {
-			self::$data_source_poller_instance = new DataSourcePoller( self::DATA_SOURCES, self::SPECS_TRANSIENT_NAME );
-		}
-		return self::$data_source_poller_instance;
 	}
 
 	/**
@@ -110,8 +89,7 @@ class RemoteInboxNotificationsEngine {
 	 * Go through the specs and run them.
 	 */
 	public static function run() {
-		$data_source_poller = self::get_data_source_poller_instance();
-		$specs              = $data_source_poller->get_specs_from_data_sources();
+		$specs = DataSourcePoller::get_instance()->get_specs_from_data_sources();
 
 		if ( false === $specs || 0 === count( $specs ) ) {
 			return;

@@ -15,22 +15,7 @@ use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\EvaluateSugg
  * WC Pay Promotion engine.
  */
 class Init {
-	const SPECS_TRANSIENT_NAME    = 'woocommerce_admin_payment_method_promotion_specs';
 	const EXPLAT_VARIATION_PREFIX = 'woocommerce_wc_pay_promotion_payment_methods_table_';
-
-	/**
-	 * Default data sources array.
-	 */
-	const DATA_SOURCES = array(
-		'https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/payment-method/promotions.json',
-	);
-
-	/**
-	 * DataSourcePoller Class instance.
-	 *
-	 * @var DataSourcePoller instance
-	 */
-	protected static $data_source_poller_instance = null;
 
 	/**
 	 * Constructor.
@@ -68,16 +53,6 @@ class Init {
 			Loader::get_file_version( 'js' ),
 			true
 		);
-	}
-
-	/**
-	 * Get class instance.
-	 */
-	public static function get_data_source_poller_instance() {
-		if ( ! self::$data_source_poller_instance ) {
-			self::$data_source_poller_instance = new \Automattic\WooCommerce\Admin\DataSourcePoller( self::DATA_SOURCES, self::SPECS_TRANSIENT_NAME );
-		}
-		return self::$data_source_poller_instance;
 	}
 
 	/**
@@ -210,8 +185,7 @@ class Init {
 	 * Delete the specs transient.
 	 */
 	public static function delete_specs_transient() {
-		$data_source_poller = self::get_data_source_poller_instance();
-		$data_source_poller->delete_specs_transient();
+		WcPayPromotionDataSourcePoller::get_instance()->delete_specs_transient();
 	}
 
 	/**
@@ -221,8 +195,7 @@ class Init {
 		if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
 			return array();
 		}
-		$data_source_poller = self::get_data_source_poller_instance();
-		return $data_source_poller->get_specs_from_data_sources();
+		return WcPayPromotionDataSourcePoller::get_instance()->get_specs_from_data_sources();
 	}
 }
 

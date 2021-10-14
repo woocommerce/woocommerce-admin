@@ -7,17 +7,37 @@ namespace Automattic\WooCommerce\Admin\RemoteInboxNotifications;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\DataSourcePoller as DataSourcePollerClass;
-
 /**
  * Specs data source poller class.
  * This handles polling specs from JSON endpoints, and
  * stores the specs in to the database as an option.
  */
-class DataSourcePoller extends DataSourcePollerClass {
-	const DATA_SOURCES = array(
+class DataSourcePoller extends \Automattic\WooCommerce\Admin\DataSourcePoller {
+	const SPECS_TRANSIENT_NAME = 'wc_remote_inbox_notifications_specs';
+	const DATA_SOURCES         = array(
 		'https://woocommerce.com/wp-json/wccom/inbox-notifications/1.0/notifications.json',
 	);
+	/**
+	 * Class instance.
+	 *
+	 * @var Analytics instance
+	 */
+	protected static $instance = null;
+
+	/**
+	 * Get class instance.
+	 */
+	public static function get_instance() {
+		if ( ! self::$instance ) {
+			self::$instance = new self(
+				self::DATA_SOURCES,
+				array(
+					'transient_name' => self::SPECS_TRANSIENT_NAME,
+				)
+			);
+		}
+		return self::$instance;
+	}
 
 	/**
 	 * Validate the spec.

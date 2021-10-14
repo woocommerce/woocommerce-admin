@@ -7,7 +7,12 @@ namespace Automattic\WooCommerce\Admin;
  * This handles polling specs from JSON endpoints, and
  * stores the specs in to the database as an option.
  */
-class DataSourcePoller {
+abstract class DataSourcePoller {
+
+	/**
+	 * Get class instance.
+	 */
+	abstract public static function get_instance();
 
 	/**
 	 * Name of data sources filter.
@@ -22,18 +27,11 @@ class DataSourcePoller {
 	protected $data_sources = array();
 
 	/**
-	 * Key for the spec id.
+	 * Default args.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	protected $spec_key = 'id';
-
-	/**
-	 * Key for the spec id.
-	 *
-	 * @var string
-	 */
-	protected $transient_name = '';
+	protected $args = array();
 
 	/**
 	 * The logger instance.
@@ -45,14 +43,18 @@ class DataSourcePoller {
 	/**
 	 * Constructor.
 	 *
-	 * @param array  $data_sources urls for data sources.
-	 * @param string $transient_name name of transient.
-	 * @param string $spec_key Optional key used as the spec identifier.
+	 * @param array $data_sources urls for data sources.
+	 * @param array $args Options for DataSourcePoller.
 	 */
-	public function __construct( $data_sources, $transient_name, $spec_key = 'id' ) {
-		$this->data_sources   = $data_sources;
-		$this->transient_name = $transient_name;
-		$this->spec_key       = $spec_key;
+	public function __construct( $data_sources = array(), $args = array() ) {
+		$this->data_sources = $data_sources;
+
+		$arg_defaults = array(
+			'spec_key'         => 'id',
+			'transient_name'   => '',
+			'transient_expiry' => 7 * DAY_IN_SECONDS,
+		);
+		$this->args   = wp_parse_args( $args, $arg_defaults );
 	}
 
 	/**
@@ -75,7 +77,7 @@ class DataSourcePoller {
 	 * @return string|boolean
 	 */
 	protected function get_spec_key( $spec ) {
-		$key = $this->spec_key;
+		$key = $this->args['spec_key'];
 		if ( isset( $spec->$key ) ) {
 			return $spec->$key;
 		}
@@ -88,11 +90,11 @@ class DataSourcePoller {
 	 * @return array list of specs.
 	 */
 	public function get_specs_from_data_sources() {
-		$specs = get_transient( $this->transient_name );
+		$specs = get_transient( $this->args['transient_name'] );
 
 		if ( false === $specs || ! is_array( $specs ) || 0 === count( $specs ) ) {
 			$this->read_specs_from_data_sources();
-			$specs = get_transient( $this->transient_name );
+			$specs = get_transient( $this->args['transient_name'] );
 		}
 		return false !== $specs ? $specs : array();
 	}
@@ -115,9 +117,9 @@ class DataSourcePoller {
 
 		// Persist the specs as a transient.
 		set_transient(
-			$this->transient_name,
+			$this->args['transient_name'],
 			$specs,
-			7 * DAY_IN_SECONDS
+			$this->args['transient_expiry']
 		);
 
 		return 0 !== count( $specs );
@@ -129,7 +131,7 @@ class DataSourcePoller {
 	 * @return bool success of failure of transient deletion.
 	 */
 	public function delete_specs_transient() {
-		return delete_transient( $this->transient_name );
+		return delete_transient( $this->args['transient_name'] );
 	}
 
 	/**
