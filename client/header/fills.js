@@ -6,7 +6,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import ActivityPanel from './activity-panel';
+import ActivityPanel from '~/activity-panel';
 import { WooHeaderItem } from './utils';
 
 const ActivityPanelHeaderItem = () => (
