@@ -12,6 +12,7 @@ import {
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	useUser,
+	useUserPreferences,
 } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
@@ -46,13 +47,14 @@ const InboxPanel = lazy( () =>
 	)
 );
 
-export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
+export const ActivityPanel = ( { isEmbedded, query } ) => {
 	const [ currentTab, setCurrentTab ] = useState( '' );
 	const [ isPanelClosing, setIsPanelClosing ] = useState( false );
 	const [ isPanelOpen, setIsPanelOpen ] = useState( false );
 	const [ isPanelSwitching, setIsPanelSwitching ] = useState( false );
 	const { fills } = useSlot( ABBREVIATED_NOTIFICATION_SLOT_NAME );
 	const hasExtendedNotifications = Boolean( fills?.length );
+	const { updateUserPreferences, ...userData } = useUserPreferences();
 
 	const getPreviewSiteBtnTrackData = ( select, getOption ) => {
 		let trackData = {};
@@ -322,11 +324,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 
 	const closedHelpPanelHighlight = () => {
 		recordEvent( 'help_tooltip_click' );
-		if (
-			userPreferencesData &&
-			userPreferencesData.updateUserPreferences
-		) {
-			userPreferencesData.updateUserPreferences( {
+		if ( userData && updateUserPreferences ) {
+			updateUserPreferences( {
 				help_panel_highlight_shown: 'yes',
 			} );
 		}
@@ -335,11 +334,8 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	const shouldShowHelpTooltip = () => {
 		const { task } = query;
 		const startedTasks =
-			userPreferencesData &&
-			userPreferencesData.task_list_tracked_started_tasks;
-		const highlightShown =
-			userPreferencesData &&
-			userPreferencesData.help_panel_highlight_shown;
+			userData && userData.task_list_tracked_started_tasks;
+		const highlightShown = userData && userData.help_panel_highlight_shown;
 		if (
 			task &&
 			highlightShown !== 'yes' &&

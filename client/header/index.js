@@ -18,10 +18,11 @@ import { recordEvent } from '@woocommerce/tracks';
  * Internal dependencies
  */
 import './style.scss';
-import ActivityPanel from './activity-panel';
 import { MobileAppBanner } from '../mobile-banner';
 import useIsScrolled from '../hooks/useIsScrolled';
 import Navigation from '../navigation';
+import { WooHeaderItem } from './utils';
+import './fills';
 
 const renderTaskListBackButton = () => {
 	const currentUrl = new URL( window.location.href );
@@ -173,16 +174,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 					{ getPageTitle( decodeEntities( pageTitle ) ) }
 				</Text>
 
-				{ window.wcAdminFeatures[ 'activity-panels' ] && (
-					<ActivityPanel
-						isEmbedded={ isEmbedded }
-						query={ query }
-						userPreferencesData={ {
-							...userData,
-							updateUserPreferences,
-						} }
-					/>
-				) }
+				<WooHeaderItem.Slot fillProps={ { isEmbedded, query } } />
 			</div>
 		</div>
 	);
