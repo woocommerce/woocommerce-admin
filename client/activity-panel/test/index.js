@@ -15,7 +15,7 @@ import { useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { ActivityPanel } from '../';
+import { ActivityPanel } from '../activity-panel';
 import { Panel } from '../panel';
 
 jest.mock( '@woocommerce/data', () => ( {

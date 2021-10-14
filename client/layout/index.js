@@ -30,6 +30,7 @@ import { Header } from '../header';
 import Notices from './notices';
 import TransientNotices from './transient-notices';
 import './navigation';
+import '~/activity-panel';
 
 const StoreAlerts = lazy( () =>
 	import( /* webpackChunkName: "store-alerts" */ './store-alerts' )

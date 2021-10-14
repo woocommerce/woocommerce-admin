@@ -22,7 +22,6 @@ import { MobileAppBanner } from '../mobile-banner';
 import useIsScrolled from '../hooks/useIsScrolled';
 import Navigation from '../navigation';
 import { WooHeaderItem } from './utils';
-import './fills';
 
 const renderTaskListBackButton = () => {
 	const currentUrl = new URL( window.location.href );
