@@ -1,4 +1,4 @@
-== 2.8.0 10/12/2021 ==
+== 2.8.0 10/14/2021 ==
 
 - Add: Store Profiler and Product task - include Subscriptions #7734
 - Fix: Fixed navigation menu text color after Gutenberg 11.6.0 #7771
@@ -10,6 +10,7 @@
 - Fix: Fixing an unwanted page refresh when using Woo Navigation. #7615
 - Fix: Fix naming of event names and properties. #7677
 - Fix: Fix white screen for variation analytic data without a name. #7686
+- Update: Update back up copy of free extension for Google Listing & Ads plugin. #7798
 - Update: Update Eway payment gateway capitalization (was eWAY). #7678
 - Update: Enable Square in France. #7679
 - Enhancement: Add experiment for promoting WooCommerce Payments in payment methods table. #7666
