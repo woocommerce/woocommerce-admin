@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { withRestApi } from '@woocommerce/e2e-utils';
+
+/**
  * Internal dependencies
  */
 import { httpClient } from './http-client';
