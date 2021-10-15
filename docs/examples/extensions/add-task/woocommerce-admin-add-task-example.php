@@ -32,7 +32,7 @@ function add_task_my_task() {
 	);
 }
 
-add_action( 'admin_init', 'add_task_my_task' );
+add_action( 'init', 'add_task_my_task' );
 
 /**
  * Register the scripts to fill the task content on the frontend.

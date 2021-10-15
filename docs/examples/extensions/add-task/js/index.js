@@ -16,11 +16,12 @@ const Task = ( { onComplete, task } ) => {
 	return (
 		<Card className="woocommerce-task-card">
 			<CardBody>
-				{ __( 'Example task card content.', 'plugin-domain' ) }
 				{ __(
 					"This task's completion status is dependent on being actioned. The action button below will action this task, while the complete button will optimistically complete the task in the task list and redirect back to the task list. Note that in this example, the task must be actioned for completion to persist.",
 					'plugin-domain'
 				) }{ ' ' }
+				<br />
+				<br />
 				{ __( 'Task actioned status: ', 'plugin-domain' ) }{ ' ' }
 				{ isActioned ? 'actioned' : 'not actioned' }
 				<br />
