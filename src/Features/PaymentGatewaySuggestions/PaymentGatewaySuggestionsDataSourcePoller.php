@@ -9,7 +9,7 @@ use Automattic\WooCommerce\Admin\DataSourcePoller;
  */
 class PaymentGatewaySuggestionsDataSourcePoller extends DataSourcePoller {
 
-	const SPECS_TRANSIENT_NAME = 'woocommerce_admin_payment_gateway_suggestions_specs';
+	const ID = 'payment_gateway_suggestions';
 
 	/**
 	 * Default data sources array.
@@ -30,7 +30,7 @@ class PaymentGatewaySuggestionsDataSourcePoller extends DataSourcePoller {
 	 */
 	public static function get_instance() {
 		if ( ! self::$instance ) {
-			self::$instance = new self( self::DATA_SOURCES, array( 'transient_name' => self::SPECS_TRANSIENT_NAME ) );
+			self::$instance = new self( self::ID, self::DATA_SOURCES );
 		}
 		return self::$instance;
 	}

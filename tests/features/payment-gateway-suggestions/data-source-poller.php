@@ -20,7 +20,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 		parent::setUp();
 
 		add_filter(
-			DataSourcePoller::FILTER_NAME,
+			PaymentGatewaySuggestionsDataSourcePoller::ID . '_' . DataSourcePoller::FILTER_NAME,
 			function() {
 				return array(
 					'payment-gateway-suggestions-data-source.json',
@@ -75,7 +75,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		remove_all_filters( DataSourcePoller::FILTER_NAME );
+		remove_all_filters( PaymentGatewaySuggestionsDataSourcePoller::ID . '_' . DataSourcePoller::FILTER_NAME );
 	}
 
 	/**
@@ -94,7 +94,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 	 */
 	public function test_read_invalid_data_source() {
 		add_filter(
-			DataSourcePoller::FILTER_NAME,
+			PaymentGatewaySuggestionsDataSourcePoller::ID . '_' . DataSourcePoller::FILTER_NAME,
 			function() {
 				return array(
 					'bad-data-source.json',
@@ -113,7 +113,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 	 */
 	public function test_merge_specs() {
 		add_filter(
-			DataSourcePoller::FILTER_NAME,
+			PaymentGatewaySuggestionsDataSourcePoller::ID . '_' . DataSourcePoller::FILTER_NAME,
 			function() {
 				return array(
 					'payment-gateway-suggestions-data-source.json',
@@ -148,7 +148,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 		$data               = $data_source_poller->get_specs_from_data_sources();
 		$this->assertCount( 2, $data );
 		add_filter(
-			DataSourcePoller::FILTER_NAME,
+			PaymentGatewaySuggestionsDataSourcePoller::ID . '_' . DataSourcePoller::FILTER_NAME,
 			function() {
 				return array(
 					'bad-data-source.json',
@@ -161,7 +161,7 @@ class WC_Tests_PaymentGatewaySuggestions_DataSourcePoller extends WC_Unit_Test_C
 		$data               = $data_source_poller->get_specs_from_data_sources();
 		$this->assertCount( 2, $data );
 
-		$data = get_transient( PaymentGatewaySuggestionsDataSourcePoller::SPECS_TRANSIENT_NAME );
+		$data = get_transient( 'woocommerce_admin_' . PaymentGatewaySuggestionsDataSourcePoller::ID . '_specs' );
 		$this->assertCount( 2, $data );
 	}
 }

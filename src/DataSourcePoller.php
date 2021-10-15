@@ -20,6 +20,13 @@ abstract class DataSourcePoller {
 	const FILTER_NAME = 'data_source_poller_data_sources';
 
 	/**
+	 * Id of DataSourcePoller.
+	 *
+	 * @var string
+	 */
+	protected $id = array();
+
+	/**
 	 * Default data sources array.
 	 *
 	 * @var array
@@ -43,15 +50,17 @@ abstract class DataSourcePoller {
 	/**
 	 * Constructor.
 	 *
-	 * @param array $data_sources urls for data sources.
-	 * @param array $args Options for DataSourcePoller.
+	 * @param string $id id of DataSourcePoller.
+	 * @param array  $data_sources urls for data sources.
+	 * @param array  $args Options for DataSourcePoller.
 	 */
-	public function __construct( $data_sources = array(), $args = array() ) {
+	public function __construct( $id, $data_sources = array(), $args = array() ) {
 		$this->data_sources = $data_sources;
+		$this->id           = $id;
 
 		$arg_defaults = array(
 			'spec_key'         => 'id',
-			'transient_name'   => '',
+			'transient_name'   => 'woocommerce_admin_' . $id . '_specs',
 			'transient_expiry' => 7 * DAY_IN_SECONDS,
 		);
 		$this->args   = wp_parse_args( $args, $arg_defaults );
@@ -106,7 +115,8 @@ abstract class DataSourcePoller {
 	 */
 	public function read_specs_from_data_sources() {
 		$specs        = array();
-		$data_sources = apply_filters( self::FILTER_NAME, $this->data_sources );
+		$filter_id    = $this::ID . '_' . self::FILTER_NAME;
+		$data_sources = apply_filters( $filter_id, $this->data_sources );
 
 		// Note that this merges the specs from the data sources based on the
 		// id - last one wins.

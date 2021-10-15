@@ -9,7 +9,7 @@ use Automattic\WooCommerce\Admin\DataSourcePoller;
  */
 class WcPayPromotionDataSourcePoller extends DataSourcePoller {
 
-	const SPECS_TRANSIENT_NAME = 'woocommerce_admin_payment_method_promotion_specs';
+	const ID = 'payment_method_promotion';
 
 	/**
 	 * Default data sources array.
@@ -30,7 +30,7 @@ class WcPayPromotionDataSourcePoller extends DataSourcePoller {
 	 */
 	public static function get_instance() {
 		if ( ! self::$instance ) {
-			self::$instance = new self( self::DATA_SOURCES, array( 'transient_name' => self::SPECS_TRANSIENT_NAME ) );
+			self::$instance = new self( self::ID, self::DATA_SOURCES );
 		}
 		return self::$instance;
 	}
