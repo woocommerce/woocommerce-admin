@@ -6,11 +6,13 @@
  */
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 
 /**
  * Register the task.
  */
-function add_task_register_task() {
+function add_task_my_task() {
 	TaskLists::add_task(
 		'extended',
 		array(
@@ -30,13 +32,12 @@ function add_task_register_task() {
 	);
 }
 
-add_action( 'admin_init', 'add_task_register_task' );
+add_action( 'admin_init', 'add_task_my_task' );
 
 /**
  * Register the scripts to fill the task content on the frontend.
  */
 function add_task_register_script() {
-
 	if (
 		! class_exists( 'Automattic\WooCommerce\Admin\Loader' ) ||
 		! \Automattic\WooCommerce\Admin\Loader::is_admin_or_embed_page()
