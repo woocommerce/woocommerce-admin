@@ -400,7 +400,7 @@ class Init {
 	 * @return string
 	 */
 	public function get_deprecated_options( $pre_option, $option ) {
-		if ( defined( 'WC_ADMIN_INSTALLING' ) && WC_ADMIN_INSTALLING ) {
+		if ( 'yes' === get_transient( 'wc_admin_installing' ) ) {
 			return $pre_option;
 		};
 
