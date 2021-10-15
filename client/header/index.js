@@ -5,7 +5,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import { useEffect, useLayoutEffect, useRef } from '@wordpress/element';
 import classnames from 'classnames';
 import { decodeEntities } from '@wordpress/html-entities';
-import { useUserPreferences } from '@woocommerce/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { Text, useSlot } from '@woocommerce/experimental';
 
@@ -13,7 +12,6 @@ import { Text, useSlot } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import './style.scss';
-import { MobileAppBanner } from '../mobile-banner';
 import useIsScrolled from '../hooks/useIsScrolled';
 import { WooHeaderItem, WooHeaderPageTitle } from './utils';
 
@@ -24,13 +22,16 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const siteTitle = getSetting( 'siteTitle', '' );
 	const pageTitle = sections.slice( -1 )[ 0 ];
 	const isScrolled = useIsScrolled();
-	const { updateUserPreferences, ...userData } = useUserPreferences();
-	const isModalDismissed = userData.android_app_banner_dismissed === 'yes';
 	let debounceTimer = null;
 
 	const className = classnames( 'woocommerce-layout__header', {
 		'is-scrolled': isScrolled,
 	} );
+
+	const pageTitleSlot = useSlot( 'woocommerce_header_page_title' );
+	const hasPageTitleFills = Boolean( pageTitleSlot?.fills?.length );
+	const headerItemSlot = useSlot( 'woocommerce_header_item' );
+	const headerItemSlotFills = headerItemSlot?.fills;
 
 	useLayoutEffect( () => {
 		updateBodyMargin();
@@ -45,7 +46,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 
 			wpBody.style.marginTop = null;
 		};
-	}, [ isModalDismissed ] );
+	}, [ headerItemSlotFills ] );
 
 	const updateBodyMargin = () => {
 		clearTimeout( debounceTimer );
@@ -87,24 +88,8 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		}
 	}, [ isEmbedded, sections, siteTitle ] );
 
-	const dismissHandler = () => {
-		updateUserPreferences( {
-			android_app_banner_dismissed: 'yes',
-		} );
-	};
-
-	const slot = useSlot( 'woocommerce_header_page_title' );
-	const hasPageTitleFills = Boolean( slot?.fills?.length );
-
 	return (
 		<div className={ className } ref={ headerElement }>
-			{ ! isModalDismissed && (
-				<MobileAppBanner
-					onDismiss={ dismissHandler }
-					onInstall={ dismissHandler }
-				/>
-			) }
-
 			<div className="woocommerce-layout__header-wrapper">
 				<Text
 					className={ `woocommerce-layout__header-heading` }

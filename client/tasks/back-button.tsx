@@ -45,6 +45,4 @@ export const BackButton: React.FC< BackButtonProps > = ( { title } ) => {
 			</div>
 		</Tooltip>
 	);
-
-	return null;
 };
