@@ -38,7 +38,11 @@ const NavigationPlugin = () => {
 	 * respond to <Link /> component's manipulation of the url.
 	 */
 	if ( ! isWCAdmin( window.location.href ) ) {
-		return null;
+		return (
+			<WooHeaderItem>
+				<Navigation />
+			</WooHeaderItem>
+		);
 	}
 
 	const reports = getReports().filter( ( item ) => item.navArgs );
