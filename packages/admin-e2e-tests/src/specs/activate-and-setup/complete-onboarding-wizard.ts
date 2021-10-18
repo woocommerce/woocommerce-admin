@@ -352,7 +352,7 @@ const testDifferentStoreCurrenciesWCPay = () => {
 };
 
 const testSubscriptionsInclusion = () => {
-	describe( 'A non US store will not see the Subscriptions inclusion', () => {
+	describe( 'A non-US store will not see the Subscriptions inclusion', () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
 
@@ -425,7 +425,7 @@ const testSubscriptionsInclusion = () => {
 			expect( tasks ).toContain( 'Add Subscriptions to my store' );
 		} );
 
-		it( 'can select the Subscription option in "Start with a template" modal', async () => {
+		it( 'can select the Subscription option in the "Start with a template" modal', async () => {
 			const productsSetup = new ProductsSetup( page );
 			await productsSetup.navigate();
 			await productsSetup.isDisplayed();
@@ -457,7 +457,7 @@ const testSubscriptionsInclusion = () => {
 			await profileWizard.optionallySelectUsageTracking();
 		} );
 
-		it( 'can complete the product types section, Subscriptions copy not visible', async () => {
+		it( 'can complete the product types section, the Subscriptions copy now is visible', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
 			await profileWizard.industry.uncheckIndustries();
@@ -488,7 +488,7 @@ const testSubscriptionsInclusion = () => {
 			await profileWizard.continue();
 		} );
 
-		it( 'can not see the WooCommerce Payments extension after been installed', async () => {
+		it( 'can not see the WooCommerce Payments extension after it has been installed', async () => {
 			await profileWizard.business.freeFeaturesIsDisplayed();
 			await profileWizard.business.expandRecommendedBusinessFeatures();
 
@@ -507,7 +507,7 @@ const testSubscriptionsInclusion = () => {
 			expect( tasks ).not.toContain( 'Add Subscriptions to my store' );
 		} );
 
-		it( 'can select the Subscription option in "Start with a template" modal', async () => {
+		it( 'can select the Subscription option in the "Start with a template" modal', async () => {
 			const productsSetup = new ProductsSetup( page );
 			await productsSetup.navigate();
 			await productsSetup.isDisplayed();
