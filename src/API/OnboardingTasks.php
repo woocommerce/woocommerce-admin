@@ -903,7 +903,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			);
 		}
 
-		$update = $task_list->show();
+		$update = $task_list->unhide();
 		$json   = $task_list->get_json();
 
 		return rest_ensure_response( $json );
