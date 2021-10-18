@@ -43,9 +43,9 @@
 	}
 
 	.woocommerce-activity-card {
-		padding: math.div( $gap-largest, 2 ) $gutter $gutter;
+		padding: math.div($gap-largest, 2) $gutter $gutter;
 
-		&:not( :last-of-type ) {
+		&:not(:last-of-type) {
 			border-bottom: 1px solid $gray-200;
 		}
 
