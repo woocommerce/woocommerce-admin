@@ -140,11 +140,17 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		trackedCompletedTasks,
 		previewSiteBtnTrackData,
 	} = useSelect( ( select ) => {
-		const { getOption, isResolving } = select( OPTIONS_STORE_NAME );
-		const isSetupTaskListHidden =
-			getOption( 'woocommerce_task_list_hidden' ) === 'yes';
-		const isExtendedTaskListHidden =
-			getOption( 'woocommerce_extended_task_list_hidden' ) === 'yes';
+		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { getTaskLists, isResolving } = select( ONBOARDING_STORE_NAME );
+
+		const taskLists = getTaskLists();
+		const isSetupTaskListHidden = taskLists.find(
+			( list ) => list.id === 'setup' && list.isHidden
+		);
+		const isExtendedTaskListHidden = taskLists.find(
+			( list ) => list.id === 'extended' && list.isHidden
+		);
+
 		const extendedTaskList = applyFilters(
 			'woocommerce_admin_onboarding_task_list',
 			[],
@@ -166,11 +172,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 				thingsToDoCount
 			),
 			thingsToDoNextCount: thingsToDoCount,
-			requestingTaskListOptions:
-				isResolving( 'getOption', [
-					'woocommerce_task_list_complete',
-				] ) ||
-				isResolving( 'getOption', [ 'woocommerce_task_list_hidden' ] ),
+			requestingTaskListOptions: isResolving( 'getTaskLists' ),
 			setupTaskListComplete:
 				getOption( 'woocommerce_task_list_complete' ) === 'yes',
 			setupTaskListHidden: isSetupTaskListHidden,
