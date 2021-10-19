@@ -60,6 +60,7 @@ describe( 'TaskDashboard and TaskList', () => {
 			updateOptions,
 			createNotice,
 			installAndActivatePlugins: jest.fn(),
+			invalidateResolutionForStoreSelector: jest.fn(),
 		} ) );
 		Object.defineProperty( global.HTMLElement.prototype, 'clientHeight', {
 			configurable: true,
