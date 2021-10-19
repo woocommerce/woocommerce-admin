@@ -1,5 +1,5 @@
 const ProductsHeader = ( task ) => {
-	return <div>{ task.key } Header</div>;
+	return <div>{ task.id } Header</div>;
 };
 
 export default ProductsHeader;
