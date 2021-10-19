@@ -27,6 +27,13 @@ class TaskLists {
 	protected static $lists = array();
 
 	/**
+	 * Boolean value to indicate if default tasks have been added.
+	 *
+	 * @var boolean
+	 */
+	protected static $default_tasks_loaded = false;
+
+	/**
 	 * Array of default tasks.
 	 *
 	 * @var array
@@ -57,8 +64,8 @@ class TaskLists {
 	 * Initialize the task lists.
 	 */
 	public static function init() {
+		self::init_default_lists();
 		add_action( 'admin_init', array( __CLASS__, 'set_active_task' ), 5 );
-		add_action( 'admin_init', array( __CLASS__, 'init_default_lists' ) );
 		add_action( 'admin_init', array( __CLASS__, 'init_tasks' ) );
 	}
 
@@ -72,10 +79,21 @@ class TaskLists {
 				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
 			)
 		);
+
 		self::add_list(
 			array(
-				'id'    => 'extended',
-				'title' => __( 'Things to do next', 'woocommerce-admin' ),
+				'id'      => 'extended',
+				'title'   => __( 'Things to do next', 'woocommerce-admin' ),
+				'sort_by' => array(
+					array(
+						'key'   => 'is_complete',
+						'order' => 'asc',
+					),
+					array(
+						'key'   => 'level',
+						'order' => 'asc',
+					),
+				),
 			)
 		);
 	}
@@ -91,6 +109,7 @@ class TaskLists {
 			}
 			$class::init();
 		}
+		self::$default_tasks_loaded = true;
 	}
 
 	/**
@@ -152,35 +171,11 @@ class TaskLists {
 	 * Add default task lists.
 	 */
 	public static function maybe_add_default_tasks() {
-		$added = ! empty( self::$lists['setup']->tasks );
-
-		if ( ! apply_filters( 'woocommerce_admin_onboarding_tasks_add_default_tasks', ! $added ) ) {
+		if ( ! apply_filters( 'woocommerce_admin_onboarding_tasks_add_default_tasks', ! self::$default_tasks_loaded ) ) {
 			return;
 		}
 
-		self::add_list(
-			array(
-				'id'    => 'setup',
-				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
-			)
-		);
-
-		self::add_list(
-			array(
-				'id'      => 'extended',
-				'title'   => __( 'Things to do next', 'woocommerce-admin' ),
-				'sort_by' => array(
-					array(
-						'key'   => 'is_complete',
-						'order' => 'asc',
-					),
-					array(
-						'key'   => 'level',
-						'order' => 'asc',
-					),
-				),
-			)
-		);
+		self::$default_tasks_loaded = true;
 
 		foreach ( self::DEFAULT_TASKS as $task ) {
 			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task;
