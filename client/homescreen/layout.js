@@ -326,8 +326,9 @@ export default compose(
 				( list ) => list.id === 'setup' && list.isHidden
 			),
 			hasTaskList: taskLists.find( ( list ) => list.isVisible ),
-			taskListComplete:
-				getOption( 'woocommerce_task_list_complete' ) === 'yes',
+			taskListComplete: taskLists.find(
+				( list ) => list.id === 'setup' && list.isComplete
+			),
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {

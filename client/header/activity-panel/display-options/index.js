@@ -64,8 +64,9 @@ export const DisplayOptions = () => {
 			defaultHomescreenLayout:
 				getOption( 'woocommerce_default_homepage_layout' ) ||
 				'single_column',
-			taskListComplete:
-				getOption( 'woocommerce_task_list_complete' ) === 'yes',
+			taskListComplete: taskLists.find(
+				( list ) => list.id === 'setup' && list.isComplete
+			),
 			isTaskListHidden: taskLists.find(
 				( list ) => list.id === 'setup' && list.isHidden
 			),

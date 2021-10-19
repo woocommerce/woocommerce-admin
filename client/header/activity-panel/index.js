@@ -173,8 +173,9 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			),
 			thingsToDoNextCount: thingsToDoCount,
 			requestingTaskListOptions: isResolving( 'getTaskLists' ),
-			setupTaskListComplete:
-				getOption( 'woocommerce_task_list_complete' ) === 'yes',
+			setupTaskListComplete: taskLists.find(
+				( list ) => list.id === 'setup' && list.isComplete
+			),
 			setupTaskListHidden: isSetupTaskListHidden,
 			trackedCompletedTasks:
 				getOption( 'woocommerce_task_list_tracked_completed_tasks' ) ||
