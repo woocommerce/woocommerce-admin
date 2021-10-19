@@ -11,30 +11,24 @@ import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { List, TaskItem } from '@woocommerce/experimental';
 import classnames from 'classnames';
-
 /**
  * Internal dependencies
  */
-import '../task-list/task-list.scss';
+import '../tasks/task-list.scss';
 import taskHeaders from './task-headers';
-
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const TaskList = ( {
 	query,
 	name,
 	eventName,
-	isComplete,
-	dismissedTasks,
-	remindMeLaterTasks,
 	tasks,
-	trackedCompletedTasks: totalTrackedCompletedTasks,
-	onComplete,
 	onHide,
 	twoColumns,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { updateOptions, dismissTask, undoDismissTask } = useDispatch(
+		OPTIONS_STORE_NAME
+	);
 	const { profileItems } = useSelect( ( select ) => {
 		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
 		return {
@@ -43,7 +37,7 @@ export const TaskList = ( {
 	} );
 
 	const [ headerContent, setHeaderContent ] = useState( '' );
-	const [ activeTaskKey, setActiveTaskKey ] = useState( '' );
+	const [ activeTaskId, setActiveTaskId ] = useState( '' );
 
 	const prevQueryRef = useRef( query );
 	useEffect( () => {
@@ -58,19 +52,13 @@ export const TaskList = ( {
 			window.document.documentElement.scrollTop = 0;
 			prevQueryRef.current = query;
 		}
-
-		possiblyCompleteTaskList();
-		possiblyTrackCompletedTasks();
 	}, [ query ] );
 
 	const nowTimestamp = Date.now();
 	const visibleTasks = tasks.filter(
 		( task ) =>
-			task.isVisible &&
-			task.id !== 'store_details' &&
-			! dismissedTasks.includes( task.id ) &&
-			( ! remindMeLaterTasks[ task.id ] ||
-				remindMeLaterTasks[ task.id ] < nowTimestamp )
+			! task.isDismissed &&
+			( ! task.isSnoozed || task.snoozedUntil < nowTimestamp )
 	);
 
 	const completedTaskKeys = visibleTasks
@@ -78,148 +66,23 @@ export const TaskList = ( {
 		.map( ( task ) => task.id );
 
 	const incompleteTasks = tasks.filter(
-		( task ) =>
-			task.isVisible &&
-			! task.isComplete &&
-			! dismissedTasks.includes( task.id )
+		( task ) => ! task.isComplete && ! task.isDismissed
 	);
 
-	const possiblyCompleteTaskList = () => {
-		const taskListVariableName = `woocommerce_${ name }_complete`;
-		const taskListToComplete = isComplete
-			? { [ taskListVariableName ]: 'no' }
-			: { [ taskListVariableName ]: 'yes' };
-
-		if (
-			( ! incompleteTasks.length && ! isComplete ) ||
-			( incompleteTasks.length && isComplete )
-		) {
-			updateOptions( {
-				...taskListToComplete,
-			} );
-
-			if ( typeof onComplete === 'function' ) {
-				onComplete();
-			}
-		}
-	};
-
-	const getTrackedIncompletedTasks = (
-		partialCompletedTasks,
-		allTrackedTask
-	) => {
-		return visibleTasks
-			.filter(
-				( task ) =>
-					allTrackedTask.includes( task.id ) &&
-					! partialCompletedTasks.includes( task.id )
-			)
-			.map( ( task ) => task.id );
-	};
-
-	const possiblyTrackCompletedTasks = () => {
-		const trackedCompletedTasks = getTrackedCompletedTasks(
-			completedTaskKeys,
-			totalTrackedCompletedTasks
-		);
-
-		const trackedIncompleteTasks = getTrackedIncompletedTasks(
-			trackedCompletedTasks,
-			totalTrackedCompletedTasks
-		);
-
-		if (
-			shouldUpdateCompletedTasks(
-				trackedCompletedTasks,
-				trackedIncompleteTasks,
-				completedTaskKeys
-			)
-		) {
-			updateOptions( {
-				woocommerce_task_list_tracked_completed_tasks: getTasksForUpdate(
-					completedTaskKeys,
-					totalTrackedCompletedTasks,
-					trackedIncompleteTasks
-				),
-			} );
-		}
-	};
-
-	const dismissTask = ( { key, onDismiss } ) => {
+	const onDismissTask = ( { id, onDismiss } ) => {
+		dismissTask( id );
 		createNotice( 'success', __( 'Task dismissed' ), {
 			actions: [
 				{
 					label: __( 'Undo', 'woocommerce-admin' ),
-					onClick: () => undoDismissTask( key ),
+					onClick: () => undoDismissTask( id ),
 				},
 			],
 		} );
 
-		recordEvent( `${ eventName }_dismiss_task`, { task_name: key } );
-
-		updateOptions( {
-			woocommerce_task_list_dismissed_tasks: [ ...dismissedTasks, key ],
-		} );
 		if ( onDismiss ) {
 			onDismiss();
 		}
-	};
-
-	const undoDismissTask = ( key ) => {
-		const updatedDismissedTasks = dismissedTasks.filter(
-			( task ) => task !== key
-		);
-
-		updateOptions( {
-			woocommerce_task_list_dismissed_tasks: updatedDismissedTasks,
-		} );
-		recordEvent( `${ eventName }_undo_dismiss_task`, {
-			task_name: key,
-		} );
-	};
-
-	const remindTaskLater = ( { key, onDismiss } ) => {
-		createNotice(
-			'success',
-			__( 'Task postponed until tomorrow', 'woocommerce-admin' ),
-			{
-				actions: [
-					{
-						label: __( 'Undo', 'woocommerce-admin' ),
-						onClick: () => undoRemindTaskLater( key ),
-					},
-				],
-			}
-		);
-		recordEvent( `${ eventName }_remindmelater_task`, {
-			task_name: key,
-		} );
-
-		const dismissTime = Date.now() + DAY_IN_MS;
-		updateOptions( {
-			woocommerce_task_list_remind_me_later_tasks: {
-				...remindMeLaterTasks,
-				[ key ]: dismissTime,
-			},
-		} );
-		if ( onDismiss ) {
-			onDismiss();
-		}
-	};
-
-	const undoRemindTaskLater = ( key ) => {
-		const {
-			// eslint-disable-next-line no-unused-vars
-			[ key ]: oldValue,
-			...updatedRemindMeLaterTasks
-		} = remindMeLaterTasks;
-
-		updateOptions( {
-			woocommerce_task_list_remind_me_later_tasks: updatedRemindMeLaterTasks,
-		} );
-		recordEvent( `${ eventName }_undo_remindmelater_task`, {
-			task_name: key,
-		} );
 	};
 
 	const recordTaskListView = () => {
@@ -271,38 +134,27 @@ export const TaskList = ( {
 		);
 	};
 
-	const listTasks = visibleTasks.map( ( task ) => {
-		if ( ! task.onClick ) {
-			task.onClick = ( e ) => {
-				recordEvent( `${ eventName }_click`, {
-					task_name: task.id,
-				} );
-				if ( e.target.nodeName === 'A' ) {
-					// This is a nested link, so don't activate this task.
-					return false;
-				}
-
-				updateQueryString( { task: task.id } );
-			};
-		}
-
-		return task;
-	} );
-
-	const onTaskSelected = ( task ) => {
-		if ( taskHeaders[ task.id ] ) {
-			setHeaderContent( taskHeaders[ task.id ]( task ) );
-			setActiveTaskKey( task.id );
-		}
-	};
-
-	let selectedHeaderCard = listTasks.find(
+	let selectedHeaderCard = visibleTasks.find(
 		( listTask ) => listTask.isComplete === false
 	);
 
 	if ( ! selectedHeaderCard ) {
-		selectedHeaderCard = listTasks[ 0 ];
+		selectedHeaderCard = visibleTasks[ 0 ];
 	}
+
+	const onTaskSelected = ( task ) => {
+		if ( task !== selectedHeaderCard ) {
+			recordEvent( `${ eventName }_click`, {
+				task_name: task.id,
+			} );
+
+			updateQueryString( { task: task.id } );
+		}
+		if ( taskHeaders[ task.id ] ) {
+			setHeaderContent( taskHeaders[ task.id ]( task ) );
+			setActiveTaskId( task.id );
+		}
+	};
 
 	useEffect( () => {
 		if ( selectedHeaderCard ) {
@@ -310,7 +162,7 @@ export const TaskList = ( {
 		}
 	}, [ selectedHeaderCard ] );
 
-	if ( ! listTasks.length ) {
+	if ( ! visibleTasks.length ) {
 		return <div className="woocommerce-task-dashboard__container"></div>;
 	}
 
@@ -333,13 +185,13 @@ export const TaskList = ( {
 						{ renderMenu() }
 					</CardHeader>
 					<List animation="custom">
-						{ listTasks.map( ( task, index ) => {
+						{ visibleTasks.map( ( task, index ) => {
 							++index;
 							const className = classnames(
 								'woocommerce-task-list__item index-' + index,
 								{
 									complete: task.isComplete,
-									'is-active': task.id === activeTaskKey,
+									'is-active': task.id === activeTaskId,
 								}
 							);
 							return (
@@ -354,12 +206,7 @@ export const TaskList = ( {
 									} }
 									onDismiss={
 										task.isDismissable
-											? () => dismissTask( task.id )
-											: undefined
-									}
-									remindMeLater={
-										task.allowRemindMeLater
-											? () => remindTaskLater( task )
+											? () => onDismissTask( task.id )
 											: undefined
 									}
 									action={ task.action }
@@ -375,39 +222,5 @@ export const TaskList = ( {
 		</>
 	);
 };
-
-function shouldUpdateCompletedTasks( tasks, untrackedTasks, completedTasks ) {
-	if ( untrackedTasks.length > 0 ) {
-		return true;
-	}
-	if ( completedTasks.length === 0 ) {
-		return false;
-	}
-	return ! completedTasks.every(
-		( taskName ) => tasks.indexOf( taskName ) >= 0
-	);
-}
-
-function getTrackedCompletedTasks( completedTasks, trackedTasks ) {
-	if ( ! trackedTasks ) {
-		return [];
-	}
-	return completedTasks.filter( ( taskName ) =>
-		trackedTasks.includes( taskName )
-	);
-}
-
-function getTasksForUpdate(
-	completedTaskKeys,
-	totalTrackedCompletedTasks,
-	trackedIncompleteTasks
-) {
-	const mergedLists = [
-		...new Set( [ ...completedTaskKeys, ...totalTrackedCompletedTasks ] ),
-	];
-	return mergedLists.filter(
-		( taskName ) => ! trackedIncompleteTasks.includes( taskName )
-	);
-}
 
 export default TaskList;
