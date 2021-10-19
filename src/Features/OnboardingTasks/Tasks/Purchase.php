@@ -4,11 +4,34 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\PluginsHelper;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**
  * Purchase Task
  */
 class Purchase {
+	/**
+	 * Initialize.
+	 */
+	public static function init() {
+		add_action( 'update_option_woocommerce_onboarding_profile', array( __CLASS__, 'clear_dismissal' ), 10, 2 );
+	}
+
+	/**
+	 * Clear dismissal on onboarding product type changes.
+	 *
+	 * @param array $old_value Old value.
+	 * @param array $new_value New value.
+	 */
+	public static function clear_dismissal( $old_value, $new_value ) {
+		if ( empty( array_diff( (array) $new_value['product_types'], (array) $old_value['product_types'] ) ) ) {
+			return;
+		}
+
+		$task = new Task( self::get_task() );
+		$task->undo_dismiss();
+	}
+
 	/**
 	 * Get the task arguments.
 	 *

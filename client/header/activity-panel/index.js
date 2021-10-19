@@ -20,7 +20,6 @@ import {
 } from '@woocommerce/data';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
-import { applyFilters } from '@wordpress/hooks';
 import { useSlot } from '@woocommerce/experimental';
 
 /**
@@ -85,19 +84,17 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		return trackData;
 	};
 
-	function getThingsToDoNextCount(
-		tasks,
-		dismissedTasks,
-		isExtendedTaskListHidden
-	) {
-		if ( ! tasks || isExtendedTaskListHidden ) {
+	function getThingsToDoNextCount( extendedTaskList ) {
+		if (
+			! extendedTaskList ||
+			! extendedTaskList.tasks.length ||
+			extendedTaskList.isHidden
+		) {
 			return 0;
 		}
-		return tasks.filter(
+		return extendedTaskList.tasks.filter(
 			( task ) =>
-				task.visible &&
-				! task.completed &&
-				! dismissedTasks.includes( task.key )
+				task.isVisible && ! task.isComplete && ! task.isDismissed
 		).length;
 	}
 
@@ -147,22 +144,11 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		const isSetupTaskListHidden = taskLists.find(
 			( list ) => list.id === 'setup' && list.isHidden
 		);
-		const isExtendedTaskListHidden = taskLists.find(
-			( list ) => list.id === 'extended' && list.isHidden
+		const extendedTaskList = taskLists.find(
+			( list ) => list.id === 'extended'
 		);
 
-		const extendedTaskList = applyFilters(
-			'woocommerce_admin_onboarding_task_list',
-			[],
-			query
-		);
-		const dismissedTasks =
-			getOption( 'woocommerce_task_list_dismissed_tasks' ) || [];
-		const thingsToDoCount = getThingsToDoNextCount(
-			extendedTaskList,
-			dismissedTasks,
-			isExtendedTaskListHidden
-		);
+		const thingsToDoCount = getThingsToDoNextCount( extendedTaskList );
 
 		return {
 			hasUnreadNotes: isNotesPanelVisible( select ),
