@@ -130,11 +130,11 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 	const {
 		hasUnreadNotes,
 		hasAbbreviatedNotifications,
+		isCompletedTask,
 		thingsToDoNextCount,
 		requestingTaskListOptions,
 		setupTaskListComplete,
 		setupTaskListHidden,
-		trackedCompletedTasks,
 		previewSiteBtnTrackData,
 	} = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
@@ -163,9 +163,18 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 				( list ) => list.id === 'setup' && list.isComplete
 			),
 			setupTaskListHidden: isSetupTaskListHidden,
-			trackedCompletedTasks:
-				getOption( 'woocommerce_task_list_tracked_completed_tasks' ) ||
-				[],
+			isCompletedTask: Boolean(
+				query.task &&
+					taskLists.reduce( ( value, list ) => {
+						return (
+							value ||
+							list.tasks.find(
+								( task ) =>
+									task.id === query.task && task.isComplete
+							)
+						);
+					}, false )
+			),
 			previewSiteBtnTrackData: getPreviewSiteBtnTrackData(
 				select,
 				getOption
@@ -352,7 +361,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			task &&
 			highlightShown !== 'yes' &&
 			( startedTasks || {} )[ task ] > 1 &&
-			! trackedCompletedTasks.includes( task )
+			! isCompletedTask
 		) {
 			return true;
 		}
