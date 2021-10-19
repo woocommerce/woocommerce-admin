@@ -93,8 +93,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			return 0;
 		}
 		return extendedTaskList.tasks.filter(
-			( task ) =>
-				task.isVisible && ! task.isComplete && ! task.isDismissed
+			( task ) => task.canView && ! task.isComplete && ! task.isDismissed
 		).length;
 	}
 

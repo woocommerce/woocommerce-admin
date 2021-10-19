@@ -132,7 +132,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/(?P<id>[a-z0-9_\-]+)/hide',
+			'/' . $this->rest_base . '/(?P<id>[a-z0-9_\-]+)/unhide',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
