@@ -185,7 +185,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			),
 		};
 	} );
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { unhideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
 	const { currentUserCan } = useUser();
 
 	const togglePanel = ( { name: tabName }, isTabOpen ) => {
@@ -267,9 +267,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 					if ( setupTaskListHidden === 'no' ) {
 						redirectToHomeScreen();
 					} else {
-						updateOptions( {
-							woocommerce_task_list_hidden: 'no',
-						} ).then( redirectToHomeScreen );
+						unhideTaskList( 'setup' ).then( redirectToHomeScreen );
 					}
 				}
 

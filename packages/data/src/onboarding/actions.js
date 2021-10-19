@@ -383,7 +383,7 @@ export function* unhideTaskList( id ) {
 
 	try {
 		const taskList = yield apiFetch( {
-			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/hide`,
+			path: `${ WC_ADMIN_NAMESPACE }/onboarding/tasks/${ id }/unhide`,
 			method: 'POST',
 		} );
 
