@@ -97,11 +97,11 @@ export const TaskList = ( {
 		} );
 	};
 
-	const hideTaskCard = () => {
+	const hideTasks = () => {
 		hideTaskList( taskListId );
 	};
 
-	const keepTaskCard = () => {
+	const keepTasks = () => {
 		const updateOptionsParams = {
 			woocommerce_task_list_keep_completed: 'yes',
 		};
@@ -124,7 +124,7 @@ export const TaskList = ( {
 										setShowDismissModal( true );
 										onToggle();
 									} else {
-										hideTaskCard( 'remove_card' );
+										hideTasks( 'remove_card' );
 									}
 								} }
 							>
@@ -173,8 +173,8 @@ export const TaskList = ( {
 		return (
 			<>
 				<TaskListCompleted
-					hideTaskCard={ hideTaskCard }
-					keepTaskCard={ keepTaskCard }
+					hideTasks={ hideTasks }
+					keepTasks={ keepTasks }
 				/>
 			</>
 		);
@@ -186,7 +186,7 @@ export const TaskList = ( {
 				<DismissModal
 					showDismissModal={ showDismissModal }
 					setShowDismissModal={ setShowDismissModal }
-					hideTaskCard={ hideTaskCard }
+					hideTasks={ hideTasks }
 				/>
 			) }
 			<div

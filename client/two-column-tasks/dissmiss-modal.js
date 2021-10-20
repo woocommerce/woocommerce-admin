@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
 const DissmissModal = ( {
 	showDismissModal,
 	setShowDismissModal,
-	hideTaskCard,
+	hideTasks,
 } ) => {
 	const closeModal = () => setShowDismissModal( false );
 	const title = __( 'Hide store setup tasks', 'woocommerce-admin' );
@@ -41,7 +41,7 @@ const DissmissModal = ( {
 							<Button
 								isPrimary
 								onClick={ () => {
-									hideTaskCard( 'remove_card' );
+									hideTasks( 'remove_card' );
 									setShowDismissModal( false );
 								} }
 							>
