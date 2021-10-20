@@ -65,6 +65,7 @@ class TaskLists {
 	 */
 	public static function init() {
 		self::init_default_lists();
+		add_action( 'init', array( __CLASS__, 'maybe_add_default_tasks' ) );
 		add_action( 'admin_init', array( __CLASS__, 'set_active_task' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'init_tasks' ) );
 	}
@@ -109,7 +110,6 @@ class TaskLists {
 			}
 			$class::init();
 		}
-		self::$default_tasks_loaded = true;
 	}
 
 	/**
