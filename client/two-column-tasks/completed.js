@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import '../task-list/task-list.scss';
+import '../tasks/task-list.scss';
 import HeaderImage from './completed.svg';
 
 export const TaskListCompleted = ( {

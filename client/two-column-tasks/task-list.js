@@ -11,6 +11,7 @@ import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { List, TaskItem } from '@woocommerce/experimental';
 import classnames from 'classnames';
+
 /**
  * Internal dependencies
  */
@@ -21,12 +22,12 @@ import TaskListCompleted from './completed';
 
 export const TaskList = ( {
 	query,
-	name,
+	taskListId,
 	eventName,
 	tasks,
-	onHide,
 	twoColumns,
 	keepCompletedTaskList,
+	isComplete,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions, dismissTask, undoDismissTask } = useDispatch(
@@ -38,7 +39,7 @@ export const TaskList = ( {
 			profileItems: getProfileItems(),
 		};
 	} );
-
+	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
 	const [ headerContent, setHeaderContent ] = useState( '' );
 	const [ activeTaskId, setActiveTaskId ] = useState( '' );
 	const [ showDismissModal, setShowDismissModal ] = useState( false );
@@ -64,10 +65,6 @@ export const TaskList = ( {
 			! task.isDismissed &&
 			( ! task.isSnoozed || task.snoozedUntil < nowTimestamp )
 	);
-
-	const completedTaskKeys = visibleTasks
-		.filter( ( task ) => task.isComplete )
-		.map( ( task ) => task.id );
 
 	const incompleteTasks = tasks.filter(
 		( task ) => ! task.isComplete && ! task.isDismissed
@@ -100,23 +97,8 @@ export const TaskList = ( {
 		} );
 	};
 
-	const hideTaskCard = ( action ) => {
-		const updateOptionsParams = {
-			[ `woocommerce_${ name }_hidden` ]: 'yes',
-		};
-		recordEvent( `${ eventName }_completed`, {
-			action,
-			completed_task_count: completedTaskKeys.length,
-			incomplete_task_count: incompleteTasks.length,
-		} );
-
-		updateOptions( {
-			...updateOptionsParams,
-		} );
-
-		if ( typeof onHide === 'function' ) {
-			onHide();
-		}
+	const hideTaskCard = () => {
+		hideTaskList( taskListId );
 	};
 
 	const keepTaskCard = () => {

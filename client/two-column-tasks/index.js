@@ -15,8 +15,25 @@ import TaskList from './task-list';
 import TaskListPlaceholder from './placeholder';
 import { Task } from '../tasks/task';
 
+const taskDashboardSelect = ( select ) => {
+	const { getOption, hasFinishedResolution } = select( OPTIONS_STORE_NAME );
+
+	return {
+		keepCompletedTaskList: getOption(
+			'woocommerce_task_list_keep_completed'
+		),
+		isResolving: ! hasFinishedResolution( 'getOption', [
+			'woocommerce_task_list_keep_completed',
+		] ),
+	};
+};
+
 const TaskDashboard = ( { query, twoColumns } ) => {
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const {
+		keepCompletedTaskList,
+		isResolving: isResolvingOptions,
+	} = useSelect( taskDashboardSelect );
 
 	useEffect( () => {
 		document.body.classList.add( 'woocommerce-onboarding' );
@@ -59,15 +76,19 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 		return null;
 	}
 
-	if ( isResolving ) {
+	if ( isResolving || isResolvingOptions ) {
 		return <TaskListPlaceholder />;
 	}
 
 	const isSetupTaskListHidden = taskLists[ 0 ].isHidden;
-	const isTaskListComplete = taskLists[ 0 ].isComplete;
 	const setupTasks = taskLists[ 0 ].tasks.filter(
 		( setupTask ) => setupTask.id !== 'store_details'
 	);
+	const completedTasks = setupTasks.filter(
+		( setupTask ) => setupTask.isComplete
+	);
+	const isTaskListComplete = setupTasks.length === completedTasks.length;
+
 	const dismissedTasks = setupTasks.filter(
 		( setupTask ) => setupTask.isDismissed
 	);
@@ -80,13 +101,18 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 		);
 	}
 
+	if ( ! taskLists[ 0 ].isVisible ) {
+		return null;
+	}
+
 	return (
 		<>
 			{ setupTasks && ( ! isSetupTaskListHidden || task ) && (
 				<TaskList
-					name="task_list"
+					taskListId={ taskLists[ 0 ].id }
 					eventName="tasklist"
 					twoColumns={ twoColumns }
+					keepCompletedTaskList={ keepCompletedTaskList }
 					dismissedTasks={ dismissedTasks || [] }
 					isComplete={ isTaskListComplete }
 					query={ query }
