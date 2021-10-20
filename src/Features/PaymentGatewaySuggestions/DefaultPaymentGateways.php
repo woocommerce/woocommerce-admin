@@ -217,7 +217,7 @@ class DefaultPaymentGateways {
 				),
 				'image'                   => plugins_url( 'images/onboarding/wcpay.svg', WC_ADMIN_PLUGIN_FILE ),
 				'plugins'                 => array( 'woocommerce-payments' ),
-				'description'             => 'Try the new way to get paid. Securely accept credit and debit cards on your site. Manage transactions without leaving your WordPress dashboard. Only with WooCommerce Payments.',
+				'description'             => 'With WooCommerce Payments, you can securely accept major cards, Apple Pay, and payments in over 100 currencies – with no setup costs or monthly fees – and you can now accept in-person payments with the Woo mobile app.',
 				'is_visible'              => array(
 					self::get_rules_for_cbd( false ),
 					self::get_rules_for_countries( self::get_wcpay_countries() ),
