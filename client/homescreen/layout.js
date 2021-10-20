@@ -108,18 +108,19 @@ export const Layout = ( {
 			<>
 				<Column shouldStick={ shouldStickColumns }>
 					{ ! isRunningTwoColumnExperiment && (
-							<ActivityHeader
-								className="your-store-today"
-								title={ __(
-									'Your store today',
-									'woocommerce-admin'
-								) }
-								subtitle={ __(
-									"To do's, tips, and insights for your business",
-									'woocommerce-admin'
-								) }
-							/>
-						) && <ActivityPanel /> }
+						<ActivityHeader
+							className="your-store-today"
+							title={ __(
+								'Your store today',
+								'woocommerce-admin'
+							) }
+							subtitle={ __(
+								"To do's, tips, and insights for your business",
+								'woocommerce-admin'
+							) }
+						/>
+					) }
+					{ ! isRunningTwoColumnExperiment && <ActivityPanel /> }
 					{ isTaskListEnabled && renderTaskList() }
 					<InboxPanel />
 				</Column>
