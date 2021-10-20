@@ -2,6 +2,10 @@
 -   Add `autoComplete` prop to the `SelectControl` component. #7497
 -   Fix calendar not being dismissed when clicking outside. #7714
 
+# 8.1.1
+
+- Fixed warnings when using AdvancedFilters component. #7704
+
 # 8.1.0
 
 -   Fix a bug in the deprecated callback handlers of Form component. #7356
