@@ -25,7 +25,7 @@ import sanitizeHTML from '~/lib/sanitize-html';
 import { setAllPropsToValue } from '~/lib/collections';
 import { getCountryCode } from '../../../../../../dashboard/utils';
 
-const ALLOWED_PLUGIN_LISTS = [ 'basics', 'grow' ];
+const ALLOWED_PLUGIN_LISTS = [ 'obw/basics', 'obw/grow' ];
 
 const FreeBadge = () => {
 	return (
