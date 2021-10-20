@@ -11,19 +11,23 @@ import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { List, TaskItem } from '@woocommerce/experimental';
 import classnames from 'classnames';
+
 /**
  * Internal dependencies
  */
 import '../tasks/task-list.scss';
 import taskHeaders from './task-headers';
+import DismissModal from './dissmiss-modal';
+import TaskListCompleted from './completed';
 
 export const TaskList = ( {
 	query,
-	name,
+	taskListId,
 	eventName,
 	tasks,
-	onHide,
 	twoColumns,
+	keepCompletedTaskList,
+	isComplete,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions, dismissTask, undoDismissTask } = useDispatch(
@@ -35,9 +39,10 @@ export const TaskList = ( {
 			profileItems: getProfileItems(),
 		};
 	} );
-
+	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
 	const [ headerContent, setHeaderContent ] = useState( '' );
 	const [ activeTaskId, setActiveTaskId ] = useState( '' );
+	const [ showDismissModal, setShowDismissModal ] = useState( false );
 
 	const prevQueryRef = useRef( query );
 	useEffect( () => {
@@ -60,10 +65,6 @@ export const TaskList = ( {
 			! task.isDismissed &&
 			( ! task.isSnoozed || task.snoozedUntil < nowTimestamp )
 	);
-
-	const completedTaskKeys = visibleTasks
-		.filter( ( task ) => task.isComplete )
-		.map( ( task ) => task.id );
 
 	const incompleteTasks = tasks.filter(
 		( task ) => ! task.isComplete && ! task.isDismissed
@@ -96,23 +97,18 @@ export const TaskList = ( {
 		} );
 	};
 
-	const hideTaskCard = ( action ) => {
+	const hideTasks = () => {
+		hideTaskList( taskListId );
+	};
+
+	const keepTasks = () => {
 		const updateOptionsParams = {
-			[ `woocommerce_${ name }_hidden` ]: 'yes',
+			woocommerce_task_list_keep_completed: 'yes',
 		};
 
-		recordEvent( `${ eventName }_completed`, {
-			action,
-			completed_task_count: completedTaskKeys.length,
-			incomplete_task_count: incompleteTasks.length,
-		} );
 		updateOptions( {
 			...updateOptionsParams,
 		} );
-
-		if ( typeof onHide === 'function' ) {
-			onHide();
-		}
 	};
 
 	const renderMenu = () => {
@@ -120,10 +116,17 @@ export const TaskList = ( {
 			<div className="woocommerce-card__menu woocommerce-card__header-item">
 				<EllipsisMenu
 					label={ __( 'Task List Options', 'woocommerce-admin' ) }
-					renderContent={ () => (
+					renderContent={ ( { onToggle } ) => (
 						<div className="woocommerce-task-card__section-controls">
 							<Button
-								onClick={ () => hideTaskCard( 'remove_card' ) }
+								onClick={ () => {
+									if ( incompleteTasks.length > 0 ) {
+										setShowDismissModal( true );
+										onToggle();
+									} else {
+										hideTasks( 'remove_card' );
+									}
+								} }
 							>
 								{ __( 'Hide this', 'woocommerce-admin' ) }
 							</Button>
@@ -166,8 +169,26 @@ export const TaskList = ( {
 		return <div className="woocommerce-task-dashboard__container"></div>;
 	}
 
+	if ( isComplete && ! keepCompletedTaskList ) {
+		return (
+			<>
+				<TaskListCompleted
+					hideTasks={ hideTasks }
+					keepTasks={ keepTasks }
+				/>
+			</>
+		);
+	}
+
 	return (
 		<>
+			{ showDismissModal && (
+				<DismissModal
+					showDismissModal={ showDismissModal }
+					setShowDismissModal={ setShowDismissModal }
+					hideTasks={ hideTasks }
+				/>
+			) }
 			<div
 				className={ classnames(
 					'woocommerce-task-dashboard__container two-column-experiment',
