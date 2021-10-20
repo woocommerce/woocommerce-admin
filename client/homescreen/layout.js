@@ -148,14 +148,6 @@ export const Layout = ( {
 			);
 		}
 
-		if ( window.wcAdminFeatures && window.wcAdminFeatures.tasks ) {
-			return (
-				<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
-					<Tasks query={ query } />
-				</Suspense>
-			);
-		}
-
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
 				<Tasks query={ query } />
