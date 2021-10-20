@@ -1,4 +1,8 @@
 .woocommerce-task-dashboard__container {
+	.woocommerce-homescreen-card {
+		max-width: none;
+		width: 100%;
+	}
 	.woocommerce-task-card.is-loading {
 		.woocommerce-card__body {
 			border-top: 1px solid $studio-gray-5;
