@@ -3,7 +3,6 @@
  */
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -11,12 +10,7 @@ import { updateQueryString } from '@woocommerce/navigation';
 import TimerImage from './timer.svg';
 import AddProductsImage from './illustrations/add_products.svg';
 
-const ProductsHeader = ( task, trackCta ) => {
-	const onClick = () => {
-		updateQueryString( { task: 'products' } );
-		trackCta( 'products' );
-	};
-
+const ProductsHeader = ( task, onClickCta ) => {
 	return (
 		<div
 			className="woocommerce-task-header__contents-container header-product"
@@ -33,7 +27,7 @@ const ProductsHeader = ( task, trackCta ) => {
 						'Add your first products and see them shine on your store! You can add your products manually or import them.'
 					) }
 				</p>
-				<Button isPrimary onClick={ onClick }>
+				<Button isPrimary onClick={ onClickCta }>
 					{ __( 'Add products', 'woocommerce-admin' ) }
 				</Button>
 				<p className="woocommerce-task-header__timer">

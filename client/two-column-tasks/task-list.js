@@ -145,22 +145,20 @@ export const TaskList = ( {
 		selectedHeaderCard = visibleTasks[ 0 ];
 	}
 
-	const trackCta = ( taskName ) => {
-		recordEvent( 'tasklist_click', {
-			task_name: taskName,
-		} );
-	};
-
 	const onTaskSelected = ( task ) => {
-		if ( task !== selectedHeaderCard ) {
-			recordEvent( `${ eventName }_click`, {
-				task_name: task.id,
-			} );
-
-			updateQueryString( { task: task.id } );
-		}
 		if ( taskHeaders[ task.id ] ) {
-			setHeaderContent( taskHeaders[ task.id ]( task, trackCta ) );
+			const onClickCta = () => {
+				if ( task !== selectedHeaderCard ) {
+					recordEvent( `${ eventName }_click`, {
+						task_name: task.id,
+					} );
+
+					updateQueryString( { task: task.id } );
+				}
+			};
+
+			const taskComponent = taskHeaders[ task.id ]( task, onClickCta );
+			setHeaderContent( taskComponent );
 			setActiveTaskId( task.id );
 		}
 	};

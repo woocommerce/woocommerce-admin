@@ -3,7 +3,6 @@
  */
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { updateQueryString } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -11,12 +10,7 @@ import { updateQueryString } from '@woocommerce/navigation';
 import TimerImage from './timer.svg';
 import AddProductsImage from './illustrations/add_products.svg';
 
-const PaymentsHeader = ( task, trackCta ) => {
-	const onClick = () => {
-		updateQueryString( { task: 'products' } );
-		trackCta( 'products' );
-	};
-
+const PaymentsHeader = ( task, onClickCta ) => {
 	return (
 		<div
 			className="woocommerce-task-header__contents-container header-product"
@@ -33,7 +27,7 @@ const PaymentsHeader = ( task, trackCta ) => {
 						"You're only one step away from getting paid. Verify your business details to start managing transactions with WooCommerce Payments"
 					) }
 				</p>
-				<Button isPrimary onClick={ onClick }>
+				<Button isPrimary onClick={ onClickCta }>
 					{ __( 'Add products', 'woocommerce-admin' ) }
 				</Button>
 				<p className="woocommerce-task-header__timer">
