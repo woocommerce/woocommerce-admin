@@ -115,8 +115,7 @@ abstract class DataSourcePoller {
 	 */
 	public function read_specs_from_data_sources() {
 		$specs        = array();
-		$filter_id    = $this::ID . '_' . self::FILTER_NAME;
-		$data_sources = apply_filters( $filter_id, $this->data_sources );
+		$data_sources = apply_filters( self::FILTER_NAME, $this->data_sources, $this::ID );
 
 		// Note that this merges the specs from the data sources based on the
 		// id - last one wins.
