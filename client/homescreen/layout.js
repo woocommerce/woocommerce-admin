@@ -156,8 +156,6 @@ export const Layout = ( {
 			);
 		}
 
-		const isSingleTask = Boolean( query.task );
-
 		return (
 			<Suspense fallback={ <TasksPlaceholder query={ query } /> }>
 				<Tasks query={ query } />
