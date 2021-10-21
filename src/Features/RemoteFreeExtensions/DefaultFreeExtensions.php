@@ -29,7 +29,6 @@ class DefaultFreeExtensions {
 					self::get_plugin( 'woocommerce-services:shipping' ),
 					self::get_plugin( 'woocommerce-services:tax' ),
 					self::get_plugin( 'jetpack' ),
-					self::get_plugin( 'mailpoet' ),
 				],
 			],
 			[
