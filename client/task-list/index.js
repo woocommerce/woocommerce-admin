@@ -30,9 +30,13 @@ import TaskListPlaceholder from './placeholder';
 
 const EMPTY_ARRAY = [];
 const taskDashboardSelect = ( select ) => {
-	const { getFreeExtensions, getProfileItems, getTasksStatus } = select(
-		ONBOARDING_STORE_NAME
-	);
+	const {
+		getFreeExtensions,
+		getProductTypes,
+		getProfileItems,
+		getTasksStatus,
+		hasFinishedResolution: hasOnboardingStoreFinishedResolution,
+	} = select( ONBOARDING_STORE_NAME );
 	const { getSettings } = select( SETTINGS_STORE_NAME );
 	const { getOption, hasFinishedResolution } = select( OPTIONS_STORE_NAME );
 	const {
@@ -66,6 +70,7 @@ const taskDashboardSelect = ( select ) => {
 	const activePlugins = getActivePlugins();
 	const installedPlugins = getInstalledPlugins();
 	const onboardingStatus = getTasksStatus();
+	const productTypes = getProductTypes();
 
 	return {
 		activePlugins,
@@ -85,6 +90,7 @@ const taskDashboardSelect = ( select ) => {
 		isTaskListComplete:
 			getOption( 'woocommerce_task_list_complete' ) === 'yes',
 		installedPlugins,
+		productTypes,
 		trackedCompletedActions,
 		onboardingStatus,
 		profileItems,
@@ -111,13 +117,17 @@ const taskDashboardSelect = ( select ) => {
 			] ) ||
 			! hasFinishedResolution( 'getOption', [
 				'woocommerce_task_list_dismissed_tasks',
-			] ),
+			] ) ||
+			! hasOnboardingStoreFinishedResolution( 'getProductTypes' ),
 	};
 };
 
 const TaskDashboard = ( { userPreferences, query } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const { invalidateResolutionForStoreSelector } = useDispatch(
+		ONBOARDING_STORE_NAME
+	);
 	const { installAndActivatePlugins } = useDispatch( PLUGINS_STORE_NAME );
 	const {
 		trackedCompletedTasks,
@@ -125,6 +135,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		countryCode,
 		freeExtensions,
 		installedPlugins,
+		productTypes,
 		isJetpackConnected,
 		onboardingStatus,
 		profileItems,
@@ -147,6 +158,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 	useEffect( () => {
 		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-task-dashboard__body' );
+		invalidateResolutionForStoreSelector( 'getProductTypes' );
 	}, [] );
 
 	const getTaskStartedCount = ( taskName ) => {
@@ -249,6 +261,7 @@ const TaskDashboard = ( { userPreferences, query } ) => {
 		onTaskSelect,
 		hasCompleteAddress,
 		trackedCompletedActions,
+		productTypes,
 	} );
 
 	const { extension, setup: setupTasks } = allTasks;

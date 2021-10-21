@@ -60,6 +60,7 @@ export function getAllTasks( {
 	onTaskSelect,
 	hasCompleteAddress,
 	trackedCompletedActions,
+	productTypes,
 } ) {
 	const {
 		hasPaymentGateway,
@@ -81,6 +82,7 @@ export function getAllTasks( {
 	};
 
 	const groupedProducts = getCategorizedOnboardingProducts(
+		productTypes,
 		profileItems,
 		installedPlugins
 	);
@@ -92,7 +94,7 @@ export function getAllTasks( {
 		activePlugins.indexOf( 'woocommerce-services' ) !== -1;
 	const {
 		completed: profilerCompleted,
-		product_types: productTypes,
+		product_types: profileProductTypes,
 		business_extensions: businessExtensions,
 	} = profileItems;
 
@@ -335,7 +337,8 @@ export function getAllTasks( {
 			},
 			completed: shippingZonesCount > 0,
 			visible:
-				( productTypes && productTypes.includes( 'physical' ) ) ||
+				( profileProductTypes &&
+					profileProductTypes.includes( 'physical' ) ) ||
 				hasPhysicalProducts,
 			time: __( '1 minute', 'woocommerce-admin' ),
 			type: 'setup',
