@@ -10,7 +10,7 @@ import { __ } from '@wordpress/i18n';
 import TimerImage from './timer.svg';
 import AddProductsImage from './illustrations/add_products.svg';
 
-const ProductsHeader = ( task, onClickCta ) => {
+const ProductsHeader = ( { task, goToTask } ) => {
 	return (
 		<div
 			className="woocommerce-task-header__contents-container header-product"
@@ -27,7 +27,11 @@ const ProductsHeader = ( task, onClickCta ) => {
 						'Add your first products and see them shine on your store! You can add your products manually or import them.'
 					) }
 				</p>
-				<Button isPrimary onClick={ onClickCta }>
+				<Button
+					isSecondary={ task.isComplete }
+					isPrimary={ ! task.isComplete }
+					onClick={ goToTask }
+				>
 					{ __( 'Add products', 'woocommerce-admin' ) }
 				</Button>
 				<p className="woocommerce-task-header__timer">
