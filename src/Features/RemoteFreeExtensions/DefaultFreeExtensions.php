@@ -313,6 +313,12 @@ class DefaultFreeExtensions {
 							],
 						],
 					],
+					[
+						'key'         => 'google-listings-and-ads',
+						'name'        => __( 'Google Listings & Ads', 'woocommerce-admin' ),
+						'description' => __( 'Drive sales with Google Listings & Ads.', 'woocommerce-admin' ),
+						'manage_url'  => 'admin.php?page=wc-admin&path=%2Fgoogle%2Fstart',
+					],
 				],
 			],
 			[
