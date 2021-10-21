@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { Button, Card, CardHeader } from '@wordpress/components';
+import { Button, Card } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
@@ -145,6 +145,12 @@ export const TaskList = ( {
 		selectedHeaderCard = visibleTasks[ 0 ];
 	}
 
+	const trackCta = ( taskName ) => {
+		recordEvent( 'tasklist_click', {
+			task_name: taskName,
+		} );
+	};
+
 	const onTaskSelected = ( task ) => {
 		if ( task !== selectedHeaderCard ) {
 			recordEvent( `${ eventName }_click`, {
@@ -154,7 +160,7 @@ export const TaskList = ( {
 			updateQueryString( { task: task.id } );
 		}
 		if ( taskHeaders[ task.id ] ) {
-			setHeaderContent( taskHeaders[ task.id ]( task ) );
+			setHeaderContent( taskHeaders[ task.id ]( task, trackCta ) );
 			setActiveTaskId( task.id );
 		}
 	};
@@ -199,12 +205,12 @@ export const TaskList = ( {
 					size="large"
 					className="woocommerce-task-card woocommerce-homescreen-card"
 				>
-					<CardHeader size="medium">
+					<div className="wooocommerce-task-card__header-container">
 						<div className="wooocommerce-task-card__header">
 							{ headerContent }
 						</div>
 						{ renderMenu() }
-					</CardHeader>
+					</div>
 					<List animation="custom">
 						{ visibleTasks.map( ( task, index ) => {
 							++index;

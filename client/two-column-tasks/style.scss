@@ -3,6 +3,24 @@
 		max-width: none;
 		width: 100%;
 	}
+
+	.wooocommerce-task-card__header-container {
+		display: flex;
+		position: relative;
+		border-bottom: 1px solid $studio-gray-5;
+	}
+
+	.wooocommerce-task-card__header {
+		width: 100%;
+		flex: 1;
+	}
+
+	.woocommerce-ellipsis-menu {
+		position: absolute;
+		top: 20px;
+		right: 16px;
+	}
+
 	.woocommerce-task-card.is-loading {
 		.woocommerce-card__body {
 			border-top: 1px solid $studio-gray-5;
@@ -175,7 +193,30 @@
 		@include single-column;
 	}
 
+	.woocommerce-task-header__contents-container {
+		padding: 24px 24px 20px 24px;
+		flex: 1;
+		background-position: 100% 100%;
+		background-repeat: no-repeat;
+		width: 100%;
+	}
 
+	.woocommerce-task-header__contents {
+		max-width: 500px;
+		p,
+		span {
+			color: #757575;
+		}
+	}
+
+	.woocommerce-task-header__timer {
+		display: flex;
+		align-items: center;
+		line-height: 22px;
+		img {
+			margin-right: 6px;
+		}
+	}
 }
 
 .woocommerce-task-dashboard__body .woocommerce-task-dismiss-modal {
