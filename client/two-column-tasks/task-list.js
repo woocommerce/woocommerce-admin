@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useRef, useState, createElement } from '@wordpress/element';
 import { Button, Card } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu } from '@woocommerce/components';
@@ -40,7 +40,7 @@ export const TaskList = ( {
 		};
 	} );
 	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
-	const [ headerContent, setHeaderContent ] = useState( '' );
+	const [ headerData, setHeaderData ] = useState( {} );
 	const [ activeTaskId, setActiveTaskId ] = useState( '' );
 	const [ showDismissModal, setShowDismissModal ] = useState( false );
 
@@ -145,27 +145,40 @@ export const TaskList = ( {
 		selectedHeaderCard = visibleTasks[ 0 ];
 	}
 
-	const onTaskSelected = ( task ) => {
+	const goToTask = ( task ) => {
+		if ( task !== selectedHeaderCard ) {
+			updateQueryString( { task: task.id } );
+		}
+	};
+
+	const showTaskHeader = ( task ) => {
 		if ( taskHeaders[ task.id ] ) {
-			const onClickCta = () => {
-				if ( task !== selectedHeaderCard ) {
-					recordEvent( `${ eventName }_click`, {
-						task_name: task.id,
-					} );
-
-					updateQueryString( { task: task.id } );
-				}
-			};
-
-			const taskComponent = taskHeaders[ task.id ]( task, onClickCta );
-			setHeaderContent( taskComponent );
+			setHeaderData( {
+				task,
+				goToTask: () => goToTask( task ),
+			} );
 			setActiveTaskId( task.id );
+		}
+	};
+
+	const onTaskSelected = ( task ) => {
+		if ( task !== selectedHeaderCard ) {
+			recordEvent( `${ eventName }_click`, {
+				task_name: task.id,
+			} );
+		}
+
+		if ( task.id === 'woocommerce-payments' ) {
+			// With WCPay, we have to show the header content for user to read t&c first.
+			showTaskHeader( task );
+		} else {
+			goToTask( task );
 		}
 	};
 
 	useEffect( () => {
 		if ( selectedHeaderCard ) {
-			onTaskSelected( selectedHeaderCard );
+			showTaskHeader( selectedHeaderCard );
 		}
 	}, [ selectedHeaderCard ] );
 
@@ -205,7 +218,11 @@ export const TaskList = ( {
 				>
 					<div className="wooocommerce-task-card__header-container">
 						<div className="wooocommerce-task-card__header">
-							{ headerContent }
+							{ headerData?.task &&
+								createElement(
+									taskHeaders[ headerData.task.id ],
+									headerData
+								) }
 						</div>
 						{ renderMenu() }
 					</div>
