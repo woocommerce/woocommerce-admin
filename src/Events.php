@@ -97,7 +97,6 @@ class Events {
 		$this->possibly_add_notes();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {
-			DataSourcePoller::get_instance()->delete_specs_transient();
 			DataSourcePoller::get_instance()->read_specs_from_data_sources();
 			RemoteInboxNotificationsEngine::run();
 		}
