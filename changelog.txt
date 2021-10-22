@@ -1,6 +1,7 @@
 == 2.8.0 10/22/2021 ==
 
 - Add: Store Profiler and Product task - include Subscriptions #7734
+- Fix: Increase CSS specificity to avoid conflicts and broken panel styling. #7813
 - Fix: Updated link to WooCommerce Developers Blog in readme.txt #7824
 - Fix: Fixed navigation menu text color after Gutenberg 11.6.0 #7771
 - Fix: Add status param to notes/delete/all REST endpoint, to correctly delete all notes. #7743
