@@ -74,6 +74,25 @@ class CoreMenu {
 	}
 
 	/**
+	 * Get unfulfilled order count
+	 *
+	 * @return array
+	 */
+	public static function get_shop_order_count() {
+		$query            = new \WC_Order_Query(
+			array(
+				'paginate' => true,
+				'return'   => 'ids',
+				'status'   => array( 'processing', 'on-hold' ),
+			)
+		);
+		$shop_orders      = $query->get_orders();
+		$shop_order_count = intval( $shop_orders->total );
+
+		return $shop_order_count;
+	}
+
+	/**
 	 * Get all menu categories.
 	 *
 	 * @return array
@@ -84,6 +103,7 @@ class CoreMenu {
 			array(
 				'title' => __( 'Orders', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-orders',
+				'badge' => self::get_shop_order_count(),
 				'order' => 10,
 			),
 			array(
@@ -374,7 +394,7 @@ class CoreMenu {
 				) {
 					continue;
 				}
-	
+
 				// Use the link from the first item if it's a category.
 				if ( ! isset( $item['url'] ) ) {
 					$categoryMenuId = $menuId === 'favorites' ? 'plugins' : $menuId;
@@ -383,7 +403,7 @@ class CoreMenu {
 					if ( ! empty( $category_items ) ) {
 						$first_item = $category_items[0];
 
-	
+
 						$submenu['woocommerce'][] = array(
 							$item['title'],
 							$first_item['capability'],
@@ -391,10 +411,10 @@ class CoreMenu {
 							$item['title'],
 						);
 					}
-	
+
 					continue;
 				}
-	
+
 				// Show top-level items.
 				$submenu['woocommerce'][] = array(
 					$item['title'],
