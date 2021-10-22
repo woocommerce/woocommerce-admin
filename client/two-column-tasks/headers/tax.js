@@ -16,7 +16,7 @@ const TaxHeader = ( { task, goToTask } ) => {
 			className="woocommerce-task-header__contents-container header-product"
 			style={ {
 				backgroundImage: `url(${ AddTaxRatesImage })`,
-				backgroundSize: '370px',
+				backgroundSize: '340px',
 				backgroundPosition: '92% 15%',
 			} }
 		>

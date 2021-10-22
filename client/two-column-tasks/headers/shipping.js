@@ -16,7 +16,7 @@ const ShippingHeader = ( { task, goToTask } ) => {
 			className="woocommerce-task-header__contents-container header-product"
 			style={ {
 				backgroundImage: `url(${ ShippingImage })`,
-				backgroundSize: '370px',
+				backgroundSize: '340px',
 				backgroundPosition: '92% 15%',
 			} }
 		>
