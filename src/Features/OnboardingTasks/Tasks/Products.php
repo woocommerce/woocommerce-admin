@@ -91,6 +91,9 @@ class Products {
 			'is_complete' => self::has_products(),
 			'can_view'    => true,
 			'time'        => __( '1 minute per product', 'woocommerce-admin' ),
+			'extra'       => array(
+				'has_products' => self::has_products(),
+			),
 		);
 	}
 

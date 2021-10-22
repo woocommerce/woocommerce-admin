@@ -34,6 +34,11 @@ class Appearance {
 			'is_complete'  => Task::is_task_actioned( 'appearance' ),
 			'can_view'     => true,
 			'time'         => __( '2 minutes', 'woocommerce-admin' ),
+			'extra'        => array(
+				'has_homepage' => self::has_homepage(),
+				'stylesheet'   => get_option( 'stylesheet' ),
+				'theme_mods'   => get_theme_mods(),
+			),
 		);
 	}
 

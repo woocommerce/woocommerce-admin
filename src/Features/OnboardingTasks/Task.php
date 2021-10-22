@@ -179,6 +179,7 @@ class Task {
 			'is_snoozeable'   => false,
 			'snoozed_until'   => null,
 			'additional_info' => '',
+			'extra'           => (object) array(),
 		);
 
 		$data = wp_parse_args( $data, $defaults );
@@ -196,6 +197,7 @@ class Task {
 		$this->time            = (string) $data['time'];
 		$this->is_dismissable  = (bool) $data['is_dismissable'];
 		$this->is_snoozeable   = (bool) $data['is_snoozeable'];
+		$this->extra           = (object) $data['extra'];
 
 		$snoozed_tasks = get_option( self::SNOOZED_OPTION, array() );
 		if ( isset( $snoozed_tasks[ $this->id ] ) ) {
@@ -395,6 +397,7 @@ class Task {
 			'isSnoozed'      => $this->is_snoozed(),
 			'isSnoozeable'   => $this->is_snoozeable,
 			'snoozedUntil'   => $this->snoozed_until,
+			'extra'          => $this->extra,
 		);
 	}
 
