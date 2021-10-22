@@ -8,18 +8,18 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import TimerImage from './timer.svg';
-import GetPaidImage from './illustrations/get_paid.svg';
+import GetPaid from './illustrations/get-paid';
 
 const PaymentsHeader = ( { task, goToTask } ) => {
 	return (
-		<div
-			className="woocommerce-task-header__contents-container header-product"
-			style={ {
-				backgroundImage: `url(${ GetPaidImage })`,
-				backgroundSize: '370px',
-				backgroundPosition: '92% 15%',
-			} }
-		>
+		<div className="woocommerce-task-header__contents-container">
+			<GetPaid
+				class="svg-background"
+				style={ {
+					right: '6%',
+					bottom: '-20px',
+				} }
+			/>
 			<div className="woocommerce-task-header__contents">
 				<h1>{ __( 'Choose payment methods', 'woocommerce-admin' ) }</h1>
 				<p>

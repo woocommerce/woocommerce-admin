@@ -20,6 +20,12 @@ import taskHeaders from './task-headers';
 import DismissModal from './dissmiss-modal';
 import TaskListCompleted from './completed';
 
+// Temporary experiment titles which differs from current task titles.
+const experimentTaskTitles = {
+	marketing: __( 'Get more sales', 'woocommerce-admin' ),
+	'woocommerce-payments': __( 'Set up payments', 'woocommerce-admin' ),
+};
+
 export const TaskList = ( {
 	query,
 	taskListId,
@@ -240,7 +246,10 @@ export const TaskList = ( {
 								<TaskItem
 									key={ task.id }
 									className={ className }
-									title={ task.title }
+									title={
+										experimentTaskTitles[ task.id ] ??
+										task.title
+									}
 									completed={ task.isComplete }
 									content={ task.content }
 									onClick={ () => {
@@ -253,7 +262,6 @@ export const TaskList = ( {
 									}
 									action={ task.action }
 									actionLabel={ task.actionLabel }
-									additionalInfo={ task.additionalInfo }
 									showActionButton={ task.showActionButton }
 								/>
 							);

@@ -8,18 +8,18 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import TimerImage from './timer.svg';
-import AddProductsImage from './illustrations/add_products.svg';
+import AddProducts from './illustrations/add-products.js';
 
 const ProductsHeader = ( { task, goToTask } ) => {
 	return (
-		<div
-			className="woocommerce-task-header__contents-container header-product"
-			style={ {
-				backgroundImage: `url(${ AddProductsImage })`,
-				backgroundSize: '370px',
-				backgroundPosition: '92% 15%',
-			} }
-		>
+		<div className="woocommerce-task-header__contents-container">
+			<AddProducts
+				class="svg-background"
+				style={ {
+					right: '6%',
+					bottom: '-27px',
+				} }
+			/>
 			<div className="woocommerce-task-header__contents">
 				<h1>{ __( 'Add products to start selling' ) }</h1>
 				<p>

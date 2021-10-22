@@ -8,18 +8,18 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import TimerImage from './timer.svg';
-import ShippingImage from './illustrations/get_more_sales.svg';
+import GetMoreSales from './illustrations/get-more-sales.js';
 
 const MarketingHeader = ( { task, goToTask } ) => {
 	return (
-		<div
-			className="woocommerce-task-header__contents-container header-product"
-			style={ {
-				backgroundImage: `url(${ ShippingImage })`,
-				backgroundSize: '370px',
-				backgroundPosition: '92% 15%',
-			} }
-		>
+		<div className="woocommerce-task-header__contents-container">
+			<GetMoreSales
+				class="svg-background"
+				style={ {
+					right: '6%',
+					bottom: '-27px',
+				} }
+			/>
 			<div className="woocommerce-task-header__contents">
 				<h1>{ __( 'Get more sales', 'woocommerce-admin' ) }</h1>
 				<p>

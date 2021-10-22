@@ -8,18 +8,18 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import TimerImage from './timer.svg';
-import AddTaxRatesImage from './illustrations/add_tax_rates.svg';
+import AddTaxRates from './illustrations/add-tax-rates.js';
 
 const TaxHeader = ( { task, goToTask } ) => {
 	return (
-		<div
-			className="woocommerce-task-header__contents-container header-product"
-			style={ {
-				backgroundImage: `url(${ AddTaxRatesImage })`,
-				backgroundSize: '340px',
-				backgroundPosition: '92% 15%',
-			} }
-		>
+		<div className="woocommerce-task-header__contents-container">
+			<AddTaxRates
+				class="svg-background"
+				style={ {
+					right: '6%',
+					bottom: '-27px',
+				} }
+			/>
 			<div className="woocommerce-task-header__contents">
 				<h1>
 					{ __( 'Next up, add your tax rates', 'woocommerce-admin' ) }

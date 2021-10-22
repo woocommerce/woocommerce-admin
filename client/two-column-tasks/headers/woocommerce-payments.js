@@ -14,7 +14,7 @@ import interpolateComponents from 'interpolate-components';
  * Internal dependencies
  */
 import TimerImage from './timer.svg';
-import GetPaidImage from './illustrations/get_paid.svg';
+import GetPaid from './illustrations/get-paid';
 
 const connect = ( createNotice, setIsBusy ) => {
 	const errorMessage = __(
@@ -43,14 +43,14 @@ const WoocommercePaymentsHeader = ( { task } ) => {
 	};
 
 	return (
-		<div
-			className="woocommerce-task-header__contents-container header-product"
-			style={ {
-				backgroundImage: `url(${ GetPaidImage })`,
-				backgroundSize: '370px',
-				backgroundPosition: '92% 15%',
-			} }
-		>
+		<div className="woocommerce-task-header__contents-container">
+			<GetPaid
+				class="svg-background"
+				style={ {
+					right: '6%',
+					bottom: '-27px',
+				} }
+			/>
 			<div className="woocommerce-task-header__contents">
 				<h1>{ __( "It's time to get paid", 'woocommerce-admin' ) }</h1>
 				<p>

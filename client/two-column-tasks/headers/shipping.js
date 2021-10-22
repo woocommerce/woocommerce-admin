@@ -8,18 +8,18 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import TimerImage from './timer.svg';
-import ShippingImage from './illustrations/shipping.svg';
+import Shipping from './illustrations/shipping.js';
 
 const ShippingHeader = ( { task, goToTask } ) => {
 	return (
-		<div
-			className="woocommerce-task-header__contents-container header-product"
-			style={ {
-				backgroundImage: `url(${ ShippingImage })`,
-				backgroundSize: '340px',
-				backgroundPosition: '92% 15%',
-			} }
-		>
+		<div className="woocommerce-task-header__contents-container">
+			<Shipping
+				class="svg-background"
+				style={ {
+					right: '6%',
+					bottom: '-27px',
+				} }
+			/>
 			<div className="woocommerce-task-header__contents">
 				<h1>
 					{ __(
