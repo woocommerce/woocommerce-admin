@@ -147,8 +147,9 @@ export const TaskList = ( {
 		( listTask ) => listTask.isComplete === false
 	);
 
+	// If nothing is selected, default to the last task since everything is completed.
 	if ( ! selectedHeaderCard ) {
-		selectedHeaderCard = visibleTasks[ 0 ];
+		selectedHeaderCard = visibleTasks[ visibleTasks.length - 1 ];
 	}
 
 	const goToTask = ( task ) => {
