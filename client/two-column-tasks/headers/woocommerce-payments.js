@@ -35,10 +35,11 @@ const connect = ( createNotice, setIsBusy ) => {
 		} );
 };
 
-const WoocommercePaymentsHeader = ( { task } ) => {
+const WoocommercePaymentsHeader = ( { task, trackClick } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const [ isBusy, setIsBusy ] = useState( false );
 	const onClick = () => {
+		trackClick();
 		connect( createNotice, setIsBusy );
 	};
 

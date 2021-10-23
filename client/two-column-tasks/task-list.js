@@ -152,9 +152,8 @@ export const TaskList = ( {
 	}
 
 	const goToTask = ( task ) => {
-		if ( task !== selectedHeaderCard ) {
-			updateQueryString( { task: task.id } );
-		}
+		trackClick( task );
+		updateQueryString( { task: task.id } );
 	};
 
 	const showTaskHeader = ( task ) => {
@@ -162,18 +161,19 @@ export const TaskList = ( {
 			setHeaderData( {
 				task,
 				goToTask: () => goToTask( task ),
+				trackClick: () => trackClick( task ),
 			} );
 			setActiveTaskId( task.id );
 		}
 	};
 
-	const onTaskSelected = ( task ) => {
-		if ( task !== selectedHeaderCard ) {
-			recordEvent( `${ eventName }_click`, {
-				task_name: task.id,
-			} );
-		}
+	const trackClick = ( task ) => {
+		recordEvent( `${ eventName }_click`, {
+			task_name: task.id,
+		} );
+	};
 
+	const onTaskSelected = ( task ) => {
 		if ( task.id === 'woocommerce-payments' ) {
 			// With WCPay, we have to show the header content for user to read t&c first.
 			showTaskHeader( task );
