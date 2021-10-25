@@ -105,36 +105,32 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 
 	return (
 		<>
-			{ setupTasks &&
-				taskLists[ 0 ].isVisible &&
-				( ! taskLists[ 0 ].isHidden || task ) && (
-					<TaskList
-						taskListId={ taskLists[ 0 ].id }
-						eventName="tasklist"
-						twoColumns={ twoColumns }
-						keepCompletedTaskList={ keepCompletedTaskList }
-						dismissedTasks={ dismissedTasks || [] }
-						isComplete={ isTaskListComplete }
-						query={ query }
-						tasks={ setupTasks }
-						title={ __(
-							'Get ready to start selling',
-							'woocommerce-admin'
-						) }
-						onComplete={ () =>
-							updateOptions( {
-								woocommerce_default_homepage_layout:
-									'two_columns',
-							} )
-						}
-						onHide={ () =>
-							updateOptions( {
-								woocommerce_default_homepage_layout:
-									'two_columns',
-							} )
-						}
-					/>
-				) }
+			{ setupTasks && ( ! taskLists[ 0 ].isHidden || task ) && (
+				<TaskList
+					taskListId={ taskLists[ 0 ].id }
+					eventName="tasklist"
+					twoColumns={ twoColumns }
+					keepCompletedTaskList={ keepCompletedTaskList }
+					dismissedTasks={ dismissedTasks || [] }
+					isComplete={ isTaskListComplete }
+					query={ query }
+					tasks={ setupTasks }
+					title={ __(
+						'Get ready to start selling',
+						'woocommerce-admin'
+					) }
+					onComplete={ () =>
+						updateOptions( {
+							woocommerce_default_homepage_layout: 'two_columns',
+						} )
+					}
+					onHide={ () =>
+						updateOptions( {
+							woocommerce_default_homepage_layout: 'two_columns',
+						} )
+					}
+				/>
+			) }
 		</>
 	);
 };
