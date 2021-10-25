@@ -132,7 +132,7 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 		}
 	);
 
-	// Use custom isComplete since we're manusally adding tasks
+	// Use custom isComplete since we're manually adding tasks
 	// to the extended task list.
 	const isComplete = completedTasks.length === extendedTaskList.tasks.length;
 
