@@ -76,6 +76,7 @@ class Tax {
 			'time'         => __( '1 minute', 'woocommerce-admin' ),
 			'extra'        => array(
 				'automated_support_countries' => self::get_automated_support_countries(),
+				'avalara_activated'           => PluginsHelper::is_plugin_active( 'woocommerce-avatax' ),
 				'tax_jar_activated'           => class_exists( 'WC_Taxjar' ),
 			),
 		);

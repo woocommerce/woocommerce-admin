@@ -25,7 +25,7 @@ import { WooOnboardingTask } from '@woocommerce/onboarding';
 class Appearance extends Component {
 	constructor( props ) {
 		super( props );
-		const { hasHomepage, hasProducts } = props.tasksStatus;
+		const { hasHomepage, hasProducts } = props.task.extra;
 
 		this.stepVisibility = {
 			homepage: ! hasHomepage,
@@ -191,10 +191,10 @@ class Appearance extends Component {
 		const {
 			clearTaskStatusCache,
 			createNotice,
-			stylesheet,
-			themeMods,
+			task,
 			updateOptions,
 		} = this.props;
+		const { stylesheet, themeMods } = task.extra;
 		const { logo } = this.state;
 		const updatedThemeMods = {
 			...themeMods,
@@ -451,8 +451,8 @@ registerPlugin( 'wc-admin-onboarding-task-appearance', {
 	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="appearance">
-			{ ( { onComplete } ) => (
-				<AppearanceWrapper onComplete={ onComplete } />
+			{ ( { onComplete, task } ) => (
+				<AppearanceWrapper onComplete={ onComplete } task={ task } />
 			) }
 		</WooOnboardingTask>
 	),

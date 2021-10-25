@@ -68,14 +68,6 @@ class Init {
 				: false;
 		}
 
-		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_tax_supported_countries();
-		$settings['hasHomepage']                    = Appearance::has_homepage();
-		$settings['hasProducts']                    = Products::has_products();
-		$settings['stylesheet']                     = get_option( 'stylesheet' );
-		$settings['taxJarActivated']                = class_exists( 'WC_Taxjar' );
-		$settings['avalaraActivated']               = PluginsHelper::is_plugin_active( 'woocommerce-avatax' );
-		$settings['themeMods']                      = get_theme_mods();
-
 		return $settings;
 	}
 
