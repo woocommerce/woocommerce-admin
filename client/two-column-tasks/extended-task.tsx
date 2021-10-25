@@ -105,14 +105,18 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 		return list.id === 'setup';
 	} );
 
-	extendedTaskList.tasks = extendedTaskList.tasks.concat(
-		setupTaskList?.tasks.filter( ( unallowedTask ) => {
-			return (
-				! allowedTasks.includes( unallowedTask.id ) &&
-				unallowedTask.id !== 'store_details'
-			);
-		} ) || []
-	);
+	extendedTaskList.tasks = [
+		...new Set(
+			extendedTaskList.tasks.concat(
+				setupTaskList?.tasks.filter( ( unallowedTask ) => {
+					return (
+						! allowedTasks.includes( unallowedTask.id ) &&
+						unallowedTask.id !== 'store_details'
+					);
+				} ) || []
+			)
+		),
+	];
 
 	if ( extendedTaskList.tasks.length === 0 ) {
 		return null;
