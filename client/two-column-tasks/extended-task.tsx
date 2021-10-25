@@ -28,9 +28,6 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 	const { task } = query;
 	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
-	const [ isLoadingExperiment, experimentAssignment ] = useExperiment(
-		'woocommerce_tasklist_progression'
-	);
 
 	const { isResolving, taskLists } = useSelect( ( select ) => {
 		return {
@@ -99,10 +96,6 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 		);
 	}
 
-	if ( isLoadingExperiment ) {
-		return <TasksPlaceholder query={ query } />;
-	}
-
 	const extendedTaskList = taskLists.find( ( list ) => {
 		return list.id === 'extended';
 	} );
@@ -153,9 +146,6 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 			<TaskList
 				id={ id }
 				isComplete={ isComplete }
-				isExpandable={
-					experimentAssignment?.variationName === 'treatment'
-				}
 				query={ query }
 				tasks={ tasks }
 				title={ title }
