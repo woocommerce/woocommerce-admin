@@ -79,17 +79,8 @@ class CoreMenu {
 	 * @return array
 	 */
 	public static function get_shop_order_count() {
-		$query            = new \WC_Order_Query(
-			array(
-				'paginate' => true,
-				'return'   => 'ids',
-				'status'   => array( 'processing', 'on-hold' ),
-			)
-		);
-		$shop_orders      = $query->get_orders();
-		$shop_order_count = intval( $shop_orders->total );
-
-		return $shop_order_count;
+		$status_counts = array_map( 'wc_orders_count', array( 'processing', 'on-hold' ) );
+		return array_sum( $status_counts );
 	}
 
 	/**
