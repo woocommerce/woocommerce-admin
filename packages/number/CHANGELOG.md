@@ -1,3 +1,7 @@
+# Unreleased
+
+-   Dev - Export data types. #7840
+
 # 2.2.0
 
 -   Fix commonjs module build, allow package to be built in isolation. #7286
