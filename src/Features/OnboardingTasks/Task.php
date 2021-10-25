@@ -397,8 +397,25 @@ class Task {
 			'isSnoozed'      => $this->is_snoozed(),
 			'isSnoozeable'   => $this->is_snoozeable,
 			'snoozedUntil'   => $this->snoozed_until,
-			'extra'          => $this->extra,
+			'extra'          => self::convert_object_to_camelcase( $this->extra ),
 		);
+	}
+
+	/**
+	 * Convert object keys to camelcase.
+	 *
+	 * @param object $object Object to convert.
+	 * @return object
+	 */
+	public static function convert_object_to_camelcase( $object ) {
+		$new_object = (object) array();
+
+		foreach ( $object as $key => $value ) {
+			$new_key              = lcfirst( implode( '', array_map( 'ucfirst', explode( '_', $key ) ) ) );
+			$new_object->$new_key = $value;
+		}
+
+		return $new_object;
 	}
 
 	/**
