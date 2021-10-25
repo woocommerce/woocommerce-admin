@@ -105,7 +105,7 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 
 	return (
 		<>
-			{ setupTasks && ( ! taskLists[ 0 ].isHidden || task ) && (
+			{ setupTasks && ( taskLists[ 0 ].isVisible || task ) && (
 				<TaskList
 					taskListId={ taskLists[ 0 ].id }
 					eventName="tasklist"
