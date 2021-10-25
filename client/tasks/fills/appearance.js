@@ -50,7 +50,7 @@ class Appearance extends Component {
 	}
 
 	componentDidMount() {
-		const { themeMods } = this.props.tasksStatus;
+		const { themeMods } = this.props.task.extra;
 
 		if ( themeMods && themeMods.custom_logo ) {
 			/* eslint-disable react/no-did-mount-set-state */
@@ -106,7 +106,7 @@ class Appearance extends Component {
 	}
 
 	importProducts() {
-		const { clearTaskStatusCache, createNotice } = this.props;
+		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
 
 		recordEvent( 'tasklist_appearance_import_demo', {} );
@@ -132,7 +132,6 @@ class Appearance extends Component {
 							'woocommerce-admin'
 						)
 					);
-					clearTaskStatusCache();
 				}
 
 				this.setState( { isPending: false } );
@@ -421,26 +420,18 @@ class Appearance extends Component {
 const AppearanceWrapper = compose(
 	withSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
-		const tasksStatus = getTasksStatus();
 
 		return {
 			demoStoreNotice: getOption( 'woocommerce_demo_store_notice' ),
-			stylesheet: getOption( 'stylesheet' ),
-			tasksStatus,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
 		const { updateOptions } = dispatch( OPTIONS_STORE_NAME );
-		const { actionTask, invalidateResolutionForStoreSelector } = dispatch(
-			ONBOARDING_STORE_NAME
-		);
+		const { actionTask } = dispatch( ONBOARDING_STORE_NAME );
 
 		return {
 			actionTask,
-			clearTaskStatusCache: () =>
-				invalidateResolutionForStoreSelector( 'getTasksStatus' ),
 			createNotice,
 			updateOptions,
 		};
