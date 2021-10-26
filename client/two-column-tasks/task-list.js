@@ -121,6 +121,7 @@ export const TaskList = ( {
 		return (
 			<div className="woocommerce-card__menu woocommerce-card__header-item">
 				<EllipsisMenu
+					className={ taskListId }
 					label={ __( 'Task List Options', 'woocommerce-admin' ) }
 					renderContent={ ( { onToggle } ) => (
 						<div className="woocommerce-task-card__section-controls">
