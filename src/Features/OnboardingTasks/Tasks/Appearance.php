@@ -4,6 +4,7 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 
 /**
  * Appearance Task
@@ -36,6 +37,7 @@ class Appearance {
 			'time'         => __( '2 minutes', 'woocommerce-admin' ),
 			'extra'        => array(
 				'has_homepage' => self::has_homepage(),
+				'has_products' => Products::has_products(),
 				'stylesheet'   => get_option( 'stylesheet' ),
 				'theme_mods'   => get_theme_mods(),
 			),
