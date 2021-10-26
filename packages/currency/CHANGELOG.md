@@ -1,6 +1,7 @@
 # Unreleased
 
 -   Tweak - Added `useCode` parameter to `formatAmount`, to render currency code instead of symbol. #7575
+-   Dev - Export data types. #7848
 
 # 3.2.0
 
