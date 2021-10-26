@@ -144,7 +144,7 @@ class Appearance extends Component {
 	}
 
 	createHomepage() {
-		const { clearTaskStatusCache, createNotice } = this.props;
+		const { createNotice } = this.props;
 		this.setState( { isPending: true } );
 
 		recordEvent( 'tasklist_appearance_create_homepage', {
@@ -156,7 +156,6 @@ class Appearance extends Component {
 			method: 'POST',
 		} )
 			.then( ( response ) => {
-				clearTaskStatusCache();
 				createNotice( response.status, response.message, {
 					actions: response.edit_post_link
 						? [
@@ -187,12 +186,7 @@ class Appearance extends Component {
 	}
 
 	async updateLogo() {
-		const {
-			clearTaskStatusCache,
-			createNotice,
-			task,
-			updateOptions,
-		} = this.props;
+		const { createNotice, task, updateOptions } = this.props;
 		const { stylesheet, themeMods } = task.extra;
 		const { logo } = this.state;
 		const updatedThemeMods = {
@@ -207,8 +201,6 @@ class Appearance extends Component {
 			[ `theme_mods_${ stylesheet }` ]: updatedThemeMods,
 		} );
 
-		clearTaskStatusCache();
-
 		if ( update.success ) {
 			this.setState( { isUpdatingLogo: false } );
 			createNotice(
@@ -222,11 +214,7 @@ class Appearance extends Component {
 	}
 
 	async updateNotice() {
-		const {
-			clearTaskStatusCache,
-			createNotice,
-			updateOptions,
-		} = this.props;
+		const { createNotice, updateOptions } = this.props;
 		const { storeNoticeText } = this.state;
 
 		recordEvent( 'tasklist_appearance_set_store_notice', {
@@ -238,8 +226,6 @@ class Appearance extends Component {
 			woocommerce_demo_store: storeNoticeText.length ? 'yes' : 'no',
 			woocommerce_demo_store_notice: storeNoticeText,
 		} );
-
-		clearTaskStatusCache();
 
 		if ( update.success ) {
 			this.setState( { isUpdatingNotice: false } );
