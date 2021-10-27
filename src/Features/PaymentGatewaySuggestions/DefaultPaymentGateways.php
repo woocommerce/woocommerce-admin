@@ -225,7 +225,7 @@ class DefaultPaymentGateways {
 				'recommendation_priority' => 1,
 			),
 			array(
-				'id'                      => 'woocommerce_payments',
+				'id'                      => 'woocommerce_payments:us',
 				'title'                   => __( 'WooCommerce Payments', 'woocommerce-admin' ),
 				'content'                 => __(
 					'Manage transactions without leaving your WordPress Dashboard. Only with WooCommerce Payments.',
