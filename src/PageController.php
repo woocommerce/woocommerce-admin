@@ -356,8 +356,10 @@ class PageController {
 
 		// Disable embed on the block editor.
 		$current_screen = did_action( 'current_screen' ) ? get_current_screen() : false;
-		if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
-			$is_connected_page = false;
+		if ( $current_screen !== false ) {
+			if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
+				$is_connected_page = false;
+			}
 		}
 
 		/**
