@@ -220,7 +220,53 @@ class DefaultPaymentGateways {
 				'description'             => 'With WooCommerce Payments, you can securely accept major cards, Apple Pay, and payments in over 100 currencies. Track cash flow and manage recurring revenue directly from your store’s dashboard - with no setup costs or monthly fees.',
 				'is_visible'              => array(
 					self::get_rules_for_cbd( false ),
+					self::get_rules_for_countries( self::get_wcpay_countries() ),
+					(object) array(
+						'type'     => 'plugin_version',
+						'plugin'   => 'woocommerce-admin',
+						'version'  => '2.9.0',
+						'operator' => '<',
+					),
+					(object) array(
+						'type'     => 'plugin_version',
+						'plugin'   => 'woocommerce',
+						'version'  => '5.10.0',
+						'operator' => '<',
+					),
+				),
+				'recommendation_priority' => 1,
+			),
+			array(
+				'id'                      => 'woocommerce_payments:non-us',
+				'title'                   => __( 'WooCommerce Payments', 'woocommerce-admin' ),
+				'content'                 => __(
+					'Manage transactions without leaving your WordPress Dashboard. Only with WooCommerce Payments.',
+					'woocommerce-admin'
+				),
+				'image'                   => plugins_url( 'images/onboarding/wcpay.svg', WC_ADMIN_PLUGIN_FILE ),
+				'plugins'                 => array( 'woocommerce-payments' ),
+				'description'             => 'With WooCommerce Payments, you can securely accept major cards, Apple Pay, and payments in over 100 currencies. Track cash flow and manage recurring revenue directly from your store’s dashboard - with no setup costs or monthly fees.',
+				'is_visible'              => array(
+					self::get_rules_for_cbd( false ),
 					self::get_rules_for_countries( array_diff( self::get_wcpay_countries(), array( 'US' ) ) ),
+					(object) array(
+						'type'     => 'or',
+						// Older versions of WooCommerce Admin require the ID to be `woocommerce-payments` to show the suggestion card.
+						'operands' => (object) array(
+							(object) array(
+								'type'     => 'plugin_version',
+								'plugin'   => 'woocommerce-admin',
+								'version'  => '2.9.0',
+								'operator' => '>=',
+							),
+							(object) array(
+								'type'     => 'plugin_version',
+								'plugin'   => 'woocommerce',
+								'version'  => '5.10.0',
+								'operator' => '>=',
+							),
+						),
+					),
 				),
 				'recommendation_priority' => 1,
 			),
@@ -237,6 +283,24 @@ class DefaultPaymentGateways {
 				'is_visible'              => array(
 					self::get_rules_for_cbd( false ),
 					self::get_rules_for_countries( array( 'US' ) ),
+					(object) array(
+						'type'     => 'or',
+						// Older versions of WooCommerce Admin require the ID to be `woocommerce-payments` to show the suggestion card.
+						'operands' => (object) array(
+							(object) array(
+								'type'     => 'plugin_version',
+								'plugin'   => 'woocommerce-admin',
+								'version'  => '2.9.0',
+								'operator' => '>=',
+							),
+							(object) array(
+								'type'     => 'plugin_version',
+								'plugin'   => 'woocommerce',
+								'version'  => '5.10.0',
+								'operator' => '>=',
+							),
+						),
+					),
 				),
 				'recommendation_priority' => 1,
 			),
