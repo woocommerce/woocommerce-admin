@@ -4,7 +4,7 @@
 	background: $studio-white;
 	border-radius: 2px;
 	@include font-size( 13 );
-	margin: 0 0 $gap-large;
+	margin: 0 0;
 	-ms-box-orient: horizontal;
 	&.banner {
 		-webkit-flex-direction: column;
@@ -28,7 +28,7 @@
 	}
 
 	&:not(.is-placeholder) {
-		border: 1px solid $gray-200;
+		border-bottom: 1px solid $gray-200;
 	}
 
 	.line {
@@ -91,6 +91,10 @@
 	}
 }
 
+.woocommerce-inbox-message__wrapper .woocommerce-inbox-message__content {
+	padding-bottom: 0;
+}
+
 .woocommerce-inbox-message__text {
 	color: $gray-700;
 	font-style: normal;
@@ -114,9 +118,6 @@
 }
 
 .woocommerce-inbox-message__actions {
-	padding-top: $gap;
-	border-top: 1px solid $gray-200;
-
 	// Ensures any immediate child with a sibling has space between the items
 	& > * + * {
 		margin-left: 0.5em;
@@ -126,6 +127,14 @@
 	button {
 		cursor: pointer;
 	}
+
+	button.is-tertiary {
+		color: $gray-700;
+		&:hover {
+			box-shadow: none !important;
+		}
+	}
+
 	.components-dropdown {
 		display: inline;
 
@@ -150,6 +159,10 @@
 		}
 	}
 }
+.woocommerce-inbox-message__wrapper .woocommerce-inbox-message__actions {
+	padding-top: 0;
+}
+
 .woocommerce-inbox-dismiss-confirmation_modal {
 	text-align: left;
 }
