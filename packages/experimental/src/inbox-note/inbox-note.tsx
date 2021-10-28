@@ -249,7 +249,7 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		! dateCreatedGmt ||
 		new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
 	const date = dateCreated;
-	const hasImage = layout !== 'plain' && layout !== '';
+	const hasImage = layout === 'thumbnail';
 	const cardClassName = classnames(
 		'woocommerce-inbox-message',
 		className,
