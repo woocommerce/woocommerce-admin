@@ -137,7 +137,9 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		previewSiteBtnTrackData,
 	} = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getTaskLists, isResolving } = select( ONBOARDING_STORE_NAME );
+		const { getTaskLists, hasFinishedResolution } = select(
+			ONBOARDING_STORE_NAME
+		);
 
 		const taskLists = getTaskLists();
 		const isSetupTaskListHidden = taskLists.find(
@@ -157,7 +159,9 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 				thingsToDoCount
 			),
 			thingsToDoNextCount: thingsToDoCount,
-			requestingTaskListOptions: isResolving( 'getTaskLists' ),
+			requestingTaskListOptions: ! hasFinishedResolution(
+				'getTaskLists'
+			),
 			setupTaskListComplete: taskLists.find(
 				( list ) => list.id === 'setup' && list.isComplete
 			),
@@ -270,6 +274,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			},
 			visible:
 				currentUserCan( 'manage_woocommerce' ) &&
+				! requestingTaskListOptions &&
 				! setupTaskListComplete &&
 				! setupTaskListHidden &&
 				! isPerformingSetupTask() &&
