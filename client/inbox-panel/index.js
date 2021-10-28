@@ -95,9 +95,9 @@ const renderNotes = ( {
 					<Badge count={ notesArray.length } />
 				</div>
 				<EllipsisMenu
-					label={ __( 'Inbox Notes Options', 'woocommerce-admin' ) }
+					label={ __( 'Task List Options', 'woocommerce-admin' ) }
 					renderContent={ ( { onToggle } ) => (
-						<div className="woocommerce-inbox-card__section-controls">
+						<div className="woocommerce-task-card__section-controls">
 							<Button
 								onClick={ () => {
 									onDismissAll( true );
