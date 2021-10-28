@@ -3,7 +3,13 @@
  */
 import { __, _n } from '@wordpress/i18n';
 import { useEffect, useState } from '@wordpress/element';
-import { EmptyContent, Section } from '@woocommerce/components';
+import {
+	EmptyContent,
+	Section,
+	Badge,
+	EllipsisMenu,
+} from '@woocommerce/components';
+import { Card, CardHeader, Button } from '@wordpress/components';
 import {
 	NOTES_STORE_NAME,
 	useUserPreferences,
@@ -16,6 +22,7 @@ import {
 	InboxNoteCard,
 	InboxDismissConfirmationModal,
 	InboxNotePlaceholder,
+	Text,
 } from '@woocommerce/experimental';
 
 /**
@@ -78,31 +85,51 @@ const renderNotes = ( {
 	const notesArray = Object.keys( notes ).map( ( key ) => notes[ key ] );
 
 	return (
-		<TransitionGroup role="menu">
-			{ notesArray.map( ( note ) => {
-				const { id: noteId, is_deleted: isDeleted } = note;
-				if ( isDeleted ) {
-					return null;
-				}
-				return (
-					<CSSTransition
-						key={ noteId }
-						timeout={ 500 }
-						classNames="woocommerce-inbox-message"
-					>
-						<InboxNoteCard
+		<Card size="large">
+			<CardHeader size="medium">
+				<div className="wooocommerce-inbox-card__header">
+					<Text size="20" lineHeight="28px" variant="title.small">
+						{ __( 'Inbox', 'woocommerce-admin' ) }
+					</Text>
+					<Badge count={ notesArray.length } />
+				</div>
+				<EllipsisMenu
+					label={ __( 'Task List Options', 'woocommerce-admin' ) }
+					renderContent={ ( {} ) => (
+						<div className="woocommerce-task-card__section-controls">
+							<Button>
+								{ __( 'Hide this', 'woocommerce-admin' ) }
+							</Button>
+						</div>
+					) }
+				/>
+			</CardHeader>
+			<TransitionGroup role="menu">
+				{ notesArray.map( ( note ) => {
+					const { id: noteId, is_deleted: isDeleted } = note;
+					if ( isDeleted ) {
+						return null;
+					}
+					return (
+						<CSSTransition
 							key={ noteId }
-							note={ note }
-							lastRead={ lastRead }
-							onDismiss={ onDismiss }
-							onNoteActionClick={ onNoteActionClick }
-							onBodyLinkClick={ onBodyLinkClick }
-							onNoteVisible={ onNoteVisible }
-						/>
-					</CSSTransition>
-				);
-			} ) }
-		</TransitionGroup>
+							timeout={ 500 }
+							classNames="woocommerce-inbox-message"
+						>
+							<InboxNoteCard
+								key={ noteId }
+								note={ note }
+								lastRead={ lastRead }
+								onDismiss={ onDismiss }
+								onNoteActionClick={ onNoteActionClick }
+								onBodyLinkClick={ onBodyLinkClick }
+								onNoteVisible={ onNoteVisible }
+							/>
+						</CSSTransition>
+					);
+				} ) }
+			</TransitionGroup>
+		</Card>
 	);
 };
 
