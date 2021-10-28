@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { TaskListType } from './types';
+import { TaskType, TaskListType } from './types';
 import { WPDataSelectors, RuleProcessor } from '../types';
 
 export const getFreeExtensions = (
@@ -28,6 +28,18 @@ export const getTaskList = (
 	selector: string
 ): TaskListType | undefined => {
 	return state.taskLists.find( ( list ) => list.id === selector );
+};
+
+export const getTask = (
+	state: OnboardingState,
+	selector: string
+): TaskType | undefined => {
+	return state.taskLists.reduce(
+		( value: TaskType | undefined, list: TaskListType ) => {
+			return value || list.tasks.find( ( task ) => task.id === selector );
+		},
+		undefined
+	);
 };
 
 export const getPaymentGatewaySuggestions = (

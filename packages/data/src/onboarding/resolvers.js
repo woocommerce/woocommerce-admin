@@ -75,6 +75,10 @@ export function* getTaskList() {
 	yield resolveSelect( STORE_NAME, 'getTaskLists' );
 }
 
+export function* getTask() {
+	yield resolveSelect( STORE_NAME, 'getTaskLists' );
+}
+
 export function* getPaymentGatewaySuggestions() {
 	try {
 		const results = yield apiFetch( {

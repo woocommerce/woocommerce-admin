@@ -137,11 +137,10 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		previewSiteBtnTrackData,
 	} = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getTaskLists, getTaskList, hasFinishedResolution } = select(
+		const { getTask, getTaskList, hasFinishedResolution } = select(
 			ONBOARDING_STORE_NAME
 		);
 
-		const taskLists = getTaskLists();
 		const isSetupTaskListHidden = getTaskList( 'setup' )?.isHidden;
 		const extendedTaskList = getTaskList( 'extended' );
 
@@ -161,16 +160,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			setupTaskListComplete: getTaskList( 'setup' )?.isComplete,
 			setupTaskListHidden: isSetupTaskListHidden,
 			isCompletedTask: Boolean(
-				query.task &&
-					taskLists.reduce( ( value, list ) => {
-						return (
-							value ||
-							list.tasks.find(
-								( task ) =>
-									task.id === query.task && task.isComplete
-							)
-						);
-					}, false )
+				query.task && getTask( query.task )?.isComplete
 			),
 			previewSiteBtnTrackData: getPreviewSiteBtnTrackData(
 				select,
