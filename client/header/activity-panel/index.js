@@ -137,17 +137,13 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		previewSiteBtnTrackData,
 	} = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getTaskLists, hasFinishedResolution } = select(
+		const { getTaskLists, getTaskList, hasFinishedResolution } = select(
 			ONBOARDING_STORE_NAME
 		);
 
 		const taskLists = getTaskLists();
-		const isSetupTaskListHidden = taskLists.find(
-			( list ) => list.id === 'setup' && list.isHidden
-		);
-		const extendedTaskList = taskLists.find(
-			( list ) => list.id === 'extended'
-		);
+		const isSetupTaskListHidden = getTaskList( 'setup' )?.isHidden;
+		const extendedTaskList = getTaskList( 'extended' );
 
 		const thingsToDoCount = getThingsToDoNextCount( extendedTaskList );
 
@@ -162,9 +158,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			requestingTaskListOptions: ! hasFinishedResolution(
 				'getTaskLists'
 			),
-			setupTaskListComplete: taskLists.find(
-				( list ) => list.id === 'setup' && list.isComplete
-			),
+			setupTaskListComplete: getTaskList( 'setup' )?.isComplete,
 			setupTaskListHidden: isSetupTaskListHidden,
 			isCompletedTask: Boolean(
 				query.task &&

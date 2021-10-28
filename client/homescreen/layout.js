@@ -280,7 +280,7 @@ export default compose(
 		const { getOption, hasFinishedResolution } = select(
 			OPTIONS_STORE_NAME
 		);
-		const { getTaskLists } = select( ONBOARDING_STORE_NAME );
+		const { getTaskList, getTaskLists } = select( ONBOARDING_STORE_NAME );
 		const taskLists = getTaskLists();
 
 		const welcomeFromCalypsoModalDismissed =
@@ -322,13 +322,9 @@ export default compose(
 			isBatchUpdating: isNotesRequesting( 'batchUpdateNotes' ),
 			shouldShowWelcomeModal,
 			shouldShowWelcomeFromCalypsoModal,
-			isTaskListHidden: taskLists.find(
-				( list ) => list.id === 'setup' && list.isHidden
-			),
+			isTaskListHidden: getTaskList( 'setup' )?.isHidden,
 			hasTaskList: taskLists.find( ( list ) => list.isVisible ),
-			taskListComplete: taskLists.find(
-				( list ) => list.id === 'setup' && list.isComplete
-			),
+			taskListComplete: getTaskList( 'setup' )?.isComplete,
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {

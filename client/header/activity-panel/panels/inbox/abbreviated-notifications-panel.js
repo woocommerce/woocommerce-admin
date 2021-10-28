@@ -37,20 +37,15 @@ export const AbbreviatedNotificationsPanel = ( { thingsToDoNextCount } ) => {
 		isSetupTaskListHidden,
 		isExtendedTaskListHidden,
 	} = useSelect( ( select ) => {
-		const { getTaskLists } = select( ONBOARDING_STORE_NAME );
+		const { getTaskList } = select( ONBOARDING_STORE_NAME );
 		const orderStatuses = getOrderStatuses( select );
-		const taskLists = getTaskLists();
 
 		return {
 			ordersToProcessCount: getUnreadOrders( select, orderStatuses ),
 			reviewsToModerateCount: getUnapprovedReviews( select ),
 			stockNoticesCount: getLowStockCount( select ),
-			isSetupTaskListHidden: taskLists.find(
-				( list ) => list.id === 'setup' && list.isHidden
-			),
-			isExtendedTaskListHidden: taskLists.find(
-				( list ) => list.id === 'extended' && list.isHidden
-			),
+			isSetupTaskListHidden: getTaskList( 'setup' )?.isHidden,
+			isExtendedTaskListHidden: getTaskList( 'extended' )?.isHidden,
 		};
 	} );
 

@@ -57,19 +57,15 @@ export const DisplayOptions = () => {
 		isTaskListHidden,
 	} = useSelect( ( select ) => {
 		const { getOption } = select( OPTIONS_STORE_NAME );
-		const { getTaskLists } = select( ONBOARDING_STORE_NAME );
-		const taskLists = getTaskLists();
+		const { getTaskList } = select( ONBOARDING_STORE_NAME );
+		const taskList = getTaskList( 'setup' );
 
 		return {
 			defaultHomescreenLayout:
 				getOption( 'woocommerce_default_homepage_layout' ) ||
 				'single_column',
-			taskListComplete: taskLists.find(
-				( list ) => list.id === 'setup' && list.isComplete
-			),
-			isTaskListHidden: taskLists.find(
-				( list ) => list.id === 'setup' && list.isHidden
-			),
+			taskListComplete: taskList?.isComplete,
+			isTaskListHidden: taskList?.isHidden,
 		};
 	} );
 	const {

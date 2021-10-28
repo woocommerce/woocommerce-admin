@@ -23,6 +23,13 @@ export const getTaskLists = ( state: OnboardingState ): TaskListType[] => {
 	return state.taskLists || initialTaskLists;
 };
 
+export const getTaskList = (
+	state: OnboardingState,
+	selector: string
+): TaskListType | undefined => {
+	return state.taskLists.find( ( list ) => list.id === selector );
+};
+
 export const getPaymentGatewaySuggestions = (
 	state: OnboardingState
 ): PaymentMethodsState[] => {

@@ -39,16 +39,14 @@ export const ActivityPanel = () => {
 		const countLowStockProducts = getLowStockCount( select );
 		const countUnapprovedReviews = getUnapprovedReviews( select );
 		const publishedProductCount = getSetting( 'publishedProductCount', 0 );
-		const taskLists = select( ONBOARDING_STORE_NAME ).getTaskLists();
+		const taskList = select( ONBOARDING_STORE_NAME ).getTaskList( 'setup' );
 
 		return {
 			countLowStockProducts,
 			countUnapprovedReviews,
 			countUnreadOrders,
 			manageStock,
-			isTaskListHidden: Boolean( taskLists.length )
-				? ! taskLists.find( ( list ) => list.id === 'setup' ).isVisible
-				: null,
+			isTaskListHidden: taskList?.isVisible,
 			publishedProductCount,
 			reviewsEnabled,
 			totalOrderCount,
