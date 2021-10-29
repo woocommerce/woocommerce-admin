@@ -36,9 +36,11 @@ export function* getNotes( query = {} ) {
 				/* eslint-disable no-console */
 				console.warn(
 					'WooCommerce Admin will soon limit inbox note contents to 320 characters. For more information, please visit https://developer.woocommerce.com/?p=10749. The following notes currently exceeds that limit: \n' +
-						noteNames.map( ( name, idx ) => {
-							return `  ${ idx + 1 }. ${ name }\n`;
-						} )
+						noteNames
+							.map( ( name, idx ) => {
+								return `  ${ idx + 1 }. ${ name }`;
+							} )
+							.join( '\n' )
 				);
 				/* eslint-enable no-console */
 				notesExceededWarningShown = true;
