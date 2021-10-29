@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __, sprintf } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 import { apiFetch } from '@wordpress/data-controls';
 import { sanitize } from 'dompurify';
@@ -35,7 +36,15 @@ export function* getNotes( query = {} ) {
 			if ( noteNames.length ) {
 				/* eslint-disable no-console */
 				console.warn(
-					'WooCommerce Admin will soon limit inbox note contents to 320 characters. For more information, please visit https://developer.woocommerce.com/?p=10749. The following notes currently exceeds that limit: \n' +
+					sprintf(
+						/* translators: %s = link to developer blog */
+						__(
+							'WooCommerce Admin will soon limit inbox note contents to 320 characters. For more information, please visit %s. The following notes currently exceeds that limit:',
+							'woocommerce-admin'
+						),
+						'https://developer.woocommerce.com/?p=10749'
+					) +
+						'\n' +
 						noteNames
 							.map( ( name, idx ) => {
 								return `  ${ idx + 1 }. ${ name }`;
