@@ -13,13 +13,16 @@ import { useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { ConfigurationStepProps } from '.';
+import { SettingsSelector } from '../utils';
 
 export const ManualConfiguration: React.FC< ConfigurationStepProps > = ( {
 	isPending,
 	onManual,
 } ) => {
 	const { generalSettings } = useSelect( ( select ) => {
-		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { getSettings } = select(
+			SETTINGS_STORE_NAME
+		) as SettingsSelector;
 
 		return {
 			generalSettings: getSettings( 'general' )?.general,

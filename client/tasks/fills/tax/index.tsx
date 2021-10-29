@@ -21,7 +21,12 @@ import { WooOnboardingTask } from '@woocommerce/onboarding';
 /**
  * Internal dependencies
  */
-import { AUTOMATION_PLUGINS, hasCompleteAddress } from './utils';
+import {
+	AUTOMATION_PLUGINS,
+	hasCompleteAddress,
+	redirectToTaxSettings,
+	SettingsSelector,
+} from './utils';
 import { AutomatedTaxes } from './automated-taxes';
 import { ConfigurationStepper } from './configuration-stepper';
 import { createNoticesFromResponse } from '../../../lib/notices';
@@ -43,7 +48,9 @@ const Tax = ( { onComplete, query } ) => {
 		tasksStatus,
 		taxSettings,
 	} = useSelect( ( select ) => {
-		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { getSettings } = select(
+			SETTINGS_STORE_NAME
+		) as SettingsSelector;
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 		const activePlugins = getActivePlugins();
 
@@ -153,7 +160,7 @@ const Tax = ( { onComplete, query } ) => {
 			woocommerce_no_sales_tax: true,
 			woocommerce_calc_taxes: 'no',
 		} ).then( () => {
-			window.location = getAdminLink( 'admin.php?page=wc-admin' );
+			window.location.href = getAdminLink( 'admin.php?page=wc-admin' );
 		} );
 	};
 
@@ -174,7 +181,7 @@ const Tax = ( { onComplete, query } ) => {
 		onEnable,
 		onManual,
 		onDisable,
-		supportsAutomatedTaxes,
+		supportsAutomatedTaxes: supportsAutomatedTaxes(),
 	};
 
 	return (

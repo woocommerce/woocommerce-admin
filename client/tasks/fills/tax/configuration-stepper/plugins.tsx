@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
 import interpolateComponents from 'interpolate-components';
 import { Link, Plugins as PluginInstaller } from '@woocommerce/components';
 import { OPTIONS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
@@ -15,14 +14,17 @@ import { useDispatch, useSelect } from '@wordpress/data';
  */
 import { createNoticesFromResponse } from '../../../../lib/notices';
 import { ConfigurationStepProps } from '.';
+import { SettingsSelector } from '../utils';
 
 export const Plugins: React.FC< ConfigurationStepProps > = ( {
 	nextStep,
+	onDisable,
+	onManual,
 	pluginsToActivate,
 } ) => {
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { tosAccepted } = useSelect( ( select ) => {
-		const { getOption } = select( OPTIONS_STORE_NAME );
+		const { getOption } = select( OPTIONS_STORE_NAME ) as SettingsSelector;
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
 		return {

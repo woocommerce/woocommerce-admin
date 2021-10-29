@@ -15,7 +15,11 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { AUTOMATION_PLUGINS, hasCompleteAddress } from '../utils';
+import {
+	AUTOMATION_PLUGINS,
+	hasCompleteAddress,
+	SettingsSelector,
+} from '../utils';
 import { Connect } from './connect';
 import { ManualConfiguration } from './manual-configuration';
 import { Plugins } from './plugins';
@@ -30,6 +34,7 @@ export type ConfigurationStepperProps = {
 };
 
 export type ConfigurationStepProps = {
+	isPending: boolean;
 	nextStep: () => void;
 	onDisable: () => void;
 	onEnable: () => void;
@@ -52,10 +57,12 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 		isResolving,
 		tosAccepted,
 	} = useSelect( ( select ) => {
-		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { getSettings } = select(
+			SETTINGS_STORE_NAME
+		) as SettingsSelector;
 		const { getOption, hasFinishedResolution } = select(
 			OPTIONS_STORE_NAME
-		);
+		) as SettingsSelector;
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
 
 		return {
@@ -92,7 +99,7 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 	}, [ activePlugins ] );
 
 	const nextStep = () => {
-		setStepIndex( { stepIndex: stepIndex + 1 } );
+		setStepIndex( stepIndex + 1 );
 	};
 
 	const stepProps = {

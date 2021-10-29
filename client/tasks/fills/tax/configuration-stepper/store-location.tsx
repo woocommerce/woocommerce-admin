@@ -12,12 +12,15 @@ import { useSelect } from '@wordpress/data';
 import { ConfigurationStepProps } from '.';
 import { getCountryCode } from '../../../../dashboard/utils';
 import { default as StoreLocationForm } from '../../steps/location';
+import { SettingsSelector } from '../utils';
 
 export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
 	nextStep,
 } ) => {
 	const { generalSettings } = useSelect( ( select ) => {
-		const { getSettings } = select( SETTINGS_STORE_NAME );
+		const { getSettings } = select(
+			SETTINGS_STORE_NAME
+		) as SettingsSelector;
 
 		return {
 			generalSettings: getSettings( 'general' )?.general,
