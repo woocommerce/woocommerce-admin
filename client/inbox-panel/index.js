@@ -17,8 +17,6 @@ import {
 	InboxDismissConfirmationModal,
 	InboxNotePlaceholder,
 } from '@woocommerce/experimental';
-import moment from 'moment';
-import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -57,7 +55,6 @@ const renderNotes = ( {
 	notes,
 	onDismiss,
 	onNoteActionClick,
-	isRunningExperiment,
 } ) => {
 	if ( isBatchUpdating ) {
 		return;
@@ -87,17 +84,6 @@ const renderNotes = ( {
 				if ( isDeleted ) {
 					return null;
 				}
-
-				if ( ! isRunningExperiment ) {
-					if ( note.name === 'wc-admin-complete-store-details' ) {
-						return null;
-					}
-
-					if ( note.name === 'wc-admin-update-store-details' ) {
-						return null;
-					}
-				}
-
 				return (
 					<CSSTransition
 						key={ noteId }
@@ -288,22 +274,6 @@ const InboxPanel = () => {
 
 	const hasNotes = hasValidNotes( notes );
 
-	const momentDate = moment().utc();
-
-	const [
-		isLoadingExperimentAssignment,
-		experimentAssignment,
-	] = useExperiment(
-		'woocommerce_tasklist_progression_headercard_' +
-			momentDate.format( 'YYYY' ) +
-			'_' +
-			momentDate.format( 'MM' )
-	);
-
-	const isRunningExperiment =
-		! isLoadingExperimentAssignment &&
-		experimentAssignment?.variationName === 'treatment';
-
 	// @todo After having a pagination implemented we should call the method "getNotes" with a different query since
 	// the current one is only getting 25 notes and the count of unread notes only will refer to this 25 and not all the existing ones.
 	return (
@@ -324,7 +294,6 @@ const InboxPanel = () => {
 							notes,
 							onDismiss,
 							onNoteActionClick,
-							isRunningExperiment,
 						} ) }
 				</Section>
 				{ dismiss && (
