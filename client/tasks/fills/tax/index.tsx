@@ -15,7 +15,7 @@ import {
 } from '@woocommerce/data';
 import { queueRecordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 
 /**
@@ -23,12 +23,13 @@ import { WooOnboardingTask } from '@woocommerce/onboarding';
  */
 import { AUTOMATION_PLUGINS, hasCompleteAddress } from './utils';
 import { AutomatedTaxes } from './automated-taxes';
-import { ConfigurationStepper } from './configuration';
+import { ConfigurationStepper } from './configuration-stepper';
 import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '../../../dashboard/utils';
 import './tax.scss';
 
 const Tax = ( { onComplete, query } ) => {
+	const [ isPending, setIsPending ] = useState( false );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateAndPersistSettingsForGroup } = useDispatch(
@@ -92,6 +93,7 @@ const Tax = ( { onComplete, query } ) => {
 	};
 
 	const onManual = async () => {
+		setIsPending( true );
 		if ( generalSettings.woocommerce_calc_taxes !== 'yes' ) {
 			updateAndPersistSettingsForGroup( 'tax', {
 				tax: {
@@ -106,13 +108,17 @@ const Tax = ( { onComplete, query } ) => {
 				},
 			} )
 				.then( () => redirectToTaxSettings() )
-				.catch( ( error ) => createNoticesFromResponse( error ) );
+				.catch( ( error ) => {
+					setIsPending( false );
+					createNoticesFromResponse( error );
+				} );
 		} else {
 			redirectToTaxSettings();
 		}
 	};
 
 	const onEnable = () => {
+		setIsPending( true );
 		updateAndPersistSettingsForGroup( 'tax', {
 			tax: {
 				...taxSettings,
@@ -136,13 +142,8 @@ const Tax = ( { onComplete, query } ) => {
 		onComplete();
 	};
 
-	const redirectToTaxSettings = () => {
-		window.location = getAdminLink(
-			'admin.php?page=wc-settings&tab=tax&section=standard&wc_onboarding_active_task=tax'
-		);
-	};
-
 	const onDisable = () => {
+		setIsPending( true );
 		queueRecordEvent( 'tasklist_tax_connect_store', {
 			connect: false,
 			no_tax: true,
@@ -169,6 +170,7 @@ const Tax = ( { onComplete, query } ) => {
 	}
 
 	const childProps = {
+		isPending,
 		onEnable,
 		onManual,
 		onDisable,
