@@ -30,6 +30,7 @@ import {
 import { ActivityCard } from '../header/activity-panel/activity-card';
 import { hasValidNotes } from './utils';
 import { getScreenName } from '../utils';
+import DismissAllModal from './dissmiss-all-modal';
 import './index.scss';
 
 const renderEmptyCard = () => (
@@ -61,6 +62,7 @@ const renderNotes = ( {
 	notes,
 	dismissNote,
 	onNoteActionClick,
+	setShowDismissAllModal,
 } ) => {
 	if ( isBatchUpdating ) {
 		return;
@@ -94,10 +96,15 @@ const renderNotes = ( {
 				</div>
 				<EllipsisMenu
 					label={ __( 'Inbox Notes Options', 'woocommerce-admin' ) }
-					renderContent={ ( {} ) => (
+					renderContent={ ( { onToggle } ) => (
 						<div className="woocommerce-inbox-card__section-controls">
-							<Button>
-								{ __( 'Hide this', 'woocommerce-admin' ) }
+							<Button
+								onClick={ () => {
+									setShowDismissAllModal( true );
+									onToggle();
+								} }
+							>
+								{ __( 'Dismiss all', 'woocommerce-admin' ) }
 							</Button>
 						</div>
 					) }
@@ -181,6 +188,7 @@ const InboxPanel = () => {
 	);
 	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
 	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
+	const [ showDismissAllModal, setShowDismissAllModal ] = useState( false );
 
 	useEffect( () => {
 		const mountTime = Date.now();
@@ -265,6 +273,11 @@ const InboxPanel = () => {
 	// the current one is only getting 25 notes and the count of unread notes only will refer to this 25 and not all the existing ones.
 	return (
 		<>
+			{ showDismissAllModal && (
+				<DismissAllModal
+					setShowDismissAllModal={ setShowDismissAllModal }
+				/>
+			) }
 			<div className="woocommerce-homepage-notes-wrapper">
 				{ ( isResolvingNotes || isBatchUpdating ) && (
 					<Section>
@@ -281,6 +294,7 @@ const InboxPanel = () => {
 							notes,
 							dismissNote,
 							onNoteActionClick,
+							setShowDismissAllModal,
 						} ) }
 				</Section>
 			</div>
