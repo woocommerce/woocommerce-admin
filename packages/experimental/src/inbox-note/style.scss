@@ -25,7 +25,7 @@
 	&:hover {
 		background: $gray-100;
 		cursor: pointer;
-		.woocommerce-inbox-message__actions button.is-tertiary {
+		.woocommerce-inbox-message__actions button.woocommerce-admin-dismiss-notification {
 			visibility: visible;
 		}
 	}
@@ -135,7 +135,7 @@
 		cursor: pointer;
 	}
 
-	button.is-tertiary {
+	button.woocommerce-admin-dismiss-notification {
 		color: $gray-700;
 		&:hover {
 			box-shadow: none !important;
