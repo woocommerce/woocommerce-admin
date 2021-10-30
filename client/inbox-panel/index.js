@@ -60,7 +60,7 @@ const renderNotes = ( {
 	isBatchUpdating,
 	lastRead,
 	notes,
-	onDismiss,
+	dismissNote,
 	onNoteActionClick,
 	setShowDismissAllModal: onDismissAll,
 } ) => {
@@ -126,7 +126,7 @@ const renderNotes = ( {
 								key={ noteId }
 								note={ note }
 								lastRead={ lastRead }
-								onDismiss={ onDismiss }
+								onDismiss={ dismissNote }
 								onNoteActionClick={ onNoteActionClick }
 								onBodyLinkClick={ onBodyLinkClick }
 								onNoteVisible={ onNoteVisible }
