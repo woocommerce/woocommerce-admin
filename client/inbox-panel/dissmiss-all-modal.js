@@ -4,7 +4,7 @@
 import { Button, Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
-const DissmissAllModal = ( { setShowDismissAllModal } ) => {
+const DissmissAllModal = ( { setShowDismissAllModal, dismissAllNotes } ) => {
 	const title = __( 'Dismiss all messages', 'woocommerce-admin' );
 	const message = __(
 		'Are you sure? Inbox messages will be dismissed forever.',
@@ -34,6 +34,7 @@ const DissmissAllModal = ( { setShowDismissAllModal } ) => {
 						<Button
 							isPrimary
 							onClick={ () => {
+								dismissAllNotes();
 								setShowDismissAllModal( false );
 							} }
 						>
