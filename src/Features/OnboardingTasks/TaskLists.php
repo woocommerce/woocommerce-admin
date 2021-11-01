@@ -45,6 +45,33 @@ class TaskLists {
 	}
 
 	/**
+	 * Initialize the task lists.
+	 */
+	public static function init() {
+		self::init_default_lists();
+		add_action( 'rest_api_init', array( __CLASS__, 'maybe_add_default_tasks' ) );
+	}
+
+	/**
+	 * Initialize default lists.
+	 */
+	public static function init_default_lists() {
+		self::add_list(
+			array(
+				'id'    => 'setup',
+				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
+			)
+		);
+
+		self::add_list(
+			array(
+				'id'    => 'extended',
+				'title' => __( 'Things to do next', 'woocommerce-admin' ),
+			)
+		);
+	}
+
+	/**
 	 * Add a task list.
 	 *
 	 * @param array $args Task list properties.
@@ -83,18 +110,15 @@ class TaskLists {
 	 * Add default task lists.
 	 */
 	public static function maybe_add_default_tasks() {
-		$added = isset( self::$lists['setup'] );
+		global $wp;
 
-		if ( ! apply_filters( 'woocommerce_admin_onboarding_tasks_add_default_tasks', ! $added ) ) {
+		if ( substr( $wp->request, 0, 34 ) !== 'wp-json/wc-admin/onboarding/tasks' ) {
 			return;
 		}
 
-		self::add_list(
-			array(
-				'id'    => 'setup',
-				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
-			)
-		);
+		if ( ! apply_filters( 'woocommerce_admin_onboarding_tasks_add_default_tasks', true ) ) {
+			return;
+		}
 
 		self::add_task( 'setup', StoreDetails::get_task() );
 		self::add_task( 'setup', Purchase::get_task() );
@@ -113,7 +137,6 @@ class TaskLists {
 	 * @return array
 	 */
 	public static function get_lists() {
-		self::maybe_add_default_tasks();
 		return self::$lists;
 	}
 
