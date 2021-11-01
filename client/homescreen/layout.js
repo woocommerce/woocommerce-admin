@@ -91,7 +91,7 @@ export const Layout = ( {
 			momentDate.format( 'MM' )
 	);
 
-	const isRunningTwoColumnExperiment =
+	const isRunningTaskListExperiment =
 		experimentAssignment?.variationName === 'treatment';
 
 	if ( isBatchUpdating && ! showInbox ) {
@@ -118,7 +118,7 @@ export const Layout = ( {
 		return (
 			<>
 				<Column shouldStick={ shouldStickColumns }>
-					{ ! isRunningTwoColumnExperiment && (
+					{ ! isRunningTaskListExperiment && (
 						<ActivityHeader
 							className="your-store-today"
 							title={ __(
@@ -131,7 +131,7 @@ export const Layout = ( {
 							) }
 						/>
 					) }
-					{ ! isRunningTwoColumnExperiment && <ActivityPanel /> }
+					{ ! isRunningTaskListExperiment && <ActivityPanel /> }
 					{ isTaskListEnabled && renderTaskList() }
 					<InboxPanel />
 				</Column>
@@ -144,7 +144,7 @@ export const Layout = ( {
 	};
 
 	const renderTaskList = () => {
-		if ( twoColumns && isRunningTwoColumnExperiment ) {
+		if ( twoColumns && isRunningTaskListExperiment ) {
 			return (
 				// When running the two-column experiment, we still need to render
 				// the component in the left column for the extended task list.
@@ -152,7 +152,7 @@ export const Layout = ( {
 			);
 		} else if (
 			! twoColumns &&
-			isRunningTwoColumnExperiment &&
+			isRunningTaskListExperiment &&
 			! isLoadingExperimentAssignment
 		) {
 			return (
@@ -176,7 +176,7 @@ export const Layout = ( {
 
 	return (
 		<>
-			{ twoColumns && isRunningTwoColumnExperiment && (
+			{ twoColumns && isRunningTaskListExperiment && (
 				<TwoColumnTasks query={ query } userPreferences={ userPrefs } />
 			) }
 			<div
