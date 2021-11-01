@@ -163,37 +163,33 @@ class DefaultFreeExtensions {
 							],
 						],
 					],
-				],
-			],
-			'woocommerce-services:shipping'     => [
-				'description' => sprintf(
-				/* translators: 1: opening product link tag. 2: closing link tag */
-					__( 'Print shipping labels with %1$sWooCommerce Shipping%2$s', 'woocommerce-admin' ),
-					'<a href="https://woocommerce.com/products/shipping" target="_blank">',
-					'</a>'
-				),
-				'is_visible'  => [
 					[
-						'type'      => 'base_location_country',
-						'value'     => 'US',
-						'operation' => '=',
-					],
-					[
-						'type'    => 'not',
-						'operand' => [
+						'key'         => 'woocommerce-services:shipping',
+						'description' => sprintf(
+						/* translators: 1: opening product link tag. 2: closing link tag */
+							__( 'Print shipping labels with %1$sWooCommerce Shipping%2$s', 'woocommerce-admin' ),
+							'<a href="https://woocommerce.com/products/shipping" target="_blank">',
+							'</a>'
+						),
+						'is_visible'  => [
 							[
-								'type'    => 'plugins_activated',
-								'plugins' => [ 'woocommerce-services' ],
+								'type'      => 'base_location_country',
+								'value'     => 'US',
+								'operation' => '=',
 							],
-						],
-					],
-					[
-						'type'     => 'or',
-						'operands' => [
 							[
-								[
-									'type'         => 'option',
-									'transformers' => [
+								'type'    => 'not',
+								'operand' => [
+									[
+										'type'    => 'plugins_activated',
+										'plugins' => [ 'woocommerce-services' ],
+									],
+								],
+							],
+							[
+								'type'     => 'or',
+								'operands' => [
+									[
 										[
 											'type'         => 'option',
 											'transformers' => [
@@ -337,7 +333,6 @@ class DefaultFreeExtensions {
 					[
 						'key'         => 'mailpoet',
 						'name'        => __( 'MailPoet', 'woocommerce-admin' ),
-						'description' => __( 'Level up your email marketing with {{link}}MailPoet{{/link}}', 'woocommerce-admin' ),
 						'description' => sprintf(
 							/* translators: 1: opening product link tag. 2: closing link tag */
 							__( 'Level up your email marketing with %1$sMailPoet%2$s', 'woocommerce-admin' ),
