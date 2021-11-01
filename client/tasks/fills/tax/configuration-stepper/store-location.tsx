@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -17,6 +17,9 @@ import { SettingsSelector } from '../utils';
 export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
 	nextStep,
 } ) => {
+	const { updateAndPersistSettingsForGroup } = useDispatch(
+		SETTINGS_STORE_NAME
+	);
 	const { generalSettings } = useSelect( ( select ) => {
 		const { getSettings } = select(
 			SETTINGS_STORE_NAME
@@ -38,6 +41,9 @@ export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
 			} }
 			isSettingsRequesting={ false }
 			settings={ generalSettings }
+			updateAndPersistSettingsForGroup={
+				updateAndPersistSettingsForGroup
+			}
 		/>
 	);
 };

@@ -103,7 +103,7 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 	};
 
 	const stepProps = {
-		isPending,
+		isPending: isPending || isResolving,
 		onEnable,
 		onDisable,
 		nextStep,
@@ -171,7 +171,7 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 
 	return (
 		<Stepper
-			isPending={ isResolving }
+			isPending={ isResolving || isPending }
 			isVertical={ true }
 			currentStep={ step.key }
 			steps={ steps }
