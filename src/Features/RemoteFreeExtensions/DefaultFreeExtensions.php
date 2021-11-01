@@ -92,6 +92,46 @@ class DefaultFreeExtensions {
 										'value'     => 'NZ',
 										'operation' => '=',
 									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'AT',
+										'operation' => '=',
+									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'BE',
+										'operation' => '=',
+									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'NL',
+										'operation' => '=',
+									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'PL',
+										'operation' => '=',
+									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'PT',
+										'operation' => '=',
+									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'CH',
+										'operation' => '=',
+									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'HK',
+										'operation' => '=',
+									],
+									[
+										'type'      => 'base_location_country',
+										'value'     => 'SG',
+										'operation' => '=',
+									],
 								],
 							],
 							[
@@ -123,33 +163,37 @@ class DefaultFreeExtensions {
 							],
 						],
 					],
+				],
+			],
+			'woocommerce-services:shipping'     => [
+				'description' => sprintf(
+				/* translators: 1: opening product link tag. 2: closing link tag */
+					__( 'Print shipping labels with %1$sWooCommerce Shipping%2$s', 'woocommerce-admin' ),
+					'<a href="https://woocommerce.com/products/shipping" target="_blank">',
+					'</a>'
+				),
+				'is_visible'  => [
 					[
-						'key'         => 'woocommerce-services:shipping',
-						'description' => sprintf(
-							/* translators: 1: opening product link tag. 2: closing link tag */
-							__( 'Print shipping labels with %1$sWooCommerce Shipping%2$s', 'woocommerce-admin' ),
-							'<a href="https://woocommerce.com/products/shipping" target="_blank">',
-							'</a>'
-						),
-						'is_visible'  => [
+						'type'      => 'base_location_country',
+						'value'     => 'US',
+						'operation' => '=',
+					],
+					[
+						'type'    => 'not',
+						'operand' => [
 							[
-								'type'      => 'base_location_country',
-								'value'     => 'US',
-								'operation' => '=',
+								'type'    => 'plugins_activated',
+								'plugins' => [ 'woocommerce-services' ],
 							],
+						],
+					],
+					[
+						'type'     => 'or',
+						'operands' => [
 							[
-								'type'    => 'not',
-								'operand' => [
-									[
-										'type'    => 'plugins_activated',
-										'plugins' => [ 'woocommerce-services' ],
-									],
-								],
-							],
-							[
-								'type'     => 'or',
-								'operands' => [
-									[
+								[
+									'type'         => 'option',
+									'transformers' => [
 										[
 											'type'         => 'option',
 											'transformers' => [
