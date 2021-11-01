@@ -224,7 +224,7 @@ class DefaultPaymentGateways {
 					(object) array(
 						'type'     => 'plugin_version',
 						'plugin'   => 'woocommerce-admin',
-						'version'  => '2.9.0',
+						'version'  => '2.9.0-dev',
 						'operator' => '<',
 					),
 					(object) array(
@@ -256,7 +256,7 @@ class DefaultPaymentGateways {
 							(object) array(
 								'type'     => 'plugin_version',
 								'plugin'   => 'woocommerce-admin',
-								'version'  => '2.9.0',
+								'version'  => '2.9.0-dev',
 								'operator' => '>=',
 							),
 							(object) array(
@@ -290,7 +290,7 @@ class DefaultPaymentGateways {
 							(object) array(
 								'type'     => 'plugin_version',
 								'plugin'   => 'woocommerce-admin',
-								'version'  => '2.9.0',
+								'version'  => '2.9.0-dev',
 								'operator' => '>=',
 							),
 							(object) array(
