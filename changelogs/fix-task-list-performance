@@ -1,4 +1,0 @@
-Significance: patch
-Type: Performance
-
-Only load tasks during rest api requests #7856
