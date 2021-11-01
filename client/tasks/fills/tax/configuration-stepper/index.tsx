@@ -24,7 +24,7 @@ import { StoreLocation } from './store-location';
 export type ConfigurationStepperProps = {
 	isPending: boolean;
 	onDisable: () => void;
-	onEnable: () => void;
+	onAutomate: () => void;
 	onManual: () => void;
 	supportsAutomatedTaxes: boolean;
 };
@@ -34,7 +34,7 @@ export type ConfigurationStepProps = {
 	isResolving: boolean;
 	nextStep: () => void;
 	onDisable: () => void;
-	onEnable: () => void;
+	onAutomate: () => void;
 	onManual: () => void;
 	pluginsToActivate: string[];
 };
@@ -42,7 +42,7 @@ export type ConfigurationStepProps = {
 export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 	isPending,
 	onDisable,
-	onEnable,
+	onAutomate,
 	onManual,
 	supportsAutomatedTaxes,
 } ) => {
@@ -99,7 +99,7 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 	const stepProps = {
 		isPending,
 		isResolving,
-		onEnable,
+		onAutomate,
 		onDisable,
 		nextStep,
 		onManual,

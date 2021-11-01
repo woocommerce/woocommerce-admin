@@ -124,7 +124,7 @@ const Tax = ( { onComplete, query } ) => {
 		}
 	};
 
-	const onEnable = () => {
+	const onAutomate = () => {
 		setIsPending( true );
 		updateAndPersistSettingsForGroup( 'tax', {
 			tax: {
@@ -168,7 +168,7 @@ const Tax = ( { onComplete, query } ) => {
 		const { auto } = query;
 
 		if ( auto === 'true' ) {
-			onEnable();
+			onAutomate();
 		}
 	}, [] );
 
@@ -178,7 +178,7 @@ const Tax = ( { onComplete, query } ) => {
 
 	const childProps = {
 		isPending,
-		onEnable,
+		onAutomate,
 		onManual,
 		onDisable,
 		supportsAutomatedTaxes: supportsAutomatedTaxes(),

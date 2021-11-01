@@ -9,7 +9,7 @@ import { recordEvent } from '@woocommerce/tracks';
 
 export const AutomatedTaxes = ( {
 	isPending,
-	onEnable,
+	onAutomate,
 	onManual,
 	onDisable,
 } ) => {
@@ -44,7 +44,7 @@ export const AutomatedTaxes = ( {
 					recordEvent( 'tasklist_tax_setup_automated_proceed', {
 						setup_automatically: true,
 					} );
-					onEnable();
+					onAutomate();
 				} }
 			>
 				{ __( 'Yes please', 'woocommerce-admin' ) }
