@@ -230,7 +230,7 @@ class DefaultPaymentGateways {
 					(object) array(
 						'type'     => 'plugin_version',
 						'plugin'   => 'woocommerce',
-						'version'  => '5.10.0',
+						'version'  => '5.10.0-dev',
 						'operator' => '<',
 					),
 				),
@@ -262,7 +262,7 @@ class DefaultPaymentGateways {
 							(object) array(
 								'type'     => 'plugin_version',
 								'plugin'   => 'woocommerce',
-								'version'  => '5.10.0',
+								'version'  => '5.10.0-dev',
 								'operator' => '>=',
 							),
 						),
@@ -296,7 +296,7 @@ class DefaultPaymentGateways {
 							(object) array(
 								'type'     => 'plugin_version',
 								'plugin'   => 'woocommerce',
-								'version'  => '5.10.0',
+								'version'  => '5.10.0-dev',
 								'operator' => '>=',
 							),
 						),
