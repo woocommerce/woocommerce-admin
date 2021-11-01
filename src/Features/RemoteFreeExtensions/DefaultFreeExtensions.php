@@ -166,7 +166,7 @@ class DefaultFreeExtensions {
 					[
 						'key'         => 'woocommerce-services:shipping',
 						'description' => sprintf(
-						/* translators: 1: opening product link tag. 2: closing link tag */
+							/* translators: 1: opening product link tag. 2: closing link tag */
 							__( 'Print shipping labels with %1$sWooCommerce Shipping%2$s', 'woocommerce-admin' ),
 							'<a href="https://woocommerce.com/products/shipping" target="_blank">',
 							'</a>'
