@@ -15,7 +15,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { AUTOMATION_PLUGINS, SettingsSelector } from '../utils';
+import { AUTOMATION_PLUGINS, SettingsSelector } from '../../utils';
 import { Connect } from './connect';
 import { ManualConfiguration } from './manual-configuration';
 import { Plugins } from './plugins';

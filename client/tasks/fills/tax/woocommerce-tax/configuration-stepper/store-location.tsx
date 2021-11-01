@@ -11,9 +11,9 @@ import { useSelect, useDispatch } from '@wordpress/data';
  * Internal dependencies
  */
 import { ConfigurationStepProps } from '.';
-import { getCountryCode } from '../../../../dashboard/utils';
-import { hasCompleteAddress, SettingsSelector } from '../utils';
-import { default as StoreLocationForm } from '../../steps/location';
+import { getCountryCode } from '~/dashboard/utils';
+import { hasCompleteAddress, SettingsSelector } from '../../utils';
+import { default as StoreLocationForm } from '~/tasks/fills/steps/location';
 
 export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
 	isResolving,

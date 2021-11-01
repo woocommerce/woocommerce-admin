@@ -12,9 +12,9 @@ import { useDispatch, useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { createNoticesFromResponse } from '../../../../lib/notices';
+import { createNoticesFromResponse } from '~/lib/notices';
 import { ConfigurationStepProps } from '.';
-import { SettingsSelector } from '../utils';
+import { SettingsSelector } from '../../utils';
 
 export const Plugins: React.FC< ConfigurationStepProps > = ( {
 	nextStep,

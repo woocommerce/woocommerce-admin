@@ -7,7 +7,7 @@ import { recordEvent, queueRecordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { default as ConnectForm } from '../../../../dashboard/components/connect';
+import { default as ConnectForm } from '~/dashboard/components/connect';
 import { ConfigurationStepProps } from '.';
 
 export const Connect: React.FC< ConfigurationStepProps > = ( {
