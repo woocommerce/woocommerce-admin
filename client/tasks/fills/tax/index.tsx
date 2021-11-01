@@ -55,7 +55,7 @@ const Tax = ( { onComplete, query } ) => {
 		const activePlugins = getActivePlugins();
 
 		return {
-			generalSettings: getSettings( 'general' ),
+			generalSettings: getSettings( 'general' ).general,
 			isJetpackConnected: select(
 				PLUGINS_STORE_NAME
 			).isJetpackConnected(),

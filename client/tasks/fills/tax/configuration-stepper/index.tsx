@@ -15,11 +15,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import {
-	AUTOMATION_PLUGINS,
-	hasCompleteAddress,
-	SettingsSelector,
-} from '../utils';
+import { AUTOMATION_PLUGINS, SettingsSelector } from '../utils';
 import { Connect } from './connect';
 import { ManualConfiguration } from './manual-configuration';
 import { Plugins } from './plugins';
@@ -35,6 +31,7 @@ export type ConfigurationStepperProps = {
 
 export type ConfigurationStepProps = {
 	isPending: boolean;
+	isResolving: boolean;
 	nextStep: () => void;
 	onDisable: () => void;
 	onEnable: () => void;
@@ -52,7 +49,6 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 	const [ pluginsToActivate, setPluginsToActivate ] = useState( [] );
 	const {
 		activePlugins,
-		generalSettings,
 		isJetpackConnected,
 		isResolving,
 		tosAccepted,
@@ -101,7 +97,8 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 	};
 
 	const stepProps = {
-		isPending: isPending || isResolving,
+		isPending,
+		isResolving,
 		onEnable,
 		onDisable,
 		nextStep,
@@ -135,6 +132,7 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 				),
 				content: <Plugins { ...stepProps } />,
 				visible:
+					! isResolving &&
 					( pluginsToActivate.length || ! tosAccepted ) &&
 					supportsAutomatedTaxes,
 			},
@@ -146,7 +144,10 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 					'woocommerce-admin'
 				),
 				content: <Connect { ...stepProps } />,
-				visible: ! isJetpackConnected && supportsAutomatedTaxes,
+				visible:
+					! isResolving &&
+					! isJetpackConnected &&
+					supportsAutomatedTaxes,
 			},
 			{
 				key: 'manual_configuration',
@@ -169,7 +170,7 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 
 	return (
 		<Stepper
-			isPending={ isResolving || isPending }
+			isPending={ isResolving }
 			isVertical={ true }
 			currentStep={ step.key }
 			steps={ steps }

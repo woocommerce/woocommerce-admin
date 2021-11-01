@@ -16,6 +16,7 @@ import { hasCompleteAddress, SettingsSelector } from '../utils';
 import { default as StoreLocationForm } from '../../steps/location';
 
 export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
+	isResolving,
 	nextStep,
 } ) => {
 	const { updateAndPersistSettingsForGroup } = useDispatch(
@@ -32,11 +33,15 @@ export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
 	} );
 
 	useEffect( () => {
-		if ( ! hasCompleteAddress( generalSettings ) ) {
+		if ( isResolving || ! hasCompleteAddress( generalSettings ) ) {
 			return;
 		}
 		nextStep();
-	}, [] );
+	}, [ isResolving ] );
+
+	if ( isResolving ) {
+		return null;
+	}
 
 	return (
 		<StoreLocationForm
