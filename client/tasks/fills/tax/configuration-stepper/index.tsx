@@ -83,9 +83,7 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 				getOption( 'woocommerce_setup_jetpack_opted_in' ) === '1',
 		};
 	} );
-	const [ stepIndex, setStepIndex ] = useState(
-		hasCompleteAddress( generalSettings ) ? 1 : 0
-	);
+	const [ stepIndex, setStepIndex ] = useState( 0 );
 
 	useEffect( () => {
 		const remainingPlugins = difference(

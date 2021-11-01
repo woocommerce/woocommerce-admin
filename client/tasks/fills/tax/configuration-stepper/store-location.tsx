@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import { useEffect } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
@@ -11,8 +12,8 @@ import { useSelect, useDispatch } from '@wordpress/data';
  */
 import { ConfigurationStepProps } from '.';
 import { getCountryCode } from '../../../../dashboard/utils';
+import { hasCompleteAddress, SettingsSelector } from '../utils';
 import { default as StoreLocationForm } from '../../steps/location';
-import { SettingsSelector } from '../utils';
 
 export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
 	nextStep,
@@ -29,6 +30,13 @@ export const StoreLocation: React.FC< ConfigurationStepProps > = ( {
 			generalSettings: getSettings( 'general' )?.general,
 		};
 	} );
+
+	useEffect( () => {
+		if ( ! hasCompleteAddress( generalSettings ) ) {
+			return;
+		}
+		nextStep();
+	}, [] );
 
 	return (
 		<StoreLocationForm
