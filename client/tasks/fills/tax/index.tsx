@@ -16,7 +16,7 @@ import { WooOnboardingTask } from '@woocommerce/onboarding';
  */
 import { redirectToTaxSettings, SettingsSelector } from './utils';
 import { createNoticesFromResponse } from '../../../lib/notices';
-import { PartnerCards } from './partner-cards';
+import { Partners } from './partners';
 import { WooCommerceTax } from './woocommerce-tax/woocommerce-tax';
 
 const Tax = ( { onComplete, query } ) => {
@@ -125,7 +125,7 @@ const Tax = ( { onComplete, query } ) => {
 					{ query.partner === 'woocommerce-tax' ? (
 						<WooCommerceTax { ...childProps } />
 					) : (
-						<PartnerCards { ...childProps } />
+						<Partners { ...childProps } />
 					) }
 				</CardBody>
 			</Card>
