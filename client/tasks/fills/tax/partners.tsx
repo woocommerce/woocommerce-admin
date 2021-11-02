@@ -8,13 +8,14 @@ import { updateQueryString } from '@woocommerce/navigation';
  * Internal dependencies
  */
 import { PartnerCard } from './partner-card';
-import { Logo as AvalaraLogo } from './avalara/logo';
-import { Logo as WooCommerceTaxLogo } from './woocommerce-tax/logo';
+import AvalaraLogo from './avalara/logo.png';
+import WooCommerceTaxLogo from './woocommerce-tax/logo.png';
 
 export const Partners = ( { isPending, onManual, onDisable } ) => {
 	return (
 		<div className="woocommerce-tax-partners">
 			<PartnerCard
+				name={ __( 'WooCommerce Tax', 'woocommerce-admin' ) }
 				isPending={ isPending }
 				logo={ WooCommerceTaxLogo }
 				description={ __( 'Best for new stores', 'woocommerce-admin' ) }
@@ -42,6 +43,7 @@ export const Partners = ( { isPending, onManual, onDisable } ) => {
 				}
 			/>
 			<PartnerCard
+				name={ __( 'Avalara', 'woocommerce-admin' ) }
 				isPending={ isPending }
 				logo={ AvalaraLogo }
 				description={ __(

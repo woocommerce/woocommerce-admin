@@ -4,7 +4,8 @@
 import { Button } from '@wordpress/components';
 
 export const PartnerCard: React.FC< {
-	logo: React.FC;
+	name: string;
+	logo: string;
 	description: string;
 	benefits: string[];
 	terms: string;
@@ -22,7 +23,11 @@ export const PartnerCard: React.FC< {
 } ) => {
 	return (
 		<div className="woocommerce-tax-partner-card">
-			<div className="woocommerce-tax-partner-card__logo">{ logo }</div>
+			<img
+				className="woocommerce-tax-partner-card__logo"
+				src={ logo }
+				alt={ name }
+			/>
 			<div className="woocommerce-tax-partner-card__description">
 				{ description }
 			</div>
