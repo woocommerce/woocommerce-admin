@@ -5,12 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { lazy, useState } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { uniqueId, find } from 'lodash';
-import {
-	Icon,
-	help as helpIcon,
-	inbox as inboxIcon,
-	external,
-} from '@wordpress/icons';
+import { Icon, help as helpIcon, external } from '@wordpress/icons';
 import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
 import { H, Section } from '@woocommerce/components';
 import {
@@ -22,7 +17,6 @@ import { getHistory, getNewPath } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { applyFilters } from '@wordpress/hooks';
 import { useSlot } from '@woocommerce/experimental';
-
 /**
  * Internal dependencies
  */
@@ -31,6 +25,7 @@ import { isNotesPanelVisible } from './unread-indicators';
 import { isWCAdmin } from '../../dashboard/utils';
 import { Tabs } from './tabs';
 import { SetupProgress } from './setup-progress';
+import { IconFlag } from './icon-flag';
 import { DisplayOptions } from './display-options';
 import { HighlightTooltip } from './highlight-tooltip';
 import { Panel } from './panel';
@@ -230,10 +225,10 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 
 	// @todo Pull in dynamic unread status/count
 	const getTabs = () => {
-		const inbox = {
-			name: 'inbox',
-			title: __( 'Inbox', 'woocommerce-admin' ),
-			icon: <Icon icon={ inboxIcon } />,
+		const activity = {
+			name: 'activity',
+			title: __( 'Activity', 'woocommerce-admin' ),
+			icon: <IconFlag />,
 			unread: hasUnreadNotes || hasAbbreviatedNotifications,
 			visible:
 				( isEmbedded || ! isHomescreen() ) && ! isPerformingSetupTask(),
@@ -307,7 +302,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			},
 		};
 
-		return [ inbox, setup, previewSite, displayOptions, help ].filter(
+		return [ activity, setup, previewSite, displayOptions, help ].filter(
 			( tab ) => tab.visible
 		);
 	};
@@ -316,7 +311,7 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 		const { task } = query;
 
 		switch ( tab ) {
-			case 'inbox':
+			case 'activity':
 				return (
 					<InboxPanel
 						hasAbbreviatedNotifications={
