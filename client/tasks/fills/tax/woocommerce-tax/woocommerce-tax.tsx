@@ -18,13 +18,14 @@ import {
 	AUTOMATION_PLUGINS,
 	hasCompleteAddress,
 	SettingsSelector,
+	TaxChildProps,
 } from '../utils';
 import { AutomatedTaxes } from './automated-taxes';
 import { ConfigurationStepper } from './configuration-stepper';
 import { getCountryCode } from '~/dashboard/utils';
 import './woocommerce-tax.scss';
 
-export const WooCommerceTax = ( {
+export const WooCommerceTax: React.FC< TaxChildProps > = ( {
 	isPending,
 	onAutomate,
 	onManual,

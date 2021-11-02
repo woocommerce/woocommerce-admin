@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { Button } from '@wordpress/components';
 import { updateQueryString } from '@woocommerce/navigation';
 
 /**
@@ -10,8 +11,13 @@ import { updateQueryString } from '@woocommerce/navigation';
 import { PartnerCard } from './partner-card';
 import AvalaraLogo from './avalara/logo.png';
 import WooCommerceTaxLogo from './woocommerce-tax/logo.png';
+import { TaxChildProps } from './utils';
 
-export const Partners = ( { isPending, onManual, onDisable } ) => {
+export const Partners: React.FC< TaxChildProps > = ( {
+	isPending,
+	onManual,
+	onDisable,
+} ) => {
 	return (
 		<div className="woocommerce-tax-partners">
 			<PartnerCard
@@ -79,6 +85,28 @@ export const Partners = ( { isPending, onManual, onDisable } ) => {
 						'https://woocommerce.com/products/woocommerce-avatax/' )
 				}
 			/>
+			<div className="woocommerce-tax-partners__other-actions">
+				<Button
+					isLink
+					disabled={ isPending }
+					isBusy={ isPending }
+					onClick={ () => {
+						onManual();
+					} }
+				>
+					{ __( 'Set up taxes manually', 'woocommerce-admin' ) }
+				</Button>
+				<Button
+					isLink
+					disabled={ isPending }
+					isBusy={ isPending }
+					onClick={ () => {
+						onDisable();
+					} }
+				>
+					{ __( "I don't charge sales tax", 'woocommerce-admin' ) }
+				</Button>
+			</div>
 		</div>
 	);
 };

@@ -47,3 +47,13 @@ export type SettingsSelector = WPDataSelectors & {
 		};
 	};
 };
+
+/**
+ * Types for child tax components.
+ */
+export type TaxChildProps = {
+	isPending: boolean;
+	onAutomate: () => void;
+	onManual: () => void;
+	onDisable: () => void;
+};
