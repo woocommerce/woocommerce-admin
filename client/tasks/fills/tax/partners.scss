@@ -1,6 +1,10 @@
 .woocommerce-tax-partners__partners {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+
+	@include breakpoint( '<782px' ) {
+		grid-template-columns: 1fr;
+	}
 }
 
 .woocommerce-tax-partners {
@@ -21,6 +25,10 @@
 	justify-content: center;
 	margin: 0;
 
+	@include breakpoint( '<782px' ) {
+		flex-direction: column;
+	}
+
 	li {
 		margin-top: $gap;
 		margin-right: $gap-smallest;
@@ -34,6 +42,10 @@
 			content: '•';
 			color: #bbb;
 			margin-left: 4px;
+
+			@include breakpoint( '<782px' ) {
+				content: '';
+			}
 		}
 
 		&:last-child {
