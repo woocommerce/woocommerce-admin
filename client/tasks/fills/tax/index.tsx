@@ -6,7 +6,7 @@ import { Card, CardBody, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { OPTIONS_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
-import { queueRecordEvent } from '@woocommerce/tracks';
+import { queueRecordEvent, recordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
 import { updateQueryString } from '@woocommerce/navigation';
 import { useEffect, useState } from '@wordpress/element';
@@ -119,7 +119,10 @@ const Tax = ( { onComplete, query } ) => {
 
 		if ( auto === 'true' ) {
 			onAutomate();
+			return;
 		}
+
+		recordEvent( 'wcadmin_tasklist_tax_view_options', {} );
 	}, [] );
 
 	useEffect( () => {

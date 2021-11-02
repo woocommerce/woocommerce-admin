@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 import interpolateComponents from 'interpolate-components';
 import { Link } from '@woocommerce/components';
+import { recordEvent } from '@woocommerce/tracks';
 import { updateQueryString } from '@woocommerce/navigation';
 
 /**
@@ -87,11 +88,14 @@ export const Partners: React.FC< TaxChildProps > = ( {
 							'Continue setup',
 							'woocommerce-admin'
 						) }
-						onClick={ () =>
+						onClick={ () => {
+							recordEvent( 'wcadmin_tasklist_tax_select_option', {
+								selected_option: 'woocommerce-tax',
+							} );
 							updateQueryString( {
 								partner: 'woocommerce-tax',
-							} )
-						}
+							} );
+						} }
 					/>
 					<PartnerCard
 						name={ __( 'Avalara', 'woocommerce-admin' ) }
@@ -136,14 +140,17 @@ export const Partners: React.FC< TaxChildProps > = ( {
 							'Enable & set up',
 							'woocommerce-admin'
 						) }
-						onClick={ () =>
+						onClick={ () => {
+							recordEvent( 'wcadmin_tasklist_tax_select_option', {
+								selected_option: 'avalara',
+							} );
 							window.open(
 								new URL(
 									'https://woocommerce.com/products/woocommerce-avatax/'
 								),
 								'_blank'
-							)
-						}
+							);
+						} }
 					/>
 				</div>
 				<ul className="woocommerce-tax-partners__other-actions">
