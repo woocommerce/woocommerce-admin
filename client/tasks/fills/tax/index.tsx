@@ -118,19 +118,17 @@ const Tax = ( { onComplete, query } ) => {
 		onDisable,
 	};
 
-	return (
-		<div className="woocommerce-task-tax">
+	if ( query.partner === 'woocommerce-tax' ) {
+		return (
 			<Card className="woocommerce-task-card">
 				<CardBody>
-					{ query.partner === 'woocommerce-tax' ? (
-						<WooCommerceTax { ...childProps } />
-					) : (
-						<Partners { ...childProps } />
-					) }
+					<WooCommerceTax { ...childProps } />
 				</CardBody>
 			</Card>
-		</div>
-	);
+		);
+	}
+
+	return <Partners { ...childProps } />;
 };
 
 registerPlugin( 'wc-admin-onboarding-task-tax', {

@@ -1,7 +1,14 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
+import { Bullet } from './bullet';
+import './partner-card.scss';
 
 export const PartnerCard: React.FC< {
 	name: string;
@@ -13,6 +20,7 @@ export const PartnerCard: React.FC< {
 	onClick: () => void;
 	isPending: boolean;
 } > = ( {
+	name,
 	logo,
 	description,
 	benefits,
@@ -23,11 +31,10 @@ export const PartnerCard: React.FC< {
 } ) => {
 	return (
 		<div className="woocommerce-tax-partner-card">
-			<img
-				className="woocommerce-tax-partner-card__logo"
-				src={ logo }
-				alt={ name }
-			/>
+			<div className="woocommerce-tax-partner-card__logo">
+				<img src={ logo } alt={ name } />
+			</div>
+
 			<div className="woocommerce-tax-partner-card__description">
 				{ description }
 			</div>
@@ -38,16 +45,21 @@ export const PartnerCard: React.FC< {
 							className="woocommerce-tax-partner-card__benefit"
 							key={ i }
 						>
-							{ benefit }
+							<span className="woocommerce-tax-partner-card__benefit-bullet">
+								<Bullet />
+							</span>
+							<span className="woocommerce-tax-partner-card__benefit-text">
+								{ benefit }
+							</span>
 						</li>
 					);
 				} ) }
 			</ul>
 
 			<div className="woocommerce-tax-partner-card__action">
-				<span className="woocommerce-tax-partner-card__terms">
+				<div className="woocommerce-tax-partner-card__terms">
 					{ terms }
-				</span>
+				</div>
 				<Button
 					isSecondary
 					onClick={ onClick }
