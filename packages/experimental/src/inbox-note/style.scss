@@ -35,6 +35,7 @@
 	}
 
 	&:not(.is-placeholder) {
+		border: 0;
 		border-bottom: 1px solid $gray-200;
 	}
 
@@ -133,7 +134,12 @@
 	a,
 	button {
 		cursor: pointer;
+		&.is-link {
+			text-decoration: none;
+		}
 	}
+
+	border-top: 0;
 
 	button.woocommerce-admin-dismiss-notification {
 		color: $gray-700;
