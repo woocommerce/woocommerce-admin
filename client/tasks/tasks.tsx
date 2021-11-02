@@ -9,7 +9,6 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { ONBOARDING_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { useExperiment } from '@woocommerce/explat';
 import { recordEvent } from '@woocommerce/tracks';
-import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -31,22 +30,6 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	const [ isLoadingExperiment, experimentAssignment ] = useExperiment(
 		'woocommerce_tasklist_progression'
 	);
-
-	const momentDate = moment().utc();
-
-	const [
-		isLoadingTwoColExperimentAssignment,
-		twoColExperimentAssignment,
-	] = useExperiment(
-		'woocommerce_tasklist_progression_headercard_2_col' +
-			momentDate.format( 'YYYY' ) +
-			'_' +
-			momentDate.format( 'MM' )
-	);
-
-	const isRunningTwoColumnExperiment =
-		! isLoadingTwoColExperimentAssignment &&
-		twoColExperimentAssignment?.variationName === 'treatment';
 
 	const { isResolving, taskLists } = useSelect( ( select ) => {
 		return {
@@ -93,9 +76,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		const taskListsFinished = false;
 		updateOptions( {
 			woocommerce_task_list_prompt_shown: true,
-			woocommerce_default_homepage_layout: isRunningTwoColumnExperiment
-				? 'two_columns'
-				: 'single_column',
+			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	}, [ taskLists, isResolving ] );
 
