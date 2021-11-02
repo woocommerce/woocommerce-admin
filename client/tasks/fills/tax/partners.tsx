@@ -137,8 +137,12 @@ export const Partners: React.FC< TaxChildProps > = ( {
 							'woocommerce-admin'
 						) }
 						onClick={ () =>
-							( window.location.href =
-								'https://woocommerce.com/products/woocommerce-avatax/' )
+							window.open(
+								new URL(
+									'https://woocommerce.com/products/woocommerce-avatax/'
+								),
+								'_blank'
+							)
 						}
 					/>
 				</div>
