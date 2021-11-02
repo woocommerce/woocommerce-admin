@@ -2,20 +2,26 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Card, CardBody } from '@wordpress/components';
+import { Card, CardBody, Spinner } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import { OPTIONS_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { queueRecordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
+import { updateQueryString } from '@woocommerce/navigation';
 import { useEffect, useState } from '@wordpress/element';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 
 /**
  * Internal dependencies
  */
-import { redirectToTaxSettings, SettingsSelector } from './utils';
+import {
+	redirectToTaxSettings,
+	SettingsSelector,
+	supportsAvalara,
+} from './utils';
 import { createNoticesFromResponse } from '../../../lib/notices';
+import { getCountryCode } from '~/dashboard/utils';
 import { Partners } from './partners';
 import { WooCommerceTax } from './woocommerce-tax/woocommerce-tax';
 
@@ -26,17 +32,22 @@ const Tax = ( { onComplete, query } ) => {
 	const { updateAndPersistSettingsForGroup } = useDispatch(
 		SETTINGS_STORE_NAME
 	);
-	const { generalSettings, taxSettings } = useSelect( ( select ) => {
-		const { getSettings } = select(
-			SETTINGS_STORE_NAME
-		) as SettingsSelector;
+	const { generalSettings, isResolving, taxSettings } = useSelect(
+		( select ) => {
+			const { getSettings, hasFinishedResolution } = select(
+				SETTINGS_STORE_NAME
+			) as SettingsSelector;
 
-		return {
-			generalSettings: getSettings( 'general' ).general,
-			// @Todo this should be removed as soon as https://github.com/woocommerce/woocommerce-admin/pull/7841 is merged.
-			taxSettings: getSettings( 'tax' ).tax || {},
-		};
-	} );
+			return {
+				generalSettings: getSettings( 'general' ).general,
+				isResolving: ! hasFinishedResolution( 'getSettings', [
+					'general',
+				] ),
+				// @Todo this should be removed as soon as https://github.com/woocommerce/woocommerce-admin/pull/7841 is merged.
+				taxSettings: getSettings( 'tax' ).tax || {},
+			};
+		}
+	);
 
 	const onManual = async () => {
 		setIsPending( true );
@@ -111,12 +122,28 @@ const Tax = ( { onComplete, query } ) => {
 		}
 	}, [] );
 
+	useEffect( () => {
+		const countryCode = getCountryCode(
+			generalSettings?.woocommerce_default_country
+		);
+		if ( supportsAvalara( countryCode ) || query.partner ) {
+			return;
+		}
+		updateQueryString( {
+			partner: 'woocommerce-tax',
+		} );
+	}, [ generalSettings ] );
+
 	const childProps = {
 		isPending,
 		onAutomate,
 		onManual,
 		onDisable,
 	};
+
+	if ( isResolving ) {
+		return <Spinner />;
+	}
 
 	if ( query.partner === 'woocommerce-tax' ) {
 		return (
