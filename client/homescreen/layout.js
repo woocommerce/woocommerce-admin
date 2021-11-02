@@ -71,9 +71,6 @@ export const Layout = ( {
 	const shouldShowStoreLinks = taskListComplete || isTaskListHidden;
 	const hasTwoColumnContent =
 		shouldShowStoreLinks || window.wcAdminFeatures.analytics;
-	const twoColumns =
-		( userPrefs.homepage_layout || defaultHomescreenLayout ) ===
-			'two_columns' && hasTwoColumnContent;
 	const [ showInbox, setShowInbox ] = useState( true );
 
 	const isTaskListEnabled = bothTaskListsHidden === false;
@@ -93,6 +90,39 @@ export const Layout = ( {
 
 	const isRunningTaskListExperiment =
 		experimentAssignment?.variationName === 'treatment';
+
+	const [
+		isLoadingTwoColExperimentAssignment,
+		twoColExperimentAssignment,
+	] = useExperiment(
+		'woocommerce_tasklist_progression_headercard_2col_' +
+			momentDate.format( 'YYYY' ) +
+			'_' +
+			momentDate.format( 'MM' )
+	);
+
+	const isRunningTwoColumnExperiment =
+		twoColExperimentAssignment?.variationName === 'treatment';
+
+	// Override defaultHomescreenLayout if store is in the experiment.
+	const defaultHomescreenLayoutOverride = () => {
+		if (
+			isLoadingExperimentAssignment ||
+			isLoadingTwoColExperimentAssignment
+		) {
+			return defaultHomescreenLayout; // Experiments are still loading, don't override.;
+		}
+
+		if ( ! isRunningTaskListExperiment ) {
+			return defaultHomescreenLayout; // Not in the experiment, don't override.
+		}
+
+		return isRunningTwoColumnExperiment ? 'two_columns' : 'single_column';
+	};
+
+	const twoColumns =
+		( userPrefs.homepage_layout || defaultHomescreenLayoutOverride() ) ===
+			'two_columns' && hasTwoColumnContent;
 
 	if ( isBatchUpdating && ! showInbox ) {
 		setShowInbox( true );
