@@ -5,6 +5,10 @@
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
+
+	a {
+		text-decoration: none;
+	}
 }
 
 .woocommerce-tax-partner-card__logo {

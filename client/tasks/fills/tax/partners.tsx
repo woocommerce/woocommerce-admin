@@ -3,6 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
+import interpolateComponents from 'interpolate-components';
+import { Link } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 
 /**
@@ -39,17 +41,48 @@ export const Partners: React.FC< TaxChildProps > = ( {
 								'Real-time sales tax calculation',
 								'woocommerce-admin'
 							),
-							__(
-								'Single economic nexus compliance',
+							interpolateComponents( {
+								mixedString: __(
+									'{{strong}}Single{{/strong}} economic nexus compliance',
+									'woocommerce-admin'
+								),
+								components: {
+									strong: <strong />,
+								},
+							} ),
+							interpolateComponents( {
+								mixedString: __(
+									'Powered by {{link}}Jetpack{{/link}}',
+									'woocommerce-admin'
+								),
+								components: {
+									link: (
+										<Link
+											type="external"
+											href="https://woocommerce.com/products/jetpack/?utm_medium=product"
+											target="_blank"
+										/>
+									),
+								},
+							} ),
+							// eslint-disable-next-line @wordpress/i18n-translator-comments
+							__( '100% free', 'woocommerce-admin' ),
+						] }
+						terms={ interpolateComponents( {
+							mixedString: __(
+								'By installing WooCommerce Tax and Jetpack you agree to the {{link}}Terms of Service{{/link}}.',
 								'woocommerce-admin'
 							),
-							__( 'Powered by Jetpack', 'woocommerce-admin' ),
-							__( '100&#37; free', 'woocommerce-admin' ),
-						] }
-						terms={ __(
-							'By installing WooCommerce Tax and Jetpack you agree to the Terms of Service.',
-							'woocommerce-admin'
-						) }
+							components: {
+								link: (
+									<Link
+										href={ 'https://wordpress.com/tos/' }
+										target="_blank"
+										type="external"
+									/>
+								),
+							},
+						} ) }
 						actionText={ __(
 							'Continue setup',
 							'woocommerce-admin'
@@ -73,10 +106,15 @@ export const Partners: React.FC< TaxChildProps > = ( {
 								'Real-time sales tax calculation',
 								'woocommerce-admin'
 							),
-							__(
-								'Multi-economic nexus compliance',
-								'woocommerce-admin'
-							),
+							interpolateComponents( {
+								mixedString: __(
+									'{{strong}}Multi{{/strong}}-economic nexus compliance',
+									'woocommerce-admin'
+								),
+								components: {
+									strong: <strong />,
+								},
+							} ),
 							__(
 								'Cross-border and multi-channel compliance',
 								'woocommerce-admin'
