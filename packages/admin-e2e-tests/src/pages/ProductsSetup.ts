@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { waitForElementByText, getElementByText } from '../utils/actions';
+import { waitForElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 
 export class ProductsSetup extends BasePage {
@@ -21,10 +21,6 @@ export class ProductsSetup extends BasePage {
 	}
 
 	async clickStartWithTemplate() {
-		const startWithATemplate = await getElementByText(
-			'span',
-			'Start with a template'
-		);
-		await startWithATemplate?.click();
+		await this.clickElementWithText( '*', 'Start with a template' );
 	}
 }
