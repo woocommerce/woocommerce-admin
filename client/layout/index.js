@@ -50,7 +50,7 @@ export class PrimaryLayout extends Component {
 				id="woocommerce-layout__primary"
 			>
 				{ window.wcAdminFeatures[ 'store-alerts' ] && (
-					<Suspense fallback={ <div></div> }>
+					<Suspense fallback={ null }>
 						<StoreAlerts />
 					</Suspense>
 				) }
