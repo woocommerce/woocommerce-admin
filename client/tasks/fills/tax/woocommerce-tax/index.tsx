@@ -21,9 +21,8 @@ import {
 	TaxChildProps,
 } from '../utils';
 import { AutomatedTaxes } from './automated-taxes';
-import { ConfigurationStepper } from './configuration-stepper';
 import { getCountryCode } from '~/dashboard/utils';
-import './woocommerce-tax.scss';
+import { Setup } from './setup';
 
 export const WooCommerceTax: React.FC< TaxChildProps > = ( {
 	isPending,
@@ -36,7 +35,6 @@ export const WooCommerceTax: React.FC< TaxChildProps > = ( {
 		isJetpackConnected,
 		isResolving,
 		pluginsToActivate,
-		tasksStatus,
 	} = useSelect( ( select ) => {
 		const { getSettings } = select(
 			SETTINGS_STORE_NAME
@@ -55,36 +53,16 @@ export const WooCommerceTax: React.FC< TaxChildProps > = ( {
 				) ||
 				! select(
 					SETTINGS_STORE_NAME
-				).hasFinishedResolution( 'getSettings', [ 'general' ] ) ||
-				! select( ONBOARDING_STORE_NAME ).hasFinishedResolution(
-					'getTasksStatus'
-				),
+				).hasFinishedResolution( 'getSettings', [ 'general' ] ),
 			pluginsToActivate: difference( AUTOMATION_PLUGINS, activePlugins ),
-			// @Todo this should be removed as soon as https://github.com/woocommerce/woocommerce-admin/pull/7841 is merged.
-			tasksStatus: select( ONBOARDING_STORE_NAME ).getTasksStatus(),
 		};
 	} );
-
-	const supportsAutomatedTaxes = () => {
-		const {
-			automatedTaxSupportedCountries = [],
-			taxJarActivated,
-		} = tasksStatus;
-
-		return (
-			! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
-			automatedTaxSupportedCountries.includes(
-				getCountryCode( generalSettings?.woocommerce_default_country )
-			)
-		);
-	};
 
 	const canAutomateTaxes = () => {
 		return (
 			hasCompleteAddress( generalSettings ) &&
 			! pluginsToActivate.length &&
-			isJetpackConnected &&
-			supportsAutomatedTaxes()
+			isJetpackConnected
 		);
 	};
 
@@ -97,12 +75,11 @@ export const WooCommerceTax: React.FC< TaxChildProps > = ( {
 		onAutomate,
 		onManual,
 		onDisable,
-		supportsAutomatedTaxes: supportsAutomatedTaxes(),
 	};
 
 	if ( canAutomateTaxes() ) {
 		return <AutomatedTaxes { ...childProps } />;
 	}
 
-	return <ConfigurationStepper { ...childProps } />;
+	return <Setup { ...childProps } />;
 };

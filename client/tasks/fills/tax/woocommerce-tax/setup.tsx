@@ -15,21 +15,20 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { AUTOMATION_PLUGINS, SettingsSelector } from '../../utils';
+import { AUTOMATION_PLUGINS, SettingsSelector } from '../utils';
 import { Connect } from './connect';
-import { ManualConfiguration } from './manual-configuration';
 import { Plugins } from './plugins';
-import { StoreLocation } from './store-location';
+import { StoreLocation } from '../components/store-location';
+import './setup.scss';
 
-export type ConfigurationStepperProps = {
+export type SetupProps = {
 	isPending: boolean;
 	onDisable: () => void;
 	onAutomate: () => void;
 	onManual: () => void;
-	supportsAutomatedTaxes: boolean;
 };
 
-export type ConfigurationStepProps = {
+export type SetupStepProps = {
 	isPending: boolean;
 	isResolving: boolean;
 	nextStep: () => void;
@@ -39,12 +38,11 @@ export type ConfigurationStepProps = {
 	pluginsToActivate: string[];
 };
 
-export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
+export const Setup: React.FC< SetupProps > = ( {
 	isPending,
 	onDisable,
 	onAutomate,
 	onManual,
-	supportsAutomatedTaxes,
 } ) => {
 	const [ pluginsToActivate, setPluginsToActivate ] = useState( [] );
 	const {
@@ -106,65 +104,40 @@ export const ConfigurationStepper: React.FC< ConfigurationStepperProps > = ( {
 		pluginsToActivate,
 	};
 
-	const getVisibleSteps = () => {
-		const allSteps = [
-			{
-				key: 'store_location',
-				label: __( 'Set store location', 'woocommerce-admin' ),
-				description: __(
-					'The address from which your business operates',
-					'woocommerce-admin'
-				),
-				content: <StoreLocation { ...stepProps } />,
-				visible: true,
-			},
-			{
-				key: 'plugins',
-				label: pluginsToActivate.includes( 'woocommerce-services' )
-					? __(
-							'Install Jetpack and WooCommerce Tax',
-							'woocommerce-admin'
-					  )
-					: __( 'Install Jetpack', 'woocommerce-admin' ),
-				description: __(
-					'Jetpack and WooCommerce Tax allow you to automate sales tax calculations',
-					'woocommerce-admin'
-				),
-				content: <Plugins { ...stepProps } />,
-				visible:
-					! isResolving &&
-					( pluginsToActivate.length || ! tosAccepted ) &&
-					supportsAutomatedTaxes,
-			},
-			{
-				key: 'connect',
-				label: __( 'Connect your store', 'woocommerce-admin' ),
-				description: __(
-					'Connect your store to WordPress.com to enable automated sales tax calculations',
-					'woocommerce-admin'
-				),
-				content: <Connect { ...stepProps } />,
-				visible:
-					! isResolving &&
-					! isJetpackConnected &&
-					supportsAutomatedTaxes,
-			},
-			{
-				key: 'manual_configuration',
-				label: __( 'Configure tax rates', 'woocommerce-admin' ),
-				description: __(
-					'Head over to the tax rate settings screen to configure your tax rates',
-					'woocommerce-admin'
-				),
-				content: <ManualConfiguration { ...stepProps } />,
-				visible: ! supportsAutomatedTaxes,
-			},
-		];
-
-		return filter( allSteps, ( step ) => step.visible );
-	};
-
-	const steps = getVisibleSteps();
+	const steps = [
+		{
+			key: 'store_location',
+			label: __( 'Set store location', 'woocommerce-admin' ),
+			description: __(
+				'The address from which your business operates',
+				'woocommerce-admin'
+			),
+			content: <StoreLocation { ...stepProps } />,
+		},
+		{
+			key: 'plugins',
+			label: pluginsToActivate.includes( 'woocommerce-services' )
+				? __(
+						'Install Jetpack and WooCommerce Tax',
+						'woocommerce-admin'
+				  )
+				: __( 'Install Jetpack', 'woocommerce-admin' ),
+			description: __(
+				'Jetpack and WooCommerce Tax allow you to automate sales tax calculations',
+				'woocommerce-admin'
+			),
+			content: <Plugins { ...stepProps } />,
+		},
+		{
+			key: 'connect',
+			label: __( 'Connect your store', 'woocommerce-admin' ),
+			description: __(
+				'Connect your store to WordPress.com to enable automated sales tax calculations',
+				'woocommerce-admin'
+			),
+			content: <Connect { ...stepProps } />,
+		},
+	];
 
 	const step = steps[ stepIndex ];
 

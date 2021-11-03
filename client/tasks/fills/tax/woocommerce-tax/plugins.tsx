@@ -13,10 +13,10 @@ import { useDispatch, useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { createNoticesFromResponse } from '~/lib/notices';
-import { ConfigurationStepProps } from '.';
-import { SettingsSelector } from '../../utils';
+import { SetupStepProps } from './setup';
+import { SettingsSelector } from '../utils';
 
-export const Plugins: React.FC< ConfigurationStepProps > = ( {
+export const Plugins: React.FC< SetupStepProps > = ( {
 	nextStep,
 	onDisable,
 	onManual,

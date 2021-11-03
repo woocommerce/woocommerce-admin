@@ -2,9 +2,19 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 
+
+	&.woocommerce-tax-partners__partners-count-1 {
+		grid-template-columns: 1fr;
+	}
+
 	@include breakpoint( '<782px' ) {
 		grid-template-columns: 1fr;
 	}
+}
+
+.woocommerce-tax-partners__partners-count-1 .woocommerce-tax-partners__partners {
+	grid-template-columns: 1fr;
+	justify-items: center;
 }
 
 .woocommerce-tax-partners {
