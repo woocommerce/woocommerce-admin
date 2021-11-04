@@ -406,7 +406,7 @@ const testSubscriptionsInclusion = () => {
 			await profileWizard.continue();
 		} );
 
-		it( 'cannot see the WooCommerce Payments extension after it has been installed', async () => {
+		it( 'should display the WooCommerce Payments extension after it has been installed', async () => {
 			await profileWizard.business.freeFeaturesIsDisplayed();
 			await profileWizard.business.expandRecommendedBusinessFeatures();
 
