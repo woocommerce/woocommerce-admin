@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, _n } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { EmptyContent, Section } from '@woocommerce/components';
 import {
 	NOTES_STORE_NAME,
@@ -157,18 +157,9 @@ const InboxPanel = () => {
 			};
 		}
 	);
-	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
+	const { ...userPrefs } = useUserPreferences();
 	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
 	const [ dismiss, setDismiss ] = useState();
-
-	useEffect( () => {
-		const mountTime = Date.now();
-
-		const userDataFields = {
-			activity_panel_inbox_last_read: mountTime,
-		};
-		updateUserPreferences( userDataFields );
-	}, [] );
 
 	const onDismiss = ( note, type ) => {
 		setDismiss( { note, type } );
