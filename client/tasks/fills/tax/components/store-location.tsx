@@ -14,7 +14,9 @@ import { getCountryCode } from '~/dashboard/utils';
 import { hasCompleteAddress, SettingsSelector, TaxChildProps } from '../utils';
 import { default as StoreLocationForm } from '~/tasks/fills/steps/location';
 
-export const StoreLocation: React.FC< TaxChildProps > = ( { nextStep } ) => {
+export const StoreLocation: React.FC< {
+	nextStep: () => void;
+} > = ( { nextStep } ) => {
 	const { updateAndPersistSettingsForGroup } = useDispatch(
 		SETTINGS_STORE_NAME
 	);

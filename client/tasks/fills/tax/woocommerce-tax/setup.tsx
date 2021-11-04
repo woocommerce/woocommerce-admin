@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { difference, filter } from 'lodash';
+import { difference } from 'lodash';
 import { useEffect, useState } from '@wordpress/element';
 import { Stepper } from '@woocommerce/components';
 import {
@@ -45,16 +45,11 @@ export const Setup: React.FC< SetupProps > = ( {
 	onManual,
 } ) => {
 	const [ pluginsToActivate, setPluginsToActivate ] = useState( [] );
-	const {
-		activePlugins,
-		isJetpackConnected,
-		isResolving,
-		tosAccepted,
-	} = useSelect( ( select ) => {
+	const { activePlugins, isResolving } = useSelect( ( select ) => {
 		const { getSettings } = select(
 			SETTINGS_STORE_NAME
 		) as SettingsSelector;
-		const { getOption, hasFinishedResolution } = select(
+		const { hasFinishedResolution } = select(
 			OPTIONS_STORE_NAME
 		) as SettingsSelector;
 		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
@@ -62,9 +57,6 @@ export const Setup: React.FC< SetupProps > = ( {
 		return {
 			activePlugins: getActivePlugins(),
 			generalSettings: getSettings( 'general' )?.general,
-			isJetpackConnected: select(
-				PLUGINS_STORE_NAME
-			).isJetpackConnected(),
 			isResolving:
 				! hasFinishedResolution( 'getOption', [
 					'woocommerce_setup_jetpack_opted_in',
@@ -72,9 +64,6 @@ export const Setup: React.FC< SetupProps > = ( {
 				! hasFinishedResolution( 'getOption', [
 					'wc_connect_options',
 				] ),
-			tosAccepted:
-				getOption( 'wc_connect_options' )?.tos_accepted ||
-				getOption( 'woocommerce_setup_jetpack_opted_in' ) === '1',
 		};
 	} );
 	const [ stepIndex, setStepIndex ] = useState( 0 );

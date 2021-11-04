@@ -12,8 +12,9 @@ import { updateQueryString } from '@woocommerce/navigation';
  */
 import { PartnerCard } from '../partner-card';
 import logo from './logo.png';
+import { TaxChildProps } from '../utils';
 
-export const Card = ( { isPending } ) => {
+export const Card: React.FC< TaxChildProps > = ( { isPending } ) => {
 	return (
 		<PartnerCard
 			name={ __( 'WooCommerce Tax', 'woocommerce-admin' ) }

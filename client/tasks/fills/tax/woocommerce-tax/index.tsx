@@ -5,11 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { difference } from 'lodash';
 import { useSelect } from '@wordpress/data';
 import { Spinner } from '@woocommerce/components';
-import {
-	ONBOARDING_STORE_NAME,
-	PLUGINS_STORE_NAME,
-	SETTINGS_STORE_NAME,
-} from '@woocommerce/data';
+import { PLUGINS_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -21,7 +17,6 @@ import {
 	TaxChildProps,
 } from '../utils';
 import { AutomatedTaxes } from './automated-taxes';
-import { getCountryCode } from '~/dashboard/utils';
 import { Setup } from './setup';
 
 export const WooCommerceTax: React.FC< TaxChildProps > = ( {
@@ -39,7 +34,9 @@ export const WooCommerceTax: React.FC< TaxChildProps > = ( {
 		const { getSettings } = select(
 			SETTINGS_STORE_NAME
 		) as SettingsSelector;
-		const { getActivePlugins } = select( PLUGINS_STORE_NAME );
+		const { getActivePlugins, hasFinishedResolution } = select(
+			PLUGINS_STORE_NAME
+		);
 		const activePlugins = getActivePlugins();
 
 		return {
@@ -48,12 +45,11 @@ export const WooCommerceTax: React.FC< TaxChildProps > = ( {
 				PLUGINS_STORE_NAME
 			).isJetpackConnected(),
 			isResolving:
-				! select( PLUGINS_STORE_NAME ).hasFinishedResolution(
-					'isJetpackConnected'
-				) ||
+				! hasFinishedResolution( 'isJetpackConnected' ) ||
 				! select(
 					SETTINGS_STORE_NAME
-				).hasFinishedResolution( 'getSettings', [ 'general' ] ),
+				).hasFinishedResolution( 'getSettings', [ 'general' ] ) ||
+				! hasFinishedResolution( 'getActivePlugins' ),
 			pluginsToActivate: difference( AUTOMATION_PLUGINS, activePlugins ),
 		};
 	} );
