@@ -391,6 +391,11 @@ class Notes extends \WC_REST_CRUD_Controller {
 		if ( ! is_null( $request->get_param( 'is_deleted' ) ) ) {
 			$requested_updates['is_deleted'] = $request->get_param( 'is_deleted' );
 		}
+
+		if ( ! is_null( $request->get_param( 'is_read' ) ) ) {
+			$requested_updates['is_read'] = $request->get_param( 'is_read' );
+		}
+
 		return $requested_updates;
 	}
 
