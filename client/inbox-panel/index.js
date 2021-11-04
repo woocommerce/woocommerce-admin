@@ -318,7 +318,9 @@ const InboxPanel = () => {
 		<>
 			{ showDismissAllModal && (
 				<DismissAllModal
-					setShowDismissAllModal={ setShowDismissAllModal }
+					onClose={ () => {
+						setShowDismissAllModal( false );
+					} }
 					dismissAllNotes={ dismissAllNotes }
 				/>
 			) }
