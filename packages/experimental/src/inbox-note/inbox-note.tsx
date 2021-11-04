@@ -46,11 +46,11 @@ type InboxNote = {
 	image: string;
 	is_deleted: boolean;
 	type: string;
+	is_read: boolean;
 };
 
 type InboxNoteProps = {
 	note: InboxNote;
-	lastRead: number;
 	onDismiss?: ( note: InboxNote, type: 'all' | 'note' ) => void;
 	onNoteActionClick?: ( note: InboxNote, action: InboxNoteAction ) => void;
 	onBodyLinkClick?: ( note: InboxNote, link: string ) => void;
@@ -64,7 +64,6 @@ const DropdownWithPopoverProps = Dropdown as React.ComponentType<
 
 const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 	note,
-	lastRead,
 	onDismiss,
 	onNoteActionClick,
 	onBodyLinkClick,
@@ -238,16 +237,14 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		layout,
 		status,
 		title,
+		is_read,
 	} = note;
 
 	if ( isDeleted ) {
 		return null;
 	}
 
-	const unread =
-		! lastRead ||
-		! dateCreatedGmt ||
-		new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
+	const unread = is_read === false;
 	const date = dateCreated;
 	const hasImage = layout !== 'plain' && layout !== '';
 	const cardClassName = classnames(

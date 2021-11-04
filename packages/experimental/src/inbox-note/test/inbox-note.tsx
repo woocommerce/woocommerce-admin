@@ -56,16 +56,12 @@ describe( 'InboxNoteCard', () => {
 		image: '',
 		date_created_gmt: '2020-05-10T16:57:31',
 		is_deleted: false,
+		is_read: false,
 	};
-	const lastRead = 1589285995243;
 
 	it( 'should render the defined action buttons', () => {
 		const { queryByText } = render(
-			<InboxNoteCard
-				key={ note.id }
-				note={ note }
-				lastRead={ lastRead }
-			/>
+			<InboxNoteCard key={ note.id } note={ note } />
 		);
 		expect( queryByText( 'Connect' ) ).toBeInTheDocument();
 		expect( queryByText( 'Learn More' ) ).toBeInTheDocument();
@@ -73,11 +69,7 @@ describe( 'InboxNoteCard', () => {
 
 	it( 'should render a dismiss button', () => {
 		const { queryByText } = render(
-			<InboxNoteCard
-				key={ note.id }
-				note={ note }
-				lastRead={ lastRead }
-			/>
+			<InboxNoteCard key={ note.id } note={ note } />
 		);
 		expect( queryByText( 'Dismiss' ) ).toBeInTheDocument();
 	} );
@@ -85,11 +77,7 @@ describe( 'InboxNoteCard', () => {
 	it( 'should render a notification type banner', () => {
 		const bannerNote = { ...note, layout: 'banner' };
 		const { container } = render(
-			<InboxNoteCard
-				key={ bannerNote.id }
-				note={ bannerNote }
-				lastRead={ lastRead }
-			/>
+			<InboxNoteCard key={ bannerNote.id } note={ bannerNote } />
 		);
 		const listNoteWithBanner = container.querySelector( '.banner' );
 		expect( listNoteWithBanner ).not.toBeNull();
@@ -98,24 +86,19 @@ describe( 'InboxNoteCard', () => {
 	it( 'should render a notification type thumbnail', () => {
 		const thumbnailNote = { ...note, layout: 'thumbnail' };
 		const { container } = render(
-			<InboxNoteCard
-				key={ thumbnailNote.id }
-				note={ thumbnailNote }
-				lastRead={ lastRead }
-			/>
+			<InboxNoteCard key={ thumbnailNote.id } note={ thumbnailNote } />
 		);
 		const listNoteWithThumbnail = container.querySelector( '.thumbnail' );
 		expect( listNoteWithThumbnail ).not.toBeNull();
 	} );
 
 	it( 'should render a read notification', () => {
-		const noteWithoutActions = { ...note, actions: [] };
+		const noteWithoutActions = {
+			...{ ...note, is_read: true },
+			actions: [],
+		};
 		const { container } = render(
-			<InboxNoteCard
-				key={ note.id }
-				note={ noteWithoutActions }
-				lastRead={ lastRead }
-			/>
+			<InboxNoteCard key={ note.id } note={ noteWithoutActions } />
 		);
 		const unreadNote = container.querySelector( '.message-is-unread' );
 		const readNote = container.querySelector(
@@ -126,14 +109,9 @@ describe( 'InboxNoteCard', () => {
 	} );
 
 	it( 'should render an unread notification', () => {
-		const olderLastRead = 1584015595000;
 		const noteWithoutActions = { ...note, actions: [] };
 		const { container } = render(
-			<InboxNoteCard
-				key={ note.id }
-				note={ noteWithoutActions }
-				lastRead={ olderLastRead }
-			/>
+			<InboxNoteCard key={ note.id } note={ noteWithoutActions } />
 		);
 		const unreadNote = container.querySelector( '.message-is-unread' );
 		expect( unreadNote ).not.toBeNull();
@@ -142,11 +120,7 @@ describe( 'InboxNoteCard', () => {
 	it( 'should not render any notification', () => {
 		const deletedNote = { ...note, is_deleted: true };
 		const { container } = render(
-			<InboxNoteCard
-				key={ note.id }
-				note={ deletedNote }
-				lastRead={ lastRead }
-			/>
+			<InboxNoteCard key={ note.id } note={ deletedNote } />
 		);
 		const unreadNote = container.querySelector(
 			'.woocommerce-inbox-message'
@@ -161,7 +135,6 @@ describe( 'InboxNoteCard', () => {
 				<InboxNoteCard
 					key={ note.id }
 					note={ note }
-					lastRead={ lastRead }
 					onDismiss={ onDismiss }
 				/>
 			);
@@ -176,7 +149,6 @@ describe( 'InboxNoteCard', () => {
 				<InboxNoteCard
 					key={ note.id }
 					note={ note }
-					lastRead={ lastRead }
 					onDismiss={ onDismiss }
 				/>
 			);
@@ -191,7 +163,6 @@ describe( 'InboxNoteCard', () => {
 				<InboxNoteCard
 					key={ note.id }
 					note={ note }
-					lastRead={ lastRead }
 					onNoteActionClick={ onNoteActionClick }
 				/>
 			);
@@ -214,7 +185,6 @@ describe( 'InboxNoteCard', () => {
 				<InboxNoteCard
 					key={ noteWithInnerLink.id }
 					note={ noteWithInnerLink }
-					lastRead={ lastRead }
 					onBodyLinkClick={ onBodyLinkClick }
 				/>
 			);
@@ -231,7 +201,6 @@ describe( 'InboxNoteCard', () => {
 				<InboxNoteCard
 					key={ note.id }
 					note={ note }
-					lastRead={ lastRead }
 					onNoteVisible={ onVisible }
 				/>
 			);
@@ -246,7 +215,6 @@ describe( 'InboxNoteCard', () => {
 				<InboxNoteCard
 					key={ note.id }
 					note={ note }
-					lastRead={ lastRead }
 					onNoteVisible={ onVisible }
 				/>
 			);
