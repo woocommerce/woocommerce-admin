@@ -164,13 +164,9 @@ const INBOX_QUERY = {
 
 const InboxPanel = () => {
 	const { createNotice } = useDispatch( 'core/notices' );
-	const {
-		batchUpdateNotes,
-		removeAllNotes,
-		removeNote,
-		updateNote,
-		triggerNoteAction,
-	} = useDispatch( NOTES_STORE_NAME );
+	const { removeNote, updateNote, triggerNoteAction } = useDispatch(
+		NOTES_STORE_NAME
+	);
 	const { isError, isResolvingNotes, isBatchUpdating, notes } = useSelect(
 		( select ) => {
 			const {
@@ -246,45 +242,6 @@ const InboxPanel = () => {
 		}
 	};
 
-	const dismissAllNotes = async () => {
-		recordEvent( 'wcadmin_inbox_action_dismissall', {} );
-		try {
-			const notesRemoved = await removeAllNotes( {
-				status: INBOX_QUERY.status,
-			} );
-			createNotice(
-				'success',
-				__( 'All messages dismissed', 'woocommerce-admin' ),
-				{
-					actions: [
-						{
-							label: __( 'Undo', 'woocommerce-admin' ),
-							onClick: () => {
-								batchUpdateNotes(
-									notesRemoved.map( ( note ) => note.id ),
-									{
-										is_deleted: 0,
-									}
-								);
-							},
-						},
-					],
-				}
-			);
-		} catch ( e ) {
-			createNotice(
-				'error',
-				_n(
-					'Message could not be dismissed',
-					'Messages could not be dismissed',
-					notes.length,
-					'woocommerce-admin'
-				)
-			);
-			setShowDismissAllModal( false );
-		}
-	};
-
 	const onNoteActionClick = ( note, action ) => {
 		triggerNoteAction( note.id, action.id );
 	};
@@ -321,7 +278,6 @@ const InboxPanel = () => {
 					onClose={ () => {
 						setShowDismissAllModal( false );
 					} }
-					dismissAllNotes={ dismissAllNotes }
 				/>
 			) }
 			<div className="woocommerce-homepage-notes-wrapper">
