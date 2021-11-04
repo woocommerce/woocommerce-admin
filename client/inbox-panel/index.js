@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, _n } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import {
 	EmptyContent,
 	Section,
@@ -186,18 +186,9 @@ const InboxPanel = () => {
 			};
 		}
 	);
-	const { updateUserPreferences, ...userPrefs } = useUserPreferences();
+	const { ...userPrefs } = useUserPreferences();
 	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
 	const [ showDismissAllModal, setShowDismissAllModal ] = useState( false );
-
-	useEffect( () => {
-		const mountTime = Date.now();
-
-		const userDataFields = {
-			activity_panel_inbox_last_read: mountTime,
-		};
-		updateUserPreferences( userDataFields );
-	}, [] );
 
 	const onDismiss = ( note ) => {
 		const screen = getScreenName();
