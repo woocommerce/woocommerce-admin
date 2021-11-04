@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { __, _n } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
 import {
 	EmptyContent,
 	Section,
@@ -10,11 +9,7 @@ import {
 	EllipsisMenu,
 } from '@woocommerce/components';
 import { Card, CardHeader, Button } from '@wordpress/components';
-import {
-	NOTES_STORE_NAME,
-	useUserPreferences,
-	QUERY_DEFAULTS,
-} from '@woocommerce/data';
+import { NOTES_STORE_NAME, QUERY_DEFAULTS } from '@woocommerce/data';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -58,7 +53,6 @@ const onBodyLinkClick = ( note, innerLink ) => {
 const renderNotes = ( {
 	hasNotes,
 	isBatchUpdating,
-	lastRead,
 	notes,
 	dismissNote,
 	onNoteActionClick,
@@ -125,7 +119,6 @@ const renderNotes = ( {
 							<InboxNoteCard
 								key={ noteId }
 								note={ note }
-								lastRead={ lastRead }
 								onDismiss={ dismissNote }
 								onNoteActionClick={ onNoteActionClick }
 								onBodyLinkClick={ onBodyLinkClick }
@@ -186,9 +179,6 @@ const InboxPanel = () => {
 			};
 		}
 	);
-	const { ...userPrefs } = useUserPreferences();
-	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
-	const [ showDismissAllModal, setShowDismissAllModal ] = useState( false );
 
 	const onDismiss = ( note ) => {
 		const screen = getScreenName();
@@ -264,13 +254,6 @@ const InboxPanel = () => {
 	// the current one is only getting 25 notes and the count of unread notes only will refer to this 25 and not all the existing ones.
 	return (
 		<>
-			{ showDismissAllModal && (
-				<DismissAllModal
-					onClose={ () => {
-						setShowDismissAllModal( false );
-					} }
-				/>
-			) }
 			<div className="woocommerce-homepage-notes-wrapper">
 				{ ( isResolvingNotes || isBatchUpdating ) && (
 					<Section>
@@ -283,11 +266,9 @@ const InboxPanel = () => {
 						renderNotes( {
 							hasNotes,
 							isBatchUpdating,
-							lastRead,
 							notes,
 							onDismiss,
 							onNoteActionClick,
-							setShowDismissAllModal,
 						} ) }
 				</Section>
 			</div>
