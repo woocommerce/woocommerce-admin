@@ -30,6 +30,15 @@
 		}
 	}
 
+	&:not(.message-is-unread) {
+		h3 {
+			font-weight: normal;
+		}
+		.woocommerce-inbox-message__actions a {
+			color: $gray-900;
+		}
+	}
+
 	.woocommerce-homepage-column & {
 		margin: 20px 0;
 	}
