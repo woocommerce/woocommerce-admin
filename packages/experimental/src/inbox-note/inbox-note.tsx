@@ -46,11 +46,11 @@ type InboxNote = {
 	image: string;
 	is_deleted: boolean;
 	type: string;
+	is_read: boolean;
 };
 
 type InboxNoteProps = {
 	note: InboxNote;
-	lastRead: number;
 	onDismiss?: ( note: InboxNote ) => void;
 	onNoteActionClick?: ( note: InboxNote, action: InboxNoteAction ) => void;
 	onBodyLinkClick?: ( note: InboxNote, link: string ) => void;
@@ -60,7 +60,6 @@ type InboxNoteProps = {
 
 const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 	note,
-	lastRead,
 	onDismiss,
 	onNoteActionClick,
 	onBodyLinkClick,
@@ -150,16 +149,14 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		layout,
 		status,
 		title,
+		is_read,
 	} = note;
 
 	if ( isDeleted ) {
 		return null;
 	}
 
-	const unread =
-		! lastRead ||
-		! dateCreatedGmt ||
-		new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
+	const unread = is_read === false;
 	const date = dateCreated;
 	const hasImage = layout === 'thumbnail';
 	const cardClassName = classnames(

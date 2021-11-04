@@ -152,6 +152,7 @@ const INBOX_QUERY = {
 		'layout',
 		'image',
 		'is_deleted',
+		'is_read',
 	],
 };
 
