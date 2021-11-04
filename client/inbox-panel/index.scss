@@ -52,7 +52,7 @@
 	.woocommerce-usage-modal__message {
 		box-sizing: border-box;
 		border-bottom: 1px solid #ddd;
-		padding: 32px;
+		padding: $gap * 2;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
