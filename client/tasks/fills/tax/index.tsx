@@ -135,17 +135,6 @@ const Tax = ( { onComplete, query } ) => {
 		} );
 	};
 
-	useEffect( () => {
-		const { auto } = query;
-
-		if ( auto === 'true' ) {
-			onAutomate();
-			return;
-		}
-
-		recordEvent( 'wcadmin_tasklist_tax_view_options', {} );
-	}, [] );
-
 	const getVisiblePartners = () => {
 		const countryCode = getCountryCode(
 			generalSettings?.woocommerce_default_country
@@ -180,6 +169,23 @@ const Tax = ( { onComplete, query } ) => {
 	};
 
 	const partners = getVisiblePartners();
+
+	useEffect( () => {
+		const { auto } = query;
+
+		if ( auto === 'true' ) {
+			onAutomate();
+			return;
+		}
+
+		if ( query.partner ) {
+			return;
+		}
+
+		recordEvent( 'wcadmin_tasklist_tax_view_options', {
+			options: partners.map( ( partner ) => partner.id ),
+		} );
+	}, [] );
 
 	const getCurrentPartner = () => {
 		if ( ! query.partner ) {
