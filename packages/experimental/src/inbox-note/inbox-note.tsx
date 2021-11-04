@@ -168,6 +168,13 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		}
 	);
 
+	const actionWrapperClassName = classnames(
+		'woocommerce-inbox-message__actions',
+		{
+			'has-multiple-actions': note.actions.length > 1,
+		}
+	);
+
 	return (
 		<VisibilitySensor onChange={ onVisible }>
 			<section className={ cardClassName }>
@@ -198,7 +205,7 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 							/>
 						</Section>
 					</div>
-					<div className="woocommerce-inbox-message__actions">
+					<div className={ actionWrapperClassName }>
 						{ renderActions() }
 						{ renderDismissButton() }
 					</div>
