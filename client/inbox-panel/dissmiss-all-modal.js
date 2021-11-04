@@ -5,17 +5,10 @@ import { Button, Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 const DissmissAllModal = ( { setShowDismissAllModal, dismissAllNotes } ) => {
-	const title = __( 'Dismiss all messages', 'woocommerce-admin' );
-	const message = __(
-		'Are you sure? Inbox messages will be dismissed forever.',
-		'woocommerce-admin'
-	);
-	const dismissActionText = __( 'Cancel', 'woocommerce-admin' );
-	const acceptActionText = __( 'Yes, dismiss all', 'woocommerce-admin' );
 	return (
 		<>
 			<Modal
-				title={ title }
+				title={ __( 'Dismiss all messages', 'woocommerce-admin' ) }
 				className="woocommerce-inbox-dismiss-all-modal"
 				onRequestClose={ () => {
 					setShowDismissAllModal( false );
@@ -23,13 +16,16 @@ const DissmissAllModal = ( { setShowDismissAllModal, dismissAllNotes } ) => {
 			>
 				<div className="woocommerce-inbox-dismiss-all-modal__wrapper">
 					<div className="woocommerce-usage-modal__message">
-						{ message }
+						{ __(
+							'Are you sure? Inbox messages will be dismissed forever.',
+							'woocommerce-admin'
+						) }
 					</div>
 					<div className="woocommerce-usage-modal__actions">
 						<Button
 							onClick={ () => setShowDismissAllModal( false ) }
 						>
-							{ dismissActionText }
+							{ __( 'Cancel', 'woocommerce-admin' ) }
 						</Button>
 						<Button
 							isPrimary
@@ -38,7 +34,7 @@ const DissmissAllModal = ( { setShowDismissAllModal, dismissAllNotes } ) => {
 								setShowDismissAllModal( false );
 							} }
 						>
-							{ acceptActionText }
+							{ __( 'Yes, dismiss all', 'woocommerce-admin' ) }
 						</Button>
 					</div>
 				</div>
