@@ -1,5 +1,6 @@
 == 2.9.0 11/03/2021 ==
 
+- Tweak: Remove the Spinner component to prevent undesired page flickering. #7886
 - Fix: Do not clear `current` class from the entire page when updating wp-admin's menu. #7773
 - Fix: Fix calendar not being dismissed when clicking outside. #7714
 - Fix: fixed warnings when using AdvancedFilters component. #7704
