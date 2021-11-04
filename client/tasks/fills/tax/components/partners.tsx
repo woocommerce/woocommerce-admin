@@ -9,7 +9,7 @@ import classnames from 'classnames';
 /**
  * Internal dependencies
  */
-import { TaxChildProps } from './utils';
+import { TaxChildProps } from '../utils';
 import './partners.scss';
 
 export const Partners: React.FC< TaxChildProps > = ( {
