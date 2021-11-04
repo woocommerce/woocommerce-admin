@@ -229,6 +229,15 @@ class CoreMenu {
 				),
 				array_merge( $product_items['new'], array( 'order' => 50 ) ),
 				$coupon_items['default'],
+				// Marketplace category.
+				array(
+					'title'      => __( 'Marketplace', 'woocommerce-admin' ),
+					'capability' => 'manage_woocommerce',
+					'id'         => 'woocommerce-marketplace',
+					'url'        => 'wc-addons',
+					'menuId'     => 'secondary',
+					'order'      => 10,
+				),
 			),
 			// Tools category.
 			self::get_tool_items(),
