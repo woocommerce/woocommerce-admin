@@ -74,8 +74,11 @@ export const ActivityPanel = ( { isEmbedded, query, userPreferencesData } ) => {
 			const demoNotice = getOption( 'woocommerce_demo_store_notice' );
 			trackData = {
 				set_notice: demoNotice ? 'Y' : 'N',
-				create_homepage: task?.extra?.hasHomepage === true ? 'Y' : 'N',
-				upload_logo: task?.extra?.themeMods?.custom_logo ? 'Y' : 'N',
+				create_homepage:
+					task?.additionalData?.hasHomepage === true ? 'Y' : 'N',
+				upload_logo: task?.additionalData?.themeMods?.custom_logo
+					? 'Y'
+					: 'N',
 			};
 		}
 

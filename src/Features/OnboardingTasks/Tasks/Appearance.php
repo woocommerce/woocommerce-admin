@@ -25,17 +25,17 @@ class Appearance {
 	 */
 	public static function get_task() {
 		return array(
-			'id'           => 'appearance',
-			'title'        => __( 'Personalize my store', 'woocommerce-admin' ),
-			'content'      => __(
+			'id'              => 'appearance',
+			'title'           => __( 'Personalize my store', 'woocommerce-admin' ),
+			'content'         => __(
 				'Add your logo, create a homepage, and start designing your store.',
 				'woocommerce-admin'
 			),
-			'action_label' => __( "Let's go", 'woocommerce-admin' ),
-			'is_complete'  => Task::is_task_actioned( 'appearance' ),
-			'can_view'     => true,
-			'time'         => __( '2 minutes', 'woocommerce-admin' ),
-			'extra'        => array(
+			'action_label'    => __( "Let's go", 'woocommerce-admin' ),
+			'is_complete'     => Task::is_task_actioned( 'appearance' ),
+			'can_view'        => true,
+			'time'            => __( '2 minutes', 'woocommerce-admin' ),
+			'additional_data' => array(
 				'has_homepage' => self::has_homepage(),
 				'has_products' => Products::has_products(),
 				'stylesheet'   => get_option( 'stylesheet' ),

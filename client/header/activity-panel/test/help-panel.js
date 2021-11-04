@@ -87,10 +87,8 @@ describe( 'Activity Panels', () => {
 							tasks: [
 								{
 									id: 'tax',
-									extra: {
-										automatedTaxSupportedCountries: [
-											'US',
-										],
+									additionalData: {
+										woocommerceTaxCountries: [ 'US' ],
 										taxJarActivated: true,
 									},
 								},
@@ -114,10 +112,8 @@ describe( 'Activity Panels', () => {
 							tasks: [
 								{
 									id: 'tax',
-									extra: {
-										automatedTaxSupportedCountries: [
-											'US',
-										],
+									additionalData: {
+										woocommerceTaxCountries: [ 'US' ],
 										taxJarActivated: false,
 									},
 								},
@@ -141,10 +137,8 @@ describe( 'Activity Panels', () => {
 							tasks: [
 								{
 									id: 'tax',
-									extra: {
-										automatedTaxSupportedCountries: [
-											'US',
-										],
+									additionalData: {
+										woocommerceTaxCountries: [ 'US' ],
 										taxJarActivated: false,
 									},
 								},

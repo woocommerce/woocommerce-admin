@@ -25,7 +25,7 @@ import { WooOnboardingTask } from '@woocommerce/onboarding';
 class Appearance extends Component {
 	constructor( props ) {
 		super( props );
-		const { hasHomepage, hasProducts } = props.task.extra;
+		const { hasHomepage, hasProducts } = props.task.additionalData;
 
 		this.stepVisibility = {
 			homepage: ! hasHomepage,
@@ -50,7 +50,7 @@ class Appearance extends Component {
 	}
 
 	componentDidMount() {
-		const { themeMods } = this.props.task.extra;
+		const { themeMods } = this.props.task.additionalData;
 
 		if ( themeMods && themeMods.custom_logo ) {
 			/* eslint-disable react/no-did-mount-set-state */
@@ -187,7 +187,7 @@ class Appearance extends Component {
 
 	async updateLogo() {
 		const { createNotice, task, updateOptions } = this.props;
-		const { stylesheet, themeMods } = task.extra;
+		const { stylesheet, themeMods } = task.additionalData;
 		const { logo } = this.state;
 		const updatedThemeMods = {
 			...themeMods,

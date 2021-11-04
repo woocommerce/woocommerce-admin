@@ -283,12 +283,12 @@ function getTaxItems( props ) {
 		return;
 	}
 
-	const { extra } = task;
-	const { automatedTaxSupportedCountries = [], taxJarActivated } = extra;
+	const { additionalData } = task;
+	const { woocommerceTaxCountries = [], taxJarActivated } = additionalData;
 
 	const showWCS =
 		! taxJarActivated && // WCS integration doesn't work with the official TaxJar plugin.
-		automatedTaxSupportedCountries.includes( countryCode );
+		woocommerceTaxCountries.includes( countryCode );
 
 	return [
 		{
