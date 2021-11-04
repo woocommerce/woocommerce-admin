@@ -13,7 +13,12 @@ import {
 import { queueRecordEvent, recordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
 import { updateQueryString } from '@woocommerce/navigation';
-import { useEffect, useState, createElement } from '@wordpress/element';
+import {
+	useCallback,
+	useEffect,
+	useState,
+	createElement,
+} from '@wordpress/element';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
 
 /**
@@ -70,7 +75,7 @@ const Tax = ( { onComplete, query } ) => {
 		};
 	} );
 
-	const onManual = async () => {
+	const onManual = useCallback( async () => {
 		setIsPending( true );
 		if ( generalSettings.woocommerce_calc_taxes !== 'yes' ) {
 			updateAndPersistSettingsForGroup( 'tax', {
@@ -93,9 +98,9 @@ const Tax = ( { onComplete, query } ) => {
 		} else {
 			redirectToTaxSettings();
 		}
-	};
+	}, [] );
 
-	const onAutomate = () => {
+	const onAutomate = useCallback( () => {
 		setIsPending( true );
 		updateAndPersistSettingsForGroup( 'tax', {
 			tax: {
@@ -118,9 +123,9 @@ const Tax = ( { onComplete, query } ) => {
 			)
 		);
 		onComplete();
-	};
+	}, [] );
 
-	const onDisable = () => {
+	const onDisable = useCallback( () => {
 		setIsPending( true );
 		queueRecordEvent( 'tasklist_tax_connect_store', {
 			connect: false,
@@ -133,7 +138,7 @@ const Tax = ( { onComplete, query } ) => {
 		} ).then( () => {
 			window.location.href = getAdminLink( 'admin.php?page=wc-admin' );
 		} );
-	};
+	}, [] );
 
 	const getVisiblePartners = () => {
 		const countryCode = getCountryCode(
