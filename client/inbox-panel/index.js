@@ -4,11 +4,7 @@
 import { __, _n } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import { EmptyContent, Section } from '@woocommerce/components';
-import {
-	NOTES_STORE_NAME,
-	useUserPreferences,
-	QUERY_DEFAULTS,
-} from '@woocommerce/data';
+import { NOTES_STORE_NAME, QUERY_DEFAULTS } from '@woocommerce/data';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -51,7 +47,6 @@ const onBodyLinkClick = ( note, innerLink ) => {
 const renderNotes = ( {
 	hasNotes,
 	isBatchUpdating,
-	lastRead,
 	notes,
 	onDismiss,
 	onNoteActionClick,
@@ -93,7 +88,6 @@ const renderNotes = ( {
 						<InboxNoteCard
 							key={ noteId }
 							note={ note }
-							lastRead={ lastRead }
 							onDismiss={ onDismiss }
 							onNoteActionClick={ onNoteActionClick }
 							onBodyLinkClick={ onBodyLinkClick }
@@ -157,8 +151,6 @@ const InboxPanel = () => {
 			};
 		}
 	);
-	const { ...userPrefs } = useUserPreferences();
-	const [ lastRead ] = useState( userPrefs.activity_panel_inbox_last_read );
 	const [ dismiss, setDismiss ] = useState();
 
 	const onDismiss = ( note, type ) => {
@@ -281,7 +273,6 @@ const InboxPanel = () => {
 						renderNotes( {
 							hasNotes,
 							isBatchUpdating,
-							lastRead,
 							notes,
 							onDismiss,
 							onNoteActionClick,
