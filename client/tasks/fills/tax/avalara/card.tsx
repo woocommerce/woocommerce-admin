@@ -8,7 +8,7 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { PartnerCard } from '../partner-card';
+import { PartnerCard } from '../components/partner-card';
 import logo from './logo.png';
 
 export const Card = ( { isPending } ) => {

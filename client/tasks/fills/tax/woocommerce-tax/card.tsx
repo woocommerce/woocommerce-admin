@@ -10,7 +10,7 @@ import { updateQueryString } from '@woocommerce/navigation';
 /**
  * Internal dependencies
  */
-import { PartnerCard } from '../partner-card';
+import { PartnerCard } from '../components/partner-card';
 import logo from './logo.png';
 import { TaxChildProps } from '../utils';
 

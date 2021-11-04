@@ -29,7 +29,7 @@ import { Card as WooCommerceTaxCard } from './woocommerce-tax/card';
 import { createNoticesFromResponse } from '../../../lib/notices';
 import { getCountryCode } from '~/dashboard/utils';
 import { ManualConfiguration } from './manual-configuration';
-import { Partners } from './partners';
+import { Partners } from './components/partners';
 import { WooCommerceTax } from './woocommerce-tax';
 
 const TaskCard = ( { children } ) => {
