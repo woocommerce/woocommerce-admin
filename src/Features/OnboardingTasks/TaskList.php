@@ -168,14 +168,16 @@ class TaskList {
 	/**
 	 * Add task to the task list.
 	 *
-	 * @param array $args Task properties.
+	 * @param Task $task Task class.
 	 */
-	public function add_task( $args ) {
-		$task_args     = wp_parse_args(
-			$args,
-			array( 'parent_id' => $this->id )
-		);
-		$this->tasks[] = new Task( $task_args );
+	public function add_task( $task ) {
+		if ( ! is_a( $task, 'Task' ) && ! is_subclass_of( $task, 'Task' ) ) {
+			return;
+		}
+
+		$task->parent_id = $this->id;
+
+		$this->tasks[] = $task;
 	}
 
 	/**
