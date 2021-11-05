@@ -1,5 +1,8 @@
 == 2.9.0 11/03/2021 ==
 
+- Update: Increased number of possible items in Recommended Extensions list from 6 to 9 #7887
+- Update: Reverts addition of Marketplace and My Subscriptions pages to the Marketplace menu. #7902
+- Tweak: Use page title Extensions for Marketplace and My Subscriptions pages. #7901
 - Tweak: Remove the Spinner component to prevent undesired page flickering. #7886
 - Fix: Do not clear `current` class from the entire page when updating wp-admin's menu. #7773
 - Fix: Fix calendar not being dismissed when clicking outside. #7714
