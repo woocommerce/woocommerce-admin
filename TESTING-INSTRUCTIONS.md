@@ -1,5 +1,24 @@
 # Testing instructions
 
+## 2.9.0
+
+### Only load default tasks during REST requests #7904
+
+**Smoke testing**
+
+1. Make sure the task lists and all tasks are returned as expected
+2. Go to Products->Help (tab)->Setup Wizard
+3. Attempt to Disable/Enable the task lists and make sure these actions work as expected
+4. Smoke test the task list, viewing, snoozing, dismissing, and undoing those actions
+
+**Performance testing**
+
+1. Create a site with 1k+ products using WC Smooth Generator
+2. Install the Query Monitor plugin - https://wordpress.org/plugins/query-monitor/
+3. Sort "Queries" by time to load
+4. Navigate to a core WC page (like Orders or Products)
+5. Note the highest is not stemming from the order counts query in the task list
+
 ## 2.8.0
 
 ### Store Profiler and Product task - include Subscriptions #7734
