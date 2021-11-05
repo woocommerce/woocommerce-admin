@@ -247,7 +247,10 @@ const Tax = ( { onComplete, query } ) => {
 	return (
 		<Partners>
 			{ partners.map( ( partner ) =>
-				createElement( partner.card, childProps )
+				createElement( partner.card, {
+					key: partner.id,
+					...childProps,
+				} )
 			) }
 		</Partners>
 	);
