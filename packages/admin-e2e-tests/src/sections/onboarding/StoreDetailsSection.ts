@@ -10,6 +10,7 @@ const {
 	clearAndFillInput,
 	verifyCheckboxIsSet,
 	verifyCheckboxIsUnset,
+	IS_RETEST_MODE,
 } = require( '@woocommerce/e2e-utils' );
 const config = require( 'config' );
 /* eslint-enable @typescript-eslint/no-var-requires */
@@ -78,7 +79,9 @@ export class StoreDetailsSection extends BasePage {
 		);
 
 		// Verify that checkbox next to "Get tips, product updates and inspiration straight to your mailbox" is selected
-		await this.checkMarketingCheckbox( true );
+		if ( ! IS_RETEST_MODE ) {
+			await this.checkMarketingCheckbox( true );
+		}
 	}
 
 	async fillAddress( address: string ) {
