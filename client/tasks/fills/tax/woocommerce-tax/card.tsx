@@ -67,7 +67,7 @@ export const Card: React.FC< TaxChildProps > = ( { isPending } ) => {
 			} ) }
 			actionText={ __( 'Continue setup', 'woocommerce-admin' ) }
 			onClick={ () => {
-				recordEvent( 'wcadmin_tasklist_tax_select_option', {
+				recordEvent( 'tasklist_tax_select_option', {
 					selected_option: 'woocommerce-tax',
 				} );
 				updateQueryString( {

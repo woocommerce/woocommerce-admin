@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { getAdminLink } from '@woocommerce/wc-admin-settings';
 import interpolateComponents from 'interpolate-components';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -11,7 +12,9 @@ import { recordEvent } from '@woocommerce/tracks';
 import { PartnerCard } from '../components/partner-card';
 import logo from './logo.png';
 
-export const Card = ( { isPending } ) => {
+export const Card = ( { isPending, tasksStatus } ) => {
+	const { avalaraActivated } = tasksStatus;
+
 	return (
 		<PartnerCard
 			name={ __( 'Avalara', 'woocommerce-admin' ) }
@@ -46,11 +49,24 @@ export const Card = ( { isPending } ) => {
 				'30-day free trial. No credit card needed.',
 				'woocommerce-admin'
 			) }
-			actionText={ __( 'Enable & set up', 'woocommerce-admin' ) }
+			actionText={
+				avalaraActivated
+					? __( 'Continue setup', 'woocommerce-admin' )
+					: __( 'Enable & set up', 'woocommerce-admin' )
+			}
 			onClick={ () => {
-				recordEvent( 'wcadmin_tasklist_tax_select_option', {
+				recordEvent( 'tasklist_tax_select_option', {
 					selected_option: 'avalara',
 				} );
+
+				if ( avalaraActivated ) {
+					window.location.href = getAdminLink(
+						'/admin.php?page=wc-settings&tab=tax&section=avatax'
+					);
+
+					return;
+				}
+
 				window.open(
 					new URL(
 						'https://woocommerce.com/products/woocommerce-avatax/'

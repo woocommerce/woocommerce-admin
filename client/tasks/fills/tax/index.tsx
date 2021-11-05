@@ -187,7 +187,7 @@ const Tax = ( { onComplete, query } ) => {
 			return;
 		}
 
-		recordEvent( 'wcadmin_tasklist_tax_view_options', {
+		recordEvent( 'tasklist_tax_view_options', {
 			options: partners.map( ( partner ) => partner.id ),
 		} );
 	}, [] );
@@ -219,6 +219,7 @@ const Tax = ( { onComplete, query } ) => {
 		onAutomate,
 		onManual,
 		onDisable,
+		tasksStatus,
 	};
 
 	if ( isResolving ) {
