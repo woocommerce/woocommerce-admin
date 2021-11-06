@@ -62,7 +62,7 @@ const renderNotes = ( {
 	notes,
 	onDismiss,
 	onNoteActionClick,
-	setShowDismissAllModal,
+	setShowDismissAllModal: onDismissAll,
 } ) => {
 	if ( isBatchUpdating ) {
 		return;
@@ -100,7 +100,7 @@ const renderNotes = ( {
 						<div className="woocommerce-inbox-card__section-controls">
 							<Button
 								onClick={ () => {
-									setShowDismissAllModal( true );
+									onDismissAll( true );
 									onToggle();
 								} }
 							>
