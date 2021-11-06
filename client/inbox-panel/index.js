@@ -60,7 +60,7 @@ const renderNotes = ( {
 	isBatchUpdating,
 	lastRead,
 	notes,
-	dismissNote,
+	onDismiss,
 	onNoteActionClick,
 	setShowDismissAllModal,
 } ) => {
@@ -126,7 +126,7 @@ const renderNotes = ( {
 								key={ noteId }
 								note={ note }
 								lastRead={ lastRead }
-								onDismiss={ dismissNote }
+								onDismiss={ onDismiss }
 								onNoteActionClick={ onNoteActionClick }
 								onBodyLinkClick={ onBodyLinkClick }
 								onNoteVisible={ onNoteVisible }
@@ -199,7 +199,7 @@ const InboxPanel = () => {
 		updateUserPreferences( userDataFields );
 	}, [] );
 
-	const dismissNote = ( note ) => {
+	const onDismiss = ( note ) => {
 		const screen = getScreenName();
 
 		recordEvent( 'inbox_action_dismiss', {
@@ -294,7 +294,7 @@ const InboxPanel = () => {
 							isBatchUpdating,
 							lastRead,
 							notes,
-							dismissNote,
+							onDismiss,
 							onNoteActionClick,
 							setShowDismissAllModal,
 						} ) }
