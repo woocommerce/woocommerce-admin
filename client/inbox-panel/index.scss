@@ -45,6 +45,10 @@
 	width: 565px;
 	max-width: 100%;
 
+	.components-modal__content::before {
+		margin-bottom: 0;
+	}
+
 	.components-modal__header {
 		border-bottom: 1px solid #ddd !important;
 	}
