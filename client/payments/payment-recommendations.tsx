@@ -30,7 +30,6 @@ const SEE_MORE_LINK =
 export function getPaymentRecommendationData(
 	select: WCDataSelector
 ): {
-	displayable: boolean;
 	recommendedPlugins?: Plugin[];
 	isLoading: boolean;
 } {
@@ -40,7 +39,6 @@ export function getPaymentRecommendationData(
 	const isLoading = plugins === undefined;
 
 	return {
-		displayable: true,
 		recommendedPlugins: plugins,
 		isLoading,
 	};
@@ -60,12 +58,12 @@ const PaymentRecommendations: React.FC = () => {
 		invalidateResolution,
 	}: PluginsStoreActions = useDispatch( PLUGINS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
-	const { displayable, recommendedPlugins, isLoading } = useSelect(
+	const { recommendedPlugins, isLoading } = useSelect(
 		getPaymentRecommendationData
 	);
 	const triggeredPageViewRef = useRef( false );
 	const shouldShowRecommendations =
-		displayable && recommendedPlugins && recommendedPlugins.length > 0;
+		recommendedPlugins && recommendedPlugins.length > 0;
 
 	useEffect( () => {
 		if (
