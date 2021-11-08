@@ -30,6 +30,9 @@ class NavigationNudge {
 	 * Attach hooks.
 	 */
 	public function __construct() {
+		if ( ! Features::exists( 'navigation' ) ) {
+			self::action_note( '', 'yes' );
+		}
 		add_action( 'update_option_' . Navigation::TOGGLE_OPTION_NAME, array( $this, 'action_note' ), 10, 2 );
 	}
 
