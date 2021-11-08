@@ -160,11 +160,11 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 							'operand' => array(
 								(object) array(
 									'type'    => 'plugins_activated',
-									'plugins' => array( 'woocommerce-gateway-stripe' )
-								)
-							)
-						)
-					)
+									'plugins' => array( 'woocommerce-gateway-stripe' ),
+								),
+							),
+						),
+					),
 				),
 			)
 		);

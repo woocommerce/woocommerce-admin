@@ -13,6 +13,11 @@ class PaymentMethodSuggestionsDataSourcePoller extends DataSourcePoller {
 	const ID = 'payment_method_suggestions';
 
 	/**
+	 * Option name for dismissed payment method suggestions.
+	 */
+	const RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION = 'woocommerce_setting_payments_recommendations_hidden';
+
+	/**
 	 * Default data sources array.
 	 */
 	const DATA_SOURCES = array(

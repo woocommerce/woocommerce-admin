@@ -14,8 +14,6 @@ use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 
 defined( 'ABSPATH' ) || exit;
 
-const RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION = 'woocommerce_setting_payments_recommendations_hidden';
-
 /**
  * Plugins Controller.
  *
@@ -450,7 +448,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
 	public function recommended_payment_plugins( $request ) {
-		if ( get_option( RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'no' ) === 'yes' ) {
+		if ( get_option( PaymentMethodSuggestionsDataSourcePoller::RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'no' ) === 'yes' ) {
 			return rest_ensure_response( array() );
 		}
 		$all_plugins = PaymentMethodSuggestionsDataSourcePoller::get_instance()->get_suggestions();
@@ -465,7 +463,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
 	public function dismiss_recommended_payment_plugins() {
-		$success = update_option( RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'yes' );
+		$success = update_option( PaymentMethodSuggestionsDataSourcePoller::RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'yes' );
 		return rest_ensure_response( $success );
 	}
 
