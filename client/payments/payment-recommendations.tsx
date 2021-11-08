@@ -51,34 +51,21 @@ export function getPaymentRecommendationData(
 	const { getOption, isResolving: isResolvingOption } = select(
 		OPTIONS_STORE_NAME
 	) as OptionsSelector;
-	const { getSettings } = select( SETTINGS_STORE_NAME ) as SettingsSelector;
 	const { getRecommendedPlugins } = select( PLUGINS_STORE_NAME );
-	const { general: settings } = getSettings( 'general' );
 
 	const hidden = getOption( DISMISS_OPTION );
-	const countryCode =
-		settings && settings.woocommerce_default_country
-			? getCountryCode( settings.woocommerce_default_country )
-			: null;
-	const countrySupported = countryCode
-		? isWCPaySupported( countryCode )
-		: false;
 	const isRequestingOptions = isResolvingOption( 'getOption', [
 		DISMISS_OPTION,
 	] );
 
-	const displayable =
-		! isRequestingOptions && hidden !== 'yes' && countrySupported;
+	const displayable = ! isRequestingOptions && hidden !== 'yes';
 	let plugins = null;
 	if ( displayable ) {
 		// don't get recommended plugins until it is displayable.
 		plugins = getRecommendedPlugins( 'payments' );
 	}
 	const isLoading =
-		isRequestingOptions ||
-		hidden === undefined ||
-		settings === undefined ||
-		plugins === undefined;
+		isRequestingOptions || hidden === undefined || plugins === undefined;
 
 	return {
 		displayable,
