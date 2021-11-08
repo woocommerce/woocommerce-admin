@@ -1,4 +1,4 @@
 Significance: patch
 Type: Add
 
-Added @woocommerce/block-data to Webpack Dependency Extraction plugin
+#7911 - Added @woocommerce/block-data to Webpack Dependency Extraction plugin
