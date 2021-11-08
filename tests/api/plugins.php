@@ -147,13 +147,24 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 	 */
 	public function test_get_recommended_payment_plugins_that_are_active() {
 		wp_set_current_user( $this->user );
-		update_option( 'active_plugins', array( 'facebook-for-woocommerce/facebook-for-woocommerce.php' ) );
+		update_option( 'active_plugins', array( 'woocommerce-gateway-stripe/woocommerce-gateway-stripe.php' ) );
 		set_transient(
 			'woocommerce_admin_' . PaymentMethodSuggestionsDataSourcePoller::ID . '_specs',
 			array(
 				(object) array(
-					'plugins' => array( 'facebook-for-woocommerce' ),
-					'title'   => 'test',
+					'plugins'    => array( 'woocommerce-gateway-stripe' ),
+					'title'      => 'test',
+					'is_visible' => array(
+						(object) array(
+							'type'    => 'not',
+							'operand' => array(
+								(object) array(
+									'type'    => 'plugins_activated',
+									'plugins' => array( 'woocommerce-gateway-stripe' )
+								)
+							)
+						)
+					)
 				),
 			)
 		);
