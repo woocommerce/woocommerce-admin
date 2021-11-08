@@ -72,11 +72,12 @@ class Init {
 	/**
 	 * Possibly filters out woocommerce-payments from recommended payment methods.
 	 *
-	 * @param array $payment_methods list of payment methods.
+	 * @param array  $specs list of payment methods.
+	 * @param string $datasource_poller_id id of data source poller.
 	 * @return array list of payment method.
 	 */
 	public static function possibly_filter_recommended_payment_gateways( $specs, $datasource_poller_id ) {
-		if ( $datasource_poller_id === PaymentMethodSuggestionsDataSourcePoller::ID && self::should_register_pre_install_wc_pay_promoted_gateway() ) {
+		if ( PaymentMethodSuggestionsDataSourcePoller::ID === $datasource_poller_id && self::should_register_pre_install_wc_pay_promoted_gateway() ) {
 			return array_filter(
 				$specs,
 				function( $spec ) {

@@ -5,8 +5,8 @@ namespace Automattic\WooCommerce\Admin;
 /**
  * Specs data source poller class for payment gateway suggestions.
  */
-class PaymentMethodSuggestionsDataSourcePoller extends DataSourcePoller
-{
+class PaymentMethodSuggestionsDataSourcePoller extends DataSourcePoller {
+
 
 	const ID = 'payment_method_suggestions';
 
@@ -27,10 +27,9 @@ class PaymentMethodSuggestionsDataSourcePoller extends DataSourcePoller
 	/**
 	 * Get class instance.
 	 */
-	public static function get_instance()
-	{
-		if (!self::$instance) {
-			self::$instance = new self(self::ID, self::DATA_SOURCES);
+	public static function get_instance() {
+		if ( ! self::$instance ) {
+			self::$instance = new self( self::ID, self::DATA_SOURCES );
 		}
 		return self::$instance;
 	}

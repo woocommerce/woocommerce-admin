@@ -14,6 +14,8 @@ use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 
 defined( 'ABSPATH' ) || exit;
 
+const RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION = 'woocommerce_setting_payments_recommendations_hidden';
+
 /**
  * Plugins Controller.
  *
@@ -97,6 +99,19 @@ class Plugins extends \WC_REST_Data_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'recommended_payment_plugins' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/recommended-payment-plugins/dismiss',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'dismiss_recommended_payment_plugins' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -435,6 +450,9 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
 	public function recommended_payment_plugins( $request ) {
+		if ( get_option( RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'no' ) === 'yes' ) {
+			return rest_ensure_response( array() );
+		}
 		$all_plugins   = PaymentMethodSuggestionsDataSourcePoller::get_instance()->get_specs_from_data_sources();
 		$valid_plugins = [];
 		$per_page      = $request->get_param( 'per_page' );
@@ -446,6 +464,16 @@ class Plugins extends \WC_REST_Data_Controller {
 		}
 
 		return rest_ensure_response( array_slice( $valid_plugins, 0, $per_page ) );
+	}
+
+	/**
+	 * Dismisses recommended payment plugins.
+	 *
+	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
+	 */
+	public function dismiss_recommended_payment_plugins() {
+		$success = update_option( RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'yes' );
+		return rest_ensure_response( $success );
 	}
 
 	/**
