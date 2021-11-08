@@ -16,7 +16,7 @@ class PaymentMethodSuggestionsDataSourcePoller extends DataSourcePoller {
 	 * Default data sources array.
 	 */
 	const DATA_SOURCES = array(
-		'http://woocommerce.test/wp-json/wccom/payment-gateway-suggestions/1.0/payment-method/suggestions.json',
+		'https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/payment-method/suggestions.json',
 	);
 
 	/**
