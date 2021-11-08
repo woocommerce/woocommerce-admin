@@ -2,6 +2,8 @@
 
 namespace Automattic\WooCommerce\Admin;
 
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\EvaluateSuggestion;
+
 /**
  * Specs data source poller class for payment gateway suggestions.
  */
@@ -35,15 +37,30 @@ class PaymentMethodSuggestionsDataSourcePoller extends DataSourcePoller {
 	}
 
 	/**
-	 * Reads the data sources for specs and persists those specs.
+	 * Gets the payment method suggestions after validating the specs.
 	 *
-	 * @return array list of specs.
+	 * @return array visible specs.
 	 */
-	public function get_specs_from_data_sources() {
+	public function get_suggestions() {
 		if ( ! $this->allow_recommendations() ) {
 			return array();
 		}
-		return parent::get_specs_from_data_sources();
+		$suggestions = array();
+		$specs       = $this->get_specs_from_data_sources();
+
+		foreach ( $specs as $spec ) {
+			$suggestion    = EvaluateSuggestion::evaluate( $spec );
+			$suggestions[] = $suggestion;
+		}
+
+		return array_values(
+			array_filter(
+				$suggestions,
+				function( $suggestion ) {
+					return ! property_exists( $suggestion, 'is_visible' ) || $suggestion->is_visible;
+				}
+			)
+		);
 	}
 
 	/**

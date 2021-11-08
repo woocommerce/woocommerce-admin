@@ -453,17 +453,10 @@ class Plugins extends \WC_REST_Data_Controller {
 		if ( get_option( RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'no' ) === 'yes' ) {
 			return rest_ensure_response( array() );
 		}
-		$all_plugins   = PaymentMethodSuggestionsDataSourcePoller::get_instance()->get_specs_from_data_sources();
-		$valid_plugins = [];
-		$per_page      = $request->get_param( 'per_page' );
+		$all_plugins = PaymentMethodSuggestionsDataSourcePoller::get_instance()->get_suggestions();
+		$per_page    = $request->get_param( 'per_page' );
 
-		foreach ( $all_plugins as $plugin ) {
-			if ( ! PluginsHelper::is_plugin_active( $plugin->plugins[0] ) ) {
-				$valid_plugins[] = $plugin;
-			}
-		}
-
-		return rest_ensure_response( array_slice( $valid_plugins, 0, $per_page ) );
+		return rest_ensure_response( array_slice( $all_plugins, 0, $per_page ) );
 	}
 
 	/**
