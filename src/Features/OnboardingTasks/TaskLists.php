@@ -176,9 +176,10 @@ class TaskLists {
 
 		self::$default_tasks_loaded = true;
 
-		foreach ( self::DEFAULT_TASKS as $task ) {
-			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task;
-			self::add_task( 'setup', $class::get_task() );
+		foreach ( self::DEFAULT_TASKS as $task_name ) {
+			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task_name;
+			$task  = new $class();
+			self::add_task( $task->get_parent_id(), $task );
 		}
 	}
 

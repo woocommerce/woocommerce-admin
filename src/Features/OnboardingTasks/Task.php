@@ -107,7 +107,7 @@ abstract class Task {
 	/**
 	 * Additional data.
 	 *
-	 * @return string
+	 * @return mixed
 	 */
 	public function get_additional_data() {
 		return null;
