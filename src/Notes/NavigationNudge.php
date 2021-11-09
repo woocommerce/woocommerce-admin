@@ -30,10 +30,16 @@ class NavigationNudge {
 	 * Attach hooks.
 	 */
 	public function __construct() {
-		if ( ! Features::exists( 'navigation' ) ) {
-			self::action_note( '', 'yes' );
-		}
 		add_action( 'update_option_' . Navigation::TOGGLE_OPTION_NAME, array( $this, 'action_note' ), 10, 2 );
+	}
+
+	/**
+	 * Delete this note if the navigation feature does not exist.
+	 */
+	public static function delete_if_not_supported() {
+		if ( ! Features::exists( 'navigation' ) ) {
+			return self::possibly_delete_note();
+		}
 	}
 
 	/**
