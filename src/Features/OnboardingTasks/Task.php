@@ -155,7 +155,7 @@ abstract class Task {
 	 * @return bool
 	 */
 	public function is_dismissed() {
-		if ( ! $this->is_dismissable ) {
+		if ( ! $this->is_dismissable() ) {
 			return false;
 		}
 
@@ -170,7 +170,7 @@ abstract class Task {
 	 * @return bool
 	 */
 	public function dismiss() {
-		if ( ! $this->is_dismissable ) {
+		if ( ! $this->is_dismissable() ) {
 			return false;
 		}
 
@@ -231,7 +231,7 @@ abstract class Task {
 	 * @return bool
 	 */
 	public function is_snoozed() {
-		if ( ! $this->is_snoozeable ) {
+		if ( ! $this->is_snoozeable() ) {
 			return false;
 		}
 
@@ -247,7 +247,7 @@ abstract class Task {
 	 * @return bool
 	 */
 	public function snooze( $duration = 'day' ) {
-		if ( ! $this->is_snoozeable ) {
+		if ( ! $this->is_snoozeable() ) {
 			return false;
 		}
 
