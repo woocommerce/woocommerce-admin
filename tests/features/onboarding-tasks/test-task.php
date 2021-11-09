@@ -1,20 +1,36 @@
 <?php
 /**
- * A temporary class for creating tasks on the fly.
+ * Class for creating testable tasks.
+ *
+ * @package WooCommerce\Admin\Tests\OnboardingTasks
  */
 
-namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**
- * ExtendedTask class.
+ * TestTask class.
  */
-class ExtendedTask extends Task {
+class TestTask extends Task {
 	/**
 	 * ID.
 	 *
 	 * @var string
 	 */
 	public $id = '';
+
+	/**
+	 * Visibility.
+	 *
+	 * @var boolean
+	 */
+	public $can_view = true;
+
+	/**
+	 * Completion.
+	 *
+	 * @var boolean
+	 */
+	public $is_complete = false;
 
 	/**
 	 * Snoozeable.
@@ -31,6 +47,13 @@ class ExtendedTask extends Task {
 	public $is_dismissable = false;
 
 	/**
+	 * Level.
+	 *
+	 * @var boolean
+	 */
+	public $level = 3;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array $args Array of task args.
@@ -40,32 +63,20 @@ class ExtendedTask extends Task {
 			$args,
 			array(
 				'id'             => null,
+				'can_view'       => true,
+				'is_complete'    => false,
 				'is_dismissable' => false,
 				'is_snoozeable'  => false,
+				'level'          => 3,
 			)
 		);
 
 		$this->id             = $task_args['id'];
+		$this->can_view       = $task_args['can_view'];
+		$this->is_complete    = $task_args['is_complete'];
 		$this->is_dismissable = $task_args['is_dismissable'];
 		$this->is_snoozeable  = $task_args['is_snoozeable'];
-	}
-
-	/**
-	 * ID.
-	 *
-	 * @return string
-	 */
-	public function get_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Parent ID.
-	 *
-	 * @return string
-	 */
-	public function get_parent_id() {
-		return 'extended';
+		$this->level          = $task_args['level'];
 	}
 
 	/**
@@ -96,6 +107,24 @@ class ExtendedTask extends Task {
 	}
 
 	/**
+	 * ID.
+	 *
+	 * @return string
+	 */
+	public function get_id() {
+		return $this->id;
+	}
+
+	/**
+	 * Parent ID.
+	 *
+	 * @return string
+	 */
+	public function get_parent_id() {
+		return 'extended';
+	}
+
+	/**
 	 * Check if a task is snoozeable.
 	 *
 	 * @return bool
@@ -111,5 +140,32 @@ class ExtendedTask extends Task {
 	 */
 	public function is_dismissable() {
 		return $this->is_dismissable;
+	}
+
+	/**
+	 * Check if a task is complete.
+	 *
+	 * @return bool
+	 */
+	public function is_complete() {
+		return $this->is_complete;
+	}
+
+	/**
+	 * Check if a task is viewable.
+	 *
+	 * @return bool
+	 */
+	public function can_view() {
+		return $this->can_view;
+	}
+
+	/**
+	 * Level.
+	 *
+	 * @return string
+	 */
+	public function get_level() {
+		return $this->level;
 	}
 }
