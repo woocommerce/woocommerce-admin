@@ -126,7 +126,7 @@ class Tax extends Task {
 	 *
 	 * @return array
 	 */
-	public function get_additonal_data() {
+	public function get_additional_data() {
 		return array(
 			'avalara_activated'         => PluginsHelper::is_plugin_active( 'woocommerce-avatax' ),
 			'tax_jar_activated'         => class_exists( 'WC_Taxjar' ),

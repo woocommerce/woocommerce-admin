@@ -71,7 +71,7 @@ class Appearance extends Task {
 	 *
 	 * @return array
 	 */
-	public function get_additonal_data() {
+	public function get_additional_data() {
 		return array(
 			'has_homepage' => self::has_homepage(),
 			'has_products' => Products::has_products(),

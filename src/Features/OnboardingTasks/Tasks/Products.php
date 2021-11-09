@@ -79,7 +79,7 @@ class Products extends Task {
 	 *
 	 * @return array
 	 */
-	public function get_additonal_data() {
+	public function get_additional_data() {
 		return array(
 			'has_products' => self::has_products(),
 		);
