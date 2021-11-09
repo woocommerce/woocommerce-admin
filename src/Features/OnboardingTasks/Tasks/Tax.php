@@ -72,9 +72,9 @@ class Tax {
 				count( TaxDataStore::get_taxes( array() ) ) > 0 ||
 				false !== get_option( 'woocommerce_no_sales_tax' ) ||
 				PluginsHelper::is_plugin_active( 'woocommerce-avatax' ),
-			'is_visible'   => true,
-			'time'         => __( '1 minute', 'woocommerce-admin' ),
-			'extra'        => array(
+			'is_visible'      => true,
+			'time'            => __( '1 minute', 'woocommerce-admin' ),
+			'additional_data' => array(
 				'avalara_activated'         => PluginsHelper::is_plugin_active( 'woocommerce-avatax' ),
 				'tax_jar_activated'         => class_exists( 'WC_Taxjar' ),
 				'woocommerce_tax_countries' => self::get_automated_support_countries(),
