@@ -84,7 +84,7 @@ class Appearance extends Task {
 	 * Add media scripts for image uploader.
 	 */
 	public function add_media_scripts() {
-		if ( ! $this->can_view() ) {
+		if ( ! Loader::is_admin_page() || ! $this->can_view() ) {
 			return;
 		}
 

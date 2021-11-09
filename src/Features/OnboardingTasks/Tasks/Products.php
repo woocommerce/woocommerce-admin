@@ -92,12 +92,12 @@ class Products extends Task {
 	 * @param string $hook Page hook.
 	 */
 	public function possibly_add_manual_return_notice_script( $hook ) {
-		if ( $this->is_complete() || ! $this->is_active() ) {
+		global $post;
+		if ( 'post.php' !== $hook || 'product' !== $post->post_type ) {
 			return;
 		}
 
-		global $post;
-		if ( 'post.php' !== $hook || 'product' !== $post->post_type ) {
+		if ( ! $this->is_active() || $this->is_complete() ) {
 			return;
 		}
 
@@ -121,11 +121,11 @@ class Products extends Task {
 	public function possibly_add_import_return_notice_script( $hook ) {
 		$step = isset( $_GET['step'] ) ? $_GET['step'] : ''; // phpcs:ignore csrf ok, sanitization ok.
 
-		if ( $this->is_complete() || ! $this->is_active() ) {
+		if ( 'product_page_product_importer' !== $hook || 'done' !== $step ) {
 			return;
 		}
 
-		if ( 'product_page_product_importer' !== $hook || 'done' !== $step ) {
+		if ( ! $this->is_active() || $this->is_complete() ) {
 			return;
 		}
 

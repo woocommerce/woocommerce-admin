@@ -26,11 +26,11 @@ class Tax extends Task {
 		$page = isset( $_GET['page'] ) ? $_GET['page'] : ''; // phpcs:ignore csrf ok, sanitization ok.
 		$tab  = isset( $_GET['tab'] ) ? $_GET['tab'] : ''; // phpcs:ignore csrf ok, sanitization ok.
 
-		if ( $this->is_complete() || ! $this->is_active() ) {
+		if ( 'wc-settings' !== $page || 'tax' !== $tab ) {
 			return;
 		}
 
-		if ( 'wc-settings' !== $page || 'tax' !== $tab ) {
+		if ( ! $this->is_active() || $this->is_complete() ) {
 			return;
 		}
 
