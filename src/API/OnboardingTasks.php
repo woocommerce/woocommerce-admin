@@ -694,7 +694,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	public function get_tasks( $request ) {
 		$extended_tasks = $request->get_param( 'extended_tasks' );
 
-		TaskLists::maybe_add_default_tasks();
 		TaskLists::maybe_add_extended_tasks( $extended_tasks );
 
 		$lists = TaskLists::get_lists();
@@ -716,7 +715,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function dismiss_task( $request ) {
-		TaskLists::maybe_add_default_tasks();
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
 
@@ -750,7 +748,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function undo_dismiss_task( $request ) {
-		TaskLists::maybe_add_default_tasks();
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
 
@@ -786,7 +783,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function snooze_task( $request ) {
-		TaskLists::maybe_add_default_tasks();
 		$task_id      = $request->get_param( 'id' );
 		$task_list_id = $request->get_param( 'task_list_id' );
 		$duration     = $request->get_param( 'duration' );
@@ -823,7 +819,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function undo_snooze_task( $request ) {
-		TaskLists::maybe_add_default_tasks();
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
 
@@ -858,7 +853,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function hide_task_list( $request ) {
-		TaskLists::maybe_add_default_tasks();
 		$id        = $request->get_param( 'id' );
 		$task_list = TaskLists::get_list( $id );
 
@@ -912,7 +906,6 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 * @return WP_REST_Request|WP_Error
 	 */
 	public function action_task( $request ) {
-		TaskLists::maybe_add_default_tasks();
 		$id   = $request->get_param( 'id' );
 		$task = TaskLists::get_task( $id );
 
