@@ -267,7 +267,7 @@ class TaskLists {
 		);
 
 		foreach ( $tasks_to_search as $task ) {
-			if ( $id === $task->id ) {
+			if ( $id === $task->get_id() ) {
 				return $task;
 			}
 		}

@@ -22,7 +22,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 			)
 		);
 
-		$this->assertEquals( true, $task->can_view );
+		$this->assertEquals( true, $task->can_view() );
 	}
 
 	/**
@@ -36,7 +36,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 			)
 		);
 
-		$this->assertEquals( false, $task->can_view );
+		$this->assertEquals( false, $task->can_view() );
 	}
 
 	/**
@@ -53,7 +53,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$update    = $task->dismiss();
 		$dismissed = get_option( Task::DISMISSED_OPTION, array() );
 		$this->assertEquals( true, $update );
-		$this->assertContains( $task->id, $dismissed );
+		$this->assertContains( $task->get_id(), $dismissed );
 	}
 
 	/**
@@ -70,7 +70,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$task->dismiss();
 		$task->undo_dismiss();
 		$dismissed = get_option( Task::DISMISSED_OPTION, array() );
-		$this->assertNotContains( $task->id, $dismissed );
+		$this->assertNotContains( $task->get_id(), $dismissed );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$update    = $task->dismiss();
 		$dismissed = get_option( Task::DISMISSED_OPTION, array() );
 		$this->assertEquals( false, $update );
-		$this->assertNotContains( $task->id, $dismissed );
+		$this->assertNotContains( $task->get_id(), $dismissed );
 	}
 
 
@@ -105,7 +105,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$update  = $task->snooze();
 		$snoozed = get_option( Task::SNOOZED_OPTION, array() );
 		$this->assertEquals( true, $update );
-		$this->assertArrayHasKey( $task->id, $snoozed );
+		$this->assertArrayHasKey( $task->get_id(), $snoozed );
 	}
 
 	/**
@@ -122,7 +122,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$task->snooze();
 		$task->undo_snooze();
 		$snoozed = get_option( Task::SNOOZED_OPTION, array() );
-		$this->assertArrayNotHasKey( $task->id, $snoozed );
+		$this->assertArrayNotHasKey( $task->get_id(), $snoozed );
 	}
 
 	/**
@@ -141,7 +141,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 			)
 		);
 
-		$this->assertEquals( $time, $task->snoozed_until );
+		$this->assertEquals( $time, $task->get_snoozed_until() );
 
 	}
 
@@ -220,7 +220,7 @@ class WC_Tests_OnboardingTasks_Task extends WC_Unit_Test_Case {
 		$update   = $task->mark_actioned();
 		$actioned = get_option( Task::ACTIONED_OPTION, array() );
 		$this->assertEquals( true, $update );
-		$this->assertContains( $task->id, $actioned );
+		$this->assertContains( $task->get_id(), $actioned );
 	}
 
 	/**

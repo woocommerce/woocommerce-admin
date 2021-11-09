@@ -10,7 +10,7 @@ namespace Automattic\WooCommerce\Admin\API;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasksFeature;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\ExtendedTask;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -721,16 +721,15 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new Task(
+			$task = new ExtendedTask(
 				array(
 					'id'             => $id,
 					'is_dismissable' => true,
-					'parent_id'      => 'extended',
 				)
 			);
 		}
 
-		if ( ! $task || ! $task->is_dismissable ) {
+		if ( ! $task || ! $task->is_dismissable() ) {
 			return new \WP_Error(
 				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no dismissable task with that ID was found.', 'woocommerce-admin' ),
@@ -756,16 +755,15 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new Task(
+			$task = new ExtendedTask(
 				array(
 					'id'             => $id,
 					'is_dismissable' => true,
-					'parent_id'      => 'extended',
 				)
 			);
 		}
 
-		if ( ! $task || ! $task->is_dismissable ) {
+		if ( ! $task || ! $task->is_dismissable() ) {
 			return new \WP_Error(
 				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no dismissable task with that ID was found.', 'woocommerce-admin' ),
@@ -796,16 +794,15 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $task_id, $task_list_id );
 
 		if ( ! $task && $task_id ) {
-			$task = new Task(
+			$task = new ExtendedTask(
 				array(
 					'id'            => $task_id,
 					'is_snoozeable' => true,
-					'parent_id'     => 'extended',
 				)
 			);
 		}
 
-		if ( ! $task || ! $task->is_snoozeable ) {
+		if ( ! $task || ! $task->is_snoozeable() ) {
 			return new \WP_Error(
 				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
@@ -831,16 +828,15 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new Task(
+			$task = new ExtendedTask(
 				array(
 					'id'            => $id,
 					'is_snoozeable' => true,
-					'parent_id'     => 'extended',
 				)
 			);
 		}
 
-		if ( ! $task || ! $task->is_snoozeable ) {
+		if ( ! $task || ! $task->is_snoozeable() ) {
 			return new \WP_Error(
 				'woocommerce_rest_invalid_task',
 				__( 'Sorry, no snoozeable task with that ID was found.', 'woocommerce-admin' ),
@@ -921,10 +917,9 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new Task(
+			$task = new ExtendedTask(
 				array(
-					'id'        => $id,
-					'parent_id' => 'extended',
+					'id' => $id,
 				)
 			);
 		}
