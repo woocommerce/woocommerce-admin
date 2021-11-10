@@ -37,7 +37,7 @@ describe( 'BusinessDetails', () => {
 	} );
 
 	describe( 'prepareInstalledExtensionsForTracking', () => {
-		test( 'prepareing extensions for tracking', () => {
+		test( 'preparing extensions for tracking', () => {
 			const extensions = {
 				'creative-mail-by-constant-contact': true,
 				'facebook-for-woocommerce': false,
@@ -63,7 +63,7 @@ describe( 'BusinessDetails', () => {
 
 			expect( installedExtensions ).toEqual( expectedExtensions );
 		} );
-		test( 'prepareing shipping and tax extensions for tracking', () => {
+		test( 'preparing shipping and tax extensions for tracking', () => {
 			const extensions = {
 				'woocommerce-services:shipping': true,
 				'woocommerce-services:tax': true,
