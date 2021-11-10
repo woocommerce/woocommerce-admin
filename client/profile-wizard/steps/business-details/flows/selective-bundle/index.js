@@ -84,20 +84,26 @@ class BusinessDetails extends Component {
 			extensionInstallationOptions
 		);
 
+		const isntalledExtensions = {};
+		for ( const [ fieldKey, value ] of Object.entries(
+			extensionInstallationOptions
+		) ) {
+			const key = `install_${ fieldKey
+				.replace( /-/g, '_' )
+				.split( ':', 1 ) }`;
+			if (
+				fieldKey !== 'install_extensions' &&
+				! isntalledExtensions[ key ]
+			) {
+				isntalledExtensions[ key ] = value;
+			}
+		}
+
 		recordEvent( 'storeprofiler_store_business_features_continue', {
 			all_extensions_installed: Object.values(
 				extensionInstallationOptions
 			).every( ( val ) => val ),
-			install_woocommerce_services:
-				extensionInstallationOptions[
-					'woocommerce-services:shipping'
-				] || extensionInstallationOptions[ 'woocommerce-services:tax' ],
-			install_google_listings_and_ads:
-				extensionInstallationOptions[ 'google-listings-and-ads' ],
-			install_jetpack: extensionInstallationOptions.jetpack,
-			install_mailpoet: extensionInstallationOptions.mailpoet,
-			install_wcpay:
-				extensionInstallationOptions[ 'woocommerce-payments' ],
+			...isntalledExtensions,
 		} );
 
 		const promises = [
