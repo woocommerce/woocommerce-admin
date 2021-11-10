@@ -296,11 +296,11 @@ abstract class Task {
 	 * Track task completion if task is viewable.
 	 */
 	public function possibly_track_completion() {
-		if ( ! $this->can_view ) {
+		if ( ! $this->can_view() ) {
 			return;
 		}
 
-		if ( ! $this->is_complete ) {
+		if ( ! $this->is_complete() ) {
 			return;
 		}
 
@@ -388,13 +388,17 @@ abstract class Task {
 	/**
 	 * Convert object keys to camelcase.
 	 *
-	 * @param object $object Object to convert.
+	 * @param array $data Data to convert.
 	 * @return object
 	 */
-	public static function convert_object_to_camelcase( $object ) {
+	public static function convert_object_to_camelcase( $data ) {
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
+
 		$new_object = (object) array();
 
-		foreach ( $object as $key => $value ) {
+		foreach ( $data as $key => $value ) {
 			$new_key              = lcfirst( implode( '', array_map( 'ucfirst', explode( '_', $key ) ) ) );
 			$new_object->$new_key = $value;
 		}
