@@ -58,6 +58,26 @@ export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
 	);
 };
 
+export const prepareInstalledExtensionsForTracking = (
+	extensionInstallationOptions
+) => {
+	const installedExtensions = {};
+	for ( const [ fieldKey, value ] of Object.entries(
+		extensionInstallationOptions
+	) ) {
+		const key = `install_${ fieldKey
+			.replace( /-/g, '_' )
+			.split( ':', 1 ) }`;
+		if (
+			fieldKey !== 'install_extensions' &&
+			! installedExtensions[ key ]
+		) {
+			installedExtensions[ key ] = value;
+		}
+	}
+	return installedExtensions;
+};
+
 class BusinessDetails extends Component {
 	constructor() {
 		super();
@@ -84,26 +104,15 @@ class BusinessDetails extends Component {
 			extensionInstallationOptions
 		);
 
-		const isntalledExtensions = {};
-		for ( const [ fieldKey, value ] of Object.entries(
+		const installedExtensions = prepareInstalledExtensionsForTracking(
 			extensionInstallationOptions
-		) ) {
-			const key = `install_${ fieldKey
-				.replace( /-/g, '_' )
-				.split( ':', 1 ) }`;
-			if (
-				fieldKey !== 'install_extensions' &&
-				! isntalledExtensions[ key ]
-			) {
-				isntalledExtensions[ key ] = value;
-			}
-		}
+		);
 
 		recordEvent( 'storeprofiler_store_business_features_continue', {
 			all_extensions_installed: Object.values(
 				extensionInstallationOptions
 			).every( ( val ) => val ),
-			...isntalledExtensions,
+			...installedExtensions,
 		} );
 
 		const promises = [
