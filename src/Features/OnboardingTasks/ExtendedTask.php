@@ -43,7 +43,7 @@ class ExtendedTask extends Task {
 				'is_dismissable'  => false,
 				'is_snoozeable'   => false,
 				'is_snoozeable'   => false,
-				'is_visible'      => true,
+				'can_view'        => true,
 				'level'           => 3,
 				'additional_info' => null,
 				'content'         => '',
@@ -59,7 +59,7 @@ class ExtendedTask extends Task {
 		$this->is_complete     = $task_args['is_complete'];
 		$this->is_dismissable  = $task_args['is_dismissable'];
 		$this->is_snoozeable   = $task_args['is_snoozeable'];
-		$this->is_visible      = $task_args['is_visible'];
+		$this->can_view        = $task_args['can_view'];
 		$this->level           = $task_args['level'];
 		$this->time            = $task_args['time'];
 		$this->title           = $task_args['title'];
@@ -161,6 +161,6 @@ class ExtendedTask extends Task {
 	 * @return bool
 	 */
 	public function can_view() {
-		return $this->is_visible;
+		return $this->can_view;
 	}
 }
