@@ -25,6 +25,31 @@ class NavigationFeedback {
 	const NOTE_NAME = 'wc-admin-navigation-feedback';
 
 	/**
+	 * Should this note exist? (The navigation feature should exist.)
+	 */
+	public static function should_note_exist() {
+		return Features::exists( 'navigation' );
+	}
+
+	/**
+	 * Delete this note if the navigation feature does not exist, unless the note has been soft-deleted already.
+	 */
+	public static function delete_if_not_supported() {
+		if ( ! self::should_note_exist() ) {
+			$data_store = Notes::load_data_store();
+			$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+
+			if ( ! empty( $note_ids ) ) {
+				$note = Notes::get_note( $note_ids[0] );
+
+				if ( ! $note->get_is_deleted() ) {
+					return self::possibly_delete_note();
+				}
+			}
+		}
+	}
+
+	/**
 	 * Get the note.
 	 *
 	 * @return Note
