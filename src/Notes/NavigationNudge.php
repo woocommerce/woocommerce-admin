@@ -34,11 +34,27 @@ class NavigationNudge {
 	}
 
 	/**
-	 * Delete this note if the navigation feature does not exist.
+	 * Should this note exist? (The navigation feature should exist.)
+	 */
+	public static function should_note_exist() {
+		return Features::exists( 'navigation' );
+	}
+
+	/**
+	 * Delete this note if the navigation feature does not exist, unless the note has been soft-deleted already.
 	 */
 	public static function delete_if_not_supported() {
-		if ( ! Features::exists( 'navigation' ) ) {
-			return self::possibly_delete_note();
+		if ( ! self::should_note_exist() ) {
+			$data_store = Notes::load_data_store();
+			$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+
+			if ( ! empty( $note_ids ) ) {
+				$note = Notes::get_note( $note_ids[0] );
+
+				if ( ! $note->get_is_deleted() ) {
+					return self::possibly_delete_note();
+				}
+			}
 		}
 	}
 
@@ -48,7 +64,7 @@ class NavigationNudge {
 	 * @return Note
 	 */
 	public static function get_note() {
-		if ( Features::is_enabled( 'navigation' ) || ! Features::exists( 'navigation' ) ) {
+		if ( Features::is_enabled( 'navigation' ) || ! self::should_note_exist() ) {
 			return;
 		}
 
