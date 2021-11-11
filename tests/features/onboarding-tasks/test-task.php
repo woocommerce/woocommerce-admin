@@ -19,20 +19,6 @@ class TestTask extends Task {
 	public $id = '';
 
 	/**
-	 * Visibility.
-	 *
-	 * @var boolean
-	 */
-	public $can_view = true;
-
-	/**
-	 * Completion.
-	 *
-	 * @var boolean
-	 */
-	public $is_complete = false;
-
-	/**
 	 * Snoozeable.
 	 *
 	 * @var boolean
@@ -47,13 +33,6 @@ class TestTask extends Task {
 	public $is_dismissable = false;
 
 	/**
-	 * Level.
-	 *
-	 * @var boolean
-	 */
-	public $level = 3;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param array $args Array of task args.
@@ -62,48 +41,30 @@ class TestTask extends Task {
 		$task_args = wp_parse_args(
 			$args,
 			array(
-				'id'             => null,
-				'can_view'       => true,
-				'is_complete'    => false,
-				'is_dismissable' => false,
-				'is_snoozeable'  => false,
-				'level'          => 3,
+				'id'              => null,
+				'is_dismissable'  => false,
+				'is_snoozeable'   => false,
+				'is_snoozeable'   => false,
+				'can_view'        => true,
+				'level'           => 3,
+				'additional_info' => null,
+				'content'         => '',
+				'title'           => '',
+				'is_complete'     => false,
+				'time'            => null,
 			)
 		);
 
-		$this->id             = $task_args['id'];
-		$this->can_view       = $task_args['can_view'];
-		$this->is_complete    = $task_args['is_complete'];
-		$this->is_dismissable = $task_args['is_dismissable'];
-		$this->is_snoozeable  = $task_args['is_snoozeable'];
-		$this->level          = $task_args['level'];
-	}
-
-	/**
-	 * Title
-	 *
-	 * @return null
-	 */
-	public function get_title() {
-		return null;
-	}
-
-	/**
-	 * Title
-	 *
-	 * @return null
-	 */
-	public function get_content() {
-		return null;
-	}
-
-	/**
-	 * Time
-	 *
-	 * @return null
-	 */
-	public function get_time() {
-		return null;
+		$this->id              = $task_args['id'];
+		$this->additional_info = $task_args['additional_info'];
+		$this->content         = $task_args['content'];
+		$this->is_complete     = $task_args['is_complete'];
+		$this->is_dismissable  = $task_args['is_dismissable'];
+		$this->is_snoozeable   = $task_args['is_snoozeable'];
+		$this->can_view        = $task_args['can_view'];
+		$this->level           = $task_args['level'];
+		$this->time            = $task_args['time'];
+		$this->title           = $task_args['title'];
 	}
 
 	/**
@@ -116,12 +77,57 @@ class TestTask extends Task {
 	}
 
 	/**
+	 * Additonal info.
+	 *
+	 * @return string
+	 */
+	public function get_additional_info() {
+		return $this->additional_info;
+	}
+
+	/**
+	 * Content.
+	 *
+	 * @return string
+	 */
+	public function get_content() {
+		return $this->content;
+	}
+
+	/**
 	 * Parent ID.
 	 *
 	 * @return string
 	 */
 	public function get_parent_id() {
 		return 'extended';
+	}
+
+	/**
+	 * Level.
+	 *
+	 * @return int
+	 */
+	public function get_level() {
+		return $this->level;
+	}
+
+	/**
+	 * Title
+	 *
+	 * @return string
+	 */
+	public function get_title() {
+		return $this->title;
+	}
+
+	/**
+	 * Time
+	 *
+	 * @return string|null
+	 */
+	public function get_time() {
+		return $this->time;
 	}
 
 	/**
@@ -143,7 +149,7 @@ class TestTask extends Task {
 	}
 
 	/**
-	 * Check if a task is complete.
+	 * Check if a task is dismissable.
 	 *
 	 * @return bool
 	 */
@@ -152,20 +158,11 @@ class TestTask extends Task {
 	}
 
 	/**
-	 * Check if a task is viewable.
+	 * Check if a task is dismissable.
 	 *
 	 * @return bool
 	 */
 	public function can_view() {
 		return $this->can_view;
-	}
-
-	/**
-	 * Level.
-	 *
-	 * @return string
-	 */
-	public function get_level() {
-		return $this->level;
 	}
 }
