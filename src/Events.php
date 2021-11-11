@@ -162,6 +162,7 @@ class Events {
 	 */
 	protected function possibly_delete_notes() {
 		NavigationNudge::delete_if_not_supported();
+		NavigationFeedback::delete_if_not_supported();
 	}
 
 	/**
