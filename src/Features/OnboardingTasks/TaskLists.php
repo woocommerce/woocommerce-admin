@@ -6,6 +6,7 @@
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\ExtendedTask;
 use Automattic\WooCommerce\Admin\Loader;
 
 /**
@@ -192,8 +193,9 @@ class TaskLists {
 	public static function maybe_add_extended_tasks( $extended_tasks ) {
 		$tasks = $extended_tasks ? $extended_tasks : array();
 
-		foreach ( $tasks as $extended_task ) {
-			self::add_task( $extended_task['list_id'], $extended_task );
+		foreach ( $tasks as $args ) {
+			$task = new ExtendedTask( $args );
+			self::add_task( $task->get_parent_id(), $task );
 		}
 	}
 
