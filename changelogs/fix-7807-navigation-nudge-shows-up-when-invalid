@@ -1,4 +1,4 @@
 Significance: patch
 Type: Fix
 
-Navigation nudge note will delete itself if the navigation feature is not available. 7807
+Navigation nudge note will delete itself if the navigation feature is not available. #7914
