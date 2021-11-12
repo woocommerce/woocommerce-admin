@@ -161,8 +161,8 @@ class Events {
 	 * Deletes notes that should be deleted.
 	 */
 	protected function possibly_delete_notes() {
-		NavigationNudge::delete_if_not_supported();
-		NavigationFeedback::delete_if_not_supported();
+		NavigationNudge::delete_if_not_applicable();
+		NavigationFeedback::delete_if_not_applicable();
 	}
 
 	/**
