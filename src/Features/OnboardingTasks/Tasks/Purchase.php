@@ -24,7 +24,10 @@ class Purchase {
 	 * @param array $new_value New value.
 	 */
 	public static function clear_dismissal( $old_value, $new_value ) {
-		if ( empty( array_diff( (array) $new_value['product_types'], (array) $old_value['product_types'] ) ) ) {
+		$product_types          = isset( $new_value['product_types'] ) ? (array) $new_value['product_types'] : array();
+		$previous_product_types = isset( $old_value['product_types'] ) ? (array) $old_value['product_types'] : array();
+
+		if ( empty( array_diff( $product_types, $previous_product_types ) ) ) {
 			return;
 		}
 
