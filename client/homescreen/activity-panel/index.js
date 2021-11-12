@@ -46,7 +46,7 @@ export const ActivityPanel = () => {
 			countUnapprovedReviews,
 			countUnreadOrders,
 			manageStock,
-			isTaskListHidden: taskList?.isVisible,
+			isTaskListVisible: taskList?.isVisible,
 			publishedProductCount,
 			reviewsEnabled,
 			totalOrderCount,
@@ -57,18 +57,18 @@ export const ActivityPanel = () => {
 	const panels = getAllPanels( panelsData );
 
 	useEffect( () => {
-		if ( panelsData.isTaskListHidden !== undefined ) {
+		if ( panelsData.isTaskListVisible !== undefined ) {
 			const visiblePanels = panels.reduce(
 				( acc, panel ) => {
 					const panelId = snakeCase( panel.id );
 					acc[ panelId ] = true;
 					return acc;
 				},
-				{ task_list: ! panelsData.isTaskListHidden }
+				{ task_list: panelsData.isTaskListVisible }
 			);
 			recordEvent( 'activity_panel_visible_panels', visiblePanels );
 		}
-	}, [ panelsData.isTaskListHidden ] );
+	}, [ panelsData.isTaskListVisible ] );
 
 	if ( panels.length === 0 ) {
 		return null;
