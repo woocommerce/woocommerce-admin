@@ -5,7 +5,6 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\PluginsHelper;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**
  * Purchase Task
@@ -15,7 +14,7 @@ class Purchase extends Task {
 	 * Initialize.
 	 */
 	public function __construct() {
-		add_action( 'update_option_woocommerce_onboarding_profile', array( __CLASS__, 'clear_dismissal' ), 10, 2 );
+		add_action( 'update_option_woocommerce_onboarding_profile', array( $this, 'clear_dismissal' ), 10, 2 );
 	}
 
 	/**
@@ -24,7 +23,7 @@ class Purchase extends Task {
 	 * @param array $old_value Old value.
 	 * @param array $new_value New value.
 	 */
-	public static function clear_dismissal( $old_value, $new_value ) {
+	public function clear_dismissal( $old_value, $new_value ) {
 		$product_types          = isset( $new_value['product_types'] ) ? (array) $new_value['product_types'] : array();
 		$previous_product_types = isset( $old_value['product_types'] ) ? (array) $old_value['product_types'] : array();
 
@@ -32,8 +31,7 @@ class Purchase extends Task {
 			return;
 		}
 
-		$task = new Task( self::get_task() );
-		$task->undo_dismiss();
+		$this->undo_dismiss();
 	}
 
 	/**
