@@ -1,14 +1,14 @@
 <?php
 /**
- * A temporary class for creating tasks on the fly.
+ * A temporary class for creating tasks on the fly from deprecated tasks.
  */
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
 /**
- * ExtendedTask class.
+ * DeprecatedExtendedTask class.
  */
-class ExtendedTask extends Task {
+class DeprecatedExtendedTask extends Task {
 	/**
 	 * ID.
 	 *

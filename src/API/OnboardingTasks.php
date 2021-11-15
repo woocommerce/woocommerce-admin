@@ -10,7 +10,7 @@ namespace Automattic\WooCommerce\Admin\API;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasksFeature;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\ExtendedTask;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\DeprecatedExtendedTask;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -719,7 +719,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new ExtendedTask(
+			$task = new DeprecatedExtendedTask(
 				array(
 					'id'             => $id,
 					'is_dismissable' => true,
@@ -752,7 +752,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new ExtendedTask(
+			$task = new DeprecatedExtendedTask(
 				array(
 					'id'             => $id,
 					'is_dismissable' => true,
@@ -790,7 +790,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $task_id, $task_list_id );
 
 		if ( ! $task && $task_id ) {
-			$task = new ExtendedTask(
+			$task = new DeprecatedExtendedTask(
 				array(
 					'id'            => $task_id,
 					'is_snoozeable' => true,
@@ -823,7 +823,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new ExtendedTask(
+			$task = new DeprecatedExtendedTask(
 				array(
 					'id'            => $id,
 					'is_snoozeable' => true,
@@ -910,7 +910,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$task = TaskLists::get_task( $id );
 
 		if ( ! $task && $id ) {
-			$task = new ExtendedTask(
+			$task = new DeprecatedExtendedTask(
 				array(
 					'id' => $id,
 				)

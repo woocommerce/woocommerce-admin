@@ -5,8 +5,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\DeprecatedExtendedTask;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\ExtendedTask;
 use Automattic\WooCommerce\Admin\Loader;
 
 /**
@@ -194,7 +194,7 @@ class TaskLists {
 		$tasks = $extended_tasks ? $extended_tasks : array();
 
 		foreach ( $tasks as $args ) {
-			$task = new ExtendedTask( $args );
+			$task = new DeprecatedExtendedTask( $args );
 			self::add_task( $task->get_parent_id(), $task );
 		}
 	}
