@@ -36,19 +36,35 @@ const createOrderedChildren = ( children, order, props ) => {
  * @param {Array} param0.order - Node order.
  */
 export const WooHeaderItem = ( { children, order = 1 } ) => {
+	const suffix = order >= 0 ? 'after' : 'before';
+
 	return (
-		<Fill name={ 'woocommerce_header_item' }>
+		<Fill name={ `woocommerce_header_item_${ suffix }` }>
 			{ createOrderedChildren.bind( null, children, order ) }
 		</Fill>
 	);
 };
 
-WooHeaderItem.Slot = ( { fillProps } ) => (
-	<Slot name={ 'woocommerce_header_item' } fillProps={ fillProps }>
+WooHeaderItem.BeforeSlot = ( { fillProps } ) => (
+	<Slot name={ 'woocommerce_header_item_before' } fillProps={ fillProps }>
 		{ ( fills ) => {
-			return fills.sort( ( a, b ) => {
-				return a[ 0 ].props.order - b[ 0 ].props.order;
-			} );
+			return fills
+				.filter( ( fill ) => fill[ 0 ].props.order < 0 )
+				.sort( ( a, b ) => {
+					return a[ 0 ].props.order - b[ 0 ].props.order;
+				} );
+		} }
+	</Slot>
+);
+
+WooHeaderItem.AfterSlot = ( { fillProps } ) => (
+	<Slot name={ 'woocommerce_header_item_after' } fillProps={ fillProps }>
+		{ ( fills ) => {
+			return fills
+				.filter( ( fill ) => fill[ 0 ].props.order >= 0 )
+				.sort( ( a, b ) => {
+					return a[ 0 ].props.order - b[ 0 ].props.order;
+				} );
 		} }
 	</Slot>
 );

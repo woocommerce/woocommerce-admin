@@ -91,6 +91,8 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	return (
 		<div className={ className } ref={ headerElement }>
 			<div className="woocommerce-layout__header-wrapper">
+				<WooHeaderItem.BeforeSlot fillProps={ { isEmbedded, query } } />
+
 				<Text
 					className={ `woocommerce-layout__header-heading` }
 					as="h1"
@@ -106,7 +108,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 					) }
 				</Text>
 
-				<WooHeaderItem.Slot fillProps={ { isEmbedded, query } } />
+				<WooHeaderItem.AfterSlot fillProps={ { isEmbedded, query } } />
 			</div>
 		</div>
 	);
