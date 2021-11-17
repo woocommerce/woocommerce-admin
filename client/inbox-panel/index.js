@@ -162,6 +162,7 @@ const InboxPanel = () => {
 	const { removeNote, updateNote, triggerNoteAction } = useDispatch(
 		NOTES_STORE_NAME
 	);
+
 	const { isError, isResolvingNotes, isBatchUpdating, notes } = useSelect(
 		( select ) => {
 			const {
