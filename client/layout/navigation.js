@@ -39,7 +39,7 @@ const NavigationPlugin = () => {
 	 */
 	if ( ! isWCAdmin( window.location.href ) ) {
 		return (
-			<WooHeaderItem>
+			<WooHeaderItem order={ -100 }>
 				<Navigation />
 			</WooHeaderItem>
 		);

@@ -34,7 +34,7 @@ export const Task: React.FC< TaskProps > = ( { query, task } ) => {
 
 	return (
 		<>
-			<WooHeaderItem>
+			<WooHeaderItem order={ -1 }>
 				<BackButton title={ task.title } />
 			</WooHeaderItem>
 			<WooHeaderPageTitle>{ task.title }</WooHeaderPageTitle>
