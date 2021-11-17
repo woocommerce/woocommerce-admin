@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __, _n } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
 import {
 	EmptyContent,
 	Section,
@@ -54,7 +55,7 @@ const renderNotes = ( {
 	hasNotes,
 	isBatchUpdating,
 	notes,
-	dismissNote,
+	onDismiss,
 	onNoteActionClick,
 	setShowDismissAllModal: onDismissAll,
 } ) => {
@@ -119,7 +120,7 @@ const renderNotes = ( {
 							<InboxNoteCard
 								key={ noteId }
 								note={ note }
-								onDismiss={ dismissNote }
+								onDismiss={ onDismiss }
 								onNoteActionClick={ onNoteActionClick }
 								onBodyLinkClick={ onBodyLinkClick }
 								onNoteVisible={ onNoteVisible }
@@ -180,6 +181,8 @@ const InboxPanel = () => {
 			};
 		}
 	);
+
+	const [ showDismissAllModal, setShowDismissAllModal ] = useState( false );
 
 	const onDismiss = ( note ) => {
 		const screen = getScreenName();
@@ -255,6 +258,13 @@ const InboxPanel = () => {
 	// the current one is only getting 25 notes and the count of unread notes only will refer to this 25 and not all the existing ones.
 	return (
 		<>
+			{ showDismissAllModal && (
+				<DismissAllModal
+					onClose={ () => {
+						setShowDismissAllModal( false );
+					} }
+				/>
+			) }
 			<div className="woocommerce-homepage-notes-wrapper">
 				{ ( isResolvingNotes || isBatchUpdating ) && (
 					<Section>
@@ -270,6 +280,7 @@ const InboxPanel = () => {
 							notes,
 							onDismiss,
 							onNoteActionClick,
+							setShowDismissAllModal,
 						} ) }
 				</Section>
 			</div>
