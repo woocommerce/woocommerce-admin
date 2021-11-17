@@ -316,3 +316,42 @@ function wc_admin_update_290_update_apperance_task_option() {
 function wc_admin_update_290_db_version() {
 	Installer::update_db_version( '2.9.0' );
 }
+
+/**
+ * Use woocommerce_admin_activity_panel_inbox_last_read from the user meta to set wc_admin_notes.is_read col.
+ */
+function wc_admin_update_300_update_is_read_from_last_read() {
+	global $wpdb;
+	$user      = wp_get_current_user();
+	$last_read = get_user_meta( $user->ID, 'woocommerce_admin_activity_panel_inbox_last_read', true );
+
+	// make sure is_read col has been added successfully.
+	$notes_table_cols = $wpdb->get_results( "show columns from {$wpdb->prefix}wc_admin_notes" );
+	$notes_table_cols = array_filter(
+		$notes_table_cols,
+		function( $row ) {
+			// phpcs:ignore
+			return 'is_read' === $row->Field;
+		}
+	);
+	$has_is_read_col  = count( $notes_table_cols ) > 0;
+
+	if ( $last_read && $has_is_read_col ) {
+		$date_in_utc = gmdate( 'Y-m-d H:i:s', $last_read );
+		$wpdb->query(
+			$wpdb->prepare(
+				"
+				update {$wpdb->prefix}wc_admin_notes set is_read = 1
+				where
+				date_created <= %s",
+				$date_in_utc
+			)
+		);
+	}
+}
+/**
+ * Update DB Version.
+ */
+function wc_admin_update_300_db_version() {
+	Installer::update_db_version( '3.0.0' );
+}
