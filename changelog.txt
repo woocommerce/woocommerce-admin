@@ -1,5 +1,7 @@
-== 2.9.0 11/05/2021 == 
+== 2.9.0 11/30/2021 == 
 
+- Fix: Fix ExPlat PHP client #7926
+- Fix: Fix marketing extensions tracks #7908
 - Update: Increased number of possible items in Recommended Extensions list from 6 to 9 #7887
 - Update: Reverts addition of Marketplace and My Subscriptions pages to the Marketplace menu. #7902
 - Update: Add marketing extensions back to onboarding wizard #7831
