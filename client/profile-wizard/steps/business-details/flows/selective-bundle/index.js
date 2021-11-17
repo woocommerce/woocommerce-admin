@@ -65,9 +65,10 @@ export const prepareExtensionTrackingData = (
 	for ( const [ fieldKey, value ] of Object.entries(
 		extensionInstallationOptions
 	) ) {
-		const key = `install_${ fieldKey
-			.replace( /-/g, '_' )
-			.split( ':', 1 ) }`;
+		const key =
+			fieldKey === 'woocommerce-payments'
+				? 'install_wcpay'
+				: `install_${ fieldKey.replace( /-/g, '_' ).split( ':', 1 ) }`;
 		if (
 			fieldKey !== 'install_extensions' &&
 			! installedExtensions[ key ]

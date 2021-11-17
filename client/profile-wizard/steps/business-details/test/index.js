@@ -54,7 +54,7 @@ describe( 'BusinessDetails', () => {
 				install_jetpack: false,
 				install_google_listings_and_ads: true,
 				install_mailchimp_for_woocommerce: false,
-				install_woocommerce_payments: true,
+				install_wcpay: true,
 			};
 
 			const installedExtensions = prepareExtensionTrackingData(
