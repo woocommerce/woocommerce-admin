@@ -58,7 +58,7 @@ export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
 	);
 };
 
-export const prepareInstalledExtensionsForTracking = (
+export const prepareExtensionTrackingData = (
 	extensionInstallationOptions
 ) => {
 	const installedExtensions = {};
@@ -104,7 +104,7 @@ class BusinessDetails extends Component {
 			extensionInstallationOptions
 		);
 
-		const installedExtensions = prepareInstalledExtensionsForTracking(
+		const installedExtensions = prepareExtensionTrackingData(
 			extensionInstallationOptions
 		);
 

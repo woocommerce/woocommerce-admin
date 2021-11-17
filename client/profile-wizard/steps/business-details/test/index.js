@@ -3,7 +3,7 @@
  */
 import {
 	filterBusinessExtensions,
-	prepareInstalledExtensionsForTracking,
+	prepareExtensionTrackingData,
 } from '../flows/selective-bundle';
 import { createInitialValues } from '../flows/selective-bundle/selective-extensions-bundle';
 
@@ -36,7 +36,7 @@ describe( 'BusinessDetails', () => {
 		expect( filteredExtensions ).toEqual( expectedExtensions );
 	} );
 
-	describe( 'prepareInstalledExtensionsForTracking', () => {
+	describe( 'prepareExtensionTrackingData', () => {
 		test( 'preparing extensions for tracking', () => {
 			const extensions = {
 				'creative-mail-by-constant-contact': true,
@@ -57,7 +57,7 @@ describe( 'BusinessDetails', () => {
 				install_woocommerce_payments: true,
 			};
 
-			const installedExtensions = prepareInstalledExtensionsForTracking(
+			const installedExtensions = prepareExtensionTrackingData(
 				extensions
 			);
 
@@ -73,31 +73,31 @@ describe( 'BusinessDetails', () => {
 				install_woocommerce_services: true,
 			};
 
-			expect(
-				prepareInstalledExtensionsForTracking( extensions )
-			).toEqual( expectedExtensions );
+			expect( prepareExtensionTrackingData( extensions ) ).toEqual(
+				expectedExtensions
+			);
 
 			extensions[ 'woocommerce-services:shipping' ] = false;
 			extensions[ 'woocommerce-services:tax' ] = true;
 
-			expect(
-				prepareInstalledExtensionsForTracking( extensions )
-			).toEqual( expectedExtensions );
+			expect( prepareExtensionTrackingData( extensions ) ).toEqual(
+				expectedExtensions
+			);
 
 			extensions[ 'woocommerce-services:shipping' ] = true;
 			extensions[ 'woocommerce-services:tax' ] = false;
 
-			expect(
-				prepareInstalledExtensionsForTracking( extensions )
-			).toEqual( expectedExtensions );
+			expect( prepareExtensionTrackingData( extensions ) ).toEqual(
+				expectedExtensions
+			);
 
 			extensions[ 'woocommerce-services:shipping' ] = false;
 			extensions[ 'woocommerce-services:tax' ] = false;
 			expectedExtensions.install_woocommerce_services = false;
 
-			expect(
-				prepareInstalledExtensionsForTracking( extensions )
-			).toEqual( expectedExtensions );
+			expect( prepareExtensionTrackingData( extensions ) ).toEqual(
+				expectedExtensions
+			);
 		} );
 	} );
 
