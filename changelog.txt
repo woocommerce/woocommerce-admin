@@ -1,5 +1,6 @@
 == 2.9.0 11/30/2021 == 
 
+- Fix: Fix ordering and styling issue with WooCommerce Payments payment method promotion. #7943
 - Fix: Fix ExPlat PHP client #7926
 - Fix: Fix marketing extensions tracks #7908
 - Update: Increased number of possible items in Recommended Extensions list from 6 to 9 #7887
