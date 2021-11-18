@@ -1,4 +1,4 @@
 Significance: minor
 Type: Fix
 
-Have NavigationFeedbackFollowUp note self-delete when navigation feature is not present, like the other Navigation notes do. #7939
+Self-delete NavigationFeedbackFollowUp note when navigation feature is not present. #7939
