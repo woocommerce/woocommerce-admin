@@ -90,5 +90,10 @@ export const WooHeaderPageTitle = ( { children } ) => {
 };
 
 WooHeaderPageTitle.Slot = ( { fillProps } ) => (
-	<Slot name={ 'woocommerce_header_page_title' } fillProps={ fillProps } />
+	<Slot name={ 'woocommerce_header_page_title' } fillProps={ fillProps }>
+		{ ( fills ) => {
+			const last = fills.pop();
+			return [ last ];
+		} }
+	</Slot>
 );
