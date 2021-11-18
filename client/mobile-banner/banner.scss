@@ -13,7 +13,7 @@ $banner-height: 56px;
 
 .woocommerce-mobile-app-banner {
 	background-color: $woocommerce-brand-purple;
-	position: fixed;
+	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;

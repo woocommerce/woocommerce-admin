@@ -61,7 +61,7 @@ const NavigationPlugin = () => {
 
 	return (
 		<>
-			<WooHeaderItem>
+			<WooHeaderItem order={ -100 }>
 				<Navigation />
 			</WooHeaderItem>
 			{ pages.map( ( page ) => (
