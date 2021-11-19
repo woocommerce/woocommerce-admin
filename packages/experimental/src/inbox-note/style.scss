@@ -123,6 +123,11 @@
 			margin: 5px 0;
 		}
 	}
+
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 8;
+	display: -webkit-box;
+	overflow: hidden;
 }
 
 .woocommerce-inbox-message__actions {
