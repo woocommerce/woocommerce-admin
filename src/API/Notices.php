@@ -61,7 +61,7 @@ class Notices extends \WC_REST_Data_Controller {
 			'/' . $this->rest_base . '/(?P<id>[a-z0-9_\-]+)/dismiss',
 			array(
 				array(
-					'methods'             => \WP_REST_Server::EDITABLE,
+					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'dismiss_notice' ),
 					'permission_callback' => false,
 				),
