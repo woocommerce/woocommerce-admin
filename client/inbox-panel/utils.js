@@ -71,8 +71,10 @@ const truncateElement = ( element, limit ) => {
 			) {
 				// If text until the limit doesn't contain any markup, we're all good to truncate.
 				clone.textContent = truncate( clone.textContent, {
+					// Add +3 to the length as Lodash truncate considers '...' as the original text length.
 					length: charactersRemaining,
 					separator: ' ',
+					omission: '',
 				} );
 			} else {
 				// If it does, then we'd need to recursively run this with balance of characters remaining.
@@ -96,7 +98,7 @@ export const truncateRenderableHTML = ( originalHTML, limit ) => {
 	const tempNode = document.createElement( 'div' );
 	tempNode.innerHTML = originalHTML;
 	if ( tempNode.textContent.length > limit ) {
-		return truncateElement( tempNode, limit ).innerHTML;
+		return truncateElement( tempNode, limit ).innerHTML + '...';
 	}
 	return originalHTML;
 };
