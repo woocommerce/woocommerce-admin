@@ -60,17 +60,14 @@ class WC_Tests_Update_Is_Read_From_Last_Read extends WC_Unit_Test_Case {
 	public function test_update_does_not_run_when_usermeta_does_not_exist() {
 		global $wpdb;
 
-		// Given.
 		$wpdb->query(
 			"
 			delete from {$wpdb->prefix}usermeta where meta_key = 'woocommerce_admin_activity_panel_inbox_last_read' 
 		"
 		);
 
-		// When.
 		wc_admin_update_300_update_is_read_from_last_read();
 
-		// Then.
 		$notes_with_is_read = $wpdb->get_var(
 			"select count(*) from {$wpdb->prefix}wc_admin_notes where is_read = 1
 		"
@@ -112,13 +109,10 @@ class WC_Tests_Update_Is_Read_From_Last_Read extends WC_Unit_Test_Case {
 		// phpcs:ignore
 		$wpdb->query( "update {$wpdb->prefix}wc_admin_notes set date_created = '{$date_created_2}' where name='test2'" );
 
-		// Given.
 		update_user_meta( $this->user, 'woocommerce_admin_activity_panel_inbox_last_read', $time );
 
-		// When.
 		wc_admin_update_300_update_is_read_from_last_read();
 
-		// Then.
 		$notes_with_is_read = $wpdb->get_var(
 			"select count(*) from {$wpdb->prefix}wc_admin_notes where is_read = 1
 		"
