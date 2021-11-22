@@ -18,38 +18,11 @@ class WC_Tests_Update_Is_Read_From_Last_Read extends WC_Unit_Test_Case {
 	 */
 	public function setUp() {
 		parent::setUp();
-
-		$this->add_is_read_col();
 		$this->user = $this->factory->user->create(
 			array(
 				'role' => 'administrator',
 			)
 		);
-	}
-
-	/**
-	 * Adds is_read col to the notes table.
-	 */
-	protected function add_is_read_col() {
-		global $wpdb;
-		// make sure is_read col has been added successfully.
-		$notes_table_cols = $wpdb->get_results( "show columns from {$wpdb->prefix}wc_admin_notes" );
-		$notes_table_cols = array_filter(
-			$notes_table_cols,
-			function( $row ) {
-				// phpcs:ignore
-				return 'is_read' === $row->Field;
-			}
-		);
-		$has_is_read_col  = count( $notes_table_cols ) > 0;
-
-		if ( ! $has_is_read_col ) {
-			$wpdb->query(
-				"
-			alter table {$wpdb->prefix}wc_admin_notes add column is_read tinyint(1)
-		"
-			);
-		}
 	}
 
 	/**
