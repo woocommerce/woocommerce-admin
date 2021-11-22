@@ -54,6 +54,7 @@ describe( 'TransientNotices', () => {
 					content: 'Test message',
 				},
 			],
+			hasFinishedResolution: true,
 		} );
 		const createNotice = jest.fn();
 		useDispatch.mockReturnValue( {
@@ -64,40 +65,6 @@ describe( 'TransientNotices', () => {
 		expect( createNotice ).toHaveBeenCalledWith(
 			'success',
 			'Test message',
-			expect.anything()
-		);
-	} );
-
-	it( 'should only show user specific notices', () => {
-		useSelect.mockReturnValue( {
-			currentUser: {
-				id: 1,
-			},
-			noticesQueue: [
-				{
-					id: 'user-specific-notice',
-					status: 'success',
-					content: 'User specific message',
-					user_id: 1,
-				},
-				{
-					id: 'different-user-notice',
-					status: 'success',
-					content: 'Should not be shown',
-					user_id: 2,
-				},
-			],
-		} );
-		const createNotice = jest.fn();
-		useDispatch.mockReturnValue( {
-			createNotice,
-		} );
-
-		render( <TransientNotices /> );
-		expect( createNotice ).toHaveBeenCalledTimes( 1 );
-		expect( createNotice ).toHaveBeenCalledWith(
-			'success',
-			'User specific message',
 			expect.anything()
 		);
 	} );
