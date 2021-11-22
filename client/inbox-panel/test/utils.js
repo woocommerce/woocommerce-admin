@@ -34,4 +34,11 @@ describe( 'truncateRenderableHTML', () => {
 			'<div>this <br/><br/> is</div>'
 		);
 	} );
+
+	test( 'it should work with unicode text', () => {
+		const sampleWithUnicode = '<div>테스트 입니다.</div>';
+		expect( truncateRenderableHTML( sampleWithUnicode, 3 ) ).toBe(
+			'<div>테스트</div>...'
+		);
+	} );
 } );
