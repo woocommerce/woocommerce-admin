@@ -24,69 +24,10 @@ import {
  * Internal dependencies
  */
 import { ActivityCard } from '../header/activity-panel/activity-card';
-import { hasValidNotes } from './utils';
+import { hasValidNotes, truncateRenderableHTML } from './utils';
 import { getScreenName } from '../utils';
 import DismissAllModal from './dissmiss-all-modal';
 import './index.scss';
-
-/**
- * Truncates characters inside of an element.
- * Currently does not count <br> as a character even though it should.
- *
- * @param {HTMLElement} element HTML element
- * @param {number} limit number of characters to limit to
- */
-const truncateElement = ( element, limit ) => {
-	const truncatedNode = document.createElement( 'div' );
-	const childNodes = Array.from( element.childNodes );
-	for ( let i = 0; i < childNodes.length; i++ ) {
-		// Deep clone.
-		let clone = childNodes[ i ].cloneNode( true );
-		if (
-			truncatedNode.textContent.length + clone.textContent.length <=
-			limit
-		) {
-			// No problem including a whole child node, no need to consider truncating at all.
-			truncatedNode.appendChild( clone );
-		} else {
-			const charactersRemaining =
-				limit - truncatedNode.textContent.length;
-			if (
-				! clone.innerHTML ||
-				clone.textContent.slice( 0, charactersRemaining ) ===
-					clone.innerHTML.slice( 0, charactersRemaining )
-			) {
-				// If text until the limit doesn't contain any markup, we're all good to truncate.
-				clone.textContent = clone.textContent.slice(
-					0,
-					charactersRemaining
-				);
-			} else {
-				// If it does, then we'd need to recursively run this with balance of characters remaining.
-				clone = truncateElement( clone, charactersRemaining );
-			}
-			truncatedNode.appendChild( clone );
-			// Exceeded limit at this point, safe to exit loop.
-			break;
-		}
-	}
-	return truncatedNode;
-};
-
-/**
- * Truncates characters from a HTML string excluding markup. Truncated strings will be appended with ellipsis.
- *
- * @param {string} originalHTML HTML string
- * @param {number} limit number of characters to limit to
- */
-const truncateRenderableHTML = ( originalHTML, limit ) => {
-	const tempNode = document.createElement( 'div' );
-	tempNode.innerHTML = originalHTML;
-	if ( tempNode.textContent.length > limit ) {
-		return truncateElement( tempNode, limit ).innerHTML + '...';
-	}
-	return originalHTML;
-};
 
 const renderEmptyCard = () => (
 	<ActivityCard
