@@ -13,7 +13,7 @@ import { PartnerCard } from '../components/partner-card';
 import logo from './logo.png';
 
 export const Card = ( { task } ) => {
-	const { avalaraActivated } = task;
+	const { avalaraActivated } = task.additionalData;
 
 	return (
 		<PartnerCard
