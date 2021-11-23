@@ -58,6 +58,8 @@ class WC_Tests_Update_Is_Read_From_Last_Read extends WC_Unit_Test_Case {
 		global $wpdb;
 		$time = time();
 
+		$meta_key = 'woocommerce_admin_activity_panel_inbox_last_read';
+
 		wp_set_current_user( $this->user );
 		$wpdb->query( "delete from {$wpdb->prefix}wc_admin_notes" );
 
@@ -82,7 +84,7 @@ class WC_Tests_Update_Is_Read_From_Last_Read extends WC_Unit_Test_Case {
 		// phpcs:ignore
 		$wpdb->query( "update {$wpdb->prefix}wc_admin_notes set date_created = '{$date_created_2}' where name='test2'" );
 
-		update_user_meta( $this->user, 'woocommerce_admin_activity_panel_inbox_last_read', $time );
+		update_user_meta( $this->user, $meta_key, $time );
 
 		wc_admin_update_300_update_is_read_from_last_read();
 
@@ -92,5 +94,9 @@ class WC_Tests_Update_Is_Read_From_Last_Read extends WC_Unit_Test_Case {
 		);
 
 		$this->assertTrue( '1' === $notes_with_is_read );
+
+		// phpcs:ignore
+		$last_read_count = $wpdb->get_var("select count(*) from {$wpdb->usermeta} where meta_key='{$meta_key}'");
+		$this->assertTrue( '0' === $last_read_count );
 	}
 }

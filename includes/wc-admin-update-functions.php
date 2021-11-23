@@ -322,12 +322,16 @@ function wc_admin_update_290_db_version() {
  */
 function wc_admin_update_300_update_is_read_from_last_read() {
 	global $wpdb;
+	$meta_key  = 'woocommerce_admin_activity_panel_inbox_last_read';
 	$last_read = $wpdb->get_results(
-		"
+		$wpdb->prepare(
+			"
 		select meta_value from {$wpdb->usermeta} 
-		where meta_key='woocommerce_admin_activity_panel_inbox_last_read' 
+		where meta_key=%s
 		order by meta_value desc
-	"
+	",
+			$meta_key
+		)
 	);
 
 	if ( count( $last_read ) ) {
@@ -342,6 +346,7 @@ function wc_admin_update_300_update_is_read_from_last_read() {
 				$date_in_utc
 			)
 		);
+		$wpdb->query( $wpdb->prepare( "delete from {$wpdb->usermeta} where meta_key=%s", $meta_key ) );
 	}
 }
 /**
