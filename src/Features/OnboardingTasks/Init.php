@@ -68,7 +68,7 @@ class Init {
 				: false;
 		}
 
-		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_tax_supported_countries();
+		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_support_countries();
 		$settings['hasHomepage']                    = Appearance::has_homepage();
 		$settings['hasProducts']                    = Products::has_products();
 		$settings['stylesheet']                     = get_option( 'stylesheet' );
