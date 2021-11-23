@@ -11,7 +11,7 @@ import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { PaymentsSetup } from '../../pages/PaymentsSetup';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { BankAccountTransferSetup } from '../../sections/payment-setup/BankAccountTransferSetup';
-import { waitForTimeout, waitForElementByText } from '../../utils/actions';
+import { waitForTimeout } from '../../utils/actions';
 import { WcSettings } from '../../pages/WcSettings';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
