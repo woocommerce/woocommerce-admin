@@ -322,11 +322,17 @@ function wc_admin_update_290_db_version() {
  */
 function wc_admin_update_300_update_is_read_from_last_read() {
 	global $wpdb;
-	$user      = wp_get_current_user();
-	$last_read = get_user_meta( $user->ID, 'woocommerce_admin_activity_panel_inbox_last_read', true );
+	$last_read = $wpdb->get_results(
+		"
+		select meta_value from {$wpdb->usermeta} 
+		where meta_key='woocommerce_admin_activity_panel_inbox_last_read' 
+		order by meta_value desc
+	"
+	);
 
-	if ( $last_read ) {
-		$date_in_utc = gmdate( 'Y-m-d H:i:s', $last_read );
+	if ( count( $last_read ) ) {
+		$last_read_value = $last_read[0]->meta_value;
+		$date_in_utc     = gmdate( 'Y-m-d H:i:s', $last_read_value );
 		$wpdb->query(
 			$wpdb->prepare(
 				"
