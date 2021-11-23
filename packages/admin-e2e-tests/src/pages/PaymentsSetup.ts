@@ -48,6 +48,7 @@ export class PaymentsSetup extends BasePage {
 	}
 
 	async enableCashOnDelivery() {
+		await this.page.waitForSelector( '.woocommerce-task-payment-cod' );
 		await this.clickButtonWithText( 'Enable' );
 	}
 }

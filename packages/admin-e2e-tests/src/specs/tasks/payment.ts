@@ -76,7 +76,6 @@ const testAdminPaymentSetupTask = () => {
 			await homeScreen.isDisplayed();
 			await waitForTimeout( 1000 );
 			await homeScreen.clickOnTaskList( 'Set up payments' );
-			await waitForElementByText( 'h2', 'Additional payment gateways' );
 			await paymentsSetup.enableCashOnDelivery();
 			await homeScreen.navigate();
 			await homeScreen.isDisplayed();
