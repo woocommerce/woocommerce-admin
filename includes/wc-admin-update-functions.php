@@ -325,18 +325,7 @@ function wc_admin_update_300_update_is_read_from_last_read() {
 	$user      = wp_get_current_user();
 	$last_read = get_user_meta( $user->ID, 'woocommerce_admin_activity_panel_inbox_last_read', true );
 
-	// make sure is_read col has been added successfully.
-	$notes_table_cols = $wpdb->get_results( "show columns from {$wpdb->prefix}wc_admin_notes" );
-	$notes_table_cols = array_filter(
-		$notes_table_cols,
-		function( $row ) {
-			// phpcs:ignore
-			return 'is_read' === $row->Field;
-		}
-	);
-	$has_is_read_col  = count( $notes_table_cols ) > 0;
-
-	if ( $last_read && $has_is_read_col ) {
+	if ( $last_read ) {
 		$date_in_utc = gmdate( 'Y-m-d H:i:s', $last_read );
 		$wpdb->query(
 			$wpdb->prepare(
