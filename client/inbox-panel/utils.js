@@ -71,7 +71,6 @@ const truncateElement = ( element, limit ) => {
 			) {
 				// If text until the limit doesn't contain any markup, we're all good to truncate.
 				clone.textContent = truncate( clone.textContent, {
-					// Add +3 to the length as Lodash truncate considers '...' as the original text length.
 					length: charactersRemaining,
 					separator: ' ',
 					omission: '',

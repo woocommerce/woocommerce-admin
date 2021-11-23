@@ -41,4 +41,14 @@ describe( 'truncateRenderableHTML', () => {
 			'<div>테스트</div>...'
 		);
 	} );
+
+	test( 'it should preserve whole words when truncated', () => {
+		const sample = '<div>this is a test sentence</div>';
+		// it should return 'this is a' (9 chars) when length 11 is given
+		// since 'this is a t' (11 chars) cannot include 'test' word without
+		// breaking the word.
+		expect( truncateRenderableHTML( sample, 11 ) ).toBe(
+			'<div>this is a</div>...'
+		);
+	} );
 } );
