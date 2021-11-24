@@ -1,5 +1,6 @@
 == 2.9.0 11/30/2021 == 
 
+- Dev: Remove task status endpoint #7841
 - Fix: Fix ordering and styling issue with WooCommerce Payments payment method promotion. #7943
 - Fix: Fix ExPlat PHP client #7926
 - Fix: Fix marketing extensions tracks #7908
