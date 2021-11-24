@@ -322,20 +322,13 @@ function wc_admin_update_290_db_version() {
  */
 function wc_admin_update_300_update_is_read_from_last_read() {
 	global $wpdb;
-	$meta_key  = 'woocommerce_admin_activity_panel_inbox_last_read';
-	$last_read = $wpdb->get_results(
-		$wpdb->prepare(
-			"
-		select meta_value from {$wpdb->usermeta} 
-		where meta_key=%s
-		order by meta_value desc
-	",
-			$meta_key
-		)
-	);
+	$meta_key = 'woocommerce_admin_activity_panel_inbox_last_read';
+	// phpcs:ignore
+	$users    = get_users( "meta_key={$meta_key}&orderby={$meta_key}&fields=all_with_meta&number=1" );
 
-	if ( count( $last_read ) ) {
-		$date_in_utc = gmdate( 'Y-m-d H:i:s', intval( $last_read[0]->meta_value ) / 1000 );
+	if ( count( $users ) ) {
+		$last_read   = current( $users )->{$meta_key};
+		$date_in_utc = gmdate( 'Y-m-d H:i:s', intval( $last_read ) / 1000 );
 		$wpdb->query(
 			$wpdb->prepare(
 				"
@@ -348,6 +341,7 @@ function wc_admin_update_300_update_is_read_from_last_read() {
 		$wpdb->query( $wpdb->prepare( "delete from {$wpdb->usermeta} where meta_key=%s", $meta_key ) );
 	}
 }
+
 /**
  * Update DB Version.
  */
