@@ -4,11 +4,11 @@ This feature uses JSON to retrieve the currently recommended payment gateways. T
 
 After merchants click on a recommendation, plugins from this source will then walk through an installer step, followed by a connection step with the minimum required fields for setup defined by the downloaded plugin.
 
-## Enabling Payment Gateway Suggestions
+## Data Source Polling
 
-This feature is behind a feature flag. In order for it to run, the `payment-gateway-suggestions` must be set to `true` in `~/config/{environment}.json` and the plugin must be rebuilt either using `npm start` or `npm run build`.
+If a store is opted into marketplace suggestions via `woocommerce_show_marketplace_suggestions` the suggestions by default will be retrieved from `https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/payment-method/suggestions.json'`.
 
-Currently there is no working remote data source. For testing purposes, [this plugin](https://github.com/joshuatf/woocommerce-admin-remote-tester) can be used which adds a data source and removes the transient cache so the data source is re-fetched on each subsequent page load.
+If a user is not opted into marketplace suggestions or polling fails, the gateway suggestions will fall back to the defaults in the `DefaultPaymentGateways` class.
 
 ## Remote Data Source Schema
 
