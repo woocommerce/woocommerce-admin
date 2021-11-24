@@ -3,7 +3,6 @@
  */
 import { Button } from '@wordpress/components';
 import { EllipsisMenu, Link } from '@woocommerce/components';
-import { VerticalCSSTransition } from '@woocommerce/experimental';
 import { useState, useEffect } from '@wordpress/element';
 import {
 	PLUGINS_STORE_NAME,
@@ -125,97 +124,97 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 		} );
 	};
 
+	if ( ! isVisible ) {
+		return null;
+	}
+
 	return (
 		<>
-			<VerticalCSSTransition timeout={ 500 } in={ isVisible }>
-				{ columns.map( ( column ) => {
-					if ( column.className.includes( 'name' ) ) {
-						return (
-							<td className="name" key={ column.className }>
-								<div className="wc-payment-gateway-method__name">
-									<Link
-										target="_blank"
-										type="external"
-										rel="noreferrer"
-										href={ url }
-									>
-										{ title }
-									</Link>
-									{ subTitleContent ? (
-										<div
-											className="pre-install-payment-gateway__subtitle"
-											dangerouslySetInnerHTML={ sanitizeHTML(
-												subTitleContent
-											) }
-										></div>
-									) : null }
-								</div>
-							</td>
-						);
-					} else if ( column.className.includes( 'status' ) ) {
-						return (
-							<td
-								className="pre-install-payment-gateway__status"
-								key={ column.className }
-							></td>
-						);
-					} else if ( column.className.includes( 'action' ) ) {
-						return (
-							<td className="action" key={ column.className }>
-								<div className="pre-install-payment-gateway__actions">
-									<EllipsisMenu
-										label={ __(
-											'Payment Promotion Options',
-											'woocommerce-admin'
+			{ columns.map( ( column ) => {
+				if ( column.className.includes( 'name' ) ) {
+					return (
+						<td className="name" key={ column.className }>
+							<div className="wc-payment-gateway-method__name">
+								<Link
+									target="_blank"
+									type="external"
+									rel="noreferrer"
+									href={ url }
+								>
+									{ title }
+								</Link>
+								{ subTitleContent ? (
+									<div
+										className="pre-install-payment-gateway__subtitle"
+										dangerouslySetInnerHTML={ sanitizeHTML(
+											subTitleContent
 										) }
-										className="pre-install-payment-gateway__actions-menu"
-										onToggle={ (
-											e:
-												| React.MouseEvent
-												| React.KeyboardEvent
-										) => e.stopPropagation() }
-										renderContent={ () => (
-											<div className="pre-install-payment-gateway__actions-menu-options">
-												<Button onClick={ onDismiss }>
-													{ __(
-														'Dismiss',
-														'woocommerce-admin'
-													) }
-												</Button>
-											</div>
-										) }
-									/>
-									<Button
-										className="button alignright"
-										onClick={ () =>
-											installPaymentGateway()
-										}
-										isSecondary
-										isBusy={ installing }
-										aria-disabled={ installing }
-									>
-										{ __( 'Install', 'woocommerce-admin' ) }
-									</Button>
-								</div>
-							</td>
-						);
-					}
+									></div>
+								) : null }
+							</div>
+						</td>
+					);
+				} else if ( column.className.includes( 'status' ) ) {
 					return (
 						<td
+							className="pre-install-payment-gateway__status"
 							key={ column.className }
-							className={ column.className }
-							width={ column.width }
-							dangerouslySetInnerHTML={
-								column.className.includes( 'sort' )
-									? {
-											__html: column.html,
-									  }
-									: sanitizeHTML( column.html )
-							}
 						></td>
 					);
-				} ) }
-			</VerticalCSSTransition>
+				} else if ( column.className.includes( 'action' ) ) {
+					return (
+						<td className="action" key={ column.className }>
+							<div className="pre-install-payment-gateway__actions">
+								<EllipsisMenu
+									label={ __(
+										'Payment Promotion Options',
+										'woocommerce-admin'
+									) }
+									className="pre-install-payment-gateway__actions-menu"
+									onToggle={ (
+										e:
+											| React.MouseEvent
+											| React.KeyboardEvent
+									) => e.stopPropagation() }
+									renderContent={ () => (
+										<div className="pre-install-payment-gateway__actions-menu-options">
+											<Button onClick={ onDismiss }>
+												{ __(
+													'Dismiss',
+													'woocommerce-admin'
+												) }
+											</Button>
+										</div>
+									) }
+								/>
+								<Button
+									className="button alignright"
+									onClick={ () => installPaymentGateway() }
+									isSecondary
+									isBusy={ installing }
+									aria-disabled={ installing }
+								>
+									{ __( 'Install', 'woocommerce-admin' ) }
+								</Button>
+							</div>
+						</td>
+					);
+				}
+				return (
+					<td
+						key={ column.className }
+						className={ column.className }
+						width={ column.width }
+						dangerouslySetInnerHTML={
+							column.className.includes( 'sort' )
+								? {
+										__html: column.html,
+								  }
+								: sanitizeHTML( column.html )
+						}
+					></td>
+				);
+			} ) }
 		</>
 	);
 };
