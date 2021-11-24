@@ -180,10 +180,7 @@ class BusinessDetails extends Component {
 		const finalUpdates = Object.entries( updates ).reduce(
 			( acc, [ key, val ] ) => {
 				if ( val !== '' ) {
-					return {
-						...acc,
-						[ key ]: val,
-					};
+					acc[ key ] = val;
 				}
 
 				return acc;
