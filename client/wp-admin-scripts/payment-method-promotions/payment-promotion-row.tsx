@@ -30,8 +30,11 @@ function sanitizeHTML( html: string ) {
 }
 
 type PaymentPromotionRowProps = {
-	pluginSlug: string;
-	titleLink: string;
+	paymentMethod: {
+		gatewayId: string;
+		pluginSlug: string;
+		url: string;
+	};
 	title: string;
 	columns: {
 		className: string;
@@ -42,18 +45,19 @@ type PaymentPromotionRowProps = {
 };
 
 export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
-	pluginSlug,
+	paymentMethod,
 	title,
-	titleLink,
 	subTitleContent,
 	columns,
 } ) => {
+	const { gatewayId, pluginSlug, url } = paymentMethod;
 	const [ installing, setInstalling ] = useState( false );
 	const { installAndActivatePlugins }: PluginsStoreActions = useDispatch(
 		PLUGINS_STORE_NAME
 	);
 	const { createNotice } = useDispatch( 'core/notices' );
-	const { gatewayIsActive, paymentGateway } = useSelect(
+	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
+	const { gatewayIsActive, isDismissed, paymentGateway } = useSelect(
 		( select: WCDataSelector ) => {
 			const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
 			const activePlugins: string[] = select(
@@ -67,9 +71,11 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 					pluginSlug.replace( /\-/g, '_' )
 				);
 			}
+			const promotion = getPaymentGateway( gatewayId );
 
 			return {
 				gatewayIsActive: isActive,
+				isDismissed: promotion?.settings?.is_dismissed?.value === 'yes',
 				paymentGateway: paymentGatewayData,
 			};
 		}
@@ -103,7 +109,17 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 		);
 	};
 
-	const onDismiss = () => {};
+	const onDismiss = () => {
+		updatePaymentGateway( gatewayId, {
+			settings: {
+				is_dismissed: 'yes',
+			},
+		} );
+	};
+
+	if ( isDismissed ) {
+		return null;
+	}
 
 	return (
 		<>
@@ -116,7 +132,7 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 									target="_blank"
 									type="external"
 									rel="noreferrer"
-									href={ titleLink }
+									href={ url }
 								>
 									{ title }
 								</Link>
