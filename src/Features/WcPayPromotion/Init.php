@@ -27,7 +27,8 @@ class Init {
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
 		add_filter( DataSourcePoller::FILTER_NAME_SPECS, array( __CLASS__, 'possibly_filter_recommended_payment_gateways' ), 10, 2 );
 
-		if ( ! isset( $_GET['page'] ) || 'wc-settings' !== $_GET['page'] || ! isset( $_GET['tab'] ) || 'checkout' !== $_GET['tab'] ) { // phpcs:ignore WordPress.Security.NonceVerification
+		$is_payments_page = isset( $_GET['page'] ) && 'wc-settings' === $_GET['page'] && isset( $_GET['tab'] ) && 'checkout' === $_GET['tab']; // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! wp_is_json_request() && ! $is_payments_page ) {
 			return;
 		}
 
