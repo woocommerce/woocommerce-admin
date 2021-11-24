@@ -335,7 +335,7 @@ function wc_admin_update_300_update_is_read_from_last_read() {
 	);
 
 	if ( count( $last_read ) ) {
-		$date_in_utc = gmdate( 'Y-m-d H:i:s', $last_read[0]->meta_value );
+		$date_in_utc = gmdate( 'Y-m-d H:i:s', intval( $last_read[0]->meta_value ) / 1000 );
 		$wpdb->query(
 			$wpdb->prepare(
 				"
