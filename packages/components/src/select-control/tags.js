@@ -75,10 +75,7 @@ class Tags extends Component {
 						isLink
 						onClick={ this.removeAll }
 					>
-						<Icon
-							icon={ cancelCircleFilled }
-							className="clear-icon"
-						/>
+						{ __( 'Clear all', 'woocommerce-admin' ) }
 						<span className="screen-reader-text">
 							{ __( 'Clear all', 'woocommerce-admin' ) }
 						</span>

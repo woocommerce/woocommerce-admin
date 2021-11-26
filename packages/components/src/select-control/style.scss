@@ -104,7 +104,10 @@
 	.woocommerce-select-control__clear {
 		position: absolute;
 		right: 10px;
-		top: calc(50% - 10px);
+		margin: 0;
+		padding: 0;
+		text-decoration: underline;
+		color: $gray-900;
 
 		& > .clear-icon {
 			color: #c9c9c9;
