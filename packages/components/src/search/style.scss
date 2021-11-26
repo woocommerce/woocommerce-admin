@@ -63,11 +63,9 @@
 	.components-base-control .woocommerce-select-control__tags {
 		margin: 0;
 		display: flex;
-
-		width: -webkit-calc(100% - 60px);
-		width: -moz-calc(100% - 60px);
-		width: calc(100% - 60px);
-
+		max-width: -webkit-calc(100% - 60px);
+		max-width: -moz-calc(100% - 60px);
+		max-width: calc(100% - 60px);
 	}
 
 	.is-overflown {

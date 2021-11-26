@@ -28,6 +28,9 @@ class Tags extends Component {
 
 	isElementOverflown(e) {
 		// Calculate total width of all child elements
+		if (typeof e === 'undefined') {
+			return false;
+		}
 		const totalWidth = Object.values(e.childNodes).reduce((total, i) => total + i.clientWidth, 0);
 		return e.clientWidth < totalWidth;
 	}
