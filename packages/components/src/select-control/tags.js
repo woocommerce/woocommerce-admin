@@ -21,6 +21,15 @@ class Tags extends Component {
 		super( props );
 		this.removeAll = this.removeAll.bind( this );
 		this.removeResult = this.removeResult.bind( this );
+		this.state = {
+			overflowActive: false
+		};
+	}
+
+	isElementOverflown(e) {
+		// Calculate total width of all child elements
+		const totalWidth = Object.values(e.childNodes).reduce((total, i) => total + i.clientWidth, 0);
+		return e.clientWidth < totalWidth;
 	}
 
 	removeAll() {
@@ -39,15 +48,20 @@ class Tags extends Component {
 		};
 	}
 
+	componentDidMount() {
+		this.setState({ overflowActive: this.isElementOverflown(this.tagsParent) });
+	}
+
 	render() {
 		const { selected, showClearButton } = this.props;
+		const { overflowActive } = this.state;
 		if ( ! selected.length ) {
 			return null;
 		}
 
 		return (
 			<Fragment>
-				<div className="woocommerce-select-control__tags">
+				<div ref={ ref => this.tagsParent = ref } className={`woocommerce-select-control__tags${overflowActive ? " is-overflown" : ""}`}>
 					{ selected.map( ( item, i ) => {
 						if ( ! item.label ) {
 							return null;
@@ -69,10 +83,10 @@ class Tags extends Component {
 						);
 					} ) }
 				</div>
-				{ showClearButton && (
+				{ showClearButton && selected.length > 1 && (
 					<Button
 						className="woocommerce-select-control__clear"
-						isLink
+						isLink={ false }
 						onClick={ this.removeAll }
 					>
 						{ __( 'Clear all', 'woocommerce-admin' ) }
