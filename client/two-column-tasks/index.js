@@ -30,7 +30,6 @@ const taskDashboardSelect = ( select ) => {
 };
 
 const TaskDashboard = ( { query, twoColumns } ) => {
-	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const {
 		keepCompletedTaskList,
 		isResolving: isResolvingOptions,
