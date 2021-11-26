@@ -119,16 +119,6 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 						'Get ready to start selling',
 						'woocommerce-admin'
 					) }
-					onComplete={ () =>
-						updateOptions( {
-							woocommerce_default_homepage_layout: 'two_columns',
-						} )
-					}
-					onHide={ () =>
-						updateOptions( {
-							woocommerce_default_homepage_layout: 'two_columns',
-						} )
-					}
 				/>
 			) }
 		</>
