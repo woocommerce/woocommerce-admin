@@ -22,6 +22,7 @@
 - Fix: fixed warnings when using AdvancedFilters component. #7704
 - Fix: Fix Tasklist UI illustrations styling #7858
 - Fix: Revert experiment task titles back to original #7853
+- Fix: Ensure homescreen defaults to single column layout. #7969
 - Add: Add Avalara to tax task #7874
 - Add: Add 2col expirement. #7872
 - Add: Added two column experimental task list #7669
