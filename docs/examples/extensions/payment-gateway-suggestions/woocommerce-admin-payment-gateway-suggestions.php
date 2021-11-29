@@ -10,7 +10,7 @@
  */
 function payment_gateway_suggestions_includes() {
 	include_once __DIR__ . '/woocommerce-admin-payment-gateway-suggestions-mock-installer.php';
-	include_once __DIR__ . '/woocommerce-admin-payment-gateway-suggestions-simple-gateway.php';
+	include_once __DIR__ . '/class-my-simple-gateway.php';
 	include_once __DIR__ . '/woocommerce-admin-payment-gateway-suggestions-slot-filled-gateway.php';
 }
 add_action( 'plugins_loaded', 'payment_gateway_suggestions_includes' );
