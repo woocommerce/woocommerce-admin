@@ -77,6 +77,7 @@ const testAdminPaymentSetupTask = () => {
 			await waitForTimeout( 1000 );
 			await homeScreen.clickOnTaskList( 'Set up payments' );
 			await paymentsSetup.enableCashOnDelivery();
+			await waitForTimeout( 1000 );
 			await homeScreen.clickOnTaskList( 'Set up payments' );
 			await paymentsSetup.isDisplayed();
 			await paymentsSetup.methodHasBeenSetup( 'cod' );
