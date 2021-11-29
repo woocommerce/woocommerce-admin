@@ -35,7 +35,7 @@ jobs:
                   npm run build
                   npx wc-e2e docker:up
                   sleep 10
-                  npx wc-e2e test:e2e
+                  npx wc-e2e test:e2e tests/e2e/specs/tasks/payment.test.tsx
             - name: Archive e2e test screenshots
               if: ${{ always() }}
               uses: actions/upload-artifact@v2
