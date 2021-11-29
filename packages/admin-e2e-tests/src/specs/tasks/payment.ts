@@ -11,7 +11,7 @@ import { OnboardingWizard } from '../../pages/OnboardingWizard';
 import { PaymentsSetup } from '../../pages/PaymentsSetup';
 import { WcHomescreen } from '../../pages/WcHomescreen';
 import { BankAccountTransferSetup } from '../../sections/payment-setup/BankAccountTransferSetup';
-import { waitForTimeout } from '../../utils/actions';
+import { waitForTimeout, waitForElementByText } from '../../utils/actions';
 import { WcSettings } from '../../pages/WcSettings';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
@@ -71,6 +71,7 @@ const testAdminPaymentSetupTask = () => {
 		} );
 
 		it( 'Enabling cash on delivery enables the payment method', async () => {
+			jest.setTimeout( 60000 );
 			await settings.cleanPaymentMethods();
 			await homeScreen.navigate();
 			await homeScreen.isDisplayed();
@@ -79,7 +80,6 @@ const testAdminPaymentSetupTask = () => {
 			await paymentsSetup.enableCashOnDelivery();
 			await homeScreen.isDisplayed();
 			await homeScreen.clickOnTaskList( 'Set up payments' );
-			await paymentsSetup.isDisplayed();
 			await paymentsSetup.methodHasBeenSetup( 'cod' );
 		} );
 	} );
