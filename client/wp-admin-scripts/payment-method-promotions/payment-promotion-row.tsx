@@ -117,6 +117,9 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 
 	const onDismiss = () => {
 		setIsVisible( false );
+		recordEvent( 'settings_payments_promotions_dismiss', {
+			id: gatewayId,
+		} );
 		updatePaymentGateway( gatewayId, {
 			settings: {
 				is_dismissed: 'yes',
