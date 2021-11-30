@@ -4,6 +4,16 @@ This feature uses JSON to retrieve the currently recommended payment gateways. T
 
 After merchants click on a recommendation, plugins from this source will then walk through an installer step, followed by a connection step with the minimum required fields for setup defined by the downloaded plugin.
 
+### Quick start
+
+Gateway suggestions are retreived from a REST API and can be added via a remote JSON data source or filtered with the `woocommerce_admin_payment_gateway_suggestion_specs` filter.
+
+To quickly get started with an example plugin, run the following from your `woocommerce-admin` directory:
+
+`npm run example -- --ext=payment-gateway-suggestions`
+
+This will create a new plugin that when activated will add two new gateway suggestions.  The first is a simple gateway demonstrating how configuration fields can be pulled from the gateway class to create a configuration form.  The second gateway shows a more customized approach via SlotFill.
+
 ## Data Source Polling
 
 If a store is opted into marketplace suggestions via `woocommerce_show_marketplace_suggestions` the suggestions by default will be retrieved from `https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/payment-method/suggestions.json'`.
