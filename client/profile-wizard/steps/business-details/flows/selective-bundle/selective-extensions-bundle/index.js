@@ -268,14 +268,18 @@ export const SelectiveExtensionsBundle = ( {
 				</div>
 				<div className="woocommerce-admin__business-details__selective-extensions-bundle">
 					<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
-						<CheckboxControl
-							checked={ values.install_extensions }
-							onChange={ ( checked ) => {
-								setValues(
-									setAllPropsToValue( values, checked )
-								);
-							} }
-						/>
+						{ isResolving ? (
+							<Spinner />
+						) : (
+							<CheckboxControl
+								checked={ values.install_extensions }
+								onChange={ ( checked ) => {
+									setValues(
+										setAllPropsToValue( values, checked )
+									);
+								} }
+							/>
+						) }
 						<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
 							{ __(
 								'Add recommended business features to my site',
@@ -341,7 +345,7 @@ export const SelectiveExtensionsBundle = ( {
 							onSubmit( values );
 						} }
 						isBusy={ isInstallingActivating }
-						disabled={ isInstallingActivating }
+						disabled={ isInstallingActivating || isResolving }
 						isPrimary
 					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
