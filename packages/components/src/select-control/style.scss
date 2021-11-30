@@ -44,6 +44,7 @@
 			padding-left: 0;
 			padding-right: 0;
 			width: 100%;
+			min-width: 20%;
 			line-height: 24px;
 			text-align: left;
 			letter-spacing: inherit;
@@ -55,6 +56,9 @@
 
 			&:focus {
 				outline: none;
+				@media only screen and (max-width: 600px) {
+					min-width: 80%;
+				}
 			}
 		}
 

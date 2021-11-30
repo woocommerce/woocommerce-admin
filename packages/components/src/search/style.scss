@@ -62,25 +62,23 @@
 
 	.components-base-control .woocommerce-select-control__tags {
 		margin: 0;
+		padding-left: 10px;
 		display: flex;
 		max-width: -webkit-calc(100% - 60px);
 		max-width: -moz-calc(100% - 60px);
 		max-width: calc(100% - 60px);
-	}
-
-	.is-overflown {
 		overflow: hidden;
 		justify-content: flex-end;
-		&:after {
-			content: "";
+		&::after {
+			content: '';
 			position: absolute;
 			z-index: 1;
 			top: 0;
 			left: 0;
 			bottom: 0;
 			pointer-events: none;
-			background-image: linear-gradient(to right, white, transparent 40%);
-			width: 10%;
+			background-image: linear-gradient(to right, #fff, transparent 70%);
+			width: 20px;
 		}
 	}
 

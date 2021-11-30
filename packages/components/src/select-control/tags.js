@@ -3,7 +3,6 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import { Icon, cancelCircleFilled } from '@wordpress/icons';
 import { createElement, Component, Fragment } from '@wordpress/element';
 import { findIndex } from 'lodash';
 import PropTypes from 'prop-types';
@@ -21,18 +20,6 @@ class Tags extends Component {
 		super( props );
 		this.removeAll = this.removeAll.bind( this );
 		this.removeResult = this.removeResult.bind( this );
-		this.state = {
-			overflowActive: false
-		};
-	}
-
-	isElementOverflown(e) {
-		// Calculate total width of all child elements
-		if (typeof e === 'undefined') {
-			return false;
-		}
-		const totalWidth = Object.values(e.childNodes).reduce((total, i) => total + i.clientWidth, 0);
-		return e.clientWidth < totalWidth;
 	}
 
 	removeAll() {
@@ -51,20 +38,15 @@ class Tags extends Component {
 		};
 	}
 
-	componentDidMount() {
-		this.setState({ overflowActive: this.isElementOverflown(this.tagsParent) });
-	}
-
 	render() {
-		const { selected, showClearButton } = this.props;
-		const { overflowActive } = this.state;
+		const { selected, showClearButton, searchInput } = this.props;
 		if ( ! selected.length ) {
-			return null;
+			return searchInput;
 		}
 
 		return (
 			<Fragment>
-				<div ref={ ref => this.tagsParent = ref } className={`woocommerce-select-control__tags${overflowActive ? " is-overflown" : ""}`}>
+				<div className={ 'woocommerce-select-control__tags' }>
 					{ selected.map( ( item, i ) => {
 						if ( ! item.label ) {
 							return null;
@@ -85,6 +67,7 @@ class Tags extends Component {
 							/>
 						);
 					} ) }
+					{ searchInput }
 				</div>
 				{ showClearButton && selected.length > 1 && (
 					<Button

@@ -96,21 +96,6 @@ class Control extends Component {
 			event.stopPropagation();
 		}
 	}
-
-	renderButton() {
-		const { multiple, selected } = this.props;
-
-		if ( multiple || ! selected.length ) {
-			return null;
-		}
-
-		return (
-			<div className="woocommerce-select-control__control-value">
-				{ selected[ 0 ].label }
-			</div>
-		);
-	}
-
 	renderInput() {
 		const {
 			activeId,
@@ -194,6 +179,7 @@ class Control extends Component {
 			label,
 			query,
 		} = this.props;
+
 		const { isActive } = this.state;
 
 		return (
@@ -227,8 +213,14 @@ class Control extends Component {
 						icon={ search }
 					/>
 				) }
-				{ inlineTags && <Tags { ...this.props } /> }
-
+				{ inlineTags ? (
+					<Tags
+						{ ...this.props }
+						searchInput={ this.renderInput() }
+					/>
+				) : (
+					this.renderInput()
+				) }
 				<div className="components-base-control__field">
 					{ !! label && (
 						<label
@@ -238,7 +230,6 @@ class Control extends Component {
 							{ label }
 						</label>
 					) }
-					{ this.renderInput() }
 					{ inlineTags && (
 						<span
 							id={ `search-inline-input-${ instanceId }` }
