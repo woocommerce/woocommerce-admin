@@ -53,6 +53,15 @@ class WCPaymentGatewayPreInstallWCPayPromotion extends \WC_Payment_Gateway {
 				'default' => 'no',
 			),
 		);
+	}
 
+	/**
+	 * Check if the promotional gateaway has been dismissed.
+	 *
+	 * @return bool
+	 */
+	public static function is_dismissed() {
+		$settings = get_option( 'woocommerce_' . self::GATEWAY_ID . '_settings', array() );
+		return isset( $settings['is_dismissed'] ) && 'yes' === $settings['is_dismissed'];
 	}
 }

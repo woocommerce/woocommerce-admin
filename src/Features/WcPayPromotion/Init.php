@@ -64,7 +64,7 @@ class Init {
 	 * @return array list of gateway classes.
 	 */
 	public static function possibly_register_pre_install_wc_pay_promotion_gateway( $gateways ) {
-		if ( self::should_register_pre_install_wc_pay_promoted_gateway() ) {
+		if ( self::can_show_promotion() && ! WCPaymentGatewayPreInstallWCPayPromotion::is_dismissed() ) {
 			$gateways[] = 'Automattic\WooCommerce\Admin\Features\WCPayPromotion\WCPaymentGatewayPreInstallWCPayPromotion';
 		}
 		return $gateways;
@@ -78,7 +78,7 @@ class Init {
 	 * @return array list of payment method.
 	 */
 	public static function possibly_filter_recommended_payment_gateways( $specs, $datasource_poller_id ) {
-		if ( PaymentMethodSuggestionsDataSourcePoller::ID === $datasource_poller_id && self::should_register_pre_install_wc_pay_promoted_gateway() ) {
+		if ( PaymentMethodSuggestionsDataSourcePoller::ID === $datasource_poller_id && self::can_show_promotion() ) {
 			return array_filter(
 				$specs,
 				function( $spec ) {
@@ -90,11 +90,11 @@ class Init {
 	}
 
 	/**
-	 * Checks if promoted gateway should be registered.
+	 * Checks if promoted gateway can be registered.
 	 *
 	 * @return boolean if promoted gateway should be registered.
 	 */
-	public static function should_register_pre_install_wc_pay_promoted_gateway() {
+	public static function can_show_promotion() {
 		// Check if WC Pay is enabled.
 		if ( class_exists( '\WC_Payments' ) ) {
 			return false;

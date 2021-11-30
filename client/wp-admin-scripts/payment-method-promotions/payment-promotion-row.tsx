@@ -52,13 +52,13 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 } ) => {
 	const { gatewayId, pluginSlug, url } = paymentMethod;
 	const [ installing, setInstalling ] = useState( false );
-	const [ isVisible, setIsVisible ] = useState( false );
+	const [ isVisible, setIsVisible ] = useState( true );
 	const { installAndActivatePlugins }: PluginsStoreActions = useDispatch(
 		PLUGINS_STORE_NAME
 	);
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
-	const { gatewayIsActive, paymentGateway, promotionGateway } = useSelect(
+	const { gatewayIsActive, paymentGateway } = useSelect(
 		( select: WCDataSelector ) => {
 			const { getPaymentGateway } = select( PAYMENT_GATEWAYS_STORE_NAME );
 			const activePlugins: string[] = select(
@@ -76,7 +76,6 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 			return {
 				gatewayIsActive: isActive,
 				paymentGateway: paymentGatewayData,
-				promotionGateway: getPaymentGateway( gatewayId ),
 			};
 		}
 	);
@@ -90,12 +89,6 @@ export const PaymentPromotionRow: React.FC< PaymentPromotionRowProps > = ( {
 			window.location.href = paymentGateway.settings_url;
 		}
 	}, [ gatewayIsActive, paymentGateway ] );
-
-	useEffect( () => {
-		if ( promotionGateway?.settings?.is_dismissed?.value === 'no' ) {
-			setIsVisible( true );
-		}
-	}, promotionGateway );
 
 	const installPaymentGateway = () => {
 		if ( installing ) {
