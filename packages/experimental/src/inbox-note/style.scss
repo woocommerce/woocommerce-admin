@@ -30,7 +30,8 @@
 	}
 
 	&:not(.message-is-unread) {
-		h3, h4 {
+		h3,
+		h4 {
 			font-weight: normal;
 			a {
 				font-weight: normal;
@@ -85,7 +86,8 @@
 		}
 	}
 
-	h3, h4 {
+	h3,
+	h4 {
 		a {
 			@extend .woocommerce-inbox-message__title;
 			color: $gray-900 !important;
