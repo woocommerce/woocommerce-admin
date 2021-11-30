@@ -15,7 +15,7 @@
  * @return array
  */
 function payment_gateway_suggestions_mock_install_activate_response( $response, $handler, $request ) {
-	$plugins          = array( 'slot-filled-gateway-wporg-slug', 'simple-gateway-wporg-slug' );
+	$plugins          = array( 'my-slot-filled-gateway-wporg-slug', 'my-simple-gateway-wporg-slug' );
 	$params           = $request->get_params();
 	$requested_plugin = isset( $params['plugins'] ) ? $params['plugins'] : null;
 
@@ -52,11 +52,11 @@ add_filter( 'rest_request_after_callbacks', 'payment_gateway_suggestions_mock_in
  */
 function payment_gateway_suggestions_mock_installed_gateway( $active_plugins ) {
 	if ( 'yes' === get_option( 'slot_filled_gateway_installed' ) ) {
-		$active_plugins[] = 'slot-filled-gateway-wporg-slug';
+		$active_plugins[] = 'my-slot-filled-gateway-wporg-slug';
 	}
 
-	if ( 'yes' === get_option( 'simple-gateway-wporg-slug' ) ) {
-		$active_plugins[] = 'simple-gateway-wporg-slug';
+	if ( 'yes' === get_option( 'my-simple-gateway-wporg-slug' ) ) {
+		$active_plugins[] = 'my-simple-gateway-wporg-slug';
 	}
 
 	return $active_plugins;

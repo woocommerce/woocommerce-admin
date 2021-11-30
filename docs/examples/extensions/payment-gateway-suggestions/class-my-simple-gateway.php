@@ -13,7 +13,7 @@ class My_Simple_Gateway extends WC_Payment_Gateway {
 	 * Constructor for the gateway.
 	 */
 	public function __construct() {
-		$this->id                 = 'simple-gateway';
+		$this->id                 = 'my-simple-gateway';
 		$this->has_fields         = false;
 		$this->method_title       = __( 'Simple gateway', 'woocommerce-admin' );
 		$this->method_description = __( 'A simple gateway to show extension of gateway installation during onboarding.', 'woocommerce-admin' );
@@ -55,7 +55,7 @@ class My_Simple_Gateway extends WC_Payment_Gateway {
 	 * Determine if the gateway requires further setup.
 	 */
 	public function needs_setup() {
-		$settings = get_option( 'woocommerce_simple-gateway_settings', array() );
+		$settings = get_option( 'woocommerce_my-simple-gateway_settings', array() );
 		return ! isset( $settings['api_key'] ) || empty( $settings['api_key'] );
 	}
 

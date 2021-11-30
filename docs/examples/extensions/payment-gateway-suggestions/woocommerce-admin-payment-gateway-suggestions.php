@@ -11,7 +11,7 @@
 function payment_gateway_suggestions_includes() {
 	include_once __DIR__ . '/woocommerce-admin-payment-gateway-suggestions-mock-installer.php';
 	include_once __DIR__ . '/class-my-simple-gateway.php';
-	include_once __DIR__ . '/woocommerce-admin-payment-gateway-suggestions-slot-filled-gateway.php';
+	include_once __DIR__ . '/class-my-slot-filled-gateway.php';
 }
 add_action( 'plugins_loaded', 'payment_gateway_suggestions_includes' );
 
@@ -38,11 +38,11 @@ add_filter( 'woocommerce_payment_gateways', 'payment_gateway_suggestions_registe
  */
 function payment_gateway_suggestions_add_suggestions( $specs ) {
 	$specs[] = array(
-		'id'         => 'simple-gateway',
+		'id'         => 'my-simple-gateway',
 		'title'      => __( 'Simple Gateway', 'woocommerce-admin' ),
 		'content'    => __( "This is a simple gateway that pulls its configuration fields from the gateway's class.", 'woocommerce-admin' ),
 		'image'      => WC()->plugin_url() . '/assets/images/placeholder.png',
-		'plugins'    => array( 'simple-gateway-wporg-slug' ),
+		'plugins'    => array( 'my-simple-gateway-wporg-slug' ),
 		'is_visible' => array(
 			(object) array(
 				'type'      => 'base_location_country',
@@ -53,11 +53,11 @@ function payment_gateway_suggestions_add_suggestions( $specs ) {
 	);
 
 	$specs[] = array(
-		'id'      => 'slot-filled-gateway',
+		'id'      => 'my-slot-filled-gateway',
 		'title'   => __( 'Slot Filled Gateway', 'woocommerce-admin' ),
 		'content' => __( 'This gateway makes use of registered SlotFill scripts to show its content.', 'woocommerce-admin' ),
 		'image'   => WC()->plugin_url() . '/assets/images/placeholder.png',
-		'plugins' => array( 'slot-filled-gateway-wporg-slug' ),
+		'plugins' => array( 'my-slot-filled-gateway-wporg-slug' ),
 	);
 
 	return $specs;
