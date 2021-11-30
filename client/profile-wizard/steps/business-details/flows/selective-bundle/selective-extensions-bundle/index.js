@@ -286,25 +286,28 @@ export const SelectiveExtensionsBundle = ( {
 								'woocommerce-admin'
 							) }
 						</p>
-						<Button
-							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
-							onClick={ () => {
-								setShowExtensions( ! showExtensions );
+						{ installableExtensions &&
+						installableExtensions.length > 0 ? (
+							<Button
+								className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
+								onClick={ () => {
+									setShowExtensions( ! showExtensions );
 
-								if ( ! showExtensions ) {
-									// only record the accordion click when the accordion is opened.
-									recordEvent(
-										'storeprofiler_store_business_features_accordion_click'
-									);
-								}
-							} }
-						>
-							<Icon
-								icon={
-									showExtensions ? chevronUp : chevronDown
-								}
-							/>
-						</Button>
+									if ( ! showExtensions ) {
+										// only record the accordion click when the accordion is opened.
+										recordEvent(
+											'storeprofiler_store_business_features_accordion_click'
+										);
+									}
+								} }
+							>
+								<Icon
+									icon={
+										showExtensions ? chevronUp : chevronDown
+									}
+								/>
+							</Button>
+						) : null }
 					</div>
 					{ showExtensions &&
 						installableExtensions.map(
