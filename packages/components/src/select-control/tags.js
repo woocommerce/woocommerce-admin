@@ -46,7 +46,7 @@ class Tags extends Component {
 
 		return (
 			<Fragment>
-				<div className={ 'woocommerce-select-control__tags' }>
+				<div className="woocommerce-select-control__tags">
 					{ selected.map( ( item, i ) => {
 						if ( ! item.label ) {
 							return null;

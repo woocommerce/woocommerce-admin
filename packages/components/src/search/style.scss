@@ -64,8 +64,7 @@
 		margin: 0;
 		padding-left: 10px;
 		display: flex;
-		max-width: -webkit-calc(100% - 60px);
-		max-width: -moz-calc(100% - 60px);
+		width: 100%;
 		max-width: calc(100% - 60px);
 		overflow: hidden;
 		justify-content: flex-end;
@@ -84,7 +83,6 @@
 
 
 	.components-base-control .woocommerce-tag {
-		flex-shrink: 0;
 		max-height: 24px;
 	}
 
