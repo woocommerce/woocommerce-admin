@@ -128,7 +128,12 @@
 
 == 2.6.3 09/21/2021 ==
 
+- Fix unsecured reports. #7691
+- Fix fatal error and unrelated results in analytics. #7682
+
 == 2.6.2 09/14/2021 ==
+
+- Fix Update task-item logic to only display content when expanded is true. #7611
 
 == 2.6.1 09/01/2021 ==
 
