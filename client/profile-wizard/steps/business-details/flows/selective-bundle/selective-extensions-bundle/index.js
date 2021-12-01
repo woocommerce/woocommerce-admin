@@ -268,46 +268,43 @@ export const SelectiveExtensionsBundle = ( {
 				</div>
 				<div className="woocommerce-admin__business-details__selective-extensions-bundle">
 					<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
-						{ isResolving ? (
-							<Spinner />
-						) : (
-							<CheckboxControl
-								checked={ values.install_extensions }
-								onChange={ ( checked ) => {
-									setValues(
-										setAllPropsToValue( values, checked )
-									);
-								} }
-							/>
-						) }
+						<CheckboxControl
+							checked={ values.install_extensions }
+							onChange={ ( checked ) => {
+								setValues(
+									setAllPropsToValue( values, checked )
+								);
+							} }
+						/>
 						<p className="woocommerce-admin__business-details__selective-extensions-bundle__description">
 							{ __(
 								'Add recommended business features to my site',
 								'woocommerce-admin'
 							) }
 						</p>
-						{ installableExtensions &&
-						installableExtensions.length > 0 ? (
-							<Button
-								className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
-								onClick={ () => {
-									setShowExtensions( ! showExtensions );
+						<Button
+							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
+							disabled={
+								! installableExtensions ||
+								installableExtensions.length === 0
+							}
+							onClick={ () => {
+								setShowExtensions( ! showExtensions );
 
-									if ( ! showExtensions ) {
-										// only record the accordion click when the accordion is opened.
-										recordEvent(
-											'storeprofiler_store_business_features_accordion_click'
-										);
-									}
-								} }
-							>
-								<Icon
-									icon={
-										showExtensions ? chevronUp : chevronDown
-									}
-								/>
-							</Button>
-						) : null }
+								if ( ! showExtensions ) {
+									// only record the accordion click when the accordion is opened.
+									recordEvent(
+										'storeprofiler_store_business_features_accordion_click'
+									);
+								}
+							} }
+						>
+							<Icon
+								icon={
+									showExtensions ? chevronUp : chevronDown
+								}
+							/>
+						</Button>
 					</div>
 					{ showExtensions &&
 						installableExtensions.map(
@@ -347,7 +344,7 @@ export const SelectiveExtensionsBundle = ( {
 						onClick={ () => {
 							onSubmit( values );
 						} }
-						isBusy={ isInstallingActivating }
+						isBusy={ isInstallingActivating || isResolving }
 						disabled={ isInstallingActivating || isResolving }
 						isPrimary
 					>
