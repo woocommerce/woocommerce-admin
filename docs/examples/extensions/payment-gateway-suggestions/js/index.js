@@ -42,7 +42,7 @@ const MyPaymentGatewaySuggestion = () => {
 	);
 };
 
-registerPlugin( 'my-payment-gateway-suggestion', {
+export default registerPlugin( 'my-payment-gateway-suggestion', {
 	render: MyPaymentGatewaySuggestion,
 	scope: 'woocommerce-tasks',
 } );

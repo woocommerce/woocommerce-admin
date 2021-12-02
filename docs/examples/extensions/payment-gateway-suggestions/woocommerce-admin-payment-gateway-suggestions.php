@@ -63,24 +63,3 @@ function payment_gateway_suggestions_add_suggestions( $specs ) {
 	return $specs;
 }
 add_filter( 'woocommerce_admin_payment_gateway_suggestion_specs', 'payment_gateway_suggestions_add_suggestions' );
-
-/**
- * Register the JS.
- */
-function payment_gateway_suggestions_register_scripts() {
-	if ( ! class_exists( 'Automattic\WooCommerce\Admin\Loader' ) || ! \Automattic\WooCommerce\Admin\Loader::is_admin_page() ) {
-		return;
-	}
-
-	$asset_file = require __DIR__ . '/dist/index.asset.php';
-	wp_register_script(
-		'payment-gateway-suggestion-slot-fill',
-		plugins_url( '/dist/index.js', __FILE__ ),
-		$asset_file['dependencies'],
-		$asset_file['version'],
-		true
-	);
-
-	wp_enqueue_script( 'payment-gateway-suggestion-slot-fill' );
-}
-add_action( 'admin_enqueue_scripts', 'payment_gateway_suggestions_register_scripts' );
