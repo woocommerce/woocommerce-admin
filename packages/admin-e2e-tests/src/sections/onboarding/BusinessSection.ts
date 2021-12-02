@@ -37,6 +37,27 @@ export class BusinessSection extends BasePage {
 
 		await sellingElsewhereDropdown.select( currentlySelling );
 	}
+	async selectEmployeesNumber( employeesNumber: string ) {
+		const employeesNumberDropdown = this.getDropdownField(
+			'.components-card__body > div:nth-child(3)'
+		);
+
+		await employeesNumberDropdown.select( employeesNumber );
+	}
+	async selectRevenue( revenue: string ) {
+		const revenueDropdown = this.getDropdownField(
+			'.components-card__body > div:nth-child(4)'
+		);
+
+		await revenueDropdown.select( revenue );
+	}
+	async selectOtherPlatformName( otherPlatformName: string ) {
+		const otherPlatformNameDropdown = this.getDropdownField(
+			'.components-card__body > div:nth-child(5)'
+		);
+
+		await otherPlatformNameDropdown.select( otherPlatformName );
+	}
 
 	async selectInstallFreeBusinessFeatures( select: boolean ) {
 		if ( select ) {
