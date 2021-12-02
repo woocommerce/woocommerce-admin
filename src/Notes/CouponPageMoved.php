@@ -45,6 +45,11 @@ class CouponPageMoved {
 			return false;
 		}
 
+		// Don't add the notice if the legacy coupon menu is already disabled.
+		if ( ! self::should_display_legacy_menu() ) {
+			return false;
+		}
+
 		// Don't add the notice if it's been hidden by the user before.
 		if ( self::has_dismissed_note() ) {
 			return false;
@@ -52,11 +57,6 @@ class CouponPageMoved {
 
 		// If we already have a notice, don't add a new one.
 		if ( self::has_unactioned_note() ) {
-			return false;
-		}
-
-		// If new navigation feature is enabled.
-		if ( Features::is_enabled( 'navigation' ) ) {
 			return false;
 		}
 
