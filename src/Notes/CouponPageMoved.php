@@ -33,6 +33,7 @@ class CouponPageMoved {
 
 		add_action( 'admin_init', [ $this, 'possibly_add_note' ] );
 		add_action( 'admin_init', [ $this, 'redirect_to_coupons' ] );
+		add_action( 'woocommerce_admin_newly_installed', [ $this, 'disable_legacy_menu_for_new_install' ] );
 	}
 
 	/**
@@ -147,5 +148,12 @@ class CouponPageMoved {
 		$this->display_legacy_menu( false );
 		wp_safe_redirect( self::get_management_url( 'coupons' ) );
 		exit;
+	}
+
+	/**
+	 * Disable legacy coupon menu when installing for the first time.
+	 */
+	public function disable_legacy_menu_for_new_install() {
+		$this->display_legacy_menu( false );
 	}
 }
