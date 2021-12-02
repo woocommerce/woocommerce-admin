@@ -40,7 +40,9 @@ export const WooHeaderItem = ( { children, order = 1 } ) => {
 
 	return (
 		<Fill name={ `woocommerce_header_item_${ suffix }` }>
-			{ createOrderedChildren.bind( null, children, order ) }
+			{ ( fillProps ) => {
+				return createOrderedChildren( children, order, fillProps );
+			} }
 		</Fill>
 	);
 };
