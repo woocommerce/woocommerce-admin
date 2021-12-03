@@ -64,10 +64,11 @@
 		margin: 0;
 		padding-left: 10px;
 		display: flex;
-		width: 100%;
-		max-width: calc(100% - 60px);
+		width: 0;
+		flex-grow: 1;
 		overflow: hidden;
 		justify-content: flex-end;
+		align-items: center;
 		&::after {
 			content: '';
 			position: absolute;

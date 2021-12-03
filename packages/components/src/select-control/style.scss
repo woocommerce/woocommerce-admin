@@ -44,7 +44,6 @@
 			padding-left: 0;
 			padding-right: 0;
 			width: 100%;
-			min-width: 20%;
 			line-height: 24px;
 			text-align: left;
 			letter-spacing: inherit;
@@ -56,9 +55,6 @@
 
 			&:focus {
 				outline: none;
-				@media only screen and (max-width: 600px) {
-					min-width: 80%;
-				}
 			}
 		}
 
@@ -87,6 +83,16 @@
 		}
 	}
 
+	.components-base-control__field {
+		min-width: 20%;
+	}
+
+	&.is-focused .components-base-control__field {
+		@media only screen and (max-width: 600px) {
+			min-width: 80%;
+		}
+	}
+
 	.woocommerce-select-control__autofill-input {
 		position: absolute;
 		z-index: -1;
@@ -106,10 +112,7 @@
 	}
 
 	.woocommerce-select-control__clear {
-		position: absolute;
-		right: 10px;
-		margin: 0;
-		padding: 0;
+		white-space: nowrap;
 		text-decoration: underline;
 		color: $gray-900;
 

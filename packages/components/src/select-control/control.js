@@ -182,6 +182,39 @@ class Control extends Component {
 
 		const { isActive } = this.state;
 
+		const field = (
+			<div className="components-base-control__field">
+				{ !! label && (
+					<label
+						htmlFor={ `woocommerce-select-control-${ instanceId }__control-input` }
+						className="components-base-control__label"
+					>
+						{ label }
+					</label>
+				) }
+				{ this.renderInput() }
+				{ inlineTags && (
+					<span
+						id={ `search-inline-input-${ instanceId }` }
+						className="screen-reader-text"
+					>
+						{ __(
+							'Move backward for selected items',
+							'woocommerce-admin'
+						) }
+					</span>
+				) }
+				{ !! help && (
+					<p
+						id={ `woocommerce-select-control-${ instanceId }__help` }
+						className="components-base-control__help"
+					>
+						{ help }
+					</p>
+				) }
+			</div>
+		);
+
 		return (
 			// Disable reason: The div below visually simulates an input field. Its
 			// child input is the actual input and responds accordingly to all keyboard
@@ -214,42 +247,10 @@ class Control extends Component {
 					/>
 				) }
 				{ inlineTags ? (
-					<Tags
-						{ ...this.props }
-						searchInput={ this.renderInput() }
-					/>
+					<Tags { ...this.props } searchInput={ field } />
 				) : (
-					this.renderInput()
+					field
 				) }
-				<div className="components-base-control__field">
-					{ !! label && (
-						<label
-							htmlFor={ `woocommerce-select-control-${ instanceId }__control-input` }
-							className="components-base-control__label"
-						>
-							{ label }
-						</label>
-					) }
-					{ inlineTags && (
-						<span
-							id={ `search-inline-input-${ instanceId }` }
-							className="screen-reader-text"
-						>
-							{ __(
-								'Move backward for selected items',
-								'woocommerce-admin'
-							) }
-						</span>
-					) }
-					{ !! help && (
-						<p
-							id={ `woocommerce-select-control-${ instanceId }__help` }
-							className="components-base-control__help"
-						>
-							{ help }
-						</p>
-					) }
-				</div>
 			</div>
 			/* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 		);
