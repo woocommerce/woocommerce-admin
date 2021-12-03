@@ -525,7 +525,7 @@ const testBusinessDetailsForm = () => {
 		beforeAll( async () => {
 			await login.login();
 		} );
-		
+
 		afterAll( async () => {
 			await deactivateAndDeleteExtension( 'woocommerce-payments' );
 			await login.logout();
