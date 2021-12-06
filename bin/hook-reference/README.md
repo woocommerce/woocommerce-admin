@@ -10,7 +10,7 @@ Generate a new reference found at `bin/hook-reference/data.json` by running the 
 npm run create-hook-reference
 ```
 
-The resulting data includes references to lines of code in the Github repository by commit hash, so it is essential to commit the resulting changes in a pull request to `main` so code references are publicly available.
+The data includes references to code in the Github repository by commit hash, so it is essential to commit the resulting data in a pull request to `main` so code references are publicly available.
 
 ## DocBlock Requirements
 
