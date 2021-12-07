@@ -1,7 +1,5 @@
 # Testing instructions
-
-## Unreleased
-
+## 3.0.0
 ### Fix PHP Warning on 'Add new product' page
 
 0. On a Jurassic Ninja site.
@@ -9,8 +7,6 @@
 2. Press **Add my products** in the task list.
 3. Press **Add manually**.
 4. No PHP warning should be visible.
-
-## 3.0.0
 
 ### Onboarding Workflow - Add number of employees field
 
