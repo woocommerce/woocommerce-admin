@@ -59,7 +59,10 @@ export const Plugin: React.FC< PluginProps > = ( {
 					{ name }
 					{ isBuiltByWC && (
 						<Pill>
-							{ __( 'Built by WooCommerce', 'woocommerce-admin' ) }
+							{ __(
+								'Built by WooCommerce',
+								'woocommerce-admin'
+							) }
 						</Pill>
 					) }
 				</Text>

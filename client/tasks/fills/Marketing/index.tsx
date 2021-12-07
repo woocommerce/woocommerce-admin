@@ -45,7 +45,14 @@ export const transformExtensionToPlugin = (
 	activePlugins: string[],
 	installedPlugins: string[]
 ): PluginProps => {
-	const { description, image_url, is_built_by_wc, key, manage_url, name } = extension;
+	const {
+		description,
+		image_url,
+		is_built_by_wc,
+		key,
+		manage_url,
+		name,
+	} = extension;
 	const slug = key.split( ':' )[ 0 ];
 	return {
 		description,
