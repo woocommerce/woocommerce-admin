@@ -6,7 +6,6 @@ import { Card, CardHeader, Spinner } from '@wordpress/components';
 import {
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
-	OPTIONS_STORE_NAME,
 	WCDataSelector,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
