@@ -19,7 +19,7 @@ import getReports from '../analytics/report/get-reports';
 import { getPages } from './controller';
 import { isWCAdmin } from '../dashboard/utils';
 import Navigation from '~/navigation';
-import { WooHeaderItem } from '~/header/utils';
+import { WooHeaderNavigationItem } from '~/header/utils';
 
 const NavigationPlugin = () => {
 	const { persistedQuery } = useSelect( ( select ) => {
@@ -39,9 +39,9 @@ const NavigationPlugin = () => {
 	 */
 	if ( ! isWCAdmin( window.location.href ) ) {
 		return (
-			<WooHeaderItem order={ -100 }>
+			<WooHeaderNavigationItem order={ -100 }>
 				<Navigation />
-			</WooHeaderItem>
+			</WooHeaderNavigationItem>
 		);
 	}
 
@@ -61,9 +61,9 @@ const NavigationPlugin = () => {
 
 	return (
 		<>
-			<WooHeaderItem order={ -100 }>
+			<WooHeaderNavigationItem order={ -100 }>
 				<Navigation />
-			</WooHeaderItem>
+			</WooHeaderNavigationItem>
 			{ pages.map( ( page ) => (
 				<WooNavigationItem
 					item={ page.navArgs.id }

@@ -13,7 +13,11 @@ import { Text, useSlot } from '@woocommerce/experimental';
  */
 import './style.scss';
 import useIsScrolled from '../hooks/useIsScrolled';
-import { WooHeaderItem, WooHeaderPageTitle } from './utils';
+import {
+	WooHeaderNavigationItem,
+	WooHeaderItem,
+	WooHeaderPageTitle,
+} from './utils';
 
 export const PAGE_TITLE_FILTER = 'woocommerce_admin_header_page_title';
 
@@ -91,7 +95,9 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 	return (
 		<div className={ className } ref={ headerElement }>
 			<div className="woocommerce-layout__header-wrapper">
-				<WooHeaderItem.BeforeSlot fillProps={ { isEmbedded, query } } />
+				<WooHeaderNavigationItem.Slot
+					fillProps={ { isEmbedded, query } }
+				/>
 
 				<Text
 					className={ `woocommerce-layout__header-heading` }
@@ -108,7 +114,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 					) }
 				</Text>
 
-				<WooHeaderItem.AfterSlot fillProps={ { isEmbedded, query } } />
+				<WooHeaderItem.Slot fillProps={ { isEmbedded, query } } />
 			</div>
 		</div>
 	);

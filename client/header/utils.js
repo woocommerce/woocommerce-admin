@@ -36,10 +36,8 @@ const createOrderedChildren = ( children, order, props ) => {
  * @param {Array} param0.order - Node order.
  */
 export const WooHeaderItem = ( { children, order = 1 } ) => {
-	const suffix = order >= 0 ? 'after' : 'before';
-
 	return (
-		<Fill name={ `woocommerce_header_item_${ suffix }` }>
+		<Fill name={ 'woocommerce_header_item' }>
 			{ ( fillProps ) => {
 				return createOrderedChildren( children, order, fillProps );
 			} }
@@ -47,26 +45,50 @@ export const WooHeaderItem = ( { children, order = 1 } ) => {
 	);
 };
 
-WooHeaderItem.BeforeSlot = ( { fillProps } ) => (
-	<Slot name={ 'woocommerce_header_item_before' } fillProps={ fillProps }>
+WooHeaderItem.Slot = ( { fillProps } ) => (
+	<Slot name={ 'woocommerce_header_item' } fillProps={ fillProps }>
 		{ ( fills ) => {
-			return fills
-				.filter( ( fill ) => fill[ 0 ].props.order < 0 )
-				.sort( ( a, b ) => {
-					return a[ 0 ].props.order - b[ 0 ].props.order;
-				} );
+			return fills.sort( ( a, b ) => {
+				return a[ 0 ].props.order - b[ 0 ].props.order;
+			} );
 		} }
 	</Slot>
 );
 
-WooHeaderItem.AfterSlot = ( { fillProps } ) => (
-	<Slot name={ 'woocommerce_header_item_after' } fillProps={ fillProps }>
+/**
+ * Create a Fill for extensions to add items to the WooCommerce Admin
+ * navigation area left of the page title.
+ *
+ * @slotFill WooHeaderNavigationItem
+ * @example
+ * const MyNavigationItem = () => (
+ * <WooHeaderNavigationItem>My nav item</WooHeaderNavigationItem>
+ * );
+ *
+ * registerPlugin( 'my-extension', {
+ * render: MyNavigationItem,
+ * scope: 'woocommerce-admin',
+ * } );
+ * @param {Object} param0
+ * @param {Array} param0.children - Node children.
+ * @param {Array} param0.order - Node order.
+ */
+export const WooHeaderNavigationItem = ( { children, order = 1 } ) => {
+	return (
+		<Fill name={ 'woocommerce_header_navigation_item' }>
+			{ ( fillProps ) => {
+				return createOrderedChildren( children, order, fillProps );
+			} }
+		</Fill>
+	);
+};
+
+WooHeaderNavigationItem.Slot = ( { fillProps } ) => (
+	<Slot name={ 'woocommerce_header_navigation_item' } fillProps={ fillProps }>
 		{ ( fills ) => {
-			return fills
-				.filter( ( fill ) => fill[ 0 ].props.order >= 0 )
-				.sort( ( a, b ) => {
-					return a[ 0 ].props.order - b[ 0 ].props.order;
-				} );
+			return fills.sort( ( a, b ) => {
+				return a[ 0 ].props.order - b[ 0 ].props.order;
+			} );
 		} }
 	</Slot>
 );

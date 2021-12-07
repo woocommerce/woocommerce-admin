@@ -11,7 +11,7 @@ import { useDispatch } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { WooHeaderItem, WooHeaderPageTitle } from '~/header/utils';
+import { WooHeaderNavigationItem, WooHeaderPageTitle } from '~/header/utils';
 import { BackButton } from './back-button';
 
 export type TaskProps = {
@@ -34,9 +34,9 @@ export const Task: React.FC< TaskProps > = ( { query, task } ) => {
 
 	return (
 		<>
-			<WooHeaderItem order={ -1 }>
+			<WooHeaderNavigationItem>
 				<BackButton title={ task.title } />
-			</WooHeaderItem>
+			</WooHeaderNavigationItem>
 			<WooHeaderPageTitle>{ task.title }</WooHeaderPageTitle>
 			<WooOnboardingTask.Slot
 				id={ id }
