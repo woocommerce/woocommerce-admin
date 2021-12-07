@@ -24,7 +24,6 @@ import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
 
 const ALLOWED_PLUGIN_LISTS = [ 'task-list/reach', 'task-list/grow' ];
-const EMPTY_ARRAY = [];
 
 export type ExtensionList = {
 	key: string;
