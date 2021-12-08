@@ -705,14 +705,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return false;
 		}
 
-		$last_order = $customer->get_last_order();
+		$first_name = $customer->get_first_name();
+		$last_name  = $customer->get_last_name();
 
-		if ( ! $last_order ) {
-			$first_name = get_user_meta( $user_id, 'first_name', true );
-			$last_name  = get_user_meta( $user_id, 'last_name', true );
-		} else {
-			$first_name = $last_order->get_customer_first_name();
-			$last_name  = $last_order->get_customer_last_name();
+		if ( empty( $first_name ) ) {
+			$first_name = $customer->get_billing_first_name();
+		}
+		if ( empty( $last_name ) ) {
+			$last_name = $customer->get_billing_last_name();
 		}
 
 		$last_active = $customer->get_meta( 'wc_last_active', true, 'edit' );
