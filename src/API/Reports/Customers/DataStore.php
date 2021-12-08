@@ -772,14 +772,15 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 * @return bool
 	 */
 	protected static function is_valid_customer( $user_id ) {
-		$customer = new \WC_Customer( $user_id );
+		$user = new \WP_User( $user_id );
 
-		if ( absint( $customer->get_id() ) !== absint( $user_id ) ) {
+		if ( (int) $user_id !== $user->ID ) {
 			return false;
 		}
 
 		$customer_roles = (array) apply_filters( 'woocommerce_analytics_customer_roles', array( 'customer' ) );
-		if ( $customer->get_order_count() < 1 && ! in_array( $customer->get_role(), $customer_roles, true ) ) {
+
+		if ( empty( $user->roles ) || ! in_array( $user->roles[0], $customer_roles, true ) ) {
 			return false;
 		}
 
