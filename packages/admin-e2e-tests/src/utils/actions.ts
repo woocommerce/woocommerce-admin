@@ -3,11 +3,6 @@
  */
 import { ElementHandle } from 'puppeteer';
 
-/**
- * Internal dependencies
- */
-import { NewOrder } from '../pages/NewOrder';
-
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { expect } = require( '@jest/globals' );
 const config = require( 'config' );

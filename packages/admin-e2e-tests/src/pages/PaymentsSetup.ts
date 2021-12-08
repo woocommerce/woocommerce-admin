@@ -1,11 +1,7 @@
 /**
  * Internal dependencies
  */
-import {
-	waitForElementByText,
-	getElementByText,
-	waitForTimeout,
-} from '../utils/actions';
+import { waitForElementByText, getElementByText } from '../utils/actions';
 import { BasePage } from './BasePage';
 
 type PaymentMethodWithSetupButton =
