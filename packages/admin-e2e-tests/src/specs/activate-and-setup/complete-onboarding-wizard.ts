@@ -544,6 +544,11 @@ const testBusinessDetailsForm = () => {
 			await profileWizard.industry.isDisplayed();
 			await profileWizard.continue();
 			await profileWizard.productTypes.isDisplayed( 7 );
+			await profileWizard.productTypes.uncheckProducts();
+			// Select Physical
+			await profileWizard.productTypes.selectProduct(
+				'Physical products'
+			);
 
 			await profileWizard.continue();
 			await page.waitForNavigation( { waitUntil: 'networkidle0' } );
