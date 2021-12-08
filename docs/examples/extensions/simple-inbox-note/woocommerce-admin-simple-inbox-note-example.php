@@ -41,8 +41,8 @@ class SimpleInboxNote {
 		// Set our note's title.
 		$note->set_title( 'Hello From Inbox Note!' );
 
-		// Set our note's content. Please keep in mind that you we have a limit
-		// of 320 displayable characters for note contents.
+		// Set our note's content. Please keep in mind that the note content
+		// is limited to 320 displayable characters.
 		// It is also not advisable to include Unicode characters such as emojis
 		// since they could possibly not work on some user's sites where database
 		// collation doesn't support Unicode.
