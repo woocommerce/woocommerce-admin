@@ -20,7 +20,7 @@ export const MobileAppBanner = () => {
 		} );
 	};
 
-	if ( ! isDismissed ) {
+	if ( isDismissed ) {
 		return null;
 	}
 
