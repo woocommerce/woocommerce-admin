@@ -573,6 +573,9 @@ const testBusinessDetailsForm = () => {
 			);
 
 			await profileWizard.continue();
+			await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
+			await profileWizard.continue();
+			await profileWizard.themes.isDisplayed();
 		} );
 	} );
 };
