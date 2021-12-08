@@ -181,7 +181,7 @@ const InboxPanel = ( { showHeader = true } ) => {
 				isResolving,
 				isNotesRequesting,
 			} = select( NOTES_STORE_NAME );
-			const WC_VERSION_59_DATE = moment(
+			const WC_VERSION_61_RELEASE_DATE = moment(
 				'2022-01-11',
 				'YYYY-MM-DD'
 			).valueOf();
@@ -193,7 +193,7 @@ const InboxPanel = ( { showHeader = true } ) => {
 						'YYYY-MM-DD'
 					).valueOf();
 
-					if ( noteDate >= WC_VERSION_59_DATE ) {
+					if ( noteDate >= WC_VERSION_61_RELEASE_DATE ) {
 						note.content = truncateRenderableHTML(
 							note.content,
 							320
