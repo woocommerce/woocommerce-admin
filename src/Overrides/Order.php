@@ -40,8 +40,8 @@ class Order extends \WC_Order {
 			),
 			$this->data,
 			array(
-				'number'         => $this->get_order_number(),
-				'meta_data'      => $this->get_meta_data(),
+				'number'    => $this->get_order_number(),
+				'meta_data' => $this->get_meta_data(),
 			)
 		);
 	}
@@ -105,10 +105,11 @@ class Order extends \WC_Order {
 	/**
 	 * Returns true if the customer has made an earlier order.
 	 *
+	 * @param int|false $customer_id Customer ID. Optional.
 	 * @return bool
 	 */
-	public function is_returning_customer() {
-		return OrdersStatsDataStore::is_returning_customer( $this );
+	public function is_returning_customer( $customer_id = null ) {
+		return OrdersStatsDataStore::is_returning_customer( $this, $customer_id );
 	}
 
 	/**

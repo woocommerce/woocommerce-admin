@@ -63,9 +63,10 @@ class OrderRefund extends \WC_Order_Refund {
 	/**
 	 * Returns null since refunds should not be counted towards returning customer counts.
 	 *
+	 * @param int|false $customer_id Customer ID. Optional.
 	 * @return null
 	 */
-	public function is_returning_customer() {
+	public function is_returning_customer( $customer_id = null ) {
 		return null;
 	}
 }

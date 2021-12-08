@@ -500,6 +500,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return -1;
 		}
 
+		$customer_id = $order->get_report_customer_id();
+
 		/**
 		 * Filters order stats data.
 		 *
@@ -519,8 +521,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'shipping_total'     => $order->get_shipping_total(),
 				'net_total'          => self::get_net_total( $order ),
 				'status'             => self::normalize_order_status( $order->get_status() ),
-				'customer_id'        => $order->get_report_customer_id(),
-				'returning_customer' => $order->is_returning_customer(),
+				'customer_id'        => $customer_id,
+				'returning_customer' => $order->is_returning_customer( $customer_id ),
 			),
 			$order
 		);
@@ -546,8 +548,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$data['parent_id'] = $parent_order->get_id();
 				$data['status']    = self::normalize_order_status( $parent_order->get_status() );
 			}
-		} else {
-			$data['returning_customer'] = self::is_returning_customer( $order );
 		}
 
 		// Update or add the information to the DB.
@@ -630,11 +630,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	/**
 	 * Check to see if an order's customer has made previous orders or not
 	 *
-	 * @param array $order WC_Order object.
+	 * @param array     $order WC_Order object.
+	 * @param int|false $customer_id Customer ID. Optional.
 	 * @return bool
 	 */
-	public static function is_returning_customer( $order ) {
-		$customer_id = \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore::get_existing_customer_id_from_order( $order );
+	public static function is_returning_customer( $order, $customer_id = null ) {
+		if ( is_null( $customer_id ) ) {
+			$customer_id = \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore::get_existing_customer_id_from_order( $order );
+		}
 
 		if ( ! $customer_id ) {
 			return false;
