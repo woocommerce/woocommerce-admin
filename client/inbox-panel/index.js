@@ -164,6 +164,7 @@ const INBOX_QUERY = {
 		'image',
 		'is_deleted',
 		'is_read',
+		'locale',
 	],
 };
 
