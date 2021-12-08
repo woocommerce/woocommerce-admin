@@ -1,3 +1,6 @@
+== 2.9.1 12/07/2021 == 
+- Fix: Fix shipping task not offering step 3. #7985
+
 == 2.9.0 11/30/2021 == 
 
 - Dev: Remove task status endpoint #7841
