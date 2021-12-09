@@ -46,7 +46,7 @@ On a new site, with English language settings:
 
 ### Inbox - Dismiss all notes
 
-1. Go to WooCommerce products screen
+1. Go to WooCommerce home screen
 2. On "Inbox" heading panel, click kebab menu (3 dots).
 3. Click "Dismiss all".
 4. On confirmation dialog, press "Cancel" button.
