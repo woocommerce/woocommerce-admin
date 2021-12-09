@@ -17,7 +17,7 @@
 On a new site, with English language settings:
 
 1. Go to WooCommerce home screen
-2. See that all notes are short in length (aproximately less than 320 characters). 
+2. See that all Inbox notes are short in length (aproximately less than 320 characters). 
 
 ### Inbox - Read notes
 
