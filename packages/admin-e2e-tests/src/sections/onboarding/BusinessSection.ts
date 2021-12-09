@@ -24,7 +24,7 @@ export class BusinessSection extends BasePage {
 
 	async selectProductNumber( productLabel: string ) {
 		const howManyProductsDropdown = this.getDropdownField(
-			'.components-card__body > div:nth-child(1)'
+			'.woocommerce-profile-wizard_product_count'
 		);
 
 		await howManyProductsDropdown.select( productLabel );
@@ -32,28 +32,28 @@ export class BusinessSection extends BasePage {
 
 	async selectCurrentlySelling( currentlySelling: string ) {
 		const sellingElsewhereDropdown = this.getDropdownField(
-			'.components-card__body > div:nth-child(2)'
+			'.woocommerce-profile-wizard_selling_venues'
 		);
 
 		await sellingElsewhereDropdown.select( currentlySelling );
 	}
 	async selectEmployeesNumber( employeesNumber: string ) {
 		const employeesNumberDropdown = this.getDropdownField(
-			'.components-card__body > div:nth-child(3)'
+			'.woocommerce-profile-wizard_number_employees'
 		);
 
 		await employeesNumberDropdown.select( employeesNumber );
 	}
 	async selectRevenue( revenue: string ) {
 		const revenueDropdown = this.getDropdownField(
-			'.components-card__body > div:nth-child(4)'
+			'.woocommerce-profile-wizard_revenue'
 		);
 
 		await revenueDropdown.select( revenue );
 	}
 	async selectOtherPlatformName( otherPlatformName: string ) {
 		const otherPlatformNameDropdown = this.getDropdownField(
-			'.components-card__body > div:nth-child(5)'
+			'.woocommerce-profile-wizard_other_platform'
 		);
 
 		await otherPlatformNameDropdown.select( otherPlatformName );
