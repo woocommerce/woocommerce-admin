@@ -36,7 +36,6 @@ import { getRevenueOptions } from '../../data/revenue-options';
 import { getProductCountOptions } from '../../data/product-options';
 import { SelectiveExtensionsBundle } from './selective-extensions-bundle';
 import './style.scss';
-import input from '@woocommerce/components/build/calendar/input';
 
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
 const FREE_FEATURES_TAB_NAME = 'free-features';
