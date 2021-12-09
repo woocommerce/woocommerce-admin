@@ -25,6 +25,19 @@ class SimpleInboxNote {
 	const NOTE_NAME = 'simple-inbox-note';
 
 	/**
+	 * Check to run to find out if we should display our note.
+	 *
+	 * @return Note
+	 */
+	public static function is_applicable() {
+		// We want to show the note after five days.
+		if ( ! self::is_wc_admin_active_in_date_range( 'week-1-4', 5 * DAY_IN_SECONDS ) ) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Get the note.
 	 *
 	 * @return Note
@@ -32,8 +45,8 @@ class SimpleInboxNote {
 	public static function get_note() {
 		// Optionally, you can add any logic here in order to
 		// control when the note should be displayed.
-		// We want to show the note after five days.
-		// if ( ! self::is_wc_admin_active_in_date_range( 'week-1-4', 5 * DAY_IN_SECONDS ) ) {
+		// In the future, this would be automatically handled by our NoteTraits.
+		// if ( ! self::is_applicable() ) {
 		// return;
 		// } //.
 

@@ -5,13 +5,11 @@
  * @package WooCommerce\Admin
  */
 
-// Import note class.
-require_once dirname( __FILE__ ) . '/class-simpleinboxnote.php';
-
 /**
  * Add note.
  */
 function add_note() {
+	require_once dirname( __FILE__ ) . '/class-simpleinboxnote.php';
 	SimpleInboxNote::possibly_add_note();
 }
 
@@ -19,6 +17,7 @@ function add_note() {
  * Delete note.
  */
 function delete_note() {
+	require_once dirname( __FILE__ ) . '/class-simpleinboxnote.php';
 	SimpleInboxNote::possibly_delete_note();
 }
 
