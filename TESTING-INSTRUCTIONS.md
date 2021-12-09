@@ -10,7 +10,7 @@
 3. Press **Add manually**.
 4. No PHP warning should be visible.
 
-## 3.0.0
+## 3.1.0
 
 ### Inbox - 320 character limit
 
@@ -18,6 +18,8 @@ On a new site, with English language settings:
 
 1. Go to WooCommerce home screen
 2. See that all Inbox notes are short in length (aproximately less than 320 characters). 
+
+## 3.0.0
 
 ### Inbox - Read notes
 
