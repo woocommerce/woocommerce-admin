@@ -44,7 +44,7 @@ On a new site, with English language settings:
 3. Click "Activity" menu item.
 4. See notes appear in panel.
 
-### Inbox - Dismiss aLl notes
+### Inbox - Dismiss all notes
 
 1. Go to WooCommerce products screen
 2. On "Inbox" heading panel, click kebab menu (3 dots).
