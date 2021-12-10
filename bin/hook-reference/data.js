@@ -55,15 +55,19 @@ const makeDocObjects = async ( path ) => {
 	return hooks.map( ( { description, tags, sourceFile } ) => {
 		const tag = tags.find( ( tag ) => dataTypes.includes( tag.tag ) );
 
-		paramTags = tags.reduce( ( result, { tag, name, type } ) => {
-			if ( tag === 'param' ) {
-				result.push( {
-					name,
-					type,
-				} );
-			}
-			return result;
-		}, [] );
+		paramTags = tags.reduce(
+			( result, { tag, name, type, description } ) => {
+				if ( tag === 'param' ) {
+					result.push( {
+						name,
+						type,
+						description,
+					} );
+				}
+				return result;
+			},
+			[]
+		);
 
 		return {
 			description,

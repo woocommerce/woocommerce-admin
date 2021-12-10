@@ -1,64 +1,74 @@
 [
     {
         "description": "Filter report table for the CSV download. Enables manipulation of data used to create the report CSV.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4a488f247cedbf8175b8da1f6ab4d2133fabae79/client/analytics/components/report-table/index.js#L159-L172",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/14775ae88cab0cf07126563cdfeaa189b498575a/client/analytics/components/report-table/index.js#L159-L172",
         "name": "woocommerce_admin_report_table",
         "type": "filter",
         "params": [
             {
                 "name": "reportTableData",
-                "type": "Object"
+                "type": "Object",
+                "description": "- data used to create the table."
             },
             {
                 "name": "reportTableData.endpoint",
-                "type": "string"
+                "type": "string",
+                "description": "- table api endpoint."
             },
             {
                 "name": "reportTableData.headers",
-                "type": "Array"
+                "type": "Array",
+                "description": "- table headers data."
             },
             {
                 "name": "reportTableData.rows",
-                "type": "Array"
+                "type": "Array",
+                "description": "- table rows data."
             },
             {
                 "name": "reportTableData.totals",
-                "type": "Object"
+                "type": "Object",
+                "description": "- total aggregates for request."
             },
             {
                 "name": "reportTableData.summary",
-                "type": "Array"
+                "type": "Array",
+                "description": "- summary numbers data."
             },
             {
                 "name": "reportTableData.items",
-                "type": "Object"
+                "type": "Object",
+                "description": "- response from api requerst."
             }
         ]
     },
     {
         "description": "List of homepage stats enabled by default",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4a488f247cedbf8175b8da1f6ab4d2133fabae79/client/homescreen/stats-overview/defaults.js#L5-L9",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/14775ae88cab0cf07126563cdfeaa189b498575a/client/homescreen/stats-overview/defaults.js#L5-L9",
         "name": "woocommerce_admin_homepage_default_stats",
         "type": "filter",
         "params": []
     },
     {
         "description": "Create a Fill for extensions to add client facing custom Navigation Items.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4a488f247cedbf8175b8da1f6ab4d2133fabae79/packages/navigation/src/index.js#L263-L270",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/14775ae88cab0cf07126563cdfeaa189b498575a/packages/navigation/src/index.js#L263-L270",
         "name": "WooNavigationItem",
         "type": "slotFill",
         "params": [
             {
                 "name": "props",
-                "type": "Object"
+                "type": "Object",
+                "description": ""
             },
             {
                 "name": "props.children",
-                "type": "Array"
+                "type": "Array",
+                "description": "- Node children."
             },
             {
                 "name": "props.item",
-                "type": "string"
+                "type": "string",
+                "description": "- Navigation item slug."
             }
         ]
     }
