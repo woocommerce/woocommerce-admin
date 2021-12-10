@@ -780,7 +780,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 
 		$customer_roles = (array) apply_filters( 'woocommerce_analytics_customer_roles', array( 'customer' ) );
 
-		if ( empty( $user->roles ) || ! in_array( $user->roles[0], $customer_roles, true ) ) {
+		if ( empty( $user->roles ) || empty( array_intersect( $user->roles, $customer_roles ) ) ) {
 			return false;
 		}
 
