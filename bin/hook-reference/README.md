@@ -18,14 +18,12 @@ JavaScript documentation blocks require certain fields in order to be included i
 
 ### Filter
 
-| Tag        | Description                                        |
-| ---------- | -------------------------------------------------- |
-| `@filter`  | Filter string used as `addFilter`'s first argument |
-| `@example` | A brief example of filter usage                    |
+| Tag       | Description                                        |
+| --------- | -------------------------------------------------- |
+| `@filter` | Filter string used as `addFilter`'s first argument |
 
 ### SlotFill
 
-| Tag         | Description                       |
-| ----------- | --------------------------------- |
-| `@slotFill` | The fill component's name         |
-| `@example`  | A brief example of slotFill usage |
+| Tag         | Description               |
+| ----------- | ------------------------- |
+| `@slotFill` | The fill component's name |

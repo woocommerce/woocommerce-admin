@@ -6,13 +6,6 @@ import { applyFilters } from '@wordpress/hooks';
  * List of homepage stats enabled by default
  *
  * @filter woocommerce_admin_homepage_default_stats
- * @example
- * addFilter(
- *	'woocommerce_admin_homepage_default_stats',
- *	'plugin-domain',
- *	( defaultStats ) =>
- *		defaultStats.filter( ( stat ) => stat !== 'jetpack/stats/views' )
- *);
  */
 export const DEFAULT_STATS = applyFilters(
 	'woocommerce_admin_homepage_default_stats',

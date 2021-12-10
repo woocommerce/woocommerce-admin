@@ -1,16 +1,65 @@
 [
     {
+        "description": "Filter report table for the CSV download. Enables manipulation of data used to create the report CSV.",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4a488f247cedbf8175b8da1f6ab4d2133fabae79/client/analytics/components/report-table/index.js#L159-L172",
+        "name": "woocommerce_admin_report_table",
+        "type": "filter",
+        "params": [
+            {
+                "name": "reportTableData",
+                "type": "Object"
+            },
+            {
+                "name": "reportTableData.endpoint",
+                "type": "string"
+            },
+            {
+                "name": "reportTableData.headers",
+                "type": "Array"
+            },
+            {
+                "name": "reportTableData.rows",
+                "type": "Array"
+            },
+            {
+                "name": "reportTableData.totals",
+                "type": "Object"
+            },
+            {
+                "name": "reportTableData.summary",
+                "type": "Array"
+            },
+            {
+                "name": "reportTableData.items",
+                "type": "Object"
+            }
+        ]
+    },
+    {
         "description": "List of homepage stats enabled by default",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/6c45028074a73557f0e4388efddc8be175a3269e/client/homescreen/stats-overview/defaults.js#L5-L16",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4a488f247cedbf8175b8da1f6ab4d2133fabae79/client/homescreen/stats-overview/defaults.js#L5-L9",
         "name": "woocommerce_admin_homepage_default_stats",
-        "example": "addFilter( 'woocommerce_admin_homepage_default_stats', 'plugin-domain', ( defaultStats ) => defaultStats.filter( ( stat ) => stat !== 'jetpack/stats/views' ) );",
-        "type": "filter"
+        "type": "filter",
+        "params": []
     },
     {
         "description": "Create a Fill for extensions to add client facing custom Navigation Items.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/6c45028074a73557f0e4388efddc8be175a3269e/packages/navigation/src/index.js#L263-L279",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4a488f247cedbf8175b8da1f6ab4d2133fabae79/packages/navigation/src/index.js#L263-L270",
         "name": "WooNavigationItem",
-        "example": "const MyExtenstionNavItem = () => ( <WooNavigationItem item=\"my-extension\">My Extension</WooNavigationItem> ); registerPlugin( 'my-extension', { render: MyExtenstionNavItem, scope: 'woocommerce-admin', } );",
-        "type": "slotFill"
+        "type": "slotFill",
+        "params": [
+            {
+                "name": "props",
+                "type": "Object"
+            },
+            {
+                "name": "props.children",
+                "type": "Array"
+            },
+            {
+                "name": "props.item",
+                "type": "string"
+            }
+        ]
     }
 ]
