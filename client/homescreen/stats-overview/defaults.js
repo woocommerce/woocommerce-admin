@@ -6,6 +6,7 @@ import { applyFilters } from '@wordpress/hooks';
  * List of homepage stats enabled by default
  *
  * @filter woocommerce_admin_homepage_default_stats
+ * @param {Array.<string>} stats Array of homepage stat slugs.
  */
 export const DEFAULT_STATS = applyFilters(
 	'woocommerce_admin_homepage_default_stats',

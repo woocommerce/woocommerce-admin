@@ -1,7 +1,7 @@
 [
     {
         "description": "Filter report table for the CSV download. Enables manipulation of data used to create the report CSV.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/14775ae88cab0cf07126563cdfeaa189b498575a/client/analytics/components/report-table/index.js#L159-L172",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/f39d389d9184936d5d8c8405aa2ee9213191c594/client/analytics/components/report-table/index.js#L159-L172",
         "name": "woocommerce_admin_report_table",
         "type": "filter",
         "params": [
@@ -44,14 +44,20 @@
     },
     {
         "description": "List of homepage stats enabled by default",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/14775ae88cab0cf07126563cdfeaa189b498575a/client/homescreen/stats-overview/defaults.js#L5-L9",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/f39d389d9184936d5d8c8405aa2ee9213191c594/client/homescreen/stats-overview/defaults.js#L5-L10",
         "name": "woocommerce_admin_homepage_default_stats",
         "type": "filter",
-        "params": []
+        "params": [
+            {
+                "name": "stats",
+                "type": "Array.<string>",
+                "description": "Array of homepage stat slugs."
+            }
+        ]
     },
     {
         "description": "Create a Fill for extensions to add client facing custom Navigation Items.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/14775ae88cab0cf07126563cdfeaa189b498575a/packages/navigation/src/index.js#L263-L270",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/f39d389d9184936d5d8c8405aa2ee9213191c594/packages/navigation/src/index.js#L263-L270",
         "name": "WooNavigationItem",
         "type": "slotFill",
         "params": [
