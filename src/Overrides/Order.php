@@ -29,6 +29,13 @@ class Order extends \WC_Order {
 	protected $refunded_line_items;
 
 	/**
+	 * Caches the customer ID.
+	 *
+	 * @var int
+	 */
+	protected $customer_id = null;
+
+	/**
 	 * Get only core class data in array format.
 	 *
 	 * @return array
@@ -99,17 +106,20 @@ class Order extends \WC_Order {
 	 * @return int
 	 */
 	public function get_report_customer_id() {
-		return CustomersDataStore::get_or_create_customer_from_order( $this );
+		if ( is_null( $this->customer_id ) ) {
+			$this->customer_id = CustomersDataStore::get_or_create_customer_from_order( $this );
+		}
+
+		return $this->customer_id;
 	}
 
 	/**
 	 * Returns true if the customer has made an earlier order.
 	 *
-	 * @param int|false $customer_id Customer ID. Optional.
 	 * @return bool
 	 */
-	public function is_returning_customer( $customer_id = null ) {
-		return OrdersStatsDataStore::is_returning_customer( $this, $customer_id );
+	public function is_returning_customer() {
+		return OrdersStatsDataStore::is_returning_customer( $this, $this->get_report_customer_id() );
 	}
 
 	/**

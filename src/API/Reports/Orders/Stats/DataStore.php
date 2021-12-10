@@ -500,8 +500,6 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			return -1;
 		}
 
-		$customer_id = $order->get_report_customer_id();
-
 		/**
 		 * Filters order stats data.
 		 *
@@ -521,8 +519,8 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				'shipping_total'     => $order->get_shipping_total(),
 				'net_total'          => self::get_net_total( $order ),
 				'status'             => self::normalize_order_status( $order->get_status() ),
-				'customer_id'        => $customer_id,
-				'returning_customer' => $order->is_returning_customer( $customer_id ),
+				'customer_id'        => $order->get_report_customer_id(),
+				'returning_customer' => $order->is_returning_customer(),
 			),
 			$order
 		);
