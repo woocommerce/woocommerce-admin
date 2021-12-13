@@ -60,13 +60,22 @@ export const ActivityPanel = ( { isEmbedded, query } ) => {
 	const getPreviewSiteBtnTrackData = ( select, getOption ) => {
 		let trackData = {};
 		if ( query.page === 'wc-admin' && query.task === 'appearance' ) {
-			const { getTasksStatus } = select( ONBOARDING_STORE_NAME );
-			const tasksStatus = getTasksStatus();
+			const { getTaskLists } = select( ONBOARDING_STORE_NAME );
+			const taskLists = getTaskLists();
+			const tasks = taskLists.reduce(
+				( acc, taskList ) => [ ...acc, ...taskList.tasks ],
+				[]
+			);
+			const task = tasks.find( ( t ) => t.id === 'appearance' );
+
 			const demoNotice = getOption( 'woocommerce_demo_store_notice' );
 			trackData = {
 				set_notice: demoNotice ? 'Y' : 'N',
-				create_homepage: tasksStatus.hasHomepage === true ? 'Y' : 'N',
-				upload_logo: tasksStatus.themeMods?.custom_logo ? 'Y' : 'N',
+				create_homepage:
+					task?.additionalData?.hasHomepage === true ? 'Y' : 'N',
+				upload_logo: task?.additionalData?.themeMods?.custom_logo
+					? 'Y'
+					: 'N',
 			};
 		}
 
@@ -157,7 +166,7 @@ export const ActivityPanel = ( { isEmbedded, query } ) => {
 			),
 		};
 	} );
-	const { unhideTaskList } = useDispatch( OPTIONS_STORE_NAME );
+	const { unhideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
 	const { currentUserCan } = useUser();
 
 	const togglePanel = ( { name: tabName }, isTabOpen ) => {
