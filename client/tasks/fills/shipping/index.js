@@ -172,7 +172,13 @@ export class Shipping extends Component {
 	}
 
 	getSteps() {
-		const { countryCode, isJetpackConnected, settings } = this.props;
+		const {
+			countryCode,
+			createNotice,
+			isJetpackConnected,
+			settings,
+			updateAndPersistSettingsForGroup,
+		} = this.props;
 		const pluginsToActivate = this.getPluginsToActivate();
 		const requiresJetpackConnection =
 			! isJetpackConnected && countryCode === 'US';
@@ -187,7 +193,11 @@ export class Shipping extends Component {
 				),
 				content: (
 					<StoreLocation
-						{ ...this.props }
+						createNotice={ createNotice }
+						updateAndPersistSettingsForGroup={
+							updateAndPersistSettingsForGroup
+						}
+						settings={ settings }
 						onComplete={ ( values ) => {
 							const country = getCountryCode(
 								values.countryState
@@ -275,9 +285,9 @@ export class Shipping extends Component {
 								plugins_to_activate: pluginsToActivate,
 							} );
 							getHistory().push( getNewPath( {}, '/', {} ) );
+							this.props.onComplete();
 						} }
 						pluginSlugs={ pluginsToActivate }
-						{ ...this.props }
 					/>
 				),
 				visible: pluginsToActivate.length,
@@ -295,7 +305,6 @@ export class Shipping extends Component {
 							'admin.php?page=wc-admin'
 						) }
 						completeStep={ this.completeStep }
-						{ ...this.props }
 						onConnect={ () => {
 							recordEvent( 'tasklist_shipping_connect_store' );
 						} }
