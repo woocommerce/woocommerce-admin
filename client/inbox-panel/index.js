@@ -19,7 +19,7 @@ import {
 	InboxNotePlaceholder,
 	Text,
 } from '@woocommerce/experimental';
-
+import moment from 'moment';
 /**
  * Internal dependencies
  */
@@ -67,6 +67,10 @@ const renderNotes = ( {
 	if ( ! hasNotes ) {
 		return renderEmptyCard();
 	}
+
+	recordEvent( 'inbox_panel_view', {
+		total: notes.length,
+	} );
 
 	const screen = getScreenName();
 	const onNoteVisible = ( note ) => {
@@ -142,7 +146,7 @@ const renderNotes = ( {
 const INBOX_QUERY = {
 	page: 1,
 	per_page: QUERY_DEFAULTS.pageSize,
-	status: 'unactioned',
+	status: 'unactioned,actioned',
 	type: QUERY_DEFAULTS.noteTypes,
 	orderby: 'date',
 	order: 'desc',
@@ -160,6 +164,7 @@ const INBOX_QUERY = {
 		'image',
 		'is_deleted',
 		'is_read',
+		'locale',
 	],
 };
 
@@ -177,10 +182,35 @@ const InboxPanel = ( { showHeader = true } ) => {
 				isResolving,
 				isNotesRequesting,
 			} = select( NOTES_STORE_NAME );
+			const WC_VERSION_61_RELEASE_DATE = moment(
+				'2022-01-11',
+				'YYYY-MM-DD'
+			).valueOf();
+
+			const supportedLocales = [
+				'en_US',
+				'en_AU',
+				'en_CA',
+				'en_GB',
+				'en_ZA',
+			];
 
 			return {
 				notes: getNotes( INBOX_QUERY ).map( ( note ) => {
-					note.content = truncateRenderableHTML( note.content, 320 );
+					const noteDate = moment(
+						note.date_created_gmt,
+						'YYYY-MM-DD'
+					).valueOf();
+
+					if (
+						supportedLocales.includes( note.locale ) &&
+						noteDate >= WC_VERSION_61_RELEASE_DATE
+					) {
+						note.content = truncateRenderableHTML(
+							note.content,
+							320
+						);
+					}
 					return note;
 				} ),
 				isError: Boolean(
