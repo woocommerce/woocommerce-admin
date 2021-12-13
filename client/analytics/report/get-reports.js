@@ -131,7 +131,7 @@ export default () => {
 	].filter( Boolean );
 
 	/**
-	 * The complete Triforce, or one or more components of the Triforce.
+	 * An object defining a report page.
 	 *
 	 * @typedef {Object} report
 	 * @property {string} report Report slug.
