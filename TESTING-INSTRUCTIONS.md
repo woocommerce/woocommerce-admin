@@ -1,13 +1,4 @@
 # Testing instructions
-## 3.0.0
-### Fix PHP Warning on 'Add new product' page
-
-0. On a Jurassic Ninja site.
-1. Go to **WooCommerce** > **Home**.
-2. Press **Add my products** in the task list.
-3. Press **Add manually**.
-4. No PHP warning should be visible.
-
 ## 3.1.0
 
 ### Inbox - 320 character limit
@@ -53,6 +44,14 @@ On a new site, with English language settings:
 5. See that notes still remain.
 6. Dismall all notes again and press "Yes, dismiss all" on confirmation dialog.
 7. See that all notes are removed.
+
+### Fix PHP Warning on 'Add new product' page
+
+0. On a Jurassic Ninja site.
+1. Go to **WooCommerce** > **Home**.
+2. Press **Add my products** in the task list.
+3. Press **Add manually**.
+4. No PHP warning should be visible.
 
 ### Onboarding Workflow - Add number of employees field
 
