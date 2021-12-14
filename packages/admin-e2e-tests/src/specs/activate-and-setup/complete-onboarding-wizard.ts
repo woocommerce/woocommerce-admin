@@ -578,6 +578,7 @@ const testBusinessDetailsForm = () => {
 			);
 
 			await profileWizard.continue();
+			await profileWizard.business.expandRecommendedBusinessFeatures();
 			await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
 			await profileWizard.continue();
 			await profileWizard.themes.isDisplayed();
