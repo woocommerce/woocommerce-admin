@@ -270,9 +270,10 @@ export const addHistoryListener = ( listener ) => {
  * Create a Fill for extensions to add client facing custom Navigation Items.
  *
  * @slotFill WooNavigationItem
+ * @scope woocommerce-navigation
  * @param {Object} props
- * @param {Array} props.children - Node children.
- * @param {string} props.item - Navigation item slug.
+ * @param {Array} props.children Node children.
+ * @param {string} props.item Navigation item slug.
  */
 export const WooNavigationItem = ( { children, item } ) => {
 	return <Fill name={ 'woocommerce_navigation_' + item }>{ children }</Fill>;

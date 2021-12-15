@@ -4,7 +4,8 @@ const { parse } = require( 'comment-parser/lib' );
 const { relative, resolve } = require( 'path' );
 const chalk = require( 'chalk' );
 
-const dataTypes = [ 'action', 'filter', 'slotFill' ];
+const dataTypes = [ 'slotFill' ];
+// const dataTypes = [ 'action', 'filter', 'slotFill' ];
 
 const getHooks = ( parsedData ) =>
 	parsedData.filter( ( docBlock ) =>
@@ -69,13 +70,20 @@ const makeDocObjects = async ( path ) => {
 			[]
 		);
 
-		return {
+		const docObject = {
 			description,
 			sourceFile,
 			name: tag ? tag.name : '',
 			type: tag.tag,
 			params: paramTags,
 		};
+
+		if ( tag.tag === 'slotFill' ) {
+			const scopeTab = tags.find( ( tag ) => tag.tag === 'scope' );
+			docObject.scope = scopeTab.name;
+		}
+
+		return docObject;
 	} );
 };
 
