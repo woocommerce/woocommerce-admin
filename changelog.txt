@@ -1,3 +1,6 @@
+== 2.9.3 12/15/2021 ==
+- Fix: Correctly match payment gateways by id #7994
+
 == 2.9.2 12/13/2021 ==
 - Fix: Fix shipping task completion status #8031
 
