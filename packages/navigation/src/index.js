@@ -38,6 +38,12 @@ export const getPath = () => getHistory().location.pathname;
  * @return {Object} Object containing the persisted queries.
  */
 export const getPersistedQuery = ( query = navUtils.getQuery() ) => {
+	/**
+	 * Filter persisted queries. These query parameters remain in the url when other parameters are updated.
+	 *
+	 * @filter woocommerce_admin_persisted_queries
+	 * @param {Array.<string>} persistedQueries Array of persisted queries.
+	 */
 	const params = applyFilters( 'woocommerce_admin_persisted_queries', [
 		'period',
 		'compare',
