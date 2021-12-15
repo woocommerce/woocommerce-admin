@@ -79,11 +79,7 @@ class Hooks extends \WC_REST_Data_Controller {
 			do_action( $action_name );
 			$data = ob_get_contents();
 			ob_end_clean();
-			$hooks[] = array(
-				'name' => $action_name,
-				'data' => $data,
-				'type' => 'action',
-			);
+			$hooks[ $action_name ] = $data;
 		}
 
 		return $hooks;
