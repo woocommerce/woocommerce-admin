@@ -1,3 +1,6 @@
+== 2.9.4 12/15/2021 ==
+- Fix: Incorrect version reported in system status report.
+
 == 2.9.3 12/15/2021 ==
 - Fix: Correctly match payment gateways by id #7994
 
