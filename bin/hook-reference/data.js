@@ -4,8 +4,7 @@ const { parse } = require( 'comment-parser/lib' );
 const { relative, resolve } = require( 'path' );
 const chalk = require( 'chalk' );
 
-const dataTypes = [ 'slotFill' ];
-// const dataTypes = [ 'action', 'filter', 'slotFill' ];
+const dataTypes = [ 'action', 'filter', 'slotFill' ];
 
 const getHooks = ( parsedData ) =>
 	parsedData.filter( ( docBlock ) =>
