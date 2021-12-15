@@ -1,7 +1,7 @@
 [
     {
         "description": "Filter report table for the CSV download. Enables manipulation of data used to create the report CSV.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/components/report-table/index.js#L159-L172",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/components/report-table/index.js#L159-L172",
         "name": "woocommerce_admin_report_table",
         "type": "filter",
         "params": [
@@ -44,7 +44,7 @@
     },
     {
         "description": "Category Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/categories/config.js#L34-L39",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/categories/config.js#L34-L39",
         "name": "woocommerce_admin_categories_report_charts",
         "type": "filter",
         "params": [
@@ -57,7 +57,7 @@
     },
     {
         "description": "Category Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/categories/config.js#L64-L71",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/categories/config.js#L64-L71",
         "name": "woocommerce_admin_category_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -80,7 +80,7 @@
     },
     {
         "description": "Category Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/categories/config.js#L157-L162",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/categories/config.js#L157-L162",
         "name": "woocommerce_admin_categories_report_filters",
         "type": "filter",
         "params": [
@@ -93,7 +93,7 @@
     },
     {
         "description": "Coupons Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/coupons/config.js#L32-L37",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/coupons/config.js#L32-L37",
         "name": "woocommerce_admin_coupons_report_charts",
         "type": "filter",
         "params": [
@@ -106,7 +106,7 @@
     },
     {
         "description": "Coupons Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/coupons/config.js#L55-L62",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/coupons/config.js#L55-L62",
         "name": "woocommerce_admin_coupon_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -129,7 +129,7 @@
     },
     {
         "description": "Coupons Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/coupons/config.js#L140-L145",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/coupons/config.js#L140-L145",
         "name": "woocommerce_admin_coupons_report_filters",
         "type": "filter",
         "params": [
@@ -142,7 +142,7 @@
     },
     {
         "description": "Customers Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/customers/config.js#L36-L41",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/customers/config.js#L36-L41",
         "name": "woocommerce_admin_customers_report_filters",
         "type": "filter",
         "params": [
@@ -155,7 +155,7 @@
     },
     {
         "description": "Customers Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/customers/config.js#L87-L94",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/customers/config.js#L87-L94",
         "name": "woocommerce_admin_customers_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -178,7 +178,7 @@
     },
     {
         "description": "Downloads Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/downloads/config.js#L33-L38",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/downloads/config.js#L33-L38",
         "name": "woocommerce_admin_downloads_report_charts",
         "type": "filter",
         "params": [
@@ -191,7 +191,7 @@
     },
     {
         "description": "Downloads Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/downloads/config.js#L58-L63",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/downloads/config.js#L58-L63",
         "name": "woocommerce_admin_downloads_report_filters",
         "type": "filter",
         "params": [
@@ -204,7 +204,7 @@
     },
     {
         "description": "Downloads Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/downloads/config.js#L82-L89",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/downloads/config.js#L82-L89",
         "name": "woocommerce_admin_downloads_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -227,7 +227,7 @@
     },
     {
         "description": "Filter Report pages list.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/get-reports.js#L143-L148",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/get-reports.js#L143-L148",
         "name": "woocommerce_admin_reports_list",
         "type": "filter",
         "params": [
@@ -240,7 +240,7 @@
     },
     {
         "description": "Orders Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/orders/config.js#L34-L39",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/orders/config.js#L34-L39",
         "name": "woocommerce_admin_orders_report_charts",
         "type": "filter",
         "params": [
@@ -253,7 +253,7 @@
     },
     {
         "description": "Orders Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/orders/config.js#L78-L83",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/orders/config.js#L78-L83",
         "name": "woocommerce_admin_orders_report_filters",
         "type": "filter",
         "params": [
@@ -266,7 +266,7 @@
     },
     {
         "description": "Orders Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/orders/config.js#L102-L109",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/orders/config.js#L102-L109",
         "name": "woocommerce_admin_orders_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -289,7 +289,7 @@
     },
     {
         "description": "Products Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/products/config.js#L37-L42",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/products/config.js#L37-L42",
         "name": "woocommerce_admin_products_report_charts",
         "type": "filter",
         "params": [
@@ -302,7 +302,7 @@
     },
     {
         "description": "Produts Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/products/config.js#L189-L196",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/products/config.js#L189-L196",
         "name": "woocommerce_admin_products_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -325,7 +325,7 @@
     },
     {
         "description": "Products Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/products/config.js#L231-L236",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/products/config.js#L231-L236",
         "name": "woocommerce_admin_products_report_filters",
         "type": "filter",
         "params": [
@@ -338,7 +338,7 @@
     },
     {
         "description": "Revenue Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/revenue/config.js#L24-L29",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/revenue/config.js#L24-L29",
         "name": "woocommerce_admin_revenue_report_charts",
         "type": "filter",
         "params": [
@@ -351,7 +351,7 @@
     },
     {
         "description": "Revenue Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/revenue/config.js#L87-L94",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/revenue/config.js#L87-L94",
         "name": "woocommerce_admin_revenue_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -374,7 +374,7 @@
     },
     {
         "description": "Revenue Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/revenue/config.js#L131-L136",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/revenue/config.js#L131-L136",
         "name": "woocommerce_admin_revenue_report_filters",
         "type": "filter",
         "params": [
@@ -387,7 +387,7 @@
     },
     {
         "description": "Stock Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/stock/config.js#L13-L20",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/stock/config.js#L13-L20",
         "name": "woocommerce_admin_stock_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -410,7 +410,7 @@
     },
     {
         "description": "Stock Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/stock/config.js#L44-L49",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/stock/config.js#L44-L49",
         "name": "woocommerce_admin_stock_report_filters",
         "type": "filter",
         "params": [
@@ -423,7 +423,7 @@
     },
     {
         "description": "Taxes Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/taxes/config.js#L34-L39",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/taxes/config.js#L34-L39",
         "name": "woocommerce_admin_taxes_report_charts",
         "type": "filter",
         "params": [
@@ -436,7 +436,7 @@
     },
     {
         "description": "Taxes Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/taxes/config.js#L71-L78",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/taxes/config.js#L71-L78",
         "name": "woocommerce_admin_taxes_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -459,7 +459,7 @@
     },
     {
         "description": "Coupons Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/taxes/config.js#L143-L148",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/taxes/config.js#L143-L148",
         "name": "woocommerce_admin_taxes_report_filters",
         "type": "filter",
         "params": [
@@ -472,7 +472,7 @@
     },
     {
         "description": "Variations Report charts filter.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/variations/config.js#L38-L43",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/variations/config.js#L38-L43",
         "name": "woocommerce_admin_variations_report_charts",
         "type": "filter",
         "params": [
@@ -485,7 +485,7 @@
     },
     {
         "description": "Variations Report Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/variations/config.js#L79-L84",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/variations/config.js#L79-L84",
         "name": "woocommerce_admin_variations_report_filters",
         "type": "filter",
         "params": [
@@ -498,7 +498,7 @@
     },
     {
         "description": "Variations Report Advanced Filters.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/report/variations/config.js#L154-L161",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/report/variations/config.js#L154-L161",
         "name": "woocommerce_admin_variations_report_advanced_filters",
         "type": "filter",
         "params": [
@@ -521,7 +521,7 @@
     },
     {
         "description": "Filter Analytics Report settings. Add a UI element to the Analytics Settings page.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/settings/config.js#L75-L80",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/settings/config.js#L75-L80",
         "name": "woocommerce_admin_analytics_settings",
         "type": "filter",
         "params": [
@@ -534,7 +534,7 @@
     },
     {
         "description": "Historical data import statuses.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/analytics/settings/historical-data/status.js#L12-L25",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/analytics/settings/historical-data/status.js#L12-L25",
         "name": "woocommerce_admin_import_status",
         "type": "filter",
         "params": [
@@ -582,7 +582,7 @@
     },
     {
         "description": "Add Report filters to the dashboard. None are added by default.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/dashboard/customizable.js#L47-L52",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/dashboard/customizable.js#L47-L52",
         "name": "woocommerce_admin_dashboard_filters",
         "type": "filter",
         "params": [
@@ -595,7 +595,7 @@
     },
     {
         "description": "Dashboard Charts section charts.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/dashboard/dashboard-charts/config.js#L96-L101",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/dashboard/dashboard-charts/config.js#L96-L101",
         "name": "woocommerce_admin_dashboard_charts_filter",
         "type": "filter",
         "params": [
@@ -608,7 +608,7 @@
     },
     {
         "description": "Default Dashboard sections. Defaults are Store Performance, Charts, and Leaderboards",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/dashboard/default-sections.js#L56-L61",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/dashboard/default-sections.js#L56-L61",
         "name": "woocommerce_dashboard_default_sections",
         "type": "filter",
         "params": [
@@ -621,7 +621,7 @@
     },
     {
         "description": "Filter an array of body components for WooCommerce non-react pages.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/embedded-body-layout/embedded-body-layout.tsx#L40-L46",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/embedded-body-layout/embedded-body-layout.tsx#L40-L46",
         "name": "woocommerce_admin_embedded_layout_components",
         "type": "filter",
         "params": [
@@ -639,7 +639,7 @@
     },
     {
         "description": "Filter an array of help items for the setup task.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/header/activity-panel/panels/help.js#L354-L361",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/header/activity-panel/panels/help.js#L354-L361",
         "name": "woocommerce_admin_setup_task_help_items",
         "type": "filter",
         "params": [
@@ -662,7 +662,7 @@
     },
     {
         "description": "List of homepage stats enabled by default",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/homescreen/stats-overview/defaults.js#L5-L10",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/homescreen/stats-overview/defaults.js#L5-L10",
         "name": "woocommerce_admin_homepage_default_stats",
         "type": "filter",
         "params": [
@@ -675,7 +675,7 @@
     },
     {
         "description": "List of WooCommerce Admin pages.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/layout/controller.js#L205-L210",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/layout/controller.js#L205-L210",
         "name": "woocommerce_admin_pages_list",
         "type": "filter",
         "params": [
@@ -688,7 +688,7 @@
     },
     {
         "description": "Filter each transient notice.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/layout/transient-notices/index.js#L61-L66",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/layout/transient-notices/index.js#L61-L66",
         "name": "woocommerce_admin_queued_notice_filter",
         "type": "filter",
         "params": [
@@ -701,7 +701,7 @@
     },
     {
         "description": "Filter the currency context. This affects all WooCommerce Admin currency formatting.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/lib/currency-context.js#L13-L19",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/lib/currency-context.js#L13-L19",
         "name": "woocommerce_admin_report_currency",
         "type": "filter",
         "params": [
@@ -719,7 +719,7 @@
     },
     {
         "description": "Navigation's exit button WooCommerce label.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/navigation/components/container/primary-menu.js#L24-L29",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/navigation/components/container/primary-menu.js#L24-L29",
         "name": "woocommerce_navigation_root_back_label",
         "type": "filter",
         "params": [
@@ -732,7 +732,7 @@
     },
     {
         "description": "Navigation's exit button url.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/navigation/components/container/primary-menu.js#L35-L40",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/navigation/components/container/primary-menu.js#L35-L40",
         "name": "woocommerce_navigation_root_back_url",
         "type": "filter",
         "params": [
@@ -745,7 +745,7 @@
     },
     {
         "description": "Filter for Onboarding steps configuration.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/profile-wizard/index.js#L139-L144",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/profile-wizard/index.js#L139-L144",
         "name": "woocommerce_admin_profile_wizard_steps",
         "type": "filter",
         "params": [
@@ -758,7 +758,7 @@
     },
     {
         "description": "Store Management extensions links",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/store-management-links/index.js#L171-L176",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/store-management-links/index.js#L171-L176",
         "name": "woocommerce_admin_homescreen_quicklinks",
         "type": "filter",
         "params": [
@@ -771,7 +771,7 @@
     },
     {
         "description": "Store product templates.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/client/tasks/fills/products/product-template-modal.js#L145-L150",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/client/tasks/fills/products/product-template-modal.js#L145-L150",
         "name": "woocommerce_admin_onboarding_product_templates",
         "type": "filter",
         "params": [
@@ -784,7 +784,7 @@
     },
     {
         "description": "Navigation Menu Items.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/packages/data/src/navigation/selectors.js#L9-L14",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/data/src/navigation/selectors.js#L9-L14",
         "name": "woocommerce_navigation_menu_items",
         "type": "filter",
         "params": [
@@ -797,7 +797,7 @@
     },
     {
         "description": "**Deprecated** Filter Onboarding tasks.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/packages/data/src/onboarding/deprecated-tasks.js#L23-L30",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/data/src/onboarding/deprecated-tasks.js#L23-L30",
         "name": "woocommerce_admin_onboarding_task_list",
         "type": "filter",
         "params": [
@@ -815,7 +815,7 @@
     },
     {
         "description": "Filter persisted queries. These query parameters remain in the url when other parameters are updated.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/packages/navigation/src/index.js#L41-L46",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/navigation/src/index.js#L41-L46",
         "name": "woocommerce_admin_persisted_queries",
         "type": "filter",
         "params": [
@@ -827,15 +827,15 @@
         ]
     },
     {
-        "description": "Create a Fill for extensions to add client facing custom Navigation Items.",
-        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/4d5003a06d6887bf4715858dda89f0e77496de66/packages/navigation/src/index.js#L269-L277",
+        "description": "A Fill for extensions to add client facing custom Navigation Items.",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/navigation/src/index.js#L269-L277",
         "name": "WooNavigationItem",
         "type": "slotFill",
         "params": [
             {
                 "name": "props",
                 "type": "Object",
-                "description": ""
+                "description": "React props."
             },
             {
                 "name": "props.children",
@@ -849,5 +849,81 @@
             }
         ],
         "scope": "woocommerce-navigation"
+    },
+    {
+        "description": "A Fill for adding Onboarding tasks.",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/onboarding/src/components/WooOnboardingTask/WooOnboardingTask.js#L31-L38",
+        "name": "WooOnboardingTask",
+        "type": "slotFill",
+        "params": [
+            {
+                "name": "props",
+                "type": "Object",
+                "description": "React props."
+            },
+            {
+                "name": "props.id",
+                "type": "string",
+                "description": "Task id."
+            }
+        ],
+        "scope": "wwoocommerce-tasks"
+    },
+    {
+        "description": "A Fill for adding Onboarding Task List items.",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/onboarding/src/components/WooOnboardingTaskListItem/WooOnboardingTaskListItem.js#L7-L14",
+        "name": "WooOnboardingTaskListItem",
+        "type": "slotFill",
+        "params": [
+            {
+                "name": "props",
+                "type": "Object",
+                "description": "React props."
+            },
+            {
+                "name": "props.id",
+                "type": "string",
+                "description": "Task id."
+            }
+        ],
+        "scope": "wwoocommerce-tasks"
+    },
+    {
+        "description": "WooCommerce Payment Gateway configuration",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/onboarding/src/components/WooPaymentGatewayConfigure/WooPaymentGatewayConfigure.js#L7-L14",
+        "name": "WooPaymentGatewayConfigure",
+        "type": "slotFill",
+        "params": [
+            {
+                "name": "props",
+                "type": "Object",
+                "description": "React props."
+            },
+            {
+                "name": "props.id",
+                "type": "string",
+                "description": "gateway id."
+            }
+        ],
+        "scope": "wwoocommerce-admin"
+    },
+    {
+        "description": "WooCommerce Payment Gateway setup.",
+        "sourceFile": "https://github.com/woocommerce/woocommerce-admin/blob/c56f7bd4dcfaf0b23a00168c11465a00525f35a5/packages/onboarding/src/components/WooPaymentGatewaySetup/WooPaymentGatewaySetup.js#L7-L14",
+        "name": "WooPaymentGatewaySetup",
+        "type": "slotFill",
+        "params": [
+            {
+                "name": "props",
+                "type": "Object",
+                "description": "React props."
+            },
+            {
+                "name": "props.id",
+                "type": "string",
+                "description": "Setup id."
+            }
+        ],
+        "scope": "wwoocommerce-admin"
     }
 ]
