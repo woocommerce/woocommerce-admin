@@ -303,7 +303,7 @@ class BusinessDetails extends Component {
 		return {
 			...props,
 			className: classnames(
-				`woocommerce-profile-wizard_${ name }`,
+				`woocommerce-profile-wizard__${ name.replace( /\_/g, '-' ) }`,
 				className
 			),
 		};
