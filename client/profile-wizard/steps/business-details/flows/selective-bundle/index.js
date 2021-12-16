@@ -60,6 +60,32 @@ export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
 	);
 };
 
+const timeBoxes = [
+	{ name: '0-2s', max: 2 },
+	{ name: '3-4s', max: 5 },
+	{ name: '5-9s', max: 10 },
+	{ name: '10-15s', max: 15 },
+	{ name: '>15s' },
+];
+function getTimebox( timeInMs ) {
+	for ( const timeBox of timeBoxes ) {
+		if ( ! timeBox.max ) {
+			return timeBox.name;
+		}
+		if ( timeInMs < timeBox.max * 1000 ) {
+			return timeBox.name;
+		}
+	}
+}
+
+function getExtensionKey( fieldKey ) {
+	const key =
+		fieldKey === 'woocommerce-payments'
+			? 'wcpay'
+			: `${ fieldKey.replace( /-/g, '_' ) }`.split( ':', 1 );
+	return key;
+}
+
 export const prepareExtensionTrackingData = (
 	extensionInstallationOptions
 ) => {
@@ -67,18 +93,46 @@ export const prepareExtensionTrackingData = (
 	for ( const [ fieldKey, value ] of Object.entries(
 		extensionInstallationOptions
 	) ) {
-		const key =
-			fieldKey === 'woocommerce-payments'
-				? 'install_wcpay'
-				: `install_${ fieldKey.replace( /-/g, '_' ).split( ':', 1 ) }`;
+		const key = getExtensionKey( fieldKey );
 		if (
 			fieldKey !== 'install_extensions' &&
-			! installedExtensions[ key ]
+			! installedExtensions[ `install_${ key }` ]
 		) {
-			installedExtensions[ key ] = value;
+			installedExtensions[ `install_${ key }` ] = value;
 		}
 	}
 	return installedExtensions;
+};
+
+export const prepareExtensionTrackingInstallationData = (
+	extensionInstallationOptions,
+	installationData
+) => {
+	const installed = [];
+	const data = {};
+	for ( let [ fieldKey ] of Object.entries( extensionInstallationOptions ) ) {
+		fieldKey = fieldKey.split( ':', 1 )[ 0 ];
+		const key = getExtensionKey( fieldKey );
+		if (
+			installationData &&
+			installationData.data &&
+			installationData.data.install_time &&
+			installationData.data.install_time[ fieldKey ]
+		) {
+			installed.push( key );
+			data[ `install_time_${ key }` ] = getTimebox(
+				installationData.data.install_time[ fieldKey ]
+			);
+		}
+	}
+	data.installed_extensions = installed;
+	data.activated_extensions =
+		installationData &&
+		installationData.data &&
+		installationData.data.activated
+			? installationData.data.activated
+			: [];
+	return data;
 };
 
 export const isSellingElsewhere = ( selectedOption ) =>
@@ -136,12 +190,37 @@ class BusinessDetails extends Component {
 		];
 
 		if ( businessExtensions.length ) {
+			const installationStartTime = window.performance.now();
 			promises.push(
 				installAndActivatePlugins( businessExtensions )
 					.then( ( response ) => {
+						const totalInstallationTime =
+							window.performance.now() - installationStartTime;
+						const installedExtensionsData = prepareExtensionTrackingInstallationData(
+							extensionInstallationOptions,
+							response
+						);
+
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: true,
+								total_time: getTimebox( totalInstallationTime ),
+								...installedExtensionsData,
+							}
+						);
 						createNoticesFromResponse( response );
 					} )
 					.catch( ( error ) => {
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: false,
+								failed_extensions: Object.keys(
+									error.data || {}
+								).map( ( key ) => getExtensionKey( key ) ),
+							}
+						);
 						createNoticesFromResponse( error );
 						throw new Error();
 					} )
