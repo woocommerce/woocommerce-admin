@@ -82,7 +82,7 @@ function getExtensionKey( fieldKey ) {
 	const key =
 		fieldKey === 'woocommerce-payments'
 			? 'wcpay'
-			: `${ fieldKey.replace( /-/g, '_' ) }`.split( ':', 1 );
+			: `${ fieldKey.replace( /-/g, '_' ) }`.split( ':', 1 )[ 0 ];
 	return key;
 }
 
