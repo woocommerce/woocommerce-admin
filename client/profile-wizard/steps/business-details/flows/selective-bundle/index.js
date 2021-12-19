@@ -298,7 +298,7 @@ class BusinessDetails extends Component {
 		} );
 	}
 
-	getSelectControlProps( getInputProps, name ) {
+	getSelectControlProps( getInputProps, name = '' ) {
 		const { className, ...props } = getInputProps( name );
 		return {
 			...props,
