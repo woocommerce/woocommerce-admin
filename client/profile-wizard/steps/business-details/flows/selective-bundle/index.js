@@ -60,15 +60,15 @@ export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
 	);
 };
 
-const timeBoxes = [
+const timeFrames = [
 	{ name: '0-2s', max: 2 },
-	{ name: '3-4s', max: 5 },
-	{ name: '5-9s', max: 10 },
+	{ name: '2-5s', max: 5 },
+	{ name: '5-10s', max: 10 },
 	{ name: '10-15s', max: 15 },
 	{ name: '>15s' },
 ];
 function getTimebox( timeInMs ) {
-	for ( const timeBox of timeBoxes ) {
+	for ( const timeBox of timeFrames ) {
 		if ( ! timeBox.max ) {
 			return timeBox.name;
 		}
@@ -90,9 +90,10 @@ export const prepareExtensionTrackingData = (
 	extensionInstallationOptions
 ) => {
 	const installedExtensions = {};
-	for ( const [ fieldKey, value ] of Object.entries(
+	for ( let [ fieldKey, value ] of Object.entries(
 		extensionInstallationOptions
 	) ) {
+		fieldKey = fieldKey.split( ':', 1 )[ 0 ];
 		const key = getExtensionKey( fieldKey );
 		if (
 			fieldKey !== 'install_extensions' &&
