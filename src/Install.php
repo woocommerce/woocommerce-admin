@@ -545,6 +545,7 @@ class Install {
 			'wc-admin-google-ads-and-marketing',
 			'wc-admin-marketing-intro',
 			'wc-admin-draw-attention',
+			'wc-admin-need-some-inspiration',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(

@@ -328,7 +328,6 @@ class WC_Admin_Notes_Launch_Checklist extends DeprecatedClassFacade {
 	protected static $deprecated_in_version = '1.7.0';
 }
 
-
 /**
  * WC_Admin_Notes_Migrate_From_Shopify.
  *
@@ -362,27 +361,6 @@ class WC_Admin_Notes_Mobile_App extends DeprecatedClassFacade {
 	 * @var string
 	 */
 	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\MobileApp';
-
-	/**
-	 * The version that this class was deprecated in.
-	 *
-	 * @var string
-	 */
-	protected static $deprecated_in_version = '1.7.0';
-}
-
-/**
- * WC_Admin_Notes_Need_Some_Inspiration.
- *
- * @deprecated since 1.7.0, use NeedSomeInspiration
- */
-class WC_Admin_Notes_Need_Some_Inspiration extends DeprecatedClassFacade {
-	/**
-	 * The name of the non-deprecated class that this facade covers.
-	 *
-	 * @var string
-	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\NeedSomeInspiration';
 
 	/**
 	 * The version that this class was deprecated in.
