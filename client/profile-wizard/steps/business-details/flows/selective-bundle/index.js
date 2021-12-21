@@ -35,6 +35,7 @@ import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { getRevenueOptions } from '../../data/revenue-options';
 import { getProductCountOptions } from '../../data/product-options';
 import { SelectiveExtensionsBundle } from './selective-extensions-bundle';
+import { getPluginSlug, getPluginTrackKey } from '~/utils';
 import './style.scss';
 
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
@@ -48,13 +49,7 @@ export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
 					extensionInstallationOptions[ key ] &&
 					key !== 'install_extensions'
 			)
-			.map( ( key ) => {
-				// Remove anything after :
-				// Please refer to selective-extensions-bundle/index.js
-				// installableExtensions variable
-				// this is to allow duplicate slugs (Tax & Shipping for example)
-				return key.split( ':' )[ 0 ];
-			} )
+			.map( getPluginSlug )
 			// remove duplicate
 			.filter( ( item, index, arr ) => arr.indexOf( item ) === index )
 	);
@@ -78,14 +73,6 @@ function getTimebox( timeInMs ) {
 	}
 }
 
-function getExtensionKey( fieldKey ) {
-	const key =
-		fieldKey === 'woocommerce-payments'
-			? 'wcpay'
-			: `${ fieldKey.replace( /-/g, '_' ) }`.split( ':', 1 )[ 0 ];
-	return key;
-}
-
 export const prepareExtensionTrackingData = (
 	extensionInstallationOptions
 ) => {
@@ -93,8 +80,8 @@ export const prepareExtensionTrackingData = (
 	for ( let [ fieldKey, value ] of Object.entries(
 		extensionInstallationOptions
 	) ) {
-		fieldKey = fieldKey.split( ':', 1 )[ 0 ];
-		const key = getExtensionKey( fieldKey );
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
 		if (
 			fieldKey !== 'install_extensions' &&
 			! installedExtensions[ `install_${ key }` ]
@@ -112,8 +99,8 @@ export const prepareExtensionTrackingInstallationData = (
 	const installed = [];
 	const data = {};
 	for ( let [ fieldKey ] of Object.entries( extensionInstallationOptions ) ) {
-		fieldKey = fieldKey.split( ':', 1 )[ 0 ];
-		const key = getExtensionKey( fieldKey );
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
 		if (
 			installationData &&
 			installationData.data &&
@@ -219,7 +206,7 @@ class BusinessDetails extends Component {
 								success: false,
 								failed_extensions: Object.keys(
 									error.data || {}
-								).map( ( key ) => getExtensionKey( key ) ),
+								).map( ( key ) => getPluginTrackKey( key ) ),
 							}
 						);
 						createNoticesFromResponse( error );
