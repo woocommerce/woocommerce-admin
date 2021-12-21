@@ -91,7 +91,7 @@ npm install
 npm run storybook
 ```
 
-Moreover, If you would like to view the storybook docs in rtl style, then you can run
+If you would like to view the storybook docs in right-to-left styling, you can run this instead:
 
 ```
 npm install
