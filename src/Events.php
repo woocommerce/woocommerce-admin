@@ -23,7 +23,6 @@ use \Automattic\WooCommerce\Admin\Notes\OnboardingPayments;
 use \Automattic\WooCommerce\Admin\Notes\PersonalizeStore;
 use \Automattic\WooCommerce\Admin\Notes\EUVATNumber;
 use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
-use \Automattic\WooCommerce\Admin\Notes\Marketing;
 use \Automattic\WooCommerce\Admin\Notes\MarketingJetpack;
 use \Automattic\WooCommerce\Admin\Notes\StartDropshippingBusiness;
 use \Automattic\WooCommerce\Admin\Notes\WooCommerceSubscriptions;
@@ -125,7 +124,6 @@ class Events {
 		PersonalizeStore::possibly_add_note();
 		WooCommercePayments::possibly_add_note();
 		EUVATNumber::possibly_add_note();
-		Marketing::possibly_add_note();
 		MarketingJetpack::possibly_add_note();
 		StartDropshippingBusiness::possibly_add_note();
 		WooCommerceSubscriptions::possibly_add_note();
