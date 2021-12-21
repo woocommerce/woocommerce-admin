@@ -547,6 +547,7 @@ class Install {
 			'wc-admin-draw-attention',
 			'wc-admin-need-some-inspiration',
 			'wc-admin-choose-niche',
+			'wc-admin-start-dropshipping-business',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(
