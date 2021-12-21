@@ -14,7 +14,6 @@ use \Automattic\WooCommerce\Admin\Notes\WooSubscriptionsNotes;
 use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
 use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
 use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
-use \Automattic\WooCommerce\Admin\Notes\DrawAttention;
 use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
 use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
 use \Automattic\WooCommerce\Admin\Notes\SellingOnlineCourses;
@@ -188,7 +187,6 @@ class FeaturePlugin {
 		new TrackingOptIn();
 		new WooCommercePayments();
 		new InstallJPAndWCSPlugins();
-		new DrawAttention();
 		new SetUpAdditionalPaymentTypes();
 		new TestCheckout();
 		new SellingOnlineCourses();

@@ -45,7 +45,6 @@ use \Automattic\WooCommerce\Admin\Notes\NavigationFeedback;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedbackFollowUp;
 use \Automattic\WooCommerce\Admin\Notes\FilterByProductVariationsInReports;
 use \Automattic\WooCommerce\Admin\Notes\AddFirstProduct;
-use \Automattic\WooCommerce\Admin\Notes\DrawAttention;
 use \Automattic\WooCommerce\Admin\Notes\GettingStartedInEcommerceWebinar;
 use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
 use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
@@ -143,7 +142,6 @@ class Events {
 		NavigationFeedback::possibly_add_note();
 		NavigationFeedbackFollowUp::possibly_add_note();
 		FilterByProductVariationsInReports::possibly_add_note();
-		DrawAttention::possibly_add_note();
 		ChoosingTheme::possibly_add_note();
 		InsightFirstProductAndPayment::possibly_add_note();
 		AddFirstProduct::possibly_add_note();

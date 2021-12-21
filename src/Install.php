@@ -544,6 +544,7 @@ class Install {
 			'wc-admin-effortless-payments-by-mollie',
 			'wc-admin-google-ads-and-marketing',
 			'wc-admin-marketing-intro',
+			'wc-admin-draw-attention',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(
