@@ -550,6 +550,7 @@ class Install {
 			'wc-admin-start-dropshipping-business',
 			'wc-admin-filter-by-product-variations-in-reports',
 			'wc-admin-learn-more-about-variable-products',
+			'wc-admin-getting-started-ecommerce-webinar',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(

@@ -41,7 +41,6 @@ use \Automattic\WooCommerce\Admin\Notes\ManageOrdersOnTheGo;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedback;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedbackFollowUp;
 use \Automattic\WooCommerce\Admin\Notes\AddFirstProduct;
-use \Automattic\WooCommerce\Admin\Notes\GettingStartedInEcommerceWebinar;
 use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
 use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
 use \Automattic\WooCommerce\Admin\Notes\CompleteStoreDetails;
@@ -139,7 +138,6 @@ class Events {
 		AddFirstProduct::possibly_add_note();
 		AddingAndManangingProducts::possibly_add_note();
 		CustomizingProductCatalog::possibly_add_note();
-		GettingStartedInEcommerceWebinar::possibly_add_note();
 		FirstDownlaodableProduct::possibly_add_note();
 		NavigationNudge::possibly_add_note();
 		CompleteStoreDetails::possibly_add_note();
