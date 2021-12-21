@@ -10,7 +10,6 @@ defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Features\Features;
 use \Automattic\WooCommerce\Admin\Notes\AddingAndManangingProducts;
-use \Automattic\WooCommerce\Admin\Notes\ChooseNiche;
 use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
 use \Automattic\WooCommerce\Admin\Notes\CustomizingProductCatalog;
 use Automattic\WooCommerce\Admin\Notes\FirstDownlaodableProduct;
@@ -130,7 +129,6 @@ class Events {
 		LaunchChecklist::possibly_add_note();
 		OnlineClothingStore::possibly_add_note();
 		FirstProduct::possibly_add_note();
-		ChooseNiche::possibly_add_note();
 		RealTimeOrderAlerts::possibly_add_note();
 		CustomizeStoreWithBlocks::possibly_add_note();
 		TestCheckout::possibly_add_note();

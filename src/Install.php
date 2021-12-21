@@ -546,6 +546,7 @@ class Install {
 			'wc-admin-marketing-intro',
 			'wc-admin-draw-attention',
 			'wc-admin-need-some-inspiration',
+			'wc-admin-choose-niche',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(
