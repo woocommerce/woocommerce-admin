@@ -549,6 +549,7 @@ class Install {
 			'wc-admin-choose-niche',
 			'wc-admin-start-dropshipping-business',
 			'wc-admin-filter-by-product-variations-in-reports',
+			'wc-admin-learn-more-about-variable-products',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(
