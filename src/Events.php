@@ -40,7 +40,6 @@ use \Automattic\WooCommerce\Admin\Notes\PerformanceOnMobile;
 use \Automattic\WooCommerce\Admin\Notes\ManageOrdersOnTheGo;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedback;
 use \Automattic\WooCommerce\Admin\Notes\NavigationFeedbackFollowUp;
-use \Automattic\WooCommerce\Admin\Notes\FilterByProductVariationsInReports;
 use \Automattic\WooCommerce\Admin\Notes\AddFirstProduct;
 use \Automattic\WooCommerce\Admin\Notes\GettingStartedInEcommerceWebinar;
 use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
@@ -135,7 +134,6 @@ class Events {
 		ManageOrdersOnTheGo::possibly_add_note();
 		NavigationFeedback::possibly_add_note();
 		NavigationFeedbackFollowUp::possibly_add_note();
-		FilterByProductVariationsInReports::possibly_add_note();
 		ChoosingTheme::possibly_add_note();
 		InsightFirstProductAndPayment::possibly_add_note();
 		AddFirstProduct::possibly_add_note();
