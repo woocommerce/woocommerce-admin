@@ -38,8 +38,6 @@ use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
 use \Automattic\WooCommerce\Admin\Notes\EditProductsOnTheMove;
 use \Automattic\WooCommerce\Admin\Notes\PerformanceOnMobile;
 use \Automattic\WooCommerce\Admin\Notes\ManageOrdersOnTheGo;
-use \Automattic\WooCommerce\Admin\Notes\NavigationFeedback;
-use \Automattic\WooCommerce\Admin\Notes\NavigationFeedbackFollowUp;
 use \Automattic\WooCommerce\Admin\Notes\AddFirstProduct;
 use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
 use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
@@ -131,8 +129,6 @@ class Events {
 		EditProductsOnTheMove::possibly_add_note();
 		PerformanceOnMobile::possibly_add_note();
 		ManageOrdersOnTheGo::possibly_add_note();
-		NavigationFeedback::possibly_add_note();
-		NavigationFeedbackFollowUp::possibly_add_note();
 		ChoosingTheme::possibly_add_note();
 		InsightFirstProductAndPayment::possibly_add_note();
 		AddFirstProduct::possibly_add_note();
@@ -149,8 +145,6 @@ class Events {
 	 */
 	protected function possibly_delete_notes() {
 		NavigationNudge::delete_if_not_applicable();
-		NavigationFeedback::delete_if_not_applicable();
-		NavigationFeedbackFollowUp::delete_if_not_applicable();
 		SetUpAdditionalPaymentTypes::delete_if_not_applicable();
 	}
 

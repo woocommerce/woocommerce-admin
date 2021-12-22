@@ -551,6 +551,8 @@ class Install {
 			'wc-admin-filter-by-product-variations-in-reports',
 			'wc-admin-learn-more-about-variable-products',
 			'wc-admin-getting-started-ecommerce-webinar',
+			'wc-admin-navigation-feedback',
+			'wc-admin-navigation-feedback-follow-up',
 		);
 
 		$additional_obsolete_notes_names = apply_filters(
