@@ -131,4 +131,118 @@ class PluginsHelper {
 		return isset( $plugins[ $plugin_path ] ) ? $plugins[ $plugin_path ] : false;
 	}
 
+	/**
+	 * Install an array of plugins.
+	 *
+	 * @param array $plugins Plugins to install.
+	 * @return array
+	 */
+	public static function install_plugins( $plugins ) {
+		/**
+		 * Filter the list of plugins to install.
+		 *
+		 * @param array $plugins A list of the plugins to install.
+		 */
+		$plugins = apply_filters( 'woocommerce_admin_plugins_pre_install', $plugins );
+
+		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		include_once ABSPATH . '/wp-admin/includes/admin.php';
+		include_once ABSPATH . '/wp-admin/includes/plugin-install.php';
+		include_once ABSPATH . '/wp-admin/includes/plugin.php';
+		include_once ABSPATH . '/wp-admin/includes/class-wp-upgrader.php';
+		include_once ABSPATH . '/wp-admin/includes/class-plugin-upgrader.php';
+
+		$existing_plugins  = self::get_installed_plugins_paths();
+		$installed_plugins = array();
+		$results           = array();
+		$time              = array();
+		$errors            = new \WP_Error();
+
+		foreach ( $plugins as $plugin ) {
+			$slug = sanitize_key( $plugin );
+
+			if ( isset( $existing_plugins[ $slug ] ) ) {
+				$installed_plugins[] = $plugin;
+				continue;
+			}
+
+			$start_time = microtime( true );
+
+			$api = plugins_api(
+				'plugin_information',
+				array(
+					'slug'   => $slug,
+					'fields' => array(
+						'sections' => false,
+					),
+				)
+			);
+
+			if ( is_wp_error( $api ) ) {
+				$properties = array(
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					'error_message' => __( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
+					'api'           => $api,
+					'slug'          => $slug,
+				);
+				wc_admin_record_tracks_event( 'install_plugin_error', $properties );
+
+				do_action( 'woocommerce_plugins_install_api_error', $slug, $api );
+
+				$errors->add(
+					$plugin,
+					sprintf(
+						/* translators: %s: plugin slug (example: woocommerce-services) */
+						__( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
+						$slug
+					)
+				);
+
+				continue;
+			}
+
+			$upgrader           = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
+			$result             = $upgrader->install( $api->download_link );
+			$results[ $plugin ] = $result;
+			$time[ $plugin ]    = round( ( microtime( true ) - $start_time ) * 1000 );
+
+			if ( is_wp_error( $result ) || is_null( $result ) ) {
+				$properties = array(
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					'error_message' => __( 'The requested plugin `%s` could not be installed.', 'woocommerce-admin' ),
+					'slug'          => $slug,
+					'api'           => $api,
+					'upgrader'      => $upgrader,
+					'result'        => $result,
+				);
+				wc_admin_record_tracks_event( 'install_plugin_error', $properties );
+
+				do_action( 'woocommerce_plugins_install_error', $slug, $api, $result, $upgrader );
+
+				$errors->add(
+					$plugin,
+					sprintf(
+						/* translators: %s: plugin slug (example: woocommerce-services) */
+						__( 'The requested plugin `%s` could not be installed. Upgrader install failed.', 'woocommerce-admin' ),
+						$slug
+					)
+				);
+				continue;
+			}
+
+			$installed_plugins[] = $plugin;
+		}
+
+		return array(
+			'installed' => $installed_plugins,
+			'results'   => $results,
+			'errors'    => $errors,
+			'time'      => $time,
+		);
+	}
+
 }

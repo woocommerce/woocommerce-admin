@@ -196,22 +196,6 @@ class Plugins extends \WC_REST_Data_Controller {
 	}
 
 	/**
-	 * Create an alert notification in response to an error installing a plugin.
-	 *
-	 * @todo This should be moved to a filter to make this API more generic and less plugin-specific.
-	 *
-	 * @param string $slug The slug of the plugin being installed.
-	 */
-	private function create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug ) {
-		// Exit early if we're not installing the Jetpack or the WooCommerce Shipping & Tax plugins.
-		if ( 'jetpack' !== $slug && 'woocommerce-services' !== $slug ) {
-			return;
-		}
-
-		InstallJPAndWCSPlugins::possibly_add_note();
-	}
-
-	/**
 	 * Install the requested plugin.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
@@ -233,114 +217,17 @@ class Plugins extends \WC_REST_Data_Controller {
 	public function install_plugins( $request ) {
 		$plugins = explode( ',', $request['plugins'] );
 
-		/**
-		 * Filter the list of plugins to install.
-		 *
-		 * @param array $plugins A list of the plugins to install.
-		 */
-		$plugins = apply_filters( 'woocommerce_admin_plugins_pre_install', $plugins );
-
-		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
-		}
-
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		include_once ABSPATH . '/wp-admin/includes/admin.php';
-		include_once ABSPATH . '/wp-admin/includes/plugin-install.php';
-		include_once ABSPATH . '/wp-admin/includes/plugin.php';
-		include_once ABSPATH . '/wp-admin/includes/class-wp-upgrader.php';
-		include_once ABSPATH . '/wp-admin/includes/class-plugin-upgrader.php';
-
-		$existing_plugins  = PluginsHelper::get_installed_plugins_paths();
-		$installed_plugins = array();
-		$results           = array();
-		$install_time      = array();
-		$errors            = new \WP_Error();
-
-		foreach ( $plugins as $plugin ) {
-			$slug = sanitize_key( $plugin );
-
-			if ( isset( $existing_plugins[ $slug ] ) ) {
-				$installed_plugins[] = $plugin;
-				continue;
-			}
-
-			$start_time = microtime( true );
-
-			$api = plugins_api(
-				'plugin_information',
-				array(
-					'slug'   => $slug,
-					'fields' => array(
-						'sections' => false,
-					),
-				)
-			);
-
-			if ( is_wp_error( $api ) ) {
-				$properties = array(
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					'error_message' => __( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
-					'api'           => $api,
-					'slug'          => $slug,
-				);
-				wc_admin_record_tracks_event( 'install_plugin_error', $properties );
-
-				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
-
-				$errors->add(
-					$plugin,
-					sprintf(
-						/* translators: %s: plugin slug (example: woocommerce-services) */
-						__( 'The requested plugin `%s` could not be installed. Plugin API call failed.', 'woocommerce-admin' ),
-						$slug
-					)
-				);
-
-				continue;
-			}
-
-			$upgrader                = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
-			$result                  = $upgrader->install( $api->download_link );
-			$results[ $plugin ]      = $result;
-			$install_time[ $plugin ] = round( ( microtime( true ) - $start_time ) * 1000 );
-
-			if ( is_wp_error( $result ) || is_null( $result ) ) {
-				$properties = array(
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					'error_message' => __( 'The requested plugin `%s` could not be installed.', 'woocommerce-admin' ),
-					'slug'          => $slug,
-					'api'           => $api,
-					'upgrader'      => $upgrader,
-					'result'        => $result,
-				);
-				wc_admin_record_tracks_event( 'install_plugin_error', $properties );
-
-				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
-
-				$errors->add(
-					$plugin,
-					sprintf(
-						/* translators: %s: plugin slug (example: woocommerce-services) */
-						__( 'The requested plugin `%s` could not be installed. Upgrader install failed.', 'woocommerce-admin' ),
-						$slug
-					)
-				);
-				continue;
-			}
-
-			$installed_plugins[] = $plugin;
-		}
+		$data = PluginsHelper::install_plugins( $plugins );
 
 		return array(
 			'data'    => array(
-				'installed'    => $installed_plugins,
-				'results'      => $results,
-				'install_time' => $install_time,
+				'installed'    => $data['installed'],
+				'results'      => $data['results'],
+				'install_time' => $data['time'],
 			),
-			'errors'  => $errors,
-			'success' => count( $errors->errors ) === 0,
-			'message' => count( $errors->errors ) === 0
+			'errors'  => $data['errors'],
+			'success' => count( $data['errors']->errors ) === 0,
+			'message' => count( $data['errors']->errors ) === 0
 				? __( 'Plugins were successfully installed.', 'woocommerce-admin' )
 				: __( 'There was a problem installing some of the requested plugins.', 'woocommerce-admin' ),
 		);
