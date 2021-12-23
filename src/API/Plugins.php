@@ -105,6 +105,19 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/activate/status',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_activation_status' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/recommended-payment-plugins',
 			array(
 				array(
@@ -268,9 +281,8 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return array Jobs.
 	 */
 	public function get_installation_status() {
-		return PluginsHelper::get_jobs();
+		return PluginsHelper::get_installation_status();
 	}
-
 
 	/**
 	 * Returns a list of active plugins in API format.
@@ -310,66 +322,42 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return WP_Error|array Plugin Status
 	 */
 	public function activate_plugins( $request ) {
-		$plugin_paths      = PluginsHelper::get_installed_plugins_paths();
-		$plugins           = explode( ',', $request['plugins'] );
-		$errors            = new \WP_Error();
-		$activated_plugins = array();
+		$plugins = explode( ',', $request['plugins'] );
 
-		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
-			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
+		if ( isset( $request['async'] ) && $request['async'] ) {
+			$job_id = PluginsHelper::schedule_activate_plugins( $plugins );
+
+			return array(
+				'data'    => array(
+					'job_id'  => $job_id,
+					'plugins' => $plugins,
+				),
+				'message' => __( 'Plugin activation has been scheduled.', 'woocommerce-admin' ),
+			);
 		}
 
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-		// the mollie-payments-for-woocommerce plugin calls `WP_Filesystem()` during it's activation hook, which crashes without this include.
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-
-		/**
-		 * Filter the list of plugins to activate.
-		 *
-		 * @param array $plugins A list of the plugins to activate.
-		 */
-		$plugins = apply_filters( 'woocommerce_admin_plugins_pre_activate', $plugins );
-
-		foreach ( $plugins as $plugin ) {
-			$slug = $plugin;
-			$path = isset( $plugin_paths[ $slug ] ) ? $plugin_paths[ $slug ] : false;
-
-			if ( ! $path ) {
-				$errors->add(
-					$plugin,
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					sprintf( __( 'The requested plugin `%s`. is not yet installed.', 'woocommerce-admin' ), $slug )
-				);
-				continue;
-			}
-
-			$result = activate_plugin( $path );
-			if ( ! is_null( $result ) ) {
-				$this->create_install_plugin_error_inbox_notification_for_jetpack_installs( $slug );
-
-				$errors->add(
-					$plugin,
-					/* translators: %s: plugin slug (example: woocommerce-services) */
-					sprintf( __( 'The requested plugin `%s` could not be activated.', 'woocommerce-admin' ), $slug )
-				);
-				continue;
-			}
-
-			$activated_plugins[] = $plugin;
-		}
+		$data = PluginsHelper::install_plugins( $plugins );
 
 		return( array(
 			'data'    => array(
-				'activated' => $activated_plugins,
-				'active'    => self::get_active_plugins(),
+				'activated' => $data['activated'],
+				'active'    => $data['active'],
 			),
-			'errors'  => $errors,
-			'success' => count( $errors->errors ) === 0,
-			'message' => count( $errors->errors ) === 0
+			'errors'  => $data['errors'],
+			'success' => count( $data['errors']->errors ) === 0,
+			'message' => count( $data['errors']->errors ) === 0
 				? __( 'Plugins were successfully activated.', 'woocommerce-admin' )
 				: __( 'There was a problem activating some of the requested plugins.', 'woocommerce-admin' ),
 		) );
+	}
+
+	/**
+	 * Returns a list of recently scheduled activation jobs.
+	 *
+	 * @return array Jobs.
+	 */
+	public function get_activation_status() {
+		return PluginsHelper::get_activation_status();
 	}
 
 	/**

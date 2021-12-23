@@ -23,6 +23,7 @@ class PluginsHelper {
 	 */
 	public static function init() {
 		add_action( 'woocommerce_plugins_install_callback', array( __CLASS__, 'install_plugins' ), 10, 2 );
+		add_action( 'woocommerce_plugins_activate_callback', array( __CLASS__, 'activate_plugins' ), 10, 2 );
 	}
 
 	/**
@@ -155,7 +156,7 @@ class PluginsHelper {
 
 		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
 			if ( $job_id ) {
-				self::set_job_status( $job_id, 'failed' );
+				self::set_installation_status( $job_id, 'failed' );
 			}
 			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
@@ -256,7 +257,7 @@ class PluginsHelper {
 		);
 
 		if ( $job_id ) {
-			self::set_job_status( $job_id, 'complete', $data );
+			self::set_installation_status( $job_id, 'complete', $data );
 		}
 
 		return $data;
@@ -274,36 +275,151 @@ class PluginsHelper {
 		}
 
 		$job_id = 'random';
-		self::set_job_status( $job_id, 'pending' );
+		self::set_installation_status( $job_id, 'pending' );
 		WC()->queue()->schedule_single( time() + 5, 'woocommerce_plugins_install_callback', array( $plugins, $job_id ) );
 
 		return $job_id;
 	}
 
 	/**
-	 * Set a job status.
+	 * Activate the requested plugins.
+	 *
+	 * @param array  $plugins Plugins.
+	 * @param string $job_id Job ID.
+	 * @return WP_Error|array Plugin Status
+	 */
+	public static function activate_plugins( $plugins, $job_id = null ) {
+		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+			if ( $job_id ) {
+				self::set_activation_status( $job_id, 'failed' );
+			}
+			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
+		}
+
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		// the mollie-payments-for-woocommerce plugin calls `WP_Filesystem()` during it's activation hook, which crashes without this include.
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+
+		/**
+		 * Filter the list of plugins to activate.
+		 *
+		 * @param array $plugins A list of the plugins to activate.
+		 */
+		$plugins = apply_filters( 'woocommerce_admin_plugins_pre_activate', $plugins );
+
+		$plugin_paths      = self::get_installed_plugins_paths();
+		$plugins           = explode( ',', $request['plugins'] );
+		$errors            = new \WP_Error();
+		$activated_plugins = array();
+
+		foreach ( $plugins as $plugin ) {
+			$slug = $plugin;
+			$path = isset( $plugin_paths[ $slug ] ) ? $plugin_paths[ $slug ] : false;
+
+			if ( ! $path ) {
+				$errors->add(
+					$plugin,
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					sprintf( __( 'The requested plugin `%s`. is not yet installed.', 'woocommerce-admin' ), $slug )
+				);
+				continue;
+			}
+
+			$result = activate_plugin( $path );
+			if ( ! is_null( $result ) ) {
+				do_action( 'woocommerce_plugins_activate_error', $slug, $result );
+
+				$errors->add(
+					$plugin,
+					/* translators: %s: plugin slug (example: woocommerce-services) */
+					sprintf( __( 'The requested plugin `%s` could not be activated.', 'woocommerce-admin' ), $slug )
+				);
+				continue;
+			}
+
+			$activated_plugins[] = $plugin;
+		}
+
+		$data = array(
+			'activated' => $activated_plugins,
+			'active'    => self::get_active_plugins(),
+			'errors'    => $errors,
+		);
+
+		if ( $job_id ) {
+			self::set_activation_status( $job_id, 'complete', $data );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Schedule plugin activation.
+	 *
+	 * @param array $plugins Plugins to activate.
+	 * @return string Job ID.
+	 */
+	public static function schedule_activate_plugins( $plugins ) {
+		if ( empty( $plugins ) || ! is_array( $plugins ) ) {
+			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
+		}
+
+		$job_id = 'random';
+		self::set_activation_status( $job_id, 'pending' );
+		WC()->queue()->schedule_single( time() + 5, 'woocommerce_plugins_activate_callback', array( $plugins, $job_id ) );
+
+		return $job_id;
+	}
+
+	/**
+	 * Set the status of an installation job.
 	 *
 	 * @param string $id Job ID.
 	 * @param string $status Status.
 	 * @param array  $data Job data.
 	 */
-	public static function set_job_status( $id, $status, $data = array() ) {
-		$install_jobs        = get_transient( 'woocommerce_plugins_install_jobs', array() );
-		$install_jobs[ $id ] = array(
+	public static function set_installation_status( $id, $status, $data = array() ) {
+		$jobs        = get_transient( 'woocommerce_plugins_installation_status', array() );
+		$jobs[ $id ] = array(
 			'status' => $status,
 			'data'   => $data,
 		);
-		set_transient( 'woocommerce_plugins_install_jobs', $install_jobs );
+		set_transient( 'woocommerce_plugins_installation_status', $jobs );
 	}
 
-
 	/**
-	 * Get jobs.
+	 * Installation status.
 	 *
 	 * @return array Job data.
 	 */
-	public static function get_jobs() {
-		return get_transient( 'woocommerce_plugins_install_jobs', array() );
+	public static function get_installation_status() {
+		return get_transient( 'woocommerce_plugins_installation_status', array() );
+	}
+
+	/**
+	 * Set the status of an activation job.
+	 *
+	 * @param string $id Job ID.
+	 * @param string $status Status.
+	 * @param array  $data Job data.
+	 */
+	public static function set_activation_status( $id, $status, $data = array() ) {
+		$jobs        = get_transient( 'woocommerce_plugins_activation_status', array() );
+		$jobs[ $id ] = array(
+			'status' => $status,
+			'data'   => $data,
+		);
+		set_transient( 'woocommerce_plugins_activation_status', $jobs );
+	}
+
+	/**
+	 * Activation status.
+	 *
+	 * @return array
+	 */
+	public static function get_activation_status() {
+		return get_transient( 'woocommerce_plugins_activation_status', array() );
 	}
 
 }

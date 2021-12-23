@@ -35,6 +35,7 @@ class InstallJPAndWCSPlugins {
 		add_action( 'activated_plugin', array( $this, 'action_note' ) );
 		add_action( 'woocommerce_plugins_install_api_error', array( $this, 'on_install_error' ) );
 		add_action( 'woocommerce_plugins_install_error', array( $this, 'on_install_error' ) );
+		add_action( 'woocommerce_plugins_activate_error', array( $this, 'on_install_error' ) );
 	}
 
 	/**
