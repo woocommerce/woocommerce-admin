@@ -53,6 +53,19 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
+			'/' . $this->rest_base . '/install/status',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_installation_status' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
 			'/' . $this->rest_base . '/active',
 			array(
 				array(
@@ -248,6 +261,16 @@ class Plugins extends \WC_REST_Data_Controller {
 				: __( 'There was a problem installing some of the requested plugins.', 'woocommerce-admin' ),
 		);
 	}
+
+	/**
+	 * Returns a list of recently scheduled installation jobs.
+	 *
+	 * @return array Jobs.
+	 */
+	public function get_installation_status() {
+		return PluginsHelper::get_jobs();
+	}
+
 
 	/**
 	 * Returns a list of active plugins in API format.
