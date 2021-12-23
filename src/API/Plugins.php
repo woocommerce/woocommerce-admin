@@ -217,7 +217,25 @@ class Plugins extends \WC_REST_Data_Controller {
 	public function install_plugins( $request ) {
 		$plugins = explode( ',', $request['plugins'] );
 
+		if ( isset( $request['async'] ) && $request['async'] ) {
+			PluginsHelper::schedule_install_plugins( $plugins );
+
+			$response = array(
+				'data'    => array(
+					'job_id'  => $id,
+					'plugins' => $plugins,
+				),
+				'message' => __( 'Plugin installation has been scheduled.', 'woocommerce-admin' ),
+			);
+
+			return rest_ensure_response( $response );
+		}
+
 		$data = PluginsHelper::install_plugins( $plugins );
+
+		if ( is_wp_error( $data ) ) {
+			return $data;
+		}
 
 		return array(
 			'data'    => array(
