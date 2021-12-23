@@ -3,6 +3,8 @@
  */
 import {
 	filterBusinessExtensions,
+	isSellingElsewhere,
+	isSellingOtherPlatformInPerson,
 	prepareExtensionTrackingData,
 } from '../flows/selective-bundle';
 import { createInitialValues } from '../flows/selective-bundle/selective-extensions-bundle';
@@ -135,6 +137,27 @@ describe( 'BusinessDetails', () => {
 			);
 
 			expect( values ).not.toContain( 'this-should-not-show-at-all' );
+		} );
+	} );
+
+	describe( 'Currently selling elsewhere', () => {
+		test( 'isSellingElsewhere', () => {
+			const sellingElsewhere = isSellingElsewhere( 'other' );
+			const notSellingElsewhere = isSellingElsewhere( 'no' );
+
+			expect( sellingElsewhere ).toBeTruthy();
+			expect( notSellingElsewhere ).toBeFalsy();
+		} );
+		test( 'isSellingOtherPlatformInPerson', () => {
+			const sellingAnotherPlatformAndInPerson = isSellingOtherPlatformInPerson(
+				'brick-mortar-other'
+			);
+			const notSellingAnotherPlatformAndInPerson = isSellingOtherPlatformInPerson(
+				'no'
+			);
+
+			expect( sellingAnotherPlatformAndInPerson ).toBeTruthy();
+			expect( notSellingAnotherPlatformAndInPerson ).toBeFalsy();
 		} );
 	} );
 } );

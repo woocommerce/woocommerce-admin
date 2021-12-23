@@ -81,6 +81,17 @@ export const prepareExtensionTrackingData = (
 	return installedExtensions;
 };
 
+export const isSellingElsewhere = ( selectedOption ) =>
+	[
+		'other',
+		'brick-mortar',
+		'brick-mortar-other',
+		'other-woocommerce',
+	].includes( selectedOption );
+
+export const isSellingOtherPlatformInPerson = ( selectedOption ) =>
+	[ 'other', 'brick-mortar-other' ].includes( selectedOption );
+
 class BusinessDetails extends Component {
 	constructor() {
 		super();
@@ -219,7 +230,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.other_platform.length &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform = __(
 				'This field is required',
@@ -230,7 +241,7 @@ class BusinessDetails extends Component {
 		if (
 			! values.other_platform_name &&
 			values.other_platform === 'other' &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform_name = __(
 				'This field is required',
@@ -240,12 +251,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.number_employees.length &&
-			[
-				'other',
-				'brick-mortar',
-				'brick-mortar-other',
-				'other-woocommerce',
-			].includes( values.selling_venues )
+			isSellingElsewhere( values.selling_venues )
 		) {
 			errors.number_employees = __(
 				'This field is required',
@@ -255,12 +261,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.revenue.length &&
-			[
-				'other',
-				'brick-mortar',
-				'brick-mortar-other',
-				'other-woocommerce',
-			].includes( values.selling_venues )
+			isSellingElsewhere( values.selling_venues )
 		) {
 			errors.revenue = __(
 				'This field is required',
@@ -392,12 +393,9 @@ class BusinessDetails extends Component {
 										) }
 									/>
 
-									{ [
-										'other',
-										'brick-mortar',
-										'brick-mortar-other',
-										'other-woocommerce',
-									].includes( values.selling_venues ) && (
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
 										<SelectControl
 											excludeSelectedOptions={ false }
 											label={ __(
@@ -413,12 +411,9 @@ class BusinessDetails extends Component {
 										/>
 									) }
 
-									{ [
-										'other',
-										'brick-mortar',
-										'brick-mortar-other',
-										'other-woocommerce',
-									].includes( values.selling_venues ) && (
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
 										<SelectControl
 											excludeSelectedOptions={ false }
 											label={ __(
@@ -439,10 +434,9 @@ class BusinessDetails extends Component {
 										/>
 									) }
 
-									{ [
-										'other',
-										'brick-mortar-other',
-									].includes( values.selling_venues ) && (
+									{ isSellingOtherPlatformInPerson(
+										values.selling_venues
+									) && (
 										<>
 											<div className="business-competitors">
 												<SelectControl
