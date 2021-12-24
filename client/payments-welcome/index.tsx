@@ -251,15 +251,13 @@ const ConnectAccountPage = () => {
 	 * Submits a request to store viewing welcome time.
 	 */
 	const storeViewWelcome = () => {
-		if ( hasViewedWelcomePage ) {
-			return false;
+		if ( ! hasViewedWelcomePage ) {
+			updateOptions( {
+				wc_pay_welcome_page_viewed_timestamp: Math.floor(
+					Date.now() / 1000
+				),
+			} );
 		}
-
-		updateOptions( {
-			wc_pay_welcome_page_viewed_timestamp: Math.floor(
-				Date.now() / 1000
-			),
-		} );
 	};
 	useEffect( () => {
 		recordEvent( 'page_view', {
