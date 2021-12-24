@@ -14,7 +14,6 @@ const PanelBody: React.FC< PanelBodyBase.Props > = ( props ) => {
 };
 
 const FrequentlyAskedQuestions: React.FC = () => {
-	// const [panelOpen, setPanelOpen] = useState(false);
 	return (
 		<div className="faq__card">
 			<h3>{ strings.faq.faqHeader }</h3>
