@@ -222,9 +222,18 @@ const ConnectPageOnboarding = ( {
 const ConnectAccountPage = () => {
 	const [ errorMessage, setErrorMessage ] = useState( '' );
 
-	const { isJetpackConnected, connectUrl, pageViewTimestamp } = useSelect(
+	const { isJetpackConnected, connectUrl, hasViewedWelcomePage } = useSelect(
 		( select ) => {
 			const { getOption } = select( OPTIONS_STORE_NAME );
+			let pageViewTimestamp = getOption(
+				'wc_pay_welcome_page_viewed_timestamp'
+			);
+			pageViewTimestamp =
+				typeof pageViewTimestamp === 'undefined' ||
+				typeof pageViewTimestamp === 'string'
+					? true
+					: false;
+
 			return {
 				isJetpackConnected: select(
 					'wc/admin/plugins'
@@ -232,9 +241,7 @@ const ConnectAccountPage = () => {
 				connectUrl:
 					'admin.php?wcpay-connect=1&_wpnonce=' +
 					getSetting( 'wcpay_welcome_page_connect_nonce' ),
-				pageViewTimestamp: getOption(
-					'wc_pay_welcome_page_viewed_timestamp'
-				),
+				hasViewedWelcomePage: pageViewTimestamp,
 			};
 		}
 	);
@@ -244,7 +251,7 @@ const ConnectAccountPage = () => {
 	 * Submits a request to store viewing welcome time.
 	 */
 	const storeViewWelcome = () => {
-		if ( typeof pageViewTimestamp === 'undefined' || pageViewTimestamp ) {
+		if ( hasViewedWelcomePage ) {
 			return false;
 		}
 
@@ -259,7 +266,7 @@ const ConnectAccountPage = () => {
 			path: 'payments_connect_dotcom_test',
 		} );
 		storeViewWelcome();
-	}, [ pageViewTimestamp ] );
+	}, [ hasViewedWelcomePage ] );
 
 	const { installAndActivatePlugins } = useDispatch( 'wc/admin/plugins' );
 	const onboardingProps = {
