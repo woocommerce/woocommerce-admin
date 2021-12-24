@@ -222,7 +222,7 @@ const ConnectPageOnboarding = ( {
 const ConnectAccountPage = () => {
 	const [ errorMessage, setErrorMessage ] = useState( '' );
 
-	const { isJetpackConnected, connectUrl, hasViewedWelcomePage } = useSelect(
+	const { isJetpackConnected, connectUrl, pageViewTimestamp } = useSelect(
 		( select ) => {
 			const { getOption } = select( OPTIONS_STORE_NAME );
 			return {
@@ -232,9 +232,9 @@ const ConnectAccountPage = () => {
 				connectUrl:
 					'admin.php?wcpay-connect=1&_wpnonce=' +
 					getSetting( 'wcpay_welcome_page_connect_nonce' ),
-				hasViewedWelcomePage:
-					getOption( 'wc_pay_welcome_page_viewed_timestamp' ) ||
-					false,
+				pageViewTimestamp: getOption(
+					'wc_pay_welcome_page_viewed_timestamp'
+				),
 			};
 		}
 	);
@@ -244,10 +244,7 @@ const ConnectAccountPage = () => {
 	 * Submits a request to store viewing welcome time.
 	 */
 	const storeViewWelcome = () => {
-		if (
-			typeof hasViewedWelcomePage === 'string' ||
-			hasViewedWelcomePage === false
-		) {
+		if ( typeof pageViewTimestamp === 'undefined' || pageViewTimestamp ) {
 			return false;
 		}
 
@@ -262,7 +259,7 @@ const ConnectAccountPage = () => {
 			path: 'payments_connect_dotcom_test',
 		} );
 		storeViewWelcome();
-	}, [ hasViewedWelcomePage ] );
+	}, [ pageViewTimestamp ] );
 
 	const { installAndActivatePlugins } = useDispatch( 'wc/admin/plugins' );
 	const onboardingProps = {
