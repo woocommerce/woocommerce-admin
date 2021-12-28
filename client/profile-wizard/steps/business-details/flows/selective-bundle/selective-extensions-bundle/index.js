@@ -159,7 +159,7 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 	);
 };
 
-const ExtensionSection = ( {
+export const ExtensionSection = ( {
 	isResolving,
 	title,
 	extensions,
