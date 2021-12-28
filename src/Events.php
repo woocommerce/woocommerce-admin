@@ -157,7 +157,7 @@ class Events {
 		NavigationNudge::possibly_add_note();
 		CompleteStoreDetails::possibly_add_note();
 		UpdateStoreDetails::possibly_add_note();
-		PaymentsRemindMeLater::possibly_add_note()();
+		PaymentsRemindMeLater::possibly_add_note();
 	}
 
 	/**
