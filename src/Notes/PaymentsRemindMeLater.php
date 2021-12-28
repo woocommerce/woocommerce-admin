@@ -33,7 +33,7 @@ class PaymentsRemindMeLater {
 	/**
 	 * Returns true if we should display the note.
 	 *
-	 * @return Boolean
+	 * @return bool
 	 */
 	public static function should_display_note() {
 		// Installed WCPay.
