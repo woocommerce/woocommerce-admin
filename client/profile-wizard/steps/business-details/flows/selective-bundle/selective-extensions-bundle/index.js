@@ -176,6 +176,42 @@ export const createInitialValues = ( extensions ) => {
 	}, baseValues );
 };
 
+const ExtensionSection = ( {
+	isResolving,
+	title,
+	plugins,
+	pluginState,
+	onCheckboxChange,
+} ) => {
+	if ( isResolving ) {
+		return (
+			<div>
+				<Spinner />
+			</div>
+		);
+	}
+
+	if ( plugins.length === 0 ) {
+		return null;
+	}
+
+	return (
+		<div>
+			<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
+				{ title }
+			</div>
+			{ plugins.map( ( { description, key } ) => (
+				<BundleExtensionCheckbox
+					key={ key }
+					description={ description }
+					isChecked={ pluginState[ key ] }
+					onChange={ onCheckboxChange( key ) }
+				/>
+			) ) }
+		</div>
+	);
+};
+
 export const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
@@ -259,7 +295,6 @@ export const SelectiveExtensionsBundle = ( {
 			}
 		};
 	};
-
 	return (
 		<div className="woocommerce-profile-wizard__business-details__free-features">
 			<Card>
@@ -309,33 +344,15 @@ export const SelectiveExtensionsBundle = ( {
 					{ showExtensions &&
 						installableExtensions.map(
 							( { plugins, key: sectionKey, title } ) => (
-								<div key={ sectionKey }>
-									{ isResolving ? (
-										<Spinner />
-									) : (
-										<>
-											<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
-												{ title }
-											</div>
-											{ plugins.map(
-												( { description, key } ) => (
-													<BundleExtensionCheckbox
-														key={ key }
-														description={
-															description
-														}
-														isChecked={
-															values[ key ]
-														}
-														onChange={ getCheckboxChangeHandler(
-															key
-														) }
-													/>
-												)
-											) }
-										</>
-									) }
-								</div>
+								<ExtensionSection
+									key={ sectionKey }
+									title={ title }
+									plugins={ plugins }
+									pluginState={ values }
+									onCheckboxChange={
+										getCheckboxChangeHandler
+									}
+								/>
 							)
 						) }
 				</div>
