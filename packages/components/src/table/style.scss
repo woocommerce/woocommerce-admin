@@ -230,8 +230,11 @@ th.woocommerce-table__item {
 .woocommerce-table__header {
 	padding: $gap-smaller $gap-large;
 	background-color: #f8f9fa;
-	font-weight: bold;
 	white-space: nowrap;
+
+	span {
+		font-weight: bold;
+	}
 
 	&.is-left-aligned.is-sortable {
 		padding-left: $gap;
