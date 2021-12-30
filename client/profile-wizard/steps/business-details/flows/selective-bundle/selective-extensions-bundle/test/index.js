@@ -148,7 +148,7 @@ describe( 'Selective extensions bundle', () => {
 			} );
 		} );
 
-		it( 'should render not title when no plugins', () => {
+		it( 'should not render title when no plugins', () => {
 			const title = 'This is title';
 			const { queryByText } = render(
 				<ExtensionSection
