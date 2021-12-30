@@ -10,7 +10,7 @@ import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
 import interpolateComponents from 'interpolate-components';
 import { pluginNames, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -213,6 +213,7 @@ export const SelectiveExtensionsBundle = ( {
 	onSubmit,
 	country,
 	productTypes,
+	industry,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
 	const [ installExtensionOptions, setInstallExtensionOptions ] = useState(
@@ -230,6 +231,15 @@ export const SelectiveExtensionsBundle = ( {
 			isResolving: ! hasFinishedResolution( 'getFreeExtensions' ),
 		};
 	} );
+
+	const { invalidateResolutionForStoreSelector } = useDispatch(
+		ONBOARDING_STORE_NAME
+	);
+
+	useEffect( () => {
+		invalidateResolutionForStoreSelector( 'getFreeExtensions' );
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ country, industry ] );
 
 	const installableExtensions = useMemo( () => {
 		return freeExtensionBundleByCategory.filter( ( extensionBundle ) => {
