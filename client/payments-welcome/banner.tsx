@@ -7,6 +7,7 @@ import { Card, CardBody } from '@wordpress/components';
  * Internal dependencies
  */
 import strings from './strings';
+import FlagIcon from './flag';
 
 const Banner = () => {
 	return (
@@ -14,7 +15,7 @@ const Banner = () => {
 			<CardBody>
 				<div className="limited-time-offer">
 					<h1 className="offer-copy">
-						<i className="flag"></i>
+						<FlagIcon className="flag-icon" />
 						{ strings.limitedTimeOffer }: { strings.bannerCopy }
 					</h1>
 					<p className="discount-copy">{ strings.discountCopy }</p>
