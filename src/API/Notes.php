@@ -138,6 +138,19 @@ class Notes extends \WC_REST_CRUD_Controller {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/activate-promo/(?P<promo_note_name>[\w-]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'activate_promo_note' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -444,6 +457,42 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$response = rest_ensure_response( $data );
 		$response->header( 'X-WP-Total', NotesRepository::get_notes_count( array( 'info', 'warning' ), array() ) );
 		return $response;
+	}
+
+	/**
+	 * Activate a promo note, create if not exist.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Request|WP_Error
+	 */
+	public function activate_promo_note( $request ) {
+		$promo_note_name = $request->get_param( 'promo_note_name' );
+		$data_store      = NotesRepository::load_data_store();
+		$note_ids        = $data_store->get_notes_with_name( $promo_note_name );
+
+		if ( empty( $note_ids ) ) {
+			// Promo note doesn't exist, this could happen in cases where
+			// user might have disabled RemoteInboxNotications via disabling
+			// marketing suggestions. Thus we'd have to manually add the note.
+			$note = new Note();
+			$note->set_name( $promo_note_name );
+			$note->set_status( Note::E_WC_ADMIN_NOTE_ACTIONED );
+			$data_store->create( $note );
+		} else {
+			$note = NotesRepository::get_note( $note_ids[0] );
+			NotesRepository::update_note(
+				$note,
+				[
+					'status' => Note::E_WC_ADMIN_NOTE_ACTIONED,
+				]
+			);
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+			)
+		);
 	}
 
 	/**
