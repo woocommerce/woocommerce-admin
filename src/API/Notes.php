@@ -34,6 +34,15 @@ class Notes extends \WC_REST_CRUD_Controller {
 	protected $rest_base = 'admin/notes';
 
 	/**
+	 * Allowed promo notes for experimental-activate-promo.
+	 *
+	 * @var array
+	 */
+	protected $allowed_promo_notes = array(
+		'wcpay-promo-2021-6-incentive-2',
+	);
+
+	/**
 	 * Register the routes for admin notes.
 	 */
 	public function register_routes() {
@@ -141,7 +150,7 @@ class Notes extends \WC_REST_CRUD_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/activate-promo/(?P<promo_note_name>[\w-]+)',
+			'/' . $this->rest_base . '/experimental-activate-promo/(?P<promo_note_name>[\w-]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -467,8 +476,17 @@ class Notes extends \WC_REST_CRUD_Controller {
 	 */
 	public function activate_promo_note( $request ) {
 		$promo_note_name = $request->get_param( 'promo_note_name' );
-		$data_store      = NotesRepository::load_data_store();
-		$note_ids        = $data_store->get_notes_with_name( $promo_note_name );
+
+		if ( ! in_array( $promo_note_name, $this->allowed_promo_notes, true ) ) {
+			return new \WP_Error(
+				'woocommerce_note_invalid_promo_note_name',
+				__( 'Please provide a valid promo note name.', 'woocommerce-admin' ),
+				array( 'status' => 422 )
+			);
+		}
+
+		$data_store = NotesRepository::load_data_store();
+		$note_ids   = $data_store->get_notes_with_name( $promo_note_name );
 
 		if ( empty( $note_ids ) ) {
 			// Promo note doesn't exist, this could happen in cases where

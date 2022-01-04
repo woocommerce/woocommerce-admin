@@ -128,7 +128,7 @@ const ConnectPageOnboarding = ( {
 
 	const activatePromo = async () => {
 		const activatePromoRequest: activatePromoResponse = await apiFetch( {
-			path: `/wc-analytics/admin/notes/activate-promo/${ PROMO_NAME }`,
+			path: `/wc-analytics/admin/notes/experimental-activate-promo/${ PROMO_NAME }`,
 			method: 'POST',
 		} );
 		if ( activatePromoRequest?.success ) {
