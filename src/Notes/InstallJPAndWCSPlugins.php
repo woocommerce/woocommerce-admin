@@ -132,7 +132,7 @@ class InstallJPAndWCSPlugins {
 	 *
 	 * @param string $slug The slug of the plugin being installed.
 	 */
-	private function on_install_error( $slug ) {
+	public function on_install_error( $slug ) {
 		// Exit early if we're not installing the Jetpack or the WooCommerce Shipping & Tax plugins.
 		if ( 'jetpack' !== $slug && 'woocommerce-services' !== $slug ) {
 			return;

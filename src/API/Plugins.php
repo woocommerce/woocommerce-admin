@@ -336,7 +336,7 @@ class Plugins extends \WC_REST_Data_Controller {
 			);
 		}
 
-		$data = PluginsHelper::install_plugins( $plugins );
+		$data = PluginsHelper::activate_plugins( $plugins );
 
 		return( array(
 			'data'    => array(
