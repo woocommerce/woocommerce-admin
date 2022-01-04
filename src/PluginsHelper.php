@@ -146,7 +146,7 @@ class PluginsHelper {
 	 * @param string $job_id Job ID to update status.
 	 * @return array
 	 */
-	public static function install_plugins( $plugins, $job_id ) {
+	public static function install_plugins( $plugins, $job_id = null ) {
 		/**
 		 * Filter the list of plugins to install.
 		 *
@@ -274,7 +274,7 @@ class PluginsHelper {
 			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
 
-		$job_id = 'random';
+		$job_id = uniqid();
 		self::set_installation_status( $job_id, 'pending' );
 		WC()->queue()->schedule_single( time() + 5, 'woocommerce_plugins_install_callback', array( $plugins, $job_id ) );
 
@@ -364,7 +364,7 @@ class PluginsHelper {
 			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
 
-		$job_id = 'random';
+		$job_id = uniqid();
 		self::set_activation_status( $job_id, 'pending' );
 		WC()->queue()->schedule_single( time() + 5, 'woocommerce_plugins_activate_callback', array( $plugins, $job_id ) );
 
