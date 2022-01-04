@@ -158,7 +158,7 @@ class PluginsHelper {
 			if ( $job_id ) {
 				self::set_installation_status( $job_id, 'failed' );
 			}
-			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
+			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ) );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';

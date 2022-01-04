@@ -243,6 +243,10 @@ class Plugins extends \WC_REST_Data_Controller {
 	public function install_plugins( $request ) {
 		$plugins = explode( ',', $request['plugins'] );
 
+		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
+		}
+
 		if ( isset( $request['async'] ) && $request['async'] ) {
 			$job_id = PluginsHelper::schedule_install_plugins( $plugins );
 
@@ -256,10 +260,6 @@ class Plugins extends \WC_REST_Data_Controller {
 		}
 
 		$data = PluginsHelper::install_plugins( $plugins );
-
-		if ( is_wp_error( $data ) ) {
-			return $data;
-		}
 
 		return array(
 			'data'    => array(
@@ -323,6 +323,10 @@ class Plugins extends \WC_REST_Data_Controller {
 	 */
 	public function activate_plugins( $request ) {
 		$plugins = explode( ',', $request['plugins'] );
+
+		if ( empty( $request['plugins'] ) || ! is_array( $plugins ) ) {
+			return new \WP_Error( 'woocommerce_rest_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
+		}
 
 		if ( isset( $request['async'] ) && $request['async'] ) {
 			$job_id = PluginsHelper::schedule_activate_plugins( $plugins );
