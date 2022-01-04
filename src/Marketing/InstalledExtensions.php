@@ -275,7 +275,7 @@ class InstalledExtensions {
 			}
 
 			$data['settingsUrl'] = admin_url( 'admin.php?page=codisto-settings' );
-			$data['docsUrl']     = 'https://woocommerce.com/documentation/getting-started-with-woocommerce-amazon-ebay-integration/?utm_medium=product';
+			$data['docsUrl']     = 'https://woocommerce.com/document/multichannel-for-woocommerce-google-amazon-ebay-walmart-integration/?utm_medium=product';
 		}
 
 		return $data;
