@@ -13,6 +13,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { getSetting } from '@woocommerce/wc-admin-settings';
 import { OPTIONS_STORE_NAME, PluginsStoreActions } from '@woocommerce/data';
+import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -48,6 +49,8 @@ declare global {
 interface activatePromoResponse {
 	success: boolean;
 }
+
+const PROMO_NAME = 'wcpay-promo-2021-6-incentive-2';
 
 const LearnMore = () => {
 	const handleClick = () => {
@@ -124,17 +127,12 @@ const ConnectPageOnboarding = ( {
 	};
 
 	const activatePromo = async () => {
-		try {
-			// const activatePromoRequest = ( await apiFetch( {
-			// 	path: '/wc-calypso-bridge/v1/payments/activate-promo',
-			// 	method: 'POST',
-			// } ) ) as activatePromoResponse;
-
-			// if ( activatePromoRequest?.success ) {
+		const activatePromoRequest: activatePromoResponse = await apiFetch( {
+			path: `/wc-analytics/admin/notes/experimental-activate-promo/${ PROMO_NAME }`,
+			method: 'POST',
+		} );
+		if ( activatePromoRequest?.success ) {
 			window.location.href = connectUrl;
-			// }
-		} catch ( e ) {
-			// renderErrorMessage( e.message );
 		}
 	};
 
@@ -149,11 +147,10 @@ const ConnectPageOnboarding = ( {
 			const installAndActivateResponse = await installAndActivatePlugins(
 				[ 'woocommerce-payments' ]
 			);
-
 			if ( installAndActivateResponse?.success ) {
-				activatePromo();
+				await activatePromo();
 			} else {
-				renderErrorMessage( installAndActivateResponse.message );
+				throw new Error( installAndActivateResponse.message );
 			}
 		} catch ( e ) {
 			renderErrorMessage( e.message );
