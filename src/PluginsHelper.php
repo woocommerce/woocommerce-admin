@@ -309,7 +309,6 @@ class PluginsHelper {
 		$plugins = apply_filters( 'woocommerce_admin_plugins_pre_activate', $plugins );
 
 		$plugin_paths      = self::get_installed_plugins_paths();
-		$plugins           = explode( ',', $request['plugins'] );
 		$errors            = new \WP_Error();
 		$activated_plugins = array();
 
@@ -343,7 +342,7 @@ class PluginsHelper {
 
 		$data = array(
 			'activated' => $activated_plugins,
-			'active'    => self::get_active_plugins(),
+			'active'    => self::get_active_plugin_slugs(),
 			'errors'    => $errors,
 		);
 
