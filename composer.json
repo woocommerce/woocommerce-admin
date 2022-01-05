@@ -22,6 +22,10 @@
 	"config": {
 		"platform": {
 			"php": "7.1"
+		},
+		"allow-plugins": {
+			"automattic/jetpack-autoloader": true,
+			"composer/installers": true
 		}
 	},
 	"scripts": {
