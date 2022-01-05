@@ -7,7 +7,7 @@ namespace Automattic\WooCommerce\Admin\Features;
  *
  * @package Automattic\WooCommerce\Admin\Features
  */
-class WCPayWelcomePage {
+class WcPayWelcomePage {
 
 	const EXPERIMENT_NAME_BASE = 'woocommerce_payments_menu_promo_nz_ie_:yyyy_:mm';
 
