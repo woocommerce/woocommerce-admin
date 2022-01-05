@@ -9,7 +9,7 @@ namespace Automattic\WooCommerce\Admin\Features;
  */
 class WCPayWelcomePage {
 
-	const EXPERIMENT_NAME = 'test';
+	const EXPERIMENT_NAME_BASE = 'woocommerce_payments_menu_promo_nz_ie_:yyyy_:mm';
 
 	/**
 	 * WCPayWelcomePage constructor.
@@ -102,6 +102,15 @@ class WCPayWelcomePage {
 			$allow_tracking
 		);
 
-		return $abtest->get_variation( self::EXPERIMENT_NAME ) === 'treatment';
+		$date            = new \DateTime( 'now', wp_timezone() );
+		$experiment_name = strtr(
+			self::EXPERIMENT_NAME_BASE,
+			array(
+				':yyyy' => $date->format( 'Y' ),
+				':mm'   => $date->format( 'm' ),
+			)
+		);
+
+		return $abtest->get_variation( $experiment_name ) === 'treatment';
 	}
 }
