@@ -23,7 +23,39 @@
 On a new site, with English language settings:
 
 1. Go to WooCommerce home screen
-2. See that all Inbox notes are short in length (aproximately less than 320 characters). 
+2. See that all Inbox notes are short in length (aproximately less than 320 characters).
+
+### OBW: Hide the extensions header when no available plugins in the category
+
+- In a new JN site with WooCommerce, install WCAdmin 3.0.0-beta.1 or WCAdmin on the main branch
+- Go to setup wizard
+- Choose "Johor - Malaysia" as store country
+- Go through all steps until "Business details"
+- Go to "Free features" tab
+- Observe the "GET THE BASICS" header is NOT shown without any plugins
+
+### OBW: Fix free extensions list isn't updated after store location or industry is changed
+
+**Change store Industry**
+
+1. Checkout to this branch
+2. Go to the setup wizard
+3. Choose any store location that supports WCPay, such as any state in the US
+4. In the Industry step, make sure to not select CBD
+5. Proceed through the setup until the Business Details step
+6. Go to the "Free features" tab
+7. Observe **WooCommerce Payments** is displayed in the suggested extensions
+8. Without refreshing, go back to the **Industry** step
+9. Select **CBD industry** and click on continue until Business Details step again
+10. In the extension list, observe that WooCommerce Payments is **NOT** displayed.
+
+**Change store country**
+
+11. Repeat steps 3~7
+12. Without refreshing, go back to the **Store Details** step
+13. Choose any store location that **doesn't** supports WCPay, such as United Kingdom (UK)
+14. Go to Business Details step again
+15. In the extension list, observe that WooCommerce Payments is **NOT** displayed.
 
 ### Fix PHP Warning on 'Add new product' page
 
