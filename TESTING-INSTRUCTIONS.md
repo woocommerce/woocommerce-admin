@@ -13,12 +13,12 @@ On a new site, with English language settings:
 
 ### OBW: Hide the extensions header when no available plugins in the category
 
-- In a new JN site with WooCommerce, install WCAdmin 3.0.0-beta.1 or WCAdmin on the main branch
-- Go to setup wizard
-- Choose "Johor - Malaysia" as store country
-- Go through all steps until "Business details"
-- Go to "Free features" tab
-- Observe the "GET THE BASICS" header is NOT shown without any plugins
+1. In a new JN site with WooCommerce, install WCAdmin 3.0.0-beta.1 or WCAdmin on the main branch
+2. Go to setup wizard
+3. Choose "Johor - Malaysia" as store country
+4. Go through all steps until "Business details"
+5. Go to "Free features" tab
+6. Observe the "GET THE BASICS" header is NOT shown without any plugins
 
 ### OBW: Fix free extensions list isn't updated after store location or industry is changed
 
@@ -45,11 +45,11 @@ On a new site, with English language settings:
 
 ### Fix PHP Warning on 'Add new product' page
 
-0. On a Jurassic Ninja site.
-1. Go to **WooCommerce** > **Home**.
-2. Press **Add my products** in the task list.
-3. Press **Add manually**.
-4. No PHP warning should be visible.
+1. On a Jurassic Ninja site.
+2. Go to **WooCommerce** > **Home**.
+3. Press **Add my products** in the task list.
+4. Press **Add manually**.
+5. No PHP warning should be visible.
 
 ## 3.0.0
 
