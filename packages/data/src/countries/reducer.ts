@@ -18,7 +18,7 @@ const reducer = (
 		error: string;
 		locales: Locales;
 	}
-) => {
+): CountriesState => {
 	switch ( type ) {
 		case TYPES.GET_LOCALES_SUCCESS:
 			state = {
