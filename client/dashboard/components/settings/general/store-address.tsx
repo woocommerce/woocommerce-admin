@@ -2,10 +2,13 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { COUNTRIES_STORE_NAME } from '@woocommerce/data';
 import { decodeEntities } from '@wordpress/html-entities';
 import { escapeRegExp } from 'lodash';
 import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
 import { SelectControl, TextControl } from '@woocommerce/components';
+import { Spinner } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -20,7 +23,9 @@ const { countries } = getAdminSetting( 'dataEndpoints', { countries: {} } );
  * @return {Object} Key value of fields and error messages, { myField: 'This field is required' }
  */
 export function validateStoreAddress( values ) {
-	const errors = {};
+	const errors: {
+		[ key: string ]: string;
+	} = {};
 
 	if ( ! values.addressLine1.trim().length ) {
 		errors.addressLine1 = __(
@@ -89,7 +94,9 @@ export function getCountryStateOptions() {
 export function useGetCountryStateAutofill( options, countryState, setValue ) {
 	const [ autofillCountry, setAutofillCountry ] = useState( '' );
 	const [ autofillState, setAutofillState ] = useState( '' );
-	const isAutofillChange = useRef();
+	const isAutofillChange: {
+		current: boolean;
+	} = useRef();
 
 	useEffect( () => {
 		const option = options.find( ( opt ) => opt.key === countryState );
@@ -213,24 +220,45 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
  */
 export function StoreAddress( props ) {
 	const { getInputProps, setValue } = props;
+	const countryState = getInputProps( 'countryState' ).value;
+	const { locale, hasFinishedResolution } = useSelect( ( select ) => {
+		return {
+			locale: select( COUNTRIES_STORE_NAME ).getLocale(
+				countryState?.split( ':' )[ 0 ] || 'US'
+			),
+			hasFinishedResolution: select(
+				COUNTRIES_STORE_NAME
+			).hasFinishedResolution( 'getLocales' ),
+		};
+	} );
 	const countryStateOptions = useMemo( () => getCountryStateOptions(), [] );
 	const countryStateAutofill = useGetCountryStateAutofill(
 		countryStateOptions,
-		getInputProps( 'countryState' ).value,
+		countryState,
 		setValue
 	);
+
+	if ( ! hasFinishedResolution ) {
+		return <Spinner />;
+	}
 
 	return (
 		<div className="woocommerce-store-address-fields">
 			<TextControl
-				label={ __( 'Address line 1', 'woocommerce-admin' ) }
+				label={
+					locale?.address_1?.label ||
+					__( 'Address line 1', 'woocommerce-admin' )
+				}
 				required
 				autoComplete="address-line1"
 				{ ...getInputProps( 'addressLine1' ) }
 			/>
 
 			<TextControl
-				label={ __( 'Address line 2 (optional)', 'woocommerce-admin' ) }
+				label={
+					locale?.address_2?.label ||
+					__( 'Address line 2 (optional)', 'woocommerce-admin' )
+				}
 				required
 				autoComplete="address-line2"
 				{ ...getInputProps( 'addressLine2' ) }
@@ -251,14 +279,19 @@ export function StoreAddress( props ) {
 			</SelectControl>
 
 			<TextControl
-				label={ __( 'City', 'woocommerce-admin' ) }
+				label={
+					locale?.city?.label || __( 'City', 'woocommerce-admin' )
+				}
 				required
 				{ ...getInputProps( 'city' ) }
 				autoComplete="address-level2"
 			/>
 
 			<TextControl
-				label={ __( 'Post code', 'woocommerce-admin' ) }
+				label={
+					locale?.postcode?.label ||
+					__( 'Post code', 'woocommerce-admin' )
+				}
 				required
 				autoComplete="postal-code"
 				{ ...getInputProps( 'postCode' ) }
