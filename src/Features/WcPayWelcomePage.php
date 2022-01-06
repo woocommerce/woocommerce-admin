@@ -7,13 +7,14 @@ namespace Automattic\WooCommerce\Admin\Features;
  *
  * @package Automattic\WooCommerce\Admin\Features
  */
-class WCPayWelcomePage {
+class WcPayWelcomePage {
+
+	const EXPERIMENT_NAME_BASE = 'woocommerce_payments_menu_promo_nz_ie_:yyyy_:mm';
 
 	/**
 	 * WCPayWelcomePage constructor.
 	 */
 	public function __construct() {
-
 		add_action( 'admin_menu', array( $this, 'register_payments_welcome_page' ) );
 	}
 	/**
@@ -21,6 +22,10 @@ class WCPayWelcomePage {
 	 */
 	public function register_payments_welcome_page() {
 		global $menu;
+
+		if ( ! $this->should_add_the_menu() ) {
+			return;
+		}
 
 		// WC Payment must not be active.
 		if ( is_plugin_active( 'woocommerce-payments/woocommerce-payments.php' ) ) {
@@ -81,5 +86,31 @@ class WCPayWelcomePage {
 				$menu[ $index ][0] .= ' <span class="wcpay-menu-badge awaiting-mod count-1"><span class="plugin-count">1</span></span>';
 			}
 		}
+	}
+
+	/**
+	 * Checks if user is in the experiment.
+	 *
+	 * @return bool Whether the user is in the treatment group.
+	 */
+	private function should_add_the_menu() {
+		$anon_id        = isset( $_COOKIE['tk_ai'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['tk_ai'] ) ) : '';
+		$allow_tracking = 'yes' === get_option( 'woocommerce_allow_tracking' );
+		$abtest         = new \WooCommerce\Admin\Experimental_Abtest(
+			$anon_id,
+			'woocommerce',
+			$allow_tracking
+		);
+
+		$date            = new \DateTime( 'now', wp_timezone() );
+		$experiment_name = strtr(
+			self::EXPERIMENT_NAME_BASE,
+			array(
+				':yyyy' => $date->format( 'Y' ),
+				':mm'   => $date->format( 'm' ),
+			)
+		);
+
+		return $abtest->get_variation( $experiment_name ) === 'treatment';
 	}
 }
