@@ -5,6 +5,7 @@
 -   Fix clicking the error message opens the dropdown. #8094
 -   Fix misaligned "Rows per page" dropdown. #8113
 -   Add `labelPositionToLeft` prop to the `OrderStatus` component. #8121
+-   Remove dev dependency `@woocommerce/wc-admin-settings`. #8057
 
 # 8.1.1
 

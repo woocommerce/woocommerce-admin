@@ -6,7 +6,6 @@ import { Component, Fragment } from '@wordpress/element';
 import { map } from 'lodash';
 import { Date, Link, OrderStatus, ViewMoreList } from '@woocommerce/components';
 import { formatValue } from '@woocommerce/number';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { defaultTableDateFormat } from '@woocommerce/date';
 
@@ -14,6 +13,7 @@ import { defaultTableDateFormat } from '@woocommerce/date';
  * Internal dependencies
  */
 import ReportTable from '../../components/report-table';
+import { getAdminSetting } from '~/utils/admin-settings';
 import { CurrencyContext } from '../../../lib/currency-context';
 
 const capitalizeFirstLetter = ( expr ) =>
@@ -107,7 +107,10 @@ class OrdersReportTable extends Component {
 	getRowsContent( tableData ) {
 		const { query } = this.props;
 		const persistedQuery = getPersistedQuery( query );
-		const dateFormat = getSetting( 'dateFormat', defaultTableDateFormat );
+		const dateFormat = getAdminSetting(
+			'dateFormat',
+			defaultTableDateFormat
+		);
 		const { render: renderCurrency, getCurrencyConfig } = this.context;
 
 		return map( tableData, ( row ) => {
@@ -175,8 +178,11 @@ class OrdersReportTable extends Component {
 						<OrderStatus
 							className="woocommerce-orders-table__status"
 							order={ { status } }
-							orderStatusMap={ getSetting( 'orderStatuses', {} ) }
 							labelPositionToLeft={ true }
+							orderStatusMap={ getAdminSetting(
+								'orderStatuses',
+								{}
+							) }
 						/>
 					),
 					value: status,
