@@ -19,9 +19,9 @@ const { countries } = getAdminSetting( 'dataEndpoints', { countries: {} } );
 /**
  * Check if a given address field is required for the locale.
  *
- * @param fieldName Name of the field to check.
- * @param locale Locale data.
- * @return boolean
+ * @param {string} fieldName Name of the field to check.
+ * @param {Object} locale Locale data.
+ * @return {boolean} Field requirement.
  */
 export function isAddressFieldRequired( fieldName, locale = {} ) {
 	if ( locale[ fieldName ]?.hasOwnProperty( 'required' ) ) {
@@ -258,13 +258,11 @@ export function useGetCountryStateAutofill( options, countryState, setValue ) {
  * @return {Object} -
  */
 export function StoreAddress( props ) {
-	const { getInputProps, setValue } = props;
+	const { getInputProps, setValue, onChange } = props;
 	const countryState = getInputProps( 'countryState' ).value;
 	const { locale, hasFinishedResolution } = useSelect( ( select ) => {
 		return {
-			locale: select( COUNTRIES_STORE_NAME ).getLocale(
-				countryState?.split( ':' )[ 0 ] || 'US'
-			),
+			locale: select( COUNTRIES_STORE_NAME ).getLocale( countryState ),
 			hasFinishedResolution: select(
 				COUNTRIES_STORE_NAME
 			).hasFinishedResolution( 'getLocales' ),

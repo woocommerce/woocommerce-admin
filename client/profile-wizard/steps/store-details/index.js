@@ -200,7 +200,8 @@ class StoreDetails extends Component {
 	}
 
 	validateStoreDetails( values ) {
-		const { locale } = this.props;
+		const { getLocale } = this.props;
+		const locale = getLocale( values.countryState );
 		const validateAddress = getStoreAddressValidator( locale );
 		const errors = validateAddress( values );
 
@@ -465,6 +466,7 @@ export default compose(
 		} = select( ONBOARDING_STORE_NAME );
 		const {
 			getLocale,
+			getLocales,
 			hasFinishedResolution: hasFinishedResolutionCountries,
 		} = select( COUNTRIES_STORE_NAME );
 		const { isResolving } = select( OPTIONS_STORE_NAME );
@@ -493,7 +495,7 @@ export default compose(
 			( settings.woocommerce_store_address &&
 				settings.woocommerce_default_country ) ||
 			'';
-		const locale = getLocale( countryState );
+		getLocales();
 
 		const initialValues = {
 			addressLine1: settings.woocommerce_store_address || '',
@@ -512,9 +514,9 @@ export default compose(
 		};
 
 		return {
+			getLocale,
 			initialValues,
 			isLoading,
-			locale,
 			profileItems,
 			isBusy,
 			settings,
