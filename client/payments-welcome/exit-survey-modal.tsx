@@ -46,7 +46,7 @@ function ExitSurveyModal( {
 			path: 'wc-admin/options',
 			method: 'POST',
 			data: {
-				wc_pay_welcome_page_dismissed: 'yes',
+				wc_calypso_bridge_payments_dismissed: 'yes',
 			},
 		} ).then( () => {
 			window.location.href = 'admin.php?page=wc-admin';
