@@ -53,7 +53,7 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/install/status',
+			'/' . $this->rest_base . '/install/status/(?P<job_id>[a-z0-9_\-]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -105,7 +105,7 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/activate/status',
+			'/' . $this->rest_base . '/activate/status/(?P<job_id>[a-z0-9_\-]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -278,10 +278,12 @@ class Plugins extends \WC_REST_Data_Controller {
 	/**
 	 * Returns a list of recently scheduled installation jobs.
 	 *
+	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return array Jobs.
 	 */
-	public function get_installation_status() {
-		return PluginsHelper::get_installation_status();
+	public function get_installation_status( $request ) {
+		$job_id = $request->get_param( 'job_id' );
+		return PluginsHelper::get_installation_status( $job_id );
 	}
 
 	/**
@@ -358,10 +360,12 @@ class Plugins extends \WC_REST_Data_Controller {
 	/**
 	 * Returns a list of recently scheduled activation jobs.
 	 *
+	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return array Jobs.
 	 */
-	public function get_activation_status() {
-		return PluginsHelper::get_activation_status();
+	public function get_activation_status( $request ) {
+		$job_id = $request->get_param( 'job_id' );
+		return PluginsHelper::get_activation_status( $job_id );
 	}
 
 	/**
