@@ -195,7 +195,7 @@ export const Layout = ( {
 					/>
 					<TwoColumnTasksExtended
 						query={ query }
-						renderTask={ false }
+						shouldRenderTask={ false }
 					/>
 				</>
 			);
