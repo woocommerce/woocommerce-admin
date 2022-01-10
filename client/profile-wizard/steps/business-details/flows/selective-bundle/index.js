@@ -41,13 +41,17 @@ import './style.scss';
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
 const FREE_FEATURES_TAB_NAME = 'free-features';
 
-export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
+export const filterBusinessExtensions = (
+	extensionInstallationOptions,
+	alreadyActivatedExtensions = []
+) => {
 	return (
 		Object.keys( extensionInstallationOptions )
 			.filter(
 				( key ) =>
 					extensionInstallationOptions[ key ] &&
-					key !== 'install_extensions'
+					key !== 'install_extensions' &&
+					! alreadyActivatedExtensions.includes( key )
 			)
 			.map( getPluginSlug )
 			// remove duplicate
@@ -60,15 +64,18 @@ const timeFrames = [
 	{ name: '2-5s', max: 5 },
 	{ name: '5-10s', max: 10 },
 	{ name: '10-15s', max: 15 },
-	{ name: '>15s' },
+	{ name: '15-20s', max: 20 },
+	{ name: '20-30s', max: 30 },
+	{ name: '30-60s', max: 60 },
+	{ name: '>60s' },
 ];
-function getTimebox( timeInMs ) {
-	for ( const timeBox of timeFrames ) {
-		if ( ! timeBox.max ) {
-			return timeBox.name;
+function getTimeFrame( timeInMs ) {
+	for ( const timeFrame of timeFrames ) {
+		if ( ! timeFrame.max ) {
+			return timeFrame.name;
 		}
-		if ( timeInMs < timeBox.max * 1000 ) {
-			return timeBox.name;
+		if ( timeInMs < timeFrame.max * 1000 ) {
+			return timeFrame.name;
 		}
 	}
 }
@@ -108,7 +115,7 @@ export const prepareExtensionTrackingInstallationData = (
 			installationData.data.install_time[ fieldKey ]
 		) {
 			installed.push( key );
-			data[ `install_time_${ key }` ] = getTimebox(
+			data[ `install_time_${ key }` ] = getTimeFrame(
 				installationData.data.install_time[ fieldKey ]
 			);
 		}
@@ -149,15 +156,29 @@ class BusinessDetails extends Component {
 		this.validate = this.validate.bind( this );
 	}
 
-	async onContinue( extensionInstallationOptions ) {
+	async onContinue(
+		extensionInstallationOptions,
+		installableExtensionsData
+	) {
 		const {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
 		} = this.props;
 
+		const alreadyActivatedExtensions = installableExtensionsData.reduce(
+			( actExtensions, bundle ) => {
+				const activated = bundle.plugins
+					.filter( ( plugin ) => plugin.is_activated )
+					.map( ( plugin ) => plugin.key );
+				return [ ...actExtensions, ...activated ];
+			},
+			[]
+		);
+
 		const businessExtensions = filterBusinessExtensions(
-			extensionInstallationOptions
+			extensionInstallationOptions,
+			alreadyActivatedExtensions
 		);
 
 		const installedExtensions = prepareExtensionTrackingData(
@@ -193,7 +214,9 @@ class BusinessDetails extends Component {
 							'storeprofiler_store_business_features_installed_and_activated',
 							{
 								success: true,
-								total_time: getTimebox( totalInstallationTime ),
+								total_time: getTimeFrame(
+									totalInstallationTime
+								),
 								...installedExtensionsData,
 							}
 						);
