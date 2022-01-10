@@ -24,7 +24,7 @@ export type TasksProps = {
 	query: { task?: string };
 };
 
-const ExtendedTask: React.FC< TasksProps > = ( { query, rednerTask } ) => {
+const ExtendedTask: React.FC< TasksProps > = ( { query, renderTask } ) => {
 	const { task } = query;
 	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
@@ -88,7 +88,7 @@ const ExtendedTask: React.FC< TasksProps > = ( { query, rednerTask } ) => {
 		return <TasksPlaceholder query={ query } />;
 	}
 
-	if ( currentTask && rednerTask ) {
+	if ( currentTask && renderTask ) {
 		return (
 			<div className="woocommerce-task-dashboard__container">
 				<Task query={ query } task={ currentTask } />
