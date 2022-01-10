@@ -20,6 +20,11 @@
 - Fix: Hide the extensions header when no available plugins in the category. #8089
 - Fix: Replace all docs.woocommerce.com links with woocommerce.com/document. #8105
 
+== 3.0.3 01/06/2022 ==
+
+- Fix: Fix blank payment gateway method in table when WooCommerce Payments is not supported. #8122
+- Add: Add woocommerce_allow_marketplace_suggestions filter to WooCommerce Payments payment method promotion. #8117
+
 == 3.0.2 01/05/2022 ==
 
 - Render the activity panel when the experimental tasklist is hidden. #8111
