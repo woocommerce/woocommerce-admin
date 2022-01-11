@@ -56,6 +56,7 @@ export function getAllPanels( {
 				title: __( 'Stock', 'woocommerce-admin' ),
 			},
 		publishedProductCount > 0 &&
+			countUnapprovedReviews > 0 &&
 			reviewsEnabled === 'yes' && {
 				className: 'woocommerce-homescreen-card',
 				id: 'reviews-panel',
