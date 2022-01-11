@@ -42,7 +42,7 @@ class PaymentsRemindMeLater {
 			return false;
 		}
 		// Dismissed WCPay welcome page.
-		if ( 'yes' === get_option( 'wc_pay_welcome_page_dismissed', 'no' ) ) {
+		if ( 'yes' === get_option( 'wc_calypso_bridge_payments_dismissed', 'no' ) ) {
 			return false;
 		}
 
