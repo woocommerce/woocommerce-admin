@@ -2,6 +2,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
+
 /**
  * Class WCPayWelcomePage
  *
@@ -32,9 +34,7 @@ class WcPayWelcomePage {
 			return;
 		}
 
-		// Store country must be in defined array.
-		$supported_countries = array( 'US', 'GB', 'AU', 'NZ', 'CA', 'IE', 'ES', 'FR', 'IT', 'DE' );
-		if ( ! in_array( WC()->countries->get_base_country(), $supported_countries, true ) ) {
+		if ( ! WooCommercePayments::is_supported() ) {
 			return;
 		}
 
