@@ -359,11 +359,39 @@ class PluginsHelper {
 	 * @return array Job data.
 	 */
 	public static function get_installation_status( $job_id ) {
-		return WC()->queue()->search(
+		$actions = WC()->queue()->search(
 			array(
+				'hook'   => 'woocommerce_plugins_install_callback',
 				'search' => $job_id,
 			)
 		);
+
+		return self::get_action_data( $actions );
+	}
+
+	/**
+	 * Gets the plugin data for the first action.
+	 *
+	 * @param array $actions Array of AS actions.
+	 * @return array
+	 */
+	public static function get_action_data( $actions ) {
+		if ( count( $actions ) ) {
+			reset( $actions );
+			$action_id = key( $actions );
+			$action    = $actions[ $action_id ];
+			$store     = new \ActionScheduler_DBStore();
+			$status    = $store->get_status( $action_id );
+			$args      = $action->get_args();
+
+			return array(
+				'job_id'  => $args[1],
+				'plugins' => $args[0],
+				'status'  => $store->get_status( $action_id ),
+			);
+		}
+
+		return null;
 	}
 
 	/**
@@ -373,11 +401,14 @@ class PluginsHelper {
 	 * @return array
 	 */
 	public static function get_activation_status( $job_id ) {
-		return WC()->queue()->search(
+		$actions = WC()->queue()->search(
 			array(
+				'hook'   => 'woocommerce_plugins_activate_callback',
 				'search' => $job_id,
 			)
 		);
+
+		return self::get_action_data( $actions );
 	}
 
 }
