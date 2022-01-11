@@ -11,6 +11,7 @@ import { Text, useSlot } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { Action } from '../Action';
+import { getPluginTrackKey } from '~/utils';
 import './List.scss';
 
 export const Item = ( { isRecommended, markConfigured, paymentGateway } ) => {
