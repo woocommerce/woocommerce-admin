@@ -109,11 +109,26 @@ describe( 'ActivityPanel', () => {
 		);
 	} );
 
-	it( 'should include the reviews panel when there are products and reviews are enabled', () => {
+	it( 'should exclude the reviews panel when there are no reviews', () => {
 		const panels = getAllPanels( {
 			publishedProductCount: 5,
 			reviewsEnabled: 'yes',
 			isTaskListHidden: 'yes',
+		} );
+
+		expect( panels ).toEqual(
+			expect.not.arrayContaining( [
+				expect.objectContaining( { id: 'reviews-panel' } ),
+			] )
+		);
+	} );
+
+	it( 'should include the reviews panel when they are enabled, there are products and reviews', () => {
+		const panels = getAllPanels( {
+			publishedProductCount: 5,
+			reviewsEnabled: 'yes',
+			isTaskListHidden: 'yes',
+			countUnapprovedReviews: 3,
 		} );
 
 		expect( panels ).toEqual(
