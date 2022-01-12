@@ -25,10 +25,6 @@ class WcPayWelcomePage {
 	public function register_payments_welcome_page() {
 		global $menu;
 
-		if ( ! $this->should_add_the_menu() ) {
-			return;
-		}
-
 		// WC Payment must not be active.
 		if ( is_plugin_active( 'woocommerce-payments/woocommerce-payments.php' ) ) {
 			return;
@@ -39,6 +35,10 @@ class WcPayWelcomePage {
 		}
 
 		if ( 'yes' === get_option( 'wc_calypso_bridge_payments_dismissed', 'no' ) ) {
+			return;
+		}
+
+		if ( ! $this->should_add_the_menu() ) {
 			return;
 		}
 
