@@ -24,7 +24,7 @@ class EvaluateExtension {
 		$rule_evaluator = new RuleEvaluator();
 
 		if ( isset( $extension->is_visible ) ) {
-			$is_visible            = is_bool( $extension->is_visible ) ? $extension->is_visible : $rule_evaluator->evaluate( $extension->is_visible );
+			$is_visible            = $rule_evaluator->evaluate( $extension->is_visible );
 			$extension->is_visible = $is_visible;
 		} else {
 			$extension->is_visible = true;
