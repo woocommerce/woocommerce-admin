@@ -69,6 +69,12 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 		hideTaskList( id );
 	};
 
+	useEffect( () => {
+		updateOptions( {
+			woocommerce_task_list_prompt_shown: true,
+		} );
+	}, [ taskLists, isResolving ] );
+
 	const currentTask = getCurrentTask();
 
 	if ( task && ! currentTask ) {
