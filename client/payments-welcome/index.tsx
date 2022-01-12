@@ -11,7 +11,6 @@ import {
 import { useState, useEffect } from '@wordpress/element';
 import { recordEvent } from '@woocommerce/tracks';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { OPTIONS_STORE_NAME, PluginsStoreActions } from '@woocommerce/data';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -33,6 +32,7 @@ import UnionPay from './cards/unionpay';
 import './style.scss';
 import FrequentlyAskedQuestions from './faq';
 import ExitSurveyModal from './exit-survey-modal';
+import { getAdminSetting } from '~/utils/admin-settings';
 
 declare global {
 	interface Window {
@@ -237,7 +237,7 @@ const ConnectAccountPage = () => {
 				).isJetpackConnected(),
 				connectUrl:
 					'admin.php?wcpay-connect=1&_wpnonce=' +
-					getSetting( 'wcpay_welcome_page_connect_nonce' ),
+					getAdminSetting( 'wcpay_welcome_page_connect_nonce' ),
 				hasViewedWelcomePage: pageViewTimestamp,
 			};
 		}
