@@ -1,4 +1,4 @@
 Significance: patch
 Type: Fix
 
-8148 remove border between email input and newsletter checkbox in OBW store details.
+Remove border between email input and newsletter checkbox in OBW store details. #8148
