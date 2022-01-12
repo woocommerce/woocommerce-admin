@@ -258,7 +258,7 @@ const ConnectAccountPage = () => {
 	};
 	useEffect( () => {
 		recordEvent( 'page_view', {
-			path: 'payments_connect_dotcom_test',
+			path: 'payments_connect_core_test',
 		} );
 		storeViewWelcome();
 	}, [ hasViewedWelcomePage ] );
