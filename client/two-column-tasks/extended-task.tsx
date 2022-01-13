@@ -70,11 +70,8 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 	};
 
 	useEffect( () => {
-		// @todo Update this when all task lists have been hidden or completed.
-		const taskListsFinished = false;
 		updateOptions( {
 			woocommerce_task_list_prompt_shown: true,
-			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	}, [ taskLists, isResolving ] );
 
