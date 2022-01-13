@@ -124,7 +124,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		$this->add_orderby_order_clause( $query_args, $this );
 
 		if ( false !== strpos( $order_by_clause, '_terms' ) ) {
-			$join = "JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_taxonomy_id";
+			$join = "JOIN {$wpdb->terms} AS _terms ON {$id_cell} = _terms.term_id";
 			if ( 'inner' === $from_arg ) {
 				// Even though this is an (inner) JOIN, we're adding it as a `left_join` to
 				// affect its order in the query statement. The SqlQuery::$sql_filters variable
