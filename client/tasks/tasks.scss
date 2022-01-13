@@ -27,6 +27,10 @@
 		.components-popover__content {
 			min-width: unset;
 		}
+
+		.woocommerce-task-card__section-controls {
+			text-align: center;
+		}
 	}
 
 	.woocommerce-task-payments {
@@ -141,10 +145,6 @@
 			border-bottom-color: $gray-900; /* Snackbar hover */
 		}
 	}
-}
-
-.woocommerce-task-card__section-controls {
-	text-align: center;
 }
 
 .woocommerce-task-dashboard__container {
