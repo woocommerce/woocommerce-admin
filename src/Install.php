@@ -317,6 +317,7 @@ class Install {
 			is_deleted boolean DEFAULT 0 NOT NULL,
 			is_read boolean DEFAULT 0 NOT NULL,
 			icon varchar(200) NOT NULL default 'info',
+			required_capability varchar(200) NULL DEFAULT NULL,
 			PRIMARY KEY (note_id)
 		) $collate;
 		CREATE TABLE {$wpdb->prefix}wc_admin_note_actions (

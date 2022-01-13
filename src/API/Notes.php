@@ -197,12 +197,14 @@ class Notes extends \WC_REST_CRUD_Controller {
 	public function get_items( $request ) {
 		$query_args = $this->prepare_objects_query( $request );
 
-		$notes = NotesRepository::get_notes( 'edit', $query_args );
-
+		$notes                                     = NotesRepository::get_notes( 'edit', $query_args );
 		$is_tasklist_experiment_assigned_treatment = $this->is_tasklist_experiment_assigned_treatment();
 
 		$data = array();
 		foreach ( (array) $notes as $note_obj ) {
+			if ( $note_obj['required_capability'] && ! current_user_can( $note_obj['required_capability'] ) ) {
+				continue;
+			}
 			// Hide selected notes for users not in experiment.
 			if ( ! $is_tasklist_experiment_assigned_treatment ) {
 				if ( 'wc-admin-complete-store-details' === $note_obj['name'] ) {

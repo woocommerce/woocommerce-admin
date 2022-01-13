@@ -52,22 +52,23 @@ class Note extends \WC_Data {
 	public function __construct( $data = '' ) {
 		// Set default data here to allow `content_data` to be an object.
 		$this->data = array(
-			'name'          => '-',
-			'type'          => self::E_WC_ADMIN_NOTE_INFORMATIONAL,
-			'locale'        => 'en_US',
-			'title'         => '-',
-			'content'       => '-',
-			'content_data'  => new \stdClass(),
-			'status'        => self::E_WC_ADMIN_NOTE_UNACTIONED,
-			'source'        => 'woocommerce',
-			'date_created'  => '0000-00-00 00:00:00',
-			'date_reminder' => '',
-			'is_snoozable'  => false,
-			'actions'       => array(),
-			'layout'        => 'plain',
-			'image'         => '',
-			'is_deleted'    => false,
-			'is_read'       => false,
+			'name'                => '-',
+			'type'                => self::E_WC_ADMIN_NOTE_INFORMATIONAL,
+			'locale'              => 'en_US',
+			'title'               => '-',
+			'content'             => '-',
+			'content_data'        => new \stdClass(),
+			'status'              => self::E_WC_ADMIN_NOTE_UNACTIONED,
+			'source'              => 'woocommerce',
+			'date_created'        => '0000-00-00 00:00:00',
+			'date_reminder'       => '',
+			'is_snoozable'        => false,
+			'actions'             => array(),
+			'layout'              => 'plain',
+			'image'               => '',
+			'is_deleted'          => false,
+			'is_read'             => false,
+			'required_capability' => null,
 		);
 
 		parent::__construct( $data );
@@ -335,6 +336,17 @@ class Note extends \WC_Data {
 		return $this->get_prop( 'is_read', $context );
 	}
 
+	/**
+	 * Get required_capability value
+	 *
+	 * @param string $context What the value is for. Valid values are 'view' and 'edit'.
+	 *
+	 * @return string
+	 */
+	public function get_required_capability( $context = 'view' ) {
+		return $this->get_prop( 'required_capability', $context );
+	}
+
 	/*
 	|--------------------------------------------------------------------------
 	| Setters
@@ -591,6 +603,15 @@ class Note extends \WC_Data {
 	 */
 	public function set_is_read( $is_read ) {
 		$this->set_prop( 'is_read', $is_read );
+	}
+
+	/**
+	 * Set required_capability
+	 *
+	 * @param string $required_capability required capability.
+	 */
+	public function set_required_capability( $required_capability ) {
+		$this->set_prop( 'required_capability', $required_capability );
 	}
 
 	/**

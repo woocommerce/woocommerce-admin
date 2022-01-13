@@ -113,6 +113,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$note->set_image( $note_row->image );
 			$this->read_actions( $note );
 			$note->set_object_read( true );
+			$note->set_required_capability( $note_row->required_capability );
 
 			/**
 			 * Fires when an admin note is loaded.
