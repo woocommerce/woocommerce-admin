@@ -53,7 +53,7 @@ On a new site, with English language settings:
 
 11. Repeat steps 3~7
 12. Without refreshing, go back to the **Store Details** step
-13. Choose any store location that **doesn't** supports WCPay, such as United Kingdom (UK)
+13. Choose any store location that **doesn't** supports WCPay, such as Malaysia (MY).
 14. Go to Business Details step again
 15. In the extension list, observe that WooCommerce Payments is **NOT** displayed.
 
