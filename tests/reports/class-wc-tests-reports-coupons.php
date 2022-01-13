@@ -329,6 +329,14 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 	 * Test that calculations and querying works correctly when coupons are deleted.
 	 */
 	public function test_deleted_coupons() {
+		/**
+		 * In WC Core 6.1.0 Coupon Data is stored consistently in the order item meta.
+		 * see https://github.com/woocommerce/woocommerce/pull/31338.
+		 */
+		function is_wc_version_store_coupon_data_in_order_meta() {
+			return version_compare( WC_VERSION, '6.1.0', '>=' );
+		}
+
 		WC_Helper_Reports::reset_stats_dbs();
 
 		// Simple product.
@@ -343,11 +351,12 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 		$coupon_1->set_amount( $coupon_1_amount );
 		$coupon_1->save();
 
-		// Coupon that will be deleted.
+		// Coupon that will be deleted, but order item will have metadata that will preserve its ID if WC version >= 6.1.0.
 		$coupon_2_amount = 7;
 		$coupon_2        = WC_Helper_Coupon::create_coupon( 'coupon_2' );
 		$coupon_2->set_amount( $coupon_2_amount );
 		$coupon_2->save();
+		$coupon_2_id = $coupon_2->get_id();
 
 		// Coupon that will be deleted, but order item will have metadata that will preserve its ID.
 		$coupon_3_amount = 1;
@@ -402,7 +411,7 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 			'extended_info' => new ArrayObject(),
 		);
 		$coupon_2_response = array(
-			'coupon_id'     => -1, // coupon_2 was deleted, so a new ID was created.
+			'coupon_id'     => is_wc_version_store_coupon_data_in_order_meta() ? $coupon_2_id : -1,
 			'amount'        => floatval( $coupon_2_amount ),
 			'orders_count'  => 1,
 			'extended_info' => new ArrayObject(),
@@ -421,10 +430,10 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 			'pages'   => 1,
 			'page_no' => 1,
 			'data'    => array(
-				// Order is 3, 1, 2 since query is sorted by coupon ID descending.
+				// Order query is sorted by coupon ID descending.
 				0 => $coupon_3_response,
-				1 => $coupon_1_response,
-				2 => $coupon_2_response,
+				1 => is_wc_version_store_coupon_data_in_order_meta() ? $coupon_2_response : $coupon_1_response,
+				2 => is_wc_version_store_coupon_data_in_order_meta() ? $coupon_1_response : $coupon_2_response,
 			),
 		);
 		$this->assertEquals( $expected_data, $data );
@@ -470,7 +479,7 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 		);
 
 		$coupon_2_response = array(
-			'coupon_id'     => -1,
+			'coupon_id'     => is_wc_version_store_coupon_data_in_order_meta() ? $coupon_2_id : -1,
 			'amount'        => floatval( $coupon_2_amount ),
 			'orders_count'  => 1,
 			'extended_info' => array(
@@ -508,10 +517,10 @@ class WC_Tests_Reports_Coupons extends WC_Unit_Test_Case {
 			'pages'   => 1,
 			'page_no' => 1,
 			'data'    => array(
-				// Order is 3, 1, 2 since query is sorted by coupon ID descending.
+				// Order query is sorted by coupon ID descending.
 				0 => $coupon_3_response,
-				1 => $coupon_1_response,
-				2 => $coupon_2_response,
+				1 => is_wc_version_store_coupon_data_in_order_meta() ? $coupon_2_response : $coupon_1_response,
+				2 => is_wc_version_store_coupon_data_in_order_meta() ? $coupon_1_response : $coupon_2_response,
 			),
 		);
 		$this->assertEquals( $expected_data, $data );
