@@ -67,6 +67,10 @@ class SpecRunner {
 			$note->set_source( $spec->source );
 		}
 
+		if ( isset( $spec->required_capability ) ) {
+			$note->set_required_capability( $spec->required_capability );
+		}
+
 		// Clear then create actions.
 		$note->clear_actions();
 		$actions = isset( $spec->actions ) ? $spec->actions : array();
