@@ -65,7 +65,10 @@ const testAdminHomescreenActivityPanel = () => {
 		} );
 
 		it( 'should show Reviews panel when we have at-least one product', async () => {
-			const productId = await createSimpleProduct( simpleProductName, '9.99' );
+			const productId = await createSimpleProduct(
+				simpleProductName,
+				'9.99'
+			);
 			await addReviewToProduct( productId, simpleProductName );
 			await homeScreen.navigate();
 			await homeScreen.isDisplayed();
