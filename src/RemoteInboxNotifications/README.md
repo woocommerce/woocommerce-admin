@@ -35,7 +35,8 @@ Following is the structure of the JSON feed, including the different rules that 
 	"rules": [
 		<Rule>,
 		...
-	]
+	],
+	"required_capability": "manage_woocommerce"
 }
 ```
 
@@ -497,6 +498,11 @@ WooCommerce Admin plugin.
 ```
 
 No other values are needed.
+
+## required_capability
+
+You can optionally specify `required_capability` to require a capability. If a user doesn't have the defined capability, 
+the note won't be displayed on WooCommerce -> Home.
 
 ## Debugging Specification
 
