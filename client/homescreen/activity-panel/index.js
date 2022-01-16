@@ -34,7 +34,7 @@ export const ActivityPanel = () => {
 		const totalOrderCount = getAdminSetting( 'orderCount', 0 );
 		const orderStatuses = getOrderStatuses( select );
 		const reviewsEnabled = getAdminSetting( 'reviewsEnabled', 'no' );
-		const countUnreadOrders = getUnreadOrders( select, orderStatuses );
+		const unreadOrdersCount = getUnreadOrders( select, orderStatuses );
 		const manageStock = getAdminSetting( 'manageStock', 'no' );
 		const lowStockProductsCount = getLowStockCount( select );
 		const unapprovedReviewsCount = getUnapprovedReviews( select );
@@ -47,7 +47,7 @@ export const ActivityPanel = () => {
 		return {
 			lowStockProductsCount,
 			unapprovedReviewsCount,
-			countUnreadOrders,
+			unreadOrdersCount,
 			manageStock,
 			isTaskListHidden: taskList?.isHidden,
 			publishedProductCount,

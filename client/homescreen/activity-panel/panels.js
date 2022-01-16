@@ -13,7 +13,7 @@ import ReviewsPanel from './reviews';
 export function getAllPanels( {
 	lowStockProductsCount,
 	unapprovedReviewsCount,
-	countUnreadOrders,
+	unreadOrdersCount,
 	manageStock,
 	isTaskListHidden,
 	orderStatuses,
@@ -28,13 +28,13 @@ export function getAllPanels( {
 	return [
 		totalOrderCount > 0 && {
 			className: 'woocommerce-homescreen-card',
-			count: countUnreadOrders,
+			count: unreadOrdersCount,
 			collapsible: true,
 			id: 'orders-panel',
 			initialOpen: false,
 			panel: (
 				<OrdersPanel
-					countUnreadOrders={ countUnreadOrders }
+					unreadOrdersCount={ unreadOrdersCount }
 					orderStatuses={ orderStatuses }
 				/>
 			),
