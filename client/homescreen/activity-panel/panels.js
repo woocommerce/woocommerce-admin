@@ -12,7 +12,7 @@ import ReviewsPanel from './reviews';
 
 export function getAllPanels( {
 	countLowStockProducts,
-	countUnapprovedReviews,
+	unapprovedReviewsCount,
 	countUnreadOrders,
 	manageStock,
 	isTaskListHidden,
@@ -56,16 +56,16 @@ export function getAllPanels( {
 				title: __( 'Stock', 'woocommerce-admin' ),
 			},
 		publishedProductCount > 0 &&
-			countUnapprovedReviews > 0 &&
+			unapprovedReviewsCount > 0 &&
 			reviewsEnabled === 'yes' && {
 				className: 'woocommerce-homescreen-card',
 				id: 'reviews-panel',
-				count: countUnapprovedReviews,
+				count: unapprovedReviewsCount,
 				initialOpen: false,
-				collapsible: countUnapprovedReviews !== 0,
+				collapsible: unapprovedReviewsCount !== 0,
 				panel: (
 					<ReviewsPanel
-						hasUnapprovedReviews={ countUnapprovedReviews > 0 }
+						hasUnapprovedReviews={ unapprovedReviewsCount > 0 }
 					/>
 				),
 				title: __( 'Reviews', 'woocommerce-admin' ),

@@ -128,7 +128,7 @@ describe( 'ActivityPanel', () => {
 			publishedProductCount: 5,
 			reviewsEnabled: 'yes',
 			isTaskListHidden: 'yes',
-			countUnapprovedReviews: 3,
+			unapprovedReviewsCount: 3,
 		} );
 
 		expect( panels ).toEqual(
