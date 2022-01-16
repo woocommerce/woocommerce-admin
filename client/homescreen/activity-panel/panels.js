@@ -11,7 +11,7 @@ import StockPanel from './stock';
 import ReviewsPanel from './reviews';
 
 export function getAllPanels( {
-	countLowStockProducts,
+	lowStockProductsCount,
 	unapprovedReviewsCount,
 	countUnreadOrders,
 	manageStock,
@@ -44,13 +44,13 @@ export function getAllPanels( {
 			publishedProductCount > 0 &&
 			manageStock === 'yes' && {
 				className: 'woocommerce-homescreen-card',
-				count: countLowStockProducts,
+				count: lowStockProductsCount,
 				id: 'stock-panel',
 				initialOpen: false,
-				collapsible: countLowStockProducts !== 0,
+				collapsible: lowStockProductsCount !== 0,
 				panel: (
 					<StockPanel
-						countLowStockProducts={ countLowStockProducts }
+						lowStockProductsCount={ lowStockProductsCount }
 					/>
 				),
 				title: __( 'Stock', 'woocommerce-admin' ),
