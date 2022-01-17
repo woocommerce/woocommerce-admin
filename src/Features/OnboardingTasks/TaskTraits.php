@@ -38,10 +38,14 @@ trait TaskTraits {
 			return;
 		}
 
+		$prefixed_event_name = $this->prefix_event( $event_name );
+
 		wc_admin_record_tracks_event(
-			$this->prefix_event( $event_name ),
+			$prefixed_event_name,
 			$args
 		);
+
+		return $prefixed_event_name;
 	}
 
 	/**
@@ -51,7 +55,8 @@ trait TaskTraits {
 	 */
 	public function get_list_id() {
 		$namespaced_class = get_class( $this );
-		$short_class      = substr( $namespaced_class, strrpos( $namespaced_class, '\\' ) + 1 );
-		return 'Task' === $short_class ? $this->parent_id : $this->id;
+		return is_subclass_of( $namespaced_class, 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task' )
+			? $this->get_parent_id()
+			: $this->id;
 	}
 }
