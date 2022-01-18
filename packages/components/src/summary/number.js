@@ -8,6 +8,7 @@ import ChevronDownIcon from 'gridicons/dist/chevron-down';
 import { isNil, noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { createElement } from '@wordpress/element';
+import { Icon, info } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -41,6 +42,7 @@ const SummaryNumber = ( {
 	hrefType,
 	isOpen,
 	label,
+	labelTooltipText,
 	onToggle,
 	prevLabel,
 	prevValue,
@@ -107,6 +109,20 @@ const SummaryNumber = ( {
 					<Text variant="body.small" size="14" lineHeight="20px">
 						{ label }
 					</Text>
+					{ labelTooltipText && (
+						<Tooltip
+							text={ labelTooltipText }
+							position="top center"
+						>
+							<div className="woocommerce-summary__info-tooltip">
+								<Icon
+									width={ 20 }
+									height={ 20 }
+									icon={ info }
+								/>
+							</div>
+						</Tooltip>
+					) }
 				</div>
 
 				<div className="woocommerce-summary__item-data">
