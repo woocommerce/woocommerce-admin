@@ -26,6 +26,7 @@ import { Text } from '../experimental';
  * @param {string} props.hrefType
  * @param {boolean} props.isOpen
  * @param {string} props.label
+ * @param {string} props.labelTooltipText
  * @param {Function} props.onToggle
  * @param {string} props.prevLabel
  * @param {number|string} props.prevValue
@@ -195,6 +196,10 @@ SummaryNumber.propTypes = {
 	 * A string description of this value, ex "Revenue", or "New Customers"
 	 */
 	label: PropTypes.string.isRequired,
+	/**
+	 * A string that will displayed via a Tooltip next to the label
+	 */
+	labelTooltipText: PropTypes.string,
 	/**
 	 * A function used to switch the given SummaryNumber to a button, and called on click.
 	 */
