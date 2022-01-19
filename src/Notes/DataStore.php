@@ -445,6 +445,19 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 
 		$where_clauses .= $escaped_is_deleted ? ' AND is_deleted = 1' : ' AND is_deleted = 0';
 
+		if ( isset( $args['content_data'] ) ) {
+			foreach ( $args['content_data'] as $content_data_arg ) {
+				foreach ( $content_data_arg as $content_data_key => $content_data_value ) {
+					if ( is_string( $content_data_value ) ) {
+						$formatted_content_data_value = sprintf( "'%s'", esc_sql( $content_data_value ) );
+					} else {
+						$formatted_content_data_value = $content_data_value;
+					}
+					$where_clauses .= " AND JSON_EXTRACT(content_data, '$.$content_data_key')=$formatted_content_data_value";
+				}
+			}
+		}
+
 		/**
 		 * Filter the notes WHERE clause before retrieving the data.
 		 *

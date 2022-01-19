@@ -217,6 +217,202 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
+	 * Test getting notes when the `per_page` parameter is smaller than the number of notes returns the count as `per_page`.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_when_per_page_param_is_smaller_than_max_number_of_notes_returns_per_page_count() {
+		// Given.
+		wp_set_current_user( $this->user );
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		// There are 4 notes in the data store.
+		$request->set_query_params(
+			array(
+				'page'     => '1',
+				'per_page' => '3',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 3, count( $notes ) );
+	}
+
+	/**
+	 * Test getting notes with a parameter that filters a `content_data` nested property returns notes that match the property value.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_with_one_content_data_param_returns_filtered_notes() {
+		// Given.
+		wp_set_current_user( $this->user );
+		// Adds 1 note with a different `content_data` key.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'expires_in' => 12 ) );
+		// Adds 2 notes with content_data `mobile_friendly: true`.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => true ), 'earlier mobile friendly note' );
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => true ), 'later mobile friendly note' );
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'content_data.mobile_friendly' => true,
+				'page'                         => '1',
+				'per_page'                     => 3,
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 2, count( $notes ) );
+		$this->assertEquals( $notes[0]['title'], 'earlier mobile friendly note' );
+		$this->assertEquals( $notes[1]['title'], 'later mobile friendly note' );
+	}
+
+	/**
+	 * Test getting notes with two parameters that filter two different `content_data` nested properties returns notes that match the 2 property values.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_with_two_content_data_params_with_different_keys_returns_filtered_notes() {
+		// Given.
+		wp_set_current_user( $this->user );
+		// Adds 1 note with `other_number` in `content_data`.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'other_number' => 12.6 ) );
+		// Adds 2 notes with `mobile_friendly` and `other_number` in `content_data`.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test(
+			array(
+				'mobile_friendly' => true,
+				'other_number'    => 12.6,
+			),
+			'mobile friendly with other number 12'
+		);
+		WC_Helper_Admin_Notes::add_note_for_content_data_test(
+			array(
+				'mobile_friendly' => true,
+				'other_number'    => 10,
+			),
+			'mobile friendly with other number 10'
+		);
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'content_data.mobile_friendly' => true,
+				'content_data.other_number'    => 12.6,
+				'page'                         => '1',
+				'per_page'                     => 3,
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $notes ) );
+		$this->assertEquals( $notes[0]['title'], 'mobile friendly with other number 12' );
+	}
+
+	/**
+	 * Test getting notes with two parameters that filter two different values for the same `content_data` nested property returns notes that match the 2 values for the same property.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_with_two_content_data_params_with_the_same_key_returns_filtered_notes() {
+		// Given.
+		wp_set_current_user( $this->user );
+		// Adds 1 note with a different `content_data` key.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'other' => 12 ) );
+		// Adds 2 notes with `mobile_platform` and/or `other` in `content_data`.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test(
+			array(
+				'mobile_platform' => 'ios',
+				'mobile_platform' => 'android',
+				'other'           => 12,
+			),
+			'ios and android note'
+		);
+		WC_Helper_Admin_Notes::add_note_for_content_data_test(
+			array(
+				'mobile_platform' => 'ios',
+				'other'           => 12,
+			),
+			'ios only note'
+		);
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'content_data.mobile_platform' => 'ios',
+				'content_data.mobile_platform' => 'android',
+				'page'                         => '1',
+				'per_page'                     => 3,
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 1, count( $notes ) );
+		$this->assertEquals( $notes[0]['title'], 'ios and android note' );
+	}
+
+	/**
+	 * Test getting notes with invalid parameters for `content_data` returns unfiltered notes.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_with_invalid_content_data_params_returns_unfiltered_notes() {
+		// Given.
+		wp_set_current_user( $this->user );
+		WC_Helper_Admin_Notes::reset_notes_dbs();
+		// Adds 1 note with `other` in `content_data`.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'other' => 12 ) );
+		// Adds 2 notes with `mobile_platform` and `other` in `content_data`.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test(
+			array(
+				'mobile_platform' => 'ios',
+				'other'           => 12,
+			),
+			'ios note'
+		);
+		WC_Helper_Admin_Notes::add_note_for_content_data_test(
+			array(
+				'mobile_platform' => 'ios',
+				'other'           => 12,
+			),
+			'same ios note'
+		);
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'content_data[mobile_platform]'     => 'ios',
+				'content_data.mobile_platform.1'    => 'ios',
+				'content_data[\'mobile_platform\']' => 'ios',
+				'page'                              => '1',
+				'per_page'                          => 10,
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 3, count( $notes ) );
+	}
+
+	/**
 	 * Test getting notes of a certain type.
 	 *
 	 * @since 3.5.0

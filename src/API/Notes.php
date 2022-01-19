@@ -278,6 +278,24 @@ class Notes extends \WC_REST_CRUD_Controller {
 			$args['orderby'] = 'date_created';
 		}
 
+		// If there are any parameters that filter nested `content_data` properties, a `content_data` argument is generated with an array of nested property key-value pairs.
+		// For example, if the parameters contain `content_data.key1=val1&content_data.key2=val2`, this results in an entry in `$args` from `content_data` to an array of
+		// `array(array(key1 => val1), array(key2 => val2))`.
+		$params = $request->get_query_params();
+		foreach ( $params as $param_key => $param_value ) {
+			$key_parts = explode( '.', $param_key );
+			if ( count( $key_parts ) !== 2 || 'content_data' !== $key_parts[0] || ! is_scalar( $param_value ) ) {
+				continue;
+			}
+			$content_data_key   = $key_parts[1];
+			$content_data_value = $param_value;
+
+			$content_data_args = $args['content_data'] ?? array();
+			array_push( $content_data_args, array( $content_data_key => $content_data_value ) );
+
+			$args['content_data'] = $content_data_args;
+		}
+
 		/**
 		 * Filter the query arguments for a request.
 		 *

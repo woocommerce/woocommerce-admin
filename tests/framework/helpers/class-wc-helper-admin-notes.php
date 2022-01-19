@@ -132,4 +132,29 @@ class WC_Helper_Admin_Notes {
 		);
 		$note_5->save();
 	}
+
+	/**
+	 * Create a note that we can use for tests on `content_data` filters
+	 *
+	 * @param array  $content_data An array of key-value pairs to be stored to the new note's `content_data` column.
+	 * @param string $title The title of the new note.
+	 */
+	public static function add_note_for_content_data_test( array $content_data, string $title = 'PHPUNIT_TEST_NOTE_TITLE' ) {
+		$data_store = WC_Data_Store::load( 'admin-note' );
+
+		$note = new Note();
+		$note->set_title( $title );
+		$note->set_content( 'PHPUNIT_TEST_CONTENT_DATA_CONTENT' );
+		if ( ! empty( $content_data ) ) {
+			$note->set_content_data( (object) $content_data );
+		}
+
+		$note->set_type( Note::E_WC_ADMIN_NOTE_MARKETING );
+		$note->set_name( 'PHPUNIT_TEST_NOTE_NAME' );
+		$note->set_source( 'PHPUNIT_TEST' );
+		$note->set_is_snoozable( false );
+		$note->set_layout( 'plain' );
+		$note->set_image( '' );
+		$note->save();
+	}
 }
