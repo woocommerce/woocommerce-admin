@@ -250,6 +250,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	public function test_getting_notes_with_one_content_data_param_returns_filtered_notes() {
 		// Given.
 		wp_set_current_user( $this->user );
+		WC_Helper_Admin_Notes::reset_notes_dbs();
 		// Adds 1 note with a different `content_data` key.
 		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'expires_in' => 12 ) );
 		// Adds 2 notes with content_data `mobile_friendly: true`.
@@ -283,6 +284,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	public function test_getting_notes_with_two_content_data_params_with_different_keys_returns_filtered_notes() {
 		// Given.
 		wp_set_current_user( $this->user );
+		WC_Helper_Admin_Notes::reset_notes_dbs();
 		// Adds 1 note with `other_number` in `content_data`.
 		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'other_number' => 12.6 ) );
 		// Adds 2 notes with `mobile_friendly` and `other_number` in `content_data`.
@@ -318,52 +320,6 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $notes ) );
 		$this->assertEquals( $notes[0]['title'], 'mobile friendly with other number 12' );
-	}
-
-	/**
-	 * Test getting notes with two parameters that filter two different values for the same `content_data` nested property returns notes that match the 2 values for the same property.
-	 *
-	 * @since 3.5.0
-	 */
-	public function test_getting_notes_with_two_content_data_params_with_the_same_key_returns_filtered_notes() {
-		// Given.
-		wp_set_current_user( $this->user );
-		// Adds 1 note with a different `content_data` key.
-		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'other' => 12 ) );
-		// Adds 2 notes with `mobile_platform` and/or `other` in `content_data`.
-		WC_Helper_Admin_Notes::add_note_for_content_data_test(
-			array(
-				'mobile_platform' => 'ios',
-				'mobile_platform' => 'android',
-				'other'           => 12,
-			),
-			'ios and android note'
-		);
-		WC_Helper_Admin_Notes::add_note_for_content_data_test(
-			array(
-				'mobile_platform' => 'ios',
-				'other'           => 12,
-			),
-			'ios only note'
-		);
-
-		// When.
-		$request = new WP_REST_Request( 'GET', $this->endpoint );
-		$request->set_query_params(
-			array(
-				'content_data.mobile_platform' => 'ios',
-				'content_data.mobile_platform' => 'android',
-				'page'                         => '1',
-				'per_page'                     => 3,
-			)
-		);
-		$response = $this->server->dispatch( $request );
-		$notes    = $response->get_data();
-
-		// Then.
-		$this->assertEquals( 200, $response->get_status() );
-		$this->assertEquals( 1, count( $notes ) );
-		$this->assertEquals( $notes[0]['title'], 'ios and android note' );
 	}
 
 	/**
