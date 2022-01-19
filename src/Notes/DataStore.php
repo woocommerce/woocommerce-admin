@@ -343,6 +343,8 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		$offset        = $args['per_page'] * ( $args['page'] - 1 );
 		$where_clauses = $this->get_notes_where_clauses( $args );
 
+		echo print_r($where_clauses);
+
 		$query = $wpdb->prepare(
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			"SELECT * FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d",
