@@ -53,4 +53,11 @@ body.woocommerce-page {
 			color: $studio-white;
 		}
 	}
+
+	.woocommerce-ellipsis-menu__content {
+		.components-button {
+			justify-content: center;
+			width: 100%;
+		}
+	}
 }
