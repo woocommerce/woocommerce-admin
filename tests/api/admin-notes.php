@@ -254,14 +254,14 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		// Adds 1 note with a different `content_data` key.
 		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'expires_in' => 12 ) );
 		// Adds 2 notes with content_data `mobile_friendly: true`.
-		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => true ), 'earlier mobile friendly note' );
-		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => true ), 'later mobile friendly note' );
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => 1 ), 'earlier mobile friendly note' );
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => 1 ), 'later mobile friendly note' );
 
 		// When.
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'content_data.mobile_friendly' => true,
+				'content_data.mobile_friendly' => 1,
 				'page'                         => '1',
 				'per_page'                     => 3,
 			)
@@ -290,25 +290,28 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		// Adds 2 notes with `mobile_friendly` and `other_number` in `content_data`.
 		WC_Helper_Admin_Notes::add_note_for_content_data_test(
 			array(
-				'mobile_friendly' => true,
-				'other_number'    => 12.6,
+				'mobile_friendly' => 1,
+				'other_number' => 12.6,
+				'mobile_platform'    => 'ios',
 			),
-			'mobile friendly with other number 12'
+			'ios friendly note'
 		);
 		WC_Helper_Admin_Notes::add_note_for_content_data_test(
 			array(
-				'mobile_friendly' => true,
-				'other_number'    => 10,
+				'mobile_friendly' => 1,
+				'other_number' => 12.6,
+				'mobile_platform'    => 'android',
 			),
-			'mobile friendly with other number 10'
+			'android friendly note'
 		);
 
 		// When.
 		$request = new WP_REST_Request( 'GET', $this->endpoint );
 		$request->set_query_params(
 			array(
-				'content_data.mobile_friendly' => true,
-				'content_data.other_number'    => 12.6,
+				'content_data.mobile_friendly' => 1,
+				'content_data.mobile_platform'    => 'android',
+				'other_number' => 12.6,
 				'page'                         => '1',
 				'per_page'                     => 3,
 			)
@@ -319,7 +322,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		// Then.
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 1, count( $notes ) );
-		$this->assertEquals( $notes[0]['title'], 'mobile friendly with other number 12' );
+		$this->assertEquals( $notes[0]['title'], 'android friendly note' );
 	}
 
 	/**

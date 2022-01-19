@@ -350,14 +350,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$args['per_page']
 		);
 
-		$query_all = $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}wc_admin_notes ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d",
-			$offset,
-			20
-		);
-
-		print_r($wpdb->get_results( $query_all ));
-
 		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
