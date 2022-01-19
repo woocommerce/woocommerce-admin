@@ -681,7 +681,7 @@ export function getDateFormatsForIntervalD3( interval, ticks = 0 ) {
 
 /**
  * Returns php date formats for the current interval.
- * See see php.net/date.
+ * See see https://www.php.net/manual/en/datetime.format.php.
  *
  * @param  {string} interval Interval to get date formats for.
  * @param  {number}    [ticks] Number of ticks the axis will have.
@@ -690,7 +690,7 @@ export function getDateFormatsForIntervalD3( interval, ticks = 0 ) {
 export function getDateFormatsForIntervalPhp( interval, ticks = 0 ) {
 	let screenReaderFormat = 'F j, Y';
 	let tooltipLabelFormat = 'F j, Y';
-	let xFormat = 'Y-m-%d';
+	let xFormat = 'Y-m-d';
 	let x2Format = 'M Y';
 	let tableFormat = defaultTableDateFormat;
 
@@ -718,10 +718,14 @@ export function getDateFormatsForIntervalPhp( interval, ticks = 0 ) {
 				xFormat = 'M';
 				x2Format = 'Y';
 			}
-			// eslint-disable-next-line @wordpress/i18n-translator-comments
-			screenReaderFormat = __( 'Week of F j, Y', 'woocommerce-admin' );
-			// eslint-disable-next-line @wordpress/i18n-translator-comments
-			tooltipLabelFormat = __( 'Week of F j, Y', 'woocommerce-admin' );
+			screenReaderFormat = __(
+				'\\W\\e\\e\\k \\of F j, Y',
+				'woocommerce-admin'
+			);
+			tooltipLabelFormat = __(
+				'\\W\\e\\e\\k \\of F j, Y',
+				'woocommerce-admin'
+			);
 			break;
 		case 'quarter':
 		case 'month':
