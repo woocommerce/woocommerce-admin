@@ -1048,8 +1048,6 @@ describe( 'getStoreTimeZoneMoment', () => {
 } );
 
 describe( 'getDateFormatsForIntervalPhp', () => {
-	const date = moment( '2022-01-01T13:00:00' ).tz( 'Asia/Taipei' );
-
 	test.each( [
 		{ interval: 'hour', ticks: 0 },
 		{ interval: 'day', ticks: dayTicksThreshold - 1 },
@@ -1063,6 +1061,8 @@ describe( 'getDateFormatsForIntervalPhp', () => {
 	] )(
 		'should return formatted date same as getDateFormatsForIntervalD3 when interval is $interval and ticks is $ticks',
 		( { interval, ticks } ) => {
+			const date = new Date();
+
 			const dateFormatsPhp = getDateFormatsForIntervalPhp(
 				interval,
 				ticks
