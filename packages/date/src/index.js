@@ -718,14 +718,15 @@ export function getDateFormatsForIntervalPhp( interval, ticks = 0 ) {
 				xFormat = 'M';
 				x2Format = 'Y';
 			}
-			screenReaderFormat = __(
-				'\\W\\e\\e\\k \\of F j, Y',
+
+			// Since some alphabet letters have php associated formats, we need to escape them first.
+			const escapedWeekOfStr = __(
+				'Week of',
 				'woocommerce-admin'
-			);
-			tooltipLabelFormat = __(
-				'\\W\\e\\e\\k \\of F j, Y',
-				'woocommerce-admin'
-			);
+			).replace( /(\w)/g, '\\$1' );
+
+			screenReaderFormat = `${ escapedWeekOfStr } F j, Y`;
+			tooltipLabelFormat = `${ escapedWeekOfStr } F j, Y`;
 			break;
 		case 'quarter':
 		case 'month':
