@@ -28,8 +28,9 @@
 			min-width: unset;
 		}
 
-		.woocommerce-task-card__section-controls {
-			text-align: center;
+		.woocommerce-task-card__section-controls .components-button {
+			justify-content: center;
+			width: 100%;
 		}
 	}
 
