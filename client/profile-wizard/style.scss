@@ -297,7 +297,6 @@
 
 		.components-base-control__label {
 			white-space: nowrap;
-			overflow: hidden;
 			text-overflow: ellipsis;
 			max-width: calc(100% - #{$gap * 2} - 24px);
 		}
