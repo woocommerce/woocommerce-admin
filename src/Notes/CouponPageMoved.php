@@ -94,15 +94,16 @@ class CouponPageMoved {
 	 * @return bool
 	 */
 	protected static function has_unactioned_note() {
-		$notes = self::get_data_store()->get_notes(
-			[
-				'name'       => [ self::NOTE_NAME ],
-				'status'     => [ 'unactioned' ],
-				'is_deleted' => false,
-			]
+		global $wpdb;
+
+		$unactioned_note_count = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s AND status = %s AND is_deleted = 0",
+				[ self::NOTE_NAME, 'unactioned' ]
+			)
 		);
 
-		return ! empty( $notes );
+		return $unactioned_note_count > 0;
 	}
 
 	/**
@@ -111,14 +112,16 @@ class CouponPageMoved {
 	 * @return bool
 	 */
 	protected static function has_dismissed_note() {
-		$notes = self::get_data_store()->get_notes(
-			[
-				'name'       => [ self::NOTE_NAME ],
-				'is_deleted' => true,
-			]
+		global $wpdb;
+
+		$dismissed_note_count = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s AND is_deleted = 1",
+				[ self::NOTE_NAME ]
+			)
 		);
 
-		return ! empty( $notes );
+		return $dismissed_note_count > 0;
 	}
 
 	/**
