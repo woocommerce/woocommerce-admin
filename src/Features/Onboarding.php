@@ -217,7 +217,7 @@ class Onboarding {
 		// New settings injection.
 		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 20 );
 		add_filter( 'woocommerce_admin_preload_settings', array( $this, 'preload_settings' ) );
-		add_filter( 'woocommerce_admin_is_loading', array( $this, 'is_loading' ) );
+		add_filter( 'admin_body_class', array( __CLASS__, 'add_loading_classes' ) );
 		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_install_notice' ), 10, 2 );
 		add_filter( 'woocommerce_component_settings_preload_endpoints', array( $this, 'add_preload_endpoints' ) );
 	}
@@ -731,19 +731,24 @@ class Onboarding {
 	}
 
 	/**
-	 * Let the app know that we will be showing the onboarding route, so wp-admin elements should be hidden while loading.
+	 * Set the admin full screen class when loading to prevent flashes of unstyled content.
 	 *
-	 * @param bool $is_loading Indicates if the `woocommerce-admin-is-loading` should be appended or not.
-	 * @return bool
+	 * @param bool $classes Body classes.
+	 * @return array
 	 */
-	public function is_loading( $is_loading ) {
-		$show_profiler = self::should_show_profiler();
-
-		if ( $show_profiler ) {
-			return true;
+	public static function add_loading_classes( $classes ) {
+		/* phpcs:disable WordPress.Security.NonceVerification */
+		if (
+			isset( $_GET['page'] ) &&
+			'wc-admin' === $_GET['page'] &&
+			isset( $_GET['path'] ) &&
+			'/setup-wizard' === $_GET['path']
+		) {
+			$classes .= ' woocommerce-admin-full-screen';
 		}
+		/* phpcs: enable */
 
-		return $is_loading;
+		return $classes;
 	}
 
 	/**
