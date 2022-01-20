@@ -77,6 +77,7 @@ const truncateElement = ( element, limit ) => {
 				} );
 			} else {
 				// If it does, then we'd need to recursively run this with balance of characters remaining.
+				// this is a test
 				clone = truncateElement( clone, charactersRemaining );
 			}
 			truncatedNode.appendChild( clone );
