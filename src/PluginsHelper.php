@@ -347,9 +347,10 @@ class PluginsHelper {
 			return new \WP_Error( 'woocommerce_plugins_invalid_plugins', __( 'Plugins must be a non-empty array.', 'woocommerce-admin' ), 404 );
 		}
 
-		$action_id = WC()->queue()->schedule_single( time() + 5, 'woocommerce_plugins_activate_callback', array( $plugins ) );
+		$job_id = uniqid();
+		WC()->queue()->schedule_single( time() + 5, 'woocommerce_plugins_activate_callback', array( $plugins, $job_id ) );
 
-		return $action_id;
+		return $job_id;
 	}
 
 	/**
