@@ -105,7 +105,7 @@ class ReportCSVExporter extends \WC_CSV_Batch_Exporter {
 	public static function get_reports_directory() {
 		$upload_dir  = wp_upload_dir();
 		$reports_dir = trailingslashit( $upload_dir['basedir'] ) . 'woocommerce_uploads/reports/';
-		return apply_filters( 'woocommerce_report_export_get_directory', $reports_dir );
+		return apply_filters( 'woocommerce_admin_report_export_get_directory', $reports_dir );
 	}
 
 	/**
