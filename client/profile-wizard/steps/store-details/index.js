@@ -17,6 +17,7 @@ import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Form, TextControl } from '@woocommerce/components';
 import {
+	COUNTRIES_STORE_NAME,
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	SETTINGS_STORE_NAME,
@@ -24,6 +25,7 @@ import {
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
 import { Icon, info } from '@wordpress/icons';
+import { isEmail } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -31,7 +33,7 @@ import { Icon, info } from '@wordpress/icons';
 import { getCountryCode, getCurrencyRegion } from '../../../dashboard/utils';
 import {
 	StoreAddress,
-	validateStoreAddress,
+	getStoreAddressValidator,
 } from '../../../dashboard/components/settings/general/store-address';
 import UsageModal from '../usage-modal';
 import { CurrencyContext } from '../../../lib/currency-context';
@@ -55,7 +57,7 @@ const LoadingPlaceholder = () => (
 	</div>
 );
 
-class StoreDetails extends Component {
+export class StoreDetails extends Component {
 	constructor( props ) {
 		super( props );
 
@@ -68,6 +70,7 @@ class StoreDetails extends Component {
 
 		this.onContinue = this.onContinue.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
+		this.validateStoreDetails = this.validateStoreDetails.bind( this );
 	}
 
 	deriveCurrencySettings( countryState ) {
@@ -114,7 +117,7 @@ class StoreDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
-			derived_currency: currencySettings.currency_code,
+			derived_currency: currencySettings.code,
 			email_signup: values.isAgreeMarketing,
 		} );
 
@@ -198,13 +201,12 @@ class StoreDetails extends Component {
 	}
 
 	validateStoreDetails( values ) {
-		const errors = validateStoreAddress( values );
+		const { getLocale } = this.props;
+		const locale = getLocale( values.countryState );
+		const validateAddress = getStoreAddressValidator( locale );
+		const errors = validateAddress( values );
 
-		if (
-			values.storeEmail &&
-			values.storeEmail.trim().length &&
-			values.storeEmail.indexOf( '@' ) === -1
-		) {
+		if ( ! isEmail( values.storeEmail ) ) {
 			errors.storeEmail = __(
 				'Invalid email address',
 				'woocommerce-admin'
@@ -358,9 +360,6 @@ class StoreDetails extends Component {
 											) }
 										</div>
 									) }
-							</CardBody>
-
-							<CardFooter>
 								<FlexItem>
 									<div className="woocommerce-profile-wizard__newsletter-signup">
 										<CheckboxControl
@@ -384,7 +383,7 @@ class StoreDetails extends Component {
 										/>
 									</div>
 								</FlexItem>
-							</CardFooter>
+							</CardBody>
 
 							<CardFooter justify="center">
 								<Button
@@ -462,6 +461,11 @@ export default compose(
 			getEmailPrefill,
 			hasFinishedResolution: hasFinishedResolutionOnboarding,
 		} = select( ONBOARDING_STORE_NAME );
+		const {
+			getLocale,
+			getLocales,
+			hasFinishedResolution: hasFinishedResolutionCountries,
+		} = select( COUNTRIES_STORE_NAME );
 		const { isResolving } = select( OPTIONS_STORE_NAME );
 
 		const profileItems = getProfileItems();
@@ -474,7 +478,8 @@ export default compose(
 			isResolving( 'getOption', [ 'woocommerce_allow_tracking' ] );
 		const isLoading =
 			! hasFinishedResolutionOnboarding( 'getProfileItems' ) ||
-			! hasFinishedResolutionOnboarding( 'getEmailPrefill' );
+			! hasFinishedResolutionOnboarding( 'getEmailPrefill' ) ||
+			! hasFinishedResolutionCountries( 'getLocales' );
 		const errorsRef = useRef( {
 			settings: null,
 		} );
@@ -487,6 +492,7 @@ export default compose(
 			( settings.woocommerce_store_address &&
 				settings.woocommerce_default_country ) ||
 			'';
+		getLocales();
 
 		const initialValues = {
 			addressLine1: settings.woocommerce_store_address || '',
@@ -505,6 +511,7 @@ export default compose(
 		};
 
 		return {
+			getLocale,
 			initialValues,
 			isLoading,
 			profileItems,

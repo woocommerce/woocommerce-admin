@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### Fix category report query returns invalid net sales
+
+1. Create a new store and finish the Onboarding flow
+2. Go to **Products > Add New** and create a product called **Hoodie with Pocket** with the price $35
+3. Create a new category called **Hoodie** with **Clothing** as the parent category in the **Product categories** on the right.
+4. Select **Clothing** and **Hoodie with Pocket** as well and click **Update**
+5. Create an order with a single item of **Hoodie with Pocket** (keep note of the total price)
+6. Run the action scheduler (make sure all are run)
+7. Go to **Analytics > Overview** and scroll down to the **Leaderboards**
+8. Observe that the **Clothing** category has only **1** items sold and net sales is $35
+9. Click on **Clothing** it will redirect to the Categories page and show the correct numbers
+10. Now click on **Analytics > Categories** again and scroll down to the table
+11. Observe that the **Clothing** category has only **1** items sold and net sales is $35
+
 ## 3.1.0
 
 ### Inbox - 320 character limit
@@ -9,15 +23,47 @@
 On a new site, with English language settings:
 
 1. Go to WooCommerce home screen
-2. See that all Inbox notes are short in length (aproximately less than 320 characters). 
+2. See that all Inbox notes are short in length (aproximately less than 320 characters).
+
+### OBW: Hide the extensions header when no available plugins in the category
+
+1. In a new JN site with WooCommerce, install WCAdmin 3.0.0-beta.1 or WCAdmin on the main branch
+2. Go to setup wizard
+3. Choose "Johor - Malaysia" as store country
+4. Go through all steps until "Business details"
+5. Go to "Free features" tab
+6. Observe the "GET THE BASICS" header is NOT shown without any plugins
+
+### OBW: Fix free extensions list isn't updated after store location or industry is changed
+
+**Change store Industry**
+
+1. Checkout to this branch
+2. Go to the setup wizard
+3. Choose any store location that supports WCPay, such as any state in the US
+4. In the Industry step, make sure to not select CBD
+5. Proceed through the setup until the Business Details step
+6. Go to the "Free features" tab
+7. Observe **WooCommerce Payments** is displayed in the suggested extensions
+8. Without refreshing, go back to the **Industry** step
+9. Select **CBD industry** and click on continue until Business Details step again
+10. In the extension list, observe that WooCommerce Payments is **NOT** displayed.
+
+**Change store country**
+
+11. Repeat steps 3~7
+12. Without refreshing, go back to the **Store Details** step
+13. Choose any store location that **doesn't** supports WCPay, such as Malaysia (MY).
+14. Go to Business Details step again
+15. In the extension list, observe that WooCommerce Payments is **NOT** displayed.
 
 ### Fix PHP Warning on 'Add new product' page
 
-0. On a Jurassic Ninja site.
-1. Go to **WooCommerce** > **Home**.
-2. Press **Add my products** in the task list.
-3. Press **Add manually**.
-4. No PHP warning should be visible.
+1. On a Jurassic Ninja site.
+2. Go to **WooCommerce** > **Home**.
+3. Press **Add my products** in the task list.
+4. Press **Add manually**.
+5. No PHP warning should be visible.
 
 ## 3.0.0
 
