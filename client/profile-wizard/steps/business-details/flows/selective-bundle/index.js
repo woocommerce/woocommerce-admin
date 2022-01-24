@@ -35,51 +35,111 @@ import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { getRevenueOptions } from '../../data/revenue-options';
 import { getProductCountOptions } from '../../data/product-options';
 import { SelectiveExtensionsBundle } from './selective-extensions-bundle';
+import { getPluginSlug, getPluginTrackKey } from '~/utils';
 import './style.scss';
 
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
 const FREE_FEATURES_TAB_NAME = 'free-features';
 
-export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
+export const filterBusinessExtensions = (
+	extensionInstallationOptions,
+	alreadyActivatedExtensions = []
+) => {
 	return (
 		Object.keys( extensionInstallationOptions )
 			.filter(
 				( key ) =>
 					extensionInstallationOptions[ key ] &&
-					key !== 'install_extensions'
+					key !== 'install_extensions' &&
+					! alreadyActivatedExtensions.includes( key )
 			)
-			.map( ( key ) => {
-				// Remove anything after :
-				// Please refer to selective-extensions-bundle/index.js
-				// installableExtensions variable
-				// this is to allow duplicate slugs (Tax & Shipping for example)
-				return key.split( ':' )[ 0 ];
-			} )
+			.map( getPluginSlug )
 			// remove duplicate
 			.filter( ( item, index, arr ) => arr.indexOf( item ) === index )
 	);
 };
 
+const timeFrames = [
+	{ name: '0-2s', max: 2 },
+	{ name: '2-5s', max: 5 },
+	{ name: '5-10s', max: 10 },
+	{ name: '10-15s', max: 15 },
+	{ name: '15-20s', max: 20 },
+	{ name: '20-30s', max: 30 },
+	{ name: '30-60s', max: 60 },
+	{ name: '>60s' },
+];
+function getTimeFrame( timeInMs ) {
+	for ( const timeFrame of timeFrames ) {
+		if ( ! timeFrame.max ) {
+			return timeFrame.name;
+		}
+		if ( timeInMs < timeFrame.max * 1000 ) {
+			return timeFrame.name;
+		}
+	}
+}
+
 export const prepareExtensionTrackingData = (
 	extensionInstallationOptions
 ) => {
 	const installedExtensions = {};
-	for ( const [ fieldKey, value ] of Object.entries(
+	for ( let [ fieldKey, value ] of Object.entries(
 		extensionInstallationOptions
 	) ) {
-		const key =
-			fieldKey === 'woocommerce-payments'
-				? 'install_wcpay'
-				: `install_${ fieldKey.replace( /-/g, '_' ).split( ':', 1 ) }`;
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
 		if (
 			fieldKey !== 'install_extensions' &&
-			! installedExtensions[ key ]
+			! installedExtensions[ `install_${ key }` ]
 		) {
-			installedExtensions[ key ] = value;
+			installedExtensions[ `install_${ key }` ] = value;
 		}
 	}
 	return installedExtensions;
 };
+
+export const prepareExtensionTrackingInstallationData = (
+	extensionInstallationOptions,
+	installationData
+) => {
+	const installed = [];
+	const data = {};
+	for ( let [ fieldKey ] of Object.entries( extensionInstallationOptions ) ) {
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
+		if (
+			installationData &&
+			installationData.data &&
+			installationData.data.install_time &&
+			installationData.data.install_time[ fieldKey ]
+		) {
+			installed.push( key );
+			data[ `install_time_${ key }` ] = getTimeFrame(
+				installationData.data.install_time[ fieldKey ]
+			);
+		}
+	}
+	data.installed_extensions = installed;
+	data.activated_extensions =
+		installationData &&
+		installationData.data &&
+		installationData.data.activated
+			? installationData.data.activated
+			: [];
+	return data;
+};
+
+export const isSellingElsewhere = ( selectedOption ) =>
+	[
+		'other',
+		'brick-mortar',
+		'brick-mortar-other',
+		'other-woocommerce',
+	].includes( selectedOption );
+
+export const isSellingOtherPlatformInPerson = ( selectedOption ) =>
+	[ 'other', 'brick-mortar-other' ].includes( selectedOption );
 
 class BusinessDetails extends Component {
 	constructor() {
@@ -96,15 +156,29 @@ class BusinessDetails extends Component {
 		this.validate = this.validate.bind( this );
 	}
 
-	async onContinue( extensionInstallationOptions ) {
+	async onContinue(
+		extensionInstallationOptions,
+		installableExtensionsData
+	) {
 		const {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
 		} = this.props;
 
+		const alreadyActivatedExtensions = installableExtensionsData.reduce(
+			( actExtensions, bundle ) => {
+				const activated = bundle.plugins
+					.filter( ( plugin ) => plugin.is_activated )
+					.map( ( plugin ) => plugin.key );
+				return [ ...actExtensions, ...activated ];
+			},
+			[]
+		);
+
 		const businessExtensions = filterBusinessExtensions(
-			extensionInstallationOptions
+			extensionInstallationOptions,
+			alreadyActivatedExtensions
 		);
 
 		const installedExtensions = prepareExtensionTrackingData(
@@ -125,12 +199,39 @@ class BusinessDetails extends Component {
 		];
 
 		if ( businessExtensions.length ) {
+			const installationStartTime = window.performance.now();
 			promises.push(
 				installAndActivatePlugins( businessExtensions )
 					.then( ( response ) => {
+						const totalInstallationTime =
+							window.performance.now() - installationStartTime;
+						const installedExtensionsData = prepareExtensionTrackingInstallationData(
+							extensionInstallationOptions,
+							response
+						);
+
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: true,
+								total_time: getTimeFrame(
+									totalInstallationTime
+								),
+								...installedExtensionsData,
+							}
+						);
 						createNoticesFromResponse( response );
 					} )
 					.catch( ( error ) => {
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: false,
+								failed_extensions: Object.keys(
+									error.data || {}
+								).map( ( key ) => getPluginTrackKey( key ) ),
+							}
+						);
 						createNoticesFromResponse( error );
 						throw new Error();
 					} )
@@ -219,7 +320,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.other_platform.length &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform = __(
 				'This field is required',
@@ -229,7 +330,7 @@ class BusinessDetails extends Component {
 		if (
 			! values.other_platform_name.trim().length &&
 			values.other_platform === 'other' &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform_name = __(
 				'This field is required',
@@ -239,12 +340,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.number_employees.length &&
-			[
-				'other',
-				'brick-mortar',
-				'brick-mortar-other',
-				'other-woocommerce',
-			].includes( values.selling_venues )
+			isSellingElsewhere( values.selling_venues )
 		) {
 			errors.number_employees = __(
 				'This field is required',
@@ -254,12 +350,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.revenue.length &&
-			[
-				'other',
-				'brick-mortar',
-				'brick-mortar-other',
-				'other-woocommerce',
-			].includes( values.selling_venues )
+			isSellingElsewhere( values.selling_venues )
 		) {
 			errors.revenue = __(
 				'This field is required',
@@ -391,12 +482,9 @@ class BusinessDetails extends Component {
 										) }
 									/>
 
-									{ [
-										'other',
-										'brick-mortar',
-										'brick-mortar-other',
-										'other-woocommerce',
-									].includes( values.selling_venues ) && (
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
 										<SelectControl
 											excludeSelectedOptions={ false }
 											label={ __(
@@ -412,12 +500,9 @@ class BusinessDetails extends Component {
 										/>
 									) }
 
-									{ [
-										'other',
-										'brick-mortar',
-										'brick-mortar-other',
-										'other-woocommerce',
-									].includes( values.selling_venues ) && (
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
 										<SelectControl
 											excludeSelectedOptions={ false }
 											label={ __(
@@ -438,10 +523,9 @@ class BusinessDetails extends Component {
 										/>
 									) }
 
-									{ [
-										'other',
-										'brick-mortar-other',
-									].includes( values.selling_venues ) && (
+									{ isSellingOtherPlatformInPerson(
+										values.selling_venues
+									) && (
 										<>
 											<div className="business-competitors">
 												<SelectControl

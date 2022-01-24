@@ -485,11 +485,16 @@ export const getPreviousDate = ( date, date1, date2, compare, interval ) => {
  * Returns the allowed selectable intervals for a specific query.
  *
  * @param  {Object} query Current query
+ * @param {string} defaultDateRange - the store's default date range
  * @return {Array} Array containing allowed intervals.
  */
-export function getAllowedIntervalsForQuery( query ) {
+export function getAllowedIntervalsForQuery(
+	query,
+	defaultDateRange = 'period=&compare=previous_year'
+) {
+	const { period } = getDateParamsFromQuery( query, defaultDateRange );
 	let allowed = [];
-	if ( query.period === 'custom' ) {
+	if ( period === 'custom' ) {
 		const { primary } = getCurrentDates( query );
 		const differenceInDays = getDateDifferenceInDays(
 			primary.before,
@@ -509,7 +514,7 @@ export function getAllowedIntervalsForQuery( query ) {
 			allowed = [ 'hour', 'day' ];
 		}
 	} else {
-		switch ( query.period ) {
+		switch ( period ) {
 			case 'today':
 			case 'yesterday':
 				allowed = [ 'hour', 'day' ];
@@ -541,11 +546,15 @@ export function getAllowedIntervalsForQuery( query ) {
 /**
  * Returns the current interval to use.
  *
- * @param  {Object} query Current query
+ * @param {Object} query Current query
+ * @param {string} defaultDateRange - the store's default date range
  * @return {string} Current interval.
  */
-export function getIntervalForQuery( query ) {
-	const allowed = getAllowedIntervalsForQuery( query );
+export function getIntervalForQuery(
+	query,
+	defaultDateRange = 'period=&compare=previous_year'
+) {
+	const allowed = getAllowedIntervalsForQuery( query, defaultDateRange );
 	const defaultInterval = allowed[ 0 ];
 	let current = query.interval || defaultInterval;
 	if ( query.interval && ! allowed.includes( query.interval ) ) {
@@ -575,13 +584,37 @@ export const defaultTableDateFormat = 'm/d/Y';
 
 /**
  * Returns date formats for the current interval.
+ *
+ * @param {string} interval Interval to get date formats for.
+ * @param {number} [ticks] Number of ticks the axis will have.
+ * @param {Object} [option] Options
+ * @param {string} [option.type] Date format type, d3 or php, defaults to d3.
+ * @return {string} Current interval.
+ */
+export function getDateFormatsForInterval(
+	interval,
+	ticks = 0,
+	option = { type: 'd3' }
+) {
+	switch ( option.type ) {
+		case 'php':
+			return getDateFormatsForIntervalPhp( interval, ticks );
+
+		case 'd3':
+		default:
+			return getDateFormatsForIntervalD3( interval, ticks );
+	}
+}
+
+/**
+ * Returns d3 date formats for the current interval.
  * See https://github.com/d3/d3-time-format for chart formats.
  *
  * @param  {string} interval Interval to get date formats for.
  * @param  {number}    [ticks] Number of ticks the axis will have.
  * @return {string} Current interval.
  */
-export function getDateFormatsForInterval( interval, ticks = 0 ) {
+export function getDateFormatsForIntervalD3( interval, ticks = 0 ) {
 	let screenReaderFormat = '%B %-d, %Y';
 	let tooltipLabelFormat = '%B %-d, %Y';
 	let xFormat = '%Y-%m-%d';
@@ -612,10 +645,12 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 				xFormat = '%b';
 				x2Format = '%Y';
 			}
+			// eslint-disable-next-line @wordpress/i18n-translator-comments
 			screenReaderFormat = __(
 				'Week of %B %-d, %Y',
 				'woocommerce-admin'
 			);
+			// eslint-disable-next-line @wordpress/i18n-translator-comments
 			tooltipLabelFormat = __(
 				'Week of %B %-d, %Y',
 				'woocommerce-admin'
@@ -632,6 +667,78 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 			screenReaderFormat = '%Y';
 			tooltipLabelFormat = '%Y';
 			xFormat = '%Y';
+			break;
+	}
+
+	return {
+		screenReaderFormat,
+		tooltipLabelFormat,
+		xFormat,
+		x2Format,
+		tableFormat,
+	};
+}
+
+/**
+ * Returns php date formats for the current interval.
+ * See see https://www.php.net/manual/en/datetime.format.php.
+ *
+ * @param  {string} interval Interval to get date formats for.
+ * @param  {number}    [ticks] Number of ticks the axis will have.
+ * @return {string} Current interval.
+ */
+export function getDateFormatsForIntervalPhp( interval, ticks = 0 ) {
+	let screenReaderFormat = 'F j, Y';
+	let tooltipLabelFormat = 'F j, Y';
+	let xFormat = 'Y-m-d';
+	let x2Format = 'M Y';
+	let tableFormat = defaultTableDateFormat;
+
+	switch ( interval ) {
+		case 'hour':
+			screenReaderFormat = 'gA F j, Y';
+			tooltipLabelFormat = 'gA M j, Y';
+			xFormat = 'gA';
+			x2Format = 'M j, Y';
+			tableFormat = 'h A';
+			break;
+		case 'day':
+			if ( ticks < dayTicksThreshold ) {
+				xFormat = 'j';
+			} else {
+				xFormat = 'M';
+				x2Format = 'Y';
+			}
+			break;
+		case 'week':
+			if ( ticks < weekTicksThreshold ) {
+				xFormat = 'j';
+				x2Format = 'M Y';
+			} else {
+				xFormat = 'M';
+				x2Format = 'Y';
+			}
+
+			// Since some alphabet letters have php associated formats, we need to escape them first.
+			const escapedWeekOfStr = __(
+				'Week of',
+				'woocommerce-admin'
+			).replace( /(\w)/g, '\\$1' );
+
+			screenReaderFormat = `${ escapedWeekOfStr } F j, Y`;
+			tooltipLabelFormat = `${ escapedWeekOfStr } F j, Y`;
+			break;
+		case 'quarter':
+		case 'month':
+			screenReaderFormat = 'F Y';
+			tooltipLabelFormat = 'F Y';
+			xFormat = 'M';
+			x2Format = 'Y';
+			break;
+		case 'year':
+			screenReaderFormat = 'Y';
+			tooltipLabelFormat = 'Y';
+			xFormat = 'Y';
 			break;
 	}
 
