@@ -1,4 +1,4 @@
 Significance: minor
 Type: Fix
 
-Fix product import error message formatting. #8173
+Preserve HTML markup in server-side error messages received from sample product import request. #8173
