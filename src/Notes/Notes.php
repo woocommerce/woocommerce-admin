@@ -272,16 +272,19 @@ class Notes {
 	 * Delete actioned survey notes.
 	 */
 	public static function possibly_delete_survey_notes() {
-		$data_store = self::load_data_store();
-		$notes      = $data_store->get_notes(
-			array(
-				'type'   => array( Note::E_WC_ADMIN_NOTE_SURVEY ),
-				'status' => array( 'actioned' ),
+		global $wpdb;
+		$note_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT `note_id` FROM {$wpdb->prefix}wc_admin_notes WHERE `type` = %s AND `status` = %s",
+				[
+					Note::E_WC_ADMIN_NOTE_SURVEY,
+					'actioned',
+				]
 			)
 		);
 
-		foreach ( $notes as $note ) {
-			$note = self::get_note( $note->note_id );
+		foreach ( $note_ids as $note_id ) {
+			$note = self::get_note( $note_id );
 			if ( $note ) {
 				$note->set_is_deleted( 1 );
 				$note->save();
