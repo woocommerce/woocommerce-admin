@@ -7,7 +7,7 @@ import { map } from 'lodash';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -16,9 +16,10 @@ import ReportTable from '../../components/report-table';
 import { isLowStock } from '../products/utils';
 import { CurrencyContext } from '../../../lib/currency-context';
 import { getVariationName } from '../../../lib/async-requests';
+import { getAdminSetting } from '~/utils/admin-settings';
 
-const manageStock = getSetting( 'manageStock', 'no' );
-const stockStatuses = getSetting( 'stockStatuses', {} );
+const manageStock = getAdminSetting( 'manageStock', 'no' );
+const stockStatuses = getAdminSetting( 'stockStatuses', {} );
 
 const getFullVariationName = ( rowData ) =>
 	getVariationName( rowData.extended_info || {} );
@@ -271,7 +272,7 @@ class VariationsReportTable extends Component {
 					orderby: query.orderby || 'items_sold',
 					order: query.order || 'desc',
 					extended_info: true,
-					product_includes: query.products,
+					product_includes: query.product_includes,
 					variations: query.variations,
 				} }
 				title={ __( 'Variations', 'woocommerce-admin' ) }

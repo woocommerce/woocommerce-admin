@@ -26,7 +26,7 @@ import { useExperiment } from '@woocommerce/explat';
 /**
  * Internal dependencies
  */
-import ActivityHeader from '../header/activity-panel/activity-header';
+import ActivityHeader from '~/activity-panel/activity-header';
 import { ActivityPanel } from './activity-panel';
 import { Column } from './column';
 import InboxPanel from '../inbox-panel';
@@ -162,7 +162,7 @@ export const Layout = ( {
 							) }
 						/>
 					) }
-					{ ! isRunningTaskListExperiment && <ActivityPanel /> }
+					{ <ActivityPanel /> }
 					{ hasTaskList && renderTaskList() }
 					<InboxPanel />
 				</Column>
@@ -193,7 +193,10 @@ export const Layout = ( {
 						userPreferences={ userPrefs }
 						twoColumns={ twoColumns }
 					/>
-					<TwoColumnTasksExtended query={ query } />
+					<TwoColumnTasksExtended
+						query={ query }
+						shouldRenderTask={ false }
+					/>
 				</>
 			);
 		}

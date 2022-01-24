@@ -22,6 +22,7 @@ import {
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -79,6 +80,17 @@ export const prepareExtensionTrackingData = (
 	}
 	return installedExtensions;
 };
+
+export const isSellingElsewhere = ( selectedOption ) =>
+	[
+		'other',
+		'brick-mortar',
+		'brick-mortar-other',
+		'other-woocommerce',
+	].includes( selectedOption );
+
+export const isSellingOtherPlatformInPerson = ( selectedOption ) =>
+	[ 'other', 'brick-mortar-other' ].includes( selectedOption );
 
 class BusinessDetails extends Component {
 	constructor() {
@@ -218,18 +230,17 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.other_platform.length &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform = __(
 				'This field is required',
 				'woocommerce-admin'
 			);
 		}
-
 		if (
-			! values.other_platform_name &&
+			! values.other_platform_name.trim().length &&
 			values.other_platform === 'other' &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform_name = __(
 				'This field is required',
@@ -239,12 +250,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.number_employees.length &&
-			[
-				'other',
-				'brick-mortar',
-				'brick-mortar-other',
-				'other-woocommerce',
-			].includes( values.selling_venues )
+			isSellingElsewhere( values.selling_venues )
 		) {
 			errors.number_employees = __(
 				'This field is required',
@@ -254,12 +260,7 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.revenue.length &&
-			[
-				'other',
-				'brick-mortar',
-				'brick-mortar-other',
-				'other-woocommerce',
-			].includes( values.selling_venues )
+			isSellingElsewhere( values.selling_venues )
 		) {
 			errors.revenue = __(
 				'This field is required',
@@ -295,6 +296,17 @@ class BusinessDetails extends Component {
 			used_platform_name: otherPlatformName,
 			setup_client: isSetupClient,
 		} );
+	}
+
+	getSelectControlProps( getInputProps, name = '' ) {
+		const { className, ...props } = getInputProps( name );
+		return {
+			...props,
+			className: classnames(
+				`woocommerce-profile-wizard__${ name.replace( /\_/g, '-' ) }`,
+				className
+			),
+		};
 	}
 
 	renderBusinessDetailsStep() {
@@ -360,7 +372,10 @@ class BusinessDetails extends Component {
 										) }
 										options={ productCountOptions }
 										required
-										{ ...getInputProps( 'product_count' ) }
+										{ ...this.getSelectControlProps(
+											getInputProps,
+											'product_count'
+										) }
 									/>
 
 									<SelectControl
@@ -371,15 +386,15 @@ class BusinessDetails extends Component {
 										) }
 										options={ sellingVenueOptions }
 										required
-										{ ...getInputProps( 'selling_venues' ) }
+										{ ...this.getSelectControlProps(
+											getInputProps,
+											'selling_venues'
+										) }
 									/>
 
-									{ [
-										'other',
-										'brick-mortar',
-										'brick-mortar-other',
-										'other-woocommerce',
-									].includes( values.selling_venues ) && (
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
 										<SelectControl
 											excludeSelectedOptions={ false }
 											label={ __(
@@ -388,18 +403,16 @@ class BusinessDetails extends Component {
 											) }
 											options={ employeeOptions }
 											required
-											{ ...getInputProps(
+											{ ...this.getSelectControlProps(
+												getInputProps,
 												'number_employees'
 											) }
 										/>
 									) }
 
-									{ [
-										'other',
-										'brick-mortar',
-										'brick-mortar-other',
-										'other-woocommerce',
-									].includes( values.selling_venues ) && (
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
 										<SelectControl
 											excludeSelectedOptions={ false }
 											label={ __(
@@ -413,14 +426,16 @@ class BusinessDetails extends Component {
 												formatAmount
 											) }
 											required
-											{ ...getInputProps( 'revenue' ) }
+											{ ...this.getSelectControlProps(
+												getInputProps,
+												'revenue'
+											) }
 										/>
 									) }
 
-									{ [
-										'other',
-										'brick-mortar-other',
-									].includes( values.selling_venues ) && (
+									{ isSellingOtherPlatformInPerson(
+										values.selling_venues
+									) && (
 										<>
 											<div className="business-competitors">
 												<SelectControl
@@ -433,7 +448,8 @@ class BusinessDetails extends Component {
 													) }
 													options={ platformOptions }
 													required
-													{ ...getInputProps(
+													{ ...this.getSelectControlProps(
+														getInputProps,
 														'other_platform'
 													) }
 												/>
@@ -445,7 +461,8 @@ class BusinessDetails extends Component {
 															'woocommerce-admin'
 														) }
 														required
-														{ ...getInputProps(
+														{ ...this.getSelectControlProps(
+															getInputProps,
 															'other_platform_name'
 														) }
 													/>

@@ -19,11 +19,11 @@ import {
 	InboxNotePlaceholder,
 	Text,
 } from '@woocommerce/experimental';
-
+import moment from 'moment';
 /**
  * Internal dependencies
  */
-import { ActivityCard } from '../header/activity-panel/activity-card';
+import { ActivityCard } from '~/activity-panel/activity-card';
 import { hasValidNotes, truncateRenderableHTML } from './utils';
 import { getScreenName } from '../utils';
 import DismissAllModal from './dissmiss-all-modal';
@@ -51,6 +51,8 @@ const onBodyLinkClick = ( note, innerLink ) => {
 	} );
 };
 
+let hasFiredPanelViewTrack = false;
+
 const renderNotes = ( {
 	hasNotes,
 	isBatchUpdating,
@@ -68,9 +70,12 @@ const renderNotes = ( {
 		return renderEmptyCard();
 	}
 
-	recordEvent( 'inbox_panel_view', {
-		total: notes.length,
-	} );
+	if ( ! hasFiredPanelViewTrack ) {
+		recordEvent( 'inbox_panel_view', {
+			total: notes.length,
+		} );
+		hasFiredPanelViewTrack = true;
+	}
 
 	const screen = getScreenName();
 	const onNoteVisible = ( note ) => {
@@ -164,6 +169,7 @@ const INBOX_QUERY = {
 		'image',
 		'is_deleted',
 		'is_read',
+		'locale',
 	],
 };
 
@@ -181,10 +187,35 @@ const InboxPanel = ( { showHeader = true } ) => {
 				isResolving,
 				isNotesRequesting,
 			} = select( NOTES_STORE_NAME );
+			const WC_VERSION_61_RELEASE_DATE = moment(
+				'2022-01-11',
+				'YYYY-MM-DD'
+			).valueOf();
+
+			const supportedLocales = [
+				'en_US',
+				'en_AU',
+				'en_CA',
+				'en_GB',
+				'en_ZA',
+			];
 
 			return {
 				notes: getNotes( INBOX_QUERY ).map( ( note ) => {
-					note.content = truncateRenderableHTML( note.content, 320 );
+					const noteDate = moment(
+						note.date_created_gmt,
+						'YYYY-MM-DD'
+					).valueOf();
+
+					if (
+						supportedLocales.includes( note.locale ) &&
+						noteDate >= WC_VERSION_61_RELEASE_DATE
+					) {
+						note.content = truncateRenderableHTML(
+							note.content,
+							320
+						);
+					}
 					return note;
 				} ),
 				isError: Boolean(
@@ -243,6 +274,14 @@ const InboxPanel = ( { showHeader = true } ) => {
 
 	const onNoteActionClick = ( note, action ) => {
 		triggerNoteAction( note.id, action.id );
+		const screen = getScreenName();
+		recordEvent( 'inbox_action_click', {
+			note_content: note.content,
+			note_name: note.name,
+			note_title: note.title,
+			note_type: note.type,
+			screen,
+		} );
 	};
 
 	if ( isError ) {

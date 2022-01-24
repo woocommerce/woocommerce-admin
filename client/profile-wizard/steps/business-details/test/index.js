@@ -3,9 +3,11 @@
  */
 import {
 	filterBusinessExtensions,
+	isSellingElsewhere,
+	isSellingOtherPlatformInPerson,
 	prepareExtensionTrackingData,
 } from '../flows/selective-bundle';
-import { createInitialValues } from '../flows/selective-bundle/selective-extensions-bundle';
+import { createInstallExtensionOptions } from '../flows/selective-bundle/selective-extensions-bundle';
 
 describe( 'BusinessDetails', () => {
 	test( 'filtering extensions', () => {
@@ -101,31 +103,33 @@ describe( 'BusinessDetails', () => {
 		} );
 	} );
 
-	describe( 'createInitialValues', () => {
+	describe( 'createInstallExtensionOptions', () => {
 		test( 'selected by default', () => {
-			const extensions = [
+			const installableExtensions = [
 				{
 					plugins: [
 						{
 							key: 'visible-and-not-selected',
-							selected: false,
 							isVisible: () => true,
 						},
 						{
 							key: 'visible-and-selected',
-							selected: true,
 							isVisible: () => true,
 						},
 						{
 							key: 'this-should-not-show-at-all',
-							selected: true,
 							isVisible: () => false,
 						},
 					],
 				},
 			];
 
-			const values = createInitialValues( extensions, 'US', '', [] );
+			const values = createInstallExtensionOptions( {
+				installableExtensions,
+				prevInstallExtensionOptions: {
+					'visible-and-not-selected': false,
+				},
+			} );
 
 			expect( values ).toEqual(
 				expect.objectContaining( {
@@ -135,6 +139,27 @@ describe( 'BusinessDetails', () => {
 			);
 
 			expect( values ).not.toContain( 'this-should-not-show-at-all' );
+		} );
+	} );
+
+	describe( 'Currently selling elsewhere', () => {
+		test( 'isSellingElsewhere', () => {
+			const sellingElsewhere = isSellingElsewhere( 'other' );
+			const notSellingElsewhere = isSellingElsewhere( 'no' );
+
+			expect( sellingElsewhere ).toBeTruthy();
+			expect( notSellingElsewhere ).toBeFalsy();
+		} );
+		test( 'isSellingOtherPlatformInPerson', () => {
+			const sellingAnotherPlatformAndInPerson = isSellingOtherPlatformInPerson(
+				'brick-mortar-other'
+			);
+			const notSellingAnotherPlatformAndInPerson = isSellingOtherPlatformInPerson(
+				'no'
+			);
+
+			expect( sellingAnotherPlatformAndInPerson ).toBeTruthy();
+			expect( notSellingAnotherPlatformAndInPerson ).toBeFalsy();
 		} );
 	} );
 } );
