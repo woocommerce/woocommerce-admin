@@ -450,6 +450,8 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 				foreach ( $content_data_arg as $content_data_key => $content_data_value ) {
 					if ( is_string( $content_data_value ) ) {
 						$formatted_content_data_value = sprintf( "'%s'", esc_sql( $content_data_value ) );
+					} elseif ( is_bool( $content_data_value ) ) {
+						$formatted_content_data_value = $content_data_value ? 'true' : 'false';
 					} else {
 						$formatted_content_data_value = $content_data_value;
 					}

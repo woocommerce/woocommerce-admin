@@ -243,17 +243,17 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 	}
 
 	/**
-	 * Test getting notes with a parameter that filters a `content_data` nested property returns notes that match the property value.
+	 * Test getting notes with a parameter that filters a `content_data` nested integer property returns notes that match the property value.
 	 *
 	 * @since 3.5.0
 	 */
-	public function test_getting_notes_with_one_content_data_param_returns_filtered_notes() {
+	public function test_getting_notes_with_one_integer_content_data_param_returns_filtered_notes() {
 		// Given.
 		wp_set_current_user( $this->user );
 		WC_Helper_Admin_Notes::reset_notes_dbs();
 		// Adds 1 note with a different `content_data` key.
 		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'expires_in' => 12 ) );
-		// Adds 2 notes with content_data `mobile_friendly: true`.
+		// Adds 2 notes with content_data `mobile_friendly: 1`.
 		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => 1 ), 'earlier mobile friendly note' );
 		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => 1 ), 'later mobile friendly note' );
 
@@ -262,6 +262,40 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		$request->set_query_params(
 			array(
 				'content_data.mobile_friendly' => 1,
+				'page'                         => '1',
+				'per_page'                     => 3,
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 2, count( $notes ) );
+		$this->assertEquals( $notes[0]['title'], 'earlier mobile friendly note' );
+		$this->assertEquals( $notes[1]['title'], 'later mobile friendly note' );
+	}
+
+	/**
+	 * Test getting notes with a parameter that filters a `content_data` nested boolean property returns notes that match the property value.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_with_one_boolean_content_data_param_returns_filtered_notes() {
+		// Given.
+		wp_set_current_user( $this->user );
+		WC_Helper_Admin_Notes::reset_notes_dbs();
+		// Adds 1 note with a different `content_data` key.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'expires_in' => 12 ) );
+		// Adds 2 notes with content_data `mobile_friendly: true`.
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => true ), 'earlier mobile friendly note' );
+		WC_Helper_Admin_Notes::add_note_for_content_data_test( array( 'mobile_friendly' => true ), 'later mobile friendly note' );
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'content_data.mobile_friendly' => true,
 				'page'                         => '1',
 				'per_page'                     => 3,
 			)
