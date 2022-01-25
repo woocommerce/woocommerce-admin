@@ -445,6 +445,10 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 
 		$where_clauses .= $escaped_is_deleted ? ' AND is_deleted = 1' : ' AND is_deleted = 0';
 
+		global $wpdb;
+		$db_version = $wpdb->db_version();
+		print_r($db_version);
+
 		if ( isset( $args['content_data'] ) ) {
 			foreach ( $args['content_data'] as $content_data_arg ) {
 				foreach ( $content_data_arg as $content_data_key => $content_data_value ) {
