@@ -198,21 +198,10 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$query_args = $this->prepare_objects_query( $request );
 
 		$notes = NotesRepository::get_notes( 'edit', $query_args );
-
-		$is_tasklist_experiment_assigned_treatment = $this->is_tasklist_experiment_assigned_treatment();
+		$notes = $this->filter_and_fetch_more_notes_if_needed( array(), $notes, $query_args );
 
 		$data = array();
 		foreach ( (array) $notes as $note_obj ) {
-			// Hide selected notes for users not in experiment.
-			if ( ! $is_tasklist_experiment_assigned_treatment ) {
-				if ( 'wc-admin-complete-store-details' === $note_obj['name'] ) {
-					continue;
-				}
-
-				if ( 'wc-admin-update-store-details' === $note_obj['name'] ) {
-					continue;
-				}
-			}
 			$note   = $this->prepare_item_for_response( $note_obj, $request );
 			$note   = $this->prepare_response_for_collection( $note );
 			$data[] = $note;
@@ -222,6 +211,68 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$response->header( 'X-WP-Total', count( $data ) );
 
 		return $response;
+	}
+
+
+	/**
+	 * Filters notes, merges with previously filtered notes, and fetches new notes if the size of the merged notes is smaller than the requested page size.
+	 *
+	 * @param array $notes An array of notes that are already filtered.
+	 * @param array $notes_to_filter An array of notes to be filtered.
+	 * @param array $query_args Query parameters for the notes request.
+	 * @return array An array of notes that are filtered.
+	 */
+	private function filter_and_fetch_more_notes_if_needed( array $notes, array $notes_to_filter, array $query_args ): array {
+		$filtered_notes = array_filter(
+			$notes_to_filter,
+			function ( $note ) use ( $query_args ) {
+				// If any `content_data` params exist, only notes that match the given params are allowed.
+				if ( isset( $query_args['content_data'] ) ) {
+					$content_data = get_object_vars( $note['content_data'] );
+					foreach ( $query_args['content_data'] as $content_data_arg ) {
+						foreach ( $content_data_arg as $content_data_key => $content_data_value ) {
+							if ( ! array_key_exists( $content_data_key, $content_data ) ) {
+								return false;
+							}
+							if ( $content_data[ $content_data_key ] !== $content_data_value ) {
+								return false;
+							}
+						}
+					}
+				}
+
+				// Hide selected notes for users not in experiment.
+				$is_tasklist_experiment_assigned_treatment = $this->is_tasklist_experiment_assigned_treatment();
+				if ( ! $is_tasklist_experiment_assigned_treatment ) {
+					if ( 'wc-admin-complete-store-details' === $note['name'] ) {
+						return false;
+					}
+
+					if ( 'wc-admin-update-store-details' === $note['name'] ) {
+						return false;
+					}
+				}
+
+				return true;
+			}
+		);
+
+		$page                          = $query_args['page'];
+		$page_size                     = $query_args['per_page'];
+		$combined_filtered_notes       = array_slice( array_merge( $notes, $filtered_notes ), 0, $page_size );
+		$combined_filtered_notes_count = count( $combined_filtered_notes );
+
+		if ( $combined_filtered_notes_count < $page_size ) {
+			$page               = ++$page;
+			$query_args['page'] = $page;
+			$next_page_notes    = NotesRepository::get_notes( 'edit', $query_args );
+			if ( empty( $next_page_notes ) ) {
+				return $combined_filtered_notes;
+			}
+			return $this->filter_and_fetch_more_notes_if_needed( $combined_filtered_notes, $next_page_notes, $query_args );
+		}
+
+		return $combined_filtered_notes;
 	}
 
 	/**
@@ -276,6 +327,24 @@ class Notes extends \WC_REST_CRUD_Controller {
 
 		if ( 'date' === $args['orderby'] ) {
 			$args['orderby'] = 'date_created';
+		}
+
+		// If there are any parameters that filter nested `content_data` properties, a `content_data` argument is generated with an array of nested property key-value pairs.
+		// For example, if the parameters contain `content_data.key1=val1&content_data.key2=val2`, this results in an entry in `$args` from `content_data` to an array of
+		// `array(array(key1 => val1), array(key2 => val2))`.
+		$params = $request->get_query_params();
+		foreach ( $params as $param_key => $param_value ) {
+			$key_parts = explode( '.', $param_key );
+			if ( count( $key_parts ) !== 2 || 'content_data' !== $key_parts[0] || ! is_scalar( $param_value ) ) {
+				continue;
+			}
+			$content_data_key   = $key_parts[1];
+			$content_data_value = $param_value;
+
+			$content_data_args = $args['content_data'] ?? array();
+			array_push( $content_data_args, array( $content_data_key => $content_data_value ) );
+
+			$args['content_data'] = $content_data_args;
 		}
 
 		/**
