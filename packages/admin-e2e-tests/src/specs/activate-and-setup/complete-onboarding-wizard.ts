@@ -7,7 +7,6 @@ import { TaskTitles } from '../../constants/taskTitles';
 import { Login } from '../../pages/Login';
 import { WcSettings } from '../../pages/WcSettings';
 import { ProductsSetup } from '../../pages/ProductsSetup';
-import { deactivateAndDeleteExtension } from '../../utils/actions';
 import { resetWooCommerceState } from '../../fixtures/reset';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
@@ -69,7 +68,6 @@ const testAdminOnboardingWizard = () => {
 
 		it( 'can complete the product types section', async () => {
 			await profileWizard.productTypes.isDisplayed( 7 );
-			// await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
 			await profileWizard.productTypes.selectProduct(
@@ -153,14 +151,12 @@ const testSelectiveBundleWCPay = () => {
 		it( 'can choose the "Other" industry', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
-			// await profileWizard.industry.uncheckIndustries();
 			await profileWizard.industry.selectIndustry( 'Other' );
 			await profileWizard.continue();
 		} );
 
 		it( 'can complete the product types section', async () => {
 			await profileWizard.productTypes.isDisplayed( 7 );
-			// await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
 			await profileWizard.productTypes.selectProduct(
@@ -275,6 +271,7 @@ const testDifferentStoreCurrenciesWCPay = () => {
 
 			beforeAll( async () => {
 				await login.login();
+				await resetWooCommerceState();
 			} );
 			afterAll( async () => {
 				await login.logout();
@@ -295,11 +292,9 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				await profileWizard.optionallySelectUsageTracking();
 				// Query for the industries checkboxes
 				await profileWizard.industry.isDisplayed();
-				await profileWizard.industry.uncheckIndustries();
 				await profileWizard.industry.selectIndustry( 'Other' );
 				await profileWizard.continue();
 				await profileWizard.productTypes.isDisplayed( 7 );
-				await profileWizard.productTypes.uncheckProducts();
 				await profileWizard.productTypes.selectProduct(
 					'Physical products'
 				);
@@ -360,6 +355,7 @@ const testSubscriptionsInclusion = () => {
 
 		beforeAll( async () => {
 			await login.login();
+			await resetWooCommerceState();
 		} );
 
 		it( 'can complete the store details section', async () => {
@@ -380,11 +376,9 @@ const testSubscriptionsInclusion = () => {
 		it( 'can complete the product types section, Subscriptions copy is not visible', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
-			await profileWizard.industry.uncheckIndustries();
 			await profileWizard.industry.selectIndustry( 'Health and beauty' );
 			await profileWizard.continue();
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
 			await profileWizard.productTypes.selectProduct( 'Subscriptions' );
 			await expect( page ).not.toMatchElement( 'p', {
 				text:
@@ -465,11 +459,9 @@ const testSubscriptionsInclusion = () => {
 		it( 'can complete the product types section, the Subscriptions copy now is visible', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
-			await profileWizard.industry.uncheckIndustries();
 			await profileWizard.industry.selectIndustry( 'Health and beauty' );
 			await profileWizard.continue();
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
 			await profileWizard.productTypes.selectProduct( 'Subscriptions' );
 			await expect( page ).toMatchElement( 'p', {
 				text:
@@ -538,6 +530,8 @@ const testBusinessDetailsForm = () => {
 
 		it( 'can complete the store details and product types sections', async () => {
 			await profileWizard.navigate();
+			await profileWizard.storeDetails.isDisplayed();
+			await profileWizard.storeDetails.completeStoreDetailsSection();
 
 			// Wait for "Continue" button to become active
 			await profileWizard.continue();
@@ -547,24 +541,25 @@ const testBusinessDetailsForm = () => {
 
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
+			await profileWizard.industry.selectIndustry(
+				'Fashion, apparel, and accessories'
+			);
 			await profileWizard.continue();
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
 			// Select Physical
 			await profileWizard.productTypes.selectProduct(
 				'Physical products'
 			);
+			await profileWizard.productTypes.selectProduct( 'Downloads' );
 
 			await profileWizard.continue();
-			await page.waitForNavigation( { waitUntil: 'networkidle0' } );
+			await page.waitForNavigation( {
+				waitUntil: 'networkidle0',
+			} );
 		} );
 
 		it( 'can complete the business details tab', async () => {
 			await profileWizard.business.isDisplayed();
-
-			expect( page ).toMatchElement( 'label', {
-				text: 'How many employees do you have?',
-			} );
 
 			await profileWizard.business.selectProductNumber(
 				config.get( 'onboardingwizard.numberofproducts' )
@@ -572,6 +567,9 @@ const testBusinessDetailsForm = () => {
 			await profileWizard.business.selectCurrentlySelling(
 				config.get( 'onboardingwizard.sellingOnAnotherPlatform' )
 			);
+			expect( page ).toMatchElement( 'label', {
+				text: 'How many employees do you have?',
+			} );
 			await profileWizard.business.selectEmployeesNumber(
 				config.get( 'onboardingwizard.number_employees' )
 			);
