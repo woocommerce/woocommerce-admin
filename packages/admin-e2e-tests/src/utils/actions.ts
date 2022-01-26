@@ -2,12 +2,10 @@
  * External dependencies
  */
 import { ElementHandle } from 'puppeteer';
-import { request } from 'http';
 
 /**
  * Internal dependencies
  */
-import { NewOrder } from '../pages/NewOrder';
 import { Login } from '../pages/Login';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
