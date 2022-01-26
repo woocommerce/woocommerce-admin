@@ -53,11 +53,24 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/install/status/(?P<job_id>[a-z0-9_\-]+)',
+			'/' . $this->rest_base . '/install/status',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_installation_status' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/install/status/(?P<job_id>[a-z0-9_\-]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_job_installation_status' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -105,11 +118,24 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/activate/status/(?P<job_id>[a-z0-9_\-]+)',
+			'/' . $this->rest_base . '/activate/status',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_activation_status' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/activate/status/(?P<job_id>[a-z0-9_\-]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_job_activation_status' ),
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -282,8 +308,19 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @return array Jobs.
 	 */
 	public function get_installation_status( $request ) {
+		return PluginsHelper::get_installation_status();
+	}
+
+	/**
+	 * Returns a list of recently scheduled installation jobs.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return array Job.
+	 */
+	public function get_job_installation_status( $request ) {
 		$job_id = $request->get_param( 'job_id' );
-		return PluginsHelper::get_installation_status( $job_id );
+		$jobs   = PluginsHelper::get_installation_status( $job_id );
+		return reset( $jobs );
 	}
 
 	/**
@@ -361,11 +398,22 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * Returns a list of recently scheduled activation jobs.
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
-	 * @return array Jobs.
+	 * @return array Job.
 	 */
 	public function get_activation_status( $request ) {
+		return PluginsHelper::get_activation_status();
+	}
+
+	/**
+	 * Returns a list of recently scheduled activation jobs.
+	 *
+	 * @param  WP_REST_Request $request Full details about the request.
+	 * @return array Jobs.
+	 */
+	public function get_job_activation_status( $request ) {
 		$job_id = $request->get_param( 'job_id' );
-		return PluginsHelper::get_activation_status( $job_id );
+		$jobs   = PluginsHelper::get_activation_status( $job_id );
+		return reset( $jobs );
 	}
 
 	/**

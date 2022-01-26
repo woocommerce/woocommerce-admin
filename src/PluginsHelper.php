@@ -359,11 +359,13 @@ class PluginsHelper {
 	 * @param int $job_id Job ID.
 	 * @return array Job data.
 	 */
-	public static function get_installation_status( $job_id ) {
+	public static function get_installation_status( $job_id = null ) {
 		$actions = WC()->queue()->search(
 			array(
-				'hook'   => 'woocommerce_plugins_install_callback',
-				'search' => $job_id,
+				'hook'    => 'woocommerce_plugins_install_callback',
+				'search'  => $job_id,
+				'orderby' => 'date',
+				'order'   => 'DESC',
 			)
 		);
 
@@ -374,38 +376,38 @@ class PluginsHelper {
 	 * Gets the plugin data for the first action.
 	 *
 	 * @param array $actions Array of AS actions.
-	 * @return array
+	 * @return array Array of action data.
 	 */
 	public static function get_action_data( $actions ) {
-		if ( count( $actions ) ) {
-			reset( $actions );
-			$action_id = key( $actions );
-			$action    = $actions[ $action_id ];
-			$store     = new \ActionScheduler_DBStore();
-			$status    = $store->get_status( $action_id );
-			$args      = $action->get_args();
+		$data = [];
 
-			return array(
+		foreach ( $actions as $action_id => $action ) {
+			$store  = new \ActionScheduler_DBStore();
+			$status = $store->get_status( $action_id );
+			$args   = $action->get_args();
+			$data[] = array(
 				'job_id'  => $args[1],
 				'plugins' => $args[0],
 				'status'  => $store->get_status( $action_id ),
 			);
 		}
 
-		return null;
+		return $data;
 	}
 
 	/**
 	 * Activation status.
 	 *
 	 * @param int $job_id Job ID.
-	 * @return array
+	 * @return array Array of action data.
 	 */
-	public static function get_activation_status( $job_id ) {
+	public static function get_activation_status( $job_id = null ) {
 		$actions = WC()->queue()->search(
 			array(
-				'hook'   => 'woocommerce_plugins_activate_callback',
-				'search' => $job_id,
+				'hook'    => 'woocommerce_plugins_activate_callback',
+				'search'  => $job_id,
+				'orderby' => 'date',
+				'order'   => 'DESC',
 			)
 		);
 
