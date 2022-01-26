@@ -262,7 +262,10 @@ class Notes extends \WC_REST_CRUD_Controller {
 		$combined_filtered_notes       = array_slice( array_merge( $notes, $filtered_notes ), 0, $page_size );
 		$combined_filtered_notes_count = count( $combined_filtered_notes );
 
-		if ( $combined_filtered_notes_count < $page_size ) {
+		// Only continues to fetch the next page of notes if:
+		// - The merged filtered notes size is smaller than the requested page size.
+		// - The notes to filter are of full page size, which indicates there might be more data to fetch.
+		if ( $combined_filtered_notes_count < $page_size && count( $notes_to_filter ) === $page_size ) {
 			$page               = ++$page;
 			$query_args['page'] = $page;
 			$next_page_notes    = NotesRepository::get_notes( 'edit', $query_args );
