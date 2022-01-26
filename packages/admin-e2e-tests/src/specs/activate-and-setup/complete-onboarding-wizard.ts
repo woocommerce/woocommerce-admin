@@ -439,8 +439,11 @@ const testSubscriptionsInclusion = () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
 
+		beforeAll( async () => {
+			await resetWooCommerceState();
+		} );
+
 		afterAll( async () => {
-			await deactivateAndDeleteExtension( 'woocommerce-payments' );
 			await login.logout();
 		} );
 
@@ -526,10 +529,10 @@ const testBusinessDetailsForm = () => {
 
 		beforeAll( async () => {
 			await login.login();
+			await resetWooCommerceState();
 		} );
 
 		afterAll( async () => {
-			await deactivateAndDeleteExtension( 'woocommerce-payments' );
 			await login.logout();
 		} );
 

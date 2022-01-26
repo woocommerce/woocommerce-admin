@@ -1,14 +1,17 @@
 /**
- * External dependencies
- */
-import { withRestApi } from '@woocommerce/e2e-utils';
-
-/**
  * Internal dependencies
  */
 import { httpClient } from './http-client';
+import { deactivateAndDeleteAllPlugins } from './plugins';
 
 const resetEndpoint = '/woocommerce-reset/v1/state';
+
+const skippedPlugins = [
+	'woocommerce',
+	'woocommerce-admin',
+	'woocommerce-reset',
+	'basic-auth',
+];
 
 export async function resetWooCommerceState() {
 	const response = await httpClient.delete( resetEndpoint );
@@ -16,4 +19,5 @@ export async function resetWooCommerceState() {
 	expect( response.data.transients ).toEqual( true );
 	expect( response.data.notes ).toEqual( true );
 	expect( response.statusCode ).toEqual( 200 );
+	await deactivateAndDeleteAllPlugins( skippedPlugins );
 }

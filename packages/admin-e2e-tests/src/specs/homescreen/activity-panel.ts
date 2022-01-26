@@ -15,6 +15,7 @@ import {
 	unhideTaskList,
 	runActionScheduler,
 	updateOption,
+	resetWooCommerceState,
 } from '../../fixtures';
 import { OrdersActivityPanel } from '../../elements/OrdersActivityPanel';
 import { addReviewToProduct, waitForElementByText } from '../../utils/actions';
@@ -33,12 +34,7 @@ const testAdminHomescreenActivityPanel = () => {
 
 		beforeAll( async () => {
 			await login.login();
-
-			await withRestApi.deleteAllProducts();
-			await removeAllOrders();
-			await unhideTaskList( 'setup' );
-			await runActionScheduler();
-			await updateOption( 'woocommerce_task_list_hidden', 'no' );
+			await resetWooCommerceState();
 			await profileWizard.navigate();
 			await profileWizard.skipStoreSetup();
 
