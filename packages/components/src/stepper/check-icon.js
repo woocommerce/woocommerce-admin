@@ -5,7 +5,9 @@ import { createElement } from '@wordpress/element';
 
 export default () => {
 	// we need a unique mask id because HTML ids are global in nature and collisions result in strange outcomes
-	const maskId = Math.floor( Math.random() * 10000000 );
+	const maskId = `check-icon-mask-${ Math.floor(
+		Math.random() * 10000000
+	) }`;
 	return (
 		<svg
 			role="img"
