@@ -93,6 +93,7 @@ export class AnalyticsOverview extends Analytics {
 	async addSection( sectionTitle: string ) {
 		await this.page.waitForSelector( "button[title='Add more sections']" );
 		await this.page.click( "button[title='Add more sections']" );
+		// Delaying this, as there is a slight transition for the Add section button to show up.
 		await waitForTimeout( 100 );
 		await this.page.waitForSelector(
 			`button[title='Add ${ sectionTitle } section']`
