@@ -25,6 +25,7 @@ import {
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
 import { Icon, info } from '@wordpress/icons';
+import { isEmail } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -56,7 +57,7 @@ const LoadingPlaceholder = () => (
 	</div>
 );
 
-class StoreDetails extends Component {
+export class StoreDetails extends Component {
 	constructor( props ) {
 		super( props );
 
@@ -116,7 +117,7 @@ class StoreDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
-			derived_currency: currencySettings.currency_code,
+			derived_currency: currencySettings.code,
 			email_signup: values.isAgreeMarketing,
 		} );
 
@@ -205,11 +206,7 @@ class StoreDetails extends Component {
 		const validateAddress = getStoreAddressValidator( locale );
 		const errors = validateAddress( values );
 
-		if (
-			values.storeEmail &&
-			values.storeEmail.trim().length &&
-			values.storeEmail.indexOf( '@' ) === -1
-		) {
+		if ( ! isEmail( values.storeEmail ) ) {
 			errors.storeEmail = __(
 				'Invalid email address',
 				'woocommerce-admin'
