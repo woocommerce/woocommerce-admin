@@ -154,13 +154,13 @@ export const getStateFilter = (
 		? option.key.split( ':' )
 		: option.label.split( '—' );
 
-	// no region options in country
+	// No region options in the country
 	if ( countryStateArray.length <= 1 ) {
 		return false;
 	}
 
 	const state = countryStateArray[ 1 ];
-	// handle special case, for example: China — Beijing / 北京
+	// Handle special case, for example: China — Beijing / 北京
 	if ( state.includes( '/' ) ) {
 		const stateStrList = state.split( '/' );
 		return (
@@ -169,7 +169,7 @@ export const getStateFilter = (
 		);
 	}
 
-	// handle special case, for example: Iran — Alborz (البرز)
+	// Handle special case, for example: Iran — Alborz (البرز)
 	if ( state.includes( '(' ) && state.includes( ')' ) ) {
 		const stateStrList = state.replace( ')', '' ).split( '(' );
 		return (
@@ -200,7 +200,7 @@ export function useGetCountryStateAutofill(
 		current: boolean;
 	} = useRef();
 
-	// sync the autofill fields on first render and the countryState value changes.
+	// Sync the autofill fields on first render and the countryState value changes.
 	useEffect( () => {
 		if ( ! isAutofillChange.current ) {
 			const option = options.find( ( opt ) => opt.key === countryState );
@@ -222,14 +222,15 @@ export function useGetCountryStateAutofill(
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ countryState ] );
 
-	// sync the countryState value the autofill fields changes
+	// Sync the countryState value the autofill fields changes
 	useEffect( () => {
-		// skip on first render since we only want to update the value when the autofill fields changes.
+		// Skip on first render since we only want to update the value when the autofill fields changes.
 		if ( isAutofillChange.current === undefined ) {
 			return;
 		}
 
 		if ( ! autofillCountry && ! autofillState && countryState ) {
+			// Clear form
 			isAutofillChange.current = true;
 			setValue( 'countryState', '' );
 			return;
@@ -240,7 +241,7 @@ export function useGetCountryStateAutofill(
 		);
 		const isCountryAbbreviation = autofillCountry.length < 3;
 		const isStateAbbreviation =
-			autofillState.length < 3 && autofillState.match( /^[\w]+$/ );
+			autofillState.length < 3 && !! autofillState.match( /^[\w]+$/ );
 		let filteredOptions = [];
 
 		if ( autofillCountry.length && autofillState.length ) {
@@ -249,7 +250,7 @@ export function useGetCountryStateAutofill(
 					isCountryAbbreviation ? option.key : option.label
 				)
 			);
-			// No country matches so use all options for state filter.
+			// no country matches so use all options for state filter.
 			if ( ! filteredOptions.length ) {
 				filteredOptions = [ ...options ];
 			}

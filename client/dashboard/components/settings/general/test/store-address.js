@@ -59,7 +59,7 @@ describe( 'useGetCountryStateAutofill', () => {
 		expect( inputs[ 1 ].autocomplete ).toEqual( 'address-level1' );
 	} );
 
-	it( 'should set countryState value if the value is provided', () => {
+	it( 'should set countryState value if a value is provided', () => {
 		const onChange = jest.fn();
 		render(
 			<AutofillWrapper
@@ -75,7 +75,7 @@ describe( 'useGetCountryStateAutofill', () => {
 		] );
 	} );
 
-	it( 'should set autocomplete fields if a countryState has a value', () => {
+	it( 'should set autocomplete fields if the countryState is not empty', () => {
 		const { queryAllByRole } = render(
 			<AutofillWrapper options={ [ ...DEFAULT_OPTIONS ] } value="CA:MB" />
 		);
