@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { stringify } from 'qs';
+import { applyFilters } from '@wordpress/hooks';
 
 const EXPLAT_VERSION = '0.1.0';
 
@@ -18,7 +19,7 @@ export const fetchExperimentAssignment = async ( {
 		);
 	}
 
-	const params = stringify( {
+	const params = applyFilters( 'woocommerce_explat_request_args', {
 		experiment_name: experimentName,
 		anon_id: anonId ?? undefined,
 		woo_country_code:
@@ -29,7 +30,9 @@ export const fetchExperimentAssignment = async ( {
 	} );
 
 	const response = await window.fetch(
-		`https://public-api.wordpress.com/wpcom/v2/experiments/${ EXPLAT_VERSION }/assignments/woocommerce?${ params }`
+		`https://public-api.wordpress.com/wpcom/v2/experiments/${ EXPLAT_VERSION }/assignments/woocommerce?${ stringify(
+			params
+		) }`
 	);
 
 	return await response.json();
