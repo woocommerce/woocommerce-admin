@@ -238,8 +238,9 @@ export function useGetCountryStateAutofill(
 			escapeRegExp( autofillCountry ),
 			'i'
 		);
-		const isStateAbbreviation = autofillState.length < 3;
 		const isCountryAbbreviation = autofillCountry.length < 3;
+		const isStateAbbreviation =
+			autofillState.length < 3 && autofillState.match( /^[\w]+$/ );
 		let filteredOptions = [];
 
 		if ( autofillCountry.length && autofillState.length ) {
