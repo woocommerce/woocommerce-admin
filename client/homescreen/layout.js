@@ -20,8 +20,6 @@ import {
 	OPTIONS_STORE_NAME,
 } from '@woocommerce/data';
 import { __ } from '@wordpress/i18n';
-import moment from 'moment';
-import { useExperiment } from '@woocommerce/explat';
 
 /**
  * Internal dependencies
@@ -37,9 +35,11 @@ import { TasksPlaceholder } from '../tasks';
 import {
 	WELCOME_MODAL_DISMISSED_OPTION_NAME,
 	WELCOME_FROM_CALYPSO_MODAL_DISMISSED_OPTION_NAME,
+	WOOCOMMERCE_ADMIN_INSTALL_TIMESTAMP_OPTION_NAME,
 } from './constants';
 import { WelcomeFromCalypsoModal } from './welcome-from-calypso-modal';
 import { WelcomeModal } from './welcome-modal';
+import { useHeadercardExperimentHook } from './hooks/use-headercard-experiment-hook';
 import './style.scss';
 import '../dashboard/style.scss';
 
@@ -67,6 +67,8 @@ export const Layout = ( {
 	shouldShowWelcomeFromCalypsoModal,
 	isTaskListHidden,
 	updateOptions,
+	installTimestamp,
+	installTimestampHasResolved,
 } ) => {
 	const userPrefs = useUserPreferences();
 	const shouldShowStoreLinks = taskListComplete || isTaskListHidden;
@@ -74,27 +76,14 @@ export const Layout = ( {
 		shouldShowStoreLinks || window.wcAdminFeatures.analytics;
 	const [ showInbox, setShowInbox ] = useState( true );
 	const isDashboardShown = ! query.task;
-
-	const momentDate = moment().utc();
-
-	const [
+	const {
 		isLoadingExperimentAssignment,
-		experimentAssignment,
-	] = useExperiment(
-		'woocommerce_tasklist_progression_headercard_' +
-			momentDate.format( 'YYYY' ) +
-			'_' +
-			momentDate.format( 'MM' )
-	);
-
-	const [
 		isLoadingTwoColExperimentAssignment,
+		experimentAssignment,
 		twoColExperimentAssignment,
-	] = useExperiment(
-		'woocommerce_tasklist_progression_headercard_2col_' +
-			momentDate.format( 'YYYY' ) +
-			'_' +
-			momentDate.format( 'MM' )
+	} = useHeadercardExperimentHook(
+		installTimestampHasResolved,
+		installTimestamp
 	);
 
 	const isRunningTwoColumnExperiment =
@@ -305,9 +294,18 @@ export default compose(
 		const welcomeModalDismissed =
 			getOption( WELCOME_MODAL_DISMISSED_OPTION_NAME ) === 'yes';
 
+		const installTimestamp = getOption(
+			WOOCOMMERCE_ADMIN_INSTALL_TIMESTAMP_OPTION_NAME
+		);
+
 		const welcomeModalDismissedHasResolved = hasFinishedResolution(
 			'getOption',
 			[ WELCOME_MODAL_DISMISSED_OPTION_NAME ]
+		);
+
+		const installTimestampHasResolved = hasFinishedResolution(
+			'getOption',
+			[ WOOCOMMERCE_ADMIN_INSTALL_TIMESTAMP_OPTION_NAME ]
 		);
 
 		const shouldShowWelcomeModal =
@@ -328,6 +326,8 @@ export default compose(
 			isTaskListHidden: getTaskList( 'setup' )?.isHidden,
 			hasTaskList: taskLists.find( ( list ) => list.isVisible ),
 			taskListComplete: getTaskList( 'setup' )?.isComplete,
+			installTimestamp,
+			installTimestampHasResolved,
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
