@@ -218,8 +218,9 @@ export function useGetCountryStateAutofill(
 			}
 		}
 		isAutofillChange.current = false;
+		// Disable reason: If we include autofillCountry/autofillState in the dependency array, we will have an unnecessary function call because we also update them in this function.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ countryState ] );
+	}, [ countryState, options ] );
 
 	// Sync the countryState value the autofill fields changes
 	useEffect( () => {
@@ -282,6 +283,7 @@ export function useGetCountryStateAutofill(
 			isAutofillChange.current = true;
 			setValue( 'countryState', filteredOptions[ 0 ].key );
 		}
+		// Disable reason: If we include countryState in the dependency array, we will have an unnecessary function call because we also update it in this function.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ autofillCountry, autofillState, options, setValue ] );
 
@@ -313,6 +315,7 @@ export function useGetCountryStateAutofill(
 }
 
 type StoreAddressProps = {
+	// Disable reason: The getInputProps type are not provided by the caller and source.
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getInputProps: any;
 	setValue: ( key: string, value: string ) => void;
