@@ -32,7 +32,7 @@ export const trackView = ( taskId ) => {
  * A Fill for adding Onboarding tasks.
  *
  * @slotFill WooOnboardingTask
- * @scope wwoocommerce-tasks
+ * @scope woocommerce-tasks
  * @param {Object} props React props.
  * @param {string} props.id Task id.
  */

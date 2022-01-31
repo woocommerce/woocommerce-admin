@@ -79,7 +79,13 @@ const makeDocObjects = async ( path ) => {
 
 		if ( tag.tag === 'slotFill' ) {
 			const scopeTab = tags.find( ( tag ) => tag.tag === 'scope' );
-			docObject.scope = scopeTab.name;
+			if ( scopeTab ) {
+				docObject.scope = scopeTab.name;
+			} else {
+				console.warn(
+					`Failed to find "scope" tag for slotFill "${ tag.name }" doc.`
+				);
+			}
 		}
 
 		return docObject;

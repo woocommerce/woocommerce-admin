@@ -8,7 +8,7 @@ import { Slot, Fill } from '@wordpress/components';
  * A Fill for adding Onboarding Task List items.
  *
  * @slotFill WooOnboardingTaskListItem
- * @scope wwoocommerce-tasks
+ * @scope woocommerce-tasks
  * @param {Object} props React props.
  * @param {string} props.id Task id.
  */

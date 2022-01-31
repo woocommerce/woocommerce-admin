@@ -8,7 +8,7 @@ import { Slot, Fill } from '@wordpress/components';
  * WooCommerce Payment Gateway configuration
  *
  * @slotFill WooPaymentGatewayConfigure
- * @scope wwoocommerce-admin
+ * @scope woocommerce-admin
  * @param {Object} props React props.
  * @param {string} props.id gateway id.
  */
