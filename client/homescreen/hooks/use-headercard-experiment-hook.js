@@ -33,7 +33,7 @@ export const useHeadercardExperimentHook = (
 					if (
 						args.experiment_name?.indexOf(
 							'woocommerce_tasklist_progression_headercard_'
-						) !== -1
+						) > -1
 					) {
 						args.install_timestamp = installTimestamp;
 					}
