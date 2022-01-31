@@ -28,11 +28,10 @@ type Option = { key: string; label: string };
  */
 export function isAddressFieldRequired(
 	fieldName: string,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	locale: any = {}
+	locale: unknown = {}
 ): boolean {
 	if ( locale[ fieldName ]?.hasOwnProperty( 'required' ) ) {
-		return locale[ fieldName ]?.required;
+		return locale[ fieldName ]?.required as boolean;
 	}
 
 	if ( fieldName === 'address_2' ) {
