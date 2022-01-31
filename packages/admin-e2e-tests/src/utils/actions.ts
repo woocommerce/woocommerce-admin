@@ -168,6 +168,35 @@ export const waitForElementByTextWithoutThrow = async (
 	return Boolean( selected );
 };
 
+const waitUntilElementStopsMoving = async ( selector: string ) => {
+	return await page.waitForFunction(
+		( selector ) => {
+			const element = document.querySelector( selector );
+			const elementRect = element.getBoundingClientRect();
+			const jsWindow: Window &
+				typeof globalThis & {
+					elementX?: number;
+					elementY?: number;
+				} = window;
+
+			if (
+				jsWindow.elementX !== elementRect.x.toFixed( 1 ) ||
+				jsWindow.elementY !== elementRect.y.toFixed( 1 )
+			) {
+				jsWindow.elementX = elementRect.x.toFixed( 1 );
+				jsWindow.elementY = elementRect.y.toFixed( 1 );
+				return false;
+			}
+
+			delete jsWindow.elementX;
+			delete jsWindow.elementY;
+			return true;
+		},
+		{},
+		selector
+	);
+};
+
 const deactivateAndDeleteExtension = async ( extension: string ) => {
 	const baseUrl = config.get( 'url' );
 	const pluginsAdmin = 'wp-admin/plugins.php?plugin_status=all&paged=1&s';
@@ -224,6 +253,7 @@ export {
 	getElementByText,
 	getElementByAttributeAndValue,
 	waitForElementByText,
+	waitUntilElementStopsMoving,
 	hasClass,
 	waitForTimeout,
 	deactivateAndDeleteExtension,
