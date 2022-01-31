@@ -35,7 +35,7 @@ export const useHeadercardExperimentHook = (
 							'woocommerce_tasklist_progression_headercard_'
 						) > -1
 					) {
-						args.install_timestamp = installTimestamp;
+						args.woo_wcadmin_install_timestamp = installTimestamp;
 					}
 					return args;
 				}

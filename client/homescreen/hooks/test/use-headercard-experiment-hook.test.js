@@ -64,7 +64,7 @@ describe( 'useHeadercardExperimentHook', () => {
 			applyFilters( 'woocommerce_explat_request_args', {} )
 		).toEqual(
 			expect.objectContaining( {
-				install_timestamp: 12345678,
+				woo_wcadmin_install_timestamp: 12345678,
 			} )
 		);
 	} );
