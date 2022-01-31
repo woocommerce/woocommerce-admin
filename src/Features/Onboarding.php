@@ -508,9 +508,8 @@ class Onboarding {
 		if ( ! Features::is_enabled( 'subscriptions' ) || 'US' !== $base_location['country'] ) {
 			$products['subscriptions']['product'] = 27147;
 		}
-		$product_types = self::append_product_data( $products );
 
-		return apply_filters( 'woocommerce_admin_onboarding_product_types', $product_types );
+		return apply_filters( 'woocommerce_admin_onboarding_product_types', $products );
 	}
 
 	/**
@@ -633,12 +632,12 @@ class Onboarding {
 	}
 
 	/**
-	 * Append dynamic product data from API.
+	 * Get dynamic product data from API.
 	 *
 	 * @param array $product_types Array of product types.
 	 * @return array
 	 */
-	public static function append_product_data( $product_types ) {
+	public static function get_product_data( $product_types ) {
 		$woocommerce_products = get_transient( self::PRODUCT_DATA_TRANSIENT );
 		if ( false === $woocommerce_products ) {
 			$woocommerce_products = wp_remote_get( 'https://woocommerce.com/wp-json/wccom-extensions/1.0/search' );
