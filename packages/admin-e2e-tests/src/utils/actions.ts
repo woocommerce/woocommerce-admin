@@ -170,8 +170,8 @@ export const waitForElementByTextWithoutThrow = async (
 
 const waitUntilElementStopsMoving = async ( selector: string ) => {
 	return await page.waitForFunction(
-		( selector ) => {
-			const element = document.querySelector( selector );
+		( elementSelector ) => {
+			const element = document.querySelector( elementSelector );
 			const elementRect = element.getBoundingClientRect();
 			const jsWindow: Window &
 				typeof globalThis & {
