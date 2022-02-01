@@ -96,15 +96,10 @@ export class AnalyticsOverview extends Analytics {
 	async addSection( sectionTitle: string ) {
 		await this.page.waitForSelector( "button[title='Add more sections']" );
 		await this.page.click( "button[title='Add more sections']" );
-		await this.page.waitForSelector(
-			`button[title='Add ${ sectionTitle } section']`
-		);
-		await waitUntilElementStopsMoving(
-			`button[title='Add ${ sectionTitle } section']`
-		);
-		await this.page.click(
-			`button[title='Add ${ sectionTitle } section']`
-		);
+		const addSectionSelector = `button[title='Add ${ sectionTitle } section']`;
+		await this.page.waitForSelector( addSectionSelector );
+		await waitUntilElementStopsMoving( addSectionSelector );
+		await this.page.click( addSectionSelector );
 	}
 
 	async moveSectionDown( sectionTitle: string ) {
