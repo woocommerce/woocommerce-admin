@@ -30,8 +30,8 @@ export const fetchExperimentAssignment = async ( {
 	 * ( args ) => {
 	 * 	args.experimentName = 'my-experiment';
 	 * 	return args;
-	 * }
-	 * }
+	 * });
+	 *
 	 */
 	const params = applyFilters( 'woocommerce_explat_request_args', {
 		experiment_name: experimentName,
