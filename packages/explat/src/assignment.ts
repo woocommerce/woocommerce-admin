@@ -19,6 +19,20 @@ export const fetchExperimentAssignment = async ( {
 		);
 	}
 
+	/**
+	 * List of URL query parameters to be sent to the server.
+	 *
+	 * @filter woocommerce_explat_request_args
+	 * @example
+	 * addFilter(
+	 * 	'woocommerce_explat_request_args',
+	 * 	'woocommerce_explat_request_args',
+	 * ( args ) => {
+	 * 	args.experimentName = 'my-experiment';
+	 * 	return args;
+	 * }
+	 * }
+	 */
 	const params = applyFilters( 'woocommerce_explat_request_args', {
 		experiment_name: experimentName,
 		anon_id: anonId ?? undefined,
