@@ -8,7 +8,6 @@
 namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\PaymentMethodSuggestionsDataSourcePoller;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 
