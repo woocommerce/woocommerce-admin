@@ -144,11 +144,11 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/recommended-payment-plugins',
+			'/' . $this->rest_base . '/payment-gateway-suggestions',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'recommended_payment_plugins' ),
+					'callback'            => array( $this, 'get_payment_gateway_suggestion' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -157,11 +157,11 @@ class Plugins extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/recommended-payment-plugins/dismiss',
+			'/' . $this->rest_base . '/payment-gateway-suggestions/dismiss',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'dismiss_recommended_payment_plugins' ),
+					'callback'            => array( $this, 'dismiss_payment_gateway_suggestion' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_item_schema' ),
@@ -422,7 +422,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
-	public function recommended_payment_plugins( $request ) {
+	public function get_payment_gateway_suggestion( $request ) {
 		if ( get_option( PaymentMethodSuggestionsDataSourcePoller::RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'no' ) === 'yes' ) {
 			return rest_ensure_response( array() );
 		}
@@ -437,7 +437,7 @@ class Plugins extends \WC_REST_Data_Controller {
 	 *
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
-	public function dismiss_recommended_payment_plugins() {
+	public function dismiss_payment_gateway_suggestion() {
 		$success = update_option( PaymentMethodSuggestionsDataSourcePoller::RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'yes' );
 		return rest_ensure_response( $success );
 	}

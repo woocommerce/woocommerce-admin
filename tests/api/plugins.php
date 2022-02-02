@@ -168,7 +168,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 			)
 		);
 
-		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/recommended-payment-plugins' );
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/payment-gateway-suggestions' );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -211,7 +211,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 			)
 		);
 
-		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/recommended-payment-plugins' );
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/payment-gateway-suggestions' );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -237,7 +237,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 			)
 		);
 
-		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/recommended-payment-plugins' );
+		$request  = new WP_REST_Request( 'GET', $this->endpoint . '/payment-gateway-suggestions' );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
@@ -253,7 +253,7 @@ class WC_Tests_API_Plugins extends WC_REST_Unit_Test_Case {
 		$this->assertEquals( 'no', get_option( 'woocommerce_setting_payments_recommendations_hidden', 'no' ) );
 		wp_set_current_user( $this->user );
 
-		$request  = new WP_REST_Request( 'POST', $this->endpoint . '/recommended-payment-plugins/dismiss' );
+		$request  = new WP_REST_Request( 'POST', $this->endpoint . '/payment-gateway-suggestions/dismiss' );
 		$response = $this->server->dispatch( $request );
 		$data     = $response->get_data();
 
