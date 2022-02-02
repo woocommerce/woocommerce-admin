@@ -94,16 +94,13 @@ class CouponPageMoved {
 	 * @return bool
 	 */
 	protected static function has_unactioned_note() {
-		global $wpdb;
+		$note = Notes::get_note_by_name( self::NOTE_NAME );
 
-		$unactioned_note_count = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s AND status = %s AND is_deleted = 0",
-				[ self::NOTE_NAME, 'unactioned' ]
-			)
-		);
+		if ( ! $note ) {
+			return false;
+		}
 
-		return $unactioned_note_count > 0;
+		return $note->get_status() === 'unactioned';
 	}
 
 	/**
