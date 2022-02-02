@@ -109,16 +109,13 @@ class CouponPageMoved {
 	 * @return bool
 	 */
 	protected static function has_dismissed_note() {
-		global $wpdb;
+		$note = Notes::get_note_by_name( self::NOTE_NAME );
 
-		$dismissed_note_count = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s AND is_deleted = 1",
-				[ self::NOTE_NAME ]
-			)
-		);
+		if ( ! $note ) {
+			return false;
+		}
 
-		return $dismissed_note_count > 0;
+		return ! $note->get_is_deleted();
 	}
 
 	/**
