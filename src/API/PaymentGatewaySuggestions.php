@@ -8,7 +8,7 @@
 namespace Automattic\WooCommerce\Admin\API;
 
 use Automattic\WooCommerce\Admin\PaymentMethodSuggestionsDataSourcePoller;
-use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\Init as PaymentGatewaySuggestionsDataStore;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\Init as Suggestions;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -85,13 +85,10 @@ class PaymentGatewaySuggestions extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
 	public function get_suggestions( $request ) {
-		if ( get_option( PaymentMethodSuggestionsDataSourcePoller::RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'no' ) === 'yes' ) {
+		if ( Suggestions::should_display() ) {
 			return rest_ensure_response( array() );
 		}
-		$all_plugins = PaymentMethodSuggestionsDataSourcePoller::get_instance()->get_suggestions();
-		$per_page    = $request->get_param( 'per_page' );
-
-		return rest_ensure_response( array_slice( $all_plugins, 0, $per_page ) );
+		return Suggestions::get_suggestions();
 	}
 
 	/**
@@ -100,7 +97,7 @@ class PaymentGatewaySuggestions extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
 	public function dismiss_payment_gateway_suggestion() {
-		$success = update_option( PaymentMethodSuggestionsDataSourcePoller::RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'yes' );
+		$success = Suggestions::dismiss();
 		return rest_ensure_response( $success );
 	}
 
