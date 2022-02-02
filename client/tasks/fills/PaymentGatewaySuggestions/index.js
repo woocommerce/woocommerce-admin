@@ -23,6 +23,8 @@ import { getPluginSlug } from '~/utils';
 import './plugins/Bacs';
 import './payment-gateway-suggestions.scss';
 
+const OFFLINE_GATEWAYS = [ 'cod', 'cheque', 'bacs' ];
+
 export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const {
@@ -67,6 +69,7 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 				installed: !! mappedPaymentGateways[ id ],
 				postInstallScripts: installedGateway.post_install_scripts,
 				enabled: installedGateway.enabled || false,
+				offlineOnly: OFFLINE_GATEWAYS.includes( id ),
 				needsSetup: installedGateway.needs_setup,
 				settingsUrl: installedGateway.settings_url,
 				connectionUrl: installedGateway.connection_url,
@@ -228,8 +231,8 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 						'woocommerce-admin'
 					) }
 					recommendation={ recommendation }
-					paymentGateways={ additionalGateways.sort( ( gateway ) => {
-						return gateway.needsSetup === false ? 1 : -1;
+					paymentGateways={ additionalGateways.sort( ( a, b ) => {
+						return a.offlineOnly - b.offlineOnly;
 					} ) }
 					markConfigured={ markConfigured }
 				/>
