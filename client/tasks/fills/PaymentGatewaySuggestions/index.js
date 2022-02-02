@@ -228,7 +228,9 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 						'woocommerce-admin'
 					) }
 					recommendation={ recommendation }
-					paymentGateways={ additionalGateways }
+					paymentGateways={ additionalGateways.sort( ( gateway ) => {
+						return gateway.needsSetup === false ? 1 : -1;
+					} ) }
 					markConfigured={ markConfigured }
 				/>
 			) }
