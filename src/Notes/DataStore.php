@@ -471,4 +471,20 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			)
 		);
 	}
+
+	/**
+	 * Find all the notes with a given type.
+	 *
+	 * @param string $note_type Type to search for.
+	 * @return array An array of matching note ids.
+	 */
+	public function get_notes_with_type( $note_type ) {
+		global $wpdb;
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT note_id FROM {$wpdb->prefix}wc_admin_notes WHERE type = %s ORDER BY note_id ASC",
+				$note_type
+			)
+		);
+	}
 }
