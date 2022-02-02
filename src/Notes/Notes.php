@@ -316,14 +316,11 @@ class Notes {
 	 * @return string|bool The note status.
 	 */
 	public static function get_note_status( $note_name ) {
-		$data_store = self::load_data_store();
-		$note_ids   = $data_store->get_notes_with_name( $note_name );
+		$note = self::get_note_by_name( $note_name );
 
-		if ( empty( $note_ids ) ) {
+		if ( ! $note ) {
 			return false;
 		}
-
-		$note = self::get_note( $note_ids[0] );
 
 		return $note->get_status();
 	}
