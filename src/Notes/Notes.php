@@ -254,14 +254,10 @@ class Notes {
 		}
 
 		$data_store = self::load_data_store();
-		$notes      = $data_store->get_notes(
-			array(
-				'type' => array( Note::E_WC_ADMIN_NOTE_MARKETING ),
-			)
-		);
+		$note_ids   = $data_store->get_notes_with_type( Note::E_WC_ADMIN_NOTE_MARKETING );
 
-		foreach ( $notes as $note ) {
-			$note = self::get_note( $note->note_id );
+		foreach ( $note_ids as $note_id ) {
+			$note = self::get_note( $note_id );
 			if ( $note ) {
 				$note->delete();
 			}
