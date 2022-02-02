@@ -9,7 +9,7 @@
 3. Create a new category called **Hoodie** with **Clothing** as the parent category in the **Product categories** on the right.
 4. Select **Clothing** and **Hoodie with Pocket** as well and click **Update**
 5. Create an order with a single item of **Hoodie with Pocket** (keep note of the total price)
-6. Run the action scheduler (make sure all are run), you can do this manually by going to **WooCommerce > Status > Scheduled Actions**
+6. Run the action scheduler (make sure all are run), you can do this manually by going to **WooCommerce > Status > Scheduled Actions**. If your queue is large, just make sure that the `wc-admin_import_orders` actions are run.
 7. Go to **Analytics > Overview** and scroll down to the **Leaderboards**
 8. Observe that the **Clothing** category has only **1** items sold and net sales is $35
 9. Click on **Clothing** it will redirect to the Categories page and show the correct numbers
