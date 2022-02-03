@@ -273,7 +273,7 @@ class Notes {
 
 		foreach ( $note_ids as $note_id ) {
 			$note = self::get_note( $note_id );
-			if ( $note ) {
+			if ( $note && ( $note->get_status() === Note::E_WC_ADMIN_NOTE_ACTIONED ) ) {
 				$note->set_is_deleted( 1 );
 				$note->save();
 			}
