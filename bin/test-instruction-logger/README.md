@@ -12,7 +12,7 @@ Test Instruction Logger requires Github username and a personal access token to 
 ## Writing to TESTING-INSTRUCTION.md
 
 1. Update the `changelog.txt` 
-2. Run `npm run test-instruction-logger -- :version`.
+2. Run `npm run test-instruction-logger -- write :version`.
 3. Verify `TESTING-INSTRUCTION.md`.
 
 ### Options
@@ -21,10 +21,10 @@ Test Instruction Logger requires Github username and a personal access token to 
 
 A comma seperated list of changelog types to retrieve the testing instructions from.
 
-`npm run test-instruction-logger -- :version --types=enhancement,add`
+`npm run test-instruction-logger -- write :version --types=enhancement,add`
 
 #### save-to
 
 Allows you to save the testing instructions to a different file. Default: TESTING-INSTRUCTIONS.md
 
-`npm run test-instruction-logger -- :version --save-to=instructions.md`
+`npm run test-instruction-logger -- write :version --save-to=instructions.md`
