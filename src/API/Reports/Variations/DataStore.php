@@ -291,52 +291,66 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 *
 	 * @param array $products Product data.
 	 */
-	protected function fill_deleted_product_data( array &$products ) {
+	protected function fill_deleted_product_name( array &$products ) {
 		global $wpdb;
-		$deleted       = __( 'deleted', 'woocommerce-admin' );
-		$variation_ids = [];
+		$product_variation_ids = [];
 		// Find products with missing extended_info.name.
 		foreach ( $products as $key => $product ) {
 			if ( ! isset( $product['extended_info']['name'] ) ) {
-				$variation_ids[ $key ] = $product['variation_id'];
+				$product_variation_ids[ $key ] = [
+					'product_id'   => $product['product_id'],
+					'variation_id' => $product['variation_id'],
+				];
 			}
 		}
 
-		if ( ! count( $variation_ids ) ) {
+		if ( ! count( $product_variation_ids ) ) {
 			return;
 		}
 
-		$placeholders = implode( ', ', array_fill( 0, count( $variation_ids ), '%s' ) );
-
-		$query = "
-			select 
-				items.order_item_name,
-				min(meta.meta_value) as variation_id
-			from {$wpdb->prefix}woocommerce_order_items as items
-				left join {$wpdb->prefix}woocommerce_order_itemmeta as meta
-				on items.order_item_id = meta.order_item_id
-			where 
-				meta.meta_key = '_variation_id'
-				and 
-				meta.meta_value in ($placeholders)
-			group by items.order_item_name
-		";
-
-		$results = $wpdb->get_results(
-			// phpcs:ignore
-			$wpdb->prepare( $query, $variation_ids )
+		$where_clauses = implode(
+			' or ',
+			array_map(
+				function( $ids ) {
+					return "(
+				product_lookup.product_id = {$ids['product_id']}
+				and
+				product_lookup.variation_id = {$ids['variation_id']}
+                )";
+				},
+				$product_variation_ids
+			)
 		);
 
-		// Make varation_id => order_item_name array.
-		$variation_index = [];
+		$query = "
+			select
+				product_lookup.product_id,
+				product_lookup.variation_id,
+				order_items.order_item_name
+			from
+				{$wpdb->prefix}wc_order_product_lookup as product_lookup
+				left join {$wpdb->prefix}woocommerce_order_items as order_items
+				on product_lookup.order_item_id = order_items.order_item_id
+			where 
+				{$where_clauses}	
+			group by 
+				product_lookup.product_id, 
+				product_lookup.variation_id, 
+				order_items.order_item_name				
+		";
+
+		// phpcs:ignore
+		$results = $wpdb->get_results( $query );
+		$index   = [];
 		foreach ( $results as $result ) {
-			$variation_index[ $result->variation_id ] = $result->order_item_name . ' (' . $deleted . ')';
+			$index[ $result->product_id . '_' . $result->variation_id ] = $result->order_item_name;
 		}
 
-		// Loop through the products data and set extended_info.name if missing.
-		foreach ( $variation_ids as $product_key => $variation_id ) {
-			if ( isset( $variation_index[ $product['variation_id'] ] ) ) {
-				$products[ $product_key ]['extended_info']['name'] = $variation_index[ $variation_id ];
+		foreach ( $product_variation_ids as $product_key => $ids ) {
+			$product   = $products[ $product_key ];
+			$index_key = $product['product_id'] . '_' . $product['variation_id'];
+			if ( isset( $index[ $index_key ] ) ) {
+				$products[ $product_key ]['extended_info']['name'] = $index[ $index_key ] . ' (' . __( 'deleted', 'woocommerce-admin' ) . ')';
 			}
 		}
 	}
@@ -457,7 +471,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$this->include_extended_info( $product_data, $query_args );
 
 			if ( $query_args['extended_info'] ) {
-				$this->fill_deleted_product_data( $product_data );
+				$this->fill_deleted_product_name( $product_data );
 			}
 
 			$product_data = array_map( array( $this, 'cast_numbers' ), $product_data );
