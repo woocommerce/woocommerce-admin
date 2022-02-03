@@ -313,10 +313,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			array_map(
 				function( $ids ) {
 					return "(
-				product_lookup.product_id = {$ids['product_id']}
-				and
-				product_lookup.variation_id = {$ids['variation_id']}
-                )";
+						product_lookup.product_id = {$ids['product_id']}
+						and
+						product_lookup.variation_id = {$ids['variation_id']}
+                    )";
 				},
 				$product_variation_ids
 			)
