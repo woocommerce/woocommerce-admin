@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Admin\DataSourcePoller;
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\EvaluateSuggestion;
-use Automattic\WooCommerce\Admin\PaymentMethodSuggestionsDataSourcePoller;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\PaymentGatewaySuggestionsDataSourcePoller as PaymentGatewaySuggestionsDataSourcePoller;
 
 /**
  * WC Pay Promotion engine.
@@ -78,10 +78,14 @@ class Init {
 	 * @return array list of payment method.
 	 */
 	public static function possibly_filter_recommended_payment_gateways( $specs, $datasource_poller_id ) {
-		if ( PaymentMethodSuggestionsDataSourcePoller::ID === $datasource_poller_id && self::can_show_promotion() ) {
+		if ( PaymentGatewaySuggestionsDataSourcePoller::ID === $datasource_poller_id && self::can_show_promotion() ) {
 			return array_filter(
 				$specs,
 				function( $spec ) {
+					$spec = (object) $spec;
+					if ( ! property_exists( $spec, 'plugins' ) ) {
+						return true;
+					}
 					return 'woocommerce-payments' !== $spec->plugins[0];
 				}
 			);

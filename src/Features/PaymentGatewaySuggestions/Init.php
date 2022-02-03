@@ -82,10 +82,6 @@ class Init {
 	 * @return bool
 	 */
 	public static function should_display() {
-		if ( ! current_user_can( 'install_plugins' ) ) {
-			return false;
-		}
-
 		if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
 			return false;
 		}

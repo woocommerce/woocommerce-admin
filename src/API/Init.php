@@ -76,7 +76,6 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\Themes',
 			'Automattic\WooCommerce\Admin\API\Plugins',
 			'Automattic\WooCommerce\Admin\API\OnboardingFreeExtensions',
-			'Automattic\WooCommerce\Admin\API\OnboardingPayments',
 			'Automattic\WooCommerce\Admin\API\OnboardingProductTypes',
 			'Automattic\WooCommerce\Admin\API\OnboardingProfile',
 			'Automattic\WooCommerce\Admin\API\OnboardingTasks',
