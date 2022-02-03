@@ -84,7 +84,6 @@ class WriteCommand extends Command {
 		if ( null !== $types ) {
 			$changelog_types = explode( ',', strtolower( $types ) );
 		}
-		error_log( print_r( $changelog_types, true ) );
 
 		$changelog = $this->changeloggerFormatter->parse( file_get_contents( $this->config->getChangelogFilepath() ) );
 		$this->githubCredentials = $this->config->getGithubCredentials();
