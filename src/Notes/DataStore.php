@@ -473,12 +473,12 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 	}
 
 	/**
-	 * Find all the notes with a given type.
+	 * Find the ids of all notes with a given type.
 	 *
 	 * @param string $note_type Type to search for.
 	 * @return array An array of matching note ids.
 	 */
-	public function get_notes_with_type( $note_type ) {
+	public function get_note_ids_by_type( $note_type ) {
 		global $wpdb;
 		return $wpdb->get_col(
 			$wpdb->prepare(

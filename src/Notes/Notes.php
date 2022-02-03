@@ -254,7 +254,7 @@ class Notes {
 		}
 
 		$data_store = self::load_data_store();
-		$note_ids   = $data_store->get_notes_with_type( Note::E_WC_ADMIN_NOTE_MARKETING );
+		$note_ids   = $data_store->get_note_ids_by_type( Note::E_WC_ADMIN_NOTE_MARKETING );
 
 		foreach ( $note_ids as $note_id ) {
 			$note = self::get_note( $note_id );
@@ -269,7 +269,7 @@ class Notes {
 	 */
 	public static function possibly_delete_survey_notes() {
 		$data_store = self::load_data_store();
-		$note_ids   = $data_store->get_notes_with_type( Note::E_WC_ADMIN_NOTE_SURVEY );
+		$note_ids   = $data_store->get_note_ids_by_type( Note::E_WC_ADMIN_NOTE_SURVEY );
 
 		foreach ( $note_ids as $note_id ) {
 			$note = self::get_note( $note_id );
