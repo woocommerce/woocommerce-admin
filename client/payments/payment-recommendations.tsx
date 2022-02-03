@@ -133,8 +133,11 @@ const PaymentRecommendations: React.FC = () => {
 			} );
 	};
 
-	const pluginsList = ( recommendedPlugins || [] ).map(
-		( plugin: Plugin ) => {
+	const pluginsList = ( recommendedPlugins || [] )
+		.filter( ( plugin: Plugin ) => {
+			return ! plugin.id.startsWith( 'woocommerce_payments' );
+		} )
+		.map( ( plugin: Plugin ) => {
 			return {
 				key: plugin.id,
 				title: (
@@ -160,8 +163,7 @@ const PaymentRecommendations: React.FC = () => {
 				),
 				before: <img src={ plugin.image } alt="" />,
 			};
-		}
-	);
+		} );
 
 	return (
 		<Card size="medium" className="woocommerce-recommended-payments-card">
