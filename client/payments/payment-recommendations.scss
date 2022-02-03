@@ -59,6 +59,10 @@
 		margin-left: $gap-small;
 	}
 
+	.woocommerce-list__item-before img {
+		max-width: 96px;
+	}
+
 	.woocommerce-list__item-text,
 	.woocommerce-recommended-payments__header-heading {
 		max-width: 749px;

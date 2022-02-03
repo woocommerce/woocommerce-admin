@@ -9,14 +9,14 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { EllipsisMenu, List, Pill } from '@woocommerce/components';
 import { Text } from '@woocommerce/experimental';
 import {
+	ONBOARDING_STORE_NAME,
+	PAYMENT_GATEWAYS_STORE_NAME,
 	PLUGINS_STORE_NAME,
-	WCDataSelector,
 	Plugin,
 	PluginsStoreActions,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import ExternalIcon from 'gridicons/dist/external';
-import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -26,23 +26,6 @@ import { createNoticesFromResponse } from '../lib/notices';
 
 const SEE_MORE_LINK =
 	'https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/?utm_source=payments_recommendations';
-
-export function getPaymentRecommendationData(
-	select: WCDataSelector
-): {
-	recommendedPlugins?: Plugin[];
-	isLoading: boolean;
-} {
-	const { getRecommendedPlugins } = select( PLUGINS_STORE_NAME );
-
-	const plugins = getRecommendedPlugins( 'payments' );
-	const isLoading = plugins === undefined;
-
-	return {
-		recommendedPlugins: plugins,
-		isLoading,
-	};
-}
 
 const WcPayPromotionGateway = document.querySelector(
 	'[data-gateway_id="pre_install_woocommerce_payments_promotion"]'
@@ -58,21 +41,36 @@ const PaymentRecommendations: React.FC = () => {
 		invalidateResolution,
 	}: PluginsStoreActions = useDispatch( PLUGINS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
-	const { recommendedPlugins, isLoading } = useSelect(
-		getPaymentRecommendationData
-	);
+
+	const {
+		getPaymentGateway,
+		paymentGatewaySuggestions,
+		isResolving,
+	} = useSelect( ( select ) => {
+		return {
+			getPaymentGateway: select( PAYMENT_GATEWAYS_STORE_NAME )
+				.getPaymentGateway,
+			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
+				'getPaymentGatewaySuggestions'
+			),
+			paymentGatewaySuggestions: select(
+				ONBOARDING_STORE_NAME
+			).getPaymentGatewaySuggestions(),
+		};
+	}, [] );
+
 	const triggeredPageViewRef = useRef( false );
 	const shouldShowRecommendations =
-		recommendedPlugins && recommendedPlugins.length > 0;
+		paymentGatewaySuggestions && paymentGatewaySuggestions.length > 0;
 
 	useEffect( () => {
 		if (
 			( shouldShowRecommendations ||
-				( WcPayPromotionGateway && ! isLoading ) ) &&
+				( WcPayPromotionGateway && ! isResolving ) ) &&
 			! triggeredPageViewRef.current
 		) {
 			triggeredPageViewRef.current = true;
-			const eventProps = ( recommendedPlugins || [] ).reduce(
+			const eventProps = ( paymentGatewaySuggestions || [] ).reduce(
 				( props, plugin ) => {
 					if ( plugin.plugins && plugin.plugins.length > 0 ) {
 						return {
@@ -92,7 +90,7 @@ const PaymentRecommendations: React.FC = () => {
 				eventProps
 			);
 		}
-	}, [ shouldShowRecommendations, WcPayPromotionGateway, isLoading ] );
+	}, [ shouldShowRecommendations, WcPayPromotionGateway, isResolving ] );
 
 	if ( ! shouldShowRecommendations ) {
 		return null;
@@ -106,7 +104,7 @@ const PaymentRecommendations: React.FC = () => {
 			createNotice(
 				'error',
 				__(
-					'There was a problem hiding the "Recommended ways to get paid" card.',
+					'There was a problem hiding the "Additional ways to get paid" card.',
 					'woocommerce-admin'
 				)
 			);
@@ -122,10 +120,9 @@ const PaymentRecommendations: React.FC = () => {
 			extension_selected: plugin.plugins[ 0 ],
 		} );
 		installAndActivatePlugins( [ plugin.plugins[ 0 ] ] )
-			.then( () => {
-				window.location.href = getAdminLink(
-					plugin[ 'setup-link' ].replace( '/wp-admin/', '' )
-				);
+			.then( async () => {
+				const gateway = await getPaymentGateway( plugin.id );
+				window.location.href = gateway.settings_url;
 			} )
 			.catch( ( response: { errors: Record< string, string > } ) => {
 				createNoticesFromResponse( response );
@@ -133,9 +130,12 @@ const PaymentRecommendations: React.FC = () => {
 			} );
 	};
 
-	const pluginsList = ( recommendedPlugins || [] )
+	const pluginsList = ( paymentGatewaySuggestions || [] )
 		.filter( ( plugin: Plugin ) => {
-			return ! plugin.id.startsWith( 'woocommerce_payments' );
+			return (
+				plugin.plugins?.length &&
+				! plugin.id.startsWith( 'woocommerce_payments' )
+			);
 		} )
 		.map( ( plugin: Plugin ) => {
 			return {
@@ -158,7 +158,8 @@ const PaymentRecommendations: React.FC = () => {
 						isBusy={ installingPlugin === plugin.id }
 						disabled={ !! installingPlugin }
 					>
-						{ plugin[ 'button-text' ] }
+						{ plugin.actionText ||
+							__( 'Get started', 'woocommerce-admin' ) }
 					</Button>
 				),
 				before: <img src={ plugin.image } alt="" />,
@@ -176,7 +177,7 @@ const PaymentRecommendations: React.FC = () => {
 						lineHeight="28px"
 					>
 						{ __(
-							'Recommended ways to get paid',
+							'Additional ways to get paid',
 							'woocommerce-admin'
 						) }
 					</Text>
