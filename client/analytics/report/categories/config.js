@@ -21,14 +21,7 @@ const CATEGORY_REPORT_ADVANCED_FILTERS_FILTER =
 const { addCesSurveyForAnalytics } = dispatch( CES_STORE_KEY );
 
 /**
- * An object defining a report page.
- *
- * @typedef {Object} chart
- * @property {string} key Chart slug.
- * @property {string} label Chart label.
- * @property {string} order Default way to order the `orderby` property.
- * @property {string} orderby Column by which to order.
- * @property {('number'|'currency')} type Specify the type of number.
+ * @typedef {import('../index.js').chart} chart
  */
 
 /**
@@ -144,14 +137,7 @@ if ( Object.keys( advancedFilters.filters ).length ) {
 }
 
 /**
- * An object defining a set of report filters.
- *
- * @typedef {Object} filter
- * @property {string} label Label describing the set of filters.
- * @property {string} param Url query param this set of filters operates on.
- * @property {Array.<string>} staticParams Array of `param` that remain constant when other params are manipulated.
- * @property {Function} showFilters A function with url query as an argument returning a Boolean depending on whether or not the filters should be shown.
- * @property {Array} filters An array of filter objects.
+ * @typedef {import('../index.js').filter} filter
  */
 
 /**

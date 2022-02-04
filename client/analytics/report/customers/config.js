@@ -23,7 +23,7 @@ const CUSTOMERS_REPORT_ADVANCED_FILTERS_FILTER =
 	'woocommerce_admin_customers_report_advanced_filters';
 
 /**
- * @typedef {import('../categories/config.js').filter} filter
+ * @typedef {import('../index.js').filter} filter
  */
 
 /**

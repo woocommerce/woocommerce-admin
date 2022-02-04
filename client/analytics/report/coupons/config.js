@@ -19,7 +19,7 @@ const COUPON_REPORT_ADVANCED_FILTERS_FILTER =
 const { addCesSurveyForAnalytics } = dispatch( CES_STORE_KEY );
 
 /**
- * @typedef {import('../categories/config.js').chart} chart
+ * @typedef {import('../index.js').chart} chart
  */
 
 /**
@@ -120,7 +120,7 @@ if ( Object.keys( advancedFilters.filters ).length ) {
 }
 
 /**
- * @typedef {import('../categories/config.js').filter} filter
+ * @typedef {import('../index.js').filter} filter
  */
 
 /**

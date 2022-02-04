@@ -25,7 +25,7 @@ const VARIATIONS_REPORT_ADVANCED_FILTERS_FILTER =
 const { addCesSurveyForAnalytics } = dispatch( CES_STORE_KEY );
 
 /**
- * @typedef {import('../categories/config.js').chart} chart
+ * @typedef {import('../index.js').chart} chart
  */
 
 /**
@@ -59,7 +59,7 @@ export const charts = applyFilters( VARIATIONS_REPORT_CHARTS_FILTER, [
 ] );
 
 /**
- * @typedef {import('../categories/config.js').filter} filter
+ * @typedef {import('../index.js').filter} filter
  */
 
 /**

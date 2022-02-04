@@ -20,7 +20,7 @@ const DOWLOADS_REPORT_ADVANCED_FILTERS_FILTER =
 	'woocommerce_admin_downloads_report_advanced_filters';
 
 /**
- * @typedef {import('../categories/config.js').chart} chart
+ * @typedef {import('../index.js').chart} chart
  */
 
 /**
@@ -38,7 +38,7 @@ export const charts = applyFilters( DOWLOADS_REPORT_CHARTS_FILTER, [
 ] );
 
 /**
- * @typedef {import('../categories/config.js').filter} filter
+ * @typedef {import('../index.js').filter} filter
  */
 
 /**

@@ -11,7 +11,7 @@ const REVENUE_REPORT_ADVANCED_FILTERS_FILTER =
 	'woocommerce_admin_revenue_report_advanced_filters';
 
 /**
- * @typedef {import('../categories/config.js').chart} chart
+ * @typedef {import('../index.js').chart} chart
  */
 
 /**
@@ -119,7 +119,7 @@ if ( Object.keys( advancedFilters.filters ).length ) {
 }
 
 /**
- * @typedef {import('../categories/config.js').filter} filter
+ * @typedef {import('../index.js').filter} filter
  */
 
 /**

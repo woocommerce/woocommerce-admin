@@ -31,7 +31,7 @@ export const advancedFilters = applyFilters(
 );
 
 /**
- * @typedef {import('../categories/config.js').filter} filter
+ * @typedef {import('../index.js').filter} filter
  */
 
 /**
