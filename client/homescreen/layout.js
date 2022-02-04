@@ -185,10 +185,7 @@ export const Layout = ( {
 							userPreferences={ userPrefs }
 							twoColumns={ twoColumns }
 						/>
-						<TwoColumnTasksExtended
-							query={ query }
-							shouldRenderTask={ false }
-						/>
+						<TwoColumnTasksExtended query={ query } />
 					</>
 				</Suspense>
 			);
