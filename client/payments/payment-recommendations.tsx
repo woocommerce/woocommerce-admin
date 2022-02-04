@@ -23,6 +23,7 @@ import ExternalIcon from 'gridicons/dist/external';
  */
 import './payment-recommendations.scss';
 import { createNoticesFromResponse } from '../lib/notices';
+import { getPluginSlug } from '~/utils';
 
 const SEE_MORE_LINK =
 	'https://woocommerce.com/product-category/woocommerce-extensions/payment-gateways/?utm_source=payments_recommendations';
@@ -35,6 +36,7 @@ const PaymentRecommendations: React.FC = () => {
 	const [ installingPlugin, setInstallingPlugin ] = useState< string | null >(
 		null
 	);
+	const [ isInstalled, setIsInstalled ] = useState< boolean >( false );
 	const {
 		installAndActivatePlugins,
 		dismissRecommendedPlugins,
@@ -43,21 +45,39 @@ const PaymentRecommendations: React.FC = () => {
 	const { createNotice } = useDispatch( 'core/notices' );
 
 	const {
-		getPaymentGateway,
+		installedPaymentGateway,
+		installedPaymentGateways,
 		paymentGatewaySuggestions,
 		isResolving,
-	} = useSelect( ( select ) => {
-		return {
-			getPaymentGateway: select( PAYMENT_GATEWAYS_STORE_NAME )
-				.getPaymentGateway,
-			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
-				'getPaymentGatewaySuggestions'
-			),
-			paymentGatewaySuggestions: select(
-				ONBOARDING_STORE_NAME
-			).getPaymentGatewaySuggestions(),
-		};
-	}, [] );
+	} = useSelect(
+		( select ) => {
+			const installingGatewayId =
+				isInstalled && getPluginSlug( installingPlugin );
+			return {
+				installedPaymentGateway:
+					installingGatewayId &&
+					select( PAYMENT_GATEWAYS_STORE_NAME ).getPaymentGateway(
+						installingGatewayId
+					),
+				installedPaymentGateways: select( PAYMENT_GATEWAYS_STORE_NAME )
+					.getPaymentGateways()
+					.reduce( ( gateways, gateway ) => {
+						if ( installingGatewayId === gateway.id ) {
+							return gateways;
+						}
+						gateways[ gateway.id ] = true;
+						return gateways;
+					}, {} ),
+				isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
+					'getPaymentGatewaySuggestions'
+				),
+				paymentGatewaySuggestions: select(
+					ONBOARDING_STORE_NAME
+				).getPaymentGatewaySuggestions(),
+			};
+		},
+		[ isInstalled ]
+	);
 
 	const triggeredPageViewRef = useRef( false );
 	const shouldShowRecommendations =
@@ -92,6 +112,13 @@ const PaymentRecommendations: React.FC = () => {
 		}
 	}, [ shouldShowRecommendations, WcPayPromotionGateway, isResolving ] );
 
+	useEffect( () => {
+		if ( ! installedPaymentGateway ) {
+			return;
+		}
+		window.location.href = installedPaymentGateway.settings_url;
+	}, [ installedPaymentGateway ] );
+
 	if ( ! shouldShowRecommendations ) {
 		return null;
 	}
@@ -120,9 +147,8 @@ const PaymentRecommendations: React.FC = () => {
 			extension_selected: plugin.plugins[ 0 ],
 		} );
 		installAndActivatePlugins( [ plugin.plugins[ 0 ] ] )
-			.then( async () => {
-				const gateway = await getPaymentGateway( plugin.id );
-				window.location.href = gateway.settings_url;
+			.then( () => {
+				setIsInstalled( true );
 			} )
 			.catch( ( response: { errors: Record< string, string > } ) => {
 				createNoticesFromResponse( response );
@@ -133,6 +159,7 @@ const PaymentRecommendations: React.FC = () => {
 	const pluginsList = ( paymentGatewaySuggestions || [] )
 		.filter( ( plugin: Plugin ) => {
 			return (
+				! installedPaymentGateways[ plugin.id ] &&
 				plugin.plugins?.length &&
 				! plugin.id.startsWith( 'woocommerce_payments' )
 			);
