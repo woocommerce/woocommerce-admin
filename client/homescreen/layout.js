@@ -168,7 +168,9 @@ export const Layout = ( {
 			return (
 				// When running the two-column experiment, we still need to render
 				// the component in the left column for the extended task list.
-				<TwoColumnTasksExtended query={ query } />
+				<Suspense fallback={ null }>
+					<TwoColumnTasksExtended query={ query } />
+				</Suspense>
 			);
 		} else if (
 			! twoColumns &&
@@ -176,17 +178,19 @@ export const Layout = ( {
 			! isLoadingExperimentAssignment
 		) {
 			return (
-				<>
-					<TwoColumnTasks
-						query={ query }
-						userPreferences={ userPrefs }
-						twoColumns={ twoColumns }
-					/>
-					<TwoColumnTasksExtended
-						query={ query }
-						shouldRenderTask={ false }
-					/>
-				</>
+				<Suspense fallback={ null }>
+					<>
+						<TwoColumnTasks
+							query={ query }
+							userPreferences={ userPrefs }
+							twoColumns={ twoColumns }
+						/>
+						<TwoColumnTasksExtended
+							query={ query }
+							shouldRenderTask={ false }
+						/>
+					</>
+				</Suspense>
 			);
 		}
 
