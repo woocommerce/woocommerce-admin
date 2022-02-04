@@ -65,6 +65,17 @@
 9. Go to **Marketing > Overview**
 10. See MailPoet links to Docs, Support, and Settings
 
+**Analytics**
+
+### Add chart color filter
+
+1. Add the following JS to your admin head. You can use a plugin like "Add Admin Javascript" to do this:
+```
+ addFilter( 'woocommerce_admin_chart_item_color', 'example', ( index, key, orderedKeys ) => '#7f54b3' );
+```
+2. Navigate to the profile wizard. `wp-admin/admin.php?page=wc-admin&path=%2Fanalytics%2Fproducts`.
+3. Make sure the chart line colors are purple.
+
 ## 3.1.0
 
 ### Inbox - 320 character limit
