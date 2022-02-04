@@ -138,19 +138,21 @@ export const Layout = ( {
 		return (
 			<>
 				<Column shouldStick={ shouldStickColumns }>
-					{ ! isRunningTaskListExperiment && (
-						<ActivityHeader
-							className="your-store-today"
-							title={ __(
-								'Your store today',
-								'woocommerce-admin'
-							) }
-							subtitle={ __(
-								"To do's, tips, and insights for your business",
-								'woocommerce-admin'
-							) }
-						/>
-					) }
+					{ ! isLoadingExperimentAssignment &&
+						! isLoadingTwoColExperimentAssignment &&
+						! isRunningTaskListExperiment && (
+							<ActivityHeader
+								className="your-store-today"
+								title={ __(
+									'Your store today',
+									'woocommerce-admin'
+								) }
+								subtitle={ __(
+									"To do's, tips, and insights for your business",
+									'woocommerce-admin'
+								) }
+							/>
+						) }
 					{ <ActivityPanel /> }
 					{ hasTaskList && renderTaskList() }
 					<InboxPanel />
@@ -201,11 +203,13 @@ export const Layout = ( {
 	return (
 		<>
 			{ twoColumns && isRunningTaskListExperiment && (
-				<TwoColumnTasks
-					query={ query }
-					userPreferences={ userPrefs }
-					twoColumns={ twoColumns }
-				/>
+				<Suspense fallback={ null }>
+					<TwoColumnTasks
+						query={ query }
+						userPreferences={ userPrefs }
+						twoColumns={ twoColumns }
+					/>
+				</Suspense>
 			) }
 			<div
 				className={ classnames( 'woocommerce-homescreen', {
