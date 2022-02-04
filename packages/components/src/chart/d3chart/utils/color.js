@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { findIndex } from 'lodash';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Internal dependencies
@@ -14,6 +15,17 @@ export const getColor = ( orderedKeys, colorScheme ) => ( key ) => {
 			? selectionLimit
 			: orderedKeys.length;
 	const idx = findIndex( orderedKeys, ( d ) => d.key === key );
+	const color = applyFilters(
+		'woocommerce_admin_chart_item_color',
+		idx,
+		key,
+		orderedKeys
+	);
+
+	if ( color && color.toString().startsWith( '#' ) ) {
+		return color;
+	}
+
 	const keyValue = idx <= selectionLimit - 1 ? colorScales[ len ][ idx ] : 0;
 	return colorScheme( keyValue );
 };
