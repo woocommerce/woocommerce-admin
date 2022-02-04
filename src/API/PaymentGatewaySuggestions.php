@@ -84,9 +84,6 @@ class PaymentGatewaySuggestions extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
 	public function get_suggestions( $request ) {
-		if ( ! Suggestions::should_display() ) {
-			return rest_ensure_response( array() );
-		}
 		return Suggestions::get_suggestions();
 	}
 
