@@ -264,5 +264,33 @@ describe( 'Payment recommendations', () => {
 			} );
 			expect( mockLocation.href ).toEqual( 'test' );
 		} );
+
+		it( 'should only show gateways that have not been installed', async () => {
+			( useSelect as jest.Mock ).mockReturnValue( {
+				installedPaymentGateway: false,
+				installedPaymentGateways: {
+					test: true,
+				},
+				paymentGatewaySuggestions: [
+					{
+						title: 'test',
+						id: 'test',
+						plugins: [ 'test-product' ],
+						actionText: 'install',
+					},
+					{
+						title: 'another',
+						id: 'another',
+						plugins: [ 'another-product' ],
+						actionText: 'install2',
+					},
+				],
+			} );
+
+			const { queryByText } = render( <PaymentRecommendations /> );
+
+			expect( queryByText( 'test' ) ).not.toBeInTheDocument();
+			expect( queryByText( 'another' ) ).toBeInTheDocument();
+		} );
 	} );
 } );
