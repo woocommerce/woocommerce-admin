@@ -30,7 +30,7 @@ class DeprecatedOptions {
 	 * @return string
 	 */
 	public static function get_deprecated_options( $pre_option, $option ) {
-		if ( Install::is_installing() ) {
+		if ( defined( 'WC_ADMIN_MIGRATING_OPTIONS' ) && WC_ADMIN_MIGRATING_OPTIONS ) {
 			return $pre_option;
 		};
 

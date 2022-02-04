@@ -104,7 +104,10 @@ class Install {
 	 * Hook in tabs.
 	 */
 	public static function init() {
-		add_action( 'init', array( __CLASS__, 'check_version' ), 5 );
+		if ( ( is_admin() && ! wp_doing_ajax() ) || wp_doing_cron() ) {
+			add_action( 'init', array( __CLASS__, 'check_version' ), 5 );
+		}
+
 		add_filter( 'wpmu_drop_tables', array( __CLASS__, 'wpmu_drop_tables' ) );
 
 		// Add wc-admin report tables to list of WooCommerce tables.
@@ -196,13 +199,10 @@ class Install {
 			return;
 		}
 
-		// Check if we are not already running this routine.
-		if ( self::is_installing() ) {
+		// Only continue on if we're able to claim the lock.
+		if ( ! self::claim_install_lock() ) {
 			return;
 		}
-
-		// If we made it till here nothing is running yet, lets set the transient now.
-		set_transient( 'wc_admin_installing', 'yes', MINUTE_IN_SECONDS * 10 );
 
 		self::migrate_options();
 		self::create_tables();
@@ -210,21 +210,10 @@ class Install {
 		self::delete_obsolete_notes();
 		self::maybe_update_db_version();
 
-		delete_transient( 'wc_admin_installing' );
-
 		// Use add_option() here to avoid overwriting this value with each
 		// plugin version update. We base plugin age off of this value.
 		add_option( 'woocommerce_admin_install_timestamp', time() );
 		do_action( 'woocommerce_admin_installed' );
-	}
-
-	/**
-	 * Check if the installer is installing.
-	 *
-	 * @return bool
-	 */
-	public static function is_installing() {
-		return 'yes' === get_transient( 'wc_admin_installing' );
 	}
 
 	/**
@@ -513,8 +502,7 @@ class Install {
 	 * @param string|null $version New WooCommerce Admin DB version or null.
 	 */
 	public static function update_db_version( $version = null ) {
-		delete_option( self::VERSION_OPTION );
-		add_option( self::VERSION_OPTION, is_null( $version ) ? WC_ADMIN_VERSION_NUMBER : $version );
+		update_option( self::VERSION_OPTION, is_null( $version ) ? WC_ADMIN_VERSION_NUMBER : $version );
 	}
 
 	/**
@@ -585,5 +573,39 @@ class Install {
 			$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
 			/* phpcs:enable */
 		}
+	}
+
+	/**
+	 * Try to claim the installation lock. Fails if already claimed.
+	 *
+	 * @return boolean
+	 */
+	private static function claim_install_lock() {
+		$expiration = MINUTE_IN_SECONDS * 10;
+
+		if ( wp_using_ext_object_cache() ) {
+			// Returns true if we claimed the lock, false if another request beat us.
+			return wp_cache_add( 'wc_admin_installing', 'yes', 'woocommerce-admin', $expiration );
+		}
+
+		if ( 'yes' === get_transient( 'wc_admin_installing' ) ) {
+			// Somebody else claimed the lock already.
+			return false;
+		}
+
+		// Can't truly prevent concurrency here. Returns true regardless of if another request may have also claimed the lock at the same time.
+		set_transient( 'wc_admin_installing', 'yes', $expiration );
+		return true;
+	}
+
+	/**
+	 * Deprecated method for checking if installation process was ongoing. No longer accurate.
+	 *
+	 * @deprecated
+	 * @return false
+	 */
+	public static function is_installing() {
+		wc_deprecated_function( 'Automattic\WooCommerce\Admin\Install::is_installing', '3.3' );
+		return false;
 	}
 }
