@@ -66,6 +66,22 @@ class Industry extends Component {
 		this.onContinue = this.onContinue.bind( this );
 		this.onIndustryChange = this.onIndustryChange.bind( this );
 		this.onDetailChange = this.onDetailChange.bind( this );
+
+		props.trackStepValueChanges(
+			props.step.key,
+			[ ...selected ],
+			this.state.selected,
+			this.onContinue
+		);
+	}
+
+	componentDidUpdate( prevProps, prevState ) {
+		if ( this.state.selected !== prevState.selected ) {
+			this.props.updateCurrentStepValues(
+				this.props.step.key,
+				this.state.selected
+			);
+		}
 	}
 
 	async onContinue() {
@@ -94,6 +110,7 @@ class Industry extends Component {
 			store_industry: selectedIndustriesList,
 			industries_with_detail: industriesWithDetail,
 		} );
+
 		await updateProfileItems( { industry: this.state.selected } );
 
 		if ( ! isError ) {
@@ -136,6 +153,7 @@ class Industry extends Component {
 					slug,
 					detail: state.textInputListContent[ slug ],
 				} );
+
 				return {
 					selected: newSelected,
 				};

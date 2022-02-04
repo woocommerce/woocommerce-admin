@@ -26,7 +26,6 @@ import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
 import { Icon, info } from '@wordpress/icons';
 import { isEmail } from '@wordpress/url';
-
 /**
  * Internal dependencies
  */
@@ -71,6 +70,8 @@ export class StoreDetails extends Component {
 		this.onContinue = this.onContinue.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
 		this.validateStoreDetails = this.validateStoreDetails.bind( this );
+		this.onFormValueChange = this.onFormValueChange.bind( this );
+		this.changedFormValues = null;
 	}
 
 	deriveCurrencySettings( countryState ) {
@@ -91,11 +92,35 @@ export class StoreDetails extends Component {
 		);
 	}
 
+	componentDidUpdate() {
+		if (
+			this.props.isLoading === false &&
+			this.changedFormValues === null
+		) {
+			// Make a copy of the initialValues.
+			// The values in this object gets updated on onFormValueChange.
+			this.changedFormValues = { ...this.props.initialValues };
+			this.props.trackStepValueChanges(
+				this.props.step.key,
+				this.props.initialValues,
+				this.changedFormValues,
+				() => {
+					this.onContinue( this.changedFormValues );
+				}
+			);
+		}
+	}
+
 	onSubmit() {
 		this.setState( {
 			showUsageModal: true,
 			skipping: false,
 		} );
+	}
+
+	onFormValueChange( changedFormValue ) {
+		this.changedFormValues[ changedFormValue.name ] =
+			changedFormValue.value;
 	}
 
 	async onContinue( values ) {
@@ -302,6 +327,7 @@ export class StoreDetails extends Component {
 					initialValues={ initialValues }
 					onSubmit={ this.onSubmit }
 					validate={ this.validateStoreDetails }
+					onChange={ this.onFormValueChange }
 				>
 					{ ( {
 						getInputProps,
