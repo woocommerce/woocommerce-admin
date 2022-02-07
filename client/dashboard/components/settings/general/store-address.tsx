@@ -315,9 +315,7 @@ export function useGetCountryStateAutofill(
 }
 
 type StoreAddressProps = {
-	// Disable reason: The getInputProps type are not provided by the caller and source.
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	getInputProps: any;
+	getInputProps: ( key: string ) => React.HTMLProps< HTMLInputElement >;
 	setValue: ( key: string, value: string ) => void;
 };
 
@@ -333,7 +331,7 @@ export function StoreAddress( {
 	getInputProps,
 	setValue,
 }: StoreAddressProps ): JSX.Element {
-	const countryState = getInputProps( 'countryState' ).value;
+	const countryState = getInputProps( 'countryState' ).value as string;
 	const { locale, hasFinishedResolution } = useSelect( ( select ) => {
 		return {
 			locale: select( COUNTRIES_STORE_NAME ).getLocale( countryState ),
