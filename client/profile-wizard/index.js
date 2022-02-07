@@ -120,7 +120,7 @@ class ProfileWizard extends Component {
 				profileItems.product_types !== null,
 		} );
 		steps.push( {
-			key: 'business-features',
+			key: 'business-details',
 			container: BusinessDetailsStep,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
@@ -150,7 +150,7 @@ class ProfileWizard extends Component {
 		return currentStep;
 	}
 
-	async goToNextStep() {
+	async goToNextStep( trackStepKey = '' ) {
 		const { activePlugins } = this.props;
 		const currentStep = this.getCurrentStep();
 		const currentStepIndex = this.getSteps().findIndex(
@@ -158,7 +158,7 @@ class ProfileWizard extends Component {
 		);
 
 		recordEvent( 'storeprofiler_step_complete', {
-			step: currentStep.key,
+			step: trackStepKey !== '' ? trackStepKey : currentStep.key,
 		} );
 
 		// Update the activePlugins cache in case plugins were installed
