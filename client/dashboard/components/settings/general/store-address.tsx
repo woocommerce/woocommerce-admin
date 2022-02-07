@@ -363,12 +363,7 @@ export function StoreAddress( {
 					.replace( /(address)Line([0-9])/, '$1$2' )
 					.toLowerCase();
 				const props = getInputProps( field );
-				if (
-					locale[ fieldKey ] &&
-					locale[ fieldKey ].hidden &&
-					props.value &&
-					props.value.length > 0
-				) {
+				if ( locale[ fieldKey ]?.hidden && props.value?.length > 0 ) {
 					// Clear hidden field.
 					setValue( field, '' );
 				}
