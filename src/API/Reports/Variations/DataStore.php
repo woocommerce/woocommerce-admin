@@ -126,7 +126,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$attr_subquery = new SqlQuery( $this->context . '_attribute_subquery' );
 			$attr_subquery->add_sql_clause( 'select', "DISTINCT {$order_product_lookup_table}.order_item_id" );
 			$attr_subquery->add_sql_clause( 'from', $order_product_lookup_table );
-			$attr_subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id != 0" );
+
+			if ( $this->should_exclude_simple_products( $query_args ) ) {
+				$attr_subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id != 0" );
+			}
 
 			foreach ( $attribute_subqueries['join'] as $attribute_join ) {
 				$attr_subquery->add_sql_clause( 'join', $attribute_join );
@@ -177,7 +180,9 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		if ( $included_variations ) {
 			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id IN ({$included_variations})" );
 		} elseif ( ! $included_products ) {
-			$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id != 0" );
+			if ( $this->should_exclude_simple_products( $query_args ) ) {
+				$this->subquery->add_sql_clause( 'where', "AND {$order_product_lookup_table}.variation_id != 0" );
+			}
 		}
 
 		$order_status_filter = $this->get_status_subquery( $query_args );
@@ -284,6 +289,10 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			}
 			$products_data[ $key ]['extended_info'] = $extended_info;
 		}
+	}
+
+	protected function should_exclude_simple_products( $query_args ) {
+		return apply_filters( 'internal_woocommerce_analytics_variations_should_exclude_simple_products', true, $query_args );
 	}
 
 	/**

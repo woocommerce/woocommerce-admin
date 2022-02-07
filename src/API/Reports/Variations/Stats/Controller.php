@@ -64,7 +64,8 @@ class Controller extends \WC_REST_Reports_Controller {
 			),
 		);
 
-		$registered = array_keys( $this->get_collection_params() );
+		$collection_params = apply_filters( 'internal_woocommerce_analytics_variations_stats_collection_params', $this->get_collection_params() );
+		$registered = array_keys( $collection_params );
 		foreach ( $registered as $param_name ) {
 			if ( isset( $request[ $param_name ] ) ) {
 				if ( isset( $this->param_mapping[ $param_name ] ) ) {
