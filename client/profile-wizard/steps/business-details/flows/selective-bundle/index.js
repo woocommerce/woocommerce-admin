@@ -386,6 +386,9 @@ class BusinessDetails extends Component {
 			used_platform_name: otherPlatformName,
 			setup_client: isSetupClient,
 		} );
+		recordEvent( 'storeprofiler_step_complete', {
+			step: BUSINESS_DETAILS_TAB_NAME,
+		} );
 	}
 
 	getSelectControlProps( getInputProps, name = '' ) {
