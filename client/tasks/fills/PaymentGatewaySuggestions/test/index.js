@@ -20,7 +20,7 @@ jest.mock( '@wordpress/data', () => ( {
 const paymentGatewaySuggestions = [
 	{
 		id: 'stripe',
-		title: ' Stripe',
+		title: 'Stripe',
 		content:
 			'Accept debit and credit cards in 135+ currencies, methods such as Alipay, and one-touch checkout with Apple Pay.',
 		image:
@@ -98,12 +98,25 @@ describe( 'PaymentGatewaySuggestions', () => {
 			/>
 		);
 
-		const paymentTitles = container.querySelectorAll(
+		const paymentTitleElements = container.querySelectorAll(
 			'.woocommerce-task-payment__title'
 		);
 
-		expect( paymentTitles.length ).toBe( 5 );
-		expect( container ).toMatchSnapshot();
+		const paymentTitles = Array.from( paymentTitleElements ).map(
+			( e ) => e.textContent
+		);
+
+		expect( paymentTitles ).toEqual( [
+			'Stripe',
+			'PayPal Payments',
+			'Eway',
+			'Cash on delivery',
+			'Direct bank transfer',
+		] );
+
+		expect(
+			container.getElementsByTagName( 'title' )[ 0 ].textContent
+		).toBe( 'WooCommerce Payments' );
 	} );
 
 	test( 'should the payment gateway offline options at the bottom', () => {
