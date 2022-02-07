@@ -151,9 +151,9 @@ class ProfileWizard extends Component {
 	}
 
 	/**
-	 * @param {string} trackStepKey optional track key for steps that have multiple tabs containing their own steps.
+	 * @param {object} tracksArgs optional track arguments for the storeprofiler_step_complete track.
 	 */
-	async goToNextStep( trackStepKey = '' ) {
+	async goToNextStep( tracksArgs = {} ) {
 		const { activePlugins } = this.props;
 		const currentStep = this.getCurrentStep();
 		const currentStepIndex = this.getSteps().findIndex(
@@ -161,7 +161,8 @@ class ProfileWizard extends Component {
 		);
 
 		recordEvent( 'storeprofiler_step_complete', {
-			step: trackStepKey !== '' ? trackStepKey : currentStep.key,
+			step: currentStep.key,
+			...tracksArgs,
 		} );
 
 		// Update the activePlugins cache in case plugins were installed

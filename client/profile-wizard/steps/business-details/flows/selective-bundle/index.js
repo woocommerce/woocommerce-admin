@@ -240,7 +240,7 @@ class BusinessDetails extends Component {
 
 		Promise.all( promises )
 			.then( () => {
-				goToNextStep( BUSINESS_FEATURES_TAB_NAME );
+				goToNextStep( { step: BUSINESS_FEATURES_TAB_NAME } );
 			} )
 			.catch( () => {
 				createNotice(
@@ -606,9 +606,9 @@ class BusinessDetails extends Component {
 										<Button
 											onClick={ () => {
 												this.persistProfileItems();
-												goToNextStep(
-													BUSINESS_FEATURES_TAB_NAME
-												);
+												goToNextStep( {
+													step: BUSINESS_FEATURES_TAB_NAME,
+												} );
 											} }
 										>
 											{ __(
