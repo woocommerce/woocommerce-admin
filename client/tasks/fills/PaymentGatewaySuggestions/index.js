@@ -23,6 +23,9 @@ import { getPluginSlug } from '~/utils';
 import './plugins/Bacs';
 import './payment-gateway-suggestions.scss';
 
+const comparePaymentGatewaysByPriority = ( a, b ) =>
+	a.recommendation_priority - b.recommendation_priority;
+
 export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 	const { updatePaymentGateway } = useDispatch( PAYMENT_GATEWAYS_STORE_NAME );
 	const {
@@ -141,10 +144,7 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 		() =>
 			Array.from( paymentGateways.values() )
 				.filter( ( gateway ) => gateway.recommendation_priority )
-				.sort(
-					( a, b ) =>
-						a.recommendation_priority - b.recommendation_priority
-				)
+				.sort( comparePaymentGatewaysByPriority )
 				.map( ( gateway ) => gateway.id )
 				.shift(),
 		[ paymentGateways ]
@@ -169,10 +169,7 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 			Array.from( paymentGateways.values() )
 				.sort( ( a, b ) => {
 					if ( a.hasPlugins === b.hasPlugins ) {
-						return (
-							a.recommendation_priority -
-							b.recommendation_priority
-						);
+						return comparePaymentGatewaysByPriority( a, b );
 					}
 
 					// hasPlugins payment first
