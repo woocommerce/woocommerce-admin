@@ -350,7 +350,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 			$product   = $products[ $product_key ];
 			$index_key = $product['product_id'] . '_' . $product['variation_id'];
 			if ( isset( $index[ $index_key ] ) ) {
-				$products[ $product_key ]['extended_info']['name'] = $index[ $index_key ] . ' (' . __( 'deleted', 'woocommerce-admin' ) . ')';
+				$products[ $product_key ]['extended_info']['name'] = $index[ $index_key ];
 			}
 		}
 	}
