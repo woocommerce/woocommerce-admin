@@ -151,7 +151,7 @@ class ProfileWizard extends Component {
 	}
 
 	/**
-	 * @param {object} tracksArgs optional track arguments for the storeprofiler_step_complete track.
+	 * @param {Object} tracksArgs optional track arguments for the storeprofiler_step_complete track.
 	 */
 	async goToNextStep( tracksArgs = {} ) {
 		const { activePlugins } = this.props;
