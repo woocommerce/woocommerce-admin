@@ -150,6 +150,9 @@ class ProfileWizard extends Component {
 		return currentStep;
 	}
 
+	/**
+	 * @param string trackStepKey optional track key for steps that have multiple tabs containing their own steps.
+	 */
 	async goToNextStep( trackStepKey = '' ) {
 		const { activePlugins } = this.props;
 		const currentStep = this.getCurrentStep();
