@@ -61,16 +61,33 @@ export class ProductTypes extends Component {
 		}
 	}
 
-	componentDidUpdate( prevProps ) {
+	componentDidUpdate( prevProps, prevState ) {
 		const { profileItems, productTypes } = this.props;
+
+		if ( this.state.selected !== prevState.selected ) {
+			this.props.updateCurrentStepValues(
+				this.props.step.key,
+				this.state.selected
+			);
+		}
 
 		if ( prevProps.productTypes !== productTypes ) {
 			const defaultProductTypes = Object.keys( productTypes ).filter(
 				( key ) => !! productTypes[ key ].default
 			);
-			this.setState( {
-				selected: profileItems.product_types || defaultProductTypes,
-			} );
+			this.setState(
+				{
+					selected: profileItems.product_types || defaultProductTypes,
+				},
+				() => {
+					this.props.trackStepValueChanges(
+						this.props.step.key,
+						[ ...this.state.selected ],
+						this.state.selected,
+						this.onContinue
+					);
+				}
+			);
 		}
 	}
 
