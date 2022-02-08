@@ -66,6 +66,21 @@ class Industry extends Component {
 		this.onContinue = this.onContinue.bind( this );
 		this.onIndustryChange = this.onIndustryChange.bind( this );
 		this.onDetailChange = this.onDetailChange.bind( this );
+		props.trackStepValueChanges(
+			props.step.key,
+			[ ...selected ],
+			this.state.selected,
+			this.onContinue
+		);
+	}
+
+	componentDidUpdate( prevProps, prevState ) {
+		if ( this.state.selected !== prevState.selected ) {
+			this.props.updateCurrentStepValues(
+				this.props.step.key,
+				this.state.selected
+			);
+		}
 	}
 
 	async onContinue() {
@@ -74,12 +89,7 @@ class Industry extends Component {
 			return;
 		}
 
-		const {
-			createNotice,
-			goToNextStep,
-			isError,
-			updateProfileItems,
-		} = this.props;
+		const { createNotice, isError, updateProfileItems } = this.props;
 		const selectedIndustriesList = this.state.selected.map(
 			( industry ) => industry.slug
 		);
@@ -97,16 +107,15 @@ class Industry extends Component {
 		await updateProfileItems( { industry: this.state.selected } );
 
 		if ( ! isError ) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating your industries',
-					'woocommerce-admin'
-				)
-			);
+			return true;
 		}
+		createNotice(
+			'error',
+			__(
+				'There was a problem updating your industries',
+				'woocommerce-admin'
+			)
+		);
 	}
 
 	async validateField() {
@@ -251,7 +260,11 @@ class Industry extends Component {
 					<CardFooter isBorderless justify="center">
 						<Button
 							isPrimary
-							onClick={ this.onContinue }
+							onClick={ () => {
+								this.onContinue().then(
+									this.props.goToNextStep
+								);
+							} }
 							isBusy={ isProfileItemsRequesting }
 							disabled={
 								! selected.length || isProfileItemsRequesting
