@@ -10,12 +10,14 @@
 		"jsx": "react",
 		"jsxFactory": "createElement",
 		"jsxFragmentFactory": "Fragment",
-		"incremental": true
+		"incremental": true,
 	},
 	"exclude": [
 		"node_modules",
+		"**/stories",
 		"**/build",
 		"**/build-module",
+		"**/build-types",
 		"**/test/*",
 		"**/jest.config.js",
 		"**/webpack.*.js"
