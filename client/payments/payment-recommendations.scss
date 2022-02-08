@@ -4,10 +4,6 @@
 	animation-duration: 250ms;
 
 	.woocommerce-list__item {
-		> .woocommerce-list__item-inner {
-			align-items: flex-start;
-		}
-
 		&:hover {
 			background-color: $white;
 			.woocommerce-list__item-title {

@@ -161,7 +161,8 @@ const PaymentRecommendations: React.FC = () => {
 			return (
 				! installedPaymentGateways[ plugin.id ] &&
 				plugin.plugins?.length &&
-				! plugin.id.startsWith( 'woocommerce_payments' )
+				( ! window.wcAdminFeatures[ 'wc-pay-promotion' ] ||
+					! plugin.id.startsWith( 'woocommerce_payments' ) )
 			);
 		} )
 		.map( ( plugin: Plugin ) => {
