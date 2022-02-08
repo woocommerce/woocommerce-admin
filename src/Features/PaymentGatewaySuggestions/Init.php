@@ -82,6 +82,10 @@ class Init {
 	 * @return bool
 	 */
 	public static function should_display() {
+		if ( 'yes' === get_option( self::RECOMMENDED_PAYMENT_PLUGINS_DISMISS_OPTION, 'no' ) ) {
+			return false;
+		}
+
 		if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
 			return false;
 		}

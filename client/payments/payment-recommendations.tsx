@@ -36,11 +36,11 @@ const PaymentRecommendations: React.FC = () => {
 	const [ installingPlugin, setInstallingPlugin ] = useState< string | null >(
 		null
 	);
+	const [ isDismissed, setIsDismissed ] = useState< boolean >( false );
 	const [ isInstalled, setIsInstalled ] = useState< boolean >( false );
 	const {
 		installAndActivatePlugins,
 		dismissRecommendedPlugins,
-		invalidateResolution,
 	}: PluginsStoreActions = useDispatch( PLUGINS_STORE_NAME );
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -81,7 +81,9 @@ const PaymentRecommendations: React.FC = () => {
 
 	const triggeredPageViewRef = useRef( false );
 	const shouldShowRecommendations =
-		paymentGatewaySuggestions && paymentGatewaySuggestions.length > 0;
+		paymentGatewaySuggestions &&
+		paymentGatewaySuggestions.length > 0 &&
+		! isDismissed;
 
 	useEffect( () => {
 		if (
@@ -123,11 +125,11 @@ const PaymentRecommendations: React.FC = () => {
 		return null;
 	}
 	const dismissPaymentRecommendations = async () => {
+		setIsDismissed( true );
 		recordEvent( 'settings_payments_recommendations_dismiss', {} );
 		const success = await dismissRecommendedPlugins( 'payments' );
-		if ( success ) {
-			invalidateResolution( 'getRecommendedPlugins', [ 'payments' ] );
-		} else {
+		if ( ! success ) {
+			setIsDismissed( false );
 			createNotice(
 				'error',
 				__(

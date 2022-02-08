@@ -51,7 +51,7 @@ class PaymentGatewaySuggestions extends \WC_REST_Data_Controller {
 
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->rest_base . '/payment-gateway-suggestions/dismiss',
+			'/' . $this->rest_base . '/dismiss',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -84,7 +84,11 @@ class PaymentGatewaySuggestions extends \WC_REST_Data_Controller {
 	 * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
 	 */
 	public function get_suggestions( $request ) {
-		return Suggestions::get_suggestions();
+		if ( Suggestions::should_display() ) {
+			return Suggestions::get_suggestions();
+		}
+
+		return rest_ensure_response( array() );
 	}
 
 	/**
