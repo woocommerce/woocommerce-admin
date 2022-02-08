@@ -126,7 +126,6 @@ export class StoreDetails extends Component {
 	async onContinue( values ) {
 		const {
 			createNotice,
-			goToNextStep,
 			updateProfileItems,
 			updateAndPersistSettingsForGroup,
 			profileItems,
@@ -209,20 +208,19 @@ export class StoreDetails extends Component {
 			! Boolean( errorsRef.current.settings ) &&
 			! errorMessages.length
 		) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your store details',
-					'woocommerce-admin'
-				)
-			);
-
-			errorMessages.forEach( ( message ) =>
-				createNotice( 'error', message )
-			);
+			return true;
 		}
+		createNotice(
+			'error',
+			__(
+				'There was a problem saving your store details',
+				'woocommerce-admin'
+			)
+		);
+
+		errorMessages.forEach( ( message ) =>
+			createNotice( 'error', message )
+		);
 	}
 
 	validateStoreDetails( values ) {
@@ -343,7 +341,11 @@ export class StoreDetails extends Component {
 										if ( skipping ) {
 											skipProfiler();
 										} else {
-											this.onContinue( values );
+											this.onContinue(
+												values
+											).then( () =>
+												this.props.goToNextStep()
+											);
 										}
 									} }
 									onClose={ () =>

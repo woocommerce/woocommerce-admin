@@ -90,12 +90,7 @@ class Industry extends Component {
 			return;
 		}
 
-		const {
-			createNotice,
-			goToNextStep,
-			isError,
-			updateProfileItems,
-		} = this.props;
+		const { createNotice, isError, updateProfileItems } = this.props;
 		const selectedIndustriesList = this.state.selected.map(
 			( industry ) => industry.slug
 		);
@@ -114,16 +109,15 @@ class Industry extends Component {
 		await updateProfileItems( { industry: this.state.selected } );
 
 		if ( ! isError ) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem updating your industries',
-					'woocommerce-admin'
-				)
-			);
+			return true;
 		}
+		createNotice(
+			'error',
+			__(
+				'There was a problem updating your industries',
+				'woocommerce-admin'
+			)
+		);
 	}
 
 	async validateField() {
@@ -269,7 +263,11 @@ class Industry extends Component {
 					<CardFooter isBorderless justify="center">
 						<Button
 							isPrimary
-							onClick={ this.onContinue }
+							onClick={ () => {
+								this.onContinue().then( () =>
+									this.props.goToNextStep()
+								);
+							} }
 							isBusy={ isProfileItemsRequesting }
 							disabled={
 								! selected.length || isProfileItemsRequesting

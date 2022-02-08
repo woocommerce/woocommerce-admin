@@ -102,7 +102,7 @@ export class ProductTypes extends Component {
 		return ! error;
 	}
 
-	onContinue() {
+	onContinue( onComplete ) {
 		const { selected } = this.state;
 		const { installedPlugins = [] } = this.props;
 
@@ -161,7 +161,9 @@ export class ProductTypes extends Component {
 					'storeprofiler_store_product_type_continue',
 					eventProps
 				);
-				goToNextStep();
+				if ( typeof onComplete === 'function' ) {
+					onComplete();
+				}
 			} )
 			.catch( () =>
 				createNotice(
@@ -277,7 +279,11 @@ export class ProductTypes extends Component {
 					<CardFooter isBorderless justify="center">
 						<Button
 							isPrimary
-							onClick={ this.onContinue }
+							onClick={ () => {
+								this.onContinue( () => {
+									this.props.goToNextStep();
+								} );
+							} }
 							isBusy={
 								isProfileItemsRequesting ||
 								isInstallingActivating

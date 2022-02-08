@@ -16,6 +16,7 @@ export default class ProfileWizardHeader extends Component {
 		this.state = {
 			showUnsavedChangesModal: false,
 		};
+		this.lastStepKey = null;
 	}
 
 	shouldWarnForUnsavedChanges( step ) {
@@ -66,6 +67,7 @@ export default class ProfileWizardHeader extends Component {
 				step.onClick = ( key ) => {
 					if ( this.shouldWarnForUnsavedChanges( currentStep ) ) {
 						this.setState( { showUnsavedChangesModal: true } );
+						this.lastStepKey = key;
 					} else {
 						updateQueryString( { step: key } );
 					}
@@ -90,11 +92,18 @@ export default class ProfileWizardHeader extends Component {
 					<UnsavedChangesModal
 						onClose={ () => {
 							this.setState( { showUnsavedChangesModal: false } );
-							this.props.goToNextStep();
+							if ( this.lastStepKey ) {
+								updateQueryString( { step: this.lastStepKey } );
+								this.lastStepKey = null;
+							}
 						} }
 						onSave={ () => {
 							this.saveCurrentStepChanges();
 							this.setState( { showUnsavedChangesModal: false } );
+							if ( this.lastStepKey ) {
+								updateQueryString( { step: this.lastStepKey } );
+								this.lastStepKey = null;
+							}
 						} }
 					/>
 				) }
