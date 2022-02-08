@@ -142,7 +142,7 @@ export const isSellingOtherPlatformInPerson = ( selectedOption ) =>
 	[ 'other', 'brick-mortar-other' ].includes( selectedOption );
 
 class BusinessDetails extends Component {
-	constructor() {
+	constructor( props ) {
 		super();
 
 		this.state = {
@@ -154,6 +154,12 @@ class BusinessDetails extends Component {
 
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
+		props.trackStepValueChanges(
+			props.step.key,
+			{ ...( this.state.savedValues || props.initialValues ) },
+			this.savedValues || props.initialValues,
+			this.persistProfileItems.bind( this )
+		);
 	}
 
 	async onContinue(
@@ -433,6 +439,10 @@ class BusinessDetails extends Component {
 				} }
 				onChange={ ( _, values, isValid ) => {
 					this.setState( { savedValues: values, isValid } );
+					this.props.updateCurrentStepValues(
+						this.props.step.key,
+						values
+					);
 				} }
 				validate={ this.validate }
 			>

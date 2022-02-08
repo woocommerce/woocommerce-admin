@@ -22,13 +22,10 @@ export default class ProfileWizardHeader extends Component {
 
 	shouldWarnForUnsavedChanges( step ) {
 		if ( typeof this.props.stepValueChanges[ step ] !== 'undefined' ) {
-			const hasFormValueChanged = ! isEqual(
+			return ! isEqual(
 				this.props.stepValueChanges[ step ].initialValues,
 				this.props.stepValueChanges[ step ].currentValues
 			);
-			if ( hasFormValueChanged ) {
-				return true;
-			}
 		}
 		return false;
 	}
@@ -52,7 +49,7 @@ export default class ProfileWizardHeader extends Component {
 			return null;
 		}
 		const stepValueChanges = this.props.stepValueChanges[ currentStep.key ];
-		if ( stepValueChanges.onSave ) {
+		if ( typeof stepValueChanges.onSave === 'function' ) {
 			stepValueChanges.onSave();
 		}
 	}
