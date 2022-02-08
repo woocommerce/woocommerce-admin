@@ -14,6 +14,7 @@ import { useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { getAdminSetting } from '~/utils/admin-settings';
+import { FormInputProps } from '~/utils/types';
 
 const { countries } = getAdminSetting( 'dataEndpoints', { countries: {} } );
 
@@ -315,7 +316,7 @@ export function useGetCountryStateAutofill(
 }
 
 type StoreAddressProps = {
-	getInputProps: ( key: string ) => React.HTMLProps< HTMLInputElement >;
+	getInputProps: ( key: string ) => FormInputProps;
 	setValue: ( key: string, value: string ) => void;
 };
 
@@ -331,7 +332,7 @@ export function StoreAddress( {
 	getInputProps,
 	setValue,
 }: StoreAddressProps ): JSX.Element {
-	const countryState = getInputProps( 'countryState' ).value as string;
+	const countryState = getInputProps( 'countryState' ).value;
 	const { locale, hasFinishedResolution } = useSelect( ( select ) => {
 		return {
 			locale: select( COUNTRIES_STORE_NAME ).getLocale( countryState ),
