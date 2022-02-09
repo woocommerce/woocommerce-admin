@@ -1,4 +1,4 @@
-export type FromValue = HTMLInputElement[ 'value' ];
+export type FormValue = HTMLInputElement[ 'value' ];
 
 export type FormInputProps = {
 	value: FromValue;
