@@ -108,7 +108,6 @@ class Onboarding {
 		add_action( 'current_screen', array( $this, 'reset_task_list' ) );
 		add_action( 'current_screen', array( $this, 'reset_extended_task_list' ) );
 		add_action( 'current_screen', array( $this, 'redirect_wccom_install' ) );
-		add_action( 'current_screen', array( $this, 'redirect_to_profiler' ) );
 	}
 
 	/**
