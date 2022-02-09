@@ -66,21 +66,24 @@ class Industry extends Component {
 		this.onContinue = this.onContinue.bind( this );
 		this.onIndustryChange = this.onIndustryChange.bind( this );
 		this.onDetailChange = this.onDetailChange.bind( this );
+		const selectedSlugs = this.getSelectedSlugs();
 		props.trackStepValueChanges(
 			props.step.key,
-			[ ...selected ],
-			this.state.selected,
+			selectedSlugs,
+			selectedSlugs,
 			this.onContinue
 		);
 	}
 
-	componentDidUpdate( prevProps, prevState ) {
-		if ( this.state.selected !== prevState.selected ) {
-			this.props.updateCurrentStepValues(
-				this.props.step.key,
-				this.state.selected
-			);
-		}
+	getSelectedSlugs() {
+		return this.state.selected.map( ( industry ) => industry.slug );
+	}
+
+	componentDidUpdate() {
+		this.props.updateCurrentStepValues(
+			this.props.step.key,
+			this.getSelectedSlugs()
+		);
 	}
 
 	async onContinue() {
