@@ -8,23 +8,16 @@ namespace Automattic\WooCommerce\Admin\Features\Onboarding;
 
 use Automattic\WooCommerce\Admin\PageController;
 use Automattic\WooCommerce\Admin\WCAdminHelper;
+use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProfile;
 
 /**
  * Contains backend logic for the onboarding profile and checklist feature.
  */
 class OnboardingSetupWizard {
 	/**
-	 * Profile data option name.
-	 */
-	const PROFILE_DATA_OPTION = 'woocommerce_onboarding_profile';
-
-	/**
 	 * Add onboarding actions.
 	 */
 	public static function init() {
-		add_action( 'woocommerce_updated', array( __CLASS__, 'maybe_mark_complete' ) );
-		add_action( 'update_option_' . self::PROFILE_DATA_OPTION, array( __CLASS__, 'trigger_profile_completed_action' ), 10, 2 );
-
 		if ( ! is_admin() ) {
 			return;
 		}
@@ -140,19 +133,19 @@ class OnboardingSetupWizard {
 	 *
 	 * @return bool
 	 */
-	public static function should_show_profiler() {
-		if ( self::is_profile_wizard() ) {
+	public static function should_show() {
+		if ( self::is_setup_wizard() ) {
 			return true;
 		}
 
-		return self::profiler_needs_completion();
+		return OnboardingProfile::needs_completion();
 	}
 
 	/**
 	 * Redirect to the profiler on homepage if completion is needed.
 	 */
 	public static function redirect_to_profiler() {
-		if ( ! self::is_homepage() || ! self::profiler_needs_completion() ) {
+		if ( ! self::is_homepage() || ! OnboardingProfile::needs_completion() ) {
 			return;
 		}
 
@@ -161,27 +154,11 @@ class OnboardingSetupWizard {
 	}
 
 	/**
-	 * Check if the profiler still needs to be completed.
-	 *
-	 * @return bool
-	 */
-	public static function profiler_needs_completion() {
-		$onboarding_data = get_option( self::PROFILE_DATA_OPTION, array() );
-
-		$is_completed = isset( $onboarding_data['completed'] ) && true === $onboarding_data['completed'];
-		$is_skipped   = isset( $onboarding_data['skipped'] ) && true === $onboarding_data['skipped'];
-
-		// @todo When merging to WooCommerce Core, we should set the `completed` flag to true during the upgrade progress.
-		// https://github.com/woocommerce/woocommerce-admin/pull/2300#discussion_r287237498.
-		return ! $is_completed && ! $is_skipped;
-	}
-
-	/**
 	 * Check if the current page is the profile wizard.
 	 *
 	 * @return bool
 	 */
-	public static function is_profile_wizard() {
+	public static function is_setup_wizard() {
 		/* phpcs:disable WordPress.Security.NonceVerification */
 		return isset( $_GET['page'] ) &&
 			'wc-admin' === $_GET['page'] &&
@@ -225,7 +202,7 @@ class OnboardingSetupWizard {
 	 * @return array
 	 */
 	public function component_settings( $settings ) {
-		$profile                = (array) get_option( self::PROFILE_DATA_OPTION, array() );
+		$profile                = (array) get_option( OnboardingProfile::DATA_OPTION, array() );
 		$settings['onboarding'] = array(
 			'profile' => $profile,
 		);
@@ -233,7 +210,7 @@ class OnboardingSetupWizard {
 		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown
 		// or the current page is one of the WooCommerce Admin pages.
 		if (
-			( ! self::should_show_profiler() && ! count( TaskLists::get_visible() )
+			( ! self::should_show() && ! count( TaskLists::get_visible() )
 			||
 			! $this->is_woocommerce_page()
 		)
@@ -273,7 +250,7 @@ class OnboardingSetupWizard {
 	 */
 	public static function add_loading_classes( $classes ) {
 		/* phpcs:disable WordPress.Security.NonceVerification */
-		if ( self::is_profile_wizard() ) {
+		if ( self::is_setup_wizard() ) {
 			$classes .= ' woocommerce-admin-full-screen';
 		}
 		/* phpcs: enable */
@@ -308,7 +285,7 @@ class OnboardingSetupWizard {
 			return;
 		}
 
-		$onboarding_data = get_option( self::PROFILE_DATA_OPTION, array() );
+		$onboarding_data = get_option( OnboardingProfile::DATA_OPTION, array() );
 		// Don't make updates if the profiler is completed or skipped, but task list is potentially incomplete.
 		if (
 			( isset( $onboarding_data['completed'] ) && $onboarding_data['completed'] ) ||
@@ -318,7 +295,7 @@ class OnboardingSetupWizard {
 		}
 
 		$onboarding_data['completed'] = true;
-		update_option( self::PROFILE_DATA_OPTION, $onboarding_data );
+		update_option( OnboardingProfile::DATA_OPTION, $onboarding_data );
 
 		if ( ! WCAdminHelper::is_wc_admin_active_for( DAY_IN_SECONDS ) ) {
 			$task_list = TaskLists::get_list( 'setup' );

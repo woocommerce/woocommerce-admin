@@ -6,6 +6,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\Onboarding;
 
+use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProfile;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 
 /**
@@ -16,7 +17,7 @@ class OnboardingSync {
 	 * Init.
 	 */
 	private function init() {
-		add_action( 'update_option_' . self::PROFILE_DATA_OPTION, array( $this, 'send_profile_data_on_update' ), 10, 2 );
+		add_action( 'update_option_' . OnboardingProfile::DATA_OPTION, array( $this, 'send_profile_data_on_update' ), 10, 2 );
 		add_action( 'woocommerce_helper_connected', array( $this, 'send_profile_data_on_connect' ) );
 
 		if ( ! is_admin() ) {
@@ -47,7 +48,7 @@ class OnboardingSync {
 			return false;
 		}
 
-		$profile       = get_option( self::PROFILE_DATA_OPTION, array() );
+		$profile       = get_option( OnboardingProfile::DATA_OPTION, array() );
 		$base_location = wc_get_base_location();
 		$defaults      = array(
 			'plugins'             => 'skipped',
@@ -105,7 +106,7 @@ class OnboardingSync {
 	 * Send profiler data after a site is connected.
 	 */
 	public static function send_profile_data_on_connect() {
-		$profile = get_option( self::PROFILE_DATA_OPTION, array() );
+		$profile = get_option( OnboardingProfile::DATA_OPTION, array() );
 		if ( ! isset( $profile['completed'] ) || ! $profile['completed'] ) {
 			return;
 		}

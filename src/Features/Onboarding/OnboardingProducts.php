@@ -7,6 +7,7 @@
 namespace Automattic\WooCommerce\Admin\Features\Onboarding;
 
 use Automattic\WooCommerce\Admin\Features\Features;
+use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProfile;
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
@@ -137,7 +138,7 @@ class OnboardingProducts {
 	 * @return array
 	 */
 	public static function get_relevant_products() {
-		$profiler_data = get_option( OnboardingSetupWizard::PROFILE_DATA_OPTION, array() );
+		$profiler_data = get_option( OnboardingProfile::DATA_OPTION, array() );
 		$installed     = PluginsHelper::get_installed_plugin_slugs();
 		$product_types = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
 		$product_data  = self::get_product_types_with_data();

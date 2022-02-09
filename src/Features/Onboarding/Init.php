@@ -21,6 +21,7 @@ class Init {
 		OnboardingJetpack::init();
 		OnboardingMailchimp::init();
 		OnboardingProducts::init();
+		OnboardingProfile::init();
 		OnboardingSetupWizard::init();
 		OnboardingSync::init();
 		OnboardingThemes::init();
