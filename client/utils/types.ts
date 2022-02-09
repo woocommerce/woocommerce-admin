@@ -1,9 +1,10 @@
 export type FormValue = HTMLInputElement[ 'value' ];
 
+// TODO: move to packages/components/Form when we convert From to TS.
 export type FormInputProps = {
-	value: FromValue;
+	value: FormValue;
 	checked: boolean;
-	selected: FromValue;
+	selected: FormValue;
 	onChange: ( value: FormValue ) => void;
 	onBlur: () => void;
 	className: string;
