@@ -4,7 +4,7 @@ export type FormInputProps = {
 	value: FromValue;
 	checked: boolean;
 	selected: FromValue;
-	onChange: ( value: FromValue ) => void;
+	onChange: ( value: FormValue ) => void;
 	onBlur: () => void;
 	className: string;
 	help: string | null;
