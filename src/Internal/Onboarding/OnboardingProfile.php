@@ -32,7 +32,7 @@ class OnboardingProfile {
 	 * @param array $old_value Previous value.
 	 * @param array $value Current value.
 	 */
-	public function trigger_complete( $old_value, $value ) {
+	public static function trigger_complete( $old_value, $value ) {
 		if ( isset( $old_value['completed'] ) && $old_value['completed'] ) {
 			return;
 		}

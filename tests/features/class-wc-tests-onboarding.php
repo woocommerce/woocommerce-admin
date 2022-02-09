@@ -33,7 +33,7 @@ class WC_Tests_Onboarding extends WC_Unit_Test_Case {
 			'slug' => 'poutine',
 		);
 		$some_themes   = array( $theme1, $theme2, $theme3, $theme4 );
-		$sorted_themes = \Automattic\WooCommerce\Admin\Internal\OnboardingThemes::sort_woocommerce_themes( $some_themes );
+		$sorted_themes = OnboardingThemes::sort_woocommerce_themes( $some_themes );
 		$this->assertEquals( 'Storefront', $sorted_themes[0]->slug );
 	}
 
