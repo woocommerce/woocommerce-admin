@@ -2,9 +2,9 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProducts;
+use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingThemes;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
-use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Purchase Task
@@ -140,79 +140,24 @@ class Purchase extends Task {
 	}
 
 	/**
-	 * Get puchasable theme by slug.
-	 *
-	 * @param string $price_string string of price.
-	 * @return float|null
-	 */
-	private function get_price_from_string( $price_string ) {
-		$price_match = null;
-		// Parse price from string as it includes the currency symbol.
-		preg_match( '/\\d+\.\d{2}\s*/', $price_string, $price_match );
-		if ( count( $price_match ) > 0 ) {
-			return (float) $price_match[0];
-		}
-		return null;
-	}
-
-	/**
-	 * Get puchasable theme by slug.
-	 *
-	 * @param string $slug from theme.
-	 * @return array|null
-	 */
-	private function get_paid_theme_by_slug( $slug ) {
-		$themes    = Onboarding::get_themes();
-		$theme_key = array_search( $slug, array_column( $themes, 'slug' ), true );
-		$theme     = false !== $theme_key ? $themes[ $theme_key ] : null;
-		if ( $theme && isset( $theme['id'] ) && isset( $theme['price'] ) && ( ! isset( $theme['is_installed'] ) || ! $theme['is_installed'] ) ) {
-			$price = $this->get_price_from_string( $theme['price'] );
-			if ( $price && $price > 0 ) {
-				return $themes[ $theme_key ];
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Get purchaseable and remaining products.
 	 *
 	 * @return array
 	 */
-	private function get_products() {
+	public static function get_products() {
+		$relevan_products = OnboardingProducts::get_relevant_products();
+
 		$profiler_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$theme         = isset( $profiler_data['theme'] ) ? $profiler_data['theme'] : null;
+		$paid_theme    = $theme ? OnboardingThemes::get_paid_theme_by_slug( $theme ) : null;
 		$installed     = PluginsHelper::get_installed_plugin_slugs();
-		$product_types = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
-		$product_data  = Onboarding::get_product_data( Onboarding::get_allowed_product_types() );
-
-		$theme      = isset( $profiler_data['theme'] ) ? $profiler_data['theme'] : null;
-		$paid_theme = $theme ? $this->get_paid_theme_by_slug( $theme ) : null;
 		if ( $paid_theme ) {
-			$product_types[]        = 'themes';
-			$product_data['themes'] = $paid_theme;
-		}
 
-		$purchaseable = array();
-		$remaining    = array();
-		foreach ( $product_types as $type ) {
-			if ( ! isset( $product_data[ $type ]['slug'] ) ) {
-				continue;
-			}
+			$relevan_products['purchaseable'][] = $paid_theme;
 
-			$purchaseable[] = $product_data[ $type ];
-
-			if ( ! in_array( $product_data[ $type ]['slug'], $installed, true ) ) {
-				if ( isset( $product_data[ $type ]['label'] ) ) {
-					$remaining[] = $product_data[ $type ]['label'];
-				} else {
-					$remaining[] = $product_data[ $type ]['title'];
-				}
+			if ( ! in_array( $paid_theme['slug'], $installed, true ) ) {
+				$remaining[] = $paid_theme['title'];
 			}
 		}
-
-		return array(
-			'purchaseable' => $purchaseable,
-			'remaining'    => $remaining,
-		);
 	}
 }

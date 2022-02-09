@@ -35,6 +35,41 @@ class OnboardingThemes {
 	}
 
 	/**
+	 * Get puchasable theme by slug.
+	 *
+	 * @param string $price_string string of price.
+	 * @return float|null
+	 */
+	private static function get_price_from_string( $price_string ) {
+		$price_match = null;
+		// Parse price from string as it includes the currency symbol.
+		preg_match( '/\\d+\.\d{2}\s*/', $price_string, $price_match );
+		if ( count( $price_match ) > 0 ) {
+			return (float) $price_match[0];
+		}
+		return null;
+	}
+
+	/**
+	 * Get puchasable theme by slug.
+	 *
+	 * @param string $slug from theme.
+	 * @return array|null
+	 */
+	 public static function get_paid_theme_by_slug( $slug ) {
+		$themes    = self::get_themes();
+		$theme_key = array_search( $slug, array_column( $themes, 'slug' ), true );
+		$theme     = false !== $theme_key ? $themes[ $theme_key ] : null;
+		if ( $theme && isset( $theme['id'] ) && isset( $theme['price'] ) && ( ! isset( $theme['is_installed'] ) || ! $theme['is_installed'] ) ) {
+			$price = self::get_price_from_string( $theme['price'] );
+			if ( $price && $price > 0 ) {
+				return $themes[ $theme_key ];
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Sort themes returned from WooCommerce.com
 	 *
 	 * @param  array $themes Array of themes from WooCommerce.com.

@@ -9,8 +9,8 @@ namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
-use \Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
+use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProducts;
+use Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
 
 /**
  * Onboarding Profile controller.
@@ -292,7 +292,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'sanitize_callback' => 'wp_parse_slug_list',
 				'validate_callback' => 'rest_validate_request_arg',
 				'items'             => array(
-					'enum' => array_keys( Onboarding::get_allowed_product_types() ),
+					'enum' => array_keys( OnboardingProducts::get_allowed_product_types() ),
 					'type' => 'string',
 				),
 			),

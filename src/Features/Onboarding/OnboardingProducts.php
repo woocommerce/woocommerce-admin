@@ -6,12 +6,9 @@
 
 namespace Automattic\WooCommerce\Admin\Features\Onboarding;
 
-use \Automattic\WooCommerce\Admin\Loader;
-use Automattic\WooCommerce\Admin\PageController;
-use Automattic\WooCommerce\Admin\WCAdminHelper;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasks;
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
-use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
+use Automattic\WooCommerce\Admin\Features\Features;
+use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Class for handling product types and data around product types.
@@ -123,5 +120,44 @@ class OnboardingProducts {
 		}
 
 		return $product_data;
+	}
+
+	/**
+	 * Get the allowed product types with the polled data.
+	 *
+	 * @return array
+	 */
+	public static function get_product_types_with_data() {
+		return self::get_product_data( self::get_allowed_product_types() );
+	}
+
+	/**
+	 * Get relevant purchaseable products for the site.
+	 *
+	 * @return array
+	 */
+	public static function get_relevant_products() {
+		$profiler_data = get_option( OnboardingSetupWizard::PROFILE_DATA_OPTION, array() );
+		$installed     = PluginsHelper::get_installed_plugin_slugs();
+		$product_types = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
+		$product_data  = self::get_product_types_with_data();
+		$purchaseable  = array();
+		$remaining     = array();
+		foreach ( $product_types as $type ) {
+			if ( ! isset( $product_data[ $type ]['slug'] ) ) {
+				continue;
+			}
+
+			$purchaseable[] = $product_data[ $type ];
+
+			if ( ! in_array( $product_data[ $type ]['slug'], $installed, true ) ) {
+				$remaining[] = $product_data[ $type ]['label'];
+			}
+		}
+
+		return array(
+			'purchaseable' => $purchaseable,
+			'remaining'    => $remaining,
+		);
 	}
 }
