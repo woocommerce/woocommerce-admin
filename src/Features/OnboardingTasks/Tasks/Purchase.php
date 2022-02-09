@@ -2,8 +2,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProducts;
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingThemes;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProducts;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingThemes;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**

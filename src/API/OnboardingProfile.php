@@ -9,8 +9,8 @@ namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProfile as Profile;
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProducts;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProfile as Profile;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProducts;
 use Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
 
 /**

@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin
  */
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\Internal\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 

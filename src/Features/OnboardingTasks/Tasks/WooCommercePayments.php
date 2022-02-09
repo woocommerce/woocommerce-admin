@@ -2,7 +2,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProfile;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProfile;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 

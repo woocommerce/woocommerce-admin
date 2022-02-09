@@ -7,7 +7,7 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProducts;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProducts;
 
 defined( 'ABSPATH' ) || exit;
 

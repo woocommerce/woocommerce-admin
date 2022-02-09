@@ -7,8 +7,8 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingIndustries;
-use Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProfile;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingIndustries;
+use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProfile;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Init as OnboardingTasksFeature;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\DeprecatedExtendedTask;

@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Notes\Note;
 use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
-use \Automattic\WooCommerce\Admin\Features\Onboarding\OnboardingProfile;
+use \Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProfile;
 
 /**
  * Selling_Online_Courses
