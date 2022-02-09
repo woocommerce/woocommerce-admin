@@ -109,16 +109,19 @@ class Industry extends Component {
 		} );
 		await updateProfileItems( { industry: this.state.selected } );
 
-		if ( ! isError ) {
-			return true;
+		if ( isError ) {
+			createNotice(
+				'error',
+				__(
+					'There was a problem updating your industries',
+					'woocommerce-admin'
+				)
+			);
+
+			return Promise.reject();
 		}
-		createNotice(
-			'error',
-			__(
-				'There was a problem updating your industries',
-				'woocommerce-admin'
-			)
-		);
+
+		return true;
 	}
 
 	async validateField() {
