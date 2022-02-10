@@ -72,13 +72,13 @@ export class StoreDetails extends Component {
 		this.onSubmit = this.onSubmit.bind( this );
 		this.validateStoreDetails = this.validateStoreDetails.bind( this );
 		this.onFormValueChange = this.onFormValueChange.bind( this );
-		this.changedFormValues = null;
+		this.changedFormValues = {};
 	}
 
 	componentDidUpdate() {
 		if (
 			this.props.isLoading === false &&
-			this.changedFormValues === null
+			Object.keys( this.changedFormValues ).length === 0
 		) {
 			// Make a copy of the initialValues.
 			// The values in this object gets updated on onFormValueChange.
