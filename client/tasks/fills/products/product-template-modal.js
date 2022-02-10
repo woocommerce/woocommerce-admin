@@ -134,7 +134,7 @@ export default function ProductTemplateModal( { onClose } ) {
 		: getProductTemplates();
 
 	/**
-	 * An object defining a report page.
+	 * An object defining a product template.
 	 *
 	 * @typedef {Object} template
 	 * @property {string} key Icon to render.

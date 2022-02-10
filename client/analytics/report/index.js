@@ -22,7 +22,7 @@ import {
 import getReports from './get-reports';
 
 /**
- * An object defining a report page.
+ * An object defining a chart.
  *
  * @typedef {Object} chart
  * @property {string} key Chart slug.

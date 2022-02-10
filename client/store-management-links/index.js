@@ -160,7 +160,7 @@ export const StoreManagementLinks = () => {
 
 	const extensionQuickLinks = generateExtensionLinks(
 		/**
-		 * An object defining a report page.
+		 * An object defining an extension link.
 		 *
 		 * @typedef {Object} link
 		 * @property {Node} icon Icon to render.
