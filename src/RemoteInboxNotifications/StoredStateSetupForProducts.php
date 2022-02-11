@@ -115,7 +115,7 @@ class StoredStateSetupForProducts {
 	 * Enqueues an async action (using action-scheduler) to run remote
 	 * notifications.
 	 */
-	private static function update_stored_state_and_run_remote_notifications() {
+	private static function update_stored_state_and_possibly_run_remote_notifications() {
 		$stored_state = RemoteInboxNotificationsEngine::get_stored_state();
 		if ( true === $stored_state->there_are_now_products ) {
 			return;
