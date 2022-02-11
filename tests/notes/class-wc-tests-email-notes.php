@@ -5,10 +5,10 @@
  * @package WooCommerce\Admin\Tests\Notes
  */
 
-use \Automattic\WooCommerce\Admin\Notes\Notes;
+use \Automattic\WooCommerce\Admin\Internal\MerchantEmailNotifications;
 use \Automattic\WooCommerce\Admin\Notes\Note;
-use \Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications\MerchantEmailNotifications;
-use \Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications\NotificationEmail;
+use \Automattic\WooCommerce\Admin\Notes\Notes;
+use \Automattic\WooCommerce\Admin\Notes\NotificationEmail;
 
 /**
  * Class WC_Tests_Email_Notes

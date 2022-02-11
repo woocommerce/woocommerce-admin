@@ -3,10 +3,11 @@
  * Handles merchant email notifications
  */
 
-namespace Automattic\WooCommerce\Admin\Notes\MerchantEmailNotifications;
+namespace Automattic\WooCommerce\Admin\Internal;
 
 use Automattic\WooCommerce\Admin\Notes\Note;
 use Automattic\WooCommerce\Admin\Notes\Notes;
+use Automattic\WooCommerce\Admin\Notes\NotificationEmail;
 
 defined( 'ABSPATH' ) || exit;
 
