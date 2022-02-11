@@ -19,9 +19,9 @@ if ( ! class_exists( 'WC_Email', false ) ) {
 }
 
 /**
- * NotificationEmail Class.
+ * EmailNotification Class.
  */
-class NotificationEmail extends \WC_Email {
+class EmailNotification extends \WC_Email {
 	/**
 	 * Constructor.
 	 *

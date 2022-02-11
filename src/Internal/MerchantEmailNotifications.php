@@ -7,7 +7,7 @@ namespace Automattic\WooCommerce\Admin\Internal;
 
 use Automattic\WooCommerce\Admin\Notes\Note;
 use Automattic\WooCommerce\Admin\Notes\Notes;
-use Automattic\WooCommerce\Admin\Notes\NotificationEmail;
+use Automattic\WooCommerce\Admin\Notes\EmailNotification;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -96,7 +96,7 @@ class MerchantEmailNotifications {
 	public static function send_merchant_notification( $note ) {
 		\WC_Emails::instance();
 		$users = self::get_notification_recipients( $note );
-		$email = new NotificationEmail( $note );
+		$email = new EmailNotification( $note );
 		foreach ( $users as $user ) {
 			if ( is_email( $user->user_email ) ) {
 				$name = self::get_merchant_preferred_name( $user );
