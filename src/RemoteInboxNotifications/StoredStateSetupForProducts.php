@@ -89,7 +89,7 @@ class StoredStateSetupForProducts {
 		}
 		// phpcs:enable
 
-		self::update_stored_state_and_run_remote_notifications();
+		self::update_stored_state_and_possibly_run_remote_notifications();
 	}
 
 	/**
@@ -108,7 +108,7 @@ class StoredStateSetupForProducts {
 			return;
 		}
 
-		self::update_stored_state_and_run_remote_notifications();
+		self::update_stored_state_and_possibly_run_remote_notifications();
 	}
 
 	/**
