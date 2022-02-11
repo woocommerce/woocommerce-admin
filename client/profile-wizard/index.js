@@ -21,7 +21,7 @@ import {
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { getAdminLink } from '@woocommerce/settings';
+import { getAdminLink, getSetting } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -70,6 +70,7 @@ class ProfileWizard extends Component {
 
 			recordEvent( 'storeprofiler_step_view', {
 				step: this.getCurrentStep().key,
+				wc_version: getSetting( 'wcVersion' ),
 			} );
 		}
 	}
@@ -83,6 +84,7 @@ class ProfileWizard extends Component {
 
 		recordEvent( 'storeprofiler_step_view', {
 			step: this.getCurrentStep().key,
+			wc_version: getSetting( 'wcVersion' ),
 		} );
 	}
 
@@ -164,6 +166,7 @@ class ProfileWizard extends Component {
 
 		recordEvent( 'storeprofiler_step_complete', {
 			step: currentStep.key,
+			wc_version: getSetting( 'wcVersion' ),
 			...tracksArgs,
 		} );
 
