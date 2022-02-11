@@ -117,6 +117,7 @@ class StoredStateSetupForProducts {
 	 */
 	private static function update_stored_state_and_possibly_run_remote_notifications() {
 		$stored_state = RemoteInboxNotificationsEngine::get_stored_state();
+		// If the stored_state is the same, we don't need to run remote notifications to avoid unnecessary action scheduling.
 		if ( true === $stored_state->there_are_now_products ) {
 			return;
 		}
