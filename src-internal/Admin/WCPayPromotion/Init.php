@@ -22,7 +22,7 @@ class Init {
 	 * Constructor.
 	 */
 	public function __construct() {
-		include_once __DIR__ . '/WCPaymentGatewayPreInstallWCPayPromotion.php';
+		include_once __DIR__ . '/WcPaymentGatewayPreInstallWCPayPromotion.php';
 
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
 		add_filter( DataSourcePoller::FILTER_NAME_SPECS, array( __CLASS__, 'possibly_filter_recommended_payment_gateways' ), 10, 2 );
