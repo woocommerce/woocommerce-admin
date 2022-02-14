@@ -41,6 +41,16 @@ class Features {
 	);
 
 	/**
+	 * Interanl aliases
+	 *
+	 * @var array $moved_class_aliases Class alias list for the moved features classes.
+	 */
+	private $moved_class_aliases = array(
+		// new class => original class (this will be aliased).
+		'Automattic\WooCommerce\Internal\Admin\WcPayPromotion\Init' => 'Automattic\WooCommerce\Admin\Features\WcPayPromotion\Init',
+	);
+
+	/**
 	 * Get class instance.
 	 */
 	public static function get_instance() {
@@ -54,6 +64,7 @@ class Features {
 	 * Constructor.
 	 */
 	public function __construct() {
+		$this->register_moved_class_alisases( $this->moved_class_aliases );
 		// Load feature before WooCommerce update hooks.
 		add_action( 'init', array( __CLASS__, 'load_features' ), 4 );
 		add_filter( 'woocommerce_get_sections_advanced', array( __CLASS__, 'add_features_section' ) );
@@ -388,5 +399,18 @@ class Features {
 
 		$admin_body_class = implode( ' ', array_unique( $classes ) );
 		return " $admin_body_class ";
+	}
+
+	/**
+	 * Alias moved features classes to make them backward compatible.
+	 * We've moved our features class to src/Internal/Admin as part of The Merge.
+	 * See https://wp.me/p90Yrv-2HY for details.
+	 *
+	 * @param array $aliases an array of class aliases.
+	 */
+	private function register_moved_class_alisases( array $aliases ) {
+		foreach ( $aliases as $new_class => $orig_class ) {
+			class_alias( $new_class, $orig_class );
+		}
 	}
 }
