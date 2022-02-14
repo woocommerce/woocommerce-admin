@@ -39,6 +39,17 @@ class TaskLists {
 	 *
 	 * @var array
 	 */
+	const DEFAULT_TASK_LISTS = array(
+		'Setup',
+		'TwoColumnSetup',
+		'Extended'
+	);
+
+	/**
+	 * Array of default tasks.
+	 *
+	 * @var array
+	 */
 	const DEFAULT_TASKS = array(
 		'StoreDetails',
 		'Purchase',
@@ -67,7 +78,6 @@ class TaskLists {
 	 */
 	public static function init() {
 		self::init_default_lists();
-		self::maybe_add_default_tasks();
 		add_action( 'admin_init', array( __CLASS__, 'set_active_task' ), 5 );
 		add_action( 'init', array( __CLASS__, 'init_tasks' ) );
 	}
@@ -76,29 +86,20 @@ class TaskLists {
 	 * Initialize default lists.
 	 */
 	public static function init_default_lists() {
-		self::add_list(
-			array(
-				'id'    => 'setup',
-				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
-			)
-		);
+		foreach ( self::DEFAULT_TASK_LISTS as $task_list ) {
+			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists\\' . $task_list;
+			if ( ! property_exists( $class, 'id') ) {
+				continue;
+			}
+			if ( isset( self::$lists[ $class::$id ] ) ) {
+				return new \WP_Error(
+					'woocommerce_task_list_exists',
+					__( 'Task list ID already exists', 'woocommerce-admin' )
+				);
+			}
 
-		self::add_list(
-			array(
-				'id'      => 'extended',
-				'title'   => __( 'Things to do next', 'woocommerce-admin' ),
-				'sort_by' => array(
-					array(
-						'key'   => 'is_complete',
-						'order' => 'asc',
-					),
-					array(
-						'key'   => 'level',
-						'order' => 'asc',
-					),
-				),
-			)
-		);
+			self::$lists[ $class::$id ] = new $class();
+		}
 	}
 
 	/**

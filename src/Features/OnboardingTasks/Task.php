@@ -50,6 +50,13 @@ abstract class Task {
 	const ACTIVE_TASK_TRANSIENT = 'wc_onboarding_active_task';
 
 	/**
+	 * Parent task list.
+	 *
+	 * @var TaskList
+	 */
+	protected $task_list;
+
+	/**
 	 * Duration to milisecond mapping.
 	 *
 	 * @var string
@@ -61,18 +68,20 @@ abstract class Task {
 	);
 
 	/**
+	 * Constructor
+	 *
+	 * @param TaskList|null $task_list Parent task list.
+	 */
+	public function __construct( $task_list = null ) {
+		$this->task_list = $task_list;
+	}
+
+	/**
 	 * ID.
 	 *
 	 * @return string
 	 */
 	abstract public function get_id();
-
-	/**
-	 * Parent ID.
-	 *
-	 * @return string
-	 */
-	abstract public function get_parent_id();
 
 	/**
 	 * Title.
@@ -94,6 +103,18 @@ abstract class Task {
 	 * @return string
 	 */
 	abstract public function get_time();
+
+	/**
+	 * Parent ID.
+	 *
+	 * @return string
+	 */
+	public function get_parent_id() {
+		if ( ! $this->task_list ) {
+			return '';
+		}
+		return $this->task_list->get_list_id();
+	}
 
 	/**
 	 * Additional info.

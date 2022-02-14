@@ -50,10 +50,9 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 			return null;
 		}
 
-		const tasks = taskLists.reduce(
-			( acc, taskList ) => [ ...acc, ...taskList.tasks ],
-			[]
-		);
+		const tasks = taskLists
+			.filter( ( { id } ) => id !== 'setup' )
+			.reduce( ( acc, taskList ) => [ ...acc, ...taskList.tasks ], [] );
 
 		const currentTask = tasks.find( ( t ) => t.id === task );
 
@@ -83,13 +82,10 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 	}
 	// List of task items to be shown on the main task list.
 	// Any other remaining tasks will be moved to the extended task list.
-	const setupTasks = taskLists[ 0 ].tasks.filter( ( setupTask ) => {
-		if ( setupTask.id === 'woocommerce-payments' && setupTask.isComplete ) {
-			// filter out woocommerce payments task if complete.
-			return false;
-		}
-		return allowedTasks.includes( setupTask.id );
-	} );
+	const taskList = taskLists.filter( ( { id } ) => id !== 'setup' )[ 0 ];
+	const setupTasks = taskList.tasks.filter( ( setupTask ) =>
+		allowedTasks.includes( setupTask.id )
+	);
 
 	const completedTasks = setupTasks.filter(
 		( setupTask ) => setupTask.isComplete
@@ -102,9 +98,9 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 
 	return (
 		<>
-			{ setupTasks && ( taskLists[ 0 ].isVisible || task ) && (
+			{ setupTasks && ( taskList.isVisible || task ) && (
 				<TaskList
-					taskListId={ taskLists[ 0 ].id }
+					taskListId={ taskList.id }
 					eventName="tasklist"
 					twoColumns={ twoColumns }
 					keepCompletedTaskList={ keepCompletedTaskList }

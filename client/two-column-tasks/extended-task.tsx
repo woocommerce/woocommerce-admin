@@ -69,7 +69,7 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 
 	// See if we need to move any of the main tasks to the extended task list
 	const setupTaskList = taskLists.find( ( list ) => {
-		return list.id === 'setup';
+		return list.id === 'setup_two_column';
 	} );
 	const hasSetupPaymentsTask = setupTaskList.tasks.find(
 		( t ) => t.id === 'payments'

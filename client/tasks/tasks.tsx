@@ -45,10 +45,9 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 			return null;
 		}
 
-		const tasks = taskLists.reduce(
-			( acc, taskList ) => [ ...acc, ...taskList.tasks ],
-			[]
-		);
+		const tasks = taskLists
+			.filter( ( { id } ) => id !== 'setup_two_column' )
+			.reduce( ( acc, taskList ) => [ ...acc, ...taskList.tasks ], [] );
 
 		const currentTask = tasks.find( ( t ) => t.id === task );
 
@@ -101,7 +100,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		return <TasksPlaceholder query={ query } />;
 	}
 
-	return taskLists.map( ( taskList ) => {
+	return taskLists.filter( ( { id } ) => id !== 'setup_two_column' ).map( ( taskList ) => {
 		const {
 			id,
 			isComplete,
@@ -148,15 +147,22 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 								role="menuitemcheckbox"
 								onClick={ () => toggleTaskList( taskList ) }
 							>
-								{ __(
-									'Show things to do next',
-									'woocommerce-admin'
-								) }
-							</MenuItem>
-						</MenuGroup>
-					</DisplayOption>
-				) }
-			</Fragment>
-		);
-	} );
+								<MenuItem
+									className="woocommerce-layout__homescreen-extension-tasklist-toggle"
+									icon={ ! isHidden && check }
+									isSelected={ ! isHidden }
+									role="menuitemcheckbox"
+									onClick={ () => toggleTaskList( taskList ) }
+								>
+									{ __(
+										'Show things to do next',
+										'woocommerce-admin'
+									) }
+								</MenuItem>
+							</MenuGroup>
+						</DisplayOption>
+					) }
+				</Fragment>
+			);
+		} );
 };

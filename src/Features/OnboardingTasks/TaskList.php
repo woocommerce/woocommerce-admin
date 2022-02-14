@@ -27,13 +27,6 @@ class TaskList {
 	const COMPLETED_OPTION = 'woocommerce_task_list_completed_lists';
 
 	/**
-	 * ID.
-	 *
-	 * @var string
-	 */
-	public $id = '';
-
-	/**
 	 * Title.
 	 *
 	 * @var string
@@ -61,7 +54,6 @@ class TaskList {
 	 */
 	public function __construct( $data = array() ) {
 		$defaults = array(
-			'id'      => null,
 			'title'   => '',
 			'tasks'   => array(),
 			'sort_by' => array(),
@@ -69,10 +61,14 @@ class TaskList {
 
 		$data = wp_parse_args( $data, $defaults );
 
-		$this->id      = $data['id'];
 		$this->title   = $data['title'];
-		$this->tasks   = $data['tasks'];
 		$this->sort_by = $data['sort_by'];
+
+		foreach ( $data['tasks'] as $task_name ) {
+			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task_name;
+			$task  = new $class( $this );
+			$this->add_task( $task );
+		}
 	}
 
 	/**
@@ -177,8 +173,28 @@ class TaskList {
 				__( 'Task is not a subclass of `Task`', 'woocommerce-admin' )
 			);
 		}
+		if ( array_search( $task, $this->tasks ) ) {
+			return;
+		}
 
 		$this->tasks[] = $task;
+	}
+
+	/**
+	 * Get only visible tasks in list.
+	 *
+	 * @param string $task_id id of task.
+	 * @return Task
+	 */
+	public function get_task( $task_id ) {
+		return current(
+			array_filter(
+				$this->tasks,
+				function( $task ) use( $task_id ) {
+					return $task->get_id() === $task_id;
+				}
+			)
+		);
 	}
 
 	/**
@@ -242,7 +258,7 @@ class TaskList {
 	public function get_json() {
 		$this->possibly_track_completion();
 		return array(
-			'id'         => $this->id,
+			'id'         => $this->get_list_id(),
 			'title'      => $this->title,
 			'isHidden'   => $this->is_hidden(),
 			'isVisible'  => $this->is_visible(),
