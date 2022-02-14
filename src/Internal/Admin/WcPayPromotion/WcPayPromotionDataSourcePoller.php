@@ -1,6 +1,6 @@
 <?php
 
-namespace Automattic\WooCommerce\Admin\Features\WcPayPromotion;
+namespace Automattic\WooCommerce\Internal\Admin\WcPayPromotion;
 
 use Automattic\WooCommerce\Admin\DataSourcePoller;
 

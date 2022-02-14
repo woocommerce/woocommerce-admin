@@ -3,7 +3,7 @@
  * Handles wcpay promotion
  */
 
-namespace Automattic\WooCommerce\Admin\Features\WcPayPromotion;
+namespace Automattic\WooCommerce\Internal\Admin\WcPayPromotion;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -65,7 +65,7 @@ class Init {
 	 */
 	public static function possibly_register_pre_install_wc_pay_promotion_gateway( $gateways ) {
 		if ( self::can_show_promotion() && ! WCPaymentGatewayPreInstallWCPayPromotion::is_dismissed() ) {
-			$gateways[] = 'Automattic\WooCommerce\Admin\Features\WCPayPromotion\WCPaymentGatewayPreInstallWCPayPromotion';
+			$gateways[] = 'Automattic\WooCommerce\Internal\Admin\WCPayPromotion\WCPaymentGatewayPreInstallWCPayPromotion';
 		}
 		return $gateways;
 	}
