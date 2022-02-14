@@ -1,0 +1,4 @@
+Significance: minor
+Type: Tweak
+
+Deprecate WC_ADMIN_VERSION_NUMBET constant #8309
