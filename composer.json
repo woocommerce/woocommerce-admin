@@ -78,7 +78,7 @@
 	"autoload": {
 		"psr-4": {
 			"Automattic\\WooCommerce\\Admin\\": "src/",
-			"Automattic\\WooCommerce\\Internal\\Admin\\": "src/Internal/Admin/"
+			"Automattic\\WooCommerce\\Internal\\Admin\\": "src-internal/Admin/"
 		}
 	}
 }
