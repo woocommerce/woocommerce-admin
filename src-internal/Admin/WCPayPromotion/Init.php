@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile
 /**
  * Handles wcpay promotion
  */
@@ -65,8 +64,8 @@ class Init {
 	 * @return array list of gateway classes.
 	 */
 	public static function possibly_register_pre_install_wc_pay_promotion_gateway( $gateways ) {
-		if ( self::can_show_promotion() && ! WCPaymentGatewayPreInstallWCPayPromotion::is_dismissed() ) {
-			$gateways[] = 'Automattic\WooCommerce\Internal\Admin\WCPayPromotion\WCPaymentGatewayPreInstallWCPayPromotion';
+		if ( self::can_show_promotion() && ! WcPaymentGatewayPreInstallWCPayPromotion::is_dismissed() ) {
+			$gateways[] = 'Automattic\WooCommerce\Internal\Admin\WCPayPromotion\WcPaymentGatewayPreInstallWCPayPromotion';
 		}
 		return $gateways;
 	}
@@ -124,7 +123,7 @@ class Init {
 	 */
 	public static function set_gateway_top_of_list( $ordering ) {
 		$ordering = (array) $ordering;
-		$id       = WCPaymentGatewayPreInstallWCPayPromotion::GATEWAY_ID;
+		$id       = WcPaymentGatewayPreInstallWCPayPromotion::GATEWAY_ID;
 		// Only tweak the ordering if the list hasn't been reordered with WooCommerce Payments in it already.
 		if ( ! isset( $ordering[ $id ] ) || ! is_numeric( $ordering[ $id ] ) ) {
 			$is_empty        = empty( $ordering ) || ( 1 === count( $ordering ) && false === $ordering[0] );

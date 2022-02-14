@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile
 namespace Automattic\WooCommerce\Internal\Admin\WcPayPromotion;
 
 use Automattic\WooCommerce\Admin\DataSourcePoller;

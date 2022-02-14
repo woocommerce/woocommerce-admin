@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile
 /**
  * Class WCPaymentGatewayPreInstallWCPayPromotion
  *
@@ -17,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @extends WC_Payment_Gateway
  */
-class WCPaymentGatewayPreInstallWCPayPromotion extends \WC_Payment_Gateway {
+class WcPaymentGatewayPreInstallWCPayPromotion extends \WC_Payment_Gateway {
 
 	const GATEWAY_ID = 'pre_install_woocommerce_payments_promotion';
 
