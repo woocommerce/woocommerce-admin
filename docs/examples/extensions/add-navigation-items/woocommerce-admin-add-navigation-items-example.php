@@ -9,7 +9,7 @@
  * Register the JS.
  */
 function add_navigation_items_register_script() {
-	if ( ! class_exists( '\Automattic\WooCommerce\Admin\Features\Navigation\Screen' ) || ! \Automattic\WooCommerce\Internal\Admin\Navigation\Screen::is_woocommerce_page() ) {
+	if ( ! class_exists( '\Automattic\WooCommerce\Internal\Admin\Navigation\Screen' ) || ! \Automattic\WooCommerce\Internal\Admin\Navigation\Screen::is_woocommerce_page() ) {
 		return;
 	}
 
@@ -31,8 +31,8 @@ add_action( 'admin_enqueue_scripts', 'add_navigation_items_register_script' );
  */
 function add_navigation_items_register_items() {
 	if (
-		! method_exists( '\Automattic\WooCommerce\Admin\Features\Navigation\Menu', 'add_plugin_category' ) ||
-		! method_exists( '\Automattic\WooCommerce\Admin\Features\Navigation\Menu', 'add_plugin_item' )
+		! method_exists( '\Automattic\WooCommerce\Internal\Admin\Navigation\Menu', 'add_plugin_category' ) ||
+		! method_exists( '\Automattic\WooCommerce\Internal\Admin\Navigation\Menu', 'add_plugin_item' )
 	) {
 		return;
 	}
