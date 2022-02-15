@@ -111,5 +111,11 @@ Name | Type | Default | Description
 Char colors can be overridden by hooking into the filter `woocommerce_admin_chart_item_color`. For example:
 
 ```js
-addFilter( 'woocommerce_admin_chart_item_color', 'example', ( index, key, orderedKeys ) => '#7f54b3' );
+const colorScales = [
+  "#0A2F51",
+  "#0E4D64",
+  "#137177",
+  "#188977",
+];
+addFilter( 'woocommerce_admin_chart_item_color', 'example', ( index, key, orderedKeys ) => colorScales[index] );
 ```
