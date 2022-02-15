@@ -3,7 +3,7 @@
  * Import related abstract functions.
  */
 
-namespace Automattic\WooCommerce\Admin\Schedulers;
+namespace Automattic\WooCommerce\Internal\Admin\Schedulers;
 
 interface ImportInterface {
 	/**

@@ -3,7 +3,7 @@
  * Order syncing related functions and actions.
  */
 
-namespace Automattic\WooCommerce\Admin\Schedulers;
+namespace Automattic\WooCommerce\Internal\Admin\Schedulers;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -13,7 +13,8 @@ use \Automattic\WooCommerce\Admin\API\Reports\Products\DataStore as ProductsData
 use \Automattic\WooCommerce\Admin\API\Reports\Taxes\DataStore as TaxesDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
-use \Automattic\WooCommerce\Admin\Schedulers\CustomersScheduler;
+use Automattic\WooCommerce\Internal\Admin\Schedulers\CustomersScheduler;
+use Automattic\WooCommerce\Internal\Admin\Schedulers\ImportScheduler;
 
 /**
  * OrdersScheduler Class.
@@ -53,7 +54,7 @@ class OrdersScheduler extends ImportScheduler {
 	 */
 	public static function get_dependencies() {
 		return array(
-			'import_batch_init' => CustomersScheduler::get_action( 'import_batch_init' ),
+			'import_batch_init' => \Automattic\WooCommerce\Internal\Admin\Schedulers\CustomersScheduler::get_action( 'import_batch_init' ),
 		);
 	}
 
