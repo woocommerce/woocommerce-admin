@@ -176,7 +176,7 @@ class Init {
 	 * Delete the specs transient.
 	 */
 	public static function delete_specs_transient() {
-		WcPayPromotionDataSourcePoller::get_instance()->delete_specs_transient();
+		WCPayPromotionDataSourcePoller::get_instance()->delete_specs_transient();
 	}
 
 	/**
@@ -186,7 +186,7 @@ class Init {
 		if ( 'no' === get_option( 'woocommerce_show_marketplace_suggestions', 'yes' ) ) {
 			return array();
 		}
-		return WcPayPromotionDataSourcePoller::get_instance()->get_specs_from_data_sources();
+		return WCPayPromotionDataSourcePoller::get_instance()->get_specs_from_data_sources();
 	}
 }
 
