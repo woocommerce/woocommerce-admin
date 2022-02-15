@@ -21,7 +21,7 @@ import {
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { getAdminLink } from '@woocommerce/settings';
+import { getAdminLink, getSetting } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -70,24 +70,24 @@ class ProfileWizard extends Component {
 
 			recordEvent( 'storeprofiler_step_view', {
 				step: this.getCurrentStep().key,
+				wc_version: getSetting( 'wcVersion' ),
 			} );
 		}
 	}
 
 	componentDidMount() {
 		document.body.classList.remove( 'woocommerce-admin-is-loading' );
-		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
 		document.body.classList.add( 'is-wp-toolbar-disabled' );
 
 		recordEvent( 'storeprofiler_step_view', {
 			step: this.getCurrentStep().key,
+			wc_version: getSetting( 'wcVersion' ),
 		} );
 	}
 
 	componentWillUnmount() {
-		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 		document.body.classList.remove( 'woocommerce-admin-full-screen' );
 		document.body.classList.remove( 'is-wp-toolbar-disabled' );
@@ -122,7 +122,7 @@ class ProfileWizard extends Component {
 				profileItems.product_types !== null,
 		} );
 		steps.push( {
-			key: 'business-features',
+			key: 'business-details',
 			container: BusinessDetailsStep,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
@@ -137,7 +137,12 @@ class ProfileWizard extends Component {
 				profileItems.hasOwnProperty( 'theme' ) &&
 				profileItems.theme !== null,
 		} );
-
+		/**
+		 * Filter for Onboarding steps configuration.
+		 *
+		 * @filter woocommerce_admin_profile_wizard_steps
+		 * @param {Array.<Object>} steps Array of steps for Onboarding Wizard.
+		 */
 		return applyFilters( STEPS_FILTER, steps );
 	}
 
@@ -152,7 +157,10 @@ class ProfileWizard extends Component {
 		return currentStep;
 	}
 
-	async goToNextStep() {
+	/**
+	 * @param {Object} tracksArgs optional track arguments for the storeprofiler_step_complete track.
+	 */
+	async goToNextStep( tracksArgs = {} ) {
 		const { activePlugins } = this.props;
 		const currentStep = this.getCurrentStep();
 		const currentStepIndex = this.getSteps().findIndex(
@@ -161,6 +169,8 @@ class ProfileWizard extends Component {
 
 		recordEvent( 'storeprofiler_step_complete', {
 			step: currentStep.key,
+			wc_version: getSetting( 'wcVersion' ),
+			...tracksArgs,
 		} );
 
 		// Update the activePlugins cache in case plugins were installed

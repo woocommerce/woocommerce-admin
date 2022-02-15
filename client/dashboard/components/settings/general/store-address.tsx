@@ -14,8 +14,16 @@ import { useSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import { getAdminSetting } from '~/utils/admin-settings';
+import { FormInputProps } from '~/utils/types';
 
 const { countries } = getAdminSetting( 'dataEndpoints', { countries: {} } );
+const storeAddressFields = [
+	'addressLine1',
+	'addressLine2',
+	'city',
+	'countryState',
+	'postCode',
+];
 
 type Option = { key: string; label: string };
 
@@ -315,9 +323,7 @@ export function useGetCountryStateAutofill(
 }
 
 type StoreAddressProps = {
-	// Disable reason: The getInputProps type are not provided by the caller and source.
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	getInputProps: any;
+	getInputProps: ( key: string ) => FormInputProps;
 	setValue: ( key: string, value: string ) => void;
 };
 
@@ -348,6 +354,21 @@ export function StoreAddress( {
 		countryState,
 		setValue
 	);
+
+	useEffect( () => {
+		if ( locale ) {
+			storeAddressFields.forEach( ( field ) => {
+				const fieldKey = field
+					.replace( /(address)Line([0-9])/, '$1$2' )
+					.toLowerCase();
+				const props = getInputProps( field );
+				if ( locale[ fieldKey ]?.hidden && props.value?.length > 0 ) {
+					// Clear hidden field.
+					setValue( field, '' );
+				}
+			} );
+		}
+	}, [ countryState, locale ] );
 	if ( ! hasFinishedResolution ) {
 		return <Spinner />;
 	}
