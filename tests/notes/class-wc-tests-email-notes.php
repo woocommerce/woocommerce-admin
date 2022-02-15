@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Tests\Notes
  */
 
-use \Automattic\WooCommerce\Admin\Internal\MerchantEmailNotifications;
+use \Automattic\WooCommerce\Admin\Internal\Notes\MerchantEmailNotifications;
 use \Automattic\WooCommerce\Admin\Notes\Note;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
 use \Automattic\WooCommerce\Admin\Notes\EmailNotification;
