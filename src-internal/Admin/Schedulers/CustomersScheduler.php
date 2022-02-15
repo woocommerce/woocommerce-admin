@@ -27,6 +27,8 @@ class CustomersScheduler extends ImportScheduler {
 
 	/**
 	 * Attach customer lookup update hooks.
+	 *
+	 * @internal
 	 */
 	public static function init() {
 		add_action( 'woocommerce_new_customer', array( __CLASS__, 'schedule_import' ) );
@@ -43,6 +45,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Add customer dependencies.
 	 *
+	 * @internal
 	 * @return array
 	 */
 	public static function get_dependencies() {
@@ -56,6 +59,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Get the customer IDs and total count that need to be synced.
 	 *
+	 * @internal
 	 * @param int      $limit Number of records to retrieve.
 	 * @param int      $page  Page number.
 	 * @param int|bool $days Number of days prior to current date to limit search results.
@@ -97,6 +101,7 @@ class CustomersScheduler extends ImportScheduler {
 	 *
 	 * Meant to be hooked into 'pre_user_query' action.
 	 *
+	 * @internal
 	 * @param WP_User_Query $wp_user_query WP_User_Query to modify.
 	 */
 	public static function exclude_existing_customers_from_query( $wp_user_query ) {
@@ -111,6 +116,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Get total number of rows imported.
 	 *
+	 * @internal
 	 * @return int
 	 */
 	public static function get_total_imported() {
@@ -122,6 +128,7 @@ class CustomersScheduler extends ImportScheduler {
 	 * Get all available scheduling actions.
 	 * Used to determine action hook names and clear events.
 	 *
+	 * @internal
 	 * @return array
 	 */
 	public static function get_scheduler_actions() {
@@ -134,6 +141,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Schedule import.
 	 *
+	 * @internal
 	 * @param int $user_id User ID.
 	 * @return void
 	 */
@@ -145,6 +153,7 @@ class CustomersScheduler extends ImportScheduler {
 	 * Schedule an import if the "last active" meta value was changed.
 	 * Function expects to be hooked into the `updated_user_meta` action.
 	 *
+	 * @internal
 	 * @param int    $meta_id ID of updated metadata entry.
 	 * @param int    $user_id ID of the user being updated.
 	 * @param string $meta_key Meta key being updated.
@@ -158,6 +167,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Schedule an action to anonymize a single Order.
 	 *
+	 * @internal
 	 * @param WC_Order $order Order object.
 	 * @return void
 	 */
@@ -171,6 +181,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Schedule an action to delete a single User.
 	 *
+	 * @internal
 	 * @param int $user_id User ID.
 	 * @return void
 	 */
@@ -184,6 +195,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Imports a single customer.
 	 *
+	 * @internal
 	 * @param int $user_id User ID.
 	 * @return void
 	 */
@@ -194,6 +206,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Delete a batch of customers.
 	 *
+	 * @internal
 	 * @param int $batch_size Number of items to delete.
 	 * @return void
 	 */
@@ -215,6 +228,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Anonymize the customer data for a single order.
 	 *
+	 * @internal
 	 * @param int $order_id Order id.
 	 * @return void
 	 */
@@ -267,6 +281,7 @@ class CustomersScheduler extends ImportScheduler {
 	/**
 	 * Delete the customer data for a single user.
 	 *
+	 * @internal
 	 * @param int $user_id User ID.
 	 * @return void
 	 */

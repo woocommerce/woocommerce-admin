@@ -29,6 +29,8 @@ class OrdersScheduler extends ImportScheduler {
 
 	/**
 	 * Attach order lookup update hooks.
+	 *
+	 * @internal
 	 */
 	public static function init() {
 		// Activate WC_Order extension.
@@ -50,6 +52,7 @@ class OrdersScheduler extends ImportScheduler {
 	/**
 	 * Add customer dependencies.
 	 *
+	 * @internal
 	 * @return array
 	 */
 	public static function get_dependencies() {
@@ -61,6 +64,7 @@ class OrdersScheduler extends ImportScheduler {
 	/**
 	 * Get the order/refund IDs and total count that need to be synced.
 	 *
+	 * @internal
 	 * @param int      $limit Number of records to retrieve.
 	 * @param int      $page  Page number.
 	 * @param int|bool $days Number of days prior to current date to limit search results.
@@ -112,6 +116,8 @@ class OrdersScheduler extends ImportScheduler {
 
 	/**
 	 * Get total number of rows imported.
+	 *
+	 * @internal
 	 */
 	public static function get_total_imported() {
 		global $wpdb;
@@ -121,6 +127,7 @@ class OrdersScheduler extends ImportScheduler {
 	/**
 	 * Schedule this import if the post is an order or refund.
 	 *
+	 * @internal
 	 * @param int $post_id Post ID.
 	 */
 	public static function possibly_schedule_import( $post_id ) {
@@ -135,6 +142,7 @@ class OrdersScheduler extends ImportScheduler {
 	 * Imports a single order or refund to update lookup tables for.
 	 * If an error is encountered in one of the updates, a retry action is scheduled.
 	 *
+	 * @internal
 	 * @param int $order_id Order or refund ID.
 	 * @return void
 	 */
@@ -180,6 +188,7 @@ class OrdersScheduler extends ImportScheduler {
 	/**
 	 * Delete a batch of orders.
 	 *
+	 * @internal
 	 * @param int $batch_size Number of items to delete.
 	 * @return void
 	 */
