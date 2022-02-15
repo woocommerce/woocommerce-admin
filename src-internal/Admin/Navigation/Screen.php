@@ -5,9 +5,9 @@
  * @package Woocommerce Navigation
  */
 
-namespace Automattic\WooCommerce\Admin\Features\Navigation;
+namespace Automattic\WooCommerce\Internal\Admin\Navigation;
 
-use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Menu;
 
 /**
  * Contains logic for the WooCommerce Navigation menu.

@@ -5,11 +5,11 @@
  * @package Woocommerce Admin
  */
 
-namespace Automattic\WooCommerce\Admin\Features\Navigation;
+namespace Automattic\WooCommerce\Internal\Admin\Navigation;
 
 use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
-use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Menu;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Screen;
 
 /**
  * CoreMenu class. Handles registering Core menu items.

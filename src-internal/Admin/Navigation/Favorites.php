@@ -5,7 +5,7 @@
  * @package Woocommerce Navigation
  */
 
-namespace Automattic\WooCommerce\Admin\Features\Navigation;
+namespace Automattic\WooCommerce\Internal\Admin\Navigation;
 
 use Automattic\WooCommerce\Admin\Loader;
 

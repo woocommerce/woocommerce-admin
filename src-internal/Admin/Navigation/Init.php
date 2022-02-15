@@ -5,14 +5,14 @@
  * @package Woocommerce Admin
  */
 
-namespace Automattic\WooCommerce\Admin\Features\Navigation;
+namespace Automattic\WooCommerce\Internal\Admin\Navigation;
 
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\Survey;
 use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
-use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
-use Automattic\WooCommerce\Admin\Features\Navigation\CoreMenu;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Screen;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Menu;
+use Automattic\WooCommerce\Internal\Admin\Navigation\CoreMenu;
 
 /**
  * Contains logic for the Navigation

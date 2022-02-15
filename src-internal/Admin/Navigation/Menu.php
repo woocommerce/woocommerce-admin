@@ -5,11 +5,11 @@
  * @package Woocommerce Navigation
  */
 
-namespace Automattic\WooCommerce\Admin\Features\Navigation;
+namespace Automattic\WooCommerce\Internal\Admin\Navigation;
 
-use Automattic\WooCommerce\Admin\Features\Navigation\Favorites;
-use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
-use Automattic\WooCommerce\Admin\Features\Navigation\CoreMenu;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Favorites;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Screen;
+use Automattic\WooCommerce\Internal\Admin\Navigation\CoreMenu;
 
 /**
  * Contains logic for the WooCommerce Navigation menu.

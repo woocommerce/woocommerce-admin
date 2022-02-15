@@ -30,7 +30,7 @@ Clicking on a category will not navigate to a new page, but instead open the chi
 * `capability` - (string) Capability to view this menu item.
 
 ```php
-\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_category(
+\Automattic\WooCommerce\Internal\Admin\Navigation\Menu::add_plugin_category(
     array(
         'id'     => 'example-category',
         'title'  => 'Example Category',
@@ -41,7 +41,7 @@ Clicking on a category will not navigate to a new page, but instead open the chi
 Categories can also contain more categories by specifying the `parent` property for the child category.  There is no limit on the level of nesting.
 
 ```php
-\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_category(
+\Automattic\WooCommerce\Internal\Admin\Navigation\Menu::add_plugin_category(
     array(
         'id'     => 'example-nested-category',
         'parent' => 'example-category',
@@ -63,7 +63,7 @@ Adding an item, much like a category, can be added directly to the menu or to an
 * `matchExpression` - (string) An optional regex string to compare against the current location and mark the item active.
 
 ```php
-\Automattic\WooCommerce\Admin\Features\Navigation\Menu::add_plugin_item(
+\Automattic\WooCommerce\Internal\Admin\Navigation\Menu::add_plugin_item(
     array(
         'id'         => 'example-plugin',
         'title'      => 'Example Plugin',
@@ -79,16 +79,15 @@ In order to show the new navigation in place of the traditional WordPress menu o
 
 When adding items, the navigation will automatically add support for the screen via the URL or callback provided with an item.  However, custom post types and taxonomies need to be registered with the navigation to work on the custom post type page.
 
-
 ```php
-\Automattic\WooCommerce\Admin\Features\Navigation\Screen::register_post_type( 'my-custom-post-type' );
-\Automattic\WooCommerce\Admin\Features\Navigation\Screen::register_taxonomy( 'my-custom-taxonomy' );
+\Automattic\WooCommerce\Internal\Admin\Navigation\Screen::register_post_type( 'my-custom-post-type' );
+\Automattic\WooCommerce\Internal\Admin\Navigation\Screen::register_taxonomy( 'my-custom-taxonomy' );
 ```
 
 You can also manually add a screen without registering an item.
 
 ```php
-\Automattic\WooCommerce\Admin\Features\Navigation\Screen::add_screen( 'my-plugin-page' );
+\Automattic\WooCommerce\Internal\Admin\Navigation\Screen::add_screen( 'my-plugin-page' );
 ```
 
 ### Slot/fill items

@@ -9,7 +9,7 @@ namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Features\Navigation\Favorites;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Favorites;
 
 /**
  * REST API Favorites controller class.

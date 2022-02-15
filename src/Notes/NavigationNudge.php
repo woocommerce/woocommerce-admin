@@ -10,7 +10,7 @@ namespace Automattic\WooCommerce\Admin\Notes;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Admin\Features\Navigation\Init as Navigation;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Init as Navigation;
 
 /**
  * Navigation Nudge.

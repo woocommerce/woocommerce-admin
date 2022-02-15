@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Tests\Navigation
  */
 
-use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Screen;
 
 /*
  * This is required to allow manually setting of the screen during testing.

@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Tests\Navigation
  */
 
-use Automattic\WooCommerce\Admin\Features\Navigation\Menu;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Menu;
 
 
 /**

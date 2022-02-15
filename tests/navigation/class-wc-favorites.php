@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Tests\Navigation
  */
 
-use Automattic\WooCommerce\Admin\Features\Navigation\Favorites;
+use Automattic\WooCommerce\Internal\Admin\Navigation\Favorites;
 
 
 /**
