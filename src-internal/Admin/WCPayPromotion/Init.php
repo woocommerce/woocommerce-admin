@@ -3,7 +3,7 @@
  * Handles wcpay promotion
  */
 
-namespace Automattic\WooCommerce\Internal\Admin\WcPayPromotion;
+namespace Automattic\WooCommerce\Internal\Admin\WCPayPromotion;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,7 +22,7 @@ class Init {
 	 * Constructor.
 	 */
 	public function __construct() {
-		include_once __DIR__ . '/WcPaymentGatewayPreInstallWCPayPromotion.php';
+		include_once __DIR__ . '/WCPaymentGatewayPreInstallWCPayPromotion.php';
 
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
 		add_filter( DataSourcePoller::FILTER_NAME_SPECS, array( __CLASS__, 'possibly_filter_recommended_payment_gateways' ), 10, 2 );
@@ -64,8 +64,8 @@ class Init {
 	 * @return array list of gateway classes.
 	 */
 	public static function possibly_register_pre_install_wc_pay_promotion_gateway( $gateways ) {
-		if ( self::can_show_promotion() && ! WcPaymentGatewayPreInstallWCPayPromotion::is_dismissed() ) {
-			$gateways[] = 'Automattic\WooCommerce\Internal\Admin\WCPayPromotion\WcPaymentGatewayPreInstallWCPayPromotion';
+		if ( self::can_show_promotion() && ! WCPaymentGatewayPreInstallWCPayPromotion::is_dismissed() ) {
+			$gateways[] = 'Automattic\WooCommerce\Internal\Admin\WCPayPromotion\WCPaymentGatewayPreInstallWCPayPromotion';
 		}
 		return $gateways;
 	}
@@ -123,7 +123,7 @@ class Init {
 	 */
 	public static function set_gateway_top_of_list( $ordering ) {
 		$ordering = (array) $ordering;
-		$id       = WcPaymentGatewayPreInstallWCPayPromotion::GATEWAY_ID;
+		$id       = WCPaymentGatewayPreInstallWCPayPromotion::GATEWAY_ID;
 		// Only tweak the ordering if the list hasn't been reordered with WooCommerce Payments in it already.
 		if ( ! isset( $ordering[ $id ] ) || ! is_numeric( $ordering[ $id ] ) ) {
 			$is_empty        = empty( $ordering ) || ( 1 === count( $ordering ) && false === $ordering[0] );

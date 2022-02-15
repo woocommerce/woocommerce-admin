@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin
  */
 
-namespace Automattic\WooCommerce\Internal\Admin\WcPayPromotion;
+namespace Automattic\WooCommerce\Internal\Admin\WCPayPromotion;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @extends WC_Payment_Gateway
  */
-class WcPaymentGatewayPreInstallWCPayPromotion extends \WC_Payment_Gateway {
+class WCPaymentGatewayPreInstallWCPayPromotion extends \WC_Payment_Gateway {
 
 	const GATEWAY_ID = 'pre_install_woocommerce_payments_promotion';
 
