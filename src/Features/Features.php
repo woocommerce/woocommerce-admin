@@ -401,6 +401,7 @@ class Features {
 		$aliases = array(
 			// new class => original class (this will be aliased).
 			'Automattic\WooCommerce\Internal\Admin\WcPayPromotion\Init' => 'Automattic\WooCommerce\Admin\Features\WcPayPromotion\Init',
+			'Automattic\WooCommerce\Internal\Admin\RemoteFreeExtensions\Init' => 'Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init',
 		);
 		foreach ( $aliases as $new_class => $orig_class ) {
 			class_alias( $new_class, $orig_class );
