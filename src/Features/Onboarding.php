@@ -491,7 +491,14 @@ class Onboarding {
 			),
 		);
 		$base_location = wc_get_base_location();
-		if ( ! Features::is_enabled( 'subscriptions' ) || 'US' !== $base_location['country'] ) {
+		$has_cbd_industry = false;
+		if ( 'US' === $base_location['country'] ) {
+			$profile = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+			if ( ! empty( $profile['industry'] ) ) {
+				$has_cbd_industry = in_array( 'cbd-other-hemp-derived-products', array_column( $profile['industry'], 'slug' ), true );
+			}
+		}
+		if ( ! Features::is_enabled( 'subscriptions' ) || 'US' !== $base_location['country'] || $has_cbd_industry ) {
 			$products['subscriptions']['product'] = 27147;
 		}
 
