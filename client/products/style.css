@@ -1,0 +1,26 @@
+.post-new-php .wrap {
+	display: none;
+}
+
+.woo-new-products {
+	padding: 10px 20px;
+}
+
+.woo-new-products > div {
+	max-height: 250px;
+	overflow-y: scroll;
+}
+
+.woo-new-products > h4 {
+	background-color: #333;
+	color: white;
+	padding: 5px 10px;
+}
+
+.woo-new-products .hidden {
+	display: block !important;
+}
+
+.woo-new-products-hidden {
+	display: none;
+}

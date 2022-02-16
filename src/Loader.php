@@ -420,6 +420,13 @@ class Loader {
 		}
 
 		wp_register_style(
+			'products-extend',
+			plugins_url( '/client/products/style.css', WC_ADMIN_PLUGIN_FILE ),
+			array(),
+			$css_file_version
+		);
+
+		wp_register_style(
 			'wc-components',
 			self::get_url( 'components/style', 'css' ),
 			array(),
@@ -692,6 +699,10 @@ class Loader {
 		wp_enqueue_style( 'wc-material-icons' );
 		wp_enqueue_style( 'wc-onboarding' );
 
+		if(Features::is_enabled('products')) {
+			wp_enqueue_style( 'products-extend' );
+		}
+
 		// Preload our assets.
 		$this->output_header_preload_tags();
 	}
@@ -841,6 +852,8 @@ class Loader {
 			return;
 		}
 
+		$product_actions = array( 'woocommerce_product_data_panels', 'woocommerce_product_write_panel_tabs',  'woocommerce_product_options_advanced', 'woocommerce_product_options_shipping' );
+
 		$sections = self::get_embed_breadcrumbs();
 		$sections = is_array( $sections ) ? $sections : array( $sections );
 		?>
@@ -851,7 +864,19 @@ class Loader {
 						<?php self::output_heading( end( $sections ) ); ?>
 					</h1>
 				</div>
+
 			</div>
+		</div>
+		<div class="woo-new-products-hidden">
+			<?php
+			if ( Features::is_enabled( 'products' ) ) {
+				foreach ( $product_actions as $action ) {
+					echo( '<div class="action_' . $action . '">' );
+					do_action( $action );
+					echo( '</div>' );
+				}
+			}
+			?>
 		</div>
 		<?php
 	}

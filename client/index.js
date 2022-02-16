@@ -16,6 +16,7 @@ import { getAdminSetting } from '~/utils/admin-settings';
 import { PageLayout, EmbedLayout, PrimaryLayout as NoticeArea } from './layout';
 import { CustomerEffortScoreTracksContainer } from './customer-effort-score-tracks';
 import { EmbeddedBodyLayout } from './embedded-body-layout';
+import { Products } from './products';
 
 // Modify webpack pubilcPath at runtime based on location of WordPress Plugin.
 // eslint-disable-next-line no-undef,camelcase
@@ -73,6 +74,10 @@ if ( appRoot ) {
 	render(
 		<div className="woocommerce-layout">
 			<NoticeArea />
+			{ window.wcAdminFeatures.products &&
+				window.location.pathname === '/wp-admin/post-new.php' && (
+					<Products />
+				) }
 		</div>,
 		wpBody.insertBefore( noticeContainer, wrap )
 	);
