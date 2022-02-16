@@ -7,7 +7,7 @@ namespace Automattic\WooCommerce\Internal\Admin\RemoteFreeExtensions;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Internal\Admin\FeaturesRemoteFreeExtensions\DefaultFreeExtensions;
+use Automattic\WooCommerce\Internal\Admin\RemoteFreeExtensions\DefaultFreeExtensions;
 
 /**
  * Remote Payment Methods engine.

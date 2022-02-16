@@ -5,6 +5,8 @@
 
 namespace Automattic\WooCommerce\Internal\Admin\Features;
 
+use Automattic\WooCommerce\Admin\Features\Features;
+
 /**
  * CouponsMovedTrait trait.
  */
