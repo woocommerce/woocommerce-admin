@@ -91,6 +91,7 @@
 	},
 	"dependencies": {
 		"@automattic/explat-client": "0.0.2",
+		"@automattic/explat-client-react-helpers": "0.0.3",
 		"@automattic/interpolate-components": "1.2.0",
 		"@woocommerce/api": "0.2.0",
 		"@woocommerce/e2e-environment": "0.2.3",
