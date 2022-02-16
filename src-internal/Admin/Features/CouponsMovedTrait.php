@@ -3,9 +3,7 @@
  * A Trait to help with managing the legacy coupon menu.
  */
 
-namespace Automattic\WooCommerce\Admin\Features;
-
-use Automattic\WooCommerce\Admin\Features\Features;
+namespace Automattic\WooCommerce\Internal\Admin\Features;
 
 /**
  * CouponsMovedTrait trait.

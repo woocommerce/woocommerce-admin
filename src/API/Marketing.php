@@ -7,7 +7,7 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
-use Automattic\WooCommerce\Admin\Features\Marketing as MarketingFeature;
+use Automattic\WooCommerce\Internal\Admin\FeaturesMarketing as MarketingFeature;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
 defined( 'ABSPATH' ) || exit;

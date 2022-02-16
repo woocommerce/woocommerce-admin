@@ -402,6 +402,19 @@ class Features {
 			// new class => original class (this will be aliased).
 			'Automattic\WooCommerce\Internal\Admin\WCPayPromotion\Init' => 'Automattic\WooCommerce\Admin\Features\WcPayPromotion\Init',
 			'Automattic\WooCommerce\Internal\Admin\RemoteFreeExtensions\Init' => 'Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init',
+			'Automattic\WooCommerce\Internal\Admin\Features\ActivityPanels' => 'Automattic\WooCommerce\Admin\Features\ActivityPanels',
+			'Automattic\WooCommerce\Internal\Admin\Features\Analytics' => 'Automattic\WooCommerce\Admin\Features\Analytics',
+			'Automattic\WooCommerce\Internal\Admin\Features\Coupons' => 'Automattic\WooCommerce\Admin\Features\Coupons',
+			'Automattic\WooCommerce\Internal\Admin\Features\CouponsMovedTrait' => 'Automattic\WooCommerce\Admin\Features\CouponsMovedTrait',
+			'Automattic\WooCommerce\Internal\Admin\Features\CustomerEffortScoreTracks' => 'Automattic\WooCommerce\Admin\Features\CustomerEffortScoreTracks',
+			'Automattic\WooCommerce\Internal\Admin\Features\Homescreen' => 'Automattic\WooCommerce\Admin\Features\Homescreen',
+			'Automattic\WooCommerce\Internal\Admin\Features\Marketing' => 'Automattic\WooCommerce\Admin\Features\Marketing',
+			'Automattic\WooCommerce\Internal\Admin\Features\MobileAppBanner' => 'Automattic\WooCommerce\Admin\Features\MobileAppBanner',
+			'Automattic\WooCommerce\Internal\Admin\Features\RemoteInboxNotifications' => 'Automattic\WooCommerce\Admin\Features\RemoteInboxNotifications',
+			'Automattic\WooCommerce\Internal\Admin\Features\Settings' => 'Automattic\WooCommerce\Admin\Features\Settings',
+			'Automattic\WooCommerce\Internal\Admin\Features\ShippingLabelBanner' => 'Automattic\WooCommerce\Admin\Features\ShippingLabelBanner',
+			'Automattic\WooCommerce\Internal\Admin\Features\ShippingLabelBannerDisplayRules' => 'Automattic\WooCommerce\Admin\Features\ShippingLabelBannerDisplayRules',
+			'Automattic\WooCommerce\Internal\Admin\Features\WcPayWelcomePage' => 'Automattic\WooCommerce\Admin\Features\WcPayWelcomePage',
 		);
 		foreach ( $aliases as $new_class => $orig_class ) {
 			class_alias( $new_class, $orig_class );

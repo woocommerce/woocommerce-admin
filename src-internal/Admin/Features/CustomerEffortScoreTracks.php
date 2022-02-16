@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Features
  */
 
-namespace Automattic\WooCommerce\Admin\Features;
+namespace Automattic\WooCommerce\Internal\Admin\Features;
 
 defined( 'ABSPATH' ) || exit;
 
