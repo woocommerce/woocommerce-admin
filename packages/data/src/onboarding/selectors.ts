@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import createSelector from 'rememo';
+
+/**
  * Internal dependencies
  */
 import { TaskType, TaskListType } from './types';
@@ -22,6 +27,18 @@ const EMPTY_ARRAY: Product[] = [];
 export const getTaskLists = ( state: OnboardingState ): TaskListType[] => {
 	return state.taskLists || initialTaskLists;
 };
+
+export const getTaskListsByIds = createSelector(
+	( state: OnboardingState, ids: string[] ): TaskListType[] => {
+		return ( state.taskLists || initialTaskLists ).filter( ( taskList ) =>
+			ids.includes( taskList.id )
+		);
+	},
+	( state: OnboardingState, ids: string[] ) =>
+		( state.taskLists || initialTaskLists ).filter( ( taskList ) =>
+			ids.includes( taskList.id )
+		)
+);
 
 export const getTaskList = (
 	state: OnboardingState,

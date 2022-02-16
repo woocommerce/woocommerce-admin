@@ -34,9 +34,12 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	const { isResolving, taskLists } = useSelect( ( select ) => {
 		return {
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
-				'getTaskLists'
+				'getTaskListsByIds'
 			),
-			taskLists: select( ONBOARDING_STORE_NAME ).getTaskLists(),
+			taskLists: select( ONBOARDING_STORE_NAME ).getTaskListsByIds( [
+				'setup_two_column',
+				'extended',
+			] ),
 		};
 	} );
 
@@ -45,9 +48,10 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 			return null;
 		}
 
-		const tasks = taskLists
-			.filter( ( { id } ) => id !== 'setup_two_column' )
-			.reduce( ( acc, taskList ) => [ ...acc, ...taskList.tasks ], [] );
+		const tasks = taskLists.reduce(
+			( acc, taskList ) => [ ...acc, ...taskList.tasks ],
+			[]
+		);
 
 		const currentTask = tasks.find( ( t ) => t.id === task );
 
@@ -100,7 +104,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		return <TasksPlaceholder query={ query } />;
 	}
 
-	return taskLists.filter( ( { id } ) => id !== 'setup_two_column' ).map( ( taskList ) => {
+	return taskLists.map( ( taskList ) => {
 		const {
 			id,
 			isComplete,
@@ -108,19 +112,12 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 			isVisible,
 			isToggleable,
 			title,
+			tasks,
 		} = taskList;
 
 		if ( ! isVisible ) {
 			return null;
 		}
-		const hasMultiplePaymentTasks =
-			( taskList.tasks || [] ).filter(
-				( t ) => t.id === 'payments' || t.id === 'woocommerce-payments'
-			).length > 1;
-		const tasks =
-			id === 'setup' && hasMultiplePaymentTasks && taskList.tasks
-				? taskList.tasks.filter( ( t ) => t.id !== 'payments' )
-				: taskList.tasks;
 
 		return (
 			<Fragment key={ id }>
@@ -147,22 +144,15 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 								role="menuitemcheckbox"
 								onClick={ () => toggleTaskList( taskList ) }
 							>
-								<MenuItem
-									className="woocommerce-layout__homescreen-extension-tasklist-toggle"
-									icon={ ! isHidden && check }
-									isSelected={ ! isHidden }
-									role="menuitemcheckbox"
-									onClick={ () => toggleTaskList( taskList ) }
-								>
-									{ __(
-										'Show things to do next',
-										'woocommerce-admin'
-									) }
-								</MenuItem>
-							</MenuGroup>
-						</DisplayOption>
-					) }
-				</Fragment>
-			);
-		} );
+								{ __(
+									'Show things to do next',
+									'woocommerce-admin'
+								) }
+							</MenuItem>
+						</MenuGroup>
+					</DisplayOption>
+				) }
+			</Fragment>
+		);
+	} );
 };

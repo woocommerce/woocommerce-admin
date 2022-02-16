@@ -38,9 +38,12 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 
 	const { isResolving, taskLists } = useSelect( ( select ) => {
 		return {
-			taskLists: select( ONBOARDING_STORE_NAME ).getTaskLists(),
+			taskLists: select( ONBOARDING_STORE_NAME ).getTaskListsByIds( [
+				'setup_two_column',
+				'extended',
+			] ),
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
-				'getTaskLists'
+				'getTaskListsByIds'
 			),
 		};
 	} );
@@ -50,9 +53,10 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 			return null;
 		}
 
-		const tasks = taskLists
-			.filter( ( { id } ) => id !== 'setup' )
-			.reduce( ( acc, taskList ) => [ ...acc, ...taskList.tasks ], [] );
+		const tasks = taskLists.reduce(
+			( acc, taskList ) => [ ...acc, ...taskList.tasks ],
+			[]
+		);
 
 		const currentTask = tasks.find( ( t ) => t.id === task );
 
@@ -82,7 +86,7 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 	}
 	// List of task items to be shown on the main task list.
 	// Any other remaining tasks will be moved to the extended task list.
-	const taskList = taskLists.filter( ( { id } ) => id !== 'setup' )[ 0 ];
+	const taskList = taskLists[ 0 ];
 	const setupTasks = taskList.tasks.filter( ( setupTask ) =>
 		allowedTasks.includes( setupTask.id )
 	);

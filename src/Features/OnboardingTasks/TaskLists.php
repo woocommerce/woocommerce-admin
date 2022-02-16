@@ -42,7 +42,8 @@ class TaskLists {
 	const DEFAULT_TASK_LISTS = array(
 		'Setup',
 		'TwoColumnSetup',
-		'Extended'
+		'Extended',
+		'TwoColumnExtended'
 	);
 
 	/**
@@ -212,6 +213,27 @@ class TaskLists {
 	 */
 	public static function get_lists() {
 		return self::$lists;
+	}
+
+	/**
+	 * Get all task lists.
+	 *
+	 * @param array $ids list of task list ids.
+	 * @return array
+	 */
+	public static function get_lists_by_ids( $ids ) {
+		return array_filter( self::$lists, function( $list ) use ( $ids ) {
+			return in_array( $list->get_id(), $ids );
+		});
+	}
+
+	/**
+	 * Get all task list ids.
+	 *
+	 * @return array
+	 */
+	public static function get_list_ids() {
+		return array_keys( self::$lists );
 	}
 
 	/**
