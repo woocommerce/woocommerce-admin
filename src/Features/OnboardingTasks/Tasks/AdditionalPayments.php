@@ -10,15 +10,14 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayme
 /**
  * Payments Task
  */
-class AdditionalPayments extends Payments
-{
+class AdditionalPayments extends Payments {
+
 	/**
 	 * Parent ID.
 	 *
 	 * @return string
 	 */
-	public function get_parent_id()
-	{
+	public function get_parent_id() {
 		return 'extended';
 	}
 
@@ -27,9 +26,8 @@ class AdditionalPayments extends Payments
 	 *
 	 * @return string
 	 */
-	public function get_title()
-	{
-		return __('Set up additional payment providers', 'woocommerce-admin');
+	public function get_title() {
+		return __( 'Set up additional payment providers', 'woocommerce-admin' );
 	}
 
 
@@ -38,10 +36,9 @@ class AdditionalPayments extends Payments
 	 *
 	 * @return bool
 	 */
-	public function can_view()
-	{
+	public function can_view() {
 		$woocommerce_payments = new WooCommercePayments();
-		return Features::is_enabled('payment-gateway-suggestions') && $woocommerce_payments->can_view();
+		return Features::is_enabled( 'payment-gateway-suggestions' ) && $woocommerce_payments->can_view();
 	}
 }
 

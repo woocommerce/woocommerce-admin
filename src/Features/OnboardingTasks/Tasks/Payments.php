@@ -74,7 +74,7 @@ class Payments extends Task {
 	 */
 	public function can_view() {
 		$woocommerce_payments = new WooCommercePayments();
-		return (!$woocommerce_payments->can_view() || ($woocommerce_payments->can_view() && WooCommercePayments::is_connected())) && Features::is_enabled('payment-gateway-suggestions');
+		return ( ! $woocommerce_payments->can_view() || ( $woocommerce_payments->can_view() && WooCommercePayments::is_connected() ) ) && Features::is_enabled( 'payment-gateway-suggestions' );
 	}
 
 	/**

@@ -116,12 +116,11 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		}
 		const hasMultiplePaymentTasks =
 			( taskList.tasks || [] ).filter(
-				( task ) =>
-					task.id === 'payments' || task.id === 'woocommerce-payments'
+				( t ) => t.id === 'payments' || t.id === 'woocommerce-payments'
 			).length > 1;
 		const tasks =
 			id === 'setup' && hasMultiplePaymentTasks && taskList.tasks
-				? taskList.tasks.filter( ( task ) => task.id !== 'payments' )
+				? taskList.tasks.filter( ( t ) => t.id !== 'payments' )
 				: taskList.tasks;
 
 		return (
