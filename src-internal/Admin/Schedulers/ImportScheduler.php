@@ -9,7 +9,6 @@ defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
 use \Automattic\WooCommerce\Admin\Schedulers\SchedulerTraits;
-use Automattic\WooCommerce\Internal\Admin\Schedulers\ImportInterface;
 
 /**
  * ImportScheduler class.

@@ -13,8 +13,6 @@ use \Automattic\WooCommerce\Admin\API\Reports\Products\DataStore as ProductsData
 use \Automattic\WooCommerce\Admin\API\Reports\Taxes\DataStore as TaxesDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDataStore;
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
-use Automattic\WooCommerce\Internal\Admin\Schedulers\CustomersScheduler;
-use Automattic\WooCommerce\Internal\Admin\Schedulers\ImportScheduler;
 
 /**
  * OrdersScheduler Class.
