@@ -70,12 +70,27 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 
 	const installingJetpackOrWcShipping =
 		extensions.includes( 'jetpack' ) ||
-		extensions.includes( 'woocommerce-shipping' );
+		extensions.includes( 'woocommerce-services:shipping' );
 
 	const accountRequiredText = __(
 		'User accounts are required to use these features.',
 		'woocommerce-admin'
 	);
+
+	const isWCShippingAvailableToInstall = extensions.includes(
+		'woocommerce-services:shipping'
+	);
+
+	const installJetpackOrWcShippingText = isWCShippingAvailableToInstall
+		? __(
+				'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
+				'woocommerce-admin'
+		  )
+		: __(
+				'By installing Jetpack plugin for free you agree to our {{link}}Terms of Service{{/link}}.',
+				'woocommerce-admin'
+		  );
+
 	return (
 		<div className="woocommerce-profile-wizard__footnote">
 			<Text variant="caption" as="p" size="12" lineHeight="16px">
@@ -94,10 +109,7 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 			{ installingJetpackOrWcShipping && (
 				<Text variant="caption" as="p" size="12" lineHeight="16px">
 					{ interpolateComponents( {
-						mixedString: __(
-							'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
-							'woocommerce-admin'
-						),
+						mixedString: installJetpackOrWcShippingText,
 						components: {
 							link: (
 								<Link
