@@ -99,6 +99,7 @@ export class ProductTypes extends Component {
 			goToNextStep,
 			installAndActivatePlugins,
 			updateProfileItems,
+			productTypes,
 		} = this.props;
 
 		const eventProps = {
