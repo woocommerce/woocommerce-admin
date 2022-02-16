@@ -203,26 +203,22 @@ export const ExtensionSection = ( {
 	);
 };
 
-export const createInstallExtensionOptions = ( {
-	installableExtensions,
-	prevInstallExtensionOptions,
-} ) => {
-	return installableExtensions.reduce( ( acc, curr ) => {
-		const plugins = curr.plugins.reduce( ( pluginAcc, plugin ) => {
-			// If the option exists in the previous state, use that so the option won't be reset.
-			if ( prevInstallExtensionOptions.hasOwnProperty( plugin.key ) ) {
-				return pluginAcc;
-			}
+export const createInstallExtensionOptions = ( installableExtensions ) => {
+	return installableExtensions.reduce(
+		( acc, curr ) => {
+			const plugins = curr.plugins.reduce( ( pluginAcc, plugin ) => {
+				return {
+					...pluginAcc,
+					[ plugin.key ]: true,
+				};
+			}, {} );
 			return {
-				...pluginAcc,
-				[ plugin.key ]: true,
+				...acc,
+				...plugins,
 			};
-		}, {} );
-		return {
-			...acc,
-			...plugins,
-		};
-	}, prevInstallExtensionOptions );
+		},
+		{ install_extensions: true }
+	);
 };
 
 export const SelectiveExtensionsBundle = ( {
@@ -280,11 +276,8 @@ export const SelectiveExtensionsBundle = ( {
 
 	useEffect( () => {
 		if ( ! isInstallingActivating ) {
-			setInstallExtensionOptions( ( currInstallExtensionOptions ) =>
-				createInstallExtensionOptions( {
-					installableExtensions,
-					prevInstallExtensionOptions: currInstallExtensionOptions,
-				} )
+			setInstallExtensionOptions( () =>
+				createInstallExtensionOptions( installableExtensions )
 			);
 		}
 		// Disable reason: This effect should only called when the installableExtensions are changed.
