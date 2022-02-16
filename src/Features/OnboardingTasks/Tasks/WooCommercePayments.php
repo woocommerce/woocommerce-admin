@@ -96,8 +96,7 @@ class WooCommercePayments extends Task {
 	public function can_view() {
 		return self::is_requested() &&
 			self::is_installed() &&
-			self::is_supported() &&
-			! self::is_connected();
+			self::is_supported();
 	}
 
 	/**
@@ -106,6 +105,7 @@ class WooCommercePayments extends Task {
 	 * @return bool
 	 */
 	public static function is_requested() {
+		return false;
 		$profiler_data       = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
 		$business_extensions = isset( $profiler_data['business_extensions'] ) ? $profiler_data['business_extensions'] : array();
 		return in_array( 'woocommerce-payments', $business_extensions, true );
@@ -127,6 +127,7 @@ class WooCommercePayments extends Task {
 	 * @return bool
 	 */
 	public static function is_connected() {
+		return true;
 		if ( class_exists( '\WC_Payments' ) ) {
 			$wc_payments_gateway = \WC_Payments::get_gateway();
 			return method_exists( $wc_payments_gateway, 'is_connected' )

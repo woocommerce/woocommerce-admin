@@ -109,12 +109,20 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 			isVisible,
 			isToggleable,
 			title,
-			tasks,
 		} = taskList;
 
 		if ( ! isVisible ) {
 			return null;
 		}
+		const hasMultiplePaymentTasks =
+			( taskList.tasks || [] ).filter(
+				( task ) =>
+					task.id === 'payments' || task.id === 'woocommerce-payments'
+			).length > 1;
+		const tasks =
+			id === 'setup' && hasMultiplePaymentTasks && taskList.tasks
+				? taskList.tasks.filter( ( task ) => task.id !== 'payments' )
+				: taskList.tasks;
 
 		return (
 			<Fragment key={ id }>
