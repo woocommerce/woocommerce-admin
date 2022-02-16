@@ -9,10 +9,6 @@ defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\API\Reports\Cache as ReportsCache;
 use \Automattic\WooCommerce\Admin\API\Reports\Customers\DataStore as CustomersDataStore;
-use Automattic\WooCommerce\Internal\Admin\Schedulers\ImportScheduler;
-use Automattic\WooCommerce\Internal\Admin\Schedulers\OrdersScheduler;
-use Automattic\WooCommerce\Admin\Schedulers\WC_Order;
-use Automattic\WooCommerce\Admin\Schedulers\WP_User_Query;
 
 /**
  * CustomersScheduler Class.
