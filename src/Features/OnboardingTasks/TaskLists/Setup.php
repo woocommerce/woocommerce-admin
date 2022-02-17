@@ -11,27 +11,28 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskList;
 /**
  * Task List class.
  */
-class Setup extends TaskList
-{
+class Setup extends TaskList {
+
 	public static $id = 'setup';
 
-	public function __construct()
-	{
-		parent::__construct( array(
-			'id'    => 'setup',
-			'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
-			'tasks' => array(
-				'StoreDetails',
-				'Purchase',
-				'Products',
-				'WooCommercePayments',
-				'Payments',
-				'Tax',
-				'Shipping',
-				'Marketing',
-				'Appearance',
+	public function __construct() {
+		parent::__construct(
+			array(
+				'id'    => 'setup',
+				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
+				'tasks' => array(
+					'StoreDetails',
+					'Purchase',
+					'Products',
+					'WooCommercePayments',
+					'Payments',
+					'Tax',
+					'Shipping',
+					'Marketing',
+					'Appearance',
+				),
 			)
-		) );
+		);
 	}
 
 	/**
@@ -39,10 +40,9 @@ class Setup extends TaskList
 	 *
 	 * @return bool
 	 */
-	public function is_hidden()
-	{
-		$hidden = get_option(self::HIDDEN_OPTION, array());
-		return in_array($this->id, $hidden, true);
+	public function is_hidden() {
+		$hidden = get_option( self::HIDDEN_OPTION, array() );
+		return in_array( $this::$id, $hidden, true );
 	}
 }
 

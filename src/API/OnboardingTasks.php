@@ -106,9 +106,9 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_tasks' ),
 					'permission_callback' => array( $this, 'get_tasks_permission_check' ),
-					'args'   => array(
+					'args'                => array(
 						'ids' => array(
-							'description' => __( 'Optional parameter to get only specific task lists by id.', 'woocommerce-admin' ),
+							'description'       => __( 'Optional parameter to get only specific task lists by id.', 'woocommerce-admin' ),
 							'type'              => 'array',
 							'sanitize_callback' => 'wp_parse_slug_list',
 							'validate_callback' => 'rest_validate_request_arg',
@@ -681,8 +681,8 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function get_task_list_params() {
 		$params                   = array();
-		$params['ids'] = array(
-			'description' => __( 'Optional parameter to get only specific task lists by id.', 'woocommerce-admin' ),
+		$params['ids']            = array(
+			'description'       => __( 'Optional parameter to get only specific task lists by id.', 'woocommerce-admin' ),
 			'type'              => 'array',
 			'sanitize_callback' => 'wp_parse_slug_list',
 			'validate_callback' => 'rest_validate_request_arg',
@@ -715,11 +715,11 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function get_tasks( $request ) {
 		$extended_tasks = $request->get_param( 'extended_tasks' );
-		$task_list_ids = $request->get_param( 'ids' );
+		$task_list_ids  = $request->get_param( 'ids' );
 
 		TaskLists::maybe_add_extended_tasks( $extended_tasks );
 
-		$lists = count( $task_list_ids ) > 0 ? TaskLists::get_lists_by_ids( $task_list_ids ) : TaskLists::get_lists();
+		$lists = is_array( $task_list_ids ) && count( $task_list_ids ) > 0 ? TaskLists::get_lists_by_ids( $task_list_ids ) : TaskLists::get_lists();
 
 		$json = array_map(
 			function( $list ) {

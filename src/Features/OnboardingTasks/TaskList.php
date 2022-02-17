@@ -78,7 +78,7 @@ class TaskList {
 	 */
 	public function is_hidden() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
-		return in_array( $this->id, $hidden, true );
+		return in_array( $this->get_list_id(), $hidden, true );
 	}
 
 	/**
@@ -158,7 +158,7 @@ class TaskList {
 	 */
 	public function has_previously_completed() {
 		$complete = get_option( self::COMPLETED_OPTION, array() );
-		return in_array( $this->id, $complete, true );
+		return in_array( $this->get_list_id(), $complete, true );
 	}
 
 	/**
@@ -190,7 +190,7 @@ class TaskList {
 		return current(
 			array_filter(
 				$this->tasks,
-				function( $task ) use( $task_id ) {
+				function( $task ) use ( $task_id ) {
 					return $task->get_id() === $task_id;
 				}
 			)
@@ -226,7 +226,7 @@ class TaskList {
 		}
 
 		$completed_lists   = get_option( self::COMPLETED_OPTION, array() );
-		$completed_lists[] = $this->id;
+		$completed_lists[] = $this::$id;
 		update_option( self::COMPLETED_OPTION, $completed_lists );
 		$this->record_tracks_event( 'tasks_completed' );
 	}

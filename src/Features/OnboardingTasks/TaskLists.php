@@ -43,7 +43,7 @@ class TaskLists {
 		'Setup',
 		'TwoColumnSetup',
 		'Extended',
-		'TwoColumnExtended'
+		'TwoColumnExtended',
 	);
 
 	/**
@@ -89,7 +89,7 @@ class TaskLists {
 	public static function init_default_lists() {
 		foreach ( self::DEFAULT_TASK_LISTS as $task_list ) {
 			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists\\' . $task_list;
-			if ( ! property_exists( $class, 'id') ) {
+			if ( ! property_exists( $class, 'id' ) ) {
 				continue;
 			}
 			if ( isset( self::$lists[ $class::$id ] ) ) {
@@ -222,9 +222,12 @@ class TaskLists {
 	 * @return array
 	 */
 	public static function get_lists_by_ids( $ids ) {
-		return array_filter( self::$lists, function( $list ) use ( $ids ) {
-			return in_array( $list->get_id(), $ids );
-		});
+		return array_filter(
+			self::$lists,
+			function( $list ) use ( $ids ) {
+				return in_array( $list->get_id(), $ids );
+			}
+		);
 	}
 
 	/**
@@ -266,7 +269,7 @@ class TaskLists {
 	 */
 	public static function get_list( $id ) {
 		foreach ( self::get_lists() as $task_list ) {
-			if ( $task_list->id === $id ) {
+			if ( $task_list::$id === $id ) {
 				return $task_list;
 			}
 		}
