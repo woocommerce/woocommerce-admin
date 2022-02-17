@@ -3,7 +3,7 @@
  * Handles merchant email notifications
  */
 
-namespace Automattic\WooCommerce\Admin\Internal\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 use Automattic\WooCommerce\Admin\Notes\Note;
 use Automattic\WooCommerce\Admin\Notes\Notes;
