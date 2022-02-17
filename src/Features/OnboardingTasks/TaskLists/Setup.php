@@ -44,5 +44,15 @@ class Setup extends TaskList {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
 		return in_array( $this::$id, $hidden, true );
 	}
+
+	/**
+	 * Prefix event for track event naming.
+	 *
+	 * @param string $event_name Event name.
+	 * @return string
+	 */
+	public function prefix_event( $event_name ) {
+		return 'tasklist_' . $event_name;
+	}
 }
 

@@ -96,7 +96,8 @@ class WooCommercePayments extends Task {
 	public function can_view() {
 		return self::is_requested() &&
 			self::is_installed() &&
-			self::is_supported();
+			self::is_supported() &&
+			( $this->get_parent_id() !== 'setup_two_column' || ! self::is_connected());
 	}
 
 	/**
@@ -126,7 +127,6 @@ class WooCommercePayments extends Task {
 	 * @return bool
 	 */
 	public static function is_connected() {
-		return true;
 		if ( class_exists( '\WC_Payments' ) ) {
 			$wc_payments_gateway = \WC_Payments::get_gateway();
 			return method_exists( $wc_payments_gateway, 'is_connected' )

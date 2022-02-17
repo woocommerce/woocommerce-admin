@@ -22,8 +22,8 @@ class TwoColumnSetup extends TaskList {
 				'title' => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks' => array(
 					'Products',
-					'WooCommercePaymentsTwoColumnList',
-					'PaymentsTwoColumnList',
+					'WooCommercePayments',
+					'Payments',
 					'Tax',
 					'Shipping',
 					'Marketing',

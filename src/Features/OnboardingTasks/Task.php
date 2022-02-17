@@ -117,6 +117,25 @@ abstract class Task {
 	}
 
 	/**
+	 * Prefix event for track event naming.
+	 *
+	 * @param string $event_name Event name.
+	 * @return string
+	 */
+	public function prefix_event( $event_name ) {
+		if ( ! $this->task_list ) {
+			return '';
+		}
+		return $this->task_list->prefix_event( $event_name );
+
+		if ( 'setup' === $id ) {
+			return 'tasklist_' . $event_name;
+		}
+
+		return $id . '_tasklist_' . $event_name;
+	}
+
+	/**
 	 * Additional info.
 	 *
 	 * @return string
