@@ -3,7 +3,7 @@
  * A Trait to help with managing the legacy coupon menu.
  */
 
-namespace Automattic\WooCommerce\Internal\Admin\Features;
+namespace Automattic\WooCommerce\Internal\Admin;
 
 use Automattic\WooCommerce\Admin\Features\Features;
 

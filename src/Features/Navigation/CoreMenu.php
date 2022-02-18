@@ -193,7 +193,7 @@ class CoreMenu {
 			$home_item = array(
 				'id'              => 'woocommerce-home',
 				'title'           => __( 'Home', 'woocommerce-admin' ),
-				'url'             => \Automattic\WooCommerce\Internal\Admin\Features\Homescreen::MENU_SLUG,
+				'url'             => \Automattic\WooCommerce\Internal\Admin\Homescreen::MENU_SLUG,
 				'order'           => 0,
 				'matchExpression' => 'page=wc-admin((?!path=).)*$',
 			);
