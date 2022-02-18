@@ -89,17 +89,17 @@ class TaskLists {
 	public static function init_default_lists() {
 		foreach ( self::DEFAULT_TASK_LISTS as $task_list ) {
 			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists\\' . $task_list;
-			if ( ! property_exists( $class, 'id' ) ) {
+			if ( ! property_exists( $class, 'list_id' ) ) {
 				continue;
 			}
-			if ( isset( self::$lists[ $class::$id ] ) ) {
+			if ( isset( self::$lists[ $class::$list_id ] ) ) {
 				return new \WP_Error(
 					'woocommerce_task_list_exists',
 					__( 'Task list ID already exists', 'woocommerce-admin' )
 				);
 			}
 
-			self::$lists[ $class::$id ] = new $class();
+			self::$lists[ $class::$list_id ] = new $class();
 		}
 	}
 
@@ -176,33 +176,17 @@ class TaskLists {
 	}
 
 	/**
-	 * Add default task lists.
-	 */
-	public static function maybe_add_default_tasks() {
-		if ( ! apply_filters( 'woocommerce_admin_onboarding_tasks_add_default_tasks', ! self::$default_tasks_loaded ) ) {
-			return;
-		}
-
-		self::$default_tasks_loaded = true;
-
-		foreach ( self::DEFAULT_TASKS as $task_name ) {
-			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task_name;
-			$task  = new $class();
-			self::add_task( $task->get_parent_id(), $task );
-		}
-	}
-
-	/**
 	 * Add default extended task lists.
 	 *
 	 * @param array $extended_tasks list of extended tasks.
 	 */
 	public static function maybe_add_extended_tasks( $extended_tasks ) {
-		$tasks = $extended_tasks ? $extended_tasks : array();
+		$tasks = $extended_tasks ?? array();
 
 		foreach ( $tasks as $args ) {
 			$task = new DeprecatedExtendedTask( $args );
-			self::add_task( $task->get_parent_id(), $task );
+			self::add_task( 'extended', $task );
+			self::add_task( 'extended_two_column', $task );
 		}
 	}
 
@@ -269,7 +253,7 @@ class TaskLists {
 	 */
 	public static function get_list( $id ) {
 		foreach ( self::get_lists() as $task_list ) {
-			if ( $task_list::$id === $id ) {
+			if ( $task_list::$list_id === $id ) {
 				return $task_list;
 			}
 		}

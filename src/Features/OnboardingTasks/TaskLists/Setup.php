@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Handles storage and retrieval of a task list
  */
@@ -13,9 +12,19 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskList;
  */
 class Setup extends TaskList {
 
-	public static $id = 'setup';
+	/**
+	 * List id.
+	 *
+	 * @var string
+	 */
+	public static $list_id = 'setup';
 
-	public function __construct() {
+	/**
+	 * Constructor
+	 *
+	 * @param array $data Task list data.
+	 */
+	public function __construct( $data = array() ) {
 		parent::__construct(
 			array(
 				'id'    => 'setup',
@@ -42,7 +51,7 @@ class Setup extends TaskList {
 	 */
 	public function is_hidden() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
-		return in_array( $this::$id, $hidden, true );
+		return in_array( $this::$list_id, $hidden, true );
 	}
 
 	/**

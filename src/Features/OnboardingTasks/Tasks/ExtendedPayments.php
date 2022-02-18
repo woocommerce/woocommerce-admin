@@ -64,8 +64,11 @@ class ExtendedPayments extends Task {
 	 * @return bool
 	 */
 	public function can_view() {
-		$woocommerce_payments = new WooCommercePayments();
-		return Features::is_enabled( 'payment-gateway-suggestions' ) && $woocommerce_payments->can_view();
+		return Features::is_enabled( 'payment-gateway-suggestions' ) &&
+			WooCommercePayments::is_requested() &&
+			WooCommercePayments::is_installed() &&
+			WooCommercePayments::is_supported() &&
+			( $this->get_parent_id() !== 'extended_two_column' || ! WooCommercePayments::is_connected() );
 	}
 
 	/**

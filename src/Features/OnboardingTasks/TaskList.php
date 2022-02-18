@@ -268,19 +268,18 @@ class TaskList {
 	public function get_json() {
 		$this->possibly_track_completion();
 		return array(
-			'id'         => $this->get_list_id(),
-			'title'      => $this->title,
-			'isHidden'   => $this->is_hidden(),
-			'isVisible'  => $this->is_visible(),
-			'isComplete' => $this->is_complete(),
-			'tasks'      => array_map(
+			'id'          => $this->get_list_id(),
+			'title'       => $this->title,
+			'isHidden'    => $this->is_hidden(),
+			'isVisible'   => $this->is_visible(),
+			'isComplete'  => $this->is_complete(),
+			'tasks'       => array_map(
 				function( $task ) {
 					return $task->get_json();
 				},
 				$this->get_viewable_tasks()
 			),
-
+			'eventPrefix' => $this->prefix_event( '' ),
 		);
 	}
-
 }

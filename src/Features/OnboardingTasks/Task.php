@@ -127,12 +127,6 @@ abstract class Task {
 			return '';
 		}
 		return $this->task_list->prefix_event( $event_name );
-
-		if ( 'setup' === $id ) {
-			return 'tasklist_' . $event_name;
-		}
-
-		return $id . '_tasklist_' . $event_name;
 	}
 
 	/**
@@ -422,6 +416,7 @@ abstract class Task {
 			'isSnoozeable'   => $this->is_snoozeable(),
 			'snoozedUntil'   => $this->get_snoozed_until(),
 			'additionalData' => self::convert_object_to_camelcase( $this->get_additional_data() ),
+			'eventPrefix'    => $this->prefix_event( '' ),
 		);
 	}
 

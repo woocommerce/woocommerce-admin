@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Handles storage and retrieval of a task list
  */
@@ -13,9 +12,19 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskList;
  */
 class TwoColumnSetup extends TaskList {
 
-	public static $id = 'setup_two_column';
+	/**
+	 * List id.
+	 *
+	 * @var string
+	 */
+	public static $list_id = 'setup_two_column';
 
-	public function __construct() {
+	/**
+	 * Constructor
+	 *
+	 * @param array $data Task list data.
+	 */
+	public function __construct( $data = array() ) {
 		parent::__construct(
 			array(
 				'id'    => 'setup_two_column',

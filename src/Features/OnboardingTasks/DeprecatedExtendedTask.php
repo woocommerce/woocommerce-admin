@@ -93,15 +93,6 @@ class DeprecatedExtendedTask extends Task {
 	}
 
 	/**
-	 * Parent ID.
-	 *
-	 * @return string
-	 */
-	public function get_parent_id() {
-		return 'extended';
-	}
-
-	/**
 	 * Level.
 	 *
 	 * @return int

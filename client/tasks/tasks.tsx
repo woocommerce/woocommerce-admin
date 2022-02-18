@@ -60,11 +60,11 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	};
 
 	const toggleTaskList = ( taskList ) => {
-		const { id, isHidden } = taskList;
+		const { id, eventPrefix, isHidden } = taskList;
 		const newValue = ! isHidden;
 
 		recordEvent(
-			newValue ? `${ id }_tasklist_hide` : `${ id }_tasklist_show`,
+			newValue ? `${ eventPrefix }hide` : `${ eventPrefix }show`,
 			{}
 		);
 
@@ -110,6 +110,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		.map( ( taskList ) => {
 			const {
 				id,
+				eventPrefix,
 				isComplete,
 				isHidden,
 				isVisible,
@@ -126,6 +127,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 				<Fragment key={ id }>
 					<TaskList
 						id={ id }
+						eventPrefix={ eventPrefix }
 						isComplete={ isComplete }
 						isExpandable={
 							experimentAssignment?.variationName === 'treatment'

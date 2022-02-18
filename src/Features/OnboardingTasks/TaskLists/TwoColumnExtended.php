@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Handles storage and retrieval of a task list
  */
@@ -13,9 +12,19 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists\Extended;
  */
 class TwoColumnExtended extends Extended {
 
-	public static $id = 'extended_two_column';
+	/**
+	 * List id.
+	 *
+	 * @var string
+	 */
+	public static $list_id = 'extended_two_column';
 
-	public function __construct() {
+	/**
+	 * Constructor
+	 *
+	 * @param array $data Task list data.
+	 */
+	public function __construct( $data = array() ) {
 		parent::__construct(
 			array(
 				'id'      => 'extended',
@@ -35,6 +44,16 @@ class TwoColumnExtended extends Extended {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Prefix event for track event naming.
+	 *
+	 * @param string $event_name Event name.
+	 * @return string
+	 */
+	public function prefix_event( $event_name ) {
+		return 'extended_tasklist_' . $event_name;
 	}
 }
 
