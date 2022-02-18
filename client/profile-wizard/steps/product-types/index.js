@@ -113,7 +113,8 @@ export class ProductTypes extends Component {
 			window.wcAdminFeatures &&
 			window.wcAdminFeatures.subscriptions &&
 			countryCode === 'US' &&
-			! productTypes[ 'subscriptions' ].yearly_price &&
+			productTypes.subscriptions &&
+			! productTypes.subscriptions.yearly_price &&
 			! installedPlugins.includes( 'woocommerce-payments' ) &&
 			selected.includes( 'subscriptions' )
 		) {
@@ -307,7 +308,8 @@ export class ProductTypes extends Component {
 						window.wcAdminFeatures.subscriptions &&
 						countryCode === 'US' &&
 						! isWCPayInstalled &&
-						! productTypes[ 'subscriptions' ].yearly_price &&
+						productTypes.subscriptions &&
+						! productTypes.subscriptions.yearly_price &&
 						selected.includes( 'subscriptions' ) && (
 							<Text
 								variant="body"
