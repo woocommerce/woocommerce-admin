@@ -39,18 +39,6 @@ class TaskLists {
 	 *
 	 * @var array
 	 */
-	const DEFAULT_TASK_LISTS = array(
-		'Setup',
-		'TwoColumnSetup',
-		'Extended',
-		'TwoColumnExtended',
-	);
-
-	/**
-	 * Array of default tasks.
-	 *
-	 * @var array
-	 */
 	const DEFAULT_TASKS = array(
 		'StoreDetails',
 		'Purchase',
@@ -87,20 +75,79 @@ class TaskLists {
 	 * Initialize default lists.
 	 */
 	public static function init_default_lists() {
-		foreach ( self::DEFAULT_TASK_LISTS as $task_list ) {
-			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists\\' . $task_list;
-			if ( ! property_exists( $class, 'list_id' ) ) {
-				continue;
-			}
-			if ( isset( self::$lists[ $class::$list_id ] ) ) {
-				return new \WP_Error(
-					'woocommerce_task_list_exists',
-					__( 'Task list ID already exists', 'woocommerce-admin' )
-				);
-			}
-
-			self::$lists[ $class::$list_id ] = new $class();
-		}
+		self::add_list(
+			array(
+				'id'           => 'setup',
+				'title'        => __( 'Get ready to start selling', 'woocommerce-admin' ),
+				'tasks'        => array(
+					'StoreDetails',
+					'Purchase',
+					'Products',
+					'WooCommercePayments',
+					'Payments',
+					'Tax',
+					'Shipping',
+					'Marketing',
+					'Appearance',
+				),
+				'event_prefix' => 'tasklist_',
+			)
+		);
+		self::add_list(
+			array(
+				'id'      => 'extended',
+				'title'   => __( 'Things to do next', 'woocommerce-admin' ),
+				'sort_by' => array(
+					array(
+						'key'   => 'is_complete',
+						'order' => 'asc',
+					),
+					array(
+						'key'   => 'level',
+						'order' => 'asc',
+					),
+				),
+				'tasks'   => array(
+					'ExtendedPayments',
+				),
+			)
+		);
+		self::add_list(
+			array(
+				'id'           => 'setup_two_column',
+				'title'        => __( 'Get ready to start selling', 'woocommerce-admin' ),
+				'tasks'        => array(
+					'Products',
+					'WooCommercePayments',
+					'Payments',
+					'Tax',
+					'Shipping',
+					'Marketing',
+					'Appearance',
+				),
+				'event_prefix' => 'tasklist_',
+			)
+		);
+		self::add_list(
+			array(
+				'id'           => 'extended_two_column',
+				'title'        => __( 'Things to do next', 'woocommerce-admin' ),
+				'sort_by'      => array(
+					array(
+						'key'   => 'is_complete',
+						'order' => 'asc',
+					),
+					array(
+						'key'   => 'level',
+						'order' => 'asc',
+					),
+				),
+				'tasks'        => array(
+					'ExtendedPayments',
+				),
+				'event_prefix' => 'extended_tasklist_',
+			)
+		);
 	}
 
 	/**
@@ -144,7 +191,7 @@ class TaskLists {
 	 * Add a task list.
 	 *
 	 * @param array $args Task list properties.
-	 * @return WP_Error|Task
+	 * @return WP_Error|TaskList
 	 */
 	public static function add_list( $args ) {
 		if ( isset( self::$lists[ $args['id'] ] ) ) {
@@ -155,6 +202,7 @@ class TaskLists {
 		}
 
 		self::$lists[ $args['id'] ] = new TaskList( $args );
+		return self::$lists[ $args['id'] ];
 	}
 
 	/**
@@ -183,11 +231,16 @@ class TaskLists {
 	public static function maybe_add_extended_tasks( $extended_tasks ) {
 		$tasks = $extended_tasks ?? array();
 
-		foreach ( $tasks as $args ) {
-			$task = new DeprecatedExtendedTask( $args );
-			self::add_task( 'extended', $task );
-			self::add_task( 'extended_two_column', $task );
+		foreach ( self::$lists as $task_list ) {
+			if ( 'extended' !== substr( $task_list->id, 0, 8 ) ) {
+				continue;
+			}
+			foreach ( $tasks as $args ) {
+				$task = new DeprecatedExtendedTask( $task_list, $args );
+				$task_list->add_task( $task );
+			}
 		}
+
 	}
 
 	/**
@@ -209,7 +262,7 @@ class TaskLists {
 		return array_filter(
 			self::$lists,
 			function( $list ) use ( $ids ) {
-				return in_array( $list->get_id(), $ids );
+				return in_array( $list->get_id(), $ids, true );
 			}
 		);
 	}
@@ -252,10 +305,8 @@ class TaskLists {
 	 * @return TaskList|null
 	 */
 	public static function get_list( $id ) {
-		foreach ( self::get_lists() as $task_list ) {
-			if ( $task_list::$list_id === $id ) {
-				return $task_list;
-			}
+		if ( isset( self::$lists[ $id ] ) ) {
+			return self::$lists[ $id ];
 		}
 
 		return null;

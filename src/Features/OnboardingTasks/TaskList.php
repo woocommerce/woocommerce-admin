@@ -27,6 +27,13 @@ class TaskList {
 	const COMPLETED_OPTION = 'woocommerce_task_list_completed_lists';
 
 	/**
+	 * ID.
+	 *
+	 * @var string
+	 */
+	public $id = '';
+
+	/**
 	 * Title.
 	 *
 	 * @var string
@@ -48,21 +55,32 @@ class TaskList {
 	public $sort_by = array();
 
 	/**
+	 * Event prefix.
+	 *
+	 * @var string|null
+	 */
+	public $event_prefix = null;
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $data Task list data.
 	 */
 	public function __construct( $data = array() ) {
 		$defaults = array(
-			'title'   => '',
-			'tasks'   => array(),
-			'sort_by' => array(),
+			'id'           => null,
+			'title'        => '',
+			'tasks'        => array(),
+			'sort_by'      => array(),
+			'event_prefix' => null,
 		);
 
 		$data = wp_parse_args( $data, $defaults );
 
-		$this->title   = $data['title'];
-		$this->sort_by = $data['sort_by'];
+		$this->id           = $data['id'];
+		$this->title        = $data['title'];
+		$this->sort_by      = $data['sort_by'];
+		$this->event_prefix = $data['event_prefix'];
 
 		foreach ( $data['tasks'] as $task_name ) {
 			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task_name;
@@ -257,7 +275,10 @@ class TaskList {
 	 * @return string
 	 */
 	public function prefix_event( $event_name ) {
-		return $this::get_list_id() . '_tasklist_' . $event_name;
+		if ( null !== $this->event_prefix ) {
+			return $this->event_prefix . $event_name;
+		}
+		return $this->get_list_id() . '_tasklist_' . $event_name;
 	}
 
 	/**
