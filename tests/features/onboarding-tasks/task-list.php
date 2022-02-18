@@ -1,23 +1,22 @@
 <?php
 /**
- * Test the TaskList class.
+ * Test the TestTaskList class.
  *
  * @package WooCommerce\Admin\Tests\OnboardingTasks
  */
 
-use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskList;
-
 require_once __DIR__ . '/test-task.php';
+require_once __DIR__ . '/test-task-list.php';
 
 /**
- * class WC_Tests_OnboardingTasks_TaskList
+ * class WC_Tests_OnboardingTasks_TestTaskList
  */
 class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 
 	/**
 	 * Task list.
 	 *
-	 * @var TaskList|null
+	 * @var TestTaskList|null
 	 */
 	protected $list = null;
 
@@ -27,37 +26,25 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	public function setUp() {
 		parent::setUp();
 
-		$this->list = new TaskList(
-			array(
-				'id' => 'setup',
-			)
-		);
+		$this->list = new TestTaskList();
 	}
 
 	/**
 	 * Tests that tracks events are correctly prefixed on the core list.
 	 */
 	public function test_setup_event_prefixing() {
-		$list = new TaskList(
-			array(
-				'id' => 'setup',
-			)
-		);
+		$list = new TestTaskList( array() );
 
-		$this->assertEquals( 'tasklist_event', $list->prefix_event( 'event' ) );
+		$this->assertEquals( 'setup_tasklist_event', $list->prefix_event( 'event' ) );
 	}
 
 	/**
 	 * Tests that tracks events are correctly prefixed on the other lists.
 	 */
 	public function test_event_prefixing() {
-		$list = new TaskList(
-			array(
-				'id' => 'my_list',
-			)
-		);
+		$list = new TestExtendedTaskList();
 
-		$this->assertEquals( 'my_list_tasklist_event', $list->prefix_event( 'event' ) );
+		$this->assertEquals( 'extended_tasklist_event', $list->prefix_event( 'event' ) );
 	}
 
 	/**
@@ -90,6 +77,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	public function test_add_task() {
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array( 'id' => 'my-task' )
 			)
 		);
@@ -102,6 +90,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	public function test_get_viewable_tasks() {
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'       => 'viewable-task',
 					'can_view' => true,
@@ -110,6 +99,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'       => 'not-viewable-task',
 					'can_view' => false,
@@ -128,6 +118,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	public function test_incomplete() {
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'complete-task',
 					'is_complete' => true,
@@ -136,6 +127,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'incomplete-task',
 					'is_complete' => false,
@@ -151,6 +143,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	public function test_complete() {
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'complete-task1',
 					'is_complete' => true,
@@ -159,6 +152,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'complete-task-2',
 					'is_complete' => true,
@@ -174,6 +168,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	public function test_previous_completion() {
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'complete-task1',
 					'is_complete' => true,
@@ -182,6 +177,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'complete-task2',
 					'is_complete' => true,
@@ -199,6 +195,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	public function test_get_json() {
 		$this->list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'my-task',
 					'is_complete' => true,
@@ -218,11 +215,12 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	/**
 	 * Adds a couple tasks to the provided list.
 	 *
-	 * @param TaskList $list list to add tasks to.
+	 * @param TestTaskList $list list to add tasks to.
 	 */
 	public function add_test_tasks( $list ) {
 		$list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'task-1',
 					'can_view'    => true,
@@ -233,6 +231,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'task-2',
 					'can_view'    => true,
@@ -242,6 +241,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'task-3',
 					'can_view'    => true,
@@ -252,6 +252,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 		);
 		$list->add_task(
 			new TestTask(
+				new TestTaskList(),
 				array(
 					'id'          => 'task-4',
 					'can_view'    => true,
@@ -276,7 +277,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	 * Test task list sort_tasks with sort_by config for is_complete.
 	 */
 	public function test_sort_tasks_with_sort_by() {
-		$list = new TaskList(
+		$list = new TestTaskList(
 			array(
 				'id'      => 'setup',
 				'sort_by' => array(
@@ -297,7 +298,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	 * Test task list sort_tasks with sort_by config for is_complete and level.
 	 */
 	public function test_sort_tasks_with_sort_by_multiple_items() {
-		$list = new TaskList(
+		$list = new TestTaskList(
 			array(
 				'id'      => 'setup',
 				'sort_by' => array(
@@ -322,7 +323,7 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	 * Test task list sort_tasks with custom config.
 	 */
 	public function test_sort_tasks_with_passed_in_sort_by_config() {
-		$list = new TaskList(
+		$list = new TestTaskList(
 			array(
 				'id'      => 'setup',
 				'sort_by' => array(
@@ -361,6 +362,6 @@ class WC_Tests_OnboardingTasks_TaskList extends WC_Unit_Test_Case {
 	 * Test that tracks events are recorded with the correct IDs.
 	 */
 	public function test_record_tracks_event() {
-		$this->assertEquals( 'tasklist_test_event', $this->list->record_tracks_event( 'test_event' ) );
+		$this->assertEquals( 'setup_tasklist_test_event', $this->list->record_tracks_event( 'test_event' ) );
 	}
 }

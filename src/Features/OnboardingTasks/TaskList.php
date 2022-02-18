@@ -119,7 +119,7 @@ class TaskList {
 		);
 
 		$hidden   = get_option( self::HIDDEN_OPTION, array() );
-		$hidden[] = $this->id;
+		$hidden[] = $this->get_list_id();
 		return update_option( self::HIDDEN_OPTION, array_unique( $hidden ) );
 	}
 
@@ -130,7 +130,7 @@ class TaskList {
 	 */
 	public function unhide() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
-		$hidden = array_diff( $hidden, array( $this->id ) );
+		$hidden = array_diff( $hidden, array( $this->get_list_id() ) );
 		return update_option( self::HIDDEN_OPTION, $hidden );
 	}
 
@@ -226,7 +226,7 @@ class TaskList {
 		}
 
 		$completed_lists   = get_option( self::COMPLETED_OPTION, array() );
-		$completed_lists[] = $this::$id;
+		$completed_lists[] = $this->get_list_id();
 		update_option( self::COMPLETED_OPTION, $completed_lists );
 		$this->record_tracks_event( 'tasks_completed' );
 	}
