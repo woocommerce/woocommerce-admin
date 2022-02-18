@@ -130,7 +130,9 @@ const webpackConfig = {
 	},
 	plugins: [
 		...styleConfig.plugins,
-		new ForkTsCheckerWebpackPlugin(),
+		new ForkTsCheckerWebpackPlugin( {
+			typescript: { configFile: './client/tsconfig.json' },
+		} ),
 		new CustomTemplatedPathPlugin( {
 			modulename( outputPath, data ) {
 				const entryName = get( data, [ 'chunk', 'name' ] );
