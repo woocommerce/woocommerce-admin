@@ -1,5 +1,5 @@
 name: E2E tests
-on: [pull_request]
+on: [push]
 
 jobs:
     e2e-tests:
@@ -30,9 +30,12 @@ jobs:
                   E2E_SLACK_TOKEN: ${{ secrets.E2E_SLACK_TOKEN }}
                   WP_VERSION: '5.8.0'
               run: |
+                  rm -rf node_modules packages/**/node_modules
                   npm i
                   composer require wp-cli/i18n-command
                   npm run build
+                  npx wc-e2e docker:down
+                  npx wc-e2e docker:clear-all
                   npx wc-e2e docker:up
                   sleep 10
                   npx wc-e2e test:e2e
