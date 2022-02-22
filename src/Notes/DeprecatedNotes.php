@@ -612,7 +612,7 @@ class WC_Admin_Notes_Woo_Subscriptions_Notes extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\WooSubscriptionsNotes';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\WooSubscriptionsNotes';
 
 	/**
 	 * The version that this class was deprecated in.
