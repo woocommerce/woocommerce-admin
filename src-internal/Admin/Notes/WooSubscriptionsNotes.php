@@ -5,7 +5,9 @@
  * Adds notes to the merchant's inbox concerning WooCommerce.com extension subscriptions.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
+
+use \Automattic\WooCommerce\Admin\Notes\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
