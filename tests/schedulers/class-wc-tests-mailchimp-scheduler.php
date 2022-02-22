@@ -99,7 +99,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 		// When.
 		update_option(
 			MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME,
-			MailchimpScheduler::MAX_ERROR_THRESHOLD,
+			MailchimpScheduler::MAX_ERROR_THRESHOLD
 		);
 
 		// Then.
