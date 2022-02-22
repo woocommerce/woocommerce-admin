@@ -129,11 +129,12 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 							->with( 'Error getting a response from Mailchimp API.', array( 'source' => MailchimpScheduler::LOGGER_CONTEXT ) );
 
 		$this->instance->run();
+		$this->assertEquals( 1, get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME ) );
 
 		// Check for the missing 'body'.
 		$this->instance->method( 'make_request' )->willReturn( array() );
 		$this->instance->run();
-		$this->assertEquals( 1, get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME ) );
+		$this->assertEquals( 2, get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME ) );
 	}
 
 
