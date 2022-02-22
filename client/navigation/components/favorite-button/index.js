@@ -46,7 +46,7 @@ export const FavoriteButton = ( { id } ) => {
 		<Button
 			id="woocommerce-navigation-favorite-button"
 			className="woocommerce-navigation-favorite-button"
-			isTertiary
+			variant="tertiary"
 			onClick={ toggleFavorite }
 			aria-label={
 				isFavorited

@@ -150,7 +150,7 @@ const PaymentRecommendations: React.FC = () => {
 				content: decodeEntities( plugin.content ),
 				after: (
 					<Button
-						isSecondary
+						variant="secondary"
 						onClick={ () => setupPlugin( plugin ) }
 						isBusy={ installingPlugin === plugin.id }
 						disabled={ !! installingPlugin }
@@ -210,7 +210,11 @@ const PaymentRecommendations: React.FC = () => {
 			</CardHeader>
 			<List items={ pluginsList } />
 			<CardFooter>
-				<Button href={ SEE_MORE_LINK } target="_blank" isTertiary>
+				<Button
+					href={ SEE_MORE_LINK }
+					target="_blank"
+					variant="tertiary"
+				>
 					{ __( 'See more options', 'woocommerce-admin' ) }
 					<ExternalIcon size={ 18 } />
 				</Button>

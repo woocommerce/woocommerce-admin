@@ -75,7 +75,7 @@ export const Banner = ( { onInstall, onDismiss } ) => {
 
 			<Button
 				href={ PLAY_STORE_LINK }
-				isSecondary
+				variant="secondary"
 				onClick={ () => {
 					onInstall();
 					setIsActioned( true );

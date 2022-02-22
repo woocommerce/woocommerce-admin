@@ -126,14 +126,18 @@ function ExitSurveyModal( {
 
 			<div className="wc-calypso-bridge-payments-welcome-survey__buttons">
 				<Button
-					isTertiary
+					variant="tertiary"
 					isDestructive
 					onClick={ removeWCPayMenu }
 					name="cancel"
 				>
 					{ strings.surveyCancelButton }
 				</Button>
-				<Button isSecondary onClick={ sendFeedback } name="send">
+				<Button
+					variant="secondary"
+					onClick={ sendFeedback }
+					name="send"
+				>
 					{ strings.surveySubmitButton }
 				</Button>
 			</div>

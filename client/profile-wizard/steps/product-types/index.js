@@ -280,7 +280,7 @@ export class ProductTypes extends Component {
 					</CardBody>
 					<CardFooter isBorderless justify="center">
 						<Button
-							isPrimary
+							variant="primary"
 							onClick={ () => {
 								this.onContinue( this.props.goToNextStep );
 							} }

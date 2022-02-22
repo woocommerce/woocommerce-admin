@@ -23,8 +23,7 @@ const MarketingHeader = ( { task, goToTask } ) => {
 					) }
 				</p>
 				<Button
-					isSecondary={ task.isComplete }
-					isPrimary={ ! task.isComplete }
+					variant={ task.isComplete ? 'primary' : 'secondary' }
 					onClick={ goToTask }
 				>
 					{ __( 'Add selling tools', 'woocommerce-admin' ) }

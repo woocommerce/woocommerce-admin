@@ -32,7 +32,7 @@ const CompareButton = ( {
 				<Button
 					className="woocommerce-compare-button"
 					disabled={ true }
-					isSecondary
+					variant="secondary"
 				>
 					{ children }
 				</Button>
@@ -43,7 +43,7 @@ const CompareButton = ( {
 			className={ classnames( 'woocommerce-compare-button', className ) }
 			onClick={ onClick }
 			disabled={ disabled }
-			isSecondary
+			variant="secondary"
 		>
 			{ children }
 		</Button>

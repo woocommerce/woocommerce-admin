@@ -70,7 +70,7 @@ export const Basic = () => (
 					{ ...getInputProps( 'radio' ) }
 				/>
 				<Button
-					isPrimary
+					variant="primary"
 					onClick={ handleSubmit }
 					disabled={ Object.keys( errors ).length }
 				>

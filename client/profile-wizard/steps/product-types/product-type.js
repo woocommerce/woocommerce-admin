@@ -33,7 +33,7 @@ export default function ProductType( {
 		<div className="woocommerce-product-type">
 			<span className="woocommerce-product-type__label">{ label }</span>
 			<Button
-				isTertiary
+				variant="tertiary"
 				label={ __(
 					'Learn more about recommended free business features',
 					'woocommerce-admin'

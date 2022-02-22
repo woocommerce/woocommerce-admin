@@ -597,7 +597,7 @@ class BusinessDetails extends Component {
 								</CardFooter>
 								<CardFooter justify="center">
 									<Button
-										isPrimary
+										variant="primary"
 										onClick={ async () => {
 											await handleSubmit();
 											this.persistProfileItems();

@@ -265,7 +265,7 @@ class Industry extends Component {
 					</CardBody>
 					<CardFooter isBorderless justify="center">
 						<Button
-							isPrimary
+							variant="primary"
 							onClick={ () => {
 								this.onContinue().then(
 									this.props.goToNextStep

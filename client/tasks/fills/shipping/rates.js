@@ -340,7 +340,7 @@ class ShippingRates extends Component {
 								) ) }
 							</div>
 
-							<Button isPrimary onClick={ handleSubmit }>
+							<Button variant="primary" onClick={ handleSubmit }>
 								{ buttonText ||
 									__( 'Update', 'woocommerce-admin' ) }
 							</Button>

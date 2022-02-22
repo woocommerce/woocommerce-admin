@@ -200,7 +200,7 @@ export class SearchListControl extends Component {
 					<strong>{ messages.selected( selectedCount ) }</strong>
 					{ selectedCount > 0 ? (
 						<Button
-							isLink
+							variant="link"
 							isDestructive
 							onClick={ this.onClear }
 							aria-label={ messages.clear }

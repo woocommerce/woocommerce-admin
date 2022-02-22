@@ -125,7 +125,7 @@ export const Configure = ( { markConfigured, paymentGateway } ) => {
 			<>
 				{ helpText }
 				<Button
-					isPrimary
+					variant="primary"
 					onClick={ () =>
 						recordEvent( 'tasklist_payment_connect_start', {
 							payment_method: id,
@@ -158,7 +158,7 @@ export const Configure = ( { markConfigured, paymentGateway } ) => {
 					) }
 				</p>
 			) }
-			<Button isPrimary href={ settingsUrl }>
+			<Button variant="primary" href={ settingsUrl }>
 				{ __( 'Set up', 'woocommerce-admin' ) }
 			</Button>
 		</>

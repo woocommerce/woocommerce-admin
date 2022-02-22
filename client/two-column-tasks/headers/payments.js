@@ -23,8 +23,7 @@ const PaymentsHeader = ( { task, goToTask } ) => {
 					) }
 				</p>
 				<Button
-					isSecondary={ task.isComplete }
-					isPrimary={ ! task.isComplete }
+					variant={ task.isComplete ? 'primary' : 'secondary' }
 					onClick={ goToTask }
 				>
 					{ __( 'Set up payments', 'woocommerce-admin' ) }

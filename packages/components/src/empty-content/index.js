@@ -53,7 +53,7 @@ class EmptyContent extends Component {
 			return (
 				<Button
 					className="woocommerce-empty-content__action"
-					isPrimary={ isPrimary }
+					variant={ isPrimary ? 'primary' : 'secondary' }
 					onClick={ actionCallback }
 					href={ actionURL }
 				>
@@ -64,7 +64,7 @@ class EmptyContent extends Component {
 			return (
 				<Button
 					className="woocommerce-empty-content__action"
-					isPrimary={ isPrimary }
+					variant={ isPrimary ? 'primary' : 'secondary' }
 					href={ actionURL }
 				>
 					{ actionLabel }
@@ -74,7 +74,7 @@ class EmptyContent extends Component {
 			return (
 				<Button
 					className="woocommerce-empty-content__action"
-					isPrimary={ isPrimary }
+					variant={ isPrimary ? 'primary' : 'secondary' }
 					onClick={ actionCallback }
 				>
 					{ actionLabel }

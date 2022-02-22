@@ -143,7 +143,7 @@ class CartModal extends Component {
 
 				<div className="woocommerce-cart-modal__actions">
 					<Button
-						isLink
+						variant="link"
 						isBusy={ purchaseLaterButtonBusy }
 						onClick={ () => this.onClickPurchaseLater() }
 					>
@@ -151,7 +151,7 @@ class CartModal extends Component {
 					</Button>
 
 					<Button
-						isPrimary
+						variant="primary"
 						isBusy={ purchaseNowButtonBusy }
 						onClick={ () => this.onClickPurchaseNow() }
 					>

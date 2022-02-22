@@ -20,8 +20,7 @@ const TaxHeader = ( { task, goToTask } ) => {
 				</h1>
 				<p>{ task.content }</p>
 				<Button
-					isSecondary={ task.isComplete }
-					isPrimary={ ! task.isComplete }
+					variant={ task.isComplete ? 'primary' : 'secondary' }
 					onClick={ goToTask }
 				>
 					{ task.actionLabel }

@@ -93,7 +93,7 @@ class InstalledExtensionRow extends Component {
 
 		return (
 			<Button
-				isSecondary
+				variant="secondary"
 				onClick={ this.onActivateClick }
 				disabled={ isLoading }
 			>
@@ -105,7 +105,7 @@ class InstalledExtensionRow extends Component {
 	getFinishSetupButton() {
 		return (
 			<Button
-				isSecondary
+				variant="secondary"
 				href={ this.props.settingsUrl }
 				onClick={ this.onFinishSetupClick }
 			>

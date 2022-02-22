@@ -384,7 +384,7 @@ export const SelectiveExtensionsBundle = ( {
 						} }
 						isBusy={ isInstallingActivating || isResolving }
 						disabled={ isInstallingActivating || isResolving }
-						isPrimary
+						variant="primary"
 					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>

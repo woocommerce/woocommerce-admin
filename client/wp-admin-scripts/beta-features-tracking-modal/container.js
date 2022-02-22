@@ -91,7 +91,7 @@ const BetaFeaturesTrackingModal = ( { updateOptions } ) => {
 			</div>
 			<div className="woocommerce-beta-features-tracking-modal__actions">
 				<Button
-					isPrimary
+					variant="primary"
 					onClick={ async () => {
 						if ( isChecked ) {
 							await setTracking( true );

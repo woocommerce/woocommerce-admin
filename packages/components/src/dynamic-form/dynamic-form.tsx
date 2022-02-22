@@ -106,7 +106,7 @@ export const DynamicForm: React.FC< DynamicFormProps > = ( {
 						} ) }
 
 						<Button
-							isPrimary
+							variant="primary"
 							isBusy={ isBusy }
 							onClick={ () => {
 								handleSubmit();

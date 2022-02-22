@@ -143,11 +143,11 @@ const Settings = ( { createNotice, query } ) => {
 					/>
 				) ) }
 				<div className="woocommerce-settings__actions">
-					<Button isSecondary onClick={ resetDefaults }>
+					<Button variant="secondary" onClick={ resetDefaults }>
 						{ __( 'Reset defaults', 'woocommerce-admin' ) }
 					</Button>
 					<Button
-						isPrimary
+						variant="primary"
 						isBusy={ isRequesting }
 						onClick={ saveChanges }
 					>

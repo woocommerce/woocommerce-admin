@@ -98,7 +98,7 @@ const StoreLocation = ( {
 						getInputProps={ getInputProps }
 						setValue={ setValue }
 					/>
-					<Button isPrimary onClick={ handleSubmit }>
+					<Button variant="primary" onClick={ handleSubmit }>
 						{ __( 'Continue', 'woocommerce-admin' ) }
 					</Button>
 				</Fragment>

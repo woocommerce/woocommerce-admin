@@ -244,7 +244,7 @@ class ReviewsPanel extends Component {
 		const cardActions = [
 			<Button
 				key="approve-action"
-				isSecondary
+				variant="secondary"
 				onClick={ () => {
 					this.recordReviewEvent( 'approve', manageReviewEvent );
 					this.updateReviewStatus(
@@ -258,7 +258,7 @@ class ReviewsPanel extends Component {
 			</Button>,
 			<Button
 				key="spam-action"
-				isTertiary
+				variant="tertiary"
 				onClick={ () => {
 					this.recordReviewEvent( 'mark_as_spam', manageReviewEvent );
 					this.updateReviewStatus( review.id, 'spam', review.status );
@@ -269,7 +269,7 @@ class ReviewsPanel extends Component {
 			<Button
 				key="delete-action"
 				isDestructive
-				isTertiary
+				variant="tertiary"
 				onClick={ () => {
 					this.recordReviewEvent( 'delete', manageReviewEvent );
 					this.deleteReview( review.id );

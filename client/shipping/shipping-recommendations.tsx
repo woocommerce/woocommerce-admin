@@ -84,7 +84,7 @@ const ShippingRecommendationsList: React.FC = ( { children } ) => (
 				className="woocommerce-recommended-shipping-extensions__more_options_cta"
 				href="https://woocommerce.com/product-category/woocommerce-extensions/shipping-methods/?utm_source=shipping_recommendations"
 				target="_blank"
-				isTertiary
+				variant="tertiary"
 			>
 				{ __( 'See more options', 'woocommerce-admin' ) }
 				<VisuallyHidden>

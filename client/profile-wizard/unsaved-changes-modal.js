@@ -27,7 +27,7 @@ const UnsavedChangesModal = ( { onClose, onSave } ) => {
 						<Button onClick={ () => onClose() }>
 							{ discardText }
 						</Button>
-						<Button isPrimary onClick={ onSave }>
+						<Button variant="primary" onClick={ onSave }>
 							{ saveText }
 						</Button>
 					</div>

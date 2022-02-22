@@ -73,8 +73,7 @@ const WoocommercePaymentsHeader = ( { task, trackClick } ) => {
 					} ) }
 				</p>
 				<Button
-					isSecondary={ task.isComplete }
-					isPrimary={ ! task.isComplete }
+					variant={ task.isComplete ? 'primary' : 'secondary' }
 					isBusy={ isBusy }
 					disabled={ isBusy }
 					onClick={ onClick }

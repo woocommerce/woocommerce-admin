@@ -71,7 +71,7 @@ export class Connect extends Component {
 			<Fragment>
 				{ hasErrors ? (
 					<Button
-						isPrimary
+						variant="primary"
 						onClick={ () => window.location.reload() }
 					>
 						{ __( 'Retry', 'woocommerce-admin' ) }
@@ -80,7 +80,7 @@ export class Connect extends Component {
 					<Button
 						disabled={ isRequesting }
 						isBusy={ this.state.isConnecting }
-						isPrimary
+						variant="primary"
 						onClick={ this.connectJetpack }
 					>
 						{ __( 'Connect', 'woocommerce-admin' ) }

@@ -35,7 +35,7 @@ export default function ProductTypeLabel( {
 				{ label }
 			</span>
 			<Button
-				isTertiary
+				variant="tertiary"
 				label={ __(
 					'Learn more about recommended free business features',
 					'woocommerce-admin'

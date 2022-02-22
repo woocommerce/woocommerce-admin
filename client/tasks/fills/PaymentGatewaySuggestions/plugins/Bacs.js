@@ -153,7 +153,7 @@ const BacsPaymentGatewaySetup = () => {
 											/>
 										</div>
 										<Button
-											isPrimary
+											variant="primary"
 											isBusy={ isUpdating }
 											onClick={ handleSubmit }
 										>

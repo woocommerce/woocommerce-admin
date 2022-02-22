@@ -23,8 +23,7 @@ const AppearanceHeader = ( { task, goToTask } ) => {
 					) }
 				</p>
 				<Button
-					isSecondary={ task.isComplete }
-					isPrimary={ ! task.isComplete }
+					variant={ task.isComplete ? 'primary' : 'secondary' }
 					onClick={ goToTask }
 				>
 					{ task.isComplete

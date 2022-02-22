@@ -184,7 +184,7 @@ export default function ProductTemplateModal( { onClose } ) {
 				</div>
 				<div className="woocommerce-product-template-modal__actions">
 					<Button
-						isPrimary
+						variant="primary"
 						isBusy={ isRedirecting }
 						disabled={ ! selectedTemplate || isRedirecting }
 						onClick={ createTemplate }

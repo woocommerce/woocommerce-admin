@@ -24,7 +24,7 @@ const initialValues = { firstName: '' };
 				{ ...getInputProps( 'firstName' ) }
 			/>
 			<Button
-				isPrimary
+				variant="primary"
 				onClick={ handleSubmit }
 				disabled={ Object.keys( errors ).length }
 			>

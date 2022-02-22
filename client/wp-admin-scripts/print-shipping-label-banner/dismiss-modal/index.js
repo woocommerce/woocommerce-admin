@@ -62,10 +62,16 @@ export class DismissModal extends Component {
 					) }
 				</p>
 				<div className="wc-admin-shipping-banner__dismiss-modal-actions">
-					<Button isSecondary onClick={ this.remindMeLaterClicked }>
+					<Button
+						variant="secondary"
+						onClick={ this.remindMeLaterClicked }
+					>
 						{ __( 'Remind me later', 'woocommerce-admin' ) }
 					</Button>
-					<Button isPrimary onClick={ this.closeForeverClicked }>
+					<Button
+						variant="primary"
+						onClick={ this.closeForeverClicked }
+					>
 						{ __( "I don't need this", 'woocommerce-admin' ) }
 					</Button>
 				</div>

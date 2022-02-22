@@ -223,7 +223,7 @@ class Theme extends Component {
 				<CardFooter>
 					{ slug === activeTheme ? (
 						<Button
-							isPrimary
+							variant="primary"
 							onClick={ () => this.onChoose( theme, 'card' ) }
 							isBusy={ chosen === slug }
 							disabled={ chosen === slug }
@@ -235,7 +235,7 @@ class Theme extends Component {
 						</Button>
 					) : (
 						<Button
-							isSecondary
+							variant="secondary"
 							onClick={ () => this.onChoose( theme, 'card' ) }
 							isBusy={ chosen === slug }
 							disabled={ chosen === slug }
@@ -245,7 +245,7 @@ class Theme extends Component {
 					) }
 					{ demoUrl && (
 						<Button
-							isTertiary
+							variant="tertiary"
 							onClick={ () => this.openDemo( theme ) }
 						>
 							{ __( 'Live demo', 'woocommerce-admin' ) }
@@ -406,7 +406,7 @@ class Theme extends Component {
 				{ activeThemeSupportsWooCommerce && (
 					<p className="woocommerce-profile-wizard__themes-skip-this-step">
 						<Button
-							isLink
+							variant="link"
 							className="woocommerce-profile-wizard__skip"
 							onClick={ () => this.skipStep() }
 						>

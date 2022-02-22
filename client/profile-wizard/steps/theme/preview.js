@@ -104,7 +104,7 @@ class ThemePreview extends Component {
 						} ) }
 					</div>
 					<Button
-						isPrimary
+						variant="primary"
 						onClick={ () => onChoose( slug, 'preview' ) }
 						isBusy={ isBusy }
 					>

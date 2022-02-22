@@ -78,7 +78,7 @@ const WooCommerceServicesItem: React.FC< {
 			</div>
 			<div className="woocommerce-list__item-after">
 				<Button
-					isSecondary
+					variant="secondary"
 					onClick={ handleSetupClick }
 					isBusy={ pluginsBeingSetup.includes(
 						'woocommerce-services'

@@ -87,7 +87,7 @@ export class Plugins extends Component {
 			return (
 				<Fragment>
 					<Button
-						isPrimary
+						variant="primary"
 						isBusy={ isRequesting }
 						onClick={ this.installAndActivate }
 					>
@@ -111,7 +111,7 @@ export class Plugins extends Component {
 			return (
 				<Fragment>
 					<Button
-						isPrimary
+						variant="primary"
 						isBusy={ isRequesting }
 						onClick={ this.skipInstaller }
 					>
@@ -125,16 +125,16 @@ export class Plugins extends Component {
 			<Fragment>
 				<Button
 					isBusy={ isRequesting }
-					isPrimary
+					variant="primary"
 					onClick={ this.installAndActivate }
 				>
 					{ __( 'Install & enable', 'woocommerce-admin' ) }
 				</Button>
-				<Button isTertiary onClick={ this.skipInstaller }>
+				<Button variant="tertiary" onClick={ this.skipInstaller }>
 					{ skipText || __( 'No thanks', 'woocommerce-admin' ) }
 				</Button>
 				{ onAbort && (
-					<Button isTertiary onClick={ onAbort }>
+					<Button variant="tertiary" onClick={ onAbort }>
 						{ abortText || __( 'Abort', 'woocommerce-admin' ) }
 					</Button>
 				) }

@@ -143,7 +143,7 @@ class DatePickerContent extends Component {
 										{ selected.name === 'custom' && (
 											<Button
 												className="woocommerce-filters-date__button"
-												isSecondary
+												variant="secondary"
 												onClick={ resetCustomValues }
 												disabled={
 													! ( after || before )
@@ -162,7 +162,7 @@ class DatePickerContent extends Component {
 													selected.name,
 													onClose
 												) }
-												isPrimary
+												variant="primary"
 											>
 												{ __(
 													'Update',
@@ -172,7 +172,7 @@ class DatePickerContent extends Component {
 										) : (
 											<Button
 												className="woocommerce-filters-date__button"
-												isPrimary
+												variant="primary"
 												disabled
 											>
 												{ __(

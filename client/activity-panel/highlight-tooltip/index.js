@@ -165,7 +165,7 @@ function HighlightTooltip( {
 							<CardFooter isBorderless={ true }>
 								<Button
 									size="small"
-									isPrimary
+									variant="primary"
 									onClick={ triggerClose }
 								>
 									{ closeButtonText ||

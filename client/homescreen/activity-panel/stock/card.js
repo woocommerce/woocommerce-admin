@@ -133,7 +133,7 @@ export class ProductStockCard extends Component {
 
 		if ( editing ) {
 			return [
-				<Button key="save" type="submit" isPrimary>
+				<Button key="save" type="submit" variant="primary">
 					{ __( 'Save', 'woocommerce-admin' ) }
 				</Button>,
 				<Button key="cancel" type="reset">
@@ -143,7 +143,7 @@ export class ProductStockCard extends Component {
 		}
 
 		return [
-			<Button key="update" isSecondary onClick={ this.beginEdit }>
+			<Button key="update" variant="secondary" onClick={ this.beginEdit }>
 				{ __( 'Update stock', 'woocommerce-admin' ) }
 			</Button>,
 		];

@@ -37,7 +37,7 @@ export const Partners: React.FC< TaxChildProps > = ( {
 				<ul className="woocommerce-tax-partners__other-actions">
 					<li>
 						<Button
-							isTertiary
+							variant="tertiary"
 							disabled={ isPending }
 							isBusy={ isPending }
 							onClick={ () => {
@@ -52,7 +52,7 @@ export const Partners: React.FC< TaxChildProps > = ( {
 					</li>
 					<li>
 						<Button
-							isTertiary
+							variant="tertiary"
 							disabled={ isPending }
 							isBusy={ isPending }
 							onClick={ () => {

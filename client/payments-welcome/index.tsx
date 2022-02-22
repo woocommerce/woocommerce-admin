@@ -173,7 +173,7 @@ const ConnectPageOnboarding = ( {
 				</div>
 				<div className="connect-account__action">
 					<Button
-						isSecondary
+						variant="secondary"
 						isBusy={ isNoThanksClicked && isExitSurveyModalOpen }
 						disabled={ isNoThanksClicked && isExitSurveyModalOpen }
 						onClick={ handleNoThanks }
@@ -182,7 +182,7 @@ const ConnectPageOnboarding = ( {
 						{ strings.nothanks }
 					</Button>
 					<Button
-						isPrimary
+						variant="primary"
 						isBusy={ isSubmitted }
 						disabled={ isSubmitted }
 						onClick={ handleSetup }

@@ -62,7 +62,7 @@ export const Action = ( {
 	const ManageButton = () => (
 		<Button
 			className={ classes }
-			isSecondary
+			variant="secondary"
 			role="button"
 			href={ manageUrl }
 			onClick={ () => recordEvent( 'tasklist_payment_manage', { id } ) }
@@ -74,8 +74,7 @@ export const Action = ( {
 	const SetupButton = () => (
 		<Button
 			className={ classes }
-			isPrimary={ isRecommended }
-			isSecondary={ ! isRecommended }
+			variant={ isRecommended ? 'primary' : 'secondary' }
 			isBusy={ isBusy }
 			disabled={ isBusy }
 			onClick={ () => handleClick() }
@@ -89,7 +88,7 @@ export const Action = ( {
 			return (
 				<Button
 					className={ classes }
-					isSecondary
+					variant="secondary"
 					onClick={ () => markConfigured( id ) }
 				>
 					{ __( 'Enable', 'woocommerce-admin' ) }
@@ -117,8 +116,7 @@ export const Action = ( {
 		return (
 			<Button
 				className={ classes }
-				isPrimary={ isRecommended }
-				isSecondary={ ! isRecommended }
+				variant={ isRecommended ? 'primary' : 'secondary' }
 				isBusy={ isBusy }
 				disabled={ isBusy }
 				onClick={ () => handleClick() }

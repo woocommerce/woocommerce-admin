@@ -43,7 +43,7 @@ export const AutomatedTaxes: React.FC< SetupStepProps > = ( {
 				} ) }
 			</p>
 			<Button
-				isPrimary
+				variant="primary"
 				isBusy={ isPending }
 				onClick={ () => {
 					recordEvent( 'tasklist_tax_setup_automated_proceed', {
@@ -56,7 +56,7 @@ export const AutomatedTaxes: React.FC< SetupStepProps > = ( {
 			</Button>
 			<Button
 				disabled={ isPending }
-				isTertiary
+				variant="tertiary"
 				onClick={ () => {
 					recordEvent( 'tasklist_tax_setup_automated_proceed', {
 						setup_automatically: false,
@@ -66,7 +66,11 @@ export const AutomatedTaxes: React.FC< SetupStepProps > = ( {
 			>
 				{ __( "No thanks, I'll set up manually", 'woocommerce-admin' ) }
 			</Button>
-			<Button disabled={ isPending } isTertiary onClick={ onDisable }>
+			<Button
+				disabled={ isPending }
+				variant="tertiary"
+				onClick={ onDisable }
+			>
 				{ __( "I don't charge sales tax", 'woocommerce-admin' ) }
 			</Button>
 		</div>

@@ -54,7 +54,7 @@ export const JetpackCTA = ( {
 			</div>
 			<footer>
 				<Button
-					isSecondary
+					variant="secondary"
 					onClick={ () => {
 						recordEvent( 'statsoverview_install_jetpack' );
 						onClickInstall();
@@ -65,7 +65,7 @@ export const JetpackCTA = ( {
 					{ getJetpackInstallText( jetpackInstallState ) }
 				</Button>
 				<Button
-					isTertiary
+					variant="tertiary"
 					onClick={ () => {
 						recordEvent( 'statsoverview_dismiss_install_jetpack' );
 						onClickDismiss();

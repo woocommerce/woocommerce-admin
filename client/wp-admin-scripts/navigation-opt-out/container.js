@@ -38,7 +38,7 @@ export class NavigationOptOutContainer extends Component {
 
 				<div className="woocommerce-navigation-opt-out-modal__actions">
 					<Button
-						isDefault
+						variant="secondary"
 						onClick={ () =>
 							this.setState( { isModalOpen: false } )
 						}
@@ -47,7 +47,7 @@ export class NavigationOptOutContainer extends Component {
 					</Button>
 
 					<Button
-						isPrimary
+						variant="primary"
 						target="_blank"
 						href={ window.surveyData.url }
 						onClick={ () =>

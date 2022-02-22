@@ -363,7 +363,7 @@ class AdvancedFilters extends Component {
 				<CardFooter align="center">
 					<div className="woocommerce-filters-advanced__controls">
 						{ updateDisabled && (
-							<Button isPrimary disabled>
+							<Button variant="primary" disabled>
 								{ __( 'Filter', 'woocommerce-admin' ) }
 							</Button>
 						) }

@@ -147,7 +147,7 @@ class UsageModal extends Component {
 					</div>
 					<div className="woocommerce-usage-modal__actions">
 						<Button
-							isSecondary
+							variant="secondary"
 							isBusy={ isBusy }
 							onClick={ () =>
 								this.updateTracking( { allowTracking: false } )
@@ -156,7 +156,7 @@ class UsageModal extends Component {
 							{ dismissActionText }
 						</Button>
 						<Button
-							isPrimary
+							variant="primary"
 							isBusy={ isBusy }
 							onClick={ () =>
 								this.updateTracking( { allowTracking: true } )

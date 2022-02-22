@@ -28,8 +28,7 @@ const ShippingHeader = ( { task, goToTask } ) => {
 					) }
 				</p>
 				<Button
-					isSecondary={ task.isComplete }
-					isPrimary={ ! task.isComplete }
+					variant={ task.isComplete ? 'primary' : 'secondary' }
 					onClick={ goToTask }
 				>
 					{ __( 'Add shipping zones', 'woocommerce-admin' ) }

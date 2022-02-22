@@ -22,8 +22,7 @@ const ProductsHeader = ( { task, goToTask } ) => {
 					) }
 				</p>
 				<Button
-					isSecondary={ task.isComplete }
-					isPrimary={ ! task.isComplete }
+					variant={ task.isComplete ? 'primary' : 'secondary' }
 					onClick={ goToTask }
 				>
 					{ __( 'Add products', 'woocommerce-admin' ) }

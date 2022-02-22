@@ -103,7 +103,7 @@ function HistoricalDataActions( {
 				<Fragment>
 					<Button
 						className="woocommerce-settings-historical-data__action-button"
-						isPrimary
+						variant="primary"
 						onClick={ onStopImport }
 					>
 						{ __( 'Stop Import', 'woocommerce-admin' ) }
@@ -128,13 +128,16 @@ function HistoricalDataActions( {
 				return (
 					<Fragment>
 						<Button
-							isPrimary
+							variant="primary"
 							onClick={ onStartImport }
 							disabled={ importDisabled }
 						>
 							{ __( 'Start', 'woocommerce-admin' ) }
 						</Button>
-						<Button isSecondary onClick={ deletePreviousData }>
+						<Button
+							variant="secondary"
+							onClick={ deletePreviousData }
+						>
 							{ __(
 								'Delete Previously Imported Data',
 								'woocommerce-admin'
@@ -147,7 +150,7 @@ function HistoricalDataActions( {
 			return (
 				<Fragment>
 					<Button
-						isPrimary
+						variant="primary"
 						onClick={ onStartImport }
 						disabled={ importDisabled }
 					>
@@ -170,10 +173,10 @@ function HistoricalDataActions( {
 		// Has imported all possible data
 		return (
 			<Fragment>
-				<Button isSecondary onClick={ reimportData }>
+				<Button variant="secondary" onClick={ reimportData }>
 					{ __( 'Re-import Data', 'woocommerce-admin' ) }
 				</Button>
-				<Button isSecondary onClick={ deletePreviousData }>
+				<Button variant="secondary" onClick={ deletePreviousData }>
 					{ __(
 						'Delete Previously Imported Data',
 						'woocommerce-admin'

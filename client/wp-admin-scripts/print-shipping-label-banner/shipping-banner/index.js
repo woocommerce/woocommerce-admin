@@ -441,7 +441,7 @@ export class ShippingBanner extends Component {
 					</div>
 					<Button
 						disabled={ isShippingLabelButtonBusy }
-						isPrimary
+						variant="primary"
 						isBusy={ isShippingLabelButtonBusy }
 						onClick={ this.createShippingLabelClicked }
 					>

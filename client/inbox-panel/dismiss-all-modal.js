@@ -66,7 +66,7 @@ const DismissAllModal = ( { onClose } ) => {
 							{ __( 'Cancel', 'woocommerce-admin' ) }
 						</Button>
 						<Button
-							isPrimary
+							variant="primary"
 							onClick={ () => {
 								dismissAllNotes();
 								onClose();

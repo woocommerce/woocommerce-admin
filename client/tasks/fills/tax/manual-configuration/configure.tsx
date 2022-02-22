@@ -31,7 +31,7 @@ export const Configure: React.FC< TaxChildProps > = ( {
 	return (
 		<>
 			<Button
-				isPrimary
+				variant="primary"
 				disabled={ isPending }
 				isBusy={ isPending }
 				onClick={ () => {

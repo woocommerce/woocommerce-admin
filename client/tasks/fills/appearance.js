@@ -272,7 +272,7 @@ class Appearance extends Component {
 						<Button
 							onClick={ this.importProducts }
 							isBusy={ isPending }
-							isPrimary
+							variant="primary"
 						>
 							{ __( 'Import products', 'woocommerce-admin' ) }
 						</Button>
@@ -293,14 +293,14 @@ class Appearance extends Component {
 				content: (
 					<Fragment>
 						<Button
-							isPrimary
+							variant="primary"
 							isBusy={ isPending }
 							onClick={ this.createHomepage }
 						>
 							{ __( 'Create homepage', 'woocommerce-admin' ) }
 						</Button>
 						<Button
-							isTertiary
+							variant="tertiary"
 							onClick={ () => {
 								recordEvent(
 									'tasklist_appearance_create_homepage',
@@ -334,12 +334,12 @@ class Appearance extends Component {
 							disabled={ ! logo && ! isDirty }
 							onClick={ this.updateLogo }
 							isBusy={ isUpdatingLogo }
-							isPrimary
+							variant="primary"
 						>
 							{ __( 'Proceed', 'woocommerce-admin' ) }
 						</Button>
 						<Button
-							isTertiary
+							variant="tertiary"
 							onClick={ () => this.completeStep() }
 						>
 							{ __( 'Skip', 'woocommerce-admin' ) }
@@ -371,7 +371,7 @@ class Appearance extends Component {
 								this.setState( { storeNoticeText: value } )
 							}
 						/>
-						<Button onClick={ this.updateNotice } isPrimary>
+						<Button onClick={ this.updateNotice } variant="primary">
 							{ __( 'Complete task', 'woocommerce-admin' ) }
 						</Button>
 					</Fragment>

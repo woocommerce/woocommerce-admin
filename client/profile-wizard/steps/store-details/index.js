@@ -293,7 +293,7 @@ export class StoreDetails extends Component {
 						) }
 
 						<Button
-							isTertiary
+							variant="tertiary"
 							label={ __(
 								'Learn more about store details',
 								'woocommerce-admin'
@@ -416,7 +416,7 @@ export class StoreDetails extends Component {
 
 							<CardFooter justify="center">
 								<Button
-									isPrimary
+									variant="primary"
 									onClick={ handleSubmit }
 									isBusy={ isBusy }
 									disabled={ ! isValidForm || isBusy }
@@ -429,7 +429,7 @@ export class StoreDetails extends Component {
 				</Form>
 				<div className="woocommerce-profile-wizard__footer">
 					<Button
-						isLink
+						variant="link"
 						className="woocommerce-profile-wizard__footer-link"
 						onClick={ () => {
 							invalidateResolutionForStoreSelector(
@@ -448,7 +448,7 @@ export class StoreDetails extends Component {
 						) }
 					</Button>
 					<Button
-						isTertiary
+						variant="tertiary"
 						label={ skipSetupText }
 						onClick={ () =>
 							this.setState( { isSkipSetupPopoverVisible: true } )
