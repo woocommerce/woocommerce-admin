@@ -5,7 +5,9 @@
  * Adds a note to learn more about WooCommerce Subscriptions.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
+
+use \Automattic\WooCommerce\Admin\Notes\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
