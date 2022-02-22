@@ -1,0 +1,4 @@
+Significance: patch
+Type: Dev
+
+Replace deprecated isPrimary, isSecondary, isTertiary, isLink Button props with variant. #8340

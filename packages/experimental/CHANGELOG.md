@@ -1,5 +1,7 @@
 # Unreleased
 
+- Replace deprecated isPrimary, isSecondary, isTertiary, isLink Button props with variant. #8340
+
 # 3.0.0
 
 ## Breaking changes

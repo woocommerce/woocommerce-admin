@@ -1,5 +1,7 @@
 # Unreleased
 
+- Replace deprecated isPrimary, isSecondary, isTertiary, isLink Button props with variant. #8340
+
 # 2.0.0
 
 - Update dependencies to support react 17 #8305
