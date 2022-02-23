@@ -13,12 +13,14 @@ import {
 	WCPayCardBody,
 	SetupRequired,
 } from '@woocommerce/onboarding';
+import { useDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
 
 import { Action } from '../Action';
+import { connectWcpay } from './utils';
 
 const TosPrompt = () =>
 	interpolateComponents( {
@@ -46,6 +48,14 @@ export const Suggestion = ( { paymentGateway, onSetupCallback = null } ) => {
 		enabled: isEnabled,
 		installed: isInstalled,
 	} = paymentGateway;
+
+	const { createNotice } = useDispatch( 'core/notices' );
+
+	if ( installed && onSetupCallback === null ) {
+		onSetupCallback = () => {
+			connectWcpay( createNotice );
+		};
+	}
 
 	return (
 		<WCPayCard>
