@@ -11,6 +11,7 @@ use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore
 use Automattic\WooCommerce\Admin\API\Plugins;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
+use Automattic\WooCommerce\Internal\Admin\RegisterActions;
 use WC_Marketplace_Suggestions;
 
 /**
@@ -68,6 +69,7 @@ class Loader {
 	 * Hooks added here should be removed in `wc_admin_initialize` via the feature plugin.
 	 */
 	public function __construct() {
+		(new RegisterActions(require_once __DIR__ . '/../src-internal/Admin/actions.php'))->register();
 		Features::get_instance();
 		WCAdminSharedSettings::get_instance();
 		add_action( 'init', array( __CLASS__, 'define_tables' ) );

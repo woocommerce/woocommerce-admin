@@ -49,10 +49,10 @@ class CategoryLookup {
 	 * Init hooks.
 	 */
 	public function init() {
-		add_action( 'generate_category_lookup_table', array( $this, 'regenerate' ) );
-		add_action( 'edit_product_cat', array( $this, 'before_edit' ), 99 );
-		add_action( 'edited_product_cat', array( $this, 'on_edit' ), 99 );
-		add_action( 'created_product_cat', array( $this, 'on_create' ), 99 );
+//		add_action( 'generate_category_lookup_table', array( $this, 'regenerate' ) );
+//		add_action( 'edit_product_cat', array( $this, 'before_edit' ), 99 );
+//		add_action( 'edited_product_cat', array( $this, 'on_edit' ), 99 );
+//		add_action( 'created_product_cat', array( $this, 'on_create' ), 99 );
 
 	}
 

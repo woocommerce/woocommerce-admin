@@ -162,7 +162,7 @@ class FeaturePlugin {
 	public function includes() {
 		// Initialize Database updates, option migrations, and Notes.
 		Install::init();
-		Events::instance()->init();
+//		Events::instance()->init();
 		Notes::init();
 
 		// Initialize Plugins Installer.
@@ -175,7 +175,7 @@ class FeaturePlugin {
 		if ( Features::is_enabled( 'analytics' ) ) {
 			// Initialize Reports syncing.
 			ReportsSync::init();
-			CategoryLookup::instance()->init();
+//			CategoryLookup::instance()->init();
 
 			// Initialize Reports exporter.
 			ReportExporter::init();

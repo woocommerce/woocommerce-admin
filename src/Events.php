@@ -81,7 +81,7 @@ class Events {
 	 * Cron event handlers.
 	 */
 	public function init() {
-		add_action( 'wc_admin_daily', array( $this, 'do_wc_admin_daily' ) );
+//		add_action( 'wc_admin_daily', array( $this, 'do_wc_admin_daily' ) );
 	}
 
 	/**
