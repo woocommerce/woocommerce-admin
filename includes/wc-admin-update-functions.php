@@ -10,7 +10,7 @@
 use Automattic\WooCommerce\Internal\Admin\Install as Installer;
 use \Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
-use \Automattic\WooCommerce\Admin\Notes\UnsecuredReportFiles;
+use \Automattic\WooCommerce\Internal\Admin\Notes\UnsecuredReportFiles;
 use \Automattic\WooCommerce\Admin\Notes\DeactivatePlugin;
 use \Automattic\WooCommerce\Admin\ReportExporter;
 

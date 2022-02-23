@@ -5,9 +5,11 @@
  * Adds a warning about potentially unsecured files.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use \Automattic\WooCommerce\Admin\Notes\Note;
 
 if ( ! class_exists( Note::class ) ) {
 	class_alias( WC_Admin_Note::class, Note::class );
