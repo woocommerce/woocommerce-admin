@@ -12,16 +12,16 @@ For better debugging, it's also recommended you add `define( 'SCRIPT_DEBUG', tru
 
 After cloning the repo, install dependencies:
 
--   `npm install` to install JavaScript dependencies.
+-   `pnpm install` to install JavaScript dependencies.
 -   `composer install` to gather PHP dependencies.
 
 Now you can build the files using one of these commands:
 
--   `npm run build` : Build a production version
--   `npm run dev` : Build a development version
--   `npm start` : Build a development version, watch files for changes
--   `npm run build:release` : Build a WordPress plugin ZIP file (`woocommerce-admin.zip` will be created in the repository root)
--   `DRY_RUN=1 npm run build:release` : Builds a Wordpress plugin ZIP **without** pushing it to Github and creating a release.
+-   `pnpm run build` : Build a production version
+-   `pnpm run dev` : Build a development version
+-   `pnpm start` : Build a development version, watch files for changes
+-   `pnpm run build:release` : Build a WordPress plugin ZIP file (`woocommerce-admin.zip` will be created in the repository root)
+-   `DRY_RUN=1 pnpm run build:release` : Builds a Wordpress plugin ZIP **without** pushing it to Github and creating a release.
 
 For more helper scripts [see here](./CONTRIBUTING.md#helper-scripts)
 
@@ -48,7 +48,7 @@ All the commands from `@woocommerce/e2e-environment` can be run through `npx`.
 
 ```
 # Set up the e2e environment
-npm i
+pnpm i
 npx wc-e2e docker:up
 ```
 
@@ -77,7 +77,7 @@ There is documentation in 2 forms available in the repo. A static set of documen
 To view the docsify docs locally you can do:
 
 ```
-npm install
+pnpm install
 cd docs
 npx docsify serve
 ```
@@ -85,8 +85,8 @@ npx docsify serve
 When deployed the docsify docs also host an embedded version of the storybook docs. To generate that and test it locally in docsify you'll need to run:
 
 ```
-npm install
-npm run docs
+pnpm install
+pnpm run docs
 cd docs
 npx docsify serve
 ```
@@ -96,15 +96,15 @@ Then navigate to `Components` from the left hand menu in the docs.
 If you would like to view the storybook docs hosted standalone, then you can run:
 
 ```
-npm install
-npm run storybook
+pnpm install
+pnpm run storybook
 ```
 
 If you would like to view the storybook docs in right-to-left styling, you can run this instead:
 
 ```
-npm install
-npm run storybook-rtl
+pnpm install
+pnpm run storybook-rtl
 ```
 
 ## Common Issues
