@@ -633,7 +633,7 @@ class WC_Admin_Notes_WooCommerce_Payments extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\WooCommercePayments';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments';
 
 	/**
 	 * The version that this class was deprecated in.

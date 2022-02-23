@@ -14,7 +14,7 @@ use \Automattic\WooCommerce\Admin\Notes\Notes;
 use \Automattic\WooCommerce\Admin\Notes\OrderMilestones;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooSubscriptionsNotes;
 use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
-use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
+use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;
 use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
 use \Automattic\WooCommerce\Admin\Notes\TestCheckout;

@@ -21,7 +21,7 @@ use \Automattic\WooCommerce\Admin\Notes\OnboardingEmailMarketing;
 use \Automattic\WooCommerce\Admin\Notes\OnboardingPayments;
 use \Automattic\WooCommerce\Admin\Notes\PersonalizeStore;
 use \Automattic\WooCommerce\Admin\Notes\EUVATNumber;
-use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
+use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;
 use \Automattic\WooCommerce\Admin\Notes\MarketingJetpack;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommerceSubscriptions;
 use \Automattic\WooCommerce\Admin\Notes\MigrateFromShopify;
