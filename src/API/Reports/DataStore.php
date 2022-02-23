@@ -1356,10 +1356,10 @@ class DataStore extends SqlQuery {
 		$ids = apply_filters( 'woocommerce_analytics_' . $field, $ids, $query_args, $field, $this->context );
 
 		if ( ! empty( $ids ) ) {
-			$ids_str = $wpdb->prepare(
-				implode( $separator, array_fill( 0, count( $ids ), '%d' ) ),
-				$ids
-			);
+			$placeholders = implode( $separator, array_fill( 0, count( $ids ), '%d' ) );
+			/* phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared */
+			$ids_str = $wpdb->prepare( "{$placeholders}", $ids );
+			/* phpcs:enable */
 		}
 		return $ids_str;
 	}
