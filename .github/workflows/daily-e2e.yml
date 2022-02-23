@@ -23,10 +23,14 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v2-beta
               with:
-                  node-version: '14'
+                  node-version: '14'      
+            - name: Install PNPM and install dependencies
+              uses: pnpm/action-setup@v2.2.1
+              with:
+                version: ^6.24.2
+                run_install: true
             - name: Build
               run: |
-                  pnpm i
                   composer require wp-cli/i18n-command
                   pnpm run build:feature-config
                   pnpm run build

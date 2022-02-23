@@ -14,9 +14,14 @@ jobs:
               with:
                   node-version: '14'
 
+            - name: Install PNPM and install dependencies
+              uses: pnpm/action-setup@v2.2.1
+              with:
+                version: ^6.24.2
+                run_install: true
+
             - name: Build
               run: |
-                  pnpm i
                   pnpm run build
                   pnpm run docs
 
