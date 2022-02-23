@@ -7,11 +7,12 @@
 
 namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
-use \Automattic\WooCommerce\Admin\Notes\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Features\Onboarding;
+use \Automattic\WooCommerce\Admin\Notes\Notes;
+use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * WooCommerce_Subscriptions.
