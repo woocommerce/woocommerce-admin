@@ -26,7 +26,7 @@
 		"access": "public"
 	},
 	"scripts": {
-		"clean": "tsc --build ./tsconfig.json ./tsconfig-cjs.json --clean && npx rimraf dist",
+		"clean": "tsc --build ./tsconfig.json ./tsconfig-cjs.json --clean && pnpx rimraf dist",
 		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"start": "tsc --build --watch",
 		"prepack": "pnpm run clean && pnpm run build",
