@@ -7,10 +7,10 @@
 
 namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
+defined( 'ABSPATH' ) || exit;
+
 use \Automattic\WooCommerce\Admin\Notes\Notes;
 use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
-
-defined( 'ABSPATH' ) || exit;
 
 /**
  * WooCommerce_Payments
