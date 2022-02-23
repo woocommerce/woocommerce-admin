@@ -3,9 +3,12 @@
  * WooCommerce Admin: Welcome to WooCommerce for store users.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use \Automattic\WooCommerce\Admin\Notes\Notes;
+use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * Welcome to WooCommerce for store users.
