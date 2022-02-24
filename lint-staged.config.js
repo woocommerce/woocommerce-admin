@@ -36,7 +36,7 @@ module.exports = {
 
 		const workspaceScripts = Object.keys( filesByPackage ).map(
 			( packageName ) =>
-				`lerna --scope @woocommerce/${ packageName } run test-staged -- ${ filesByPackage[
+				`pnpm --filter @woocommerce/${ packageName } run test-staged -- ${ filesByPackage[
 					packageName
 				].join( ' ' ) }`
 		);

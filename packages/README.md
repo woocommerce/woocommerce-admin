@@ -69,26 +69,11 @@ To create a new package, add a new folder to `/packages`, containing…
 
 ## Publishing packages
 
--   Run `pnpm run publish-packages:check` to see which packages will be published
+-   Run `pnpm run publish-packages:check` to run pnpm publish with the `--dry-run` option
 -   Create a PR with a CHANGELOG for each updated package (or try to add to the CHANGELOG with any PR editing `packages/`)
 -   Run `pnpm run publish-packages:prod` to publish the package
 -   _OR_ Run `pnpm run publish-packages:dev` to publish "next" releases (installed as `pnpm i @woocommerce/package@next`). Only use `:dev` if you have a reason to.
--   Both commands will run `build:packages` before the lerna task, just to catch any last updates.
-
-It will confirm with you once more before publishing:
-
-```
-Changes:
- - @woocommerce/components: 1.0.1 => 1.1.0
- - @woocommerce/date: 1.0.1 => 1.0.2
- - @woocommerce/navigation: 1.0.0 => 1.1.0
-
-? Are you sure you want to publish these packages?
-```
-
-If you accept, Lerna will create git tags, publish those to github, then push your packages to npm.
-
-🎉 You have a published package!
+-   Both commands will run `build:packages` before the publishing  task, just to catch any last updates.
 
 ### Publishing a single package
 
