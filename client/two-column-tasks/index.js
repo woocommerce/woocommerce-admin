@@ -13,7 +13,6 @@ import './style.scss';
 import TaskList from './task-list';
 import TaskListPlaceholder from './placeholder';
 import { Task } from '../tasks/task';
-import allowedTasks from './allowed-tasks';
 
 const taskDashboardSelect = ( select ) => {
 	const { getOption, hasFinishedResolution } = select( OPTIONS_STORE_NAME );
@@ -87,9 +86,7 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 	// List of task items to be shown on the main task list.
 	// Any other remaining tasks will be moved to the extended task list.
 	const taskList = taskLists[ 0 ];
-	const setupTasks = taskList.tasks.filter( ( setupTask ) =>
-		allowedTasks.includes( setupTask.id )
-	);
+	const setupTasks = taskList.tasks;
 
 	const completedTasks = setupTasks.filter(
 		( setupTask ) => setupTask.isComplete
