@@ -1,3 +1,7 @@
+== 3.2.1 02/22/2022 == 
+
+- Fix: Fix backwards compatibility with SkyVerge payment gateway. #8371
+
 == 3.2.0 02/22/2022 == 
 
 - Fix: Adjusted task list logic to fix conflict between current and experimental task list. #8321
