@@ -570,7 +570,7 @@ class WC_Admin_Notes_Test_Checkout extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\TestCheckout';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\TestCheckout';
 
 	/**
 	 * The version that this class was deprecated in.
