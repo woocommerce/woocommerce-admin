@@ -115,6 +115,7 @@ class TaskLists {
 		self::add_list(
 			array(
 				'id'           => 'setup_two_column',
+				'hidden_id'    => 'setup',
 				'title'        => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'        => array(
 					'Products',
@@ -131,6 +132,7 @@ class TaskLists {
 		self::add_list(
 			array(
 				'id'           => 'extended_two_column',
+				'hidden_id'    => 'extended',
 				'title'        => __( 'Things to do next', 'woocommerce-admin' ),
 				'sort_by'      => array(
 					array(
@@ -262,7 +264,7 @@ class TaskLists {
 		return array_filter(
 			self::$lists,
 			function( $list ) use ( $ids ) {
-				return in_array( $list->get_id(), $ids, true );
+				return in_array( $list->get_list_id(), $ids, true );
 			}
 		);
 	}

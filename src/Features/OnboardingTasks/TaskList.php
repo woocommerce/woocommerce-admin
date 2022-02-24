@@ -34,6 +34,13 @@ class TaskList {
 	public $id = '';
 
 	/**
+	 * ID.
+	 *
+	 * @var string
+	 */
+	public $hidden_id = '';
+
+	/**
 	 * Title.
 	 *
 	 * @var string
@@ -69,6 +76,7 @@ class TaskList {
 	public function __construct( $data = array() ) {
 		$defaults = array(
 			'id'           => null,
+			'hidden_id'    => null,
 			'title'        => '',
 			'tasks'        => array(),
 			'sort_by'      => array(),
@@ -78,6 +86,7 @@ class TaskList {
 		$data = wp_parse_args( $data, $defaults );
 
 		$this->id           = $data['id'];
+		$this->hidden_id    = $data['hidden_id'];
 		$this->title        = $data['title'];
 		$this->sort_by      = $data['sort_by'];
 		$this->event_prefix = $data['event_prefix'];
@@ -96,7 +105,7 @@ class TaskList {
 	 */
 	public function is_hidden() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
-		return in_array( $this->get_list_id(), $hidden, true );
+		return in_array( $this->hidden_id ?: $this->id, $hidden, true );
 	}
 
 	/**
@@ -137,7 +146,7 @@ class TaskList {
 		);
 
 		$hidden   = get_option( self::HIDDEN_OPTION, array() );
-		$hidden[] = $this->get_list_id();
+		$hidden[] = $this->hidden_id ?: $this->id;
 		return update_option( self::HIDDEN_OPTION, array_unique( $hidden ) );
 	}
 
@@ -148,7 +157,7 @@ class TaskList {
 	 */
 	public function unhide() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
-		$hidden = array_diff( $hidden, array( $this->get_list_id() ) );
+		$hidden = array_diff( $hidden, array( $this->hidden_id ?: $this->id ) );
 		return update_option( self::HIDDEN_OPTION, $hidden );
 	}
 
