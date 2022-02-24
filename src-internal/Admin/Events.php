@@ -43,7 +43,7 @@ use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
 use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
 use \Automattic\WooCommerce\Admin\Notes\CompleteStoreDetails;
 use \Automattic\WooCommerce\Internal\Admin\Notes\UpdateStoreDetails;
-use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
+use \Automattic\WooCommerce\Internal\Admin\Notes\SetUpAdditionalPaymentTypes;
 use \Automattic\WooCommerce\Admin\Notes\PaymentsRemindMeLater;
 use \Automattic\WooCommerce\Admin\Notes\MagentoMigration;
 

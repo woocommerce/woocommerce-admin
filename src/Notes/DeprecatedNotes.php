@@ -549,7 +549,7 @@ class WC_Admin_Notes_Set_Up_Additional_Payment_Types extends DeprecatedClassFaca
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\SetUpAdditionalPaymentTypes';
 
 	/**
 	 * The version that this class was deprecated in.
