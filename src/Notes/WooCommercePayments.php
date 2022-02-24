@@ -183,9 +183,9 @@ class WooCommercePayments {
 			return;
 		}
 
-		$note_id = array_pop($note_ids);
-		$note = Notes::get_note($note_id);
-		if (false === $note) {
+		$note_id = array_pop( $note_ids );
+		$note    = Notes::get_note( $note_id );
+		if ( false === $note ) {
 			return;
 		}
 		$action = $note->get_action( 'get-started' );
