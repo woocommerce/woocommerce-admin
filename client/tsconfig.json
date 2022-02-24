@@ -12,6 +12,7 @@
 		// Import non-ES modules as default imports.
 		"esModuleInterop": true,
 		"skipLibCheck": true,
+		"noEmit": true,
 		"module": "esnext",
 		"typeRoots": [
 			"../typings",
