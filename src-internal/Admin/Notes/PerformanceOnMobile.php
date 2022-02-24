@@ -5,11 +5,14 @@
  * Adds a note to download the mobile app, performance on mobile.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Internal\Admin\Notes\RealTimeOrderAlerts;
+use \Automattic\WooCommerce\Admin\Notes\ManageOrdersOnTheGo;
+use \Automattic\WooCommerce\Admin\Notes\MobileApp;
+use \Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * Performance_On_Mobile

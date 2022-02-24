@@ -465,7 +465,7 @@ class WC_Admin_Notes_Performance_On_Mobile extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\PerformanceOnMobile';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\PerformanceOnMobile';
 
 	/**
 	 * The version that this class was deprecated in.
