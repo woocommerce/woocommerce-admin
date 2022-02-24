@@ -486,7 +486,7 @@ class WC_Admin_Notes_Personalize_Store extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\PersonalizeStore';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\PersonalizeStore';
 
 	/**
 	 * The version that this class was deprecated in.
