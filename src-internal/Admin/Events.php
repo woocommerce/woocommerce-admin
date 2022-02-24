@@ -26,7 +26,7 @@ use \Automattic\WooCommerce\Admin\Notes\MarketingJetpack;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommerceSubscriptions;
 use \Automattic\WooCommerce\Admin\Notes\MigrateFromShopify;
 use \Automattic\WooCommerce\Admin\Notes\LaunchChecklist;
-use \Automattic\WooCommerce\Admin\Notes\RealTimeOrderAlerts;
+use \Automattic\WooCommerce\Internal\Admin\Notes\RealTimeOrderAlerts;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Internal\Admin\Notes\MerchantEmailNotifications;

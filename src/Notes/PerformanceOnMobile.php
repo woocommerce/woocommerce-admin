@@ -9,6 +9,8 @@ namespace Automattic\WooCommerce\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
+use \Automattic\WooCommerce\Internal\Admin\Notes\RealTimeOrderAlerts;
+
 /**
  * Performance_On_Mobile
  */

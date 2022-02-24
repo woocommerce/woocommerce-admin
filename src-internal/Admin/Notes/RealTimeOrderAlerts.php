@@ -5,9 +5,13 @@
  * Adds a note to download the mobile app to monitor store activity.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use \Automattic\WooCommerce\Admin\Notes\MobileApp;
+use \Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * Real_Time_Order_Alerts
