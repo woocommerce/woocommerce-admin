@@ -66,7 +66,7 @@ const ExtendedTask: React.FC< TasksProps > = ( { query } ) => {
 
 	const extendedTaskList = taskLists[ 0 ];
 
-	if ( extendedTaskList.tasks.length === 0 ) {
+	if ( ! extendedTaskList || extendedTaskList.tasks.length === 0 ) {
 		return null;
 	}
 

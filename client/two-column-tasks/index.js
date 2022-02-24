@@ -39,7 +39,7 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 		return {
 			taskLists: select( ONBOARDING_STORE_NAME ).getTaskListsByIds( [
 				'setup_two_column',
-				'extended',
+				'extended_two_column',
 			] ),
 			isResolving: select( ONBOARDING_STORE_NAME ).isResolving(
 				'getTaskListsByIds'
@@ -72,7 +72,7 @@ const TaskDashboard = ( { query, twoColumns } ) => {
 		return null;
 	}
 
-	if ( isResolving || isResolvingOptions ) {
+	if ( isResolving || isResolvingOptions || ! taskLists[ 0 ] ) {
 		return <TaskListPlaceholder twoColumns={ twoColumns } />;
 	}
 

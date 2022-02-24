@@ -71,24 +71,8 @@ export function* getTaskLists() {
 	}
 }
 
-export function* getTaskListsByIds( ids ) {
-	const deprecatedTasks = new DeprecatedTasks();
-	try {
-		const results = yield apiFetch( {
-			path: WC_ADMIN_NAMESPACE + '/onboarding/tasks',
-			method: deprecatedTasks.hasDeprecatedTasks() ? 'POST' : 'GET',
-			data: {
-				...deprecatedTasks.getPostData(),
-				ids,
-			},
-		} );
-
-		deprecatedTasks.mergeDeprecatedCallbackFunctions( results );
-
-		yield getTaskListsSuccess( results );
-	} catch ( error ) {
-		yield getTaskListsError( error );
-	}
+export function* getTaskListsByIds() {
+	yield resolveSelect( STORE_NAME, 'getTaskLists' );
 }
 
 export function* getTaskList() {
