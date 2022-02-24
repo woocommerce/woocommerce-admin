@@ -591,7 +591,7 @@ class WC_Admin_Notes_Tracking_Opt_In extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\TrackingOptIn';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\TrackingOptIn';
 
 	/**
 	 * The version that this class was deprecated in.

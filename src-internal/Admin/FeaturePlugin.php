@@ -13,7 +13,7 @@ use Automattic\WooCommerce\Admin\Loader;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
 use \Automattic\WooCommerce\Admin\Notes\OrderMilestones;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooSubscriptionsNotes;
-use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
+use \Automattic\WooCommerce\Internal\Admin\Notes\TrackingOptIn;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;
 use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
 use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
