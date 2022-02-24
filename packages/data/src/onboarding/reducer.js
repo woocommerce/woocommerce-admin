@@ -38,7 +38,7 @@ const getUpdatedTaskLists = ( taskLists, args ) => {
 				...lists,
 				[ taskListId ]: {
 					...taskLists[ taskListId ],
-					tasks: taskList.tasks.map( ( task ) => {
+					tasks: taskLists[ taskListId ].tasks.map( ( task ) => {
 						if ( args.id === task.id ) {
 							return {
 								...task,
@@ -145,10 +145,10 @@ const onboarding = (
 		case TYPES.GET_TASK_LISTS_SUCCESS:
 			return {
 				...state,
-				taskLists: taskLists.reduce( ( lists, taskList ) => {
+				taskLists: taskLists.reduce( ( lists, list ) => {
 					return {
 						...lists,
-						[ taskList.id ]: taskList,
+						[ taskList.id ]: list,
 					};
 				}, state.taskLists || {} ),
 			};

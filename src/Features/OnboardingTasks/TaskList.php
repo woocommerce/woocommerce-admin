@@ -105,7 +105,7 @@ class TaskList {
 	 */
 	public function is_hidden() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
-		return in_array( $this->hidden_id ?: $this->id, $hidden, true );
+		return in_array( $this->hidden_id ? $this->hidden_id : $this->id, $hidden, true );
 	}
 
 	/**
@@ -146,7 +146,7 @@ class TaskList {
 		);
 
 		$hidden   = get_option( self::HIDDEN_OPTION, array() );
-		$hidden[] = $this->hidden_id ?: $this->id;
+		$hidden[] = $this->hidden_id ? $this->hidden_id : $this->id;
 		return update_option( self::HIDDEN_OPTION, array_unique( $hidden ) );
 	}
 
@@ -157,7 +157,7 @@ class TaskList {
 	 */
 	public function unhide() {
 		$hidden = get_option( self::HIDDEN_OPTION, array() );
-		$hidden = array_diff( $hidden, array( $this->hidden_id ?: $this->id ) );
+		$hidden = array_diff( $hidden, array( $this->hidden_id ? $this->hidden_id : $this->id ) );
 		return update_option( self::HIDDEN_OPTION, $hidden );
 	}
 
