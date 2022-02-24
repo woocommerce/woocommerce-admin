@@ -148,7 +148,7 @@ const onboarding = (
 				taskLists: taskLists.reduce( ( lists, list ) => {
 					return {
 						...lists,
-						[ taskList.id ]: list,
+						[ list.id ]: list,
 					};
 				}, state.taskLists || {} ),
 			};
