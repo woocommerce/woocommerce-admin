@@ -16,6 +16,7 @@ import {
 	SETTINGS_STORE_NAME,
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
+	COUNTRIES_STORE_NAME,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
@@ -29,7 +30,6 @@ import { getCountryCode } from '../../../dashboard/utils';
 import StoreLocation from '../steps/location';
 import ShippingRates from './rates';
 import { createNoticesFromResponse } from '../../../lib/notices';
-import { getAdminSetting } from '~/utils/admin-settings';
 import './shipping.scss';
 
 export class Shipping extends Component {
@@ -362,16 +362,14 @@ const ShippingWrapper = compose(
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
+		const { getCountry } = select( COUNTRIES_STORE_NAME );
 
 		const { general: settings = {} } = getSettings( 'general' );
 		const countryCode = getCountryCode(
 			settings.woocommerce_default_country
 		);
 
-		const { countries = [] } = getAdminSetting( 'dataEndpoints', {} );
-		const country = countryCode
-			? countries.find( ( c ) => c.code === countryCode )
-			: null;
+		const country = countryCode ? getCountry( countryCode ) : null;
 		const countryName = country ? country.name : null;
 		const activePlugins = getActivePlugins();
 
