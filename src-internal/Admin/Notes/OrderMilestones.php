@@ -5,9 +5,12 @@
  * Adds a note to the merchant's inbox when certain order milestones are reached.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use \Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\Notes;
 
 /**
  * Order_Milestones

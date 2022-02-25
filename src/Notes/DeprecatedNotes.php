@@ -444,7 +444,7 @@ class WC_Admin_Notes_Order_Milestones extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\OrderMilestones';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\OrderMilestones';
 
 	/**
 	 * The version that this class was deprecated in.
