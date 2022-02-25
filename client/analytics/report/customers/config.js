@@ -5,8 +5,7 @@ import { __, _x } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { applyFilters } from '@wordpress/hooks';
 import { resolveSelect } from '@wordpress/data';
-import { NAMESPACE } from '@woocommerce/data';
-import { COUNTRIES_STORE_NAME } from '@woocommerce/data';
+import { NAMESPACE, COUNTRIES_STORE_NAME } from '@woocommerce/data';
 
 /**
  * Internal dependencies

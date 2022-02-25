@@ -344,14 +344,16 @@ export function StoreAddress( {
 		countries,
 		loadingCountries,
 	} = useSelect( ( select ) => {
-		const { getLocale, getCountries, hasFinishedResolution } = select(
-			COUNTRIES_STORE_NAME
-		);
+		const {
+			getLocale,
+			getCountries,
+			hasFinishedResolution: hasFinishedCountryResolution,
+		} = select( COUNTRIES_STORE_NAME );
 		return {
 			locale: getLocale( countryState ),
 			countries: getCountries(),
-			loadingCountries: ! hasFinishedResolution( 'getCountries' ),
-			hasFinishedResolution: hasFinishedResolution( 'getLocales' ),
+			loadingCountries: ! hasFinishedCountryResolution( 'getCountries' ),
+			hasFinishedResolution: hasFinishedCountryResolution( 'getLocales' ),
 		};
 	} );
 	const countryStateOptions = useMemo(
