@@ -78,7 +78,7 @@
 		"example": "webpack --config docs/examples/extensions/examples.config.js --watch",
 		"pre-release": "./bin/pre-release.sh",
 		"create-wc-extension": "node ./bin/starter-pack/starter-pack.js",
-		"storybook": "./bin/import-wp-css-storybook.sh && STORYBOOK=true start-storybook -c ./storybook/.storybook -p 6007 --ci",
+		"storybook": "./bin/import-wp-css-storybook.sh && BABEL_ENV=storybook STORYBOOK=true start-storybook -c ./storybook/.storybook -p 6007 --ci",
 		"storybook-rtl": "USE_RTL_STYLE=true pnpm run storybook",
 		"build-storybook": "build-storybook  -c ./storybook/.storybook",
 		"changelog": "node ./bin/changelog --changelogSrcType='ZENHUB_RELEASE'",

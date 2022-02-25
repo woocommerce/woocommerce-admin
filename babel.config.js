@@ -25,7 +25,7 @@ module.exports = function ( api ) {
 			 * An invalid syntax in _locutus_shared_bc.js:6 causes the "BABEL_PARSE_ERROR"
 			 * We only import 'locutus/php/strings/number_format' so it's safe to ignore this file for now until the authors fix the issue
 			 */
-			"packages/number/node_modules/locutus/php/_locutus_shared/_locutus_shared_bc.js"
+			'packages/number/node_modules/locutus/php/_locutus_shared/_locutus_shared_bc.js',
 		],
 		env: {
 			production: {
@@ -35,6 +35,28 @@ module.exports = function ( api ) {
 						{
 							output: 'languages/woocommerce-admin.po',
 						},
+					],
+				],
+			},
+
+			storybook: {
+				plugins: [
+					/**
+					 * We need to set loose mode here because the storybook's default babel config enables the loose mode.
+					 * The 'loose' mode configuration must be the same for those babel plugins.
+					 *
+					 */
+					[
+						'@babel/plugin-proposal-class-properties',
+						{ loose: true },
+					],
+					[
+						'@babel/plugin-proposal-private-methods',
+						{ loose: true },
+					],
+					[
+						'@babel/plugin-proposal-private-property-in-object',
+						{ loose: true },
 					],
 				],
 			},
