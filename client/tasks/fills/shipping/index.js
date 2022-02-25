@@ -57,7 +57,6 @@ export class Shipping extends Component {
 	}
 
 	async fetchShippingZones() {
-		this.setState( { isPending: true } );
 		const { countryCode, countryName } = this.props;
 
 		// @todo The following fetches for shipping information should be moved into
@@ -117,7 +116,7 @@ export class Shipping extends Component {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const { countryCode, settings } = this.props;
+		const { countryCode, countryName, settings } = this.props;
 		const {
 			woocommerce_store_address: storeAddress,
 			woocommerce_default_country: defaultCountry,
@@ -128,9 +127,13 @@ export class Shipping extends Component {
 		if (
 			step === 'rates' &&
 			( prevProps.countryCode !== countryCode ||
+				prevProps.countryName !== countryName ||
 				prevState.step !== 'rates' )
 		) {
-			this.fetchShippingZones();
+			this.setState( { isPending: true } );
+			if ( countryName ) {
+				this.fetchShippingZones();
+			}
 		}
 
 		const isCompleteAddress = Boolean(
