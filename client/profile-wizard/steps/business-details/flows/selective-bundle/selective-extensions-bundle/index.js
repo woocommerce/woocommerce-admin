@@ -68,28 +68,36 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 		);
 	}
 
-	const installingJetpackOrWcShipping =
-		extensions.includes( 'jetpack' ) ||
-		extensions.includes( 'woocommerce-services:shipping' );
-
 	const accountRequiredText = __(
 		'User accounts are required to use these features.',
 		'woocommerce-admin'
 	);
 
-	const isWCShippingAvailableToInstall = extensions.includes(
-		'woocommerce-services:shipping'
+	const extensionsWithToS = extensions.filter(
+		( extension ) =>
+			extension === 'jetpack' ||
+			extension.includes( 'woocommerce-services' )
 	);
 
-	const installJetpackOrWcShippingText = isWCShippingAvailableToInstall
-		? __(
-				'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
-				'woocommerce-admin'
-		  )
-		: __(
-				'By installing Jetpack plugin for free you agree to our {{link}}Terms of Service{{/link}}.',
-				'woocommerce-admin'
-		  );
+	const isInstallingJetpackAndWCServices =
+		extensionsWithToS.includes( 'jetpack' ) &&
+		( extensionsWithToS.includes( 'woocommerce-services:shipping' ) ||
+			extensionsWithToS.includes( 'woocommerce-services:tax' ) );
+
+	const extensionsListText = isInstallingJetpackAndWCServices
+		? 'Jetpack and WooCommerce Shipping & Tax'
+		: pluginNames[ extensionsWithToS[ 0 ] ];
+
+	const installingJetpackShippingTaxToS = sprintf(
+		/* translators: %s: a list of plugins, e.g. Jetpack */
+		_n(
+			'By installing %s plugin for free you agree to our {{link}}Terms of Service{{/link}}.',
+			'By installing %s plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
+			extensionsWithToS.length,
+			'woocommerce-admin'
+		),
+		extensionsListText
+	);
 
 	return (
 		<div className="woocommerce-profile-wizard__footnote">
@@ -106,10 +114,10 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 					accountRequiredText
 				) }
 			</Text>
-			{ installingJetpackOrWcShipping && (
+			{ extensionsWithToS.length > 0 && (
 				<Text variant="caption" as="p" size="12" lineHeight="16px">
 					{ interpolateComponents( {
-						mixedString: installJetpackOrWcShippingText,
+						mixedString: installingJetpackShippingTaxToS,
 						components: {
 							link: (
 								<Link
