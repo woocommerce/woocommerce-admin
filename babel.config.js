@@ -20,6 +20,13 @@ module.exports = function ( api ) {
 			 */
 			'@babel/plugin-proposal-class-properties',
 		],
+		ignore: [
+			/**
+			 * An invalid syntax in _locutus_shared_bc.js:6 causes the "BABEL_PARSE_ERROR"
+			 * We only import 'locutus/php/strings/number_format' so it's safe to ignore this file for now until the authors fix the issue
+			 */
+			"packages/number/node_modules/locutus/php/_locutus_shared/_locutus_shared_bc.js"
+		],
 		env: {
 			production: {
 				plugins: [
