@@ -122,7 +122,7 @@ class Orders extends \WC_REST_Orders_Controller {
 	/**
 	 * Get customer data from customer_id.
 	 *
-	 * @param array $customer_id ID of customer.
+	 * @param array $customer_id User ID of customer.
 	 * @return array
 	 */
 	protected function get_customer_by_id( $customer_id ) {
@@ -133,7 +133,7 @@ class Orders extends \WC_REST_Orders_Controller {
 		$customer = $wpdb->get_row(
 			$wpdb->prepare(
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT * FROM {$customer_lookup_table} WHERE customer_id = ( %d )",
+				"SELECT * FROM {$customer_lookup_table} WHERE user_id = ( %d )",
 				$customer_id
 			),
 			ARRAY_A
