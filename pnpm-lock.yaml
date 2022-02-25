@@ -660,7 +660,6 @@ importers:
       react-transition-group: 4.4.1
       react-visibility-sensor: 5.1.1
     dependencies:
-      '@babel/runtime': 7.17.2
       '@woocommerce/components': link:../components
       '@wordpress/components': 19.4.0_162cb9c18f7689dfa7f230030284cc2f
       '@wordpress/element': 4.1.1
@@ -674,6 +673,7 @@ importers:
       react-transition-group: 4.4.1_react-dom@17.0.2+react@17.0.2
       react-visibility-sensor: 5.1.1_react-dom@17.0.2+react@17.0.2
     devDependencies:
+      '@babel/runtime': 7.17.2
       '@storybook/addon-console': 1.2.3_@storybook+addon-actions@6.2.9
       '@storybook/react': 6.2.9_8db0b6e95d60c39f0bed5a6becc106a5
       '@testing-library/react': 12.1.3_react-dom@17.0.2+react@17.0.2
