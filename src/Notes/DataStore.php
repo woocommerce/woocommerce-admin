@@ -11,6 +11,9 @@ defined( 'ABSPATH' ) || exit;
  * WC Admin Note Data Store (Custom Tables)
  */
 class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Interface {
+	// Extensions should define their own contexts and use them to avoid applying woocommerce_note_where_clauses when not needed.
+	const WC_ADMIN_NOTE_OPER_GLOBAL = 'global';
+
 	/**
 	 * Method to create a new note in the database.
 	 *
@@ -333,6 +336,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		global $wpdb;
 
 		$defaults = array(
+			'context'  => WC_ADMIN_NOTE_OPER_GLOBAL, // Extensions should define their own contexts and use them to avoid applying woocommerce_note_where_clauses when not needed.
 			'per_page' => get_option( 'posts_per_page' ),
 			'page'     => 1,
 			'order'    => 'DESC',
