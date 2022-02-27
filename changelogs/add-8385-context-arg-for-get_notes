@@ -1,0 +1,4 @@
+Significance: minor
+Type: Enhancement
+
+Add a context argument with a default value of global to Admin\Notes\DataStore::get_notes(). #8386
