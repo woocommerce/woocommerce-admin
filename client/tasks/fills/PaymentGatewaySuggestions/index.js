@@ -12,6 +12,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { useMemo, useCallback, useEffect } from '@wordpress/element';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
+import { getNewPath } from '@woocommerce/navigation';
 
 /**
  * Internal dependencies
@@ -121,7 +122,19 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 		updatePaymentGateway( id, {
 			enabled: true,
 		} ).then( () => {
-			onComplete();
+			onComplete(
+				// use the paymentGateways variable.
+				// gateway variable doesn't have hasPlugins property.
+				paymentGateways.get( id )?.hasPlugins === undefined
+					? {
+							redirectPath: getNewPath(
+								{ task: 'payments' },
+								{},
+								'/'
+							),
+					  }
+					: {}
+			);
 		} );
 	};
 
