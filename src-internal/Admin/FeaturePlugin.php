@@ -30,7 +30,7 @@ use Automattic\WooCommerce\Admin\ReportExporter;
 use Automattic\WooCommerce\Admin\ReportsSync;
 use Automattic\WooCommerce\Internal\Admin\CategoryLookup;
 use Automattic\WooCommerce\Internal\Admin\Events;
-use Automattic\WooCommerce\Admin\Internal\Onboarding\Onboarding;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\Onboarding;
 
 /**
  * Feature plugin main class.

@@ -4,10 +4,10 @@
  *
  * @package WooCommerce\Admin\Tests\API
  */
-
+use \Automattic\WooCommerce\Admin\API\OnboardingProfile;
 use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
-use Automattic\WooCommerce\Admin\Internal\Onboarding;
-use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProfile as Profile;
+use Automattic\WooCommerce\Internal\Admin\Onboarding;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile as Profile;
 
 /**
  * WC Tests API Onboarding Profile

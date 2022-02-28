@@ -6,7 +6,7 @@
  */
 
 use Automattic\WooCommerce\Admin\API\OnboardingProductTypes;
-use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProducts;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProducts;
 
 /**
  * WC Tests API Onboarding Product Types

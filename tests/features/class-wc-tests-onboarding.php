@@ -2,10 +2,10 @@
 /**
  * Onboarding Themes Tests.
  *
- * @package WooCommerce\Admin\Tests\OnboardingThemes
+ * @package WooCommerce\Internal\Admin\Tests\OnboardingThemes
  */
 
-use \Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingThemes;
+use \Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingThemes;
 
 /**
  * Class WC_Tests_Onboarding
