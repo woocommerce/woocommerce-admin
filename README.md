@@ -44,30 +44,30 @@ across the entire repository even when they haven't been opened in the IDE.
 
 Tests live in `./tests/e2e`. An existing build is required prior running, please refer to the section above for steps. E2E tests use the `@woocommerce/e2e-environment` package which hosts a Docker container for testing, by default the container can be accessed at `http://localhost:8084`
 
-All the commands from `@woocommerce/e2e-environment` can be run through `pnpx`.
+All the commands from `@woocommerce/e2e-environment` can be run through `pnpm exec`.
 
 ```
 # Set up the e2e environment
 pnpm i
-pnpx wc-e2e docker:up
+pnpm exec wc-e2e docker:up
 ```
 
 Run tests using:
 
 ```
-pnpx wc-e2e test:e2e-dev
+pnpm exec wc-e2e test:e2e-dev
 ```
 
 or in headless mode:
 
 ```
-pnpx wc-e2e test:e2e
+pnpm exec wc-e2e test:e2e
 ```
 
 Run a single test by adding the path to the file name:
 
 ```
-pnpx wc-e2e test:e2e-dev tests/e2e/specs/activate-and-setup/complete-onboarding-wizard.test.ts
+pnpm exec wc-e2e test:e2e-dev tests/e2e/specs/activate-and-setup/complete-onboarding-wizard.test.ts
 ```
 
 ### Documentation
@@ -79,7 +79,7 @@ To view the docsify docs locally you can do:
 ```
 pnpm install
 cd docs
-pnpx docsify serve
+pnpm exec docsify serve
 ```
 
 When deployed the docsify docs also host an embedded version of the storybook docs. To generate that and test it locally in docsify you'll need to run:
@@ -88,7 +88,7 @@ When deployed the docsify docs also host an embedded version of the storybook do
 pnpm install
 pnpm run docs
 cd docs
-pnpx docsify serve
+pnpm exec docsify serve
 ```
 
 Then navigate to `Components` from the left hand menu in the docs.

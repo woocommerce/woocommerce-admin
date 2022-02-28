@@ -46,7 +46,7 @@ jobs:
               env:
                   WC_E2E_SCREENSHOTS: 1
               run: |
-                  pnpx wc-e2e test:e2e
+                  pnpm exec wc-e2e test:e2e
             - name: Archive e2e test screenshots
               if: ${{ always() }}
               uses: actions/upload-artifact@v2

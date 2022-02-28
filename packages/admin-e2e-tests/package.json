@@ -45,7 +45,7 @@
 	},
 	"scripts": {
 		"build": "tsc --build",
-		"clean": "pnpx rimraf tsconfig.tsbuildinfo build build-*",
+		"clean": "pnpm exec rimraf tsconfig.tsbuildinfo build build-*",
 		"prepack": "pnpm run clean && pnpm run build"
 	}
 }
