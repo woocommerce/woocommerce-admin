@@ -28,6 +28,12 @@ class Onboarding extends DeprecatedClassFacade {
 	protected static $deprecated_in_version = '6.3.0';
 
 	/**
+	 * Hook into WooCommerce.
+	 */
+	public function __construct() {
+	}
+
+	/**
 	 * Send profile data to WooCommerce.com.
 	 *
 	 * @deprecated 6.3.0
