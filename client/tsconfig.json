@@ -44,6 +44,6 @@
 		{ "path": "../packages/notices" },
 		{ "path": "../packages/number" },
 		{ "path": "../packages/onboarding" },
-		{ "path": "../packages/tracks" },
+		{ "path": "../packages/tracks" }
     ]
 }
