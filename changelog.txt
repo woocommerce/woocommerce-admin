@@ -1,4 +1,4 @@
-== 4.0.0 03/01/2022 == 
+== 3.3.0 03/01/2022 == 
 
 - Fix: Added random IDs to SVG checkmarks in stepper component #8222
 - Fix: Fix Google Listings plugin is always shown in free features despite already activated. #8330
