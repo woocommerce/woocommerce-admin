@@ -276,7 +276,7 @@ class WC_Admin_Notes_Install_JP_And_WCS_Plugins extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\InstallJPAndWCSPlugins';
 
 	/**
 	 * The version that this class was deprecated in.
