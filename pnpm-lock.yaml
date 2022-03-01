@@ -758,7 +758,7 @@ importers:
     specifiers:
       '@automattic/interpolate-components': ^1.2.0
       '@woocommerce/style-build': workspace:*
-      '@woocommerce/tracks': file:../tracks
+      '@woocommerce/tracks': workspace:*
       '@wordpress/components': 19.4.0
       '@wordpress/element': 4.1.1
       '@wordpress/i18n': ^4.1.0
