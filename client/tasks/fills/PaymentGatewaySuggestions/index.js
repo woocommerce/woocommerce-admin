@@ -127,7 +127,7 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 			onComplete(
 				// use the paymentGateways variable.
 				// gateway variable doesn't have hasPlugins property.
-				paymentGateways.get( id )?.hasPlugins
+				! paymentGateways.get( id )?.hasPlugins
 					? {
 							redirectPath: getNewPath(
 								{ task: 'payments' },
