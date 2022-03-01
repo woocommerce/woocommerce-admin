@@ -27,6 +27,7 @@
 		"@automattic/interpolate-components": "^1.2.0",
 		"@woocommerce/tracks": "workspace:*",
 		"@woocommerce/experimental": "workspace:*",
+		"@woocommerce/components": "workspace:*",
 		"@wordpress/components": "19.4.0",
 		"@wordpress/element": "4.1.1",
 		"@wordpress/i18n": "^4.1.0",
