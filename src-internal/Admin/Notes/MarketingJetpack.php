@@ -5,12 +5,15 @@
  * Adds notes to the merchant's inbox concerning Jetpack Backup.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
-
-use Automattic\Jetpack\Constants;
-use Automattic\WooCommerce\Admin\PluginsHelper;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use Automattic\Jetpack\Constants;
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\Notes;
+use Automattic\WooCommerce\Admin\Notes\NoteTraits;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Suggest Jetpack Backup to Woo users.
