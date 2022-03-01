@@ -3,9 +3,12 @@
  * New! Manage your store activity from the Home screen.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * New! Manage your store activity from the Home screen.
