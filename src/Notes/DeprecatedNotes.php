@@ -150,7 +150,7 @@ class WC_Admin_Notes_Edit_Products_On_The_Move extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\EditProductsOnTheMove';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\EditProductsOnTheMove';
 
 	/**
 	 * The version that this class was deprecated in.

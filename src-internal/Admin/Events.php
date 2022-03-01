@@ -35,7 +35,7 @@ use \Automattic\WooCommerce\Internal\Admin\Notes\OnlineClothingStore;
 use \Automattic\WooCommerce\Internal\Admin\Notes\FirstProduct;
 use \Automattic\WooCommerce\Admin\Notes\CustomizeStoreWithBlocks;
 use \Automattic\WooCommerce\Internal\Admin\Notes\TestCheckout;
-use \Automattic\WooCommerce\Admin\Notes\EditProductsOnTheMove;
+use \Automattic\WooCommerce\Internal\Admin\Notes\EditProductsOnTheMove;
 use \Automattic\WooCommerce\Internal\Admin\Notes\PerformanceOnMobile;
 use \Automattic\WooCommerce\Internal\Admin\Notes\ManageOrdersOnTheGo;
 use \Automattic\WooCommerce\Admin\Notes\AddFirstProduct;
