@@ -171,7 +171,7 @@ class WC_Admin_Notes_EU_VAT_Number extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\EUVATNumber';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\EUVATNumber';
 
 	/**
 	 * The version that this class was deprecated in.

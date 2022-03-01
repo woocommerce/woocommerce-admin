@@ -20,7 +20,7 @@ use \Automattic\WooCommerce\Internal\Admin\Notes\TrackingOptIn;
 use \Automattic\WooCommerce\Admin\Notes\OnboardingEmailMarketing;
 use \Automattic\WooCommerce\Internal\Admin\Notes\OnboardingPayments;
 use \Automattic\WooCommerce\Internal\Admin\Notes\PersonalizeStore;
-use \Automattic\WooCommerce\Admin\Notes\EUVATNumber;
+use \Automattic\WooCommerce\Internal\Admin\Notes\EUVATNumber;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;
 use \Automattic\WooCommerce\Internal\Admin\Notes\MarketingJetpack;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommerceSubscriptions;

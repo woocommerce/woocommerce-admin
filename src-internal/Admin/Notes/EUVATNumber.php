@@ -5,9 +5,12 @@
  * Adds a note for EU store to install the EU VAT Number extension.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use \Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * EU_VAT_Number
