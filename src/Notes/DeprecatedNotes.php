@@ -213,7 +213,7 @@ class WC_Admin_Notes_First_Product extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\FirstProduct';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\FirstProduct';
 
 	/**
 	 * The version that this class was deprecated in.

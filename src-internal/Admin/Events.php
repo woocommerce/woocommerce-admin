@@ -32,7 +32,7 @@ use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificati
 use \Automattic\WooCommerce\Internal\Admin\Notes\MerchantEmailNotifications;
 use \Automattic\WooCommerce\Internal\Admin\Notes\InsightFirstSale;
 use \Automattic\WooCommerce\Internal\Admin\Notes\OnlineClothingStore;
-use \Automattic\WooCommerce\Admin\Notes\FirstProduct;
+use \Automattic\WooCommerce\Internal\Admin\Notes\FirstProduct;
 use \Automattic\WooCommerce\Admin\Notes\CustomizeStoreWithBlocks;
 use \Automattic\WooCommerce\Internal\Admin\Notes\TestCheckout;
 use \Automattic\WooCommerce\Admin\Notes\EditProductsOnTheMove;
