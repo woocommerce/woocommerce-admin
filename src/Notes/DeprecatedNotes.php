@@ -423,7 +423,7 @@ class WC_Admin_Notes_Online_Clothing_Store extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\OnlineClothingStore';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\OnlineClothingStore';
 
 	/**
 	 * The version that this class was deprecated in.
