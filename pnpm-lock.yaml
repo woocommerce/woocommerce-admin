@@ -759,6 +759,7 @@ importers:
   packages/onboarding:
     specifiers:
       '@automattic/interpolate-components': ^1.2.0
+      '@woocommerce/components': workspace:*
       '@woocommerce/experimental': workspace:*
       '@woocommerce/style-build': workspace:*
       '@woocommerce/tracks': workspace:*
@@ -769,6 +770,7 @@ importers:
       gridicons: ^3.3.1
     dependencies:
       '@automattic/interpolate-components': 1.2.0_react@17.0.2
+      '@woocommerce/components': link:../components
       '@woocommerce/experimental': link:../experimental
       '@woocommerce/tracks': link:../tracks
       '@wordpress/components': 19.4.0_162cb9c18f7689dfa7f230030284cc2f
