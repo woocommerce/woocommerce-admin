@@ -18,7 +18,7 @@ use \Automattic\WooCommerce\Admin\Notes\MobileApp;
 use \Automattic\WooCommerce\Admin\Notes\NewSalesRecord;
 use \Automattic\WooCommerce\Internal\Admin\Notes\TrackingOptIn;
 use \Automattic\WooCommerce\Admin\Notes\OnboardingEmailMarketing;
-use \Automattic\WooCommerce\Admin\Notes\OnboardingPayments;
+use \Automattic\WooCommerce\Internal\Admin\Notes\OnboardingPayments;
 use \Automattic\WooCommerce\Internal\Admin\Notes\PersonalizeStore;
 use \Automattic\WooCommerce\Admin\Notes\EUVATNumber;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;

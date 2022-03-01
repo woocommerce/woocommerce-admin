@@ -5,9 +5,12 @@
  * Adds a notes to complete the payment methods.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * Onboarding_Payments.
