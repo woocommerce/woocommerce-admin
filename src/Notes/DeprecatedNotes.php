@@ -234,7 +234,7 @@ class WC_Admin_Notes_Giving_Feedback_Notes extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\GivingFeedbackNotes';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\GivingFeedbackNotes';
 
 	/**
 	 * The version that this class was deprecated in.

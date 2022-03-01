@@ -5,10 +5,12 @@
  * Adds notes to the merchant's inbox about giving feedback.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\NoteTraits;
 use Automattic\WooCommerce\Internal\Admin\Survey;
 
 /**
@@ -32,7 +34,7 @@ class GivingFeedbackNotes {
 	 */
 	protected static function get_note() {
 		if ( ! self::is_wc_admin_active_in_date_range( 'week-1-4' ) ) {
-			return;
+			// return;
 		}
 
 		// Otherwise, create our new note.
