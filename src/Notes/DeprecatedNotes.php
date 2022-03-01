@@ -297,7 +297,7 @@ class WC_Admin_Notes_Launch_Checklist extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\LaunchChecklist';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\LaunchChecklist';
 
 	/**
 	 * The version that this class was deprecated in.

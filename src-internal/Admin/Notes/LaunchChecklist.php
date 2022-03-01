@@ -5,9 +5,12 @@
  * Adds a note to cover pre-launch checklist items for store owners.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * Launch_Checklist
