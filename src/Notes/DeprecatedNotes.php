@@ -360,7 +360,7 @@ class WC_Admin_Notes_New_Sales_Record extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\NewSalesRecord';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\NewSalesRecord';
 
 	/**
 	 * The version that this class was deprecated in.

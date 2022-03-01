@@ -15,7 +15,7 @@ use \Automattic\WooCommerce\Admin\Notes\CustomizingProductCatalog;
 use Automattic\WooCommerce\Admin\Notes\FirstDownlaodableProduct;
 use \Automattic\WooCommerce\Admin\Notes\InsightFirstProductAndPayment;
 use \Automattic\WooCommerce\Admin\Notes\MobileApp;
-use \Automattic\WooCommerce\Admin\Notes\NewSalesRecord;
+use \Automattic\WooCommerce\Internal\Admin\Notes\NewSalesRecord;
 use \Automattic\WooCommerce\Internal\Admin\Notes\TrackingOptIn;
 use \Automattic\WooCommerce\Admin\Notes\OnboardingEmailMarketing;
 use \Automattic\WooCommerce\Internal\Admin\Notes\OnboardingPayments;
