@@ -30,7 +30,7 @@ use \Automattic\WooCommerce\Internal\Admin\Notes\RealTimeOrderAlerts;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Internal\Admin\Notes\MerchantEmailNotifications;
-use \Automattic\WooCommerce\Admin\Notes\InsightFirstSale;
+use \Automattic\WooCommerce\Internal\Admin\Notes\InsightFirstSale;
 use \Automattic\WooCommerce\Internal\Admin\Notes\OnlineClothingStore;
 use \Automattic\WooCommerce\Admin\Notes\FirstProduct;
 use \Automattic\WooCommerce\Admin\Notes\CustomizeStoreWithBlocks;

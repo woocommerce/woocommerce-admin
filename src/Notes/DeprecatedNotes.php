@@ -255,7 +255,7 @@ class WC_Admin_Notes_Insight_First_Sale extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\InsightFirstSale';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\InsightFirstSale';
 
 	/**
 	 * The version that this class was deprecated in.
