@@ -3,11 +3,13 @@
  * WooCommerce Admin note on how to migrate from Magento.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
-
-use Automattic\WooCommerce\Admin\Features\Onboarding;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * MagentoMigration
