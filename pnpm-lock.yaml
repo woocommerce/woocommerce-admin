@@ -153,6 +153,7 @@ importers:
       moment-timezone: '>= 0.1.0'
       moment-timezone-data-webpack-plugin: 1.3.0
       node-watch: 0.7.1
+      patch-package: ^6.4.7
       postcss: ^8.1.0
       postcss-color-function: 4.1.0
       postcss-loader: 3.0.0
@@ -179,7 +180,7 @@ importers:
       stylelint: 9.10.1
       stylelint-config-wordpress: 13.1.0
       terser-webpack-plugin: 2.3.8
-      ts-jest: 27.0.4
+      ts-jest: 27.1.3
       typescript: 4.2.4
       url-loader: 1.1.2
       webpack: 4.43.0
@@ -347,6 +348,7 @@ importers:
       moment-timezone: 0.5.34
       moment-timezone-data-webpack-plugin: 1.3.0_e80d605e72f2c33d3b6ba2e35e7f928e
       node-watch: 0.7.1
+      patch-package: 6.4.7
       postcss: 8.4.6
       postcss-color-function: 4.1.0
       postcss-loader: 3.0.0
@@ -365,7 +367,7 @@ importers:
       stylelint: 9.10.1
       stylelint-config-wordpress: 13.1.0_stylelint@9.10.1
       terser-webpack-plugin: 2.3.8_webpack@4.43.0
-      ts-jest: 27.0.4_4160c9d186d39be52b56c6e6a9303808
+      ts-jest: 27.1.3_4160c9d186d39be52b56c6e6a9303808
       url-loader: 1.1.2_webpack@4.43.0
       webpack: 4.43.0
       webpack-bundle-analyzer: 3.6.1
@@ -7791,6 +7793,10 @@ packages:
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
     dev: true
 
+  /@yarnpkg/lockfile/1.1.0:
+    resolution: {integrity: sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==}
+    dev: true
+
   /abab/2.0.5:
     resolution: {integrity: sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q==}
 
@@ -12672,6 +12678,12 @@ packages:
       semver-regex: 3.1.3
     dev: true
 
+  /find-yarn-workspace-root/2.0.0:
+    resolution: {integrity: sha512-1IMnbjt4KzsQfnhnzNd8wUEgXZ44IzZaZmnLYx7D5FZlaHt2gW20Cri8Q+E/t5tIj4+epTBub+2Zxu/vNILzqQ==}
+    dependencies:
+      micromatch: 4.0.4
+    dev: true
+
   /findup-sync/0.3.0:
     resolution: {integrity: sha1-N5MKpdgWt3fANEXhlmzGeQpMCxY=}
     engines: {node: '>= 0.6.0'}
@@ -12936,6 +12948,15 @@ packages:
       klaw: 1.3.1
       path-is-absolute: 1.0.1
       rimraf: 2.7.1
+    dev: true
+
+  /fs-extra/7.0.1:
+    resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
+    engines: {node: '>=6 <7 || >=8'}
+    dependencies:
+      graceful-fs: 4.2.9
+      jsonfile: 4.0.0
+      universalify: 0.1.2
     dev: true
 
   /fs-extra/8.1.0:
@@ -16597,6 +16618,12 @@ packages:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
 
+  /klaw-sync/6.0.0:
+    resolution: {integrity: sha512-nIeuVSzdCCs6TDPTqI8w1Yre34sSq7AkZ4B3sfOBbI2CgVSB4Du4aLQijFU2+lhAFCwt9+42Hel6lQNIv6AntQ==}
+    dependencies:
+      graceful-fs: 4.2.9
+    dev: true
+
   /klaw/1.3.1:
     resolution: {integrity: sha1-QIhDO0azsbolnXh4XY6W9zugJDk=}
     optionalDependencies:
@@ -18596,6 +18623,26 @@ packages:
   /pascalcase/0.1.1:
     resolution: {integrity: sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=}
     engines: {node: '>=0.10.0'}
+
+  /patch-package/6.4.7:
+    resolution: {integrity: sha512-S0vh/ZEafZ17hbhgqdnpunKDfzHQibQizx9g8yEf5dcVk3KOflOfdufRXQX8CSEkyOQwuM/bNz1GwKvFj54kaQ==}
+    engines: {npm: '>5'}
+    hasBin: true
+    dependencies:
+      '@yarnpkg/lockfile': 1.1.0
+      chalk: 2.4.2
+      cross-spawn: 6.0.5
+      find-yarn-workspace-root: 2.0.0
+      fs-extra: 7.0.1
+      is-ci: 2.0.0
+      klaw-sync: 6.0.0
+      minimist: 1.2.5
+      open: 7.4.2
+      rimraf: 2.7.1
+      semver: 5.7.1
+      slash: 2.0.0
+      tmp: 0.0.33
+    dev: true
 
   /path-browserify/0.0.1:
     resolution: {integrity: sha512-BapA40NHICOS+USX9SN4tyhq+A2RrN/Ws5F0Z5aMHDp98Fl86lX8Oti8B7uN93L4Ifv4fHOEA+pQw87gmMO/lQ==}
@@ -22538,7 +22585,6 @@ packages:
     engines: {node: '>=0.6.0'}
     dependencies:
       os-tmpdir: 1.0.2
-    dev: false
 
   /tmp/0.2.1:
     resolution: {integrity: sha512-76SUhtfqR2Ijn+xllcI5P1oyannHNHByD80W1q447gU3mp9G9PSpGdWmjUOHRDPiHYacIk66W7ubDTuPF3BEtQ==}
@@ -22686,14 +22732,15 @@ packages:
       typescript: 4.2.4
     dev: true
 
-  /ts-jest/27.0.4_4160c9d186d39be52b56c6e6a9303808:
-    resolution: {integrity: sha512-c4E1ECy9Xz2WGfTMyHbSaArlIva7Wi2p43QOMmCqjSSjHP06KXv+aT+eSY+yZMuqsMi3k7pyGsGj2q5oSl5WfQ==}
+  /ts-jest/27.1.3_4160c9d186d39be52b56c6e6a9303808:
+    resolution: {integrity: sha512-6Nlura7s6uM9BVUAoqLH7JHyMXjz8gluryjpPXxr3IxZdAXnU6FhjvVLHFtfd1vsE1p8zD1OJfskkc0jhTSnkA==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
     peerDependencies:
       '@babel/core': '>=7.0.0-beta.0 <8'
-      '@types/jest': ^26.0.0
+      '@types/jest': ^27.0.0
       babel-jest: '>=27.0.0 <28'
+      esbuild: ~0.14.0
       jest: ^27.0.0
       typescript: '>=3.8 <5.0'
     peerDependenciesMeta:
@@ -22703,19 +22750,19 @@ packages:
         optional: true
       babel-jest:
         optional: true
+      esbuild:
+        optional: true
     dependencies:
       '@babel/core': 7.14.0
       '@types/jest': 26.0.23
       babel-jest: 26.6.3_@babel+core@7.14.0
       bs-logger: 0.2.6
-      buffer-from: 1.1.2
       fast-json-stable-stringify: 2.1.0
       jest: 27.0.6
       jest-util: 27.5.1
       json5: 2.2.0
-      lodash: 4.17.21
+      lodash.memoize: 4.1.2
       make-error: 1.3.6
-      mkdirp: 1.0.4
       semver: 7.3.5
       typescript: 4.2.4
       yargs-parser: 20.2.9
