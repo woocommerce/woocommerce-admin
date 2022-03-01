@@ -1,6 +1,6 @@
 # Testing instructions
 
-## Unreleased
+## 3.3.0
 
 ### Prompt a modal to save any unsaved changes in OBW
 
@@ -12,6 +12,72 @@
 6. Go back to the step and confirm the changes.
 7. Repeat the step, but click the disregard button for this time.
 8. Confirm the changes are not saved for this time.
+
+### Fix Google Listings plugin is always shown in free features despite already activated
+
+1. Make sure the fallback payment suggestions file is used:
+    - turn off `woocommerce_show_marketplace_suggestions` option using `wp-cli`:
+      `wp option set woocommerce_show_marketplace_suggestions no`
+2. Go to setup wizard's business details step -> free features tab
+3. Observe that "Google Listings and Ads plugin" is displayed
+4. Install and activate Google Listings and Ads plugin (https://woocommerce.com/products/google-listings-and-ads/)
+5. Go to setup wizard's business details step -> free features tab
+6. Observe the plugin is NOT present
+
+### Fix view logic for Setup additional payment providers task
+
+-   Start the onboarding wizard on a fresh install
+-   Choose a supported country like US
+-   Install WooCommerce Payments in the Business Details / Free Features step.
+-   Do not complete the WooCommerce Payments set up.
+
+**Case 1: WC Pay is not set up**
+
+-   See that "Get paid with WooCommerce Payments" task is not ticked.
+-   See that "Setup additional payment providers" is not shown.
+
+<img width="529" alt="Screen Shot 2022-03-01 at 3 01 17 pm" src="https://user-images.githubusercontent.com/9312929/156120850-91dbffb9-04c8-4a9a-afa1-3430ed810ffa.png">
+
+**Case 2 WC Pay is set up**
+
+-   Set up WooCommerce Payments or cheat by adding `return true` to `src/Features/OnboardingTasks/Tasks/WooCommercePayments.php` [line 128](https://github.com/woocommerce/woocommerce-admin/blob/25458963affe344f8740004ad09aa6a9927e4cb5/src/Features/OnboardingTasks/Tasks/WooCommercePayments.php#L128)
+-   See that "Get paid with WooCommerce Payments" task is ticked.
+-   See that "Setup additional payment providers" is shown.
+
+<img width="526" alt="Screen Shot 2022-03-01 at 3 01 03 pm" src="https://user-images.githubusercontent.com/9312929/156121335-c4cfe575-9992-4896-a89d-444d1909548d.png">
+
+### Fix setup wizard title and flash of content
+
+1. Navigate to `wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard` directly via your browser's address bar
+2. Note that the page content underneath (header, menu, etc) is not shown while the profile wizard is loading
+3. In your browser's console run `document.body.classList.remove('woocommerce-admin-full-screen');`
+4. This will result in a broken layout, but the important item to note here is that the header title is now "Store details" instead of "/setup-wizardStoreDetails"
+5. Navigate to other pages to make sure no regressions have occurred
+
+### OBW: fix copy on Business Details when "WooCommerce Shipping" is not listed
+
+1. Create a test site using JN.
+2. Start OBW and enter an address that is not in the US.
+3. Choose "food and drink" from the Industry
+4. When you get to the "Business Details", click "Free features".
+5. Note that "WooCommerce Shipping" is not listed.
+6. Confirm that the copy under the plugin list says: `By installing Jetpack plugin for free you agree to our Terms of Service.`.
+
+![screenshot-one local-2022 02 16-18_11_29](https://user-images.githubusercontent.com/1314156/154358103-53f33091-0673-4637-87f1-925b2aa4c1ca.png)
+
+7. No go to the first step and select an address in the US.
+8. Go back to the "Business Details" step and click "Free features".
+9. The text now should say: `By installing Jetpack and WooCommerce Shipping plugins for free you agree to our Terms of Service.`
+
+![screenshot-one local-2022 02 16-18_12_27](https://user-images.githubusercontent.com/1314156/154358164-532abca7-6d9d-4497-a216-4f62d3ca5580.png)
+
+10. Run the tests and confirm that everything is working well.
+
+### Show single success message for theme install and activation
+
+1. Navigate to the store setup wizard theme step
+2. Choose a new theme
+3. Note the single success toast notice
 
 ## 3.2.0
 
@@ -83,11 +149,14 @@
 ### Add chart color filter
 
 1. Add the following JS to your admin head. You can use a plugin like "Add Admin Javascript" to do this:
+
 ```
  addFilter( 'woocommerce_admin_chart_item_color', 'example', ( index, key, orderedKeys ) => '#7f54b3' );
 ```
+
 2. Navigate to the profile wizard. `wp-admin/admin.php?page=wc-admin&path=%2Fanalytics%2Fproducts`.
 3. Make sure the chart line colors are purple.
+
 ### Add additional store profiler track for the business details tab. #8265
 
 1. Open your console and make sure you have tracks outputted ( `localStorage.setItem( 'debug', 'wc-admin:*' );` )
