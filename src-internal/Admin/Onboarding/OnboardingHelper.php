@@ -15,22 +15,39 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
 class OnboardingHelper {
 
 	/**
+	 * Class instance.
+	 *
+	 * @var OnboardingHelper instance
+	 */
+	private static $instance = null;
+
+	/**
+	 * Get class instance.
+	 */
+	final public static function instance() {
+		if ( ! static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
+
+	/**
 	 * Init.
 	 */
-	public static function init() {
+	public function init() {
 		if ( ! is_admin() ) {
 			return;
 		}
 
-		add_action( 'current_screen', array( __CLASS__, 'add_help_tab' ), 60 );
-		add_action( 'current_screen', array( __CLASS__, 'reset_task_list' ) );
-		add_action( 'current_screen', array( __CLASS__, 'reset_extended_task_list' ) );
+		add_action( 'current_screen', array( $this, 'add_help_tab' ), 60 );
+		add_action( 'current_screen', array( $this, 'reset_task_list' ) );
+		add_action( 'current_screen', array( $this, 'reset_extended_task_list' ) );
 	}
 
 	/**
 	 * Update the help tab setup link to reset the onboarding profiler.
 	 */
-	public static function add_help_tab() {
+	public function add_help_tab() {
 		if ( ! function_exists( 'wc_get_screen_ids' ) ) {
 			return;
 		}
@@ -90,7 +107,7 @@ class OnboardingHelper {
 	/**
 	 * Reset the onboarding task list and redirect to the dashboard.
 	 */
-	public static function reset_task_list() {
+	public function reset_task_list() {
 		if (
 			! PageController::is_admin_page() ||
 			! isset( $_GET['reset_task_list'] ) // phpcs:ignore CSRF ok.
@@ -122,7 +139,7 @@ class OnboardingHelper {
 	/**
 	 * Reset the extended task list and redirect to the dashboard.
 	 */
-	public static function reset_extended_task_list() {
+	public function reset_extended_task_list() {
 		if (
 			! PageController::is_admin_page() ||
 			! isset( $_GET['reset_extended_task_list'] ) // phpcs:ignore CSRF ok.

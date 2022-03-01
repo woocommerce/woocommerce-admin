@@ -34,16 +34,6 @@ class Onboarding extends DeprecatedClassFacade {
 	}
 
 	/**
-	 * Send profile data to WooCommerce.com.
-	 *
-	 * @deprecated 6.3.0
-	 */
-	public static function send_profile_data() {
-		wc_deprecated_function( 'send_profile_data', '6.3', '\Automattic\WooCommerce\Internal\Admin\OnboardingSync::send_profile_data()' );
-		return \Automattic\WooCommerce\Internal\Admin\OnboardingSync::send_profile_data();
-	}
-
-	/**
 	 * Get a list of allowed industries for the onboarding wizard.
 	 *
 	 * @deprecated 6.3.0

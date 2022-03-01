@@ -176,19 +176,6 @@ class OnboardingThemes {
 	}
 
 	/**
-	 * Check if theme has declared support for WooCommerce.
-	 *
-	 * @param WP_Theme $theme Theme to check.
-	 * @link https://developer.woocommerce.com/2017/12/09/wc-3-3-will-look-great-on-all-the-themes/
-	 * @deprecated 2.2.0
-	 * @return bool
-	 */
-	public static function has_woocommerce_support( $theme ) {
-		wc_deprecated_function( 'Onboarding::has_woocommerce_support', '5.3' ); // Deprecated since WooCommerce 5.3.
-		return true; // All themes are supported since WooCommerce 3.3.
-	}
-
-	/**
 	 * Delete the stored themes transient.
 	 */
 	public static function delete_themes_transient() {

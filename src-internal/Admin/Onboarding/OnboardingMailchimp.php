@@ -13,10 +13,27 @@ use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
  */
 class OnboardingMailchimp {
 	/**
+	 * Class instance.
+	 *
+	 * @var OnboardingMailchimp instance
+	 */
+	private static $instance = null;
+
+	/**
+	 * Get class instance.
+	 */
+	final public static function instance() {
+		if ( ! static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
+
+	/**
 	 * Init.
 	 */
-	public static function init() {
-		add_action( 'woocommerce_onboarding_profile_data_updated', array( __CLASS__, 'on_profile_data_updated' ), 10, 2 );
+	public function init() {
+		add_action( 'woocommerce_onboarding_profile_data_updated', array( $this, 'on_profile_data_updated' ), 10, 2 );
 	}
 
 	/**
@@ -25,7 +42,7 @@ class OnboardingMailchimp {
 	 * @param array $existing_data Existing option data.
 	 * @param array $updating_data Updating option data.
 	 */
-	public static function on_profile_data_updated( $existing_data, $updating_data ) {
+	public function on_profile_data_updated( $existing_data, $updating_data ) {
 		if (
 			isset( $existing_data['store_email'] ) &&
 			isset( $updating_data['store_email'] ) &&

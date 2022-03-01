@@ -16,23 +16,40 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
  */
 class OnboardingSetupWizard {
 	/**
+	 * Class instance.
+	 *
+	 * @var OnboardingSetupWizard instance
+	 */
+	private static $instance = null;
+
+	/**
+	 * Get class instance.
+	 */
+	final public static function instance() {
+		if ( ! static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
+
+	/**
 	 * Add onboarding actions.
 	 */
-	public static function init() {
+	public function init() {
 		if ( ! is_admin() ) {
 			return;
 		}
 
 		// Old settings injection.
 		// Run after Automattic\WooCommerce\Internal\Admin\Loader.
-		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'component_settings' ), 20 );
+		add_filter( 'woocommerce_components_settings', array( $this, 'component_settings' ), 20 );
 		// New settings injection.
-		add_filter( 'woocommerce_admin_shared_settings', array( __CLASS__, 'component_settings' ), 20 );
-		add_filter( 'woocommerce_admin_preload_settings', array( __CLASS__, 'preload_settings' ) );
-		add_filter( 'admin_body_class', array( __CLASS__, 'add_loading_classes' ) );
-		add_action( 'admin_init', array( __CLASS__, 'do_admin_redirects' ) );
-		add_action( 'current_screen', array( __CLASS__, 'redirect_to_profiler' ) );
-		add_filter( 'woocommerce_show_admin_notice', array( __CLASS__, 'remove_old_install_notice' ), 10, 2 );
+		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 20 );
+		add_filter( 'woocommerce_admin_preload_settings', array( $this, 'preload_settings' ) );
+		add_filter( 'admin_body_class', array( $this, 'add_loading_classes' ) );
+		add_action( 'admin_init', array( $this, 'do_admin_redirects' ) );
+		add_action( 'current_screen', array( $this, 'redirect_to_profiler' ) );
+		add_filter( 'woocommerce_show_admin_notice', array( $this, 'remove_old_install_notice' ), 10, 2 );
 	}
 
 	/**
@@ -42,7 +59,7 @@ class OnboardingSetupWizard {
 	 *
 	 * @return bool
 	 */
-	public static function is_running_from_async_action_scheduler() {
+	private function is_running_from_async_action_scheduler() {
 		if ( function_exists( '\wc_is_running_from_async_action_scheduler' ) ) {
 			return \wc_is_running_from_async_action_scheduler();
 		}
@@ -56,10 +73,10 @@ class OnboardingSetupWizard {
 	 *
 	 * For setup wizard, transient must be present, the user must have access rights, and we must ignore the network/bulk plugin updaters.
 	 */
-	public static function do_admin_redirects() {
+	public function do_admin_redirects() {
 		// Don't run this fn from Action Scheduler requests, as it would clear _wc_activation_redirect transient.
 		// That means OBW would never be shown.
-		if ( self::is_running_from_async_action_scheduler() ) {
+		if ( $this->is_running_from_async_action_scheduler() ) {
 			return;
 		}
 
@@ -121,8 +138,8 @@ class OnboardingSetupWizard {
 	 *
 	 * @return bool
 	 */
-	public static function should_show() {
-		if ( self::is_setup_wizard() ) {
+	private function should_show() {
+		if ( $this->is_setup_wizard() ) {
 			return true;
 		}
 
@@ -132,8 +149,8 @@ class OnboardingSetupWizard {
 	/**
 	 * Redirect to the profiler on homepage if completion is needed.
 	 */
-	public static function redirect_to_profiler() {
-		if ( ! self::is_homepage() || ! OnboardingProfile::needs_completion() ) {
+	public function redirect_to_profiler() {
+		if ( ! $this->is_homepage() || ! OnboardingProfile::needs_completion() ) {
 			return;
 		}
 
@@ -146,7 +163,7 @@ class OnboardingSetupWizard {
 	 *
 	 * @return bool
 	 */
-	public static function is_setup_wizard() {
+	private function is_setup_wizard() {
 		/* phpcs:disable WordPress.Security.NonceVerification */
 		return isset( $_GET['page'] ) &&
 			'wc-admin' === $_GET['page'] &&
@@ -160,7 +177,7 @@ class OnboardingSetupWizard {
 	 *
 	 * @return bool
 	 */
-	public static function is_homepage() {
+	private function is_homepage() {
 		/* phpcs:disable WordPress.Security.NonceVerification */
 		return isset( $_GET['page'] ) &&
 			'wc-admin' === $_GET['page'] &&
@@ -173,7 +190,7 @@ class OnboardingSetupWizard {
 	 *
 	 * @return bool
 	 */
-	public static function is_woocommerce_page() {
+	private function is_woocommerce_page() {
 		$current_page = PageController::get_instance()->get_current_page();
 		if ( ! $current_page || ! isset( $current_page['path'] ) ) {
 			return false;
@@ -189,7 +206,7 @@ class OnboardingSetupWizard {
 	 *
 	 * @return array
 	 */
-	public static function component_settings( $settings ) {
+	public function component_settings( $settings ) {
 		$profile                = (array) get_option( OnboardingProfile::DATA_OPTION, array() );
 		$settings['onboarding'] = array(
 			'profile' => $profile,
@@ -198,9 +215,9 @@ class OnboardingSetupWizard {
 		// Only fetch if the onboarding wizard OR the task list is incomplete or currently shown
 		// or the current page is one of the WooCommerce Admin pages.
 		if (
-			( ! self::should_show() && ! count( TaskLists::get_visible() )
+			( ! $this->should_show() && ! count( TaskLists::get_visible() )
 			||
-			! self::is_woocommerce_page()
+			! $this->is_woocommerce_page()
 		)
 		) {
 			return $settings;
@@ -224,7 +241,7 @@ class OnboardingSetupWizard {
 	 * @param array $options Array of options to preload.
 	 * @return array
 	 */
-	public static function preload_settings( $options ) {
+	public function preload_settings( $options ) {
 		$options[] = 'general';
 
 		return $options;
@@ -236,9 +253,9 @@ class OnboardingSetupWizard {
 	 * @param bool $classes Body classes.
 	 * @return array
 	 */
-	public static function add_loading_classes( $classes ) {
+	public function add_loading_classes( $classes ) {
 		/* phpcs:disable WordPress.Security.NonceVerification */
-		if ( self::is_setup_wizard() ) {
+		if ( $this->is_setup_wizard() ) {
 			$classes .= ' woocommerce-admin-full-screen';
 		}
 		/* phpcs: enable */
@@ -253,44 +270,11 @@ class OnboardingSetupWizard {
 	 * @param string $notice The slug of the notice.
 	 * @return bool
 	 */
-	public static function remove_old_install_notice( $show, $notice ) {
+	public function remove_old_install_notice( $show, $notice ) {
 		if ( 'install' === $notice ) {
 			return false;
 		}
 
 		return $show;
-	}
-
-	/**
-	 * When updating WooCommerce, mark the profiler and task list complete.
-	 *
-	 * @todo The `maybe_enable_setup_wizard()` method should be revamped on onboarding enable in core.
-	 * See https://github.com/woocommerce/woocommerce/blob/1ca791f8f2325fe2ee0947b9c47e6a4627366374/includes/class-wc-install.php#L341
-	 */
-	public static function maybe_mark_complete() {
-		// The install notice still exists so don't complete the profiler.
-		if ( ! class_exists( 'WC_Admin_Notices' ) || \WC_Admin_Notices::has_notice( 'install' ) ) {
-			return;
-		}
-
-		$onboarding_data = get_option( OnboardingProfile::DATA_OPTION, array() );
-		// Don't make updates if the profiler is completed or skipped, but task list is potentially incomplete.
-		if (
-			( isset( $onboarding_data['completed'] ) && $onboarding_data['completed'] ) ||
-			( isset( $onboarding_data['skipped'] ) && $onboarding_data['skipped'] )
-		) {
-			return;
-		}
-
-		$onboarding_data['completed'] = true;
-		update_option( OnboardingProfile::DATA_OPTION, $onboarding_data );
-
-		if ( ! WCAdminHelper::is_wc_admin_active_for( DAY_IN_SECONDS ) ) {
-			$task_list = TaskLists::get_list( 'setup' );
-			if ( ! $task_list ) {
-				return;
-			}
-			$task_list->hide();
-		}
 	}
 }

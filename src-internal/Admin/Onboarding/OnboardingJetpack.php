@@ -11,20 +11,37 @@ namespace Automattic\WooCommerce\Internal\Admin\Onboarding;
  */
 class OnboardingJetpack {
 	/**
+	 * Class instance.
+	 *
+	 * @var OnboardingJetpack instance
+	 */
+	private static $instance = null;
+
+	/**
+	 * Get class instance.
+	 */
+	final public static function instance() {
+		if ( ! static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
+
+	/**
 	 * Init.
 	 */
-	public static function init() {
-		add_action( 'woocommerce_admin_plugins_pre_activate', array( __CLASS__, 'activate_and_install_jetpack_ahead_of_wcpay' ) );
-		add_action( 'woocommerce_admin_plugins_pre_install', array( __CLASS__, 'activate_and_install_jetpack_ahead_of_wcpay' ) );
+	public function init() {
+		add_action( 'woocommerce_admin_plugins_pre_activate', array( $this, 'activate_and_install_jetpack_ahead_of_wcpay' ) );
+		add_action( 'woocommerce_admin_plugins_pre_install', array( $this, 'activate_and_install_jetpack_ahead_of_wcpay' ) );
 
 		// Always hook into Jetpack connection even if outside of admin.
-		add_action( 'jetpack_site_registered', array( __CLASS__, 'set_woocommerce_setup_jetpack_opted_in' ) );
+		add_action( 'jetpack_site_registered', array( $this, 'set_woocommerce_setup_jetpack_opted_in' ) );
 	}
 
 	/**
 	 * Sets the woocommerce_setup_jetpack_opted_in to true when Jetpack connects to WPCOM.
 	 */
-	public static function set_woocommerce_setup_jetpack_opted_in() {
+	public function set_woocommerce_setup_jetpack_opted_in() {
 		update_option( 'woocommerce_setup_jetpack_opted_in', true );
 	}
 
@@ -39,7 +56,7 @@ class OnboardingJetpack {
 	 *
 	 * @return array
 	 */
-	public static function activate_and_install_jetpack_ahead_of_wcpay( $plugins ) {
+	public function activate_and_install_jetpack_ahead_of_wcpay( $plugins ) {
 		if ( in_array( 'jetpack', $plugins, true ) && in_array( 'woocommerce-payments', $plugins, true ) ) {
 			array_unshift( $plugins, 'jetpack' );
 			$plugins = array_unique( $plugins );

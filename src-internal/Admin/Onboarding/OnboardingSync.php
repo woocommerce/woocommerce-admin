@@ -14,23 +14,40 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
  */
 class OnboardingSync {
 	/**
+	 * Class instance.
+	 *
+	 * @var OnboardingSync instance
+	 */
+	private static $instance = null;
+
+	/**
+	 * Get class instance.
+	 */
+	final public static function instance() {
+		if ( ! static::$instance ) {
+			static::$instance = new static();
+		}
+		return static::$instance;
+	}
+
+	/**
 	 * Init.
 	 */
-	public static function init() {
-		add_action( 'update_option_' . OnboardingProfile::DATA_OPTION, array( __CLASS__, 'send_profile_data_on_update' ), 10, 2 );
-		add_action( 'woocommerce_helper_connected', array( __CLASS__, 'send_profile_data_on_connect' ) );
+	public function init() {
+		add_action( 'update_option_' . OnboardingProfile::DATA_OPTION, array( $this, 'send_profile_data_on_update' ), 10, 2 );
+		add_action( 'woocommerce_helper_connected', array( $this, 'send_profile_data_on_connect' ) );
 
 		if ( ! is_admin() ) {
 			return;
 		}
 
-		add_action( 'current_screen', array( __CLASS__, 'redirect_wccom_install' ) );
+		add_action( 'current_screen', array( $this, 'redirect_wccom_install' ) );
 	}
 
 	/**
 	 * Send profile data to WooCommerce.com.
 	 */
-	public static function send_profile_data() {
+	private function send_profile_data() {
 		if ( 'yes' !== get_option( 'woocommerce_allow_tracking', 'no' ) ) {
 			return;
 		}
@@ -94,24 +111,24 @@ class OnboardingSync {
 	 * @param array $old_value Previous value.
 	 * @param array $value Current value.
 	 */
-	public static function send_profile_data_on_update( $old_value, $value ) {
+	public function send_profile_data_on_update( $old_value, $value ) {
 		if ( ! isset( $value['completed'] ) || ! $value['completed'] ) {
 			return;
 		}
 
-		self::send_profile_data();
+		$this->send_profile_data();
 	}
 
 	/**
 	 * Send profiler data after a site is connected.
 	 */
-	public static function send_profile_data_on_connect() {
+	public function send_profile_data_on_connect() {
 		$profile = get_option( OnboardingProfile::DATA_OPTION, array() );
 		if ( ! isset( $profile['completed'] ) || ! $profile['completed'] ) {
 			return;
 		}
 
-		self::send_profile_data();
+		$this->send_profile_data();
 	}
 
 	/**
@@ -119,7 +136,7 @@ class OnboardingSync {
 	 *
 	 * @todo Once URL params are added to the redirect, we can check those instead of the referer.
 	 */
-	public static function redirect_wccom_install() {
+	public function redirect_wccom_install() {
 		$task_list = TaskLists::get_list( 'setup' );
 
 		if (

@@ -14,13 +14,13 @@ class Onboarding {
 	 * Initialize onboarding functionality.
 	 */
 	public static function init() {
-		OnboardingHelper::init();
+		OnboardingHelper::instance()->init();
 		OnboardingIndustries::init();
-		OnboardingJetpack::init();
-		OnboardingMailchimp::init();
+		OnboardingJetpack::instance()->init();
+		OnboardingMailchimp::instance()->init();
 		OnboardingProfile::init();
-		OnboardingSetupWizard::init();
-		OnboardingSync::init();
+		OnboardingSetupWizard::instance()->init();
+		OnboardingSync::instance()->init();
 		OnboardingThemes::init();
 	}
 }
