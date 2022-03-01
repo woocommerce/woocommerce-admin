@@ -24,7 +24,7 @@ use \Automattic\WooCommerce\Admin\Notes\EUVATNumber;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;
 use \Automattic\WooCommerce\Admin\Notes\MarketingJetpack;
 use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommerceSubscriptions;
-use \Automattic\WooCommerce\Admin\Notes\MigrateFromShopify;
+use \Automattic\WooCommerce\Internal\Admin\Notes\MigrateFromShopify;
 use \Automattic\WooCommerce\Admin\Notes\LaunchChecklist;
 use \Automattic\WooCommerce\Internal\Admin\Notes\RealTimeOrderAlerts;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;

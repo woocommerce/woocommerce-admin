@@ -318,7 +318,7 @@ class WC_Admin_Notes_Migrate_From_Shopify extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\MigrateFromShopify';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\MigrateFromShopify';
 
 	/**
 	 * The version that this class was deprecated in.
