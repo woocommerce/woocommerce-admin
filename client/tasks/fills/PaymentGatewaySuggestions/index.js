@@ -70,7 +70,9 @@ export const PaymentGatewaySuggestions = ( { onComplete, query } ) => {
 			const enrichedSuggestion = {
 				installed: !! mappedPaymentGateways[ id ],
 				postInstallScripts: installedGateway.post_install_scripts,
-				hasPlugins: suggestion.plugins && suggestion.plugins.length,
+				hasPlugins: !! (
+					suggestion.plugins && suggestion.plugins.length
+				),
 				enabled: installedGateway.enabled || false,
 				needsSetup: installedGateway.needs_setup,
 				settingsUrl: installedGateway.settings_url,
