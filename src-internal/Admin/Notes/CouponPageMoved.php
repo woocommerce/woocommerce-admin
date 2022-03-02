@@ -5,13 +5,16 @@
  * Adds a notice when the store manager access the coupons page via the old WooCommerce > Coupons menu.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
+defined( 'ABSPATH' ) || exit;
+
+use Automattic\WooCommerce\Admin\Notes\Note;
+use Automattic\WooCommerce\Admin\Notes\Notes;
+use Automattic\WooCommerce\Admin\Notes\NoteTraits;
 use Automattic\WooCommerce\Internal\Admin\CouponsMovedTrait;
 use stdClass;
 use WC_Data_Store;
-
-defined( 'ABSPATH' ) || exit;
 
 /**
  * Coupon_Page_Moved class.
