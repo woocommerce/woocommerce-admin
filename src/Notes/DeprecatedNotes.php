@@ -129,7 +129,7 @@ class WC_Admin_Notes_Deactivate_Plugin extends DeprecatedClassFacade {
 	 *
 	 * @var string
 	 */
-	protected static $facade_over_classname = 'Automattic\WooCommerce\Admin\Notes\DeactivatePlugin';
+	protected static $facade_over_classname = 'Automattic\WooCommerce\Internal\Admin\Notes\DeactivatePlugin';
 
 	/**
 	 * The version that this class was deprecated in.
