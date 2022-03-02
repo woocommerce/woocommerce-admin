@@ -5,9 +5,12 @@
  * Adds a note with a link to the customizer a day after adding the first product
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use \Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * Class CustomizingProductCatalog

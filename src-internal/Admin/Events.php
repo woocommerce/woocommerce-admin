@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 use \Automattic\WooCommerce\Admin\Features\Features;
 use \Automattic\WooCommerce\Admin\Notes\AddingAndManangingProducts;
 use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
-use \Automattic\WooCommerce\Admin\Notes\CustomizingProductCatalog;
+use \Automattic\WooCommerce\Internal\Admin\Notes\CustomizingProductCatalog;
 use Automattic\WooCommerce\Internal\Admin\Notes\FirstDownlaodableProduct;
 use \Automattic\WooCommerce\Internal\Admin\Notes\InsightFirstProductAndPayment;
 use \Automattic\WooCommerce\Internal\Admin\Notes\MobileApp;
