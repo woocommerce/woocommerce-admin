@@ -149,7 +149,7 @@ class FeaturePlugin {
 		 * Constant used to fetch the connection owner token
 		 *
 		 * @deprecated 3.3.0
-		 * @var boolean
+		 * @var string
 		 */
 		define( 'WC_ADMIN_VERSION_NUMBER', '3.3.0' );
 	}
