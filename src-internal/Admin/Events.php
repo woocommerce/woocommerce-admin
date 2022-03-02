@@ -38,7 +38,7 @@ use \Automattic\WooCommerce\Internal\Admin\Notes\TestCheckout;
 use \Automattic\WooCommerce\Internal\Admin\Notes\EditProductsOnTheMove;
 use \Automattic\WooCommerce\Internal\Admin\Notes\PerformanceOnMobile;
 use \Automattic\WooCommerce\Internal\Admin\Notes\ManageOrdersOnTheGo;
-use \Automattic\WooCommerce\Admin\Notes\AddFirstProduct;
+use \Automattic\WooCommerce\Internal\Admin\Notes\AddFirstProduct;
 use \Automattic\WooCommerce\Internal\Admin\Notes\NavigationNudge;
 use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
 use \Automattic\WooCommerce\Internal\Admin\Notes\CompleteStoreDetails;

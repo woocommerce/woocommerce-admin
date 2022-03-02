@@ -5,9 +5,12 @@
  * Adds a note (type `email`) to bring the client back to the store setup flow.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
+
+use \Automattic\WooCommerce\Admin\Notes\Note;
+use \Automattic\WooCommerce\Admin\Notes\NoteTraits;
 
 /**
  * Add_First_Product.
