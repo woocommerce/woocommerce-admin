@@ -9,7 +9,7 @@ namespace Automattic\WooCommerce\Internal\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Features\Features;
-use \Automattic\WooCommerce\Admin\Notes\AddingAndManangingProducts;
+use \Automattic\WooCommerce\Internal\Admin\Notes\AddingAndManangingProducts;
 use \Automattic\WooCommerce\Internal\Admin\Notes\ChoosingTheme;
 use \Automattic\WooCommerce\Internal\Admin\Notes\CustomizingProductCatalog;
 use Automattic\WooCommerce\Internal\Admin\Notes\FirstDownlaodableProduct;
