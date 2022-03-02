@@ -35,6 +35,7 @@ export type Plugin = {
 	plugins: string[];
 	title: string;
 	image: string;
+	square_image?: string;
 	recommendation_priority?: number;
 	is_visible?: boolean;
 	is_local_partner?: boolean;
