@@ -192,7 +192,9 @@ const PaymentRecommendations: React.FC = () => {
 							__( 'Get started', 'woocommerce-admin' ) }
 					</Button>
 				),
-				before: <img src={ plugin.square_image || plugin.image } alt="" />,
+				before: (
+					<img src={ plugin.square_image || plugin.image } alt="" />
+				),
 			};
 		} );
 
