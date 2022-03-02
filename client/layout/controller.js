@@ -13,7 +13,6 @@ import {
 	getQueryExcludedScreens,
 	getScreenFromPath,
 } from '@woocommerce/navigation';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { Spinner } from '@woocommerce/components';
 
 /**
@@ -21,6 +20,7 @@ import { Spinner } from '@woocommerce/components';
  */
 import getReports from '../analytics/report/get-reports';
 import { isWCAdmin } from '../dashboard/utils';
+import { getAdminSetting } from '~/utils/admin-settings';
 import { NoMatch } from './NoMatch';
 
 const AnalyticsReport = lazy( () =>
@@ -50,12 +50,18 @@ const SettingsGroup = lazy( () =>
 	import( /* webpackChunkName: "profile-wizard" */ '../settings' )
 );
 
+const WCPaymentsWelcomePage = lazy( () =>
+	import(
+		/* webpackChunkName: "wcpay-payment-welcome-page" */ '../payments-welcome'
+	)
+);
+
 export const PAGES_FILTER = 'woocommerce_admin_pages_list';
 
 export const getPages = () => {
 	const pages = [];
 	const initialBreadcrumbs = [
-		[ '', getSetting( 'woocommerceTranslation' ) ],
+		[ '', getAdminSetting( 'woocommerceTranslation' ) ],
 	];
 
 	pages.push( {
@@ -167,7 +173,7 @@ export const getPages = () => {
 			path: '/setup-wizard',
 			breadcrumbs: [
 				...initialBreadcrumbs,
-				[ '/setup-wizard', __( 'Setup Wizard', 'woocommerce-admin' ) ],
+				__( 'Setup Wizard', 'woocommerce-admin' ),
 			],
 			capability: 'manage_woocommerce',
 		} );
@@ -179,7 +185,7 @@ export const getPages = () => {
 			path: '/settings/:page',
 			breadcrumbs: ( { match } ) => {
 				// @todo This might need to be refactored to retreive groups via data store.
-				const settingsPages = getSetting( 'settingsPages' );
+				const settingsPages = getAdminSetting( 'settingsPages' );
 				const page = settingsPages[ match.params.page ];
 				if ( ! page ) {
 					return [];
@@ -202,6 +208,31 @@ export const getPages = () => {
 		} );
 	}
 
+	if ( window.wcAdminFeatures[ 'wc-pay-welcome-page' ] ) {
+		pages.push( {
+			container: WCPaymentsWelcomePage,
+			path: '/wc-pay-welcome-page',
+			breadcrumbs: [
+				[
+					'/wc-pay-welcome-page',
+					__( 'WooCommerce Payments', 'woocommerce-admin' ),
+				],
+				__( 'WooCommerce Payments', 'woocommerce-admin' ),
+			],
+			navArgs: {
+				id: 'woocommerce-wc-pay-welcome-page',
+			},
+			wpOpenMenu: 'toplevel_page_woocommerce-wc-pay-welcome-page',
+			capability: 'manage_woocommerce',
+		} );
+	}
+
+	/**
+	 * List of WooCommerce Admin pages.
+	 *
+	 * @filter woocommerce_admin_pages_list
+	 * @param {Array.<Object>} pages Array page objects.
+	 */
 	const filteredPages = applyFilters( PAGES_FILTER, pages );
 
 	filteredPages.push( {

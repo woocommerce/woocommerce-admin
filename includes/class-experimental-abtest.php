@@ -136,7 +136,7 @@ final class Experimental_Abtest {
 		}
 
 		// Store the variation in our internal cache.
-		$this->tests[ $test_name ] = $results['variations'][ $test_name ];
+		$this->tests[ $test_name ] = $results['variations'][ $test_name ] ?? null;
 
 		$variation = $results['variations'][ $test_name ] ?? 'control';
 
@@ -156,9 +156,12 @@ final class Experimental_Abtest {
 	 */
 	protected function request_variation( $test_name ) {
 		$args = array(
-			'experiment_name' => $test_name,
-			'anon_id'         => $this->anon_id,
+			'experiment_name'  => $test_name,
+			'anon_id'          => rawurlencode( $this->anon_id ),
+			'woo_country_code' => rawurlencode( get_option( 'woocommerce_default_country', 'US:CA' ) ),
 		);
+
+		$args = apply_filters( 'woocommerce_explat_request_args', $args );
 
 		$url = add_query_arg(
 			$args,

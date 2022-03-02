@@ -21,7 +21,9 @@ import {
 	PLUGINS_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { getSetting } from '@woocommerce/settings';
 import { recordEvent } from '@woocommerce/tracks';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -29,37 +31,119 @@ import { recordEvent } from '@woocommerce/tracks';
 import { CurrencyContext } from '~/lib/currency-context';
 import { createNoticesFromResponse } from '~/lib/notices';
 import { platformOptions } from '../../data/platform-options';
+import { employeeOptions } from '../../data/employee-options';
 import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { getRevenueOptions } from '../../data/revenue-options';
 import { getProductCountOptions } from '../../data/product-options';
 import { SelectiveExtensionsBundle } from './selective-extensions-bundle';
+import { getPluginSlug, getPluginTrackKey } from '~/utils';
 import './style.scss';
 
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
-const FREE_FEATURES_TAB_NAME = 'free-features';
+const BUSINESS_FEATURES_TAB_NAME = 'business-features';
 
-export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
+export const filterBusinessExtensions = (
+	extensionInstallationOptions,
+	alreadyActivatedExtensions = []
+) => {
 	return (
 		Object.keys( extensionInstallationOptions )
 			.filter(
 				( key ) =>
 					extensionInstallationOptions[ key ] &&
-					key !== 'install_extensions'
+					key !== 'install_extensions' &&
+					! alreadyActivatedExtensions.includes( key )
 			)
-			.map( ( key ) => {
-				// Remove anything after :
-				// Please refer to selective-extensions-bundle/index.js
-				// installableExtensions variable
-				// this is to allow duplicate slugs (Tax & Shipping for example)
-				return key.split( ':' )[ 0 ];
-			} )
+			.map( getPluginSlug )
 			// remove duplicate
 			.filter( ( item, index, arr ) => arr.indexOf( item ) === index )
 	);
 };
 
+const timeFrames = [
+	{ name: '0-2s', max: 2 },
+	{ name: '2-5s', max: 5 },
+	{ name: '5-10s', max: 10 },
+	{ name: '10-15s', max: 15 },
+	{ name: '15-20s', max: 20 },
+	{ name: '20-30s', max: 30 },
+	{ name: '30-60s', max: 60 },
+	{ name: '>60s' },
+];
+function getTimeFrame( timeInMs ) {
+	for ( const timeFrame of timeFrames ) {
+		if ( ! timeFrame.max ) {
+			return timeFrame.name;
+		}
+		if ( timeInMs < timeFrame.max * 1000 ) {
+			return timeFrame.name;
+		}
+	}
+}
+
+export const prepareExtensionTrackingData = (
+	extensionInstallationOptions
+) => {
+	const installedExtensions = {};
+	for ( let [ fieldKey, value ] of Object.entries(
+		extensionInstallationOptions
+	) ) {
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
+		if (
+			fieldKey !== 'install_extensions' &&
+			! installedExtensions[ `install_${ key }` ]
+		) {
+			installedExtensions[ `install_${ key }` ] = value;
+		}
+	}
+	return installedExtensions;
+};
+
+export const prepareExtensionTrackingInstallationData = (
+	extensionInstallationOptions,
+	installationData
+) => {
+	const installed = [];
+	const data = {};
+	for ( let [ fieldKey ] of Object.entries( extensionInstallationOptions ) ) {
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
+		if (
+			installationData &&
+			installationData.data &&
+			installationData.data.install_time &&
+			installationData.data.install_time[ fieldKey ]
+		) {
+			installed.push( key );
+			data[ `install_time_${ key }` ] = getTimeFrame(
+				installationData.data.install_time[ fieldKey ]
+			);
+		}
+	}
+	data.installed_extensions = installed;
+	data.activated_extensions =
+		installationData &&
+		installationData.data &&
+		installationData.data.activated
+			? installationData.data.activated
+			: [];
+	return data;
+};
+
+export const isSellingElsewhere = ( selectedOption ) =>
+	[
+		'other',
+		'brick-mortar',
+		'brick-mortar-other',
+		'other-woocommerce',
+	].includes( selectedOption );
+
+export const isSellingOtherPlatformInPerson = ( selectedOption ) =>
+	[ 'other', 'brick-mortar-other' ].includes( selectedOption );
+
 class BusinessDetails extends Component {
-	constructor() {
+	constructor( props ) {
 		super();
 
 		this.state = {
@@ -71,16 +155,40 @@ class BusinessDetails extends Component {
 
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
+		props.trackStepValueChanges(
+			props.step.key,
+			{ ...( this.state.savedValues || props.initialValues ) },
+			this.savedValues || props.initialValues,
+			this.persistProfileItems.bind( this )
+		);
 	}
 
-	async onContinue( extensionInstallationOptions ) {
+	async onContinue(
+		extensionInstallationOptions,
+		installableExtensionsData
+	) {
 		const {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
 		} = this.props;
 
+		const alreadyActivatedExtensions = installableExtensionsData.reduce(
+			( actExtensions, bundle ) => {
+				const activated = bundle.plugins
+					.filter( ( plugin ) => plugin.is_activated )
+					.map( ( plugin ) => plugin.key );
+				return [ ...actExtensions, ...activated ];
+			},
+			[]
+		);
+
 		const businessExtensions = filterBusinessExtensions(
+			extensionInstallationOptions,
+			alreadyActivatedExtensions
+		);
+
+		const installedExtensions = prepareExtensionTrackingData(
 			extensionInstallationOptions
 		);
 
@@ -88,13 +196,7 @@ class BusinessDetails extends Component {
 			all_extensions_installed: Object.values(
 				extensionInstallationOptions
 			).every( ( val ) => val ),
-			install_woocommerce_services:
-				extensionInstallationOptions[
-					'woocommerce-services:shipping'
-				] || extensionInstallationOptions[ 'woocommerce-services:tax' ],
-			install_jetpack: extensionInstallationOptions.jetpack,
-			install_wcpay:
-				extensionInstallationOptions[ 'woocommerce-payments' ],
+			...installedExtensions,
 		} );
 
 		const promises = [
@@ -104,12 +206,39 @@ class BusinessDetails extends Component {
 		];
 
 		if ( businessExtensions.length ) {
+			const installationStartTime = window.performance.now();
 			promises.push(
 				installAndActivatePlugins( businessExtensions )
 					.then( ( response ) => {
+						const totalInstallationTime =
+							window.performance.now() - installationStartTime;
+						const installedExtensionsData = prepareExtensionTrackingInstallationData(
+							extensionInstallationOptions,
+							response
+						);
+
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: true,
+								total_time: getTimeFrame(
+									totalInstallationTime
+								),
+								...installedExtensionsData,
+							}
+						);
 						createNoticesFromResponse( response );
 					} )
 					.catch( ( error ) => {
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: false,
+								failed_extensions: Object.keys(
+									error.data || {}
+								).map( ( key ) => getPluginTrackKey( key ) ),
+							}
+						);
 						createNoticesFromResponse( error );
 						throw new Error();
 					} )
@@ -118,7 +247,7 @@ class BusinessDetails extends Component {
 
 		Promise.all( promises )
 			.then( () => {
-				goToNextStep();
+				goToNextStep( { step: BUSINESS_FEATURES_TAB_NAME } );
 			} )
 			.catch( () => {
 				createNotice(
@@ -135,6 +264,7 @@ class BusinessDetails extends Component {
 		const { updateProfileItems, createNotice } = this.props;
 
 		const {
+			number_employees: numberEmployees,
 			other_platform: otherPlatform,
 			other_platform_name: otherPlatformName,
 			product_count: productCount,
@@ -144,6 +274,7 @@ class BusinessDetails extends Component {
 		} = this.state.savedValues;
 
 		const updates = {
+			number_employees: numberEmployees,
 			other_platform: otherPlatform,
 			other_platform_name:
 				otherPlatform === 'other' ? otherPlatformName : '',
@@ -158,10 +289,7 @@ class BusinessDetails extends Component {
 		const finalUpdates = Object.entries( updates ).reduce(
 			( acc, [ key, val ] ) => {
 				if ( val !== '' ) {
-					return {
-						...acc,
-						[ key ]: val,
-					};
+					acc[ key ] = val;
 				}
 
 				return acc;
@@ -199,18 +327,17 @@ class BusinessDetails extends Component {
 
 		if (
 			! values.other_platform.length &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform = __(
 				'This field is required',
 				'woocommerce-admin'
 			);
 		}
-
 		if (
-			! values.other_platform_name &&
+			! values.other_platform_name.trim().length &&
 			values.other_platform === 'other' &&
-			[ 'other', 'brick-mortar-other' ].includes( values.selling_venues )
+			isSellingOtherPlatformInPerson( values.selling_venues )
 		) {
 			errors.other_platform_name = __(
 				'This field is required',
@@ -219,13 +346,18 @@ class BusinessDetails extends Component {
 		}
 
 		if (
+			! values.number_employees.length &&
+			isSellingElsewhere( values.selling_venues )
+		) {
+			errors.number_employees = __(
+				'This field is required',
+				'woocommerce-admin'
+			);
+		}
+
+		if (
 			! values.revenue.length &&
-			[
-				'other',
-				'brick-mortar',
-				'brick-mortar-other',
-				'other-woocommerce',
-			].includes( values.selling_venues )
+			isSellingElsewhere( values.selling_venues )
 		) {
 			errors.revenue = __(
 				'This field is required',
@@ -241,6 +373,7 @@ class BusinessDetails extends Component {
 	}
 
 	trackBusinessDetailsStep( {
+		number_employees: numberEmployees,
 		other_platform: otherPlatform,
 		other_platform_name: otherPlatformName,
 		product_count: productCount,
@@ -251,6 +384,7 @@ class BusinessDetails extends Component {
 		const { getCurrencyConfig } = this.context;
 
 		recordEvent( 'storeprofiler_store_business_details_continue_variant', {
+			number_employees: numberEmployees,
 			already_selling: sellingVenues,
 			currency: getCurrencyConfig().code,
 			product_number: productCount,
@@ -259,6 +393,21 @@ class BusinessDetails extends Component {
 			used_platform_name: otherPlatformName,
 			setup_client: isSetupClient,
 		} );
+		recordEvent( 'storeprofiler_step_complete', {
+			step: BUSINESS_DETAILS_TAB_NAME,
+			wc_version: getSetting( 'wcVersion' ),
+		} );
+	}
+
+	getSelectControlProps( getInputProps, name = '' ) {
+		const { className, ...props } = getInputProps( name );
+		return {
+			...props,
+			className: classnames(
+				`woocommerce-profile-wizard__${ name.replace( /\_/g, '-' ) }`,
+				className
+			),
+		};
 	}
 
 	renderBusinessDetailsStep() {
@@ -282,13 +431,21 @@ class BusinessDetails extends Component {
 				onSubmit={ ( values ) => {
 					this.setState( {
 						savedValues: values,
-						currentTab: 'free-features',
+						currentTab: BUSINESS_FEATURES_TAB_NAME,
 					} );
 
 					this.trackBusinessDetailsStep( values );
+					recordEvent( 'storeprofiler_step_view', {
+						step: BUSINESS_FEATURES_TAB_NAME,
+						wc_version: getSetting( 'wcVersion' ),
+					} );
 				} }
 				onChange={ ( _, values, isValid ) => {
 					this.setState( { savedValues: values, isValid } );
+					this.props.updateCurrentStepValues(
+						this.props.step.key,
+						values
+					);
 				} }
 				validate={ this.validate }
 			>
@@ -324,7 +481,10 @@ class BusinessDetails extends Component {
 										) }
 										options={ productCountOptions }
 										required
-										{ ...getInputProps( 'product_count' ) }
+										{ ...this.getSelectControlProps(
+											getInputProps,
+											'product_count'
+										) }
 									/>
 
 									<SelectControl
@@ -335,15 +495,33 @@ class BusinessDetails extends Component {
 										) }
 										options={ sellingVenueOptions }
 										required
-										{ ...getInputProps( 'selling_venues' ) }
+										{ ...this.getSelectControlProps(
+											getInputProps,
+											'selling_venues'
+										) }
 									/>
 
-									{ [
-										'other',
-										'brick-mortar',
-										'brick-mortar-other',
-										'other-woocommerce',
-									].includes( values.selling_venues ) && (
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
+										<SelectControl
+											excludeSelectedOptions={ false }
+											label={ __(
+												'How many employees do you have?',
+												'woocommerce-admin'
+											) }
+											options={ employeeOptions }
+											required
+											{ ...this.getSelectControlProps(
+												getInputProps,
+												'number_employees'
+											) }
+										/>
+									) }
+
+									{ isSellingElsewhere(
+										values.selling_venues
+									) && (
 										<SelectControl
 											excludeSelectedOptions={ false }
 											label={ __(
@@ -357,14 +535,16 @@ class BusinessDetails extends Component {
 												formatAmount
 											) }
 											required
-											{ ...getInputProps( 'revenue' ) }
+											{ ...this.getSelectControlProps(
+												getInputProps,
+												'revenue'
+											) }
 										/>
 									) }
 
-									{ [
-										'other',
-										'brick-mortar-other',
-									].includes( values.selling_venues ) && (
+									{ isSellingOtherPlatformInPerson(
+										values.selling_venues
+									) && (
 										<>
 											<div className="business-competitors">
 												<SelectControl
@@ -377,7 +557,8 @@ class BusinessDetails extends Component {
 													) }
 													options={ platformOptions }
 													required
-													{ ...getInputProps(
+													{ ...this.getSelectControlProps(
+														getInputProps,
 														'other_platform'
 													) }
 												/>
@@ -389,7 +570,8 @@ class BusinessDetails extends Component {
 															'woocommerce-admin'
 														) }
 														required
-														{ ...getInputProps(
+														{ ...this.getSelectControlProps(
+															getInputProps,
 															'other_platform_name'
 														) }
 													/>
@@ -437,7 +619,9 @@ class BusinessDetails extends Component {
 										<Button
 											onClick={ () => {
 												this.persistProfileItems();
-												goToNextStep();
+												goToNextStep( {
+													step: BUSINESS_FEATURES_TAB_NAME,
+												} );
 											} }
 										>
 											{ __(
@@ -518,6 +702,10 @@ class BusinessDetails extends Component {
 							savedValues:
 								this.state.savedValues || initialValues,
 						} );
+						recordEvent( 'storeprofiler_step_view', {
+							step: tabName,
+							wc_version: getSetting( 'wcVersion' ),
+						} );
 					}
 				} }
 				tabs={ [
@@ -531,10 +719,10 @@ class BusinessDetails extends Component {
 					},
 					{
 						name:
-							this.state.currentTab === FREE_FEATURES_TAB_NAME
+							this.state.currentTab === BUSINESS_FEATURES_TAB_NAME
 								? 'current-tab'
-								: FREE_FEATURES_TAB_NAME,
-						id: FREE_FEATURES_TAB_NAME,
+								: BUSINESS_FEATURES_TAB_NAME,
+						id: BUSINESS_FEATURES_TAB_NAME,
 						title: __( 'Free features', 'woocommerce-admin' ),
 						className: this.state.isValid ? '' : 'is-disabled',
 					},

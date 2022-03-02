@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/date",
-	"version": "3.1.0",
+	"version": "4.0.0",
 	"description": "WooCommerce date utilities.",
 	"author": "Automattic",
 	"license": "GPL-3.0-or-later",
@@ -21,13 +21,13 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@wordpress/date": "3.13.0",
-		"@wordpress/i18n": "3.17.0",
+		"@wordpress/date": "4.3.1",
+		"@wordpress/i18n": "4.3.1",
 		"moment": "2.29.1",
 		"qs": "6.9.6"
 	},
 	"devDependencies": {
-		"@woocommerce/wc-admin-settings": "file:../wc-admin-settings"
+		"d3-time-format": "2.3.0"
 	},
 	"peerDependencies": {
 		"lodash": "^4.17.0"

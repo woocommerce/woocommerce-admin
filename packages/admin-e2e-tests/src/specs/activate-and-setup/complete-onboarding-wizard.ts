@@ -7,7 +7,7 @@ import { TaskTitles } from '../../constants/taskTitles';
 import { Login } from '../../pages/Login';
 import { WcSettings } from '../../pages/WcSettings';
 import { ProductsSetup } from '../../pages/ProductsSetup';
-import { deactivateAndDeleteExtension } from '../../utils/actions';
+import { resetWooCommerceState } from '../../fixtures/reset';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
@@ -32,6 +32,7 @@ const testAdminOnboardingWizard = () => {
 
 		beforeAll( async () => {
 			await login.login();
+			await resetWooCommerceState();
 		} );
 		afterAll( async () => {
 			await login.logout();
@@ -54,7 +55,6 @@ const testAdminOnboardingWizard = () => {
 		it( 'can complete the industry section', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed( 7, 8 );
-			await profileWizard.industry.uncheckIndustries();
 
 			// Select just "fashion" and "health/beauty" to get the single checkbox business section when
 			// filling out details for a US store.
@@ -68,7 +68,6 @@ const testAdminOnboardingWizard = () => {
 
 		it( 'can complete the product types section', async () => {
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
 			await profileWizard.productTypes.selectProduct(
@@ -124,6 +123,7 @@ const testSelectiveBundleWCPay = () => {
 
 		beforeAll( async () => {
 			await login.login();
+			await resetWooCommerceState();
 		} );
 		afterAll( async () => {
 			await login.logout();
@@ -151,14 +151,12 @@ const testSelectiveBundleWCPay = () => {
 		it( 'can choose the "Other" industry', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
-			await profileWizard.industry.uncheckIndustries();
 			await profileWizard.industry.selectIndustry( 'Other' );
 			await profileWizard.continue();
 		} );
 
 		it( 'can complete the product types section', async () => {
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
 
 			// Select Physical and Downloadable products
 			await profileWizard.productTypes.selectProduct(
@@ -273,6 +271,7 @@ const testDifferentStoreCurrenciesWCPay = () => {
 
 			beforeAll( async () => {
 				await login.login();
+				await resetWooCommerceState();
 			} );
 			afterAll( async () => {
 				await login.logout();
@@ -293,11 +292,9 @@ const testDifferentStoreCurrenciesWCPay = () => {
 				await profileWizard.optionallySelectUsageTracking();
 				// Query for the industries checkboxes
 				await profileWizard.industry.isDisplayed();
-				await profileWizard.industry.uncheckIndustries();
 				await profileWizard.industry.selectIndustry( 'Other' );
 				await profileWizard.continue();
 				await profileWizard.productTypes.isDisplayed( 7 );
-				await profileWizard.productTypes.uncheckProducts();
 				await profileWizard.productTypes.selectProduct(
 					'Physical products'
 				);
@@ -358,6 +355,7 @@ const testSubscriptionsInclusion = () => {
 
 		beforeAll( async () => {
 			await login.login();
+			await resetWooCommerceState();
 		} );
 
 		it( 'can complete the store details section', async () => {
@@ -378,11 +376,9 @@ const testSubscriptionsInclusion = () => {
 		it( 'can complete the product types section, Subscriptions copy is not visible', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
-			await profileWizard.industry.uncheckIndustries();
 			await profileWizard.industry.selectIndustry( 'Health and beauty' );
 			await profileWizard.continue();
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
 			await profileWizard.productTypes.selectProduct( 'Subscriptions' );
 			await expect( page ).not.toMatchElement( 'p', {
 				text:
@@ -416,6 +412,7 @@ const testSubscriptionsInclusion = () => {
 		} );
 
 		it( 'should display the task "Add Subscriptions to my store"', async () => {
+			await profileWizard.navigate();
 			await profileWizard.goToOBWStep( 'Store Details' );
 			await profileWizard.skipStoreSetup();
 			const homescreen = new WcHomescreen( page );
@@ -437,8 +434,11 @@ const testSubscriptionsInclusion = () => {
 		const profileWizard = new OnboardingWizard( page );
 		const login = new Login( page );
 
+		beforeAll( async () => {
+			await resetWooCommerceState();
+		} );
+
 		afterAll( async () => {
-			await deactivateAndDeleteExtension( 'woocommerce-payments' );
 			await login.logout();
 		} );
 
@@ -460,11 +460,9 @@ const testSubscriptionsInclusion = () => {
 		it( 'can complete the product types section, the Subscriptions copy now is visible', async () => {
 			// Query for the industries checkboxes
 			await profileWizard.industry.isDisplayed();
-			await profileWizard.industry.uncheckIndustries();
 			await profileWizard.industry.selectIndustry( 'Health and beauty' );
 			await profileWizard.continue();
 			await profileWizard.productTypes.isDisplayed( 7 );
-			await profileWizard.productTypes.uncheckProducts();
 			await profileWizard.productTypes.selectProduct( 'Subscriptions' );
 			await expect( page ).toMatchElement( 'p', {
 				text:
@@ -498,6 +496,7 @@ const testSubscriptionsInclusion = () => {
 		} );
 
 		it( 'should not display the task "Add Subscriptions to my store"', async () => {
+			await profileWizard.navigate();
 			await profileWizard.goToOBWStep( 'Store Details' );
 			await profileWizard.skipStoreSetup();
 			const homescreen = new WcHomescreen( page );
@@ -517,9 +516,85 @@ const testSubscriptionsInclusion = () => {
 	} );
 };
 
+const testBusinessDetailsForm = () => {
+	describe( 'A store that is selling elsewhere will see the "Number of employees” dropdown menu', () => {
+		const profileWizard = new OnboardingWizard( page );
+		const login = new Login( page );
+
+		beforeAll( async () => {
+			await login.login();
+			await resetWooCommerceState();
+		} );
+
+		afterAll( async () => {
+			await login.logout();
+		} );
+
+		it( 'can complete the store details and product types sections', async () => {
+			await profileWizard.navigate();
+			await profileWizard.storeDetails.isDisplayed();
+			await profileWizard.storeDetails.completeStoreDetailsSection();
+
+			// Wait for "Continue" button to become active
+			await profileWizard.continue();
+
+			// Wait for usage tracking pop-up window to appear
+			await profileWizard.optionallySelectUsageTracking();
+
+			// Query for the industries checkboxes
+			await profileWizard.industry.isDisplayed();
+			await profileWizard.industry.selectIndustry(
+				'Fashion, apparel, and accessories'
+			);
+			await profileWizard.continue();
+			await profileWizard.productTypes.isDisplayed( 7 );
+			// Select Physical
+			await profileWizard.productTypes.selectProduct(
+				'Physical products'
+			);
+			await profileWizard.productTypes.selectProduct( 'Downloads' );
+
+			await profileWizard.continue();
+			await page.waitForNavigation( {
+				waitUntil: 'networkidle0',
+			} );
+		} );
+
+		it( 'can complete the business details tab', async () => {
+			await profileWizard.business.isDisplayed();
+
+			await profileWizard.business.selectProductNumber(
+				config.get( 'onboardingwizard.numberofproducts' )
+			);
+			await profileWizard.business.selectCurrentlySelling(
+				config.get( 'onboardingwizard.sellingOnAnotherPlatform' )
+			);
+			expect( page ).toMatchElement( 'label', {
+				text: 'How many employees do you have?',
+			} );
+			await profileWizard.business.selectEmployeesNumber(
+				config.get( 'onboardingwizard.number_employees' )
+			);
+			await profileWizard.business.selectRevenue(
+				config.get( 'onboardingwizard.revenue' )
+			);
+			await profileWizard.business.selectOtherPlatformName(
+				config.get( 'onboardingwizard.other_platform_name' )
+			);
+
+			await profileWizard.continue();
+			await profileWizard.business.expandRecommendedBusinessFeatures();
+			await profileWizard.business.uncheckAllRecommendedBusinessFeatures();
+			await profileWizard.continue();
+			await profileWizard.themes.isDisplayed();
+		} );
+	} );
+};
+
 module.exports = {
 	testAdminOnboardingWizard,
 	testSelectiveBundleWCPay,
 	testDifferentStoreCurrenciesWCPay,
 	testSubscriptionsInclusion,
+	testBusinessDetailsForm,
 };

@@ -1,5 +1,29 @@
 # Unreleased
 
+- Replace deprecated wp.compose.withState with wp.element.useState. #8338
+
+# 9.0.0
+
+- Update line-height of SelectControl label to avoid truncated descenders in some typefaces and zoom levels. #8186
+- Made @woocommerce/components/Stepper a Typescript file. #8286
+- Added Typescript type declarations to build for @woocommerce/components #8282
+## Breaking changes
+
+-   Update dependencies to support react 17. #8305
+-   Drop support for IE11. #8305
+
+# 8.2.0
+
+-   Fix usage of Wordpress DatePicker component in `DatePicker`. #7982
+-   Fix select-control component label/value alignment. #8045
+-   Fix clicking the error message opens the dropdown. #8094
+-   Fix misaligned "Rows per page" dropdown. #8113
+-   Add `labelPositionToLeft` prop to the `OrderStatus` component. #8121
+-   Remove dev dependency `@woocommerce/wc-admin-settings`. #8057
+-   Fix incorrect screen reader text generated for data points on charts table. #8181
+-   Grow and center buttons in all WooCommerce ellipsis menu popover containers. #8168
+-   Added random IDs to SVG checkmarks in stepper component #8222  
+
 # 8.1.1
 
 -   Fixed warnings when using AdvancedFilters component. #7704

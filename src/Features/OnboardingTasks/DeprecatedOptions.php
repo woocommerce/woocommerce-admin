@@ -6,7 +6,7 @@
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\TaskList;
-use Automattic\WooCommerce\Admin\Install;
+use Automattic\WooCommerce\Internal\Admin\Install;
 
 /**
  * DeprecatedOptions class.
@@ -59,7 +59,7 @@ class DeprecatedOptions {
 				if ( ! $task_list ) {
 					return;
 				}
-				$update = 'yes' === $value ? $task_list->hide() : $task_list->show();
+				$update = 'yes' === $value ? $task_list->hide() : $task_list->unhide();
 				delete_option( 'woocommerce_task_list_hidden' );
 				return false;
 			case 'woocommerce_extended_task_list_hidden':
@@ -67,7 +67,7 @@ class DeprecatedOptions {
 				if ( ! $task_list ) {
 					return;
 				}
-				$update = 'yes' === $value ? $task_list->hide() : $task_list->show();
+				$update = 'yes' === $value ? $task_list->hide() : $task_list->unhide();
 				delete_option( 'woocommerce_extended_task_list_hidden' );
 				return false;
 		}

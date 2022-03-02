@@ -1,11 +1,13 @@
 /**
  * External dependencies
  */
-import { apiFetch } from '@wordpress/data-controls';
+import { apiFetch, select } from '@wordpress/data-controls';
+import { controls } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
+import { STORE_NAME } from './constants';
 import { WC_ADMIN_NAMESPACE } from '../constants';
 import {
 	getFreeExtensionsError,
@@ -14,13 +16,15 @@ import {
 	getTaskListsSuccess,
 	setProfileItems,
 	setError,
-	setTasksStatus,
 	setPaymentMethods,
 	setEmailPrefill,
 	getProductTypesSuccess,
 	getProductTypesError,
 } from './actions';
 import { DeprecatedTasks } from './deprecated-tasks';
+
+const resolveSelect =
+	controls && controls.resolveSelect ? controls.resolveSelect : select;
 
 export function* getProfileItems() {
 	try {
@@ -50,19 +54,6 @@ export function* getEmailPrefill() {
 	}
 }
 
-export function* getTasksStatus() {
-	try {
-		const results = yield apiFetch( {
-			path: WC_ADMIN_NAMESPACE + '/onboarding/tasks/status',
-			method: 'GET',
-		} );
-
-		yield setTasksStatus( results, true );
-	} catch ( error ) {
-		yield setError( 'getTasksStatus', error );
-	}
-}
-
 export function* getTaskLists() {
 	const deprecatedTasks = new DeprecatedTasks();
 	try {
@@ -78,6 +69,18 @@ export function* getTaskLists() {
 	} catch ( error ) {
 		yield getTaskListsError( error );
 	}
+}
+
+export function* getTaskListsByIds() {
+	yield resolveSelect( STORE_NAME, 'getTaskLists' );
+}
+
+export function* getTaskList() {
+	yield resolveSelect( STORE_NAME, 'getTaskLists' );
+}
+
+export function* getTask() {
+	yield resolveSelect( STORE_NAME, 'getTaskLists' );
 }
 
 export function* getPaymentGatewaySuggestions() {

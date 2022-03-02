@@ -11,6 +11,7 @@ use Automattic\WooCommerce\Admin\API\Reports\Orders\DataStore as OrdersDataStore
 use Automattic\WooCommerce\Admin\API\Plugins;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
+use Automattic\WooCommerce\Internal\Admin\WCAdminSharedSettings;
 use WC_Marketplace_Suggestions;
 
 /**
@@ -291,7 +292,7 @@ class Loader {
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 			return filemtime( WC_ADMIN_ABSPATH . self::get_path( $ext ) );
 		}
-		return WC_ADMIN_VERSION_NUMBER;
+		return WC_VERSION;
 	}
 
 	/**
@@ -1019,7 +1020,7 @@ class Loader {
 			];
 		}
 
-		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array( '/wc/v3' ) );
+		$preload_data_endpoints = apply_filters( 'woocommerce_component_settings_preload_endpoints', array() );
 		if ( class_exists( 'Jetpack' ) ) {
 			$preload_data_endpoints['jetpackStatus'] = '/jetpack/v4/connection';
 		}
@@ -1102,8 +1103,9 @@ class Loader {
 			$settings['embedBreadcrumbs'] = self::get_embed_breadcrumbs();
 		}
 
-		$settings['allowMarketplaceSuggestions'] = WC_Marketplace_Suggestions::allow_suggestions();
-		$settings['connectNonce']                = wp_create_nonce( 'connect' );
+		$settings['allowMarketplaceSuggestions']      = WC_Marketplace_Suggestions::allow_suggestions();
+		$settings['connectNonce']                     = wp_create_nonce( 'connect' );
+		$settings['wcpay_welcome_page_connect_nonce'] = wp_create_nonce( 'wcpay-connect' );
 
 		return $settings;
 	}

@@ -161,6 +161,7 @@ const ReportTable = ( props ) => {
 		 *
 		 * Enables manipulation of data used to create the report CSV.
 		 *
+		 * @filter woocommerce_admin_report_table
 		 * @param {Object} reportTableData - data used to create the table.
 		 * @param {string} reportTableData.endpoint - table api endpoint.
 		 * @param {Array} reportTableData.headers - table headers data.
@@ -598,7 +599,9 @@ export default compose(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		if ( isRequesting ) {
+		const noSearchResultsFound =
+			query.search && ! ( query[ endpoint ] && query[ endpoint ].length );
+		if ( isRequesting || noSearchResultsFound ) {
 			return EMPTY_OBJECT;
 		}
 

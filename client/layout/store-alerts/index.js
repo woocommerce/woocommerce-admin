@@ -12,12 +12,11 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 import classnames from 'classnames';
-import interpolateComponents from 'interpolate-components';
+import interpolateComponents from '@automattic/interpolate-components';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import moment from 'moment';
 import { Icon, chevronLeft, chevronRight } from '@wordpress/icons';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { NOTES_STORE_NAME, QUERY_DEFAULTS } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
@@ -27,6 +26,7 @@ import { Text } from '@woocommerce/experimental';
  */
 import sanitizeHTML from '../../lib/sanitize-html';
 import StoreAlertsPlaceholder from './placeholder';
+import { getAdminSetting } from '~/utils/admin-settings';
 
 import './style.scss';
 
@@ -182,7 +182,7 @@ export class StoreAlerts extends Component {
 
 	render() {
 		const alerts = this.getAlerts();
-		const preloadAlertCount = getSetting( 'alertCount', 0, ( count ) =>
+		const preloadAlertCount = getAdminSetting( 'alertCount', 0, ( count ) =>
 			parseInt( count, 10 )
 		);
 

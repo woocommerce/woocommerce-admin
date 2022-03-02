@@ -28,7 +28,7 @@ jest.mock( '../placeholder', () => ( {
 	TasksPlaceholder: () => <div>task-placeholder</div>,
 } ) );
 
-jest.mock( '../../header/activity-panel/display-options', () => ( {
+jest.mock( '~/activity-panel/display-options', () => ( {
 	DisplayOption: ( { children } ) => <div>{ children } </div>,
 } ) );
 
@@ -46,6 +46,7 @@ describe( 'Task', () => {
 			taskLists: [
 				{
 					id: 'main',
+					eventPrefix: 'main_tasklist_',
 					isVisible: true,
 					tasks: [ { id: 'main-task-1' }, { id: 'main-task-2' } ],
 				},
@@ -124,6 +125,7 @@ describe( 'Task', () => {
 			taskLists: [
 				{
 					id: 'main',
+					eventPrefix: 'main_tasklist_',
 					isVisible: true,
 					isToggleable: true,
 					isHidden: false,
@@ -147,7 +149,6 @@ describe( 'Task', () => {
 		);
 		expect( updateOptions ).toHaveBeenCalledWith( {
 			woocommerce_task_list_prompt_shown: true,
-			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	} );
 
@@ -158,6 +159,7 @@ describe( 'Task', () => {
 				taskLists: [
 					{
 						id: 'main',
+						eventPrefix: 'main_tasklist_',
 						isVisible: true,
 						isToggleable: true,
 						isHidden: false,
@@ -186,6 +188,7 @@ describe( 'Task', () => {
 				taskLists: [
 					{
 						id: 'main',
+						eventPrefix: 'main_tasklist_',
 						isVisible: true,
 						isToggleable: true,
 						isHidden: true,

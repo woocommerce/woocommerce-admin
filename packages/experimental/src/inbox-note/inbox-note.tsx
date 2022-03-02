@@ -46,11 +46,11 @@ type InboxNote = {
 	image: string;
 	is_deleted: boolean;
 	type: string;
+	is_read: boolean;
 };
 
 type InboxNoteProps = {
 	note: InboxNote;
-	lastRead: number;
 	onDismiss?: ( note: InboxNote ) => void;
 	onNoteActionClick?: ( note: InboxNote, action: InboxNoteAction ) => void;
 	onBodyLinkClick?: ( note: InboxNote, link: string ) => void;
@@ -60,7 +60,6 @@ type InboxNoteProps = {
 
 const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 	note,
-	lastRead,
 	onDismiss,
 	onNoteActionClick,
 	onBodyLinkClick,
@@ -150,17 +149,14 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		layout,
 		status,
 		title,
+		is_read,
 	} = note;
 
 	if ( isDeleted ) {
 		return null;
 	}
 
-	const unread =
-		! lastRead ||
-		! dateCreatedGmt ||
-		new Date( dateCreatedGmt + 'Z' ).getTime() > lastRead;
-	const date = dateCreated;
+	const unread = is_read === false;
 	const hasImage = layout === 'thumbnail';
 	const cardClassName = classnames(
 		'woocommerce-inbox-message',
@@ -168,6 +164,13 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 		layout,
 		{
 			'message-is-unread': unread && status === 'unactioned',
+		}
+	);
+
+	const actionWrapperClassName = classnames(
+		'woocommerce-inbox-message__actions',
+		{
+			'has-multiple-actions': note.actions.length > 1,
 		}
 	);
 
@@ -184,13 +187,30 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 						{ unread && (
 							<div className="woocommerce-inbox-message__unread-indicator" />
 						) }
-						{ date && (
+						{ dateCreatedGmt && (
 							<span className="woocommerce-inbox-message__date">
-								{ moment.utc( date ).fromNow() }
+								{ moment.utc( dateCreatedGmt ).fromNow() }
 							</span>
 						) }
 						<H className="woocommerce-inbox-message__title">
-							{ title }
+							{ note.actions && note.actions.length === 1 && (
+								<InboxNoteActionButton
+									key={ note.actions[ 0 ].id }
+									label={ title }
+									preventBusyState={ true }
+									href={
+										note.actions[ 0 ].url &&
+										note.actions[ 0 ].url.length
+											? note.actions[ 0 ].url
+											: undefined
+									}
+									onClick={ () =>
+										onActionClicked( note.actions[ 0 ] )
+									}
+								/>
+							) }
+
+							{ note.actions && note.actions.length > 1 && title }
 						</H>
 						<Section className="woocommerce-inbox-message__text">
 							<span
@@ -201,7 +221,7 @@ const InboxNoteCard: React.FC< InboxNoteProps > = ( {
 							/>
 						</Section>
 					</div>
-					<div className="woocommerce-inbox-message__actions">
+					<div className={ actionWrapperClassName }>
 						{ renderActions() }
 						{ renderDismissButton() }
 					</div>

@@ -2,8 +2,8 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
-import interpolateComponents from 'interpolate-components';
+import { getAdminLink } from '@woocommerce/settings';
+import interpolateComponents from '@automattic/interpolate-components';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -12,13 +12,12 @@ import { recordEvent } from '@woocommerce/tracks';
 import { PartnerCard } from '../components/partner-card';
 import logo from './logo.png';
 
-export const Card = ( { isPending, tasksStatus } ) => {
-	const { avalaraActivated } = tasksStatus;
+export const Card = ( { task } ) => {
+	const { avalaraActivated } = task.additionalData;
 
 	return (
 		<PartnerCard
 			name={ __( 'Avalara', 'woocommerce-admin' ) }
-			isPending={ isPending }
 			logo={ logo }
 			description={ __(
 				'Powerful all-in-one tax tool',

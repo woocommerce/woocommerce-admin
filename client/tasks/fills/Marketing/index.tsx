@@ -6,7 +6,6 @@ import { Card, CardHeader, Spinner } from '@wordpress/components';
 import {
 	ONBOARDING_STORE_NAME,
 	PLUGINS_STORE_NAME,
-	OPTIONS_STORE_NAME,
 	WCDataSelector,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -23,9 +22,9 @@ import './Marketing.scss';
 import { createNoticesFromResponse } from '~/lib/notices';
 import { PluginList, PluginListProps } from './PluginList';
 import { PluginProps } from './Plugin';
+import { getPluginSlug } from '../../../utils';
 
 const ALLOWED_PLUGIN_LISTS = [ 'task-list/reach', 'task-list/grow' ];
-const EMPTY_ARRAY = [];
 
 export type ExtensionList = {
 	key: string;
@@ -37,6 +36,7 @@ export type Extension = {
 	description: string;
 	key: string;
 	image_url: string;
+	is_built_by_wc: boolean;
 	manage_url: string;
 	name: string;
 };
@@ -46,14 +46,22 @@ export const transformExtensionToPlugin = (
 	activePlugins: string[],
 	installedPlugins: string[]
 ): PluginProps => {
-	const { description, image_url, key, manage_url, name } = extension;
-	const slug = key.split( ':' )[ 0 ];
+	const {
+		description,
+		image_url,
+		is_built_by_wc,
+		key,
+		manage_url,
+		name,
+	} = extension;
+	const slug = getPluginSlug( key );
 	return {
 		description,
 		slug,
 		imageUrl: image_url,
 		isActive: activePlugins.includes( slug ),
 		isInstalled: installedPlugins.includes( slug ),
+		isBuiltByWC: is_built_by_wc,
 		manageUrl: manage_url,
 		name,
 	};

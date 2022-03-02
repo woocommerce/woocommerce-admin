@@ -3,13 +3,13 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import interpolateComponents from 'interpolate-components';
-import { getSetting, ORDER_STATUSES } from '@woocommerce/wc-admin-settings';
+import interpolateComponents from '@automattic/interpolate-components';
 
 /**
  * Internal dependencies
  */
 import DefaultDate from './default-date';
+import { getAdminSetting, ORDER_STATUSES } from '~/utils/admin-settings';
 
 const SETTINGS_FILTER = 'woocommerce_admin_analytics_settings';
 export const DEFAULT_ACTIONABLE_STATUSES = [ 'processing', 'on-hold' ];
@@ -37,7 +37,10 @@ const filteredOrderStatuses = Object.keys( ORDER_STATUSES )
 		};
 	} );
 
-const unregisteredOrderStatuses = getSetting( 'unregisteredOrderStatuses', {} );
+const unregisteredOrderStatuses = getAdminSetting(
+	'unregisteredOrderStatuses',
+	{}
+);
 
 const orderStatusOptions = [
 	{
@@ -72,6 +75,12 @@ const orderStatusOptions = [
 	},
 ];
 
+/**
+ * Filter Analytics Report settings. Add a UI element to the Analytics Settings page.
+ *
+ * @filter woocommerce_admin_analytics_settings
+ * @param {Object} reportSettings Report settings.
+ */
 export const config = applyFilters( SETTINGS_FILTER, {
 	woocommerce_excluded_report_order_statuses: {
 		label: __( 'Excluded statuses:', 'woocommerce-admin' ),

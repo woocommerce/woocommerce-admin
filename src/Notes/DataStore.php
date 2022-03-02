@@ -43,7 +43,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		$wpdb->insert( $wpdb->prefix . 'wc_admin_notes', $note_to_be_inserted );
 		$note_id = $wpdb->insert_id;
 		$note->set_id( $note_id );
-		$note->save_meta_data();
 		$this->save_actions( $note );
 		$note->apply_changes();
 
@@ -79,7 +78,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 
 		if ( 0 === $note->get_id() || '0' === $note->get_id() ) {
 			$this->read_actions( $note );
-			$note->read_meta_data();
 			$note->set_object_read( true );
 
 			/**
@@ -110,10 +108,10 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$note->set_date_reminder( $note_row->date_reminder );
 			$note->set_is_snoozable( $note_row->is_snoozable );
 			$note->set_is_deleted( (bool) $note_row->is_deleted );
+			isset( $note_row->is_read ) && $note->set_is_read( (bool) $note_row->is_read );
 			$note->set_layout( $note_row->layout );
 			$note->set_image( $note_row->image );
 			$this->read_actions( $note );
-			$note->read_meta_data();
 			$note->set_object_read( true );
 
 			/**
@@ -165,12 +163,12 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 					'layout'        => $note->get_layout(),
 					'image'         => $note->get_image(),
 					'is_deleted'    => $note->get_is_deleted(),
+					'is_read'       => $note->get_is_read(),
 				),
 				array( 'note_id' => $note->get_id() )
 			);
 		}
 
-		$note->save_meta_data();
 		$this->save_actions( $note );
 		$note->apply_changes();
 
@@ -420,14 +418,16 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$escaped_is_deleted = esc_sql( $args['is_deleted'] );
 		}
 
-		$where_name_array   = $this->get_escaped_arguments_array_by_key( $args, 'name' );
-		$where_source_array = $this->get_escaped_arguments_array_by_key( $args, 'source' );
+		$where_name_array          = $this->get_escaped_arguments_array_by_key( $args, 'name' );
+		$where_excluded_name_array = $this->get_escaped_arguments_array_by_key( $args, 'excluded_name' );
+		$where_source_array        = $this->get_escaped_arguments_array_by_key( $args, 'source' );
 
-		$escaped_where_types  = implode( ',', $where_type_array );
-		$escaped_where_status = implode( ',', $where_status_array );
-		$escaped_where_names  = implode( ',', $where_name_array );
-		$escaped_where_source = implode( ',', $where_source_array );
-		$where_clauses        = '';
+		$escaped_where_types          = implode( ',', $where_type_array );
+		$escaped_where_status         = implode( ',', $where_status_array );
+		$escaped_where_names          = implode( ',', $where_name_array );
+		$escaped_where_excluded_names = implode( ',', $where_excluded_name_array );
+		$escaped_where_source         = implode( ',', $where_source_array );
+		$where_clauses                = '';
 
 		if ( ! empty( $escaped_where_types ) ) {
 			$where_clauses .= " AND type IN ($escaped_where_types)";
@@ -439,6 +439,10 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 
 		if ( ! empty( $escaped_where_names ) ) {
 			$where_clauses .= " AND name IN ($escaped_where_names)";
+		}
+
+		if ( ! empty( $escaped_where_excluded_names ) ) {
+			$where_clauses .= " AND name NOT IN ($escaped_where_excluded_names)";
 		}
 
 		if ( ! empty( $escaped_where_source ) ) {

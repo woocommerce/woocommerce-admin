@@ -12,7 +12,7 @@ import {
 	PLUGINS_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/settings';
 import { recordEvent } from '@woocommerce/tracks';
 
 /**
@@ -124,7 +124,7 @@ export default function ProductTemplateModal( { onClose } ) {
 	const removeSubscriptions =
 		( window.wcAdminFeatures && ! window.wcAdminFeatures.subscriptions ) ||
 		countryCode !== 'US' ||
-		! profileItems.product_types.includes( 'subscriptions' ) ||
+		! profileItems.product_types?.includes( 'subscriptions' ) ||
 		! installedPlugins.includes( 'woocommerce-payments' );
 
 	const productTemplates = removeSubscriptions
@@ -133,6 +133,21 @@ export default function ProductTemplateModal( { onClose } ) {
 		  )
 		: getProductTemplates();
 
+	/**
+	 * An object defining a product template.
+	 *
+	 * @typedef {Object} template
+	 * @property {string} key Icon to render.
+	 * @property {string} title Url.
+	 * @property {string} subtitle Link title.
+	 */
+
+	/**
+	 * Store product templates.
+	 *
+	 * @filter woocommerce_admin_onboarding_product_templates
+	 * @param {Array.<template>} templates Array of product templates.
+	 */
 	const templates = applyFilters(
 		ONBOARDING_PRODUCT_TEMPLATES_FILTER,
 		productTemplates

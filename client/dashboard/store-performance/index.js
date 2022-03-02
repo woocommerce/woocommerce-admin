@@ -5,9 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { Component, Fragment } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { getPersistedQuery } from '@woocommerce/navigation';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { withSelect } from '@wordpress/data';
-import { SETTINGS_STORE_NAME } from '@woocommerce/data';
 import {
 	EllipsisMenu,
 	MenuItem,
@@ -26,10 +24,14 @@ import { recordEvent } from '@woocommerce/tracks';
 import './style.scss';
 import { CurrencyContext } from '../../lib/currency-context';
 import { getIndicatorData, getIndicatorValues } from './utils';
+import { getAdminSetting } from '~/utils/admin-settings';
 
-const { performanceIndicators: indicators } = getSetting( 'dataEndpoints', {
-	performanceIndicators: [],
-} );
+const { performanceIndicators: indicators } = getAdminSetting(
+	'dataEndpoints',
+	{
+		performanceIndicators: [],
+	}
+);
 
 class StorePerformance extends Component {
 	renderMenu() {
@@ -198,15 +200,11 @@ export default compose(
 		const userIndicators = indicators.filter(
 			( indicator ) => ! hiddenBlocks.includes( indicator.stat )
 		);
-		const { woocommerce_default_date_range: defaultDateRange } = select(
-			SETTINGS_STORE_NAME
-		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
 		const data = {
 			hiddenBlocks,
 			userIndicators,
 			indicators,
-			defaultDateRange,
 		};
 		if ( userIndicators.length === 0 ) {
 			return data;

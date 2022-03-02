@@ -20,6 +20,7 @@ import {
 	PaypalOnboardingStatus,
 	PluginNames,
 	SelectorKeysWithActions,
+	RecommendedTypes,
 } from './types';
 
 // Can be removed in WP 5.9, wp.data is supported in >5.7.
@@ -38,6 +39,7 @@ type PluginsResponse< PluginData > = {
 type InstallPluginsResponse = PluginsResponse< {
 	installed: string[];
 	results: Record< string, boolean >;
+	install_time?: Record< string, number >;
 } >;
 
 type ActivatePluginsResponse = PluginsResponse< {
@@ -49,6 +51,12 @@ function isWPError(
 	error: WPError< PluginNames > | Error | string
 ): error is WPError< PluginNames > {
 	return ( error as WPError ).errors !== undefined;
+}
+
+class PluginError extends Error {
+	constructor( message: string, public data: unknown ) {
+		super( message );
+	}
 }
 
 export function formatErrors(
@@ -208,7 +216,7 @@ export function* installPlugins( plugins: string[] ) {
 			error = { [ plugins[ 0 ] ]: error.message };
 		}
 		yield setError( 'installPlugins', error );
-		throw new Error( formatErrorMessage( error ) );
+		throw new PluginError( formatErrorMessage( error ), error );
 	}
 }
 
@@ -239,19 +247,29 @@ export function* activatePlugins( plugins: string[] ) {
 			error = { [ plugins[ 0 ] ]: error.message };
 		}
 		yield setError( 'activatePlugins', error );
-		throw new Error( formatErrorMessage( error, 'activate' ) );
+		throw new PluginError( formatErrorMessage( error, 'activate' ), error );
 	}
 }
 
 export function* installAndActivatePlugins( plugins: string[] ) {
 	try {
-		yield dispatch( STORE_NAME, 'installPlugins', plugins );
+		const installations: InstallPluginsResponse = yield dispatch(
+			STORE_NAME,
+			'installPlugins',
+			plugins
+		);
 		const activations: InstallPluginsResponse = yield dispatch(
 			STORE_NAME,
 			'activatePlugins',
 			plugins
 		);
-		return activations;
+		return {
+			...activations,
+			data: {
+				...activations.data,
+				...installations.data,
+			},
+		};
 	} catch ( error ) {
 		throw error;
 	}
@@ -348,6 +366,36 @@ export function setRecommendedPlugins(
 	};
 }
 
+const SUPPORTED_TYPES = [ 'payments' ];
+export function* dismissRecommendedPlugins( type: RecommendedTypes ) {
+	if ( ! SUPPORTED_TYPES.includes( type ) ) {
+		return [];
+	}
+	const plugins: Plugin[] = yield resolveSelect(
+		STORE_NAME,
+		'getRecommendedPlugins',
+		type
+	);
+	yield setRecommendedPlugins( type, [] );
+
+	let success: boolean;
+	try {
+		const url =
+			WC_ADMIN_NAMESPACE + '/plugins/recommended-payment-plugins/dismiss';
+		success = yield apiFetch( {
+			path: url,
+			method: 'POST',
+		} );
+	} catch ( error ) {
+		success = false;
+	}
+	if ( ! success ) {
+		// Reset recommended plugins
+		yield setRecommendedPlugins( type, plugins );
+	}
+	return success;
+}
+
 export type Actions =
 	| ReturnType< typeof updateActivePlugins >
 	| ReturnType< typeof updateInstalledPlugins >
@@ -362,4 +410,5 @@ export type Actions =
 export type ActionDispatchers = {
 	installJetpackAndConnect: typeof installJetpackAndConnect;
 	installAndActivatePlugins: typeof installAndActivatePlugins;
+	dismissRecommendedPlugins: typeof dismissRecommendedPlugins;
 };

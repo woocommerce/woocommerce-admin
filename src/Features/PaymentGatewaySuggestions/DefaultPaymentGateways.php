@@ -223,15 +223,29 @@ class DefaultPaymentGateways {
 					self::get_rules_for_countries( self::get_wcpay_countries() ),
 					(object) array(
 						'type'     => 'plugin_version',
-						'plugin'   => 'woocommerce-admin',
-						'version'  => '2.9.0-dev',
-						'operator' => '<',
-					),
-					(object) array(
-						'type'     => 'plugin_version',
 						'plugin'   => 'woocommerce',
 						'version'  => '5.10.0-dev',
 						'operator' => '<',
+					),
+					(object) array(
+						'type'     => 'or',
+						'operands' => (object) array(
+							(object) array(
+								'type'    => 'not',
+								'operand' => [
+									(object) array(
+										'type'    => 'plugins_activated',
+										'plugins' => [ 'woocommerce-admin' ],
+									),
+								],
+							),
+							(object) array(
+								'type'     => 'plugin_version',
+								'plugin'   => 'woocommerce-admin',
+								'version'  => '2.9.0-dev',
+								'operator' => '<',
+							),
+						),
 					),
 				),
 				'recommendation_priority' => 1,
@@ -360,7 +374,7 @@ class DefaultPaymentGateways {
 								self::get_rules_for_cbd( true ),
 							),
 							array(
-								self::get_rules_for_countries( array( 'US', 'CA', 'JP', 'GB', 'AU', 'IE', 'FR' ) ),
+								self::get_rules_for_countries( array( 'US', 'CA', 'JP', 'GB', 'AU', 'IE', 'FR', 'ES' ) ),
 								self::get_rules_for_selling_venues( array( 'brick-mortar', 'brick-mortar-other' ) ),
 							),
 						),

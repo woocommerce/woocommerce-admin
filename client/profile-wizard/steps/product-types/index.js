@@ -61,16 +61,33 @@ export class ProductTypes extends Component {
 		}
 	}
 
-	componentDidUpdate( prevProps ) {
+	componentDidUpdate( prevProps, prevState ) {
 		const { profileItems, productTypes } = this.props;
+
+		if ( this.state.selected !== prevState.selected ) {
+			this.props.updateCurrentStepValues(
+				this.props.step.key,
+				this.state.selected
+			);
+		}
 
 		if ( prevProps.productTypes !== productTypes ) {
 			const defaultProductTypes = Object.keys( productTypes ).filter(
 				( key ) => !! productTypes[ key ].default
 			);
-			this.setState( {
-				selected: profileItems.product_types || defaultProductTypes,
-			} );
+			this.setState(
+				{
+					selected: profileItems.product_types || defaultProductTypes,
+				},
+				() => {
+					this.props.trackStepValueChanges(
+						this.props.step.key,
+						[ ...this.state.selected ],
+						this.state.selected,
+						this.onContinue
+					);
+				}
+			);
 		}
 	}
 
@@ -85,7 +102,7 @@ export class ProductTypes extends Component {
 		return ! error;
 	}
 
-	onContinue() {
+	onContinue( onSuccess ) {
 		const { selected } = this.state;
 		const { installedPlugins = [] } = this.props;
 
@@ -96,14 +113,15 @@ export class ProductTypes extends Component {
 		const {
 			countryCode,
 			createNotice,
-			goToNextStep,
 			installAndActivatePlugins,
 			updateProfileItems,
+			productTypes,
 		} = this.props;
 
-		recordEvent( 'storeprofiler_store_product_type_continue', {
+		const eventProps = {
 			product_type: selected,
-		} );
+			wcpay_installed: false,
+		};
 
 		const promises = [ updateProfileItems( { product_types: selected } ) ];
 
@@ -111,12 +129,25 @@ export class ProductTypes extends Component {
 			window.wcAdminFeatures &&
 			window.wcAdminFeatures.subscriptions &&
 			countryCode === 'US' &&
+			productTypes.subscriptions &&
+			! productTypes.subscriptions.yearly_price &&
 			! installedPlugins.includes( 'woocommerce-payments' ) &&
 			selected.includes( 'subscriptions' )
 		) {
 			promises.push(
 				installAndActivatePlugins( [ 'woocommerce-payments' ] )
 					.then( ( response ) => {
+						eventProps.wcpay_installed = true;
+						if (
+							response.data &&
+							response.data.install_time &&
+							response.data.install_time[ 'woocommerce-payments' ]
+						) {
+							eventProps.install_time_wcpay =
+								response.data.install_time[
+									'woocommerce-payments'
+								];
+						}
 						createNoticesFromResponse( response );
 					} )
 					.catch( ( error ) => {
@@ -127,7 +158,15 @@ export class ProductTypes extends Component {
 		}
 
 		Promise.all( promises )
-			.then( () => goToNextStep() )
+			.then( () => {
+				recordEvent(
+					'storeprofiler_store_product_type_continue',
+					eventProps
+				);
+				if ( typeof onSuccess === 'function' ) {
+					onSuccess();
+				}
+			} )
 			.catch( () =>
 				createNotice(
 					'error',
@@ -242,7 +281,9 @@ export class ProductTypes extends Component {
 					<CardFooter isBorderless justify="center">
 						<Button
 							isPrimary
-							onClick={ this.onContinue }
+							onClick={ () => {
+								this.onContinue( this.props.goToNextStep );
+							} }
 							isBusy={
 								isProfileItemsRequesting ||
 								isInstallingActivating
@@ -287,6 +328,8 @@ export class ProductTypes extends Component {
 						window.wcAdminFeatures.subscriptions &&
 						countryCode === 'US' &&
 						! isWCPayInstalled &&
+						productTypes.subscriptions &&
+						! productTypes.subscriptions.yearly_price &&
 						selected.includes( 'subscriptions' ) && (
 							<Text
 								variant="body"

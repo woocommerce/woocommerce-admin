@@ -24,9 +24,20 @@
 	}
 	&:hover {
 		background: $gray-100;
-		cursor: pointer;
 		.woocommerce-inbox-message__actions button.woocommerce-admin-dismiss-notification {
 			visibility: visible;
+		}
+	}
+
+	&:not(.message-is-unread) {
+		.woocommerce-inbox-message__title {
+			font-weight: normal;
+			a {
+				font-weight: normal;
+			}
+		}
+		.woocommerce-inbox-message__actions a {
+			color: $gray-900;
 		}
 	}
 
@@ -57,15 +68,6 @@
 }
 
 .woocommerce-inbox-message__content {
-	.woocommerce-inbox-message__unread-indicator {
-		height: 8px;
-		width: 8px;
-		background-color: var(--wp-admin-theme-color);
-		border-radius: 100px;
-		display: inline-block;
-		margin-right: $gap-smaller;
-	}
-
 	.woocommerce-inbox-message__title {
 		color: $gray-900;
 		@include font-size( 16 );
@@ -80,6 +82,12 @@
 				margin: 5px 0;
 			}
 			margin-bottom: 10px;
+		}
+
+		a {
+			@extend .woocommerce-inbox-message__title;
+			color: $gray-900 !important;
+			text-decoration: none !important;
 		}
 	}
 
@@ -136,6 +144,17 @@
 		cursor: pointer;
 		&.is-link {
 			text-decoration: none;
+		}
+	}
+
+	&.has-multiple-actions {
+		button.is-link {
+			padding: 6px 12px;
+			border: 1px solid var(--wp-admin-theme-color);
+			margin-right: 0.5em;
+		}
+		a {
+			margin-right: 0.5em;
 		}
 	}
 

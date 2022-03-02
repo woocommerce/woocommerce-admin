@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/onboarding",
-	"version": "2.2.2",
+	"version": "3.0.0",
 	"description": "Onboarding utilities.",
 	"author": "Automattic",
 	"license": "GPL-3.0-or-later",
@@ -24,12 +24,13 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"@wordpress/components": "^14.1.0",
-		"@wordpress/element": "2.19.0",
+		"@automattic/interpolate-components": "^1.2.0",
+		"@woocommerce/tracks": "file:../tracks",
+		"@wordpress/components": "19.4.0",
+		"@wordpress/element": "4.1.1",
 		"@wordpress/i18n": "^4.1.0",
 		"concurrently": "5.3.0",
-		"gridicons": "^3.3.1",
-		"interpolate-components": "^1.1.1"
+		"gridicons": "^3.3.1"
 	},
 	"devDependencies": {
 		"@woocommerce/style-build": "file:../style-build"

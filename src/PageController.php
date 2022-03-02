@@ -291,21 +291,23 @@ class PageController {
 		);
 
 		if ( ! empty( $_GET['page'] ) ) {
-			if ( in_array( $_GET['page'], array_keys( $pages_with_tabs ) ) ) { // WPCS: sanitization ok.
+			$page = wc_clean( wp_unslash( $_GET['page'] ) );
+			if ( in_array( $page, array_keys( $pages_with_tabs ) ) ) {
 				if ( ! empty( $_GET['tab'] ) ) {
 					$tab = wc_clean( wp_unslash( $_GET['tab'] ) );
 				} else {
-					$tab = $pages_with_tabs[ $_GET['page'] ]; // WPCS: sanitization ok.
+					$tab = $pages_with_tabs[ $page ];
 				}
 
 				$screen_pieces[] = $tab;
 
 				if ( ! empty( $_GET['section'] ) ) {
+					$section = wc_clean( wp_unslash( $_GET['section'] ) );
 					if (
 						isset( $tabs_with_sections[ $tab ] ) &&
-						in_array( $_GET['section'], array_keys( $tabs_with_sections[ $tab ] ) ) // WPCS: sanitization ok.
+						in_array( $section, array_keys( $tabs_with_sections[ $tab ] ) )
 					) {
-						$screen_pieces[] = wc_clean( wp_unslash( $_GET['section'] ) );
+						$screen_pieces[] = $section;
 					}
 				}
 
@@ -356,7 +358,7 @@ class PageController {
 
 		// Disable embed on the block editor.
 		$current_screen = did_action( 'current_screen' ) ? get_current_screen() : false;
-		if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
+		if ( ! empty( $current_screen ) && method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
 			$is_connected_page = false;
 		}
 

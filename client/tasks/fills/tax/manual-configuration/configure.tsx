@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-import interpolateComponents from 'interpolate-components';
+import interpolateComponents from '@automattic/interpolate-components';
 import { Link } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
 import { SETTINGS_STORE_NAME } from '@woocommerce/data';
@@ -53,7 +53,7 @@ export const Configure: React.FC< TaxChildProps > = ( {
 						components: {
 							link: (
 								<Link
-									href="https://docs.woocommerce.com/document/setting-up-taxes-in-woocommerce/?utm_medium=product#section-1"
+									href="https://woocommerce.com/document/setting-up-taxes-in-woocommerce/?utm_medium=product#section-1"
 									target="_blank"
 									type="external"
 								/>

@@ -7,14 +7,10 @@ import { Text } from '@woocommerce/experimental';
 import { Link } from '@woocommerce/components';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, chevronDown, chevronUp } from '@wordpress/icons';
-import interpolateComponents from 'interpolate-components';
-import {
-	pluginNames,
-	ONBOARDING_STORE_NAME,
-	SETTINGS_STORE_NAME,
-} from '@woocommerce/data';
+import interpolateComponents from '@automattic/interpolate-components';
+import { pluginNames, ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -25,7 +21,7 @@ import sanitizeHTML from '~/lib/sanitize-html';
 import { setAllPropsToValue } from '~/lib/collections';
 import { getCountryCode } from '../../../../../../dashboard/utils';
 
-const ALLOWED_PLUGIN_LISTS = [ 'obw/basics', 'obw/grow' ];
+const ALLOWED_PLUGIN_CATEGORIES = [ 'obw/basics', 'obw/grow' ];
 
 const FreeBadge = () => {
 	return (
@@ -72,14 +68,37 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 		);
 	}
 
-	const installingJetpackOrWcShipping =
-		extensions.includes( 'jetpack' ) ||
-		extensions.includes( 'woocommerce-shipping' );
-
 	const accountRequiredText = __(
 		'User accounts are required to use these features.',
 		'woocommerce-admin'
 	);
+
+	const extensionsWithToS = extensions.filter(
+		( extension ) =>
+			extension === 'jetpack' ||
+			extension.includes( 'woocommerce-services' )
+	);
+
+	const isInstallingJetpackAndWCServices =
+		extensionsWithToS.includes( 'jetpack' ) &&
+		( extensionsWithToS.includes( 'woocommerce-services:shipping' ) ||
+			extensionsWithToS.includes( 'woocommerce-services:tax' ) );
+
+	const extensionsListText = isInstallingJetpackAndWCServices
+		? 'Jetpack and WooCommerce Shipping & Tax'
+		: pluginNames[ extensionsWithToS[ 0 ] ];
+
+	const installingJetpackShippingTaxToS = sprintf(
+		/* translators: %s: a list of plugins, e.g. Jetpack */
+		_n(
+			'By installing %s plugin for free you agree to our {{link}}Terms of Service{{/link}}.',
+			'By installing %s plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
+			extensionsWithToS.length,
+			'woocommerce-admin'
+		),
+		extensionsListText
+	);
+
 	return (
 		<div className="woocommerce-profile-wizard__footnote">
 			<Text variant="caption" as="p" size="12" lineHeight="16px">
@@ -95,13 +114,10 @@ const renderBusinessExtensionHelpText = ( values, isInstallingActivating ) => {
 					accountRequiredText
 				) }
 			</Text>
-			{ installingJetpackOrWcShipping && (
+			{ extensionsWithToS.length > 0 && (
 				<Text variant="caption" as="p" size="12" lineHeight="16px">
 					{ interpolateComponents( {
-						mixedString: __(
-							'By installing Jetpack and WooCommerce Shipping plugins for free you agree to our {{link}}Terms of Service{{/link}}.',
-							'woocommerce-admin'
-						),
+						mixedString: installingJetpackShippingTaxToS,
 						components: {
 							link: (
 								<Link
@@ -159,62 +175,102 @@ const BundleExtensionCheckbox = ( { onChange, description, isChecked } ) => {
 	);
 };
 
-const baseValues = { install_extensions: true };
-export const createInitialValues = ( extensions ) => {
-	return extensions.reduce( ( acc, curr ) => {
-		const plugins = curr.plugins.reduce(
-			( pluginAcc, { key, selected } ) => {
-				return { ...pluginAcc, [ key ]: selected ?? true };
-			},
-			{}
+export const ExtensionSection = ( {
+	isResolving,
+	title,
+	extensions,
+	installExtensionOptions,
+	onCheckboxChange,
+} ) => {
+	if ( isResolving ) {
+		return (
+			<div>
+				<Spinner />
+			</div>
 		);
+	}
 
-		return {
-			...acc,
-			...plugins,
-		};
-	}, baseValues );
+	if ( extensions.length === 0 ) {
+		return null;
+	}
+
+	return (
+		<div>
+			<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
+				{ title }
+			</div>
+			{ extensions.map( ( { description, key } ) => (
+				<BundleExtensionCheckbox
+					key={ key }
+					description={ description }
+					isChecked={ installExtensionOptions[ key ] }
+					onChange={ onCheckboxChange( key ) }
+				/>
+			) ) }
+		</div>
+	);
+};
+
+export const createInstallExtensionOptions = ( installableExtensions ) => {
+	return installableExtensions.reduce(
+		( acc, curr ) => {
+			const plugins = curr.plugins.reduce( ( pluginAcc, plugin ) => {
+				return {
+					...pluginAcc,
+					[ plugin.key ]: true,
+				};
+			}, {} );
+			return {
+				...acc,
+				...plugins,
+			};
+		},
+		{ install_extensions: true }
+	);
 };
 
 export const SelectiveExtensionsBundle = ( {
 	isInstallingActivating,
 	onSubmit,
+	country,
+	productTypes,
+	industry,
 } ) => {
 	const [ showExtensions, setShowExtensions ] = useState( false );
-	const [ values, setValues ] = useState( baseValues );
-
+	const [ installExtensionOptions, setInstallExtensionOptions ] = useState( {
+		install_extensions: true,
+	} );
 	const {
-		countryCode,
-		freeExtensions,
+		freeExtensions: freeExtensionBundleByCategory,
 		isResolving,
-		profileItems,
 	} = useSelect( ( select ) => {
-		const {
-			getFreeExtensions,
-			getProfileItems,
-			hasFinishedResolution,
-		} = select( ONBOARDING_STORE_NAME );
-		const { getSettings } = select( SETTINGS_STORE_NAME );
-		const { general: settings = {} } = getSettings( 'general' );
-
+		const { getFreeExtensions, hasFinishedResolution } = select(
+			ONBOARDING_STORE_NAME
+		);
 		return {
-			countryCode: getCountryCode( settings.woocommerce_default_country ),
 			freeExtensions: getFreeExtensions(),
 			isResolving: ! hasFinishedResolution( 'getFreeExtensions' ),
-			profileItems: getProfileItems(),
 		};
 	} );
 
+	const { invalidateResolutionForStoreSelector } = useDispatch(
+		ONBOARDING_STORE_NAME
+	);
+
+	useEffect( () => {
+		invalidateResolutionForStoreSelector( 'getFreeExtensions' );
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ country, industry ] );
+
 	const installableExtensions = useMemo( () => {
-		const { product_types: productTypes } = profileItems;
-		return freeExtensions.filter( ( list ) => {
+		return freeExtensionBundleByCategory.filter( ( extensionBundle ) => {
 			if (
 				window.wcAdminFeatures &&
 				window.wcAdminFeatures.subscriptions &&
-				countryCode === 'US'
+				getCountryCode( country ) === 'US'
 			) {
 				if ( productTypes.includes( 'subscriptions' ) ) {
-					list.plugins = list.plugins.filter(
+					extensionBundle.plugins = extensionBundle.plugins.filter(
 						( extension ) =>
 							extension.key !== 'woocommerce-payments' ||
 							( extension.key === 'woocommerce-payments' &&
@@ -222,21 +278,24 @@ export const SelectiveExtensionsBundle = ( {
 					);
 				}
 			}
-			return ALLOWED_PLUGIN_LISTS.includes( list.key );
+			return ALLOWED_PLUGIN_CATEGORIES.includes( extensionBundle.key );
 		} );
-	}, [ freeExtensions, profileItems ] );
+	}, [ freeExtensionBundleByCategory, productTypes, country ] );
 
 	useEffect( () => {
 		if ( ! isInstallingActivating ) {
-			const initialValues = createInitialValues( installableExtensions );
-			setValues( initialValues );
+			setInstallExtensionOptions( () =>
+				createInstallExtensionOptions( installableExtensions )
+			);
 		}
+		// Disable reason: This effect should only called when the installableExtensions are changed.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ installableExtensions ] );
 
 	const getCheckboxChangeHandler = ( key ) => {
 		return ( checked ) => {
 			const newState = {
-				...values,
+				...installExtensionOptions,
 				[ key ]: checked,
 			};
 
@@ -246,13 +305,13 @@ export const SelectiveExtensionsBundle = ( {
 
 			if ( allExtensionsDisabled ) {
 				// If all the extensions are disabled then disable the "Install Extensions" checkbox too
-				setValues( {
+				setInstallExtensionOptions( {
 					...newState,
 					install_extensions: false,
 				} );
 			} else {
-				setValues( {
-					...values,
+				setInstallExtensionOptions( {
+					...installExtensionOptions,
 					[ key ]: checked,
 					install_extensions: true,
 				} );
@@ -269,10 +328,15 @@ export const SelectiveExtensionsBundle = ( {
 				<div className="woocommerce-admin__business-details__selective-extensions-bundle">
 					<div className="woocommerce-admin__business-details__selective-extensions-bundle__extension">
 						<CheckboxControl
-							checked={ values.install_extensions }
+							checked={
+								installExtensionOptions.install_extensions
+							}
 							onChange={ ( checked ) => {
-								setValues(
-									setAllPropsToValue( values, checked )
+								setInstallExtensionOptions(
+									setAllPropsToValue(
+										installExtensionOptions,
+										checked
+									)
 								);
 							} }
 						/>
@@ -284,6 +348,10 @@ export const SelectiveExtensionsBundle = ( {
 						</p>
 						<Button
 							className="woocommerce-admin__business-details__selective-extensions-bundle__expand"
+							disabled={
+								! installableExtensions ||
+								installableExtensions.length === 0
+							}
 							onClick={ () => {
 								setShowExtensions( ! showExtensions );
 
@@ -304,44 +372,31 @@ export const SelectiveExtensionsBundle = ( {
 					</div>
 					{ showExtensions &&
 						installableExtensions.map(
-							( { plugins, key: sectionKey, title } ) => (
-								<div key={ sectionKey }>
-									{ isResolving ? (
-										<Spinner />
-									) : (
-										<>
-											<div className="woocommerce-admin__business-details__selective-extensions-bundle__category">
-												{ title }
-											</div>
-											{ plugins.map(
-												( { description, key } ) => (
-													<BundleExtensionCheckbox
-														key={ key }
-														description={
-															description
-														}
-														isChecked={
-															values[ key ]
-														}
-														onChange={ getCheckboxChangeHandler(
-															key
-														) }
-													/>
-												)
-											) }
-										</>
-									) }
-								</div>
+							( { plugins, key, title } ) => (
+								<ExtensionSection
+									key={ key }
+									title={ title }
+									extensions={ plugins }
+									installExtensionOptions={
+										installExtensionOptions
+									}
+									onCheckboxChange={
+										getCheckboxChangeHandler
+									}
+								/>
 							)
 						) }
 				</div>
 				<div className="woocommerce-profile-wizard__business-details__free-features__action">
 					<Button
 						onClick={ () => {
-							onSubmit( values );
+							onSubmit(
+								installExtensionOptions,
+								installableExtensions
+							);
 						} }
-						isBusy={ isInstallingActivating }
-						disabled={ isInstallingActivating }
+						isBusy={ isInstallingActivating || isResolving }
+						disabled={ isInstallingActivating || isResolving }
 						isPrimary
 					>
 						{ __( 'Continue', 'woocommerce-admin' ) }
@@ -349,7 +404,7 @@ export const SelectiveExtensionsBundle = ( {
 				</div>
 			</Card>
 			{ renderBusinessExtensionHelpText(
-				values,
+				installExtensionOptions,
 				isInstallingActivating
 			) }
 		</div>

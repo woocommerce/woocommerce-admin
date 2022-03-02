@@ -116,6 +116,7 @@ class WooCommercePayments {
 		$note->set_source( 'woocommerce-admin' );
 		$note->add_action( 'learn-more', __( 'Learn more', 'woocommerce-admin' ), 'https://woocommerce.com/payments/?utm_medium=product', Note::E_WC_ADMIN_NOTE_UNACTIONED );
 		$note->add_action( 'get-started', __( 'Get started', 'woocommerce-admin' ), wc_admin_url( '&action=setup-woocommerce-payments' ), Note::E_WC_ADMIN_NOTE_ACTIONED, true );
+		$note->add_nonce_to_action( 'get-started', 'setup-woocommerce-payments', '' );
 
 		// Create the note as "actioned" if the plugin is already installed.
 		if ( self::is_installed() ) {
@@ -165,7 +166,6 @@ class WooCommercePayments {
 	 */
 	public function install_on_action() {
 		// TODO: Need to validate this request more strictly since we're taking install actions directly?
-		/* phpcs:disable WordPress.Security.NonceVerification */
 		if (
 			! isset( $_GET['page'] ) ||
 			'wc-admin' !== $_GET['page'] ||
@@ -174,7 +174,31 @@ class WooCommercePayments {
 		) {
 			return;
 		}
-		/* phpcs:enable */
+
+		$data_store = Notes::load_data_store();
+
+		// We already have this note? Then mark the note as actioned.
+		$note_ids = $data_store->get_notes_with_name( self::NOTE_NAME );
+		if ( empty( $note_ids ) ) {
+			return;
+		}
+
+		$note_id = array_pop( $note_ids );
+		$note    = Notes::get_note( $note_id );
+		if ( false === $note ) {
+			return;
+		}
+		$action = $note->get_action( 'get-started' );
+		if ( ! $action ||
+			( isset( $action->nonce_action ) &&
+				(
+					empty( $_GET['_wpnonce'] ) ||
+					! wp_verify_nonce( wp_unslash( $_GET['_wpnonce'] ), $action->nonce_action ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+				)
+			)
+		) {
+			return;
+		}
 
 		if ( ! current_user_can( 'install_plugins' ) ) {
 			return;
