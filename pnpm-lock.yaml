@@ -577,7 +577,7 @@ importers:
       dompurify: ^2.3.3
       md5: ^2.3.0
       qs: 6.9.6
-      rememo: ^3.0.0
+      rememo: ^4.0.0
     dependencies:
       '@woocommerce/date': link:../date
       '@woocommerce/navigation': link:../navigation
@@ -594,7 +594,7 @@ importers:
       dompurify: 2.3.6
       md5: 2.3.0
       qs: 6.9.6
-      rememo: 3.0.0
+      rememo: 4.0.0
     devDependencies:
       '@testing-library/react': 12.1.3_react-dom@17.0.2+react@17.0.2
       '@testing-library/react-hooks': 7.0.1_react-dom@17.0.2+react@17.0.2
@@ -20773,6 +20773,10 @@ packages:
 
   /rememo/3.0.0:
     resolution: {integrity: sha512-eWtut/7pqMRnSccbexb647iPjN7ir6Tmf4RG92ZVlykFEkHqGYy9tWnpHH3I+FS+WQ6lQ1i1iDgarYzGKgTcRQ==}
+    dev: false
+
+  /rememo/4.0.0:
+    resolution: {integrity: sha512-6BAfg1Dqg6UteZBEH9k6EHHersM86/EcBOMtJV+h+xEn1GC3H+gAgJWpexWYAamAxD0qXNmIt50iS/zuZKnQag==}
     dev: false
 
   /remove-trailing-separator/1.1.0:
