@@ -3,13 +3,13 @@
  * Handles emailing user notes.
  */
 
-namespace Automattic\WooCommerce\Admin\Notes;
-
-use Automattic\WooCommerce\Admin\Notes\Notes;
+namespace Automattic\WooCommerce\Internal\Admin\Notes;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use Automattic\WooCommerce\Admin\Notes\Notes;
 
 /**
  * Include dependencies.
