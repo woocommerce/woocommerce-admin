@@ -16,6 +16,7 @@ import {
 import { NAMESPACE } from '../constants';
 import { Locales, Country } from './types';
 import { STORE_NAME } from './constants';
+import { RestApiError } from '../types';
 
 const resolveSelect =
 	controls && controls.resolveSelect ? controls.resolveSelect : select;
@@ -34,7 +35,7 @@ export function* getLocales() {
 
 		return getLocalesSuccess( results );
 	} catch ( error ) {
-		return getLocalesError( error );
+		return getLocalesError( error as RestApiError );
 	}
 }
 
