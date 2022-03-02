@@ -34,7 +34,7 @@ class GivingFeedbackNotes {
 	 */
 	protected static function get_note() {
 		if ( ! self::is_wc_admin_active_in_date_range( 'week-1-4' ) ) {
-			// return;
+			return;
 		}
 
 		// Otherwise, create our new note.
