@@ -216,6 +216,7 @@ class FeaturePlugin {
 		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ), 0 );
 
 		Loader::get_instance();
+		WCAdminAssets::get_instance();
 	}
 
 	/**
