@@ -26,7 +26,7 @@ export function getCountriesSuccess( countries: Country[] ) {
 	};
 }
 
-export function getCountriesError( error: string ) {
+export function getCountriesError( error: RestApiError ) {
 	return {
 		type: TYPES.GET_COUNTRIES_ERROR,
 		error,

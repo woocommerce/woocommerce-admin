@@ -53,6 +53,6 @@ export function* getCountries() {
 
 		return getCountriesSuccess( results );
 	} catch ( error ) {
-		return getCountriesError( error );
+		return getCountriesError( error as RestApiError );
 	}
 }
