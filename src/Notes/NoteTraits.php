@@ -150,14 +150,8 @@ trait NoteTraits {
 	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
 	 */
 	public static function possibly_update_note() {
-		$data_store = Notes::load_data_store();
-		$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+		$note = Notes::get_note_by_name( self::NOTE_NAME );
 
-		if ( empty( $note_ids ) ) {
-			return;
-		}
-
-		$note = Notes::get_note( $note_ids[0] );
 		if ( ! $note ) {
 			return;
 		}
@@ -169,7 +163,6 @@ trait NoteTraits {
 			$note->save();
 		}
 	}
-
 	/**
 	 * Get if the note has been actioned.
 	 *
