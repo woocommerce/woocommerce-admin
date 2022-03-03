@@ -65,12 +65,12 @@ describe( 'truncateRenderableHTML', () => {
 	test( 'it should work with multi-char letters', () => {
 		const sampleWithUnicode = '<div>🏳️‍🌈</div>';
 		expect( truncateRenderableHTML( sampleWithUnicode, 1 ) ).toBe(
-			'<div>🏳️‍🌈</div>...'
+			'<div>🏳️‍🌈</div>'
 		);
 
 		const hindiSample = '<div>अनुच्छेद</div>';
 		expect( truncateRenderableHTML( hindiSample, 5 ) ).toBe(
-			'<div>अनुच्छेद</div>...'
+			'<div>अनुच्छेद</div>'
 		);
 
 		expect( truncateRenderableHTML( hindiSample, 3 ) ).toBe(
@@ -79,7 +79,7 @@ describe( 'truncateRenderableHTML', () => {
 
 		const demonicSample = '<div>Z͑ͫ̓ͪ̂ͫ̽͏̴̙̤̞͉͚̯̞̠͍A̴̵̜̰͔ͫ͗͢L̠ͨͧͩ͘G̴̻͈͍͔̹̑͗̎̅͛́Ǫ̵̹̻̝̳͂̌̌͘!͖̬̰̙̗̿̋ͥͥ̂ͣ̐́́͜͞</div>';
 		expect( truncateRenderableHTML( demonicSample, 6 ) ).toBe(
-			'<div>Z͑ͫ̓ͪ̂ͫ̽͏̴̙̤̞͉͚̯̞̠͍A̴̵̜̰͔ͫ͗͢L̠ͨͧͩ͘G̴̻͈͍͔̹̑͗̎̅͛́Ǫ̵̹̻̝̳͂̌̌͘!͖̬̰̙̗̿̋ͥͥ̂ͣ̐́́͜͞</div>...'
+			'<div>Z͑ͫ̓ͪ̂ͫ̽͏̴̙̤̞͉͚̯̞̠͍A̴̵̜̰͔ͫ͗͢L̠ͨͧͩ͘G̴̻͈͍͔̹̑͗̎̅͛́Ǫ̵̹̻̝̳͂̌̌͘!͖̬̰̙̗̿̋ͥͥ̂ͣ̐́́͜͞</div>'
 		);
 	} );
 } );

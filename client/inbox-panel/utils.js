@@ -119,8 +119,10 @@ const truncateElement = ( element, limit ) => {
  */
 export const truncateRenderableHTML = ( originalHTML, limit ) => {
 	const tempNode = document.createElement( 'div' );
+	const splitter = new GraphemeSplitter();
+
 	tempNode.innerHTML = originalHTML;
-	if ( tempNode.textContent.length > limit ) {
+	if ( splitter.splitGraphemes( tempNode.textContent ).length > limit ) {
 		return truncateElement( tempNode, limit ).innerHTML + '...';
 	}
 	return originalHTML;
