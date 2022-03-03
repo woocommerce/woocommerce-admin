@@ -72,7 +72,7 @@ class WcPayWelcomePage {
 				'admin.php?page=wc-admin&path=/wc-pay-welcome-page',
 				null,
 				$menu_icon,
-				55.7,
+				56,
 			);
 
 			call_user_func_array( 'add_menu_page', $menu_with_nav_data );
