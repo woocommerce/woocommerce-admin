@@ -7,7 +7,8 @@ namespace Automattic\WooCommerce\Internal\Admin;
 
 use \_WP_Dependency;
 use Automattic\WooCommerce\Admin\Features\Features;
-use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\PageController;
+use Automattic\WooCommerce\Internal\Admin\Loader;
 
 /**
  * WCAdminAssets Class.
@@ -49,7 +50,7 @@ class WCAdminAssets {
 	 * @param  string $ext File extension.
 	 * @return string Folder path of asset.
 	 */
-	static function get_path( $ext ) {
+	public static function get_path( $ext ) {
 		return ( 'css' === $ext ) ? WC_ADMIN_DIST_CSS_FOLDER : WC_ADMIN_DIST_JS_FOLDER;
 	}
 
@@ -59,7 +60,7 @@ class WCAdminAssets {
 	 * @param  boolean $script_debug Only serve unminified files if script debug is on.
 	 * @return boolean If js asset should use minified version.
 	 */
-	static function should_use_minified_js_file( $script_debug ) {
+	public static function should_use_minified_js_file( $script_debug ) {
 		// minified files are only shipped in non-core versions of wc-admin, return false if minified files are not available.
 		if ( ! Features::exists( 'minified-js' ) ) {
 			return false;
@@ -76,7 +77,7 @@ class WCAdminAssets {
 	 * @param  string $ext File extension.
 	 * @return string URL to asset.
 	 */
-	static function get_url( $file, $ext ) {
+	public static function get_url( $file, $ext ) {
 		$suffix = '';
 
 		// Potentially enqueue minified JavaScript.
@@ -94,7 +95,7 @@ class WCAdminAssets {
 	 * @param string $ext File extension.
 	 * @return string The cache buster value to use for the given file.
 	 */
-	static function get_file_version( $ext ) {
+	public static function get_file_version( $ext ) {
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 			return filemtime( WC_ADMIN_ABSPATH . self::get_path( $ext ) );
 		}
@@ -110,7 +111,7 @@ class WCAdminAssets {
 	 *
 	 * @throws \Exception Throws an exception when a readable asset registry file cannot be found.
 	 */
-	static function get_script_asset_filename( $script_path_name, $file ) {
+	public static function get_script_asset_filename( $script_path_name, $file ) {
 		$minification_supported = Features::exists( 'minified-js' );
 		$script_min_filename    = $file . '.min.asset.php';
 		$script_nonmin_filename = $file . '.asset.php';
@@ -144,7 +145,8 @@ class WCAdminAssets {
 				! empty( $allowlist ) &&
 				! in_array( $dependency->handle, $allowlist, true )
 			) ||
-			in_array( $dependency->handle, $this->preloaded_dependencies[ $type ], true )
+			( ! empty( $this->preloaded_dependencies[ $type ] ) &&
+			in_array( $dependency->handle, $this->preloaded_dependencies[ $type ], true ) )
 		) {
 			return;
 		}
@@ -222,7 +224,7 @@ class WCAdminAssets {
 	 * Loads the required scripts on the correct pages.
 	 */
 	public function enqueue_assets() {
-		if ( ! Loader::is_admin_or_embed_page() ) {
+		if ( ! PageController::is_admin_or_embed_page() ) {
 			return;
 		}
 

@@ -5,7 +5,8 @@
 
 namespace Automattic\WooCommerce\Internal\Admin;
 
-use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\PageController;
+use Automattic\WooCommerce\Internal\Admin\Loader;
 
 /**
  * Translations Class.
@@ -185,7 +186,7 @@ class Translations {
 	 * Loads the required translation scripts on the correct pages.
 	 */
 	public function potentially_load_translation_script_file() {
-		if ( ! Loader::is_admin_or_embed_page() ) {
+		if ( ! PageController::is_admin_or_embed_page() ) {
 			return;
 		}
 

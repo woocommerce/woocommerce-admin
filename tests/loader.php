@@ -5,7 +5,7 @@
  * @package WooCommerce\Admin\Tests\Loader
  */
 
-use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Internal\Admin\Loader;
 
 /**
  * WC_Admin_Tests_Page_Loader Class

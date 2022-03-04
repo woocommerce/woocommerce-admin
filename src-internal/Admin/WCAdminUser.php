@@ -2,8 +2,11 @@
 
 namespace Automattic\WooCommerce\Internal\Admin;
 
-class WCAdminUser
-{
+/**
+ * WCAdminUser Class.
+ */
+class WCAdminUser {
+
 	/**
 	 * Class instance.
 	 *
@@ -15,7 +18,7 @@ class WCAdminUser
 	 * Constructor.
 	 */
 	public function __construct() {
-		add_action('rest_api_init', array( $this, 'register_user_data'));
+		add_action( 'rest_api_init', array( $this, 'register_user_data' ) );
 	}
 
 	/**

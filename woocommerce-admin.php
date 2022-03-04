@@ -20,7 +20,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Internal\Admin\FeaturePlugin;
-use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Internal\Admin\Loader;
 use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 /**

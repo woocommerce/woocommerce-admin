@@ -5,7 +5,8 @@
 
 namespace Automattic\WooCommerce\Admin;
 
-use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
+use Automattic\WooCommerce\Internal\Admin\Loader;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -537,5 +538,31 @@ class PageController {
 		}
 
 		unset( $submenu['woocommerce'][ $wc_admin_key ] );
+	}
+
+	/**
+	 * Returns true if we are on a JS powered admin page or
+	 * a "classic" (non JS app) powered admin page (an embedded page).
+	 */
+	public static function is_admin_or_embed_page() {
+		return self::is_admin_page() || self::is_embed_page();
+	}
+
+	/**
+	 * Returns true if we are on a JS powered admin page.
+	 */
+	public static function is_admin_page() {
+		// phpcs:disable WordPress.Security.NonceVerification
+		return isset( $_GET['page'] ) && 'wc-admin' === $_GET['page'];
+		// phpcs:enable WordPress.Security.NonceVerification
+	}
+
+	/**
+	 *  Returns true if we are on a "classic" (non JS app) powered admin page.
+	 *
+	 * TODO: See usage in `admin.php`. This needs refactored and implemented properly in core.
+	 */
+	public static function is_embed_page() {
+		return wc_admin_is_connected_page() || ( ! self::is_admin_page() && class_exists( 'Automattic\WooCommerce\Admin\Features\Navigation\Screen' ) && Screen::is_woocommerce_page() );
 	}
 }

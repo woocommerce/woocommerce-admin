@@ -2,7 +2,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\PageController;
+use Automattic\WooCommerce\Internal\Admin\Loader;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
@@ -80,7 +81,7 @@ class Appearance extends Task {
 	 * Add media scripts for image uploader.
 	 */
 	public function add_media_scripts() {
-		if ( ! Loader::is_admin_page() || ! $this->can_view() ) {
+		if ( ! PageController::is_admin_page() || ! $this->can_view() ) {
 			return;
 		}
 

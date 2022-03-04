@@ -7,7 +7,7 @@
 
 namespace Automattic\WooCommerce\Admin\Features\Navigation;
 
-use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Internal\Admin\Loader;
 
 /**
  * Contains logic for the WooCommerce Navigation menu.

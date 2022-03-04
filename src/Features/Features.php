@@ -5,7 +5,8 @@
 
 namespace Automattic\WooCommerce\Admin\Features;
 
-use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Admin\PageController;
+use Automattic\WooCommerce\Internal\Admin\Loader;
 use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 /**
@@ -358,7 +359,7 @@ class Features {
 	 * Loads the required scripts on the correct pages.
 	 */
 	public static function load_scripts() {
-		if ( ! Loader::is_admin_or_embed_page() ) {
+		if ( ! PageController::is_admin_or_embed_page() ) {
 			return;
 		}
 
@@ -377,7 +378,7 @@ class Features {
 	 * @param string $admin_body_class Body class to add.
 	 */
 	public static function add_admin_body_classes( $admin_body_class = '' ) {
-		if ( ! Loader::is_admin_or_embed_page() ) {
+		if ( ! PageController::is_admin_or_embed_page() ) {
 			return $admin_body_class;
 		}
 
