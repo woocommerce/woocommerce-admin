@@ -5,6 +5,7 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
+use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 /**
  * Appearance Task
@@ -103,12 +104,12 @@ class Appearance extends Task {
 			return;
 		}
 
-		$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-homepage-notice' );
+		$script_assets_filename = WCAdminAssets::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-homepage-notice' );
 		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
 
 		wp_enqueue_script(
 			'onboarding-homepage-notice',
-			Loader::get_url( 'wp-admin-scripts/onboarding-homepage-notice', 'js' ),
+			WCAdminAssets::get_url( 'wp-admin-scripts/onboarding-homepage-notice', 'js' ),
 			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
 			WC_VERSION,
 			true

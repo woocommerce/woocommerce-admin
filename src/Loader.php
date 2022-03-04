@@ -13,6 +13,7 @@ use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\Navigation\Screen;
 use Automattic\WooCommerce\Internal\Admin\Translations;
 use Automattic\WooCommerce\Internal\Admin\WCAdminSharedSettings;
+use Automattic\WooCommerce\Internal\Admin\WCAdminUser;
 use WC_Marketplace_Suggestions;
 
 /**
@@ -68,16 +69,14 @@ class Loader {
 		Features::get_instance();
 		WCAdminSharedSettings::get_instance();
 		Translations::get_instance();
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'inject_wc_settings_dependencies' ), 14 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), 15 );
+		WCAdminUser::get_instance();
+
 		// Old settings injection.
 		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'add_component_settings' ) );
 		// New settings injection.
 		add_filter( 'woocommerce_admin_shared_settings', array( __CLASS__, 'add_component_settings' ) );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
 		add_filter( 'admin_title', array( __CLASS__, 'update_admin_title' ) );
-		add_action( 'rest_api_init', array( __CLASS__, 'register_user_data' ) );
 		add_action( 'in_admin_header', array( __CLASS__, 'embed_page_header' ) );
 		add_filter( 'woocommerce_settings_groups', array( __CLASS__, 'add_settings_group' ) );
 		add_filter( 'woocommerce_settings-wc_admin', array( __CLASS__, 'add_settings' ) );
@@ -133,113 +132,6 @@ class Loader {
 	public static function is_feature_enabled( $feature ) {
 		wc_deprecated_function( 'is_feature_enabled', '1.9', '\Automattic\WooCommerce\Internal\Admin\Features\Features::is_enabled()' );
 		return Features::is_enabled( $feature );
-	}
-
-	/**
-	 * Loads the required scripts on the correct pages.
-	 */
-	public function load_scripts() {
-		if ( ! self::is_admin_or_embed_page() ) {
-			return;
-		}
-
-		wp_enqueue_script( WC_ADMIN_APP );
-		wp_enqueue_style( WC_ADMIN_APP );
-		wp_enqueue_style( 'wc-material-icons' );
-		wp_enqueue_style( 'wc-onboarding' );
-
-		// Preload our assets.
-		$this->output_header_preload_tags();
-	}
-
-	/**
-	 * Render a preload link tag for a dependency, optionally
-	 * checked against a provided allowlist.
-	 *
-	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
-	 *
-	 * @param WP_Dependency $dependency The WP_Dependency being preloaded.
-	 * @param string        $type Dependency type - 'script' or 'style'.
-	 * @param array         $allowlist Optional. List of allowed dependency handles.
-	 */
-	public function maybe_output_preload_link_tag( $dependency, $type, $allowlist = array() ) {
-		if (
-			(
-				! empty( $allowlist ) &&
-				! in_array( $dependency->handle, $allowlist, true )
-			) ||
-			in_array( $dependency->handle, $this->preloaded_dependencies[ $type ], true )
-		) {
-			return;
-		}
-
-		$this->preloaded_dependencies[ $type ][] = $dependency->handle;
-
-		$source = $dependency->ver ? add_query_arg( 'ver', $dependency->ver, $dependency->src ) : $dependency->src;
-
-		echo '<link rel="preload" href="', esc_url( $source ), '" as="', esc_attr( $type ), '" />', "\n";
-	}
-
-	/**
-	 * Output a preload link tag for dependencies (and their sub dependencies)
-	 * with an optional allowlist.
-	 *
-	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
-	 *
-	 * @param string $type Dependency type - 'script' or 'style'.
-	 * @param array  $allowlist Optional. List of allowed dependency handles.
-	 */
-	public function output_header_preload_tags_for_type( $type, $allowlist = array() ) {
-		if ( 'script' === $type ) {
-			$dependencies_of_type = wp_scripts();
-		} elseif ( 'style' === $type ) {
-			$dependencies_of_type = wp_styles();
-		} else {
-			return;
-		}
-
-		foreach ( $dependencies_of_type->queue as $dependency_handle ) {
-			$dependency = $dependencies_of_type->query( $dependency_handle, 'registered' );
-
-			if ( false === $dependency ) {
-				continue;
-			}
-
-			// Preload the subdependencies first.
-			foreach ( $dependency->deps as $sub_dependency_handle ) {
-				$sub_dependency = $dependencies_of_type->query( $sub_dependency_handle, 'registered' );
-
-				if ( $sub_dependency ) {
-					$this->maybe_output_preload_link_tag( $sub_dependency, $type, $allowlist );
-				}
-			}
-
-			$this->maybe_output_preload_link_tag( $dependency, $type, $allowlist );
-		}
-	}
-
-	/**
-	 * Output preload link tags for all enqueued stylesheets and scripts.
-	 *
-	 * See: https://macarthur.me/posts/preloading-javascript-in-wordpress
-	 */
-	public function output_header_preload_tags() {
-		$wc_admin_scripts = array(
-			WC_ADMIN_APP,
-			'wc-components',
-		);
-
-		$wc_admin_styles = array(
-			WC_ADMIN_APP,
-			'wc-components',
-			'wc-material-icons',
-		);
-
-		// Preload styles.
-		$this->output_header_preload_tags_for_type( 'style', $wc_admin_styles );
-
-		// Preload scripts.
-		$this->output_header_preload_tags_for_type( 'script', $wc_admin_scripts );
 	}
 
 	/**
@@ -695,144 +587,6 @@ class Loader {
 				'priceFormat'       => html_entity_decode( get_woocommerce_price_format() ),
 			)
 		);
-	}
-
-	/**
-	 * Registers WooCommerce specific user data to the WordPress user API.
-	 */
-	public static function register_user_data() {
-		register_rest_field(
-			'user',
-			'is_super_admin',
-			array(
-				'get_callback' => function() {
-					return is_super_admin();
-				},
-				'schema'       => null,
-			)
-		);
-		register_rest_field(
-			'user',
-			'woocommerce_meta',
-			array(
-				'get_callback'    => array( __CLASS__, 'get_user_data_values' ),
-				'update_callback' => array( __CLASS__, 'update_user_data_values' ),
-				'schema'          => null,
-			)
-		);
-	}
-
-	/**
-	 * For all the registered user data fields (  Loader::get_user_data_fields ), fetch the data
-	 * for returning via the REST API.
-	 *
-	 * @param WP_User $user Current user.
-	 */
-	public static function get_user_data_values( $user ) {
-		$values = array();
-		foreach ( self::get_user_data_fields() as $field ) {
-			$values[ $field ] = self::get_user_data_field( $user['id'], $field );
-		}
-		return $values;
-	}
-
-	/**
-	 * For all the registered user data fields ( Loader::get_user_data_fields ), update the data
-	 * for the REST API.
-	 *
-	 * @param array   $values   The new values for the meta.
-	 * @param WP_User $user     The current user.
-	 * @param string  $field_id The field id for the user meta.
-	 */
-	public static function update_user_data_values( $values, $user, $field_id ) {
-		if ( empty( $values ) || ! is_array( $values ) || 'woocommerce_meta' !== $field_id ) {
-			return;
-		}
-		$fields  = self::get_user_data_fields();
-		$updates = array();
-		foreach ( $values as $field => $value ) {
-			if ( in_array( $field, $fields, true ) ) {
-				$updates[ $field ] = $value;
-				self::update_user_data_field( $user->ID, $field, $value );
-			}
-		}
-		return $updates;
-	}
-
-	/**
-	 * We store some WooCommerce specific user meta attached to users endpoint,
-	 * so that we can track certain preferences or values such as the inbox activity panel last open time.
-	 * Additional fields can be added in the function below, and then used via wc-admin's currentUser data.
-	 *
-	 * @return array Fields to expose over the WP user endpoint.
-	 */
-	public static function get_user_data_fields() {
-		return apply_filters( 'woocommerce_admin_get_user_data_fields', array() );
-	}
-
-	/**
-	 * Helper to update user data fields.
-	 *
-	 * @param int    $user_id  User ID.
-	 * @param string $field Field name.
-	 * @param mixed  $value  Field value.
-	 */
-	public static function update_user_data_field( $user_id, $field, $value ) {
-		update_user_meta( $user_id, 'woocommerce_admin_' . $field, $value );
-	}
-
-	/**
-	 * Helper to retrive user data fields.
-	 *
-	 * Migrates old key prefixes as well.
-	 *
-	 * @param int    $user_id  User ID.
-	 * @param string $field Field name.
-	 * @return mixed The user field value.
-	 */
-	public static function get_user_data_field( $user_id, $field ) {
-		$meta_value = get_user_meta( $user_id, 'woocommerce_admin_' . $field, true );
-
-		// Migrate old meta values (prefix changed from `wc_admin_` to `woocommerce_admin_`).
-		if ( '' === $meta_value ) {
-			$old_meta_value = get_user_meta( $user_id, 'wc_admin_' . $field, true );
-
-			if ( '' !== $old_meta_value ) {
-				self::update_user_data_field( $user_id, $field, $old_meta_value );
-				delete_user_meta( $user_id, 'wc_admin_' . $field );
-
-				$meta_value = $old_meta_value;
-			}
-		}
-
-		return $meta_value;
-	}
-
-	/**
-	 * Injects wp-shared-settings as a dependency if it's present.
-	 */
-	public static function inject_wc_settings_dependencies() {
-		if ( wp_script_is( 'wc-settings', 'registered' ) ) {
-			$handles_for_injection = [
-				'wc-csv',
-				'wc-currency',
-				'wc-customer-effort-score',
-				'wc-navigation',
-				// NOTE: This should be removed when Gutenberg is updated and
-				// the notices package is removed from WooCommerce Admin.
-				'wc-notices',
-				'wc-number',
-				'wc-date',
-				'wc-components',
-				'wc-tracks',
-			];
-			foreach ( $handles_for_injection as $handle ) {
-				$script = wp_scripts()->query( $handle, 'registered' );
-				if ( $script instanceof _WP_Dependency ) {
-					$script->deps[] = 'wc-settings';
-				}
-			}
-		}
 	}
 
 	/**
