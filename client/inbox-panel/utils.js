@@ -50,7 +50,7 @@ export function hasValidNotes( notes ) {
  * @param {number} limit number of characters to limit to
  * @param {string} separator The separator string to truncate to.
  */
-const truncate = ( letters, limit, separator = ' ' ) => {
+export const truncate = ( letters, limit, separator = ' ' ) => {
 	let truncatedLetters = letters.slice( 0, limit );
 
 	if ( letters.indexOf( separator, limit ) !== limit ) {
@@ -89,20 +89,13 @@ const truncateElement = ( element, limit ) => {
 		}
 
 		const charactersRemaining = limit - truncatedTextLength;
-		const isNodeOnlyTextContent =
-			! clone.innerHTML ||
-			clone.textContent.slice( 0, charactersRemaining ) ===
-				clone.innerHTML.slice( 0, charactersRemaining );
-
-		if ( isNodeOnlyTextContent ) {
-			// If text until the limit doesn't contain any markup, we're all good to truncate.
+		if ( clone.hasChildNodes() ) {
+			clone = truncateElement( clone, charactersRemaining );
+		} else {
 			clone.textContent = truncate(
 				cloneNodeLetters,
 				charactersRemaining
 			);
-		} else {
-			// If it does, then we'd need to recursively run this with balance of characters remaining.
-			clone = truncateElement( clone, charactersRemaining );
 		}
 		truncatedNode.appendChild( clone );
 		// Exceeded limit at this point, safe to exit loop.

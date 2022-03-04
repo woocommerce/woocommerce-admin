@@ -35,6 +35,14 @@ describe( 'truncateRenderableHTML', () => {
 		);
 	} );
 
+	test( 'it should truncate properly with nested tags', () => {
+		const sampleWithNestedTags = '<div>this is <div>a</div></div>';
+		// this (4 chars) + space (1 char) + is (2char) + space (1 char) = 7
+		expect( truncateRenderableHTML( sampleWithNestedTags, 7 ) ).toBe(
+			'<div>this is</div>...'
+		);
+	} );
+
 	test( 'it should work with unicode text', () => {
 		const sampleWithUnicode = '<div>테스트 입니다.</div>';
 		expect( truncateRenderableHTML( sampleWithUnicode, 3 ) ).toBe(
