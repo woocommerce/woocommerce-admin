@@ -15,11 +15,11 @@
 	},
 	"private": true,
 	"main": "build/util/index.js",
+	"module": "build-module/util/index.js",
 	"scripts": {
-		"build": "pnpm run ts:check && pnpm run build:cjs",
-		"build:cjs": "tsc --build ./tsconfig-cjs.json",
+		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"ts:check": "tsc --noEmit --project ./tsconfig.json",
-		"clean": "pnpm exec rimraf tsconfig.tsbuildinfo build build-*",
+		"clean": "pnpm exec rimraf *.tsbuildinfo build build-*",
 		"prepack": "pnpm run clean && pnpm run build"
 	},
 	"dependencies": {
