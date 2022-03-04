@@ -67,7 +67,7 @@ class WCAdminUser {
 	public function get_user_data_values( $user ) {
 		$values = array();
 		foreach ( $this->get_user_data_fields() as $field ) {
-			$values[ $field ] = $this->get_user_data_field( $user['id'], $field );
+			$values[ $field ] = self::get_user_data_field( $user['id'], $field );
 		}
 		return $values;
 	}
@@ -89,7 +89,7 @@ class WCAdminUser {
 		foreach ( $values as $field => $value ) {
 			if ( in_array( $field, $fields, true ) ) {
 				$updates[ $field ] = $value;
-				$this->update_user_data_field( $user->ID, $field, $value );
+				self::update_user_data_field( $user->ID, $field, $value );
 			}
 		}
 		return $updates;
@@ -113,7 +113,7 @@ class WCAdminUser {
 	 * @param string $field Field name.
 	 * @param mixed  $value  Field value.
 	 */
-	public function update_user_data_field( $user_id, $field, $value ) {
+	public static function update_user_data_field( $user_id, $field, $value ) {
 		update_user_meta( $user_id, 'woocommerce_admin_' . $field, $value );
 	}
 
@@ -126,7 +126,7 @@ class WCAdminUser {
 	 * @param string $field Field name.
 	 * @return mixed The user field value.
 	 */
-	public function get_user_data_field( $user_id, $field ) {
+	public static function get_user_data_field( $user_id, $field ) {
 		$meta_value = get_user_meta( $user_id, 'woocommerce_admin_' . $field, true );
 
 		// Migrate old meta values (prefix changed from `wc_admin_` to `woocommerce_admin_`).
@@ -134,7 +134,7 @@ class WCAdminUser {
 			$old_meta_value = get_user_meta( $user_id, 'wc_admin_' . $field, true );
 
 			if ( '' !== $old_meta_value ) {
-				$this->update_user_data_field( $user_id, $field, $old_meta_value );
+				self::update_user_data_field( $user_id, $field, $old_meta_value );
 				delete_user_meta( $user_id, 'wc_admin_' . $field );
 
 				$meta_value = $old_meta_value;

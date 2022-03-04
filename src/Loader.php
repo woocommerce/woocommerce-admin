@@ -10,8 +10,8 @@ use Automattic\WooCommerce\Admin\Features\Features;
  *
  * @deprecated since 6.3.0, use WooCommerce\Internal\Admin\Loader.
  */
-class Loader extends DeprecatedClassFacade
-{
+class Loader extends DeprecatedClassFacade {
+
 	/**
 	 * Returns if a specific wc-admin feature is enabled.
 	 *
@@ -28,6 +28,7 @@ class Loader extends DeprecatedClassFacade
 	/**
 	 * Returns true if we are on a JS powered admin page or
 	 * a "classic" (non JS app) powered admin page (an embedded page).
+	 *
 	 * @deprecated 6.3.0
 	 */
 	public static function is_admin_or_embed_page() {
@@ -37,6 +38,7 @@ class Loader extends DeprecatedClassFacade
 
 	/**
 	 * Returns true if we are on a JS powered admin page.
+	 *
 	 * @deprecated 6.3.0
 	 */
 	public static function is_admin_page() {
@@ -46,6 +48,7 @@ class Loader extends DeprecatedClassFacade
 
 	/**
 	 * Returns true if we are on a "classic" (non JS app) powered admin page.
+	 *
 	 * @deprecated 6.3.0
 	 */
 	public static function is_embed_page() {
