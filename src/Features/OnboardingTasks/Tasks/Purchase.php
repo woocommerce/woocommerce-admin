@@ -149,6 +149,16 @@ class Purchase extends Task {
 		$installed     = PluginsHelper::get_installed_plugin_slugs();
 		$product_types = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
 		$product_data  = Onboarding::get_product_data( Onboarding::get_allowed_product_types() );
+		$themes        = Onboarding::get_themes();
+		$theme_key     = array_search( $profiler_data['theme'], array_column($themes, 'slug') );
+		if ( false !== $theme_key && isset( $themes[ $theme_key ]['id'] ) && isset( $themes[ $theme_key ]['price'] ) && ! $themes[ $theme_key ]['is_installed'] ) {
+			$price_match = null;
+			preg_match( '/\\d+\.\d{2}\s*/',  $themes[ $theme_key ]['price'], $price_match);
+			if ( count( $price_match ) > 0 && ( (float) $price_match[0] ) > 0 ) {
+				$product_types[] = 'themes';
+				$product_data['themes'] = $themes[$theme_key];
+			}
+		}
 		$purchaseable  = array();
 		$remaining     = array();
 		foreach ( $product_types as $type ) {
@@ -159,7 +169,11 @@ class Purchase extends Task {
 			$purchaseable[] = $product_data[ $type ];
 
 			if ( ! in_array( $product_data[ $type ]['slug'], $installed, true ) ) {
-				$remaining[] = $product_data[ $type ]['label'];
+				if ( isset( $product_data[ $type ]['label'] ) ) {
+					$remaining[] = $product_data[$type]['label'];
+				} else {
+					$remaining[] = $product_data[$type]['title'];
+				}
 			}
 		}
 
