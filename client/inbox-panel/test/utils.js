@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { truncateRenderableHTML } from '../utils';
+import { truncateRenderableHTML, truncate } from '../utils';
 
 describe( 'truncateRenderableHTML', () => {
 	test( 'it should recover malformed HTML when truncated', () => {
@@ -88,6 +88,30 @@ describe( 'truncateRenderableHTML', () => {
 		const demonicSample = '<div>Z͑ͫ̓ͪ̂ͫ̽͏̴̙̤̞͉͚̯̞̠͍A̴̵̜̰͔ͫ͗͢L̠ͨͧͩ͘G̴̻͈͍͔̹̑͗̎̅͛́Ǫ̵̹̻̝̳͂̌̌͘!͖̬̰̙̗̿̋ͥͥ̂ͣ̐́́͜͞</div>';
 		expect( truncateRenderableHTML( demonicSample, 6 ) ).toBe(
 			'<div>Z͑ͫ̓ͪ̂ͫ̽͏̴̙̤̞͉͚̯̞̠͍A̴̵̜̰͔ͫ͗͢L̠ͨͧͩ͘G̴̻͈͍͔̹̑͗̎̅͛́Ǫ̵̹̻̝̳͂̌̌͘!͖̬̰̙̗̿̋ͥͥ̂ͣ̐́́͜͞</div>'
+		);
+	} );
+} );
+
+describe( 'truncate', () => {
+	it( 'should truncate letters and return truncated string', () => {
+		expect( truncate( 'this is a test sentence'.split( '' ), 4 ) ).toBe(
+			'this'
+		);
+	} );
+
+	it( 'should not contain end-space', () => {
+		expect( truncate( 'this is a test sentence'.split( '' ), 5 ) ).toBe(
+			'this'
+		);
+	} );
+
+	it( 'should preserve whole words', () => {
+		// "this i" doesn't preserve whole words, so it should be truncated to "this"
+		expect( truncate( 'this is a test sentence'.split( '' ), 6 ) ).toBe(
+			'this'
+		);
+		expect( truncate( 'this is a test sentence'.split( '' ), 7 ) ).toBe(
+			'this is'
 		);
 	} );
 } );
