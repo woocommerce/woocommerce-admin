@@ -4,6 +4,6 @@ export interface RestApiErrorData {
 
 export type RestApiError = {
 	code: string;
-	data: RestApiErrorData;
+	data?: RestApiErrorData;
 	message: string;
 };
