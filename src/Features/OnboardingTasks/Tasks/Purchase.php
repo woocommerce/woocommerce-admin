@@ -150,17 +150,18 @@ class Purchase extends Task {
 		$product_types = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
 		$product_data  = Onboarding::get_product_data( Onboarding::get_allowed_product_types() );
 		$themes        = Onboarding::get_themes();
-		$theme_key     = array_search( $profiler_data['theme'], array_column($themes, 'slug') );
+		$theme_key     = array_search( $profiler_data['theme'], array_column( $themes, 'slug' ), true );
 		if ( false !== $theme_key && isset( $themes[ $theme_key ]['id'] ) && isset( $themes[ $theme_key ]['price'] ) && ! $themes[ $theme_key ]['is_installed'] ) {
 			$price_match = null;
-			preg_match( '/\\d+\.\d{2}\s*/',  $themes[ $theme_key ]['price'], $price_match);
+			// Find the price inside the string as it contains other items.
+			preg_match( '/\\d+\.\d{2}\s*/', $themes[ $theme_key ]['price'], $price_match );
 			if ( count( $price_match ) > 0 && ( (float) $price_match[0] ) > 0 ) {
-				$product_types[] = 'themes';
-				$product_data['themes'] = $themes[$theme_key];
+				$product_types[]        = 'themes';
+				$product_data['themes'] = $themes[ $theme_key ];
 			}
 		}
-		$purchaseable  = array();
-		$remaining     = array();
+		$purchaseable = array();
+		$remaining    = array();
 		foreach ( $product_types as $type ) {
 			if ( ! isset( $product_data[ $type ]['slug'] ) ) {
 				continue;
@@ -170,9 +171,9 @@ class Purchase extends Task {
 
 			if ( ! in_array( $product_data[ $type ]['slug'], $installed, true ) ) {
 				if ( isset( $product_data[ $type ]['label'] ) ) {
-					$remaining[] = $product_data[$type]['label'];
+					$remaining[] = $product_data[ $type ]['label'];
 				} else {
-					$remaining[] = $product_data[$type]['title'];
+					$remaining[] = $product_data[ $type ]['title'];
 				}
 			}
 		}
