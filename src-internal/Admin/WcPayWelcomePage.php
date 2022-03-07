@@ -48,7 +48,7 @@ class WcPayWelcomePage {
 			'id'       => 'wc-calypso-bridge-payments-welcome-page',
 			'title'    => __( 'Payments', 'woocommerce-admin' ),
 			'path'     => '/wc-pay-welcome-page',
-			'position' => '55.7',
+			'position' => '56',
 			'nav_args' => [
 				'title'        => __( 'WooCommerce Payments', 'woocommerce-admin' ),
 				'is_category'  => false,
