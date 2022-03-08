@@ -16,6 +16,7 @@ use \Automattic\WooCommerce\Admin\API\Reports\ExportableTraits;
 /**
  * REST API Reports products controller class.
  *
+ * @internal
  * @extends WC_REST_Reports_Controller
  */
 class Controller extends ReportsController implements ExportableInterface {
@@ -396,7 +397,7 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @param array $status Stock status from report row.
 	 * @return string
 	 */
-	protected function _get_stock_status( $status ) {
+	protected function get_stock_status( $status ) {
 		$statuses = wc_get_product_stock_status_options();
 
 		return isset( $statuses[ $status ] ) ? $statuses[ $status ] : '';
@@ -440,7 +441,7 @@ class Controller extends ReportsController implements ExportableInterface {
 		);
 
 		if ( 'yes' === get_option( 'woocommerce_manage_stock' ) ) {
-			$export_item['stock_status'] = $this->_get_stock_status( $item['extended_info']['stock_status'] );
+			$export_item['stock_status'] = $this->get_stock_status( $item['extended_info']['stock_status'] );
 			$export_item['stock']        = $item['extended_info']['stock_quantity'];
 		}
 
