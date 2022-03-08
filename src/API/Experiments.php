@@ -60,7 +60,7 @@ class Experiments extends \WC_REST_Data_Controller {
 		$args = $request->get_query_params();
 
 		if ( ! isset( $args['experiment_name'] ) ) {
-			return new \WP_Error(
+			return new \WP_REST_Response(
 				'woocommerce_rest_experiment_name_required',
 				__( 'Sorry, experiment_name is required.', 'woocommerce-admin' ),
 				array( 'status' => 400 )
@@ -76,8 +76,8 @@ class Experiments extends \WC_REST_Data_Controller {
 			true  // set true to send request as auth user.
 		);
 		$response = $abtest->request_assignment( $args );
-		if ( is_wp_error( $response ) || ! is_array( $response ) || ! isset( $response['body'] ) ) {
-			return new \WP_Error( 'failed_to_fetch_data', 'Unable to fetch the requested data.', array( 'status' => 503 ) );
+		if ( is_wp_error( $response ) ) {
+			return $response;
 		}
 
 		return json_decode( $response['body'], true );
