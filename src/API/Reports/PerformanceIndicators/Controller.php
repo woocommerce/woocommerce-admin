@@ -202,9 +202,10 @@ class Controller extends \WC_REST_Reports_Controller {
 	/**
 	 * Set active Jetpack modules.
 	 *
+	 * @internal
 	 * @param array $modules List of active Jetpack module slugs.
 	 */
-	private function set_active_jetpack_modules( $modules ) {
+	public function set_active_jetpack_modules( $modules ) {
 		$this->active_jetpack_modules = $modules;
 	}
 
