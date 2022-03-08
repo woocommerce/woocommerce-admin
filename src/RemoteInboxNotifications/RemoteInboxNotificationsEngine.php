@@ -43,14 +43,14 @@ class RemoteInboxNotificationsEngine {
 			'woocommerce_admin_updated',
 			function() {
 				$next_hook = WC()->queue()->get_next(
-					'woocommerce_run_remote_inbox_engine',
+					'woocommerce_run_on_woocommerce_admin_updated',
 					array( __CLASS__, 'run_on_woocommerce_admin_updated' ),
 					'woocommerce-remote-inbox-engine'
 				);
 				if ( null === $next_hook ) {
 					WC()->queue()->schedule_single(
 						time(),
-						'woocommerce_run_remote_inbox_engine',
+						'woocommerce_run_on_woocommerce_admin_updated',
 						array( __CLASS__, 'run_on_woocommerce_admin_updated' ),
 						'woocommerce-remote-inbox-engine'
 					);
