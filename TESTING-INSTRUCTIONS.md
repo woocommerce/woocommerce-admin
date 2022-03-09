@@ -10,8 +10,9 @@
 4. Complete the rest of the onboarding wizard.
 5. Confirm that "Get paid with WooCommerce Payments" appears under primary task list.
 6. When clicked, it should redirect to WCPay connection page.
-6. Confirm that "Set up additional payment providers" appears under extended task list.
-7. When clicked, it should direct to the payments task.
+7. Set up/connect WooCommerce Payments.
+8. After WCPay is connected, go to the Homescreen and confirm that "Set up additional payment providers" appears under extended task list.
+9. When clicked, it should direct to the payments task.
 
 ## 3.3.0
 
