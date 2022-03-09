@@ -50,7 +50,11 @@
 		"@types/dompurify": "^2.3.3",
 		"@types/react-transition-group": "^4.4.4",
 		"@woocommerce/style-build": "workspace:*",
-		"concurrently": "^5.3.0"
+		"concurrently": "^5.3.0",
+		"css-loader": "^3.6.0",
+		"postcss-loader": "^3.0.0",
+		"sass-loader": "^10.2.1",
+		"webpack": "^4.46.0"
 	},
 	"scripts": {
 		"clean": "pnpm exec rimraf tsconfig.tsbuildinfo build build-*",

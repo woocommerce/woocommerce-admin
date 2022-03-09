@@ -25,8 +25,8 @@
 	},
 	"dependencies": {
 		"@automattic/interpolate-components": "^1.2.0",
-		"@woocommerce/experimental": "workspace:*",
 		"@woocommerce/components": "workspace:*",
+		"@woocommerce/experimental": "workspace:*",
 		"@woocommerce/tracks": "workspace:*",
 		"@wordpress/components": "^19.5.0",
 		"@wordpress/element": "^4.1.1",
@@ -35,7 +35,11 @@
 		"gridicons": "^3.4.0"
 	},
 	"devDependencies": {
-		"@woocommerce/style-build": "workspace:*"
+		"@woocommerce/style-build": "workspace:*",
+		"css-loader": "^3.6.0",
+		"postcss-loader": "^3.0.0",
+		"sass-loader": "^10.2.1",
+		"webpack": "^4.46.0"
 	},
 	"scripts": {
 		"clean": "pnpm exec rimraf tsconfig.tsbuildinfo build build-*",
