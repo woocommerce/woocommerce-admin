@@ -164,6 +164,7 @@ trait NoteTraits {
 			return;
 		}
 
+		error_log(self::NOTE_NAME );
 		// Update note content if it's changed.
 		$latest_note_content = $note->get_content();
 		if ( $note_in_db->get_content() !== $latest_note_content ) {
