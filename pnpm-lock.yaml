@@ -437,6 +437,7 @@ importers:
       classnames: ^2.3.1
       concurrently: ^5.3.0
       core-js: ^3.21.1
+      css-loader: ^3.6.0
       d3-axis: ^1.0.12
       d3-format: ^1.4.5
       d3-scale: ^2.2.2
@@ -449,10 +450,13 @@ importers:
       gridicons: ^3.4.0
       memoize-one: ^5.2.1
       moment: ^2.29.1
+      postcss-loader: ^3.0.0
       prop-types: ^15.8.1
       react-dates: ^17.2.0
       react-router-dom: ^5.3.0
       react-transition-group: ^4.4.2
+      sass-loader: ^10.2.1
+      webpack: ^4.46.0
     dependencies:
       '@automattic/interpolate-components': 1.2.0_react@17.0.2
       '@storybook/addon-knobs': 6.4.0_6d3fd42cc2dc28673127a5aba3ab9a43
@@ -504,6 +508,10 @@ importers:
       '@woocommerce/style-build': link:../style-build
       '@wordpress/scripts': 12.6.1_3d2d8d4acee74eea68cf8002a5de7191
       concurrently: 5.3.0
+      css-loader: 3.6.0_webpack@4.46.0
+      postcss-loader: 3.0.0
+      sass-loader: 10.2.1_sass@1.49.9+webpack@4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   packages/csv-export:
     specifiers:
@@ -541,8 +549,12 @@ importers:
       '@wordpress/notices': ^3.3.2
       classnames: ^2.3.1
       concurrently: ^5.3.0
+      css-loader: ^3.6.0
+      postcss-loader: ^3.0.0
       prop-types: ^15.8.1
       react-transition-group: ^4.4.2
+      sass-loader: ^10.2.1
+      webpack: ^4.46.0
     dependencies:
       '@woocommerce/experimental': link:../experimental
       '@wordpress/components': 19.5.0_33bdac975a6e334c49640fab91e2abb4
@@ -559,6 +571,10 @@ importers:
       '@types/wordpress__components': 9.8.6_react-dom@17.0.2+react@17.0.2
       '@woocommerce/style-build': link:../style-build
       concurrently: 5.3.0
+      css-loader: 3.6.0_webpack@4.46.0
+      postcss-loader: 3.0.0
+      sass-loader: 10.2.1_sass@1.49.9+webpack@4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   packages/data:
     specifiers:
@@ -658,11 +674,15 @@ importers:
       '@wordpress/keycodes': ^3.3.1
       classnames: ^2.3.1
       concurrently: ^5.3.0
+      css-loader: ^3.6.0
       dompurify: ^2.3.6
       gridicons: ^3.4.0
       moment: ^2.29.1
+      postcss-loader: ^3.0.0
       react-transition-group: ^4.4.2
       react-visibility-sensor: ^5.1.1
+      sass-loader: ^10.2.1
+      webpack: ^4.46.0
     dependencies:
       '@woocommerce/components': link:../components
       '@wordpress/components': 19.5.0_33bdac975a6e334c49640fab91e2abb4
@@ -686,6 +706,10 @@ importers:
       '@types/react-transition-group': 4.4.4
       '@woocommerce/style-build': link:../style-build
       concurrently: 5.3.0
+      css-loader: 3.6.0_webpack@4.46.0
+      postcss-loader: 3.0.0
+      sass-loader: 10.2.1_sass@1.49.9+webpack@4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   packages/explat:
     specifiers:
@@ -769,7 +793,11 @@ importers:
       '@wordpress/element': ^4.1.1
       '@wordpress/i18n': ^4.3.1
       concurrently: ^5.3.0
+      css-loader: ^3.6.0
       gridicons: ^3.4.0
+      postcss-loader: ^3.0.0
+      sass-loader: ^10.2.1
+      webpack: ^4.46.0
     dependencies:
       '@automattic/interpolate-components': 1.2.0_react@17.0.2
       '@woocommerce/components': link:../components
@@ -782,6 +810,10 @@ importers:
       gridicons: 3.4.0_react@17.0.2
     devDependencies:
       '@woocommerce/style-build': link:../style-build
+      css-loader: 3.6.0_webpack@4.46.0
+      postcss-loader: 3.0.0
+      sass-loader: 10.2.1_sass@1.49.9+webpack@4.46.0
+      webpack: 4.46.0_webpack-cli@3.3.12
 
   packages/style-build:
     specifiers:
