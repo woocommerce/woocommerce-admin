@@ -116,7 +116,7 @@ git add . $DRY_RUN_ARG
 git commit -m "Adding translations to release" --no-verify $DRY_RUN_ARG
 
 # Force add build directory and commit.
-git add ../woocommerce/assets/client/admin/. --force $DRY_RUN_ARG
+git add dist/. --force $DRY_RUN_ARG
 git add . $DRY_RUN_ARG
 git commit -m "Adding /dist directory to release" --no-verify $DRY_RUN_ARG
 
