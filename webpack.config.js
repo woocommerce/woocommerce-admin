@@ -73,7 +73,7 @@ const webpackConfig = {
 				: `[name]/index${ suffix }.js`;
 		},
 		chunkFilename: `chunks/[name]${ suffix }.js`,
-		path: path.join( __dirname, 'dist' ),
+		path: path.join( __dirname, '/../woocommerce/assets/client/admin' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
 		jsonpFunction: '__wcAdmin_webpackJsonp',

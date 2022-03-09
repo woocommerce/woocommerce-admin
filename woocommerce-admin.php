@@ -93,7 +93,7 @@ function woocommerce_admin_is_development_version() {
 function woocommerce_admin_check_build_files() {
 	$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
 	$suffix       = WCAdminAssets::should_use_minified_js_file( $script_debug ) ? '.min' : '';
-	return file_exists( __DIR__ . "/dist/app/index{$suffix}.js" );
+	return file_exists( __DIR__ . "/../woocommerce/assets/client/admin/app/index{$suffix}.js" );
 }
 
 /**

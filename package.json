@@ -9,9 +9,9 @@
 	"license": "GPL-3.0-or-later",
 	"author": "Automattic",
 	"files": [
-		"dist/**/*.css",
-		"dist/**/*.js",
-		"dist/feature-config-core.php",
+		"../woocommerce/assets/client/admin/**/*.css",
+		"../woocommerce/assets/client/admin/**/*.js",
+		"../woocommerce/assets/client/admin/feature-config-core.php",
 		"includes/class-wc-admin-loader.php",
 		"includes/features/**/*.php",
 		"languages/**/*.json",
