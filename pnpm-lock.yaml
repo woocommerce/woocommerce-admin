@@ -476,6 +476,7 @@ importers:
       ts-jest: ^27.1.3
       typescript: ^4.6.2
       webpack: ^4.46.0
+      webpack-cli: ^3.3.12
     dependencies:
       '@automattic/interpolate-components': 1.2.0_react@17.0.2
       '@storybook/addon-knobs': 6.4.0_6d3fd42cc2dc28673127a5aba3ab9a43
@@ -544,6 +545,7 @@ importers:
       ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
       typescript: 4.6.2
       webpack: 4.46.0_webpack-cli@3.3.12
+      webpack-cli: 3.3.12_webpack@4.46.0
 
   packages/csv-export:
     specifiers:
@@ -616,6 +618,7 @@ importers:
       ts-jest: ^27.1.3
       typescript: ^4.6.2
       webpack: ^4.46.0
+      webpack-cli: ^3.3.12
     dependencies:
       '@woocommerce/experimental': link:../experimental
       '@wordpress/components': 19.5.0_33bdac975a6e334c49640fab91e2abb4
@@ -631,7 +634,7 @@ importers:
       '@babel/core': 7.17.5
       '@testing-library/react': 12.1.3_react-dom@17.0.2+react@17.0.2
       '@types/prop-types': 15.7.4
-      '@types/wordpress__components': 9.8.6_react-dom@17.0.2+react@17.0.2
+      '@types/wordpress__components': 9.8.6_react@17.0.2
       '@woocommerce/style-build': link:../style-build
       '@wordpress/browserslist-config': 4.1.1
       concurrently: 5.3.0
@@ -643,6 +646,7 @@ importers:
       ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
       typescript: 4.6.2
       webpack: 4.46.0_webpack-cli@3.3.12
+      webpack-cli: 3.3.12_webpack@4.46.0
 
   packages/data:
     specifiers:
@@ -731,6 +735,7 @@ importers:
       ts-jest: ^27.1.3
       typescript: ^4.6.2
       webpack: ^4.46.0
+      webpack-cli: ^3.3.12
     dependencies:
       '@wordpress/dependency-extraction-webpack-plugin': 2.9.0_webpack@4.46.0
     devDependencies:
@@ -740,6 +745,7 @@ importers:
       ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
       typescript: 4.6.2
       webpack: 4.46.0_webpack-cli@3.3.12
+      webpack-cli: 3.3.12_webpack@4.46.0
 
   packages/eslint-plugin:
     specifiers:
@@ -803,6 +809,7 @@ importers:
       ts-jest: ^27.1.3
       typescript: ^4.6.2
       webpack: ^4.46.0
+      webpack-cli: ^3.3.12
     dependencies:
       '@woocommerce/components': link:../components
       '@wordpress/components': 19.5.0_33bdac975a6e334c49640fab91e2abb4
@@ -838,6 +845,7 @@ importers:
       ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
       typescript: 4.6.2
       webpack: 4.46.0_webpack-cli@3.3.12
+      webpack-cli: 3.3.12_webpack@4.46.0
 
   packages/explat:
     specifiers:
@@ -990,6 +998,7 @@ importers:
       ts-jest: ^27.1.3
       typescript: ^4.6.2
       webpack: ^4.46.0
+      webpack-cli: ^3.3.12
     dependencies:
       '@automattic/interpolate-components': 1.2.0_react@17.0.2
       '@woocommerce/components': link:../components
@@ -1012,6 +1021,7 @@ importers:
       ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
       typescript: 4.6.2
       webpack: 4.46.0_webpack-cli@3.3.12
+      webpack-cli: 3.3.12_webpack@4.46.0
 
   packages/style-build:
     specifiers:
@@ -3387,7 +3397,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.4
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 17.0.19
+      '@types/node': 17.0.21
       '@types/yargs': 15.0.14
       chalk: 4.1.2
 
@@ -5548,12 +5558,11 @@ packages:
       - react-dom
     dev: true
 
-  /@types/wordpress__components/9.8.6_react-dom@17.0.2+react@17.0.2:
+  /@types/wordpress__components/9.8.6_react@17.0.2:
     resolution: {integrity: sha512-K/GR3L9uaLqbgcnPfFEi8dpeJPdMaeR3t7mTrOvQkMH5Lgnr+5ifmalhBaw/EPtjfPyv9tyYPvBPUOsIwYQdcw==}
     dependencies:
       '@types/react': 17.0.39
       '@types/tinycolor2': 1.4.3
-      '@types/wordpress__components': 19.3.0_react-dom@17.0.2+react@17.0.2
       '@types/wordpress__notices': 1.5.4
       '@types/wordpress__rich-text': 3.4.6
       '@wordpress/element': 2.20.3
@@ -5561,7 +5570,6 @@ packages:
       re-resizable: 4.11.0
     transitivePeerDependencies:
       - react
-      - react-dom
     dev: true
 
   /@types/wordpress__data-controls/2.2.0:
