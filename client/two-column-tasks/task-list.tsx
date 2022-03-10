@@ -7,7 +7,11 @@ import { Button, Card } from '@wordpress/components';
 import { useSelect, useDispatch, Action } from '@wordpress/data';
 import { EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
-import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME, TaskType } from '@woocommerce/data';
+import {
+	OPTIONS_STORE_NAME,
+	ONBOARDING_STORE_NAME,
+	TaskType,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { List, TaskItem } from '@woocommerce/experimental';
 import classnames from 'classnames';
@@ -41,15 +45,34 @@ export const TaskList: React.FC< TaskListProps > = ( {
 		};
 	} );
 	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
-	const [ headerData, setHeaderData ] = useState<{
+	const [ headerData, setHeaderData ] = useState< {
 		task?: TaskType;
 		goToTask?: () => void;
 		trackClick?: () => void;
-	}>( {} );
+	} >( {} );
 	const [ activeTaskId, setActiveTaskId ] = useState( '' );
 	const [ showDismissModal, setShowDismissModal ] = useState( false );
 
 	const prevQueryRef = useRef( query );
+
+	const nowTimestamp = Date.now();
+	const visibleTasks = tasks.filter(
+		( task ) =>
+			! task.isDismissed &&
+			( ! task.isSnoozed || task.snoozedUntil < nowTimestamp )
+	);
+
+	const recordTaskListView = () => {
+		if ( query.task ) {
+			return;
+		}
+
+		recordEvent( `${ eventName }_view`, {
+			number_tasks: visibleTasks.length,
+			store_connected: profileItems.wccom_connected,
+		} );
+	};
+
 	useEffect( () => {
 		recordTaskListView();
 	}, [] );
@@ -64,25 +87,17 @@ export const TaskList: React.FC< TaskListProps > = ( {
 		}
 	}, [ query ] );
 
-	const nowTimestamp = Date.now();
-	const visibleTasks = tasks.filter(
-		( task ) =>
-			! task.isDismissed &&
-			( ! task.isSnoozed || task.snoozedUntil < nowTimestamp )
-	);
-
 	const incompleteTasks = tasks.filter(
 		( task ) => ! task.isComplete && ! task.isDismissed
 	);
 
-	const onDismissTask = ( id: string, onDismiss?: () => void ) => {
-		dismissTask( id );
+	const onDismissTask = ( taskId: string, onDismiss?: () => void ) => {
+		dismissTask( taskId );
 		createNotice( 'success', __( 'Task dismissed' ), {
 			actions: [
 				{
 					label: __( 'Undo', 'woocommerce-admin' ),
-					// @ts-ignore onClick not available within type yet.
-					onClick: () => undoDismissTask( id ),
+					onClick: () => undoDismissTask( taskId ),
 				},
 			],
 		} );
@@ -92,18 +107,7 @@ export const TaskList: React.FC< TaskListProps > = ( {
 		}
 	};
 
-	const recordTaskListView = () => {
-		if ( query.task ) {
-			return;
-		}
-
-		recordEvent( `${ eventName }_view`, {
-			number_tasks: visibleTasks.length,
-			store_connected: profileItems.wccom_connected,
-		} );
-	};
-
-	const hideTasks = ( eventName: string ) => {
+	const hideTasks = ( event: string ) => {
 		hideTaskList( id );
 	};
 
@@ -123,7 +127,11 @@ export const TaskList: React.FC< TaskListProps > = ( {
 				<EllipsisMenu
 					className={ id }
 					label={ __( 'Task List Options', 'woocommerce-admin' ) }
-					renderContent={ ( { onToggle }: { onToggle: () => void } ) => (
+					renderContent={ ( {
+						onToggle,
+					}: {
+						onToggle: () => void;
+					} ) => (
 						<div className="woocommerce-task-card__section-controls">
 							<Button
 								onClick={ () => {
@@ -153,6 +161,12 @@ export const TaskList: React.FC< TaskListProps > = ( {
 		selectedHeaderCard = visibleTasks[ visibleTasks.length - 1 ];
 	}
 
+	const trackClick = ( task: TaskType ) => {
+		recordEvent( `${ eventName }_click`, {
+			task_name: task.id,
+		} );
+	};
+
 	const goToTask = ( task: TaskType ) => {
 		trackClick( task );
 		updateQueryString( { task: task.id } );
@@ -167,12 +181,6 @@ export const TaskList: React.FC< TaskListProps > = ( {
 			} );
 			setActiveTaskId( task.id );
 		}
-	};
-
-	const trackClick = ( task: TaskType ) => {
-		recordEvent( `${ eventName }_click`, {
-			task_name: task.id,
-		} );
 	};
 
 	const onTaskSelected = ( task: TaskType ) => {
@@ -200,7 +208,7 @@ export const TaskList: React.FC< TaskListProps > = ( {
 				<TaskListCompleted
 					hideTasks={ hideTasks }
 					keepTasks={ keepTasks }
-					twoColumns={false}
+					twoColumns={ false }
 				/>
 			</>
 		);
@@ -260,7 +268,7 @@ export const TaskList: React.FC< TaskListProps > = ( {
 											? () => onDismissTask( task.id )
 											: undefined
 									}
-									action={() => {}}
+									action={ () => {} }
 									actionLabel={ task.actionLabel }
 								/>
 							);

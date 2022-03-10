@@ -24,21 +24,26 @@ export type TasksProps = {
 	query: { task?: string };
 };
 
-const TaskList = lazy( () =>
-	import( /* webpackChunkName: "task-list" */ './task-list' )
+const TaskList = lazy(
+	() => import( /* webpackChunkName: "task-list" */ './task-list' )
 );
 
-const TwoColumnTaskList = lazy( () =>
-	import( /* webpackChunkName: "two-column-task-list" */ '../two-column-tasks/task-list' )
+const TwoColumnTaskList = lazy(
+	() =>
+		import(
+			/* webpackChunkName: "two-column-task-list" */ '../two-column-tasks/task-list'
+		)
 );
 
-function getTaskListComponent( taskListId: string ):React.LazyExoticComponent<React.FC<TaskListProps>>   {
-	switch( taskListId ) {
+function getTaskListComponent(
+	taskListId: string
+): React.LazyExoticComponent< React.FC< TaskListProps > > {
+	switch ( taskListId ) {
 		case 'setup_experiment_1':
 			return TwoColumnTaskList;
 		default:
 			return TaskList;
-	  }
+	}
 }
 
 export const Tasks: React.FC< TasksProps > = ( { query } ) => {
