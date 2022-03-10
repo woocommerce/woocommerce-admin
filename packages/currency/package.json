@@ -1,6 +1,6 @@
 {
 	"name": "@woocommerce/currency",
-	"version": "3.2.0",
+	"version": "4.0.0",
 	"description": "WooCommerce currency utilities.",
 	"author": "Automattic",
 	"license": "GPL-3.0-or-later",
@@ -21,21 +21,21 @@
 	"module": "build-module/index.js",
 	"react-native": "src/index",
 	"dependencies": {
-		"@woocommerce/number": "file:../number",
-		"@wordpress/deprecated": "^2.9.0",
-		"@wordpress/element": "2.19.0",
-		"@wordpress/html-entities": "2.10.0",
-		"@wordpress/i18n": "3.17.0"
+		"@woocommerce/number": "workspace:*",
+		"@wordpress/deprecated": "^2.12.3",
+		"@wordpress/element": "^4.1.1",
+		"@wordpress/html-entities": "^3.3.1",
+		"@wordpress/i18n": "^3.20.0"
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
-		"clean": "npx rimraf tsconfig.tsbuildinfo build build-*",
+		"clean": "pnpm exec rimraf tsconfig.tsbuildinfo build build-*",
 		"build": "tsc --build ./tsconfig.json ./tsconfig-cjs.json",
 		"start": "tsc --build --watch",
-		"prepack": "npm run clean && npm run build",
-		"test": "lerna run build && npm run test:nobuild",
+		"prepack": "pnpm run clean && pnpm run build",
+		"test": "pnpm run build && pnpm run test:nobuild",
 		"test:nobuild": "jest --config ./jest.config.json",
 		"test-staged": "jest --bail --config ./jest.config.json --findRelatedTests"
 	}

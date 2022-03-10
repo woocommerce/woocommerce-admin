@@ -6,6 +6,7 @@ docs/**/dist
 build
 build-module
 build-style
+build-types
 languages/*
 !languages/README.md
 woocommerce-admin.zip
@@ -24,7 +25,9 @@ wp-cli.local.yml
 *.tgz
 *.zip
 .idea
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/settings.json
 
 # Composer
 /vendor/

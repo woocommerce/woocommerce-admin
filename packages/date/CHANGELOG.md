@@ -1,8 +1,21 @@
 # Unreleased
 
+-   Update all js packages with minor/patch version changes. #8392
+
+# 4.0.0
+
+## Breaking changes
+
+-   Update dependencies to support react 17. #8305
+-   Drop support for IE11. #8305
+
+# 3.2.0
+
 -   Remove dev dependency `@woocommerce/wc-admin-settings`. #8057
 -   Add "defaultDateRange" argument to "getAllowedIntervalsForQuery" for default period value. #8189
 -   Add type option to `getDateFormatsForInterval` to support `getDateFormatsForIntervalPhp` feature. #8129
+-   Sentence case all the things analytics #6501
+-   Fix end date for last periods #6584
 
 # 3.1.0
 

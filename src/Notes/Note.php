@@ -296,6 +296,26 @@ class Note extends \WC_Data {
 	}
 
 	/**
+	 * Get action by action name on the note.
+	 *
+	 * @param  string $action_name The action name.
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array the action.
+	 */
+	public function get_action( $action_name, $context = 'view' ) {
+		$actions = $this->get_prop( 'actions', $context );
+
+		$matching_action = null;
+		foreach ( $actions as $i => $action ) {
+			if ( $action->name === $action_name ) {
+				$matching_action =& $actions[ $i ];
+				break;
+			}
+		}
+		return $matching_action;
+	}
+
+	/**
 	 * Get note layout (the old notes won't have one).
 	 *
 	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.

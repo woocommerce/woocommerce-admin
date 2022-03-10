@@ -8,7 +8,7 @@ import { useDispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { WC_ADMIN_NAMESPACE } from '@woocommerce/data';
 import { Link } from '@woocommerce/components';
-import interpolateComponents from 'interpolate-components';
+import interpolateComponents from '@automattic/interpolate-components';
 
 /**
  * Internal dependencies
@@ -45,7 +45,7 @@ const WoocommercePaymentsHeader = ( { task, trackClick } ) => {
 
 	return (
 		<div className="woocommerce-task-header__contents-container">
-			<GetPaid class="svg-background" />
+			<GetPaid className="svg-background" />
 			<div className="woocommerce-task-header__contents">
 				<h1>{ __( "It's time to get paid", 'woocommerce-admin' ) }</h1>
 				<p>
