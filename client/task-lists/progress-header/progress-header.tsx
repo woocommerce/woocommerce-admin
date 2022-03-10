@@ -85,10 +85,9 @@ export const ProgressHeader: React.FC< ProgressHeaderProps > = ( {
 				</h1>
 				<p>
 					{ sprintf(
-						/* translators: %d = completed tasks */
-						/* translators: %d = total tasks */
+						/* translators: 1: completed tasks, 2: total tasks */
 						__(
-							'Follow these steps to start selling quickly. %d out of %d complete.',
+							'Follow these steps to start selling quickly. %1$d out of %2$d complete.',
 							'woocommerce-admin'
 						),
 						completedCount,
