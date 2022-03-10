@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { MenuGroup, MenuItem } from '@wordpress/components';
 import { check } from '@wordpress/icons';
-import { Fragment, useEffect } from '@wordpress/element';
+import { Fragment, useEffect, lazy } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { ONBOARDING_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { useExperiment } from '@woocommerce/explat';
@@ -15,13 +15,31 @@ import { recordEvent } from '@woocommerce/tracks';
  */
 import { DisplayOption } from '~/activity-panel/display-options';
 import { Task } from './task';
-import { TaskList } from './task-list';
 import { TasksPlaceholder } from './placeholder';
 import './tasks.scss';
+import { TaskListProps } from './task-list';
+import '../two-column-tasks/style.scss';
 
 export type TasksProps = {
 	query: { task?: string };
 };
+
+const TaskList = lazy( () =>
+	import( /* webpackChunkName: "task-list" */ './task-list' )
+);
+
+const TwoColumnTaskList = lazy( () =>
+	import( /* webpackChunkName: "two-column-task-list" */ '../two-column-tasks/task-list' )
+);
+
+function getTaskListComponent( taskListId: string ):React.LazyExoticComponent<React.FC<TaskListProps>>   {
+	switch( taskListId ) {
+		case 'setup_experiment_1':
+			return TwoColumnTaskList;
+		default:
+			return TaskList;
+	  }
+}
 
 export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	const { task } = query;
@@ -123,9 +141,11 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 				return null;
 			}
 
+			const TaskListComponent = getTaskListComponent( id );
+
 			return (
 				<Fragment key={ id }>
-					<TaskList
+					<TaskListComponent
 						id={ id }
 						eventPrefix={ eventPrefix }
 						isComplete={ isComplete }
@@ -135,6 +155,7 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 						query={ query }
 						tasks={ tasks }
 						title={ title }
+						twoColumns={ false }
 					/>
 					{ isToggleable && (
 						<DisplayOption>

@@ -19,8 +19,11 @@ import './task-list.scss';
 
 export type TaskListProps = TaskListType & {
 	query: {
-		task: string;
+		task?: string;
 	};
+	eventName?: string;
+	twoColumns?: boolean;
+	keepCompletedTaskList?: boolean;
 };
 
 export const TaskList: React.FC< TaskListProps > = ( {
@@ -139,3 +142,5 @@ export const TaskList: React.FC< TaskListProps > = ( {
 		</>
 	);
 };
+
+export default TaskList;

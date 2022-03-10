@@ -4,10 +4,10 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useRef, useState, createElement } from '@wordpress/element';
 import { Button, Card } from '@wordpress/components';
-import { useSelect, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch, Action } from '@wordpress/data';
 import { EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
-import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME } from '@woocommerce/data';
+import { OPTIONS_STORE_NAME, ONBOARDING_STORE_NAME, TaskType } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { List, TaskItem } from '@woocommerce/experimental';
 import classnames from 'classnames';
@@ -19,10 +19,11 @@ import '../tasks/task-list.scss';
 import taskHeaders from './task-headers';
 import DismissModal from './dismiss-modal';
 import TaskListCompleted from './completed';
+import { TaskListProps } from '~/tasks/task-list';
 
-export const TaskList = ( {
+export const TaskList: React.FC< TaskListProps > = ( {
 	query,
-	taskListId,
+	id,
 	eventName,
 	tasks,
 	twoColumns,
@@ -40,7 +41,11 @@ export const TaskList = ( {
 		};
 	} );
 	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
-	const [ headerData, setHeaderData ] = useState( {} );
+	const [ headerData, setHeaderData ] = useState<{
+		task?: TaskType;
+		goToTask?: () => void;
+		trackClick?: () => void;
+	}>( {} );
 	const [ activeTaskId, setActiveTaskId ] = useState( '' );
 	const [ showDismissModal, setShowDismissModal ] = useState( false );
 
@@ -70,12 +75,13 @@ export const TaskList = ( {
 		( task ) => ! task.isComplete && ! task.isDismissed
 	);
 
-	const onDismissTask = ( { id, onDismiss } ) => {
+	const onDismissTask = ( id: string, onDismiss?: () => void ) => {
 		dismissTask( id );
 		createNotice( 'success', __( 'Task dismissed' ), {
 			actions: [
 				{
 					label: __( 'Undo', 'woocommerce-admin' ),
+					// @ts-ignore onClick not available within type yet.
 					onClick: () => undoDismissTask( id ),
 				},
 			],
@@ -97,8 +103,8 @@ export const TaskList = ( {
 		} );
 	};
 
-	const hideTasks = () => {
-		hideTaskList( taskListId );
+	const hideTasks = ( eventName: string ) => {
+		hideTaskList( id );
 	};
 
 	const keepTasks = () => {
@@ -115,9 +121,9 @@ export const TaskList = ( {
 		return (
 			<div className="woocommerce-card__menu woocommerce-card__header-item">
 				<EllipsisMenu
-					className={ taskListId }
+					className={ id }
 					label={ __( 'Task List Options', 'woocommerce-admin' ) }
-					renderContent={ ( { onToggle } ) => (
+					renderContent={ ( { onToggle }: { onToggle: () => void } ) => (
 						<div className="woocommerce-task-card__section-controls">
 							<Button
 								onClick={ () => {
@@ -147,12 +153,12 @@ export const TaskList = ( {
 		selectedHeaderCard = visibleTasks[ visibleTasks.length - 1 ];
 	}
 
-	const goToTask = ( task ) => {
+	const goToTask = ( task: TaskType ) => {
 		trackClick( task );
 		updateQueryString( { task: task.id } );
 	};
 
-	const showTaskHeader = ( task ) => {
+	const showTaskHeader = ( task: TaskType ) => {
 		if ( taskHeaders[ task.id ] ) {
 			setHeaderData( {
 				task,
@@ -163,13 +169,13 @@ export const TaskList = ( {
 		}
 	};
 
-	const trackClick = ( task ) => {
+	const trackClick = ( task: TaskType ) => {
 		recordEvent( `${ eventName }_click`, {
 			task_name: task.id,
 		} );
 	};
 
-	const onTaskSelected = ( task ) => {
+	const onTaskSelected = ( task: TaskType ) => {
 		if ( task.id === 'woocommerce-payments' ) {
 			// With WCPay, we have to show the header content for user to read t&c first.
 			showTaskHeader( task );
@@ -194,6 +200,7 @@ export const TaskList = ( {
 				<TaskListCompleted
 					hideTasks={ hideTasks }
 					keepTasks={ keepTasks }
+					twoColumns={false}
 				/>
 			</>
 		);
@@ -253,9 +260,8 @@ export const TaskList = ( {
 											? () => onDismissTask( task.id )
 											: undefined
 									}
-									action={ task.action }
+									action={() => {}}
 									actionLabel={ task.actionLabel }
-									showActionButton={ task.showActionButton }
 								/>
 							);
 						} ) }
