@@ -200,7 +200,12 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 
 		// Verify there are actions to cancel.
 		$pending_actions = WC_Helper_Queue::get_all_pending();
-		$pending_hooks   = array_map( fn( $action) => $action->get_hook(), $pending_actions );
+		$pending_hooks   = array_map(
+			function ( $action ) {
+				return $action->get_hook();
+			},
+			$pending_actions
+		);
 		$this->assertContains( 'wc-admin_import_orders', $pending_hooks );
 		$this->assertContains( 'wc-admin_import_customers', $pending_hooks );
 
@@ -214,7 +219,12 @@ class WC_Tests_API_Reports_Import extends WC_REST_Unit_Test_Case {
 
 		// Verify there are no pending actions.
 		$pending_actions = WC_Helper_Queue::get_all_pending();
-		$pending_hooks   = array_map( fn( $action) => $action->get_hook(), $pending_actions );
+		$pending_hooks   = array_map(
+			function ( $action ) {
+				return $action->get_hook();
+			},
+			$pending_actions
+		);
 		$this->assertNotContains( 'wc-admin_import_orders', $pending_hooks );
 		$this->assertNotContains( 'wc-admin_import_customers', $pending_hooks );
 	}
