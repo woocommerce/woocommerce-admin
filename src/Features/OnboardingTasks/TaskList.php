@@ -69,6 +69,13 @@ class TaskList {
 	public $event_prefix = null;
 
 	/**
+	 * Array of custom options.
+	 *
+	 * @var array
+	 */
+	public $options = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $data Task list data.
@@ -81,6 +88,7 @@ class TaskList {
 			'tasks'        => array(),
 			'sort_by'      => array(),
 			'event_prefix' => null,
+			'options'      => array()
 		);
 
 		$data = wp_parse_args( $data, $defaults );
@@ -90,6 +98,7 @@ class TaskList {
 		$this->title        = $data['title'];
 		$this->sort_by      = $data['sort_by'];
 		$this->event_prefix = $data['event_prefix'];
+		$this->options      = $data['options'];
 
 		foreach ( $data['tasks'] as $task_name ) {
 			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task_name;

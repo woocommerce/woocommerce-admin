@@ -217,7 +217,7 @@ export const TaskList: React.FC< TaskListProps > = ( {
 			) }
 			<div
 				className={ classnames(
-					'woocommerce-task-dashboard__container two-column-experiment',
+					`woocommerce-task-dashboard__container two-column-experiment woocommerce-task-list__${ id }`,
 					{ 'two-columns': twoColumns !== false }
 				) }
 			>

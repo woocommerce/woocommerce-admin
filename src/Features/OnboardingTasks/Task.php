@@ -117,6 +117,31 @@ abstract class Task {
 	}
 
 	/**
+	 * Parent ID.
+	 *
+	 * @return string
+	 */
+	public function get_parent_options() {
+		if ( ! $this->task_list ) {
+			return array();
+		}
+		return $this->task_list->options;
+	}
+
+	/**
+	 * Parent ID.
+	 *
+	 * @return mixed
+	 */
+	public function get_parent_option( $option_name ) {
+		if ( $this->task_list && isset( $this->task_list->options[ $option_name ] ) ) {
+			return $this->task_list->options[ $option_name ];
+		}
+		return null;
+	}
+
+
+	/**
 	 * Prefix event for track event naming.
 	 *
 	 * @param string $event_name Event name.

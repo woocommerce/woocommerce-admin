@@ -25,6 +25,12 @@ class Marketing extends Task {
 	 * @return string
 	 */
 	public function get_title() {
+		if ( true === $this->get_parent_option('task_past_tense' ) ) {
+			if ( $this->is_complete() ) {
+				return  __( 'You added marketing tools', 'woocommerce-admin' );
+			}
+			return  __( 'Get more sales', 'woocommerce-admin' );
+		}
 		return __( 'Set up marketing tools', 'woocommerce-admin' );
 	}
 

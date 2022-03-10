@@ -108,7 +108,7 @@ export const TaskList: React.FC< TaskListProps > = ( {
 
 	return (
 		<>
-			<div className="woocommerce-task-dashboard__container">
+			<div className={"woocommerce-task-dashboard__container woocommerce-task-list__" + id}>
 				<Card
 					size="large"
 					className="woocommerce-task-card woocommerce-homescreen-card"
