@@ -69,6 +69,13 @@ class TaskList {
 	public $event_prefix = null;
 
 	/**
+	 * Task list visibility.
+	 *
+	 * @var boolean
+	 */
+	public $visible = true;
+
+	/**
 	 * Array of custom options.
 	 *
 	 * @var array
@@ -88,7 +95,8 @@ class TaskList {
 			'tasks'        => array(),
 			'sort_by'      => array(),
 			'event_prefix' => null,
-			'options'      => array()
+			'options'      => array(),
+			'visible'      => true
 		);
 
 		$data = wp_parse_args( $data, $defaults );
@@ -99,6 +107,7 @@ class TaskList {
 		$this->sort_by      = $data['sort_by'];
 		$this->event_prefix = $data['event_prefix'];
 		$this->options      = $data['options'];
+		$this->visible      = $data['visible'];
 
 		foreach ( $data['tasks'] as $task_name ) {
 			$class = 'Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\\' . $task_name;
@@ -123,6 +132,9 @@ class TaskList {
 	 * @return bool
 	 */
 	public function is_visible() {
+		if ( ! $this->visible ) {
+			return false;
+		}
 		return ! $this->is_hidden();
 	}
 
