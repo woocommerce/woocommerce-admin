@@ -92,7 +92,7 @@ class TaskLists {
 					'Appearance',
 				),
 				'event_prefix' => 'tasklist_',
-				'visible' => ! Features::is_enabled( "tasklist-setup-experiment-1" ),
+				'visible'      => ! Features::is_enabled( 'tasklist-setup-experiment-1' ),
 			)
 		);
 
@@ -113,9 +113,9 @@ class TaskLists {
 				),
 				'event_prefix' => 'tasklist_',
 				'options'      => array(
-					'task_past_tense' => true
+					'task_past_tense' => true,
 				),
-				'visible' => Features::is_enabled( "tasklist-setup-experiment-1" ),
+				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-1' ),
 			)
 		);
 

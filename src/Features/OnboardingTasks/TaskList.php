@@ -96,7 +96,7 @@ class TaskList {
 			'sort_by'      => array(),
 			'event_prefix' => null,
 			'options'      => array(),
-			'visible'      => true
+			'visible'      => true,
 		);
 
 		$data = wp_parse_args( $data, $defaults );

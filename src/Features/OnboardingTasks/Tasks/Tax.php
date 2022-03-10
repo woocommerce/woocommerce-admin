@@ -65,11 +65,11 @@ class Tax extends Task {
 	 * @return string
 	 */
 	public function get_title() {
-		if ( true === $this->get_parent_option('task_past_tense' ) ) {
+		if ( true === $this->get_parent_option( 'task_past_tense' ) ) {
 			if ( $this->is_complete() ) {
-				return  __( 'You added tax rates', 'woocommerce-admin' );
+				return __( 'You added tax rates', 'woocommerce-admin' );
 			}
-			return  __( 'Add tax rates', 'woocommerce-admin' );
+			return __( 'Add tax rates', 'woocommerce-admin' );
 		}
 		return __( 'Set up tax', 'woocommerce-admin' );
 	}

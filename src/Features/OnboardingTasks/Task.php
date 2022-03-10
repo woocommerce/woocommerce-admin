@@ -117,9 +117,9 @@ abstract class Task {
 	}
 
 	/**
-	 * Parent ID.
+	 * Get task list options.
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function get_parent_options() {
 		if ( ! $this->task_list ) {
@@ -129,8 +129,9 @@ abstract class Task {
 	}
 
 	/**
-	 * Parent ID.
+	 * Get custom option.
 	 *
+	 * @param string $option_name name of custom option.
 	 * @return mixed
 	 */
 	public function get_parent_option( $option_name ) {
