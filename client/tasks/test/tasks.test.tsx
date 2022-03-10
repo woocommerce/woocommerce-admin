@@ -16,6 +16,15 @@ jest.mock( '@wordpress/data' );
 jest.mock( '@woocommerce/explat' );
 jest.mock( '@woocommerce/tracks' );
 
+jest.mock( '@wordpress/element', () => {
+	return {
+		...jest.requireActual( '@wordpress/element' ),
+		Suspense: ( { children } ) => <div>{ children }</div>,
+		// It's not easy to mock a React.lazy component, since we only use one in this component, this mocks lazy to return a mocked <TaskList>
+		lazy: () => ( { id } ) => <div>task-list:{ id }</div>,
+	};
+} );
+
 jest.mock( '../task-list', () => ( {
 	TaskList: ( { id } ) => <div>task-list:{ id }</div>,
 } ) );
