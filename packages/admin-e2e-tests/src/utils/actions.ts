@@ -88,7 +88,7 @@ const hasClass = async (
 	return classNameValue.includes( elementClass );
 };
 
-const getInputValue = async ( selector: string ): Promise< unknown | null > => {
+const getInputValue = async ( selector: string ): Promise< unknown > => {
 	const field = await page.$( selector );
 	if ( field ) {
 		const fieldValue = await (
@@ -103,7 +103,7 @@ const getInputValue = async ( selector: string ): Promise< unknown | null > => {
 const getAttribute = async (
 	selector: string,
 	attribute: string
-): Promise< unknown | null > => {
+): Promise< unknown > => {
 	await page.focus( selector );
 	const field = await page.$( selector );
 	if ( field ) {
