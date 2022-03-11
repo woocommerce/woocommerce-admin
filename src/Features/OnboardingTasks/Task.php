@@ -422,8 +422,8 @@ abstract class Task {
 	 * @return bool
 	 */
 	public function is_visited() {
-		$user_id = get_current_user_id();
-		$response = WCAdminUser::get_user_data_field( $user_id, 'task_list_tracked_started_tasks' );
+		$user_id       = get_current_user_id();
+		$response      = WCAdminUser::get_user_data_field( $user_id, 'task_list_tracked_started_tasks' );
 		$tracked_tasks = $response ? json_decode( $response, true ) : array();
 
 		return isset( $tracked_tasks[ $this->get_id() ] ) && $tracked_tasks[ $this->get_id() ] > 0;
