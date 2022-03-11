@@ -35,12 +35,21 @@ const TwoColumnTaskList = lazy(
 		)
 );
 
+const SectionedTaskList = lazy(
+	() =>
+		import(
+			/* webpackChunkName: "two-column-task-list" */ '../two-column-tasks/sectioned-task-list'
+		)
+);
+
 function getTaskListComponent(
 	taskListId: string
 ): React.LazyExoticComponent< React.FC< TaskListProps > > {
 	switch ( taskListId ) {
 		case 'setup_experiment_1':
 			return TwoColumnTaskList;
+		case 'setup_experiment_2':
+			return SectionedTaskList;
 		default:
 			return TaskList;
 	}

@@ -121,6 +121,26 @@ class TaskLists {
 
 		self::add_list(
 			array(
+				'id'           => 'setup_experiment_2',
+				'hidden_id'    => 'setup',
+				'title'        => __( 'Get ready to start selling', 'woocommerce-admin' ),
+				'tasks'        => array(
+					'StoreDetails',
+					'Products',
+					'WooCommercePayments',
+					'Payments',
+					'Tax',
+					'Shipping',
+					'Marketing',
+					'Appearance',
+				),
+				'event_prefix' => 'tasklist_',
+				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-1' ),
+			)
+		);
+
+		self::add_list(
+			array(
 				'id'      => 'extended',
 				'title'   => __( 'Things to do next', 'woocommerce-admin' ),
 				'sort_by' => array(

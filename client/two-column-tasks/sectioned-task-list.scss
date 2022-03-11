@@ -1,0 +1,39 @@
+.woocommerce-task-dashboard__container {
+	.components-panel {
+		width: 100%;
+	}
+
+	.components-panel__body {
+		padding-bottom: 0px;
+
+		.components-panel__body-title {
+			margin-bottom: 0px;
+			border-bottom: 1px solid #e0e0e0;
+
+			> .components-button {
+				font-size: 20px;
+				font-weight: 400;
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+		}
+		.wooocommerce-task-card__header-container {
+			width: 100%;
+			border-bottom: none;
+		}
+		&.is-opened .components-panel__body-toggle {
+			width: 100%;
+			padding: 0px;
+			> span {
+				position: absolute;
+				right: 0px;
+				top: 20px;
+			}
+		}
+
+		.woocommerce-experimental-list {
+			width: calc( 100% + 32px );
+			margin: 0px -16px;
+		}
+	}
+}
