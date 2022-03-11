@@ -4,6 +4,7 @@
 -   Add missing dependencies. #8349
 -   Update all js packages with minor/patch version changes. #8392
 -   Add moment-timezone to package.json. #6483
+-   Refactor the `onFilterChange` method in the `AdvancedFilters` component. #8459
 
 # 9.0.0
 
