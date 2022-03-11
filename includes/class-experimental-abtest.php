@@ -121,7 +121,7 @@ final class Experimental_Abtest {
 		}
 
 		// Request as anonymous user.
-		if ( ! $this->as_auth_wpcom_user || ! isset( $response ) ) {
+		if ( ! isset( $response ) ) {
 			$response = wp_remote_get(
 				'https://public-api.wordpress.com/wpcom/v2/experiments/0.1.0/assignments/' .
 				$this->platform,
