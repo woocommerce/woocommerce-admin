@@ -69,7 +69,7 @@ export const fetchExperimentAssignment = async ( {
 	anonId: string | null;
 } ): Promise< unknown > =>
 	_fetchExperimentAssignment( {
-		url: `https://public-api.wordpress.com/wpcom/v2/experiments/${ EXPLAT_VERSION }/assignments/woocommerce?`,
+		url: `https://public-api.wordpress.com/wpcom/v2/experiments/${ EXPLAT_VERSION }/assignments/woocommerce`,
 		experimentName,
 		anonId,
 	} );
@@ -82,6 +82,7 @@ export const fetchExperimentAssignmentWithAuth = async ( {
 	anonId: string | null;
 } ): Promise< unknown > =>
 	_fetchExperimentAssignment( {
+		// Send the request to our backend server to get the assignment with a user token via Jetpack.
 		path: '/wc-admin/experiments/assignment',
 		experimentName,
 		anonId,

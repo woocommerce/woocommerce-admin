@@ -37,7 +37,7 @@ describe( 'fetchExperimentAssignment', () => {
 		Promise.resolve( fetchPromise );
 
 		expect( fetchMock ).toHaveBeenCalledWith(
-			'https://public-api.wordpress.com/wpcom/v2/experiments/0.1.0/assignments/woocommerce?%3Fanon_id=abc&test=test&_locale=user',
+			'https://public-api.wordpress.com/wpcom/v2/experiments/0.1.0/assignments/woocommerce?anon_id=abc&test=test&_locale=user',
 			{
 				body: undefined,
 				credentials: 'include',
