@@ -7,7 +7,7 @@
 
 use \Automattic\WooCommerce\Admin\API\OnboardingProfile;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
+use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
 
 /**
  * WC Tests API Onboarding Profile
@@ -203,5 +203,6 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$this->server->dispatch( $request );
 
 		$this->assertFalse( get_option( MailchimpScheduler::SUBSCRIBED_OPTION_NAME, false ) );
+		$this->assertFalse( get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME, false ) );
 	}
 }

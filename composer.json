@@ -1,6 +1,6 @@
 {
 	"name": "woocommerce/woocommerce-admin",
-	"version": "3.2.0-dev",
+	"version": "3.4.0-dev",
 	"description": "A modern, javascript-driven WooCommerce Admin experience.",
 	"homepage": "https://github.com/woocommerce/woocommerce-admin",
 	"type": "wordpress-plugin",
@@ -77,7 +77,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Automattic\\WooCommerce\\Admin\\": "src/"
+			"Automattic\\WooCommerce\\Admin\\": "src/",
+			"Automattic\\WooCommerce\\Internal\\Admin\\": "src-internal/Admin/"
 		}
 	}
 }

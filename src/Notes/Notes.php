@@ -83,6 +83,26 @@ class Notes {
 	}
 
 	/**
+	 * Get admin note using its name.
+	 *
+	 * This is a shortcut for the common pattern of looking up note ids by name and then passing the first id to get_note().
+	 * It will behave unpredictably when more than one note with the given name exists.
+	 *
+	 * @param string $note_name Note name.
+	 * @return Note|bool
+	 **/
+	public static function get_note_by_name( $note_name ) {
+		$data_store = self::load_data_store();
+		$note_ids   = $data_store->get_notes_with_name( $note_name );
+
+		if ( empty( $note_ids ) ) {
+			return false;
+		}
+
+		return self::get_note( $note_ids[0] );
+	}
+
+	/**
 	 * Get the total number of notes
 	 *
 	 * @param string $type Comma separated list of note types.
@@ -254,14 +274,10 @@ class Notes {
 		}
 
 		$data_store = self::load_data_store();
-		$notes      = $data_store->get_notes(
-			array(
-				'type' => array( Note::E_WC_ADMIN_NOTE_MARKETING ),
-			)
-		);
+		$note_ids   = $data_store->get_note_ids_by_type( Note::E_WC_ADMIN_NOTE_MARKETING );
 
-		foreach ( $notes as $note ) {
-			$note = self::get_note( $note->note_id );
+		foreach ( $note_ids as $note_id ) {
+			$note = self::get_note( $note_id );
 			if ( $note ) {
 				$note->delete();
 			}
@@ -273,16 +289,11 @@ class Notes {
 	 */
 	public static function possibly_delete_survey_notes() {
 		$data_store = self::load_data_store();
-		$notes      = $data_store->get_notes(
-			array(
-				'type'   => array( Note::E_WC_ADMIN_NOTE_SURVEY ),
-				'status' => array( 'actioned' ),
-			)
-		);
+		$note_ids   = $data_store->get_note_ids_by_type( Note::E_WC_ADMIN_NOTE_SURVEY );
 
-		foreach ( $notes as $note ) {
-			$note = self::get_note( $note->note_id );
-			if ( $note ) {
+		foreach ( $note_ids as $note_id ) {
+			$note = self::get_note( $note_id );
+			if ( $note && ( $note->get_status() === Note::E_WC_ADMIN_NOTE_ACTIONED ) ) {
 				$note->set_is_deleted( 1 );
 				$note->save();
 			}
@@ -296,14 +307,11 @@ class Notes {
 	 * @return string|bool The note status.
 	 */
 	public static function get_note_status( $note_name ) {
-		$data_store = self::load_data_store();
-		$note_ids   = $data_store->get_notes_with_name( $note_name );
+		$note = self::get_note_by_name( $note_name );
 
-		if ( empty( $note_ids ) ) {
+		if ( ! $note ) {
 			return false;
 		}
-
-		$note = self::get_note( $note_ids[0] );
 
 		return $note->get_status();
 	}

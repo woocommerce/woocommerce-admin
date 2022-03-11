@@ -20,25 +20,12 @@ class Payments extends Task {
 	}
 
 	/**
-	 * Parent ID.
-	 *
-	 * @return string
-	 */
-	public function get_parent_id() {
-		$woocommerce_payments = new WooCommercePayments();
-		return $woocommerce_payments->can_view() ? 'extended' : 'setup';
-	}
-
-	/**
 	 * Title.
 	 *
 	 * @return string
 	 */
 	public function get_title() {
-		$woocommerce_payments = new WooCommercePayments();
-		return $woocommerce_payments->can_view()
-			? __( 'Set up additional payment providers', 'woocommerce-admin' )
-			: __( 'Set up payments', 'woocommerce-admin' );
+		return __( 'Set up payments', 'woocommerce-admin' );
 	}
 
 	/**
@@ -77,7 +64,8 @@ class Payments extends Task {
 	 * @return bool
 	 */
 	public function can_view() {
-		return Features::is_enabled( 'payment-gateway-suggestions' );
+		$woocommerce_payments = $this->task_list->get_task( 'woocommerce-payments' );
+		return Features::is_enabled( 'payment-gateway-suggestions' ) && ! $woocommerce_payments->can_view();
 	}
 
 	/**

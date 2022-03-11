@@ -71,6 +71,10 @@ export function* getTaskLists() {
 	}
 }
 
+export function* getTaskListsByIds() {
+	yield resolveSelect( STORE_NAME, 'getTaskLists' );
+}
+
 export function* getTaskList() {
 	yield resolveSelect( STORE_NAME, 'getTaskLists' );
 }
@@ -82,7 +86,7 @@ export function* getTask() {
 export function* getPaymentGatewaySuggestions() {
 	try {
 		const results = yield apiFetch( {
-			path: WC_ADMIN_NAMESPACE + '/onboarding/payments',
+			path: WC_ADMIN_NAMESPACE + '/payment-gateway-suggestions',
 			method: 'GET',
 		} );
 

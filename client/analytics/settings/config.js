@@ -3,7 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import interpolateComponents from 'interpolate-components';
+import interpolateComponents from '@automattic/interpolate-components';
 
 /**
  * Internal dependencies
@@ -75,6 +75,12 @@ const orderStatusOptions = [
 	},
 ];
 
+/**
+ * Filter Analytics Report settings. Add a UI element to the Analytics Settings page.
+ *
+ * @filter woocommerce_admin_analytics_settings
+ * @param {Object} reportSettings Report settings.
+ */
 export const config = applyFilters( SETTINGS_FILTER, {
 	woocommerce_excluded_report_order_statuses: {
 		label: __( 'Excluded statuses:', 'woocommerce-admin' ),

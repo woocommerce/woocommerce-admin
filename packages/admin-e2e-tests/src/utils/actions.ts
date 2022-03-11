@@ -6,7 +6,6 @@ import { ElementHandle } from 'puppeteer';
 /**
  * Internal dependencies
  */
-import { NewOrder } from '../pages/NewOrder';
 import { Login } from '../pages/Login';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
@@ -175,6 +174,35 @@ export const waitForElementByTextWithoutThrow = async (
 	return Boolean( selected );
 };
 
+const waitUntilElementStopsMoving = async ( selector: string ) => {
+	return await page.waitForFunction(
+		( elementSelector ) => {
+			const element = document.querySelector( elementSelector );
+			const elementRect = element.getBoundingClientRect();
+			const jsWindow: Window &
+				typeof globalThis & {
+					elementX?: number;
+					elementY?: number;
+				} = window;
+
+			if (
+				jsWindow.elementX !== elementRect.x.toFixed( 1 ) ||
+				jsWindow.elementY !== elementRect.y.toFixed( 1 )
+			) {
+				jsWindow.elementX = elementRect.x.toFixed( 1 );
+				jsWindow.elementY = elementRect.y.toFixed( 1 );
+				return false;
+			}
+
+			delete jsWindow.elementX;
+			delete jsWindow.elementY;
+			return true;
+		},
+		{},
+		selector
+	);
+};
+
 const deactivateAndDeleteExtension = async (
 	extension: string
 ): Promise< void > => {
@@ -233,6 +261,7 @@ export {
 	getElementByText,
 	getElementByAttributeAndValue,
 	waitForElementByText,
+	waitUntilElementStopsMoving,
 	hasClass,
 	waitForTimeout,
 	deactivateAndDeleteExtension,

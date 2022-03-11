@@ -10,13 +10,13 @@ Gateway suggestions are retreived from a REST API and can be added via a remote 
 
 To quickly get started with an example plugin, run the following from your `woocommerce-admin` directory:
 
-`npm run example -- --ext=payment-gateway-suggestions`
+`pnpm run example -- --ext=payment-gateway-suggestions`
 
 This will create a new plugin that when activated will add two new gateway suggestions.  The first is a simple gateway demonstrating how configuration fields can be pulled from the gateway class to create a configuration form.  The second gateway shows a more customized approach via SlotFill.
 
 ## Data Source Polling
 
-If a store is opted into marketplace suggestions via `woocommerce_show_marketplace_suggestions` the suggestions by default will be retrieved from `https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/payment-method/suggestions.json'`.
+If a store is opted into marketplace suggestions via `woocommerce_show_marketplace_suggestions` the suggestions by default will be retrieved from `https://woocommerce.com/wp-json/wccom/payment-gateway-suggestions/1.0/suggestions.json`.
 
 If a user is not opted into marketplace suggestions or polling fails, the gateway suggestions will fall back to the defaults in the `DefaultPaymentGateways` class.
 

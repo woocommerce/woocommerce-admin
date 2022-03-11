@@ -5,17 +5,21 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 use Automattic\WooCommerce\Admin\API\Reports\Taxes\Stats\DataStore as TaxDataStore;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
-use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\PluginsHelper;
+use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 /**
  * Tax Task
  */
 class Tax extends Task {
+
 	/**
-	 * Initialize.
+	 * Constructor
+	 *
+	 * @param TaskList $task_list Parent task list.
 	 */
-	public function __construct() {
+	public function __construct( $task_list ) {
+		parent::__construct( $task_list );
 		add_action( 'admin_enqueue_scripts', array( $this, 'possibly_add_return_notice_script' ) );
 	}
 
@@ -34,14 +38,14 @@ class Tax extends Task {
 			return;
 		}
 
-		$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-tax-notice' );
+		$script_assets_filename = WCAdminAssets::get_script_asset_filename( 'wp-admin-scripts', 'onboarding-tax-notice' );
 		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
 
 		wp_enqueue_script(
 			'onboarding-tax-notice',
-			Loader::get_url( 'wp-admin-scripts/onboarding-tax-notice', 'js' ),
+			WCAdminAssets::get_url( 'wp-admin-scripts/onboarding-tax-notice', 'js' ),
 			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
-			WC_ADMIN_VERSION_NUMBER,
+			WC_VERSION,
 			true
 		);
 	}
@@ -53,15 +57,6 @@ class Tax extends Task {
 	 */
 	public function get_id() {
 		return 'tax';
-	}
-
-	/**
-	 * Parent ID.
-	 *
-	 * @return string
-	 */
-	public function get_parent_id() {
-		return 'setup';
 	}
 
 	/**

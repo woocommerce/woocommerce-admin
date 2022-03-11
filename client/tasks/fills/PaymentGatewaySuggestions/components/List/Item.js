@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { Fragment } from '@wordpress/element';
 import { CardBody, CardMedia, CardDivider } from '@wordpress/components';
 import { RecommendedRibbon, SetupRequired } from '@woocommerce/onboarding';
-import { recordEvent } from '@woocommerce/tracks';
 import { Text, useSlot } from '@woocommerce/experimental';
 
 /**
@@ -86,11 +85,6 @@ export const Item = ( { isRecommended, markConfigured, paymentGateway } ) => {
 						isRecommended={ isRecommended }
 						isLoading={ loading }
 						markConfigured={ markConfigured }
-						onSetUp={ () =>
-							recordEvent( 'tasklist_payment_setup', {
-								selected: id,
-							} )
-						}
 					/>
 				</div>
 			</CardBody>

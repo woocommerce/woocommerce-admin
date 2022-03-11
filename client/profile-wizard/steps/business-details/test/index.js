@@ -6,6 +6,7 @@ import {
 	isSellingElsewhere,
 	isSellingOtherPlatformInPerson,
 	prepareExtensionTrackingData,
+	prepareExtensionTrackingInstallationData,
 } from '../flows/selective-bundle';
 import { createInstallExtensionOptions } from '../flows/selective-bundle/selective-extensions-bundle';
 
@@ -47,7 +48,7 @@ describe( 'BusinessDetails', () => {
 				jetpack: false,
 				'google-listings-and-ads': true,
 				'mailchimp-for-woocommerce': false,
-				'woocommerce-payments': true,
+				'woocommerce-payments:us': true,
 			};
 
 			const expectedExtensions = {
@@ -103,6 +104,56 @@ describe( 'BusinessDetails', () => {
 		} );
 	} );
 
+	describe( 'extension installation tracking', () => {
+		const extensions = {
+			'creative-mail-by-constant-contact': true,
+			'facebook-for-woocommerce': false,
+			install_extensions: true,
+			jetpack: false,
+			'google-listings-and-ads': true,
+			'mailchimp-for-woocommerce': false,
+			'woocommerce-payments:us': true,
+		};
+
+		it( 'should return a list of installed and activated extensions', () => {
+			const data = prepareExtensionTrackingInstallationData( extensions, {
+				data: {
+					activated: [
+						'woocommerce-payments',
+						'google-listings-and-ads',
+					],
+					install_time: {
+						'woocommerce-payments': 2000,
+					},
+				},
+			} );
+			expect( data.installed_extensions ).toEqual( [ 'wcpay' ] );
+			expect( data.activated_extensions ).toEqual( [
+				'woocommerce-payments',
+				'google-listings-and-ads',
+			] );
+		} );
+
+		it( 'should add install_time_extension_name prop if install_time is set with correct timebox', () => {
+			const data = prepareExtensionTrackingInstallationData( extensions, {
+				data: {
+					activated: [
+						'woocommerce-payments',
+						'google-listings-and-ads',
+					],
+					install_time: {
+						'woocommerce-payments': 200,
+						'google-listings-and-ads': 12023,
+					},
+				},
+			} );
+			expect( data.install_time_wcpay ).toEqual( '0-2s' );
+			expect( data.install_time_google_listings_and_ads ).toEqual(
+				'10-15s'
+			);
+		} );
+	} );
+
 	describe( 'createInstallExtensionOptions', () => {
 		test( 'selected by default', () => {
 			const installableExtensions = [
@@ -110,35 +161,25 @@ describe( 'BusinessDetails', () => {
 					plugins: [
 						{
 							key: 'visible-and-not-selected',
-							isVisible: () => true,
 						},
 						{
 							key: 'visible-and-selected',
-							isVisible: () => true,
-						},
-						{
-							key: 'this-should-not-show-at-all',
-							isVisible: () => false,
 						},
 					],
 				},
 			];
 
-			const values = createInstallExtensionOptions( {
-				installableExtensions,
-				prevInstallExtensionOptions: {
-					'visible-and-not-selected': false,
-				},
-			} );
+			const values = createInstallExtensionOptions(
+				installableExtensions
+			);
 
 			expect( values ).toEqual(
 				expect.objectContaining( {
-					'visible-and-not-selected': false,
+					install_extensions: true,
+					'visible-and-not-selected': true,
 					'visible-and-selected': true,
 				} )
 			);
-
-			expect( values ).not.toContain( 'this-should-not-show-at-all' );
 		} );
 	} );
 

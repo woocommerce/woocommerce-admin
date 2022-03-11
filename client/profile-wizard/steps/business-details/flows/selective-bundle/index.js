@@ -21,6 +21,7 @@ import {
 	PLUGINS_STORE_NAME,
 	SETTINGS_STORE_NAME,
 } from '@woocommerce/data';
+import { getSetting } from '@woocommerce/settings';
 import { recordEvent } from '@woocommerce/tracks';
 import classnames from 'classnames';
 
@@ -35,50 +36,99 @@ import { sellingVenueOptions } from '../../data/selling-venue-options';
 import { getRevenueOptions } from '../../data/revenue-options';
 import { getProductCountOptions } from '../../data/product-options';
 import { SelectiveExtensionsBundle } from './selective-extensions-bundle';
+import { getPluginSlug, getPluginTrackKey } from '~/utils';
 import './style.scss';
 
 const BUSINESS_DETAILS_TAB_NAME = 'business-details';
-const FREE_FEATURES_TAB_NAME = 'free-features';
+const BUSINESS_FEATURES_TAB_NAME = 'business-features';
 
-export const filterBusinessExtensions = ( extensionInstallationOptions ) => {
+export const filterBusinessExtensions = (
+	extensionInstallationOptions,
+	alreadyActivatedExtensions = []
+) => {
 	return (
 		Object.keys( extensionInstallationOptions )
 			.filter(
 				( key ) =>
 					extensionInstallationOptions[ key ] &&
-					key !== 'install_extensions'
+					key !== 'install_extensions' &&
+					! alreadyActivatedExtensions.includes( key )
 			)
-			.map( ( key ) => {
-				// Remove anything after :
-				// Please refer to selective-extensions-bundle/index.js
-				// installableExtensions variable
-				// this is to allow duplicate slugs (Tax & Shipping for example)
-				return key.split( ':' )[ 0 ];
-			} )
+			.map( getPluginSlug )
 			// remove duplicate
 			.filter( ( item, index, arr ) => arr.indexOf( item ) === index )
 	);
 };
 
+const timeFrames = [
+	{ name: '0-2s', max: 2 },
+	{ name: '2-5s', max: 5 },
+	{ name: '5-10s', max: 10 },
+	{ name: '10-15s', max: 15 },
+	{ name: '15-20s', max: 20 },
+	{ name: '20-30s', max: 30 },
+	{ name: '30-60s', max: 60 },
+	{ name: '>60s' },
+];
+function getTimeFrame( timeInMs ) {
+	for ( const timeFrame of timeFrames ) {
+		if ( ! timeFrame.max ) {
+			return timeFrame.name;
+		}
+		if ( timeInMs < timeFrame.max * 1000 ) {
+			return timeFrame.name;
+		}
+	}
+}
+
 export const prepareExtensionTrackingData = (
 	extensionInstallationOptions
 ) => {
 	const installedExtensions = {};
-	for ( const [ fieldKey, value ] of Object.entries(
+	for ( let [ fieldKey, value ] of Object.entries(
 		extensionInstallationOptions
 	) ) {
-		const key =
-			fieldKey === 'woocommerce-payments'
-				? 'install_wcpay'
-				: `install_${ fieldKey.replace( /-/g, '_' ).split( ':', 1 ) }`;
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
 		if (
 			fieldKey !== 'install_extensions' &&
-			! installedExtensions[ key ]
+			! installedExtensions[ `install_${ key }` ]
 		) {
-			installedExtensions[ key ] = value;
+			installedExtensions[ `install_${ key }` ] = value;
 		}
 	}
 	return installedExtensions;
+};
+
+export const prepareExtensionTrackingInstallationData = (
+	extensionInstallationOptions,
+	installationData
+) => {
+	const installed = [];
+	const data = {};
+	for ( let [ fieldKey ] of Object.entries( extensionInstallationOptions ) ) {
+		fieldKey = getPluginSlug( fieldKey );
+		const key = getPluginTrackKey( fieldKey );
+		if (
+			installationData &&
+			installationData.data &&
+			installationData.data.install_time &&
+			installationData.data.install_time[ fieldKey ]
+		) {
+			installed.push( key );
+			data[ `install_time_${ key }` ] = getTimeFrame(
+				installationData.data.install_time[ fieldKey ]
+			);
+		}
+	}
+	data.installed_extensions = installed;
+	data.activated_extensions =
+		installationData &&
+		installationData.data &&
+		installationData.data.activated
+			? installationData.data.activated
+			: [];
+	return data;
 };
 
 export const isSellingElsewhere = ( selectedOption ) =>
@@ -93,7 +143,7 @@ export const isSellingOtherPlatformInPerson = ( selectedOption ) =>
 	[ 'other', 'brick-mortar-other' ].includes( selectedOption );
 
 class BusinessDetails extends Component {
-	constructor() {
+	constructor( props ) {
 		super();
 
 		this.state = {
@@ -105,17 +155,37 @@ class BusinessDetails extends Component {
 
 		this.onContinue = this.onContinue.bind( this );
 		this.validate = this.validate.bind( this );
+		props.trackStepValueChanges(
+			props.step.key,
+			{ ...( this.state.savedValues || props.initialValues ) },
+			this.savedValues || props.initialValues,
+			this.persistProfileItems.bind( this )
+		);
 	}
 
-	async onContinue( extensionInstallationOptions ) {
+	async onContinue(
+		extensionInstallationOptions,
+		installableExtensionsData
+	) {
 		const {
 			createNotice,
 			goToNextStep,
 			installAndActivatePlugins,
 		} = this.props;
 
+		const alreadyActivatedExtensions = installableExtensionsData.reduce(
+			( actExtensions, bundle ) => {
+				const activated = bundle.plugins
+					.filter( ( plugin ) => plugin.is_activated )
+					.map( ( plugin ) => plugin.key );
+				return [ ...actExtensions, ...activated ];
+			},
+			[]
+		);
+
 		const businessExtensions = filterBusinessExtensions(
-			extensionInstallationOptions
+			extensionInstallationOptions,
+			alreadyActivatedExtensions
 		);
 
 		const installedExtensions = prepareExtensionTrackingData(
@@ -136,12 +206,39 @@ class BusinessDetails extends Component {
 		];
 
 		if ( businessExtensions.length ) {
+			const installationStartTime = window.performance.now();
 			promises.push(
 				installAndActivatePlugins( businessExtensions )
 					.then( ( response ) => {
+						const totalInstallationTime =
+							window.performance.now() - installationStartTime;
+						const installedExtensionsData = prepareExtensionTrackingInstallationData(
+							extensionInstallationOptions,
+							response
+						);
+
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: true,
+								total_time: getTimeFrame(
+									totalInstallationTime
+								),
+								...installedExtensionsData,
+							}
+						);
 						createNoticesFromResponse( response );
 					} )
 					.catch( ( error ) => {
+						recordEvent(
+							'storeprofiler_store_business_features_installed_and_activated',
+							{
+								success: false,
+								failed_extensions: Object.keys(
+									error.data || {}
+								).map( ( key ) => getPluginTrackKey( key ) ),
+							}
+						);
 						createNoticesFromResponse( error );
 						throw new Error();
 					} )
@@ -150,7 +247,7 @@ class BusinessDetails extends Component {
 
 		Promise.all( promises )
 			.then( () => {
-				goToNextStep();
+				goToNextStep( { step: BUSINESS_FEATURES_TAB_NAME } );
 			} )
 			.catch( () => {
 				createNotice(
@@ -296,6 +393,10 @@ class BusinessDetails extends Component {
 			used_platform_name: otherPlatformName,
 			setup_client: isSetupClient,
 		} );
+		recordEvent( 'storeprofiler_step_complete', {
+			step: BUSINESS_DETAILS_TAB_NAME,
+			wc_version: getSetting( 'wcVersion' ),
+		} );
 	}
 
 	getSelectControlProps( getInputProps, name = '' ) {
@@ -330,13 +431,21 @@ class BusinessDetails extends Component {
 				onSubmit={ ( values ) => {
 					this.setState( {
 						savedValues: values,
-						currentTab: 'free-features',
+						currentTab: BUSINESS_FEATURES_TAB_NAME,
 					} );
 
 					this.trackBusinessDetailsStep( values );
+					recordEvent( 'storeprofiler_step_view', {
+						step: BUSINESS_FEATURES_TAB_NAME,
+						wc_version: getSetting( 'wcVersion' ),
+					} );
 				} }
 				onChange={ ( _, values, isValid ) => {
 					this.setState( { savedValues: values, isValid } );
+					this.props.updateCurrentStepValues(
+						this.props.step.key,
+						values
+					);
 				} }
 				validate={ this.validate }
 			>
@@ -510,7 +619,9 @@ class BusinessDetails extends Component {
 										<Button
 											onClick={ () => {
 												this.persistProfileItems();
-												goToNextStep();
+												goToNextStep( {
+													step: BUSINESS_FEATURES_TAB_NAME,
+												} );
 											} }
 										>
 											{ __(
@@ -591,6 +702,10 @@ class BusinessDetails extends Component {
 							savedValues:
 								this.state.savedValues || initialValues,
 						} );
+						recordEvent( 'storeprofiler_step_view', {
+							step: tabName,
+							wc_version: getSetting( 'wcVersion' ),
+						} );
 					}
 				} }
 				tabs={ [
@@ -604,10 +719,10 @@ class BusinessDetails extends Component {
 					},
 					{
 						name:
-							this.state.currentTab === FREE_FEATURES_TAB_NAME
+							this.state.currentTab === BUSINESS_FEATURES_TAB_NAME
 								? 'current-tab'
-								: FREE_FEATURES_TAB_NAME,
-						id: FREE_FEATURES_TAB_NAME,
+								: BUSINESS_FEATURES_TAB_NAME,
+						id: BUSINESS_FEATURES_TAB_NAME,
 						title: __( 'Free features', 'woocommerce-admin' ),
 						className: this.state.isValid ? '' : 'is-disabled',
 					},

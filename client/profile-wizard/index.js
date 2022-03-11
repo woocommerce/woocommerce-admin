@@ -21,7 +21,7 @@ import {
 	QUERY_DEFAULTS,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { getAdminLink } from '@woocommerce/settings';
+import { getAdminLink, getSetting } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -42,6 +42,11 @@ class ProfileWizard extends Component {
 		super( props );
 		this.cachedActivePlugins = props.activePlugins;
 		this.goToNextStep = this.goToNextStep.bind( this );
+		this.trackStepValueChanges = this.trackStepValueChanges.bind( this );
+		this.updateCurrentStepValues = this.updateCurrentStepValues.bind(
+			this
+		);
+		this.stepValueChanges = {};
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -70,27 +75,57 @@ class ProfileWizard extends Component {
 
 			recordEvent( 'storeprofiler_step_view', {
 				step: this.getCurrentStep().key,
+				wc_version: getSetting( 'wcVersion' ),
 			} );
 		}
 	}
 
 	componentDidMount() {
 		document.body.classList.remove( 'woocommerce-admin-is-loading' );
-		document.body.classList.add( 'woocommerce-onboarding' );
 		document.body.classList.add( 'woocommerce-profile-wizard__body' );
 		document.body.classList.add( 'woocommerce-admin-full-screen' );
 		document.body.classList.add( 'is-wp-toolbar-disabled' );
 
 		recordEvent( 'storeprofiler_step_view', {
 			step: this.getCurrentStep().key,
+			wc_version: getSetting( 'wcVersion' ),
 		} );
 	}
 
 	componentWillUnmount() {
-		document.body.classList.remove( 'woocommerce-onboarding' );
 		document.body.classList.remove( 'woocommerce-profile-wizard__body' );
 		document.body.classList.remove( 'woocommerce-admin-full-screen' );
 		document.body.classList.remove( 'is-wp-toolbar-disabled' );
+	}
+
+	/**
+	 * Set the initial and current values of a step to track the state of the step.
+	 * This is used to determine if the step has been changes or not.
+	 *
+	 * @param {string} step key of the step
+	 * @param {*} initialValues the initial values of the step
+	 * @param {*} currentValues the current values of the step
+	 * @param {Function} onSave a function to call when the step is saved
+	 */
+	trackStepValueChanges( step, initialValues, currentValues, onSave ) {
+		this.stepValueChanges[ step ] = {
+			initialValues,
+			currentValues,
+			onSave,
+		};
+	}
+
+	/**
+	 * Update currentValues of the given step.
+	 *
+	 * @param {string} step key of the step
+	 * @param {*} currentValues the current values of the step
+	 */
+	updateCurrentStepValues( step, currentValues ) {
+		if ( ! this.stepValueChanges[ step ] ) {
+			return;
+		}
+		this.stepValueChanges[ step ].currentValues = currentValues;
 	}
 
 	getSteps() {
@@ -122,7 +157,7 @@ class ProfileWizard extends Component {
 				profileItems.product_types !== null,
 		} );
 		steps.push( {
-			key: 'business-features',
+			key: 'business-details',
 			container: BusinessDetailsStep,
 			label: __( 'Business Details', 'woocommerce-admin' ),
 			isComplete:
@@ -137,7 +172,12 @@ class ProfileWizard extends Component {
 				profileItems.hasOwnProperty( 'theme' ) &&
 				profileItems.theme !== null,
 		} );
-
+		/**
+		 * Filter for Onboarding steps configuration.
+		 *
+		 * @filter woocommerce_admin_profile_wizard_steps
+		 * @param {Array.<Object>} steps Array of steps for Onboarding Wizard.
+		 */
 		return applyFilters( STEPS_FILTER, steps );
 	}
 
@@ -152,7 +192,10 @@ class ProfileWizard extends Component {
 		return currentStep;
 	}
 
-	async goToNextStep() {
+	/**
+	 * @param {Object} tracksArgs optional track arguments for the storeprofiler_step_complete track.
+	 */
+	async goToNextStep( tracksArgs = {} ) {
 		const { activePlugins } = this.props;
 		const currentStep = this.getCurrentStep();
 		const currentStepIndex = this.getSteps().findIndex(
@@ -161,6 +204,8 @@ class ProfileWizard extends Component {
 
 		recordEvent( 'storeprofiler_step_complete', {
 			step: currentStep.key,
+			wc_version: getSetting( 'wcVersion' ),
+			...tracksArgs,
 		} );
 
 		// Update the activePlugins cache in case plugins were installed
@@ -246,6 +291,8 @@ class ProfileWizard extends Component {
 			skipProfiler: () => {
 				this.skipProfiler();
 			},
+			trackStepValueChanges: this.trackStepValueChanges,
+			updateCurrentStepValues: this.updateCurrentStepValues,
 		} );
 		const steps = this.getSteps().map( ( _step ) =>
 			pick( _step, [ 'key', 'label', 'isComplete' ] )
@@ -254,7 +301,11 @@ class ProfileWizard extends Component {
 
 		return (
 			<>
-				<ProfileWizardHeader currentStep={ stepKey } steps={ steps } />
+				<ProfileWizardHeader
+					currentStep={ stepKey }
+					steps={ steps }
+					stepValueChanges={ this.stepValueChanges }
+				/>
 				<div className={ classNames }>{ container }</div>
 			</>
 		);

@@ -71,6 +71,27 @@ export class StoreDetails extends Component {
 		this.onContinue = this.onContinue.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
 		this.validateStoreDetails = this.validateStoreDetails.bind( this );
+		this.onFormValueChange = this.onFormValueChange.bind( this );
+		this.changedFormValues = {};
+	}
+
+	componentDidUpdate() {
+		if (
+			this.props.isLoading === false &&
+			Object.keys( this.changedFormValues ).length === 0
+		) {
+			// Make a copy of the initialValues.
+			// The values in this object gets updated on onFormValueChange.
+			this.changedFormValues = { ...this.props.initialValues };
+			this.props.trackStepValueChanges(
+				this.props.step.key,
+				this.props.initialValues,
+				this.changedFormValues,
+				() => {
+					this.onContinue( this.changedFormValues );
+				}
+			);
+		}
 	}
 
 	deriveCurrencySettings( countryState ) {
@@ -98,10 +119,14 @@ export class StoreDetails extends Component {
 		} );
 	}
 
+	onFormValueChange( changedFormValue ) {
+		this.changedFormValues[ changedFormValue.name ] =
+			changedFormValue.value;
+	}
+
 	async onContinue( values ) {
 		const {
 			createNotice,
-			goToNextStep,
 			updateProfileItems,
 			updateAndPersistSettingsForGroup,
 			profileItems,
@@ -184,20 +209,19 @@ export class StoreDetails extends Component {
 			! Boolean( errorsRef.current.settings ) &&
 			! errorMessages.length
 		) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your store details',
-					'woocommerce-admin'
-				)
-			);
-
-			errorMessages.forEach( ( message ) =>
-				createNotice( 'error', message )
-			);
+			return true;
 		}
+		createNotice(
+			'error',
+			__(
+				'There was a problem saving your store details',
+				'woocommerce-admin'
+			)
+		);
+
+		errorMessages.forEach( ( message ) =>
+			createNotice( 'error', message )
+		);
 	}
 
 	validateStoreDetails( values ) {
@@ -206,7 +230,7 @@ export class StoreDetails extends Component {
 		const validateAddress = getStoreAddressValidator( locale );
 		const errors = validateAddress( values );
 
-		if ( ! isEmail( values.storeEmail ) ) {
+		if ( values.storeEmail && ! isEmail( values.storeEmail ) ) {
 			errors.storeEmail = __(
 				'Invalid email address',
 				'woocommerce-admin'
@@ -302,6 +326,7 @@ export class StoreDetails extends Component {
 					initialValues={ initialValues }
 					onSubmit={ this.onSubmit }
 					validate={ this.validateStoreDetails }
+					onChange={ this.onFormValueChange }
 				>
 					{ ( {
 						getInputProps,
@@ -317,7 +342,11 @@ export class StoreDetails extends Component {
 										if ( skipping ) {
 											skipProfiler();
 										} else {
-											this.onContinue( values );
+											this.onContinue(
+												values
+											).then( () =>
+												this.props.goToNextStep()
+											);
 										}
 									} }
 									onClose={ () =>
@@ -464,6 +493,7 @@ export default compose(
 		const {
 			getLocale,
 			getLocales,
+			getCountries,
 			hasFinishedResolution: hasFinishedResolutionCountries,
 		} = select( COUNTRIES_STORE_NAME );
 		const { isResolving } = select( OPTIONS_STORE_NAME );
@@ -479,7 +509,8 @@ export default compose(
 		const isLoading =
 			! hasFinishedResolutionOnboarding( 'getProfileItems' ) ||
 			! hasFinishedResolutionOnboarding( 'getEmailPrefill' ) ||
-			! hasFinishedResolutionCountries( 'getLocales' );
+			! hasFinishedResolutionCountries( 'getLocales' ) ||
+			! hasFinishedResolutionCountries( 'getCountries' );
 		const errorsRef = useRef( {
 			settings: null,
 		} );
@@ -492,6 +523,7 @@ export default compose(
 			( settings.woocommerce_store_address &&
 				settings.woocommerce_default_country ) ||
 			'';
+		getCountries();
 		getLocales();
 
 		const initialValues = {

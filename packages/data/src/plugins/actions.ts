@@ -39,6 +39,7 @@ type PluginsResponse< PluginData > = {
 type InstallPluginsResponse = PluginsResponse< {
 	installed: string[];
 	results: Record< string, boolean >;
+	install_time?: Record< string, number >;
 } >;
 
 type ActivatePluginsResponse = PluginsResponse< {
@@ -50,6 +51,12 @@ function isWPError(
 	error: WPError< PluginNames > | Error | string
 ): error is WPError< PluginNames > {
 	return ( error as WPError ).errors !== undefined;
+}
+
+class PluginError extends Error {
+	constructor( message: string, public data: unknown ) {
+		super( message );
+	}
 }
 
 export function formatErrors(
@@ -204,12 +211,13 @@ export function* installPlugins( plugins: string[] ) {
 
 		return results;
 	} catch ( error ) {
-		if ( plugins.length === 1 && ! error[ plugins[ 0 ] ] ) {
+		if ( error instanceof Error && plugins.length === 1 ) {
 			// Incase of a network error
 			error = { [ plugins[ 0 ] ]: error.message };
 		}
-		yield setError( 'installPlugins', error );
-		throw new Error( formatErrorMessage( error ) );
+		const errors = error as WPError[ 'errors' ];
+		yield setError( 'installPlugins', errors );
+		throw new PluginError( formatErrorMessage( errors ), errors );
 	}
 }
 
@@ -235,24 +243,35 @@ export function* activatePlugins( plugins: string[] ) {
 
 		return results;
 	} catch ( error ) {
-		if ( plugins.length === 1 && ! error[ plugins[ 0 ] ] ) {
+		if ( error instanceof Error && plugins.length === 1 ) {
 			// Incase of a network error
 			error = { [ plugins[ 0 ] ]: error.message };
 		}
-		yield setError( 'activatePlugins', error );
-		throw new Error( formatErrorMessage( error, 'activate' ) );
+		const errors = error as WPError[ 'errors' ];
+		yield setError( 'installPlugins', errors );
+		throw new PluginError( formatErrorMessage( errors ), errors );
 	}
 }
 
 export function* installAndActivatePlugins( plugins: string[] ) {
 	try {
-		yield dispatch( STORE_NAME, 'installPlugins', plugins );
+		const installations: InstallPluginsResponse = yield dispatch(
+			STORE_NAME,
+			'installPlugins',
+			plugins
+		);
 		const activations: InstallPluginsResponse = yield dispatch(
 			STORE_NAME,
 			'activatePlugins',
 			plugins
 		);
-		return activations;
+		return {
+			...activations,
+			data: {
+				...activations.data,
+				...installations.data,
+			},
+		};
 	} catch ( error ) {
 		throw error;
 	}
@@ -300,7 +319,11 @@ export function* installJetpackAndConnect(
 		);
 		window.location.href = url;
 	} catch ( error ) {
-		yield errorAction( error.message );
+		if ( error instanceof Error ) {
+			yield errorAction( error.message );
+		} else {
+			throw error;
+		}
 	}
 }
 
@@ -317,7 +340,11 @@ export function* connectToJetpackWithFailureRedirect(
 		);
 		window.location.href = url;
 	} catch ( error ) {
-		yield errorAction( error.message );
+		if ( error instanceof Error ) {
+			yield errorAction( error.message );
+		} else {
+			throw error;
+		}
 		window.location.href = failureRedirect;
 	}
 }
@@ -363,8 +390,7 @@ export function* dismissRecommendedPlugins( type: RecommendedTypes ) {
 
 	let success: boolean;
 	try {
-		const url =
-			WC_ADMIN_NAMESPACE + '/plugins/recommended-payment-plugins/dismiss';
+		const url = WC_ADMIN_NAMESPACE + '/payment-gateway-suggestions/dismiss';
 		success = yield apiFetch( {
 			path: url,
 			method: 'POST',

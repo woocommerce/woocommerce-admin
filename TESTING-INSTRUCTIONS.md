@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 3.3.0
+
+### Prompt a modal to save any unsaved changes in OBW
+
+1. Start with a fresh install.
+2. Navigate to WooCommerce -> Home to start the OBW.
+3. Complete a few steps.
+4. Click any of the previous steps and make some changes.
+5. Click the next/previous step. You should be prompted by the modal to save your changes. Click the save button.
+6. Go back to the step and confirm the changes.
+7. Repeat the step, but click the disregard button for this time.
+8. Confirm the changes are not saved for this time.
+
+## 3.2.0
+
 ### Fix category report query returns invalid net sales
 
 1. Create a new store and finish the Onboarding flow
@@ -9,12 +24,82 @@
 3. Create a new category called **Hoodie** with **Clothing** as the parent category in the **Product categories** on the right.
 4. Select **Clothing** and **Hoodie with Pocket** as well and click **Update**
 5. Create an order with a single item of **Hoodie with Pocket** (keep note of the total price)
-6. Run the action scheduler (make sure all are run)
+6. Run the action scheduler (make sure all are run), you can do this manually by going to **WooCommerce > Status > Scheduled Actions**. If your queue is large, just make sure that the `wc-admin_import_orders` actions are run.
 7. Go to **Analytics > Overview** and scroll down to the **Leaderboards**
 8. Observe that the **Clothing** category has only **1** items sold and net sales is $35
 9. Click on **Clothing** it will redirect to the Categories page and show the correct numbers
 10. Now click on **Analytics > Categories** again and scroll down to the table
 11. Observe that the **Clothing** category has only **1** items sold and net sales is $35
+
+### Hide store address fields in regions that specify hidden #8172
+
+1. Go to the store setup wizard
+2. Change to a country like Guatemala that hides the post code
+3. Verify that the post code is hidden and "Continue" still works as expected
+4. Switch to a different country with all fields shown and make sure things still work as expected
+
+### Add localized validation to store address #8123
+
+**Store details**
+
+1. Navigate to the Store Details step of the profiler
+2. Change the country/region to US.
+3. Check that all fields are still required
+4. Change your country to Australia
+5. Make sure post code and city labels are updated (you can check this [list here](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/includes/class-wc-countries.php#L795-L1528) for other country requirements by shortcode)
+6. Change the country to Hong Kong
+7. Check that zip/postal is no longer required
+
+**Tasks**
+
+1. Delete any shipping zones you might have
+2. Clear your address in **WooCommerce > Settings** aside from the country/region.
+3. Visit the Shipping task in the task list
+4. It should prompt you to put in the store address.
+5. This should follow the same store address validation as the Store Details step.
+
+### Enhance report chart i18n support #8129
+
+1. Go to **Analytics > Overview**
+2. Observe chart texts show normally in English/site language.
+3. Select different "stats" by click on the 3 dots on the right hand and enabling other stats, now repeat step 2 until all options are confirmed.
+4. Go to **Settings > General**
+5. Change the "Site Language" to another languages like "Português do Brasil"
+6. Repeat 1 ~ 3 steps
+
+### Add MailPoet to Installed marketing extensions #8091
+
+1. Go to **Marketing > Overview**
+2. MailPoet is not shown in **Installed marketing extensions**
+3. Go to **Plugins** and install but don't activate **MailPoet 3**
+4. Go to **Marketing > Overview**
+5. See MailPoet in **Installed marketing extensions**
+6. Click **Activate**
+7. Click **Finish Setup**
+8. Finish MailPoet setup (fill with dummy data)
+9. Go to **Marketing > Overview**
+10. See MailPoet links to Docs, Support, and Settings
+
+**Analytics**
+
+### Add chart color filter
+
+1. Add the following JS to your admin head. You can use a plugin like "Add Admin Javascript" to do this:
+```
+ addFilter( 'woocommerce_admin_chart_item_color', 'example', ( index, key, orderedKeys ) => '#7f54b3' );
+```
+2. Navigate to the profile wizard. `wp-admin/admin.php?page=wc-admin&path=%2Fanalytics%2Fproducts`.
+3. Make sure the chart line colors are purple.
+4. Confirm that chart legend items are not overflowing.
+### Add additional store profiler track for the business details tab. #8265
+
+1. Open your console and make sure you have tracks outputted ( `localStorage.setItem( 'debug', 'wc-admin:*' );` )
+2. Go to the Onboarding wizard and step through until the business details `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard&step=business-details`
+3. A `storeprofiler_step_view` should be triggered with `business-details` as the step.
+4. Fill out the dropdowns and click continue
+5. A `storeprofiler_step_complete` should of fired with a `step` prop of `business-details`. A new `storeprofiler_step_view` should of also fired with `business-features` as a step. Now select some free features and click continue.
+6. A `storeprofiler_step_complete` should of fired with a `step` prop of `business-features`.
+7. Check the general styling of the business features tab to make sure things look good still.
 
 ## 3.1.0
 
