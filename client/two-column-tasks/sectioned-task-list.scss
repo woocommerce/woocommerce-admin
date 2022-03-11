@@ -1,13 +1,18 @@
 .woocommerce-task-dashboard__container {
 	.components-panel {
 		width: 100%;
+		background: transparent;
+		border: 0;
 	}
 
 	.components-panel__body {
-		padding-bottom: 0px;
+		padding-bottom: 0;
+		margin-bottom: $gap-smaller;
+		background: #fff;
+		border: 1px solid $gray-200;
 
 		.components-panel__body-title {
-			margin-bottom: 0px;
+			margin-bottom: 0;
 			border-bottom: 1px solid #e0e0e0;
 
 			> .components-button {
@@ -23,17 +28,17 @@
 		}
 		&.is-opened .components-panel__body-toggle {
 			width: 100%;
-			padding: 0px;
+			padding: 0;
 			> span {
 				position: absolute;
-				right: 0px;
-				top: 20px;
+				right: 0;
+				top: $gap-large;
 			}
 		}
 
 		.woocommerce-experimental-list {
-			width: calc( 100% + 32px );
-			margin: 0px -16px;
+			width: calc(100% + 32px);
+			margin: 0 -16px;
 		}
 	}
 }

@@ -22,4 +22,11 @@ export type TaskListType = {
 	tasks: TaskType[];
 	title: string;
 	eventPrefix: string;
+	sections?: {
+		id: string;
+		title: string;
+		description: string;
+		image: string;
+		tasks: string[];
+	}[];
 };

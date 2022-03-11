@@ -2,14 +2,8 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useRef, useState, createElement } from '@wordpress/element';
-import {
-	Button,
-	Card,
-	Panel,
-	PanelBody,
-	PanelRow,
-} from '@wordpress/components';
+import { useEffect, useRef, useState, createRef } from '@wordpress/element';
+import { Button, Panel, PanelBody, PanelRow } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
@@ -32,6 +26,7 @@ import taskHeaders from './task-headers';
 import DismissModal from './dismiss-modal';
 import TaskListCompleted from './completed';
 import { TaskListProps } from '~/tasks/task-list';
+import SectionHeader from './headers/section-header';
 
 export const SectionedTaskList: React.FC< TaskListProps > = ( {
 	query,
@@ -40,6 +35,7 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 	tasks,
 	keepCompletedTaskList,
 	isComplete,
+	sections,
 } ) => {
 	const { createNotice } = useDispatch( 'core/notices' );
 	const { updateOptions, dismissTask, undoDismissTask } = useDispatch(
@@ -52,14 +48,15 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 		};
 	} );
 	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
-	const [ headerData, setHeaderData ] = useState< {
-		task?: TaskType;
-		goToTask?: () => void;
-		trackClick?: () => void;
-	} >( {} );
-	const [ activeTaskId, setActiveTaskId ] = useState( '' );
 	const [ showDismissModal, setShowDismissModal ] = useState( false );
 	const [ openPanel, setOpenPanel ] = useState< string | null >( null );
+	const sectionRefs = useRef( {} );
+	sectionRefs.current = ( sections || [] ).reduce( ( refs, section ) => {
+		return {
+			...refs,
+			[ section.id ]: createRef(),
+		};
+	}, {} );
 
 	const prevQueryRef = useRef( query );
 
@@ -95,10 +92,6 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 		}
 	}, [ query ] );
 
-	const incompleteTasks = tasks.filter(
-		( task ) => ! task.isComplete && ! task.isDismissed
-	);
-
 	const onDismissTask = ( taskId: string, onDismiss?: () => void ) => {
 		dismissTask( taskId );
 		createNotice( 'success', __( 'Task dismissed' ), {
@@ -129,37 +122,6 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 		} );
 	};
 
-	const renderMenu = () => {
-		return (
-			<div className="woocommerce-card__menu woocommerce-card__header-item">
-				<EllipsisMenu
-					className={ id }
-					label={ __( 'Task List Options', 'woocommerce-admin' ) }
-					renderContent={ ( {
-						onToggle,
-					}: {
-						onToggle: () => void;
-					} ) => (
-						<div className="woocommerce-task-card__section-controls">
-							<Button
-								onClick={ () => {
-									if ( incompleteTasks.length > 0 ) {
-										setShowDismissModal( true );
-										onToggle();
-									} else {
-										hideTasks( 'remove_card' );
-									}
-								} }
-							>
-								{ __( 'Hide this', 'woocommerce-admin' ) }
-							</Button>
-						</div>
-					) }
-				/>
-			</div>
-		);
-	};
-
 	let selectedHeaderCard = visibleTasks.find(
 		( listTask ) => listTask.isComplete === false
 	);
@@ -180,31 +142,15 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 		updateQueryString( { task: task.id } );
 	};
 
-	const showTaskHeader = ( task: TaskType ) => {
-		if ( taskHeaders[ task.id ] ) {
-			setHeaderData( {
-				task,
-				goToTask: () => goToTask( task ),
-				trackClick: () => trackClick( task ),
-			} );
-			setActiveTaskId( task.id );
-		}
-	};
-
 	const onTaskSelected = ( task: TaskType ) => {
-		if ( task.id === 'woocommerce-payments' ) {
-			// With WCPay, we have to show the header content for user to read t&c first.
-			showTaskHeader( task );
-		} else {
-			goToTask( task );
-		}
+		goToTask( task );
 	};
 
-	useEffect( () => {
-		if ( selectedHeaderCard ) {
-			showTaskHeader( selectedHeaderCard );
-		}
-	}, [ selectedHeaderCard ] );
+	const getSectionTasks = ( sectionTaskIds: string[] ) => {
+		return visibleTasks.filter( ( task ) =>
+			sectionTaskIds.includes( task.id )
+		);
+	};
 
 	if ( ! visibleTasks.length ) {
 		return <div className="woocommerce-task-dashboard__container"></div>;
@@ -237,72 +183,73 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 				) }
 			>
 				<Panel>
-					<PanelBody
-						title={
-							openPanel === 'setup' ? (
-								<div className="wooocommerce-task-card__header-container">
-									<div className="wooocommerce-task-card__header">
-										{ headerData?.task &&
-											createElement(
-												taskHeaders[
-													headerData.task.id
-												],
-												headerData
-											) }
+					{ ( sections || [] ).map( ( section ) => (
+						<PanelBody
+							key={ section.id }
+							ref={ sectionRefs.current[ section.id ] }
+							title={
+								openPanel === section.id ? (
+									<div className="wooocommerce-task-card__header-container">
+										<div className="wooocommerce-task-card__header">
+											<SectionHeader { ...section } />
+										</div>
 									</div>
-								</div>
-							) : (
-								'Cover the basics'
-							)
-						}
-						onToggle={ ( isOpen ) => {
-							if ( ! isOpen && openPanel === 'setup' ) {
-								setOpenPanel( null );
-							} else {
-								setOpenPanel( 'setup' );
+								) : (
+									section.title
+								)
 							}
-						} }
-						initialOpen={ false }
-					>
-						<PanelRow>
-							<List animation="custom">
-								{ visibleTasks.map( ( task, index ) => {
-									++index;
-									const className = classnames(
-										'woocommerce-task-list__item index-' +
-											index,
-										{
-											complete: task.isComplete,
-											'is-active':
-												task.id === activeTaskId,
+							opened={ openPanel === section.id }
+							onToggle={ ( isOpen ) => {
+								if ( ! isOpen && openPanel === section.id ) {
+									setOpenPanel( null );
+								} else {
+									setOpenPanel( section.id );
+								}
+							} }
+							initialOpen={ false }
+						>
+							<PanelRow>
+								<List animation="custom">
+									{ getSectionTasks( section.tasks ).map(
+										( task ) => {
+											const className = classnames(
+												'woocommerce-task-list__item',
+												{
+													complete: task.isComplete,
+												}
+											);
+											return (
+												<TaskItem
+													key={ task.id }
+													className={ className }
+													title={ task.title }
+													completed={
+														task.isComplete
+													}
+													content={ task.content }
+													onClick={ () => {
+														onTaskSelected( task );
+													} }
+													onDismiss={
+														task.isDismissable
+															? () =>
+																	onDismissTask(
+																		task.id
+																	)
+															: undefined
+													}
+													action={ () => {} }
+													actionLabel={
+														task.actionLabel
+													}
+												/>
+											);
 										}
-									);
-									return (
-										<TaskItem
-											key={ task.id }
-											className={ className }
-											title={ task.title }
-											completed={ task.isComplete }
-											content={ task.content }
-											onClick={ () => {
-												onTaskSelected( task );
-											} }
-											onDismiss={
-												task.isDismissable
-													? () =>
-															onDismissTask(
-																task.id
-															)
-													: undefined
-											}
-											action={ () => {} }
-											actionLabel={ task.actionLabel }
-										/>
-									);
-								} ) }
-							</List>
-						</PanelRow>
-					</PanelBody>
+									) }
+								</List>
+							</PanelRow>
+						</PanelBody>
+					) ) }
 				</Panel>
 			</div>
 		</>

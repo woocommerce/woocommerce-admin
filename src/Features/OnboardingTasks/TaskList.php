@@ -83,6 +83,20 @@ class TaskList {
 	public $options = array();
 
 	/**
+	 * Array of TaskListSection.
+	 *
+	 * @var array
+	 */
+	private $sections = array();
+
+	/**
+	 * Key value map of task class and id used for sections.
+	 *
+	 * @var array
+	 */
+	public $task_class_id_map = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param array $data Task list data.
@@ -97,6 +111,7 @@ class TaskList {
 			'event_prefix' => null,
 			'options'      => array(),
 			'visible'      => true,
+			'sections'     => array(),
 		);
 
 		$data = wp_parse_args( $data, $defaults );
@@ -114,6 +129,12 @@ class TaskList {
 			$task  = new $class( $this );
 			$this->add_task( $task );
 		}
+		$this->sections = array_map(
+			function( $section ) {
+				return new TaskListSection( $section, $this );
+			},
+			$data['sections']
+		);
 	}
 
 	/**
@@ -225,7 +246,9 @@ class TaskList {
 			return;
 		}
 
-		$this->tasks[] = $task;
+		$task_class_name                             = substr( get_class( $task ), strrpos( get_class( $task ), '\\' ) + 1 );
+		$this->task_class_id_map[ $task_class_name ] = $task->get_id();
+		$this->tasks[]                               = $task;
 	}
 
 	/**
@@ -258,6 +281,26 @@ class TaskList {
 					return $task->can_view();
 				}
 			)
+		);
+	}
+
+	/**
+	 * Get only visible tasks in list.
+	 *
+	 * @return array
+	 */
+	public function get_sections() {
+		return array_map(
+			function( $section ) {
+				$section_tasks = array_map(
+					function() {
+
+					},
+					$section['tasks']
+				);
+
+			},
+			$this->sections
 		);
 	}
 
@@ -331,6 +374,12 @@ class TaskList {
 				$this->get_viewable_tasks()
 			),
 			'eventPrefix' => $this->prefix_event( '' ),
+			'sections'    => array_map(
+				function( $section ) {
+					return $section->get_json();
+				},
+				$this->sections
+			),
 		);
 	}
 }
