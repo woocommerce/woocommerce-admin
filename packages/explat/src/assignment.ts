@@ -7,27 +7,13 @@ import apiFetch from '@wordpress/api-fetch';
 
 const EXPLAT_VERSION = '0.1.0';
 
-const _fetchExperimentAssignment = async ( {
-	url,
-	path,
+const getRequestQueryString = ( {
 	experimentName,
 	anonId,
 }: {
-	url?: string;
-	path?: string;
 	experimentName: string;
 	anonId: string | null;
-} ): Promise< unknown > => {
-	if ( ! window.wcTracks?.isEnabled ) {
-		throw new Error(
-			`Tracking is disabled, can't fetch experimentAssignment`
-		);
-	}
-
-	if ( ! url && ! path ) {
-		throw new Error( 'Url or path is required' );
-	}
-
+} ): string => {
 	/**
 	 * List of URL query parameters to be sent to the server.
 	 *
@@ -42,7 +28,7 @@ const _fetchExperimentAssignment = async ( {
 	 * });
 	 *
 	 */
-	const queryString = stringify(
+	return stringify(
 		applyFilters( 'woocommerce_explat_request_args', {
 			experiment_name: experimentName,
 			anon_id: anonId ?? undefined,
@@ -53,12 +39,6 @@ const _fetchExperimentAssignment = async ( {
 					?.woocommerce_default_country,
 		} )
 	);
-
-	const response = await apiFetch( {
-		url: url && `${ url }?${ queryString }`,
-		path: path && `${ path }?${ queryString }`,
-	} );
-	return response;
 };
 
 export const fetchExperimentAssignment = async ( {
@@ -67,12 +47,21 @@ export const fetchExperimentAssignment = async ( {
 }: {
 	experimentName: string;
 	anonId: string | null;
-} ): Promise< unknown > =>
-	_fetchExperimentAssignment( {
-		url: `https://public-api.wordpress.com/wpcom/v2/experiments/${ EXPLAT_VERSION }/assignments/woocommerce`,
-		experimentName,
-		anonId,
-	} );
+} ): Promise< unknown > => {
+	if ( ! window.wcTracks?.isEnabled ) {
+		throw new Error(
+			`Tracking is disabled, can't fetch experimentAssignment`
+		);
+	}
+	return await window.fetch(
+		`https://public-api.wordpress.com/wpcom/v2/experiments/${ EXPLAT_VERSION }/assignments/woocommerce?${ getRequestQueryString(
+			{
+				experimentName,
+				anonId,
+			}
+		) }`
+	);
+};
 
 export const fetchExperimentAssignmentWithAuth = async ( {
 	experimentName,
@@ -80,10 +69,17 @@ export const fetchExperimentAssignmentWithAuth = async ( {
 }: {
 	experimentName: string;
 	anonId: string | null;
-} ): Promise< unknown > =>
-	_fetchExperimentAssignment( {
-		// Send the request to our backend server to get the assignment with a user token via Jetpack.
-		path: '/wc-admin/experiments/assignment',
-		experimentName,
-		anonId,
+} ): Promise< unknown > => {
+	if ( ! window.wcTracks?.isEnabled ) {
+		throw new Error(
+			`Tracking is disabled, can't fetch experimentAssignment`
+		);
+	}
+	// Use apiFetch to send request with credentials and nonce to our backend api to get the assignment with a user token via Jetpack.
+	return await apiFetch( {
+		path: `/wc-admin/experiments/assignment?${ getRequestQueryString( {
+			experimentName,
+			anonId,
+		} ) }`,
 	} );
+};

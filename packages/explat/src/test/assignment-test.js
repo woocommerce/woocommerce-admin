@@ -37,12 +37,7 @@ describe( 'fetchExperimentAssignment', () => {
 		Promise.resolve( fetchPromise );
 
 		expect( fetchMock ).toHaveBeenCalledWith(
-			'https://public-api.wordpress.com/wpcom/v2/experiments/0.1.0/assignments/woocommerce?anon_id=abc&test=test&_locale=user',
-			{
-				body: undefined,
-				credentials: 'include',
-				headers: { Accept: 'application/json, */*;q=0.1' },
-			}
+			'https://public-api.wordpress.com/wpcom/v2/experiments/0.1.0/assignments/woocommerce?anon_id=abc&test=test'
 		);
 	} );
 } );
