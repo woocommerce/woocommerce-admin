@@ -23,8 +23,8 @@ class Experimental_Abtest_Test extends WC_Unit_Test_Case {
 		delete_transient( 'abtest_variation_control' );
 		add_filter(
 			'pre_http_request',
-			function( $preempt, $parsed_args, $url ) {
-				$this->assertEquals( $parsed_args['test'], 'test' );
+			function( $arg1, $arg2, $url ) {
+				$this->assertTrue( false !== strpos( $url, 'test=test' ) );
 				return array(
 					'response'    => 200,
 					'status_code' => 200,
