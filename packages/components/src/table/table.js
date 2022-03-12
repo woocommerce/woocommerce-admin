@@ -14,6 +14,7 @@ import { find, get, noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { withInstanceId } from '@wordpress/compose';
 import { Icon, chevronUp, chevronDown } from '@wordpress/icons';
+import { applyFilters } from '@wordpress/hooks';
 
 const ASC = 'asc';
 const DESC = 'desc';
@@ -147,6 +148,7 @@ class Table extends Component {
 			rowHeader,
 			rows,
 		} = this.props;
+
 		const { isScrollableRight, isScrollableLeft, tabIndex } = this.state;
 		const classes = classnames( 'woocommerce-table__table', classNames, {
 			'is-scrollable-right': isScrollableRight,
@@ -300,46 +302,51 @@ class Table extends Component {
 						</tr>
 						{ hasData ? (
 							rows.map( ( row, i ) => (
-								<tr key={ this.getRowKey( row, i ) }>
-									{ row.map( ( cell, j ) => {
-										const {
-											cellClassName,
-											isLeftAligned,
-											isNumeric,
-										} = headers[ j ];
-										const isHeader = rowHeader === j;
-										const Cell = isHeader ? 'th' : 'td';
-										const cellClasses = classnames(
-											'woocommerce-table__item',
-											cellClassName,
-											{
-												'is-left-aligned':
-													isLeftAligned ||
-													! isNumeric,
-												'is-numeric': isNumeric,
-												'is-sorted':
-													sortedBy ===
-													headers[ j ].key,
-											}
-										);
-										const cellKey =
-											this.getRowKey(
-												row,
-												i
-											).toString() + j;
-										return (
-											<Cell
-												scope={
-													isHeader ? 'row' : null
+								applyFilters(
+									'woocommerce_admin_after_table_row',
+									<tr key={ this.getRowKey( row, i ) }>
+										{ row.map( ( cell, j ) => {
+											const {
+												cellClassName,
+												isLeftAligned,
+												isNumeric,
+											} = headers[ j ];
+											const isHeader = rowHeader === j;
+											const Cell = isHeader ? 'th' : 'td';
+											const cellClasses = classnames(
+												'woocommerce-table__item',
+												cellClassName,
+												{
+													'is-left-aligned':
+														isLeftAligned ||
+														! isNumeric,
+													'is-numeric': isNumeric,
+													'is-sorted':
+														sortedBy ===
+														headers[ j ].key,
 												}
-												key={ cellKey }
-												className={ cellClasses }
-											>
-												{ getDisplay( cell ) }
-											</Cell>
-										);
-									} ) }
-								</tr>
+											);
+											const cellKey =
+												this.getRowKey(
+													row,
+													i
+												).toString() + j;
+											return (
+												<Cell
+													scope={
+														isHeader ? 'row' : null
+													}
+													key={ cellKey }
+													className={ cellClasses }
+												>
+													{ getDisplay( cell ) }
+												</Cell>
+											);
+										} ) }
+									</tr>,
+									row,
+									query
+								)
 							) )
 						) : (
 							<tr>
