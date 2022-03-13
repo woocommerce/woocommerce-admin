@@ -19,10 +19,10 @@ import { CurrencyContext } from '../../../lib/currency-context';
 import { getVariationName } from '../../../lib/async-requests';
 import { getAdminSetting } from '~/utils/admin-settings';
 
-const INTERNAL_VARIATIONS_REPORT_TABLE_TITLE_FILTER =
-	'internal_woocommerce_admin_variations_report_table_title';
-const INTERNAL_VARIATIONS_REPORT_TABLE_SUMMARY_VARIATIONS_COUNT_LABEL_FILTER =
-	'internal_woocommerce_admin_variations_report_table_summary_variations_count_label';
+const EXPERIMENTAL_VARIATIONS_REPORT_TABLE_TITLE_FILTER =
+	'experimental_woocommerce_admin_variations_report_table_title';
+const EXPERIMENTAL_VARIATIONS_REPORT_TABLE_SUMMARY_VARIATIONS_COUNT_LABEL_FILTER =
+	'experimental_woocommerce_admin_variations_report_table_summary_variations_count_label';
 
 const manageStock = getAdminSetting( 'manageStock', 'no' );
 const stockStatuses = getAdminSetting( 'stockStatuses', {} );
@@ -207,7 +207,7 @@ class VariationsReportTable extends Component {
 		return [
 			{
 				label: applyFilters(
-					INTERNAL_VARIATIONS_REPORT_TABLE_SUMMARY_VARIATIONS_COUNT_LABEL_FILTER,
+					EXPERIMENTAL_VARIATIONS_REPORT_TABLE_SUMMARY_VARIATIONS_COUNT_LABEL_FILTER,
 					_n(
 						'variation sold',
 						'variations sold',
@@ -291,7 +291,7 @@ class VariationsReportTable extends Component {
 					variations: query.variations,
 				} }
 				title={ applyFilters(
-					INTERNAL_VARIATIONS_REPORT_TABLE_TITLE_FILTER,
+					EXPERIMENTAL_VARIATIONS_REPORT_TABLE_TITLE_FILTER,
 					__( 'Variations', 'woocommerce-admin' ),
 					query
 				) }
