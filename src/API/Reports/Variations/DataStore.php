@@ -291,8 +291,17 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 		}
 	}
 
-	protected function should_exclude_simple_products( $query_args ) {
-		return apply_filters( 'internal_woocommerce_analytics_variations_should_exclude_simple_products', true, $query_args );
+	/**
+	 * Returns if simple products should be excluded from the report.
+	 *
+	 * @internal
+	 *
+	 * @param array $query_args Query parameters.
+	 *
+	 * @return boolean
+	 */
+	protected function should_exclude_simple_products( array $query_args ) {
+		return apply_filters( 'experimental_woocommerce_analytics_variations_should_exclude_simple_products', true, $query_args );
 	}
 
 	/**
@@ -340,12 +349,12 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				{$wpdb->prefix}wc_order_product_lookup as product_lookup
 				left join {$wpdb->prefix}woocommerce_order_items as order_items
 				on product_lookup.order_item_id = order_items.order_item_id
-			where 
-				{$where_clauses}	
-			group by 
-				product_lookup.product_id, 
-				product_lookup.variation_id, 
-				order_items.order_item_name				
+			where
+				{$where_clauses}
+			group by
+				product_lookup.product_id,
+				product_lookup.variation_id,
+				order_items.order_item_name
 		";
 
 		// phpcs:ignore
