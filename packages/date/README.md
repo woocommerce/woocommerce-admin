@@ -16,7 +16,7 @@ _This package assumes that your code will run in an **ES2015+** environment. If 
 
 The `date` package makes use of the global `window.wcSettings.timeZone`.  If a timezone is set, the current and last periods will be converted from your browser's timezone to the store timezone.  If none is set, these periods will be based on your browser's timezone.
 
-## Functions
+### Functions
 
 <dl>
 <dt><a href="#appendTimestamp">appendTimestamp</a> ⇒ <code>string</code></dt>
@@ -92,7 +92,7 @@ of moment style js formats.</p>
 </dd>
 </dl>
 
-## Typedefs
+### Typedefs
 
 <dl>
 <dt><a href="#DateValue">DateValue</a> : <code>Object</code></dt>
@@ -107,7 +107,7 @@ of moment style js formats.</p>
 
 <a name="appendTimestamp"></a>
 
-## appendTimestamp ⇒ <code>string</code>
+### appendTimestamp ⇒ <code>string</code>
 Adds timestamp to a string date.
 
 **Kind**: global constant
@@ -120,7 +120,7 @@ Adds timestamp to a string date.
 
 <a name="getDateValue"></a>
 
-## getDateValue ⇒ [<code>DateValue</code>](#DateValue)
+### getDateValue ⇒ [<code>DateValue</code>](#DateValue)
 Get a DateValue object for a period described by a period, compare value, and start/end
 dates, for custom dates.
 
@@ -136,7 +136,7 @@ dates, for custom dates.
 
 <a name="getDateParamsFromQueryMemoized"></a>
 
-## getDateParamsFromQueryMemoized ⇒ <code>Object</code>
+### getDateParamsFromQueryMemoized ⇒ <code>Object</code>
 Memoized internal logic of getDateParamsFromQuery().
 
 **Kind**: global constant
@@ -152,7 +152,7 @@ Memoized internal logic of getDateParamsFromQuery().
 
 <a name="getDateParamsFromQuery"></a>
 
-## getDateParamsFromQuery ⇒ [<code>DateParams</code>](#DateParams)
+### getDateParamsFromQuery ⇒ [<code>DateParams</code>](#DateParams)
 Add default date-related parameters to a query object
 
 **Kind**: global constant
@@ -169,7 +169,7 @@ Add default date-related parameters to a query object
 
 <a name="getCurrentDatesMemoized"></a>
 
-## getCurrentDatesMemoized ⇒ <code>Object</code>
+### getCurrentDatesMemoized ⇒ <code>Object</code>
 Memoized internal logic of getCurrentDates().
 
 **Kind**: global constant
@@ -186,7 +186,7 @@ Memoized internal logic of getCurrentDates().
 
 <a name="getCurrentDates"></a>
 
-## getCurrentDates ⇒ <code>Object</code>
+### getCurrentDates ⇒ <code>Object</code>
 Get Date Value Objects for a primary and secondary date range
 
 **Kind**: global constant
@@ -203,7 +203,7 @@ Get Date Value Objects for a primary and secondary date range
 
 <a name="getDateDifferenceInDays"></a>
 
-## getDateDifferenceInDays ⇒ <code>number</code>
+### getDateDifferenceInDays ⇒ <code>number</code>
 Calculates the date difference between two dates. Used in calculating a matching date for previous period.
 
 **Kind**: global constant
@@ -216,7 +216,7 @@ Calculates the date difference between two dates. Used in calculating a matching
 
 <a name="getPreviousDate"></a>
 
-## getPreviousDate ⇒ <code>Object</code>
+### getPreviousDate ⇒ <code>Object</code>
 Get the previous date for either the previous period of year.
 
 **Kind**: global constant
@@ -232,7 +232,7 @@ Get the previous date for either the previous period of year.
 
 <a name="toMoment"></a>
 
-## toMoment(format, str) ⇒ <code>Object</code> \| <code>null</code>
+### toMoment(format, str) ⇒ <code>Object</code> \| <code>null</code>
 Convert a string to Moment object
 
 **Kind**: global function
@@ -245,7 +245,7 @@ Convert a string to Moment object
 
 <a name="getRangeLabel"></a>
 
-## getRangeLabel(after, before) ⇒ <code>string</code>
+### getRangeLabel(after, before) ⇒ <code>string</code>
 Given two dates, derive a string representation
 
 **Kind**: global function
@@ -258,14 +258,14 @@ Given two dates, derive a string representation
 
 <a name="getStoreTimeZoneMoment"></a>
 
-## getStoreTimeZoneMoment() ⇒ <code>string</code>
+### getStoreTimeZoneMoment() ⇒ <code>string</code>
 Gets the current time in the store time zone if set.
 
 **Kind**: global function
 **Returns**: <code>string</code> - - Datetime string.
 <a name="getLastPeriod"></a>
 
-## getLastPeriod(period, compare) ⇒ [<code>DateValue</code>](#DateValue)
+### getLastPeriod(period, compare) ⇒ [<code>DateValue</code>](#DateValue)
 Get a DateValue object for a period prior to the current period.
 
 **Kind**: global function
@@ -278,7 +278,7 @@ Get a DateValue object for a period prior to the current period.
 
 <a name="getCurrentPeriod"></a>
 
-## getCurrentPeriod(period, compare) ⇒ [<code>DateValue</code>](#DateValue)
+### getCurrentPeriod(period, compare) ⇒ [<code>DateValue</code>](#DateValue)
 Get a DateValue object for a curent period. The period begins on the first day of the period,
 and ends on the current day.
 
@@ -292,7 +292,7 @@ and ends on the current day.
 
 <a name="getAllowedIntervalsForQuery"></a>
 
-## getAllowedIntervalsForQuery(query, defaultDateRange) ⇒ <code>Array</code>
+### getAllowedIntervalsForQuery(query, defaultDateRange) ⇒ <code>Array</code>
 Returns the allowed selectable intervals for a specific query.
 
 **Kind**: global function
@@ -305,7 +305,7 @@ Returns the allowed selectable intervals for a specific query.
 
 <a name="getIntervalForQuery"></a>
 
-## getIntervalForQuery(query, defaultDateRange) ⇒ <code>string</code>
+### getIntervalForQuery(query, defaultDateRange) ⇒ <code>string</code>
 Returns the current interval to use.
 
 **Kind**: global function
@@ -318,7 +318,7 @@ Returns the current interval to use.
 
 <a name="getChartTypeForQuery"></a>
 
-## getChartTypeForQuery(query) ⇒ <code>string</code>
+### getChartTypeForQuery(query) ⇒ <code>string</code>
 Returns the current chart type to use.
 
 **Kind**: global function
@@ -331,7 +331,7 @@ Returns the current chart type to use.
 
 <a name="getDateFormatsForInterval"></a>
 
-## getDateFormatsForInterval(interval, [ticks], [option]) ⇒ <code>string</code>
+### getDateFormatsForInterval(interval, [ticks], [option]) ⇒ <code>string</code>
 Returns date formats for the current interval.
 
 **Kind**: global function
@@ -346,7 +346,7 @@ Returns date formats for the current interval.
 
 <a name="getDateFormatsForIntervalD3"></a>
 
-## getDateFormatsForIntervalD3(interval, [ticks]) ⇒ <code>string</code>
+### getDateFormatsForIntervalD3(interval, [ticks]) ⇒ <code>string</code>
 Returns d3 date formats for the current interval.
 See https://github.com/d3/d3-time-format for chart formats.
 
@@ -360,7 +360,7 @@ See https://github.com/d3/d3-time-format for chart formats.
 
 <a name="getDateFormatsForIntervalPhp"></a>
 
-## getDateFormatsForIntervalPhp(interval, [ticks]) ⇒ <code>string</code>
+### getDateFormatsForIntervalPhp(interval, [ticks]) ⇒ <code>string</code>
 Returns php date formats for the current interval.
 See see https://www.php.net/manual/en/datetime.format.php.
 
@@ -374,7 +374,7 @@ See see https://www.php.net/manual/en/datetime.format.php.
 
 <a name="loadLocaleData"></a>
 
-## loadLocaleData(config)
+### loadLocaleData(config)
 Gutenberg's moment instance is loaded with i18n values, which are
 PHP date formats, ie 'LLL: "F j, Y g:i a"'. Override those with translations
 of moment style js formats.
@@ -389,7 +389,7 @@ of moment style js formats.
 
 <a name="validateDateInputForRange"></a>
 
-## validateDateInputForRange(type, value, [before], [after], format) ⇒ <code>Object</code>
+### validateDateInputForRange(type, value, [before], [after], format) ⇒ <code>Object</code>
 Validate text input supplied for a date range.
 
 **Kind**: global function
@@ -405,7 +405,7 @@ Validate text input supplied for a date range.
 
 <a name="DateValue"></a>
 
-## DateValue : <code>Object</code>
+### DateValue : <code>Object</code>
 DateValue Object
 
 **Kind**: global typedef
@@ -420,7 +420,7 @@ DateValue Object
 
 <a name="DateParams"></a>
 
-## DateParams : <code>Object</code>
+### DateParams : <code>Object</code>
 DateParams Object
 
 **Kind**: global typedef
@@ -439,7 +439,7 @@ DateParams Object
 
 <a name="validatedDate"></a>
 
-## validatedDate : <code>Object</code>
+### validatedDate : <code>Object</code>
 **Kind**: global typedef
 **Properties**
 
