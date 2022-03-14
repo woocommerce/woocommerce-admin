@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useRef, useState, createElement } from '@wordpress/element';
 import { Button, Card } from '@wordpress/components';
-import { useSelect, useDispatch, Action } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import {
