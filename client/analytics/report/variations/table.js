@@ -209,7 +209,7 @@ class VariationsReportTable extends Component {
 				/**
 				 * Experimental: Filter the label used for the number of variations in the report table summary.
 				 *
-				 * @filter EXPERIMENTAL_VARIATIONS_REPORT_TABLE_SUMMARY_VARIATIONS_COUNT_LABEL_FILTER
+				 * @filter experimental_woocommerce_admin_variations_report_table_summary_variations_count_label
 				 *
 				 * @param {string} label Label used for the count.
 				 * @param {string} variationsCount Number of variations.
