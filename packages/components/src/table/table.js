@@ -303,7 +303,7 @@ class Table extends Component {
 						{ hasData ? (
 							rows.map( ( row, i ) => (
 								applyFilters(
-									'woocommerce_admin_after_table_row',
+									'woocommerce_admin_table_row',
 									<tr key={ this.getRowKey( row, i ) }>
 										{ row.map( ( cell, j ) => {
 											const {
@@ -344,6 +344,7 @@ class Table extends Component {
 											);
 										} ) }
 									</tr>,
+									i,
 									row,
 									query
 								)
@@ -354,9 +355,12 @@ class Table extends Component {
 									className="woocommerce-table__empty-item"
 									colSpan={ headers.length }
 								>
-									{ __(
-										'No data to display',
-										'woocommerce-admin'
+									{ applyFilters(
+										'woocommerce_admin_nodata_text',
+										__(
+											'No data to display',
+											'woocommerce-admin'
+										)
 									) }
 								</td>
 							</tr>
