@@ -115,7 +115,7 @@ class TaskLists {
 				'options'      => array(
 					'use_completed_title' => true,
 				),
-				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-1' ),
+				'visible'      => ! Features::is_enabled( 'tasklist-setup-experiment-1' ),
 			)
 		);
 
@@ -125,6 +125,7 @@ class TaskLists {
 				'hidden_id'    => 'setup',
 				'title'        => __( 'Get ready to start selling', 'woocommerce-admin' ),
 				'tasks'        => array(
+					'StoreCreation',
 					'StoreDetails',
 					'Products',
 					'WooCommercePayments',
@@ -136,6 +137,9 @@ class TaskLists {
 				),
 				'event_prefix' => 'tasklist_',
 				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-1' ),
+				'options'      => array(
+					'use_completed_title' => true,
+				),
 				'sections'     => array(
 					array(
 						'id'          => 'basics',
@@ -145,7 +149,7 @@ class TaskLists {
 							'/images/task_list/basics-section-illustration.png',
 							WC_ADMIN_PLUGIN_FILE
 						),
-						'task_names'  => array( 'StoreDetails', 'Products', 'Payments' ),
+						'task_names'  => array( 'StoreCreation', 'StoreDetails', 'Products', 'Payments', 'WooCommercePayments' ),
 					),
 					array(
 						'id'          => 'sales',

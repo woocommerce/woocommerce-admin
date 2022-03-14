@@ -1,4 +1,4 @@
-.woocommerce-task-dashboard__container {
+.woocommerce-sectioned-task-list {
 	.components-panel {
 		width: 100%;
 		background: transparent;
@@ -26,6 +26,9 @@
 			width: 100%;
 			border-bottom: none;
 		}
+		.components-panel__body-toggle {
+			box-shadow: none;
+		}
 		&.is-opened .components-panel__body-toggle {
 			width: 100%;
 			padding: 0;
@@ -40,5 +43,8 @@
 			width: calc(100% + 32px);
 			margin: 0 -16px;
 		}
+	}
+	.woocommerce-task-list__item.complete .woocommerce-task__icon {
+		background-color: $alert-green;
 	}
 }

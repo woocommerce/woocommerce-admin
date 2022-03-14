@@ -3,11 +3,9 @@
  */
 import { __ } from '@wordpress/i18n';
 import { useEffect, useRef, useState, createRef } from '@wordpress/element';
-import { Button, Panel, PanelBody, PanelRow } from '@wordpress/components';
+import { Panel, PanelBody, PanelRow } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { EllipsisMenu } from '@woocommerce/components';
 import { updateQueryString } from '@woocommerce/navigation';
-import { more } from '@wordpress/icons';
 import {
 	OPTIONS_STORE_NAME,
 	ONBOARDING_STORE_NAME,
@@ -22,7 +20,6 @@ import classnames from 'classnames';
  */
 import '../tasks/task-list.scss';
 import './sectioned-task-list.scss';
-import taskHeaders from './task-headers';
 import DismissModal from './dismiss-modal';
 import TaskListCompleted from './completed';
 import { TaskListProps } from '~/tasks/task-list';
@@ -179,7 +176,7 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 			) }
 			<div
 				className={ classnames(
-					`woocommerce-task-dashboard__container two-column-experiment woocommerce-task-list__${ id }`
+					`woocommerce-task-dashboard__container woocommerce-sectioned-task-list two-column-experiment woocommerce-task-list__${ id }`
 				) }
 			>
 				<Panel>
@@ -225,6 +222,9 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 													title={ task.title }
 													completed={
 														task.isComplete
+													}
+													expanded={
+														! task.isComplete
 													}
 													content={ task.content }
 													onClick={ () => {

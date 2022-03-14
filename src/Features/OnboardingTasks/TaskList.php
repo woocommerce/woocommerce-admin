@@ -285,23 +285,12 @@ class TaskList {
 	}
 
 	/**
-	 * Get only visible tasks in list.
+	 * Get task list sections.
 	 *
 	 * @return array
 	 */
 	public function get_sections() {
-		return array_map(
-			function( $section ) {
-				$section_tasks = array_map(
-					function() {
-
-					},
-					$section['tasks']
-				);
-
-			},
-			$this->sections
-		);
+		return $this->sections;
 	}
 
 	/**
