@@ -406,6 +406,15 @@ abstract class Task {
 	}
 
 	/**
+	 * Check if task is disabled.
+	 *
+	 * @return bool
+	 */
+	public function is_disabled() {
+		return false;
+	}
+
+	/**
 	 * Check if the task is complete.
 	 *
 	 * @return bool
@@ -440,6 +449,7 @@ abstract class Task {
 			'isDismissable'  => $this->is_dismissable(),
 			'isSnoozed'      => $this->is_snoozed(),
 			'isSnoozeable'   => $this->is_snoozeable(),
+			'isDisabled'     => $this->is_disabled(),
 			'snoozedUntil'   => $this->get_snoozed_until(),
 			'additionalData' => self::convert_object_to_camelcase( $this->get_additional_data() ),
 			'eventPrefix'    => $this->prefix_event( '' ),

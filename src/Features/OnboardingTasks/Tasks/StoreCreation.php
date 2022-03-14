@@ -66,5 +66,14 @@ class StoreCreation extends Task {
 	public function is_complete() {
 		return true;
 	}
+
+	/**
+	 * Check if task is disabled.
+	 *
+	 * @return bool
+	 */
+	public function is_disabled() {
+		return true;
+	}
 }
 

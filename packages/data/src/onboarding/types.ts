@@ -9,9 +9,19 @@ export type TaskType = {
 	isVisible: boolean;
 	isSnoozed: boolean;
 	isSnoozable: boolean;
+	isDisabled: boolean;
 	snoozedUntil: number;
 	time: string;
 	title: string;
+};
+
+export type TaskListSection = {
+	id: string;
+	title: string;
+	description: string;
+	image: string;
+	tasks: string[];
+	isComplete: boolean;
 };
 
 export type TaskListType = {
@@ -22,11 +32,5 @@ export type TaskListType = {
 	tasks: TaskType[];
 	title: string;
 	eventPrefix: string;
-	sections?: {
-		id: string;
-		title: string;
-		description: string;
-		image: string;
-		tasks: string[];
-	}[];
+	sections?: TaskListSection[];
 };

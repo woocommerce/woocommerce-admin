@@ -44,7 +44,34 @@
 			margin: 0 -16px;
 		}
 	}
+	ul li.woocommerce-task-list__item {
+		padding-top: $gap;
+		padding-bottom: $gap;
+
+		&.task-disabled {
+			pointer-events: none;
+		}
+	}
+
 	.woocommerce-task-list__item.complete .woocommerce-task__icon {
 		background-color: $alert-green;
+	}
+
+	.components-panel__body-title {
+		.woocommerce-badge {
+			width: 28px;
+			height: 28px;
+		}
+		.woocommerce-task__icon {
+			margin-left: $gap-smaller;
+			background-color: $alert-green;
+			border-radius: 50%;
+			width: 24px;
+			height: 24px;
+			svg {
+				fill: #fff;
+				position: relative;
+			}
+		}
 	}
 }

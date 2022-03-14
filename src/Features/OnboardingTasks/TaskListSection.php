@@ -78,6 +78,25 @@ class TaskListSection {
 	}
 
 	/**
+	 * Returns if section is complete.
+	 *
+	 * @return boolean;
+	 */
+	private function is_complete() {
+		$complete = true;
+		foreach ( $this->task_names as $task_name ) {
+			if ( null !== $this->task_list && isset( $this->task_list->task_class_id_map[ $task_name ] ) ) {
+				$task = $this->task_list->get_task( $this->task_list->task_class_id_map[ $task_name ] );
+				if ( ! $task->is_complete() ) {
+					$complete = false;
+					break;
+				}
+			}
+		}
+		return $complete;
+	}
+
+	/**
 	 * Get the list for use in JSON.
 	 *
 	 * @return array
@@ -97,6 +116,7 @@ class TaskListSection {
 				},
 				$this->task_names
 			),
+			'isComplete'  => $this->is_complete(),
 		);
 	}
 }

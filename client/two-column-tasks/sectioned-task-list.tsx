@@ -2,17 +2,20 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useRef, useState, createRef } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { Panel, PanelBody, PanelRow } from '@wordpress/components';
 import { useSelect, useDispatch } from '@wordpress/data';
+import { Icon, check } from '@wordpress/icons';
 import { updateQueryString } from '@woocommerce/navigation';
+import { Badge } from '@woocommerce/components';
 import {
 	OPTIONS_STORE_NAME,
 	ONBOARDING_STORE_NAME,
 	TaskType,
+	TaskListSection,
 } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
-import { List, TaskItem } from '@woocommerce/experimental';
+import { List, TaskItem, Text } from '@woocommerce/experimental';
 import classnames from 'classnames';
 
 /**
@@ -20,10 +23,15 @@ import classnames from 'classnames';
  */
 import '../tasks/task-list.scss';
 import './sectioned-task-list.scss';
-import DismissModal from './dismiss-modal';
 import TaskListCompleted from './completed';
 import { TaskListProps } from '~/tasks/task-list';
 import SectionHeader from './headers/section-header';
+
+type PanelBodyProps = Omit< PanelBody.Props, 'title' | 'onToggle' > & {
+	title: string | React.ReactNode | undefined;
+	onToggle?: ( isOpen: boolean ) => void;
+};
+const PanelBodyWithUpdatedType = PanelBody as React.ComponentType< PanelBodyProps >;
 
 export const SectionedTaskList: React.FC< TaskListProps > = ( {
 	query,
@@ -45,15 +53,9 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 		};
 	} );
 	const { hideTaskList } = useDispatch( ONBOARDING_STORE_NAME );
-	const [ showDismissModal, setShowDismissModal ] = useState( false );
-	const [ openPanel, setOpenPanel ] = useState< string | null >( null );
-	const sectionRefs = useRef( {} );
-	sectionRefs.current = ( sections || [] ).reduce( ( refs, section ) => {
-		return {
-			...refs,
-			[ section.id ]: createRef(),
-		};
-	}, {} );
+	const [ openPanel, setOpenPanel ] = useState< string | null >(
+		sections?.find( ( section ) => ! section.isComplete )?.id || null
+	);
 
 	const prevQueryRef = useRef( query );
 
@@ -105,7 +107,7 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 		}
 	};
 
-	const hideTasks = ( event: string ) => {
+	const hideTasks = () => {
 		hideTaskList( id );
 	};
 
@@ -149,6 +151,28 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 		);
 	};
 
+	const getPanelTitle = ( section: TaskListSection ) => {
+		return openPanel === section.id ? (
+			<div className="wooocommerce-task-card__header-container">
+				<div className="wooocommerce-task-card__header">
+					<SectionHeader { ...section } />
+				</div>
+			</div>
+		) : (
+			<>
+				<Text variant="title.small" size="20" lineHeight="28px">
+					{ section.title }
+				</Text>
+				<Badge count={ section.tasks.length } />
+				{ section.isComplete && (
+					<div className="woocommerce-task__icon">
+						<Icon icon={ check } />
+					</div>
+				) }
+			</>
+		);
+	};
+
 	if ( ! visibleTasks.length ) {
 		return <div className="woocommerce-task-dashboard__container"></div>;
 	}
@@ -167,13 +191,6 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 
 	return (
 		<>
-			{ showDismissModal && (
-				<DismissModal
-					showDismissModal={ showDismissModal }
-					setShowDismissModal={ setShowDismissModal }
-					hideTasks={ hideTasks }
-				/>
-			) }
 			<div
 				className={ classnames(
 					`woocommerce-task-dashboard__container woocommerce-sectioned-task-list two-column-experiment woocommerce-task-list__${ id }`
@@ -181,22 +198,11 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 			>
 				<Panel>
 					{ ( sections || [] ).map( ( section ) => (
-						<PanelBody
+						<PanelBodyWithUpdatedType
 							key={ section.id }
-							ref={ sectionRefs.current[ section.id ] }
-							title={
-								openPanel === section.id ? (
-									<div className="wooocommerce-task-card__header-container">
-										<div className="wooocommerce-task-card__header">
-											<SectionHeader { ...section } />
-										</div>
-									</div>
-								) : (
-									section.title
-								)
-							}
+							title={ getPanelTitle( section ) }
 							opened={ openPanel === section.id }
-							onToggle={ ( isOpen ) => {
+							onToggle={ ( isOpen: boolean ) => {
 								if ( ! isOpen && openPanel === section.id ) {
 									setOpenPanel( null );
 								} else {
@@ -213,6 +219,8 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 												'woocommerce-task-list__item',
 												{
 													complete: task.isComplete,
+													'task-disabled':
+														task.isDisabled,
 												}
 											);
 											return (
@@ -228,7 +236,13 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 													}
 													content={ task.content }
 													onClick={ () => {
-														onTaskSelected( task );
+														if (
+															! task.isDisabled
+														) {
+															onTaskSelected(
+																task
+															);
+														}
 													} }
 													onDismiss={
 														task.isDismissable
@@ -248,7 +262,7 @@ export const SectionedTaskList: React.FC< TaskListProps > = ( {
 									) }
 								</List>
 							</PanelRow>
-						</PanelBody>
+						</PanelBodyWithUpdatedType>
 					) ) }
 				</Panel>
 			</div>
