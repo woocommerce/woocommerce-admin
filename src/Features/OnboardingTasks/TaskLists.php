@@ -113,7 +113,7 @@ class TaskLists {
 				),
 				'event_prefix' => 'tasklist_',
 				'options'      => array(
-					'task_past_tense' => true,
+					'use_completed_title' => true,
 				),
 				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-1' ),
 			)

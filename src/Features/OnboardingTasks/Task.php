@@ -132,7 +132,7 @@ abstract class Task {
 	 * Get custom option.
 	 *
 	 * @param string $option_name name of custom option.
-	 * @return mixed
+	 * @return mixed|null
 	 */
 	public function get_parent_option( $option_name ) {
 		if ( $this->task_list && isset( $this->task_list->options[ $option_name ] ) ) {
