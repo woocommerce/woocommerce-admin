@@ -147,6 +147,7 @@ class Purchase extends Task {
 	 */
 	private function get_price_from_string( $price_string ) {
 		$price_match = null;
+		// Parse price from string as it includes the currency symbol.
 		preg_match( '/\\d+\.\d{2}\s*/', $price_string, $price_match );
 		if ( count( $price_match ) > 0 ) {
 			return (float) $price_match[0];
