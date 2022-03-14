@@ -27,7 +27,7 @@ class Marketing extends Task {
 	public function get_title() {
 		if ( true === $this->get_parent_option( 'use_completed_title' ) ) {
 			if ( $this->is_complete() ) {
-				return __( 'You added marketing tools', 'woocommerce-admin' );
+				return __( 'You added sales channels', 'woocommerce-admin' );
 			}
 			return __( 'Get more sales', 'woocommerce-admin' );
 		}
