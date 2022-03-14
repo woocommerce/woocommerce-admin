@@ -55,7 +55,14 @@ class Controller extends ReportsController implements ExportableInterface {
 	 * @return array|WP_Error
 	 */
 	public function get_items( $request ) {
-		$args              = array();
+		$args = array();
+		/**
+		 * Experimental: Filter the list of parameters provided when querying data from the data store.
+		 *
+		 * @ignore
+		 *
+		 * @param array $collection_params List of parameters.
+		 */
 		$collection_params = apply_filters(
 			'experimental_woocommerce_analytics_variations_collection_params',
 			$this->get_collection_params()
