@@ -1,4 +1,4 @@
-== 3.3.0 03/01/2022 == 
+== 3.3.0 03/15/2022 == 
 
 - Fix: Added random IDs to SVG checkmarks in stepper component #8222
 - Fix: Fix Google Listings plugin is always shown in free features despite already activated. #8330
@@ -36,6 +36,9 @@
 - Enhancement: Increase color selection limit to ten and add additional colors. #8258
 - Enhancement: Made @woocommerce/components/Stepper a Typescript file #8286
 - Enhancement: Prompts a modal to save any unsaved changes when the users try to move to a different step #8278
+- Fix: Make sure the paid extension task is also shown for themes. #8412
+- Fix: Reintroduce emphasis on inbox note action button. #8411
+- Fix: Remove class ExtendedPayments. #8461
 
 == 3.2.0 02/22/2022 == 
 
