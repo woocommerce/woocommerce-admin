@@ -329,14 +329,14 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 	/**
 	 * Return an ordered list of notes.
 	 *
-	 * @param array $args Query arguments.
+	 * @param array  $args Query arguments.
+	 * @param string $context Optional argument that the woocommerce_note_where_clauses filter can use to determine whether to apply extra conditions. Extensions should define their own contexts and use them to avoid adding to notes where clauses when not needed.
 	 * @return array An array of objects containing a note id.
 	 */
-	public function get_notes( $args = array() ) {
+	public function get_notes( $args = array(), $context = self::WC_ADMIN_NOTE_OPER_GLOBAL ) {
 		global $wpdb;
 
 		$defaults = array(
-			'context'  => WC_ADMIN_NOTE_OPER_GLOBAL, // Extensions should define their own contexts and use them to avoid applying woocommerce_note_where_clauses when not needed.
 			'per_page' => get_option( 'posts_per_page' ),
 			'page'     => 1,
 			'order'    => 'DESC',
@@ -345,7 +345,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		$args     = wp_parse_args( $args, $defaults );
 
 		$offset        = $args['per_page'] * ( $args['page'] - 1 );
-		$where_clauses = $this->get_notes_where_clauses( $args );
+		$where_clauses = $this->get_notes_where_clauses( $args, $context );
 
 		$query = $wpdb->prepare(
 			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -385,16 +385,18 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 	 *
 	 * @param string $type Comma separated list of note types.
 	 * @param string $status Comma separated list of statuses.
+	 * @param string $context Optional argument that the woocommerce_note_where_clauses filter can use to determine whether to apply extra conditions. Extensions should define their own contexts and use them to avoid adding to notes where clauses when not needed.
 	 * @return array An array of objects containing a note id.
 	 */
-	public function get_notes_count( $type = array(), $status = array() ) {
+	public function get_notes_count( $type = array(), $status = array(), $context = self::WC_ADMIN_NOTE_OPER_GLOBAL ) {
 		global $wpdb;
 
 		$where_clauses = $this->get_notes_where_clauses(
 			array(
 				'type'   => $type,
 				'status' => $status,
-			)
+			),
+			$context
 		);
 
 		if ( ! empty( $where_clauses ) ) {
@@ -432,10 +434,11 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 	 * Applies woocommerce_note_where_clauses filter.
 	 *
 	 * @uses args_to_where_clauses
-	 *  @param array $args Array of args to pass.
+	 * @param array  $args Array of args to pass.
+	 * @param string $context Optional argument that the woocommerce_note_where_clauses filter can use to determine whether to apply extra conditions. Extensions should define their own contexts and use them to avoid adding to notes where clauses when not needed.
 	 * @return string Where clauses for the query.
 	 */
-	public function get_notes_where_clauses( $args = array() ) {
+	public function get_notes_where_clauses( $args = array(), $context = self::WC_ADMIN_NOTE_OPER_GLOBAL ) {
 		$where_clauses = $this->args_to_where_clauses( $args );
 
 		/**
@@ -446,7 +449,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		 * @param string $where_clauses The generated WHERE clause.
 		 * @param array  $args          The original arguments for the request.
 		 */
-		return apply_filters( 'woocommerce_note_where_clauses', $where_clauses, $args );
+		return apply_filters( 'woocommerce_note_where_clauses', $where_clauses, $args, $context );
 	}
 
 	/**
