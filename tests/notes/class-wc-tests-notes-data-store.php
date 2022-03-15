@@ -59,6 +59,8 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 		$data_store = WC_Data_Store::load( 'admin-note' );
 
 		$note = new Note();
+		$note->set_name( 'PHPUNIT_TEST_NOTE_NAME' );
+		$note->set_source( 'PHPUNIT_TEST' );
 		$note->set_title( 'PHPUNIT_TEST_NOTE' );
 		$note->set_content( 'PHPUNIT_TEST_NOTE_CONTENT' );
 		$note->save();
@@ -109,6 +111,7 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 			for ( $i = 0; $i < 3; $i++ ) {
 				$note = new Note();
 				$note->set_name( $note_name );
+				$note->set_source( 'PHPUNIT_TEST' );
 				$note->set_title( 'PHPUNIT_TEST_NOTE' );
 				$note->set_content( 'PHPUNIT_TEST_NOTE_CONTENT' );
 				$note->save();
@@ -160,6 +163,7 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 			for ( $i = 0; $i < 3; $i++ ) {
 				$note = new Note();
 				$note->set_name( $note_name );
+				$note->set_source( 'PHPUNIT_TEST' );
 				$note->set_title( 'PHPUNIT_TEST_NOTE' );
 				$note->set_content( 'PHPUNIT_TEST_NOTE_CONTENT' );
 				$note->save();
@@ -210,6 +214,7 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 		// Create a test note.
 		$note = new Note();
 		$note->set_name( 'PHPUNIT_TEST_NOTE_NAME' );
+		$note->set_source( 'PHPUNIT_TEST' );
 		$note->set_title( 'PHPUNIT_TEST_NOTE_TITLE' );
 		$note->set_content( 'PHPUNIT_TEST_NOTE_CONTENT' );
 		$note->save();
