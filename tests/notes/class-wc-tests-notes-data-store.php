@@ -223,7 +223,7 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 		$mock_datastore->method( 'read' )->will( $this->throwException( new \Exception() ) );
 
 		// Suppress deliberately caused errors.
-		$log_file = ini_set( 'error_log', '/dev/null' );
+		$log_file = ini_set( 'error_log', '/dev/null' );  // phpcs:ignore WordPress.PHP.IniSet.Risky
 
 		$filter_datastore = function() use ( $mock_datastore ) {
 			return $mock_datastore;
@@ -236,7 +236,7 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 
 		remove_filter( 'woocommerce_admin-note_data_store', $filter_datastore );
 
-		ini_set( 'error_log', $log_file );
+		ini_set( 'error_log', $log_file );  // phpcs:ignore WordPress.PHP.IniSet.Risky
 
 		$this->assertFalse( $note );
 		$this->assertEquals( 1, did_action( 'woocommerce_caught_exception' ) );
