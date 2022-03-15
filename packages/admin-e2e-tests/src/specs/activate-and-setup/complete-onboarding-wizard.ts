@@ -66,6 +66,15 @@ const testAdminOnboardingWizard = () => {
 			await profileWizard.continue();
 		} );
 
+		it( 'can click industry tab after going back', async () => {
+			await profileWizard.goToOBWStep( 'Store Details' );
+			await profileWizard.storeDetails.isDisplayed();
+
+			await profileWizard.goToOBWStep( 'Industry' );
+			await profileWizard.industry.isDisplayed();
+			await profileWizard.continue();
+		} );
+
 		it( 'can complete the product types section', async () => {
 			await profileWizard.productTypes.isDisplayed( 7 );
 
