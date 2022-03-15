@@ -92,7 +92,7 @@ class TaskLists {
 					'Appearance',
 				),
 				'event_prefix' => 'tasklist_',
-				'visible'      => ! Features::is_enabled( 'tasklist-setup-experiment-1' ),
+				'visible'      => ! Features::is_enabled( 'tasklist-setup-experiment-1' ) && ! Features::is_enabled( 'tasklist-setup-experiment-2' ),
 			)
 		);
 
@@ -115,7 +115,7 @@ class TaskLists {
 				'options'      => array(
 					'use_completed_title' => true,
 				),
-				'visible'      => ! Features::is_enabled( 'tasklist-setup-experiment-1' ),
+				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-1' ),
 			)
 		);
 
@@ -136,7 +136,7 @@ class TaskLists {
 					'Appearance',
 				),
 				'event_prefix' => 'tasklist_',
-				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-1' ),
+				'visible'      => Features::is_enabled( 'tasklist-setup-experiment-2' ),
 				'options'      => array(
 					'use_completed_title' => true,
 				),
