@@ -741,17 +741,9 @@ importers:
 
   packages/dependency-extraction-webpack-plugin:
     specifiers:
-      '@babel/core': ^7.17.5
-      '@wordpress/dependency-extraction-webpack-plugin': ^2.9.0
-      jest: ^27.5.1
-      jest-cli: ^27.5.1
-      rimraf: ^3.0.2
-      ts-jest: ^27.1.3
-      typescript: ^4.6.2
-      webpack: ^4.46.0
-      webpack-cli: ^3.3.12
+      '@wordpress/dependency-extraction-webpack-plugin': ^3.3.0
     dependencies:
-      '@wordpress/dependency-extraction-webpack-plugin': 2.9.0_webpack@5.70.0
+      '@wordpress/dependency-extraction-webpack-plugin': 3.3.2_webpack@5.70.0
 
   packages/eslint-plugin:
     specifiers:
@@ -1056,6 +1048,7 @@ importers:
       postcss-loader: ^3.0.0
       rimraf: ^3.0.2
       sass-loader: ^10.2.1
+      webpack-fix-style-only-entries: ^0.6.1
       webpack-remove-empty-scripts: ^0.7.3
       webpack-rtl-plugin: ^2.0.0
     dependencies:
@@ -1066,6 +1059,7 @@ importers:
       mini-css-extract-plugin: 2.6.0_webpack@5.70.0
       postcss-loader: 3.0.0
       sass-loader: 10.2.1_sass@1.49.9+webpack@5.70.0
+      webpack-fix-style-only-entries: 0.6.1
       webpack-remove-empty-scripts: 0.7.3_webpack@5.70.0
       webpack-rtl-plugin: 2.0.0
     devDependencies:
@@ -6629,14 +6623,15 @@ packages:
       webpack-sources: 1.4.3
     dev: true
 
-  /@wordpress/dependency-extraction-webpack-plugin/2.9.0_webpack@5.70.0:
-    resolution: {integrity: sha512-Eo8ByPd3iZ6az4UmdLD2xYLp1/7os/H80l28Y5OlS4DozkD3vcWCBReynWoBax74u3oJ9wWN5b/8oSxGwIKXYQ==}
+  /@wordpress/dependency-extraction-webpack-plugin/3.3.2_webpack@5.70.0:
+    resolution: {integrity: sha512-E6xPoZ/44tkoF6SHlqILFYOPCTv3VM9Ulo91GlaHveNtDy6XTLelYQLhl2Ef1gb8BLlmo6ClqEBuhBYYBBXuIw==}
+    engines: {node: '>=12'}
     peerDependencies:
       webpack: ^4.8.3 || ^5.0.0
     dependencies:
       json2php: 0.0.4
       webpack: 5.70.0_webpack-cli@4.9.2
-      webpack-sources: 1.4.3
+      webpack-sources: 3.2.3
     dev: false
 
   /@wordpress/deprecated/2.12.3:
@@ -7516,6 +7511,11 @@ packages:
     dependencies:
       entities: 2.2.0
     dev: true
+
+  /ansis/1.3.4:
+    resolution: {integrity: sha512-BDXljGSG4gZXmWK64bQzXkI509i5fe8aAa9+eL29e3swaWUqxvxk/XlONjw9AUrNCpQWNdy++0GX7HAhWeR9BQ==}
+    engines: {node: '>=12.13'}
+    dev: false
 
   /anymatch/2.0.0:
     resolution: {integrity: sha512-5teOsQWABXHHBFP9y3skS5P3d/WfWXpv3FUpy+LorMrNYaT9pI4oLMQX7jzQ2KklNpGpWHzdCXTDT2Y3XGlZBw==}
@@ -23028,6 +23028,16 @@ packages:
       wildcard: 2.0.0
     dev: true
 
+  /webpack-remove-empty-scripts/0.7.3_webpack@5.70.0:
+    resolution: {integrity: sha512-yipqb25A0qtH7X9vKt6yihwyYkTtSlRiDdBb2QsyrkqGM3hpfAcfOO1lYDef9HQUNm3s8ojmorbNg32XXX6FYg==}
+    engines: {node: '>=12.14'}
+    peerDependencies:
+      webpack: '>=5.32.0'
+    dependencies:
+      ansis: 1.3.4
+      webpack: 5.70.0_webpack-cli@4.9.2
+    dev: false
+
   /webpack-rtl-plugin/2.0.0:
     resolution: {integrity: sha512-lROgFkiPjapg9tcZ8FiLWeP5pJoG00018aEjLTxSrVldPD1ON+LPlhKPHjb7eE8Bc0+KL23pxcAjWDGOv9+UAw==}
     dependencies:
@@ -23053,7 +23063,6 @@ packages:
   /webpack-sources/3.2.3:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
     engines: {node: '>=10.13.0'}
-    dev: true
 
   /webpack-virtual-modules/0.2.2:
     resolution: {integrity: sha512-kDUmfm3BZrei0y+1NTHJInejzxfhtU8eDj2M7OKb2IWrPFAeO1SOH2KuQ68MSZu9IGEHcxbkKKR1v18FrUSOmA==}

@@ -8,7 +8,6 @@ const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-web
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
-const TerserPlugin = require( 'terser-webpack-plugin' );
 const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
 
 /**
@@ -68,7 +67,6 @@ const webpackConfig = {
 	},
 	output: {
 		filename: ( data ) => {
-			console.log("data", data)
 			return wpAdminScripts.includes( data.chunk.name )
 				? `wp-admin-scripts/[name]${ suffix }.js`
 				: `[name]/index${ suffix }.js`;
@@ -76,7 +74,7 @@ const webpackConfig = {
 		chunkFilename: `chunks/[name]${ suffix }.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
-		libraryTarget: 'this',
+		libraryTarget: 'window',
 		uniqueName: '__wcAdmin_webpackJsonp',
 	},
 	module: {
@@ -152,6 +150,7 @@ const webpackConfig = {
 			patterns: wcAdminPackages.map( ( packageName ) => ( {
 				from: `./packages/${ packageName }/build-style/*.css`,
 				to: `./${ packageName }/[name][ext]`,
+				noErrorOnMissing: true
 			} ) )
 		}
 		),
