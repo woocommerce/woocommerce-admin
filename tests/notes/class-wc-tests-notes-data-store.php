@@ -320,10 +320,10 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 		// We should have hit the filter exactly once.
 		$this->assertEquals( $filter_hit_count, 1 );
 
-		// We should have two notes in the lookup_result.
+		// We should have two notes in the lookup_result, because lookup_notes() ignores the 'per_page' arg.
 		$this->assertEquals( count( $lookup_result ), 2 );
 
-		// We should have one note in the get_result.
+		// We should have one note in the get_result, because get_notes() respects the 'per_page' arg.
 		$this->assertEquals( count( $get_result ), 1 );
 
 		// Lookup and get should return well-formed Notes.
