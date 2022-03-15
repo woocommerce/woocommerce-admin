@@ -106,6 +106,18 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_tasks' ),
 					'permission_callback' => array( $this, 'get_tasks_permission_check' ),
+					'args'                => array(
+						'ids' => array(
+							'description'       => __( 'Optional parameter to get only specific task lists by id.', 'woocommerce-admin' ),
+							'type'              => 'array',
+							'sanitize_callback' => 'wp_parse_slug_list',
+							'validate_callback' => 'rest_validate_request_arg',
+							'items'             => array(
+								'enum' => TaskLists::get_list_ids(),
+								'type' => 'string',
+							),
+						),
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -549,7 +561,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 		$industry_images = array();
 		$industries      = Onboarding::get_allowed_industries();
 		foreach ( $industries as $industry_slug => $label ) {
-			$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', plugins_url( 'images/onboarding/other-small.jpg', WC_ADMIN_PLUGIN_FILE ), $industry_slug );
+			$industry_images[ $industry_slug ] = apply_filters( 'woocommerce_admin_onboarding_industry_image', WC_ADMIN_IMAGES_FOLDER_URL . '/onboarding/other-small.jpg', $industry_slug );
 		}
 		return $industry_images;
 	}
@@ -669,6 +681,16 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function get_task_list_params() {
 		$params                   = array();
+		$params['ids']            = array(
+			'description'       => __( 'Optional parameter to get only specific task lists by id.', 'woocommerce-admin' ),
+			'type'              => 'array',
+			'sanitize_callback' => 'wp_parse_slug_list',
+			'validate_callback' => 'rest_validate_request_arg',
+			'items'             => array(
+				'enum' => TaskLists::get_list_ids(),
+				'type' => 'string',
+			),
+		);
 		$params['extended_tasks'] = array(
 			'description'       => __( 'List of extended deprecated tasks from the client side filter.', 'woocommerce-admin' ),
 			'type'              => 'array',
@@ -693,10 +715,11 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	 */
 	public function get_tasks( $request ) {
 		$extended_tasks = $request->get_param( 'extended_tasks' );
+		$task_list_ids  = $request->get_param( 'ids' );
 
 		TaskLists::maybe_add_extended_tasks( $extended_tasks );
 
-		$lists = TaskLists::get_lists();
+		$lists = is_array( $task_list_ids ) && count( $task_list_ids ) > 0 ? TaskLists::get_lists_by_ids( $task_list_ids ) : TaskLists::get_lists();
 
 		$json = array_map(
 			function( $list ) {

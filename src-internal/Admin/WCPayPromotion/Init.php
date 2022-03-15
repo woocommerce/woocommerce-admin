@@ -8,9 +8,9 @@ namespace Automattic\WooCommerce\Internal\Admin\WCPayPromotion;
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\DataSourcePoller;
-use Automattic\WooCommerce\Admin\Loader;
 use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\EvaluateSuggestion;
-use Automattic\WooCommerce\Admin\PaymentMethodSuggestionsDataSourcePoller;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\PaymentGatewaySuggestionsDataSourcePoller as PaymentGatewaySuggestionsDataSourcePoller;
+use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 /**
  * WC Pay Promotion engine.
@@ -25,7 +25,6 @@ class Init {
 		include_once __DIR__ . '/WCPaymentGatewayPreInstallWCPayPromotion.php';
 
 		add_action( 'change_locale', array( __CLASS__, 'delete_specs_transient' ) );
-		add_filter( DataSourcePoller::FILTER_NAME_SPECS, array( __CLASS__, 'possibly_filter_recommended_payment_gateways' ), 10, 2 );
 
 		$is_payments_page = isset( $_GET['page'] ) && 'wc-settings' === $_GET['page'] && isset( $_GET['tab'] ) && 'checkout' === $_GET['tab']; // phpcs:ignore WordPress.Security.NonceVerification
 		if ( ! wp_is_json_request() && ! $is_payments_page ) {
@@ -40,19 +39,19 @@ class Init {
 
 		wp_enqueue_style(
 			'wc-admin-payment-method-promotions',
-			Loader::get_url( "payment-method-promotions/style{$rtl}", 'css' ),
+			WCAdminAssets::get_url( "payment-method-promotions/style{$rtl}", 'css' ),
 			array( 'wp-components' ),
-			Loader::get_file_version( 'css' )
+			WCAdminAssets::get_file_version( 'css' )
 		);
 
-		$script_assets_filename = Loader::get_script_asset_filename( 'wp-admin-scripts', 'payment-method-promotions' );
+		$script_assets_filename = WCAdminAssets::get_script_asset_filename( 'wp-admin-scripts', 'payment-method-promotions' );
 		$script_assets          = require WC_ADMIN_ABSPATH . WC_ADMIN_DIST_JS_FOLDER . 'wp-admin-scripts/' . $script_assets_filename;
 
 		wp_enqueue_script(
 			'wc-admin-payment-method-promotions',
-			Loader::get_url( 'wp-admin-scripts/payment-method-promotions', 'js' ),
+			WCAdminAssets::get_url( 'wp-admin-scripts/payment-method-promotions', 'js' ),
 			array_merge( array( WC_ADMIN_APP ), $script_assets ['dependencies'] ),
-			Loader::get_file_version( 'js' ),
+			WCAdminAssets::get_file_version( 'js' ),
 			true
 		);
 	}
@@ -68,25 +67,6 @@ class Init {
 			$gateways[] = 'Automattic\WooCommerce\Internal\Admin\WCPayPromotion\WCPaymentGatewayPreInstallWCPayPromotion';
 		}
 		return $gateways;
-	}
-
-	/**
-	 * Possibly filters out woocommerce-payments from recommended payment methods.
-	 *
-	 * @param array  $specs list of payment methods.
-	 * @param string $datasource_poller_id id of data source poller.
-	 * @return array list of payment method.
-	 */
-	public static function possibly_filter_recommended_payment_gateways( $specs, $datasource_poller_id ) {
-		if ( PaymentMethodSuggestionsDataSourcePoller::ID === $datasource_poller_id && self::can_show_promotion() ) {
-			return array_filter(
-				$specs,
-				function( $spec ) {
-					return 'woocommerce-payments' !== $spec->plugins[0];
-				}
-			);
-		}
-		return $specs;
 	}
 
 	/**

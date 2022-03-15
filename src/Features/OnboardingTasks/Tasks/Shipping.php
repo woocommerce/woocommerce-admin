@@ -19,20 +19,17 @@ class Shipping extends Task {
 	}
 
 	/**
-	 * Parent ID.
-	 *
-	 * @return string
-	 */
-	public function get_parent_id() {
-		return 'setup';
-	}
-
-	/**
 	 * Title.
 	 *
 	 * @return string
 	 */
 	public function get_title() {
+		if ( true === $this->get_parent_option( 'use_completed_title' ) ) {
+			if ( $this->is_complete() ) {
+				return __( 'You added shipping costs', 'woocommerce-admin' );
+			}
+			return __( 'Add shipping costs', 'woocommerce-admin' );
+		}
 		return __( 'Set up shipping', 'woocommerce-admin' );
 	}
 

@@ -143,6 +143,34 @@ trait NoteTraits {
 		}
 	}
 
+
+	/**
+	 * Update the note if it passes predefined conditions.
+	 *
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
+	 */
+	public static function possibly_update_note() {
+		$note_in_db = Notes::get_note_by_name( self::NOTE_NAME );
+		if ( ! $note_in_db ) {
+			return;
+		}
+
+		if ( ! method_exists( self::class, 'get_note' ) ) {
+			return;
+		}
+
+		$note = self::get_note();
+		if ( ! $note instanceof Note && ! $note instanceof WC_Admin_Note ) {
+			return;
+		}
+
+		// Update note content if it's changed.
+		$latest_note_content = $note->get_content();
+		if ( $note_in_db->get_content() !== $latest_note_content ) {
+			$note_in_db->set_content( $latest_note_content );
+			$note_in_db->save();
+		}
+	}
 	/**
 	 * Get if the note has been actioned.
 	 *

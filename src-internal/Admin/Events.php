@@ -9,43 +9,42 @@ namespace Automattic\WooCommerce\Internal\Admin;
 defined( 'ABSPATH' ) || exit;
 
 use \Automattic\WooCommerce\Admin\Features\Features;
-use \Automattic\WooCommerce\Admin\Notes\AddingAndManangingProducts;
-use \Automattic\WooCommerce\Admin\Notes\ChoosingTheme;
-use \Automattic\WooCommerce\Admin\Notes\CustomizingProductCatalog;
-use Automattic\WooCommerce\Admin\Notes\FirstDownlaodableProduct;
-use \Automattic\WooCommerce\Admin\Notes\InsightFirstProductAndPayment;
-use \Automattic\WooCommerce\Admin\Notes\MobileApp;
-use \Automattic\WooCommerce\Admin\Notes\NewSalesRecord;
-use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
-use \Automattic\WooCommerce\Admin\Notes\OnboardingEmailMarketing;
-use \Automattic\WooCommerce\Admin\Notes\OnboardingPayments;
-use \Automattic\WooCommerce\Admin\Notes\PersonalizeStore;
-use \Automattic\WooCommerce\Admin\Notes\EUVATNumber;
-use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
-use \Automattic\WooCommerce\Admin\Notes\MarketingJetpack;
-use \Automattic\WooCommerce\Admin\Notes\WooCommerceSubscriptions;
-use \Automattic\WooCommerce\Admin\Notes\MigrateFromShopify;
-use \Automattic\WooCommerce\Admin\Notes\LaunchChecklist;
-use \Automattic\WooCommerce\Admin\Notes\RealTimeOrderAlerts;
+use \Automattic\WooCommerce\Internal\Admin\Notes\AddingAndManangingProducts;
+use \Automattic\WooCommerce\Internal\Admin\Notes\ChoosingTheme;
+use \Automattic\WooCommerce\Internal\Admin\Notes\CustomizingProductCatalog;
+use \Automattic\WooCommerce\Internal\Admin\Notes\FirstDownlaodableProduct;
+use \Automattic\WooCommerce\Internal\Admin\Notes\InsightFirstProductAndPayment;
+use \Automattic\WooCommerce\Internal\Admin\Notes\MobileApp;
+use \Automattic\WooCommerce\Internal\Admin\Notes\NewSalesRecord;
+use \Automattic\WooCommerce\Internal\Admin\Notes\TrackingOptIn;
+use \Automattic\WooCommerce\Internal\Admin\Notes\OnboardingPayments;
+use \Automattic\WooCommerce\Internal\Admin\Notes\PersonalizeStore;
+use \Automattic\WooCommerce\Internal\Admin\Notes\EUVATNumber;
+use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;
+use \Automattic\WooCommerce\Internal\Admin\Notes\MarketingJetpack;
+use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommerceSubscriptions;
+use \Automattic\WooCommerce\Internal\Admin\Notes\MigrateFromShopify;
+use \Automattic\WooCommerce\Internal\Admin\Notes\LaunchChecklist;
+use \Automattic\WooCommerce\Internal\Admin\Notes\RealTimeOrderAlerts;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\DataSourcePoller;
 use \Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use \Automattic\WooCommerce\Internal\Admin\Notes\MerchantEmailNotifications;
-use \Automattic\WooCommerce\Admin\Notes\InsightFirstSale;
-use \Automattic\WooCommerce\Admin\Notes\OnlineClothingStore;
-use \Automattic\WooCommerce\Admin\Notes\FirstProduct;
-use \Automattic\WooCommerce\Admin\Notes\CustomizeStoreWithBlocks;
-use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
-use \Automattic\WooCommerce\Admin\Notes\EditProductsOnTheMove;
-use \Automattic\WooCommerce\Admin\Notes\PerformanceOnMobile;
-use \Automattic\WooCommerce\Admin\Notes\ManageOrdersOnTheGo;
-use \Automattic\WooCommerce\Admin\Notes\AddFirstProduct;
-use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
-use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
-use \Automattic\WooCommerce\Admin\Notes\CompleteStoreDetails;
-use \Automattic\WooCommerce\Admin\Notes\UpdateStoreDetails;
-use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
-use \Automattic\WooCommerce\Admin\Notes\PaymentsRemindMeLater;
-use \Automattic\WooCommerce\Admin\Notes\MagentoMigration;
+use \Automattic\WooCommerce\Internal\Admin\Notes\InsightFirstSale;
+use \Automattic\WooCommerce\Internal\Admin\Notes\OnlineClothingStore;
+use \Automattic\WooCommerce\Internal\Admin\Notes\FirstProduct;
+use \Automattic\WooCommerce\Internal\Admin\Notes\CustomizeStoreWithBlocks;
+use \Automattic\WooCommerce\Internal\Admin\Notes\TestCheckout;
+use \Automattic\WooCommerce\Internal\Admin\Notes\EditProductsOnTheMove;
+use \Automattic\WooCommerce\Internal\Admin\Notes\PerformanceOnMobile;
+use \Automattic\WooCommerce\Internal\Admin\Notes\ManageOrdersOnTheGo;
+use \Automattic\WooCommerce\Internal\Admin\Notes\AddFirstProduct;
+use \Automattic\WooCommerce\Internal\Admin\Notes\NavigationNudge;
+use \Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
+use \Automattic\WooCommerce\Internal\Admin\Notes\CompleteStoreDetails;
+use \Automattic\WooCommerce\Internal\Admin\Notes\UpdateStoreDetails;
+use \Automattic\WooCommerce\Internal\Admin\Notes\SetUpAdditionalPaymentTypes;
+use \Automattic\WooCommerce\Internal\Admin\Notes\PaymentsRemindMeLater;
+use \Automattic\WooCommerce\Internal\Admin\Notes\MagentoMigration;
 
 /**
  * Events Class.
@@ -92,6 +91,7 @@ class Events {
 	public function do_wc_admin_daily() {
 		$this->possibly_add_notes();
 		$this->possibly_delete_notes();
+		$this->possibly_update_notes();
 
 		if ( $this->is_remote_inbox_notifications_enabled() ) {
 			DataSourcePoller::get_instance()->read_specs_from_data_sources();
@@ -151,6 +151,43 @@ class Events {
 		NavigationNudge::delete_if_not_applicable();
 		SetUpAdditionalPaymentTypes::delete_if_not_applicable();
 		PaymentsRemindMeLater::delete_if_not_applicable();
+	}
+
+	/**
+	 * Updates notes that should be updated.
+	 */
+	protected function possibly_update_notes() {
+		NewSalesRecord::possibly_update_note();
+		MobileApp::possibly_update_note();
+		TrackingOptIn::possibly_update_note();
+		OnboardingPayments::possibly_update_note();
+		PersonalizeStore::possibly_update_note();
+		WooCommercePayments::possibly_update_note();
+		EUVATNumber::possibly_update_note();
+		MarketingJetpack::possibly_update_note();
+		WooCommerceSubscriptions::possibly_update_note();
+		MigrateFromShopify::possibly_update_note();
+		InsightFirstSale::possibly_update_note();
+		LaunchChecklist::possibly_update_note();
+		OnlineClothingStore::possibly_update_note();
+		FirstProduct::possibly_update_note();
+		RealTimeOrderAlerts::possibly_update_note();
+		CustomizeStoreWithBlocks::possibly_update_note();
+		TestCheckout::possibly_update_note();
+		EditProductsOnTheMove::possibly_update_note();
+		PerformanceOnMobile::possibly_update_note();
+		ManageOrdersOnTheGo::possibly_update_note();
+		ChoosingTheme::possibly_update_note();
+		InsightFirstProductAndPayment::possibly_update_note();
+		AddFirstProduct::possibly_update_note();
+		AddingAndManangingProducts::possibly_update_note();
+		CustomizingProductCatalog::possibly_update_note();
+		FirstDownlaodableProduct::possibly_update_note();
+		NavigationNudge::possibly_update_note();
+		CompleteStoreDetails::possibly_update_note();
+		UpdateStoreDetails::possibly_update_note();
+		PaymentsRemindMeLater::possibly_update_note();
+		MagentoMigration::possibly_update_note();
 	}
 
 	/**

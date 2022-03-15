@@ -9,21 +9,20 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\API;
 use Automattic\WooCommerce\Internal\Admin\Install;
-use Automattic\WooCommerce\Admin\Loader;
 use \Automattic\WooCommerce\Admin\Notes\Notes;
-use \Automattic\WooCommerce\Admin\Notes\OrderMilestones;
-use \Automattic\WooCommerce\Admin\Notes\WooSubscriptionsNotes;
-use \Automattic\WooCommerce\Admin\Notes\TrackingOptIn;
-use \Automattic\WooCommerce\Admin\Notes\WooCommercePayments;
-use \Automattic\WooCommerce\Admin\Notes\InstallJPAndWCSPlugins;
-use \Automattic\WooCommerce\Admin\Notes\SetUpAdditionalPaymentTypes;
-use \Automattic\WooCommerce\Admin\Notes\TestCheckout;
-use \Automattic\WooCommerce\Admin\Notes\SellingOnlineCourses;
+use \Automattic\WooCommerce\Internal\Admin\Notes\OrderMilestones;
+use \Automattic\WooCommerce\Internal\Admin\Notes\WooSubscriptionsNotes;
+use \Automattic\WooCommerce\Internal\Admin\Notes\TrackingOptIn;
+use \Automattic\WooCommerce\Internal\Admin\Notes\WooCommercePayments;
+use \Automattic\WooCommerce\Internal\Admin\Notes\InstallJPAndWCSPlugins;
+use \Automattic\WooCommerce\Internal\Admin\Notes\SetUpAdditionalPaymentTypes;
+use \Automattic\WooCommerce\Internal\Admin\Notes\TestCheckout;
+use \Automattic\WooCommerce\Internal\Admin\Notes\SellingOnlineCourses;
 use \Automattic\WooCommerce\Internal\Admin\Notes\MerchantEmailNotifications;
-use \Automattic\WooCommerce\Admin\Notes\WelcomeToWooCommerceForStoreUsers;
-use \Automattic\WooCommerce\Admin\Notes\ManageStoreActivityFromHomeScreen;
-use \Automattic\WooCommerce\Admin\Notes\NavigationNudge;
-use \Automattic\WooCommerce\Admin\Notes\MagentoMigration;
+use \Automattic\WooCommerce\Internal\Admin\Notes\WelcomeToWooCommerceForStoreUsers;
+use \Automattic\WooCommerce\Internal\Admin\Notes\ManageStoreActivityFromHomeScreen;
+use \Automattic\WooCommerce\Internal\Admin\Notes\NavigationNudge;
+use \Automattic\WooCommerce\Internal\Admin\Notes\MagentoMigration;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 use Automattic\WooCommerce\Admin\PluginsInstaller;
@@ -153,9 +152,11 @@ class FeaturePlugin {
 		$this->define( 'WC_ADMIN_DIST_JS_FOLDER', 'dist/' );
 		$this->define( 'WC_ADMIN_DIST_CSS_FOLDER', 'dist/' );
 		$this->define( 'WC_ADMIN_PLUGIN_FILE', WC_ADMIN_ABSPATH . 'woocommerce-admin.php' );
+		$this->define( 'WC_ADMIN_IMAGES_FOLDER_URL', plugins_url( 'images', WC_ADMIN_PLUGIN_FILE ) );
+
 		// WARNING: Do not directly edit this version number constant.
 		// It is updated as part of the prebuild process from the package.json value.
-		$this->define( 'WC_ADMIN_VERSION_NUMBER', '3.3.0-dev' );
+		$this->define( 'WC_ADMIN_VERSION_NUMBER', '3.4.0-dev' );
 	}
 
 	/**
@@ -216,6 +217,7 @@ class FeaturePlugin {
 		add_filter( 'woocommerce_admin_features', array( $this, 'replace_supported_features' ), 0 );
 
 		Loader::get_instance();
+		WCAdminAssets::get_instance();
 	}
 
 	/**

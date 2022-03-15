@@ -7,7 +7,7 @@
  * Author URI: https://woocommerce.com/
  * Text Domain: woocommerce-admin
  * Domain Path: /languages
- * Version: 3.3.0-dev
+ * Version: 3.4.0-dev
  * Requires at least: 5.6
  * Requires PHP: 7.0
  *
@@ -20,7 +20,8 @@
 defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Internal\Admin\FeaturePlugin;
-use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Internal\Admin\Loader;
+use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
 
 /**
  * Autoload packages.
@@ -91,7 +92,7 @@ function woocommerce_admin_is_development_version() {
  */
 function woocommerce_admin_check_build_files() {
 	$script_debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
-	$suffix       = Loader::should_use_minified_js_file( $script_debug ) ? '.min' : '';
+	$suffix       = WCAdminAssets::should_use_minified_js_file( $script_debug ) ? '.min' : '';
 	return file_exists( __DIR__ . "/dist/app/index{$suffix}.js" );
 }
 
@@ -126,8 +127,8 @@ if ( ! woocommerce_admin_check_build_files() ) {
 				/* Translators: %1$s, %2$s, and %3$s are all build commands to be run in order.  */
 				esc_html__( 'You have installed a development version of WooCommerce Admin which requires files to be built. From the plugin directory, run %1$s and %2$s to install dependencies, then %3$s to build the files.', 'woocommerce-admin' ),
 				'<code>composer install</code>',
-				'<code>npm install</code>',
-				'<code>npm run build</code>'
+				'<code>pnpm install</code>',
+				'<code>pnpm run build</code>'
 			);
 			printf(
 				/* translators: 1: URL of GitHub Repository build page */

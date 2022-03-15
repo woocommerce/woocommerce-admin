@@ -11,7 +11,7 @@ namespace Automattic\WooCommerce\Admin\Composer;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Notes\DeactivatePlugin;
+use Automattic\WooCommerce\Internal\Admin\Notes\DeactivatePlugin;
 use Automattic\WooCommerce\Admin\Notes\Notes;
 use Automattic\WooCommerce\Admin\Notes\NotesUnavailableException;
 use Automattic\WooCommerce\Internal\Admin\FeaturePlugin;
@@ -26,7 +26,7 @@ class Package {
 	 *
 	 * @var string
 	 */
-	const VERSION = '3.3.0-dev';
+	const VERSION = '3.4.0-dev';
 
 	/**
 	 * Package active.

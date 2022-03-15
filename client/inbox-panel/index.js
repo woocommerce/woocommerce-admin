@@ -20,6 +20,7 @@ import {
 	Text,
 } from '@woocommerce/experimental';
 import moment from 'moment';
+
 /**
  * Internal dependencies
  */
@@ -151,7 +152,7 @@ const renderNotes = ( {
 const INBOX_QUERY = {
 	page: 1,
 	per_page: QUERY_DEFAULTS.pageSize,
-	status: 'unactioned,actioned',
+	status: 'unactioned',
 	type: QUERY_DEFAULTS.noteTypes,
 	orderby: 'date',
 	order: 'desc',
@@ -211,10 +212,13 @@ const InboxPanel = ( { showHeader = true } ) => {
 						supportedLocales.includes( note.locale ) &&
 						noteDate >= WC_VERSION_61_RELEASE_DATE
 					) {
-						note.content = truncateRenderableHTML(
-							note.content,
-							320
-						);
+						return {
+							...note,
+							content: truncateRenderableHTML(
+								note.content,
+								320
+							),
+						};
 					}
 					return note;
 				} ),
@@ -272,18 +276,6 @@ const InboxPanel = ( { showHeader = true } ) => {
 		}
 	};
 
-	const onNoteActionClick = ( note, action ) => {
-		triggerNoteAction( note.id, action.id );
-		const screen = getScreenName();
-		recordEvent( 'inbox_action_click', {
-			note_content: note.content,
-			note_name: note.name,
-			note_title: note.title,
-			note_type: note.type,
-			screen,
-		} );
-	};
-
 	if ( isError ) {
 		const title = __(
 			'There was an error getting your inbox. Please try again.',
@@ -332,7 +324,9 @@ const InboxPanel = ( { showHeader = true } ) => {
 							isBatchUpdating,
 							notes,
 							onDismiss,
-							onNoteActionClick,
+							onNoteActionClick: ( note, action ) => {
+								triggerNoteAction( note.id, action.id );
+							},
 							setShowDismissAllModal,
 							showHeader,
 						} ) }

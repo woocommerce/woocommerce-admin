@@ -13,12 +13,12 @@ use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayme
 class AdditionalPayments extends Payments {
 
 	/**
-	 * Parent ID.
+	 * ID.
 	 *
 	 * @return string
 	 */
-	public function get_parent_id() {
-		return 'extended';
+	public function get_id() {
+		return 'payments';
 	}
 
 	/**
@@ -30,6 +30,35 @@ class AdditionalPayments extends Payments {
 		return __( 'Set up additional payment providers', 'woocommerce-admin' );
 	}
 
+	/**
+	 * Content.
+	 *
+	 * @return string
+	 */
+	public function get_content() {
+		return __(
+			'Choose payment providers and enable payment methods at checkout.',
+			'woocommerce-admin'
+		);
+	}
+
+	/**
+	 * Time.
+	 *
+	 * @return string
+	 */
+	public function get_time() {
+		return __( '2 minutes', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Task completion.
+	 *
+	 * @return bool
+	 */
+	public function is_complete() {
+		return self::has_gateways();
+	}
 
 	/**
 	 * Task visibility.
@@ -37,8 +66,35 @@ class AdditionalPayments extends Payments {
 	 * @return bool
 	 */
 	public function can_view() {
+		if ( ! Features::is_enabled( 'payment-gateway-suggestions' ) ) {
+			// Hide task if feature not enabled.
+			return false;
+		}
+
 		$woocommerce_payments = new WooCommercePayments();
-		return Features::is_enabled( 'payment-gateway-suggestions' ) && $woocommerce_payments->can_view();
+
+		if ( $woocommerce_payments->is_requested() && $woocommerce_payments->is_supported() && ! $woocommerce_payments->is_connected() ) {
+			// Hide task if WC Pay is installed via OBW, in supported country, but not connected.
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if the store has any enabled gateways.
+	 *
+	 * @return bool
+	 */
+	public static function has_gateways() {
+		$gateways         = WC()->payment_gateways->get_available_payment_gateways();
+		$enabled_gateways = array_filter(
+			$gateways,
+			function( $gateway ) {
+				return 'yes' === $gateway->enabled && 'woocommerce_payments' !== $gateway->id;
+			}
+		);
+
+		return ! empty( $enabled_gateways );
 	}
 }
-

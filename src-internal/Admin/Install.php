@@ -103,7 +103,9 @@ class Install {
 	 * Hook in tabs.
 	 */
 	public static function init() {
-		add_action( 'init', array( __CLASS__, 'check_version' ), 5 );
+		if ( ( is_admin() && ! wp_doing_ajax() ) || wp_doing_cron() ) {
+			add_action( 'init', array( __CLASS__, 'check_version' ), 5 );
+		}
 		add_filter( 'wpmu_drop_tables', array( __CLASS__, 'wpmu_drop_tables' ) );
 
 		// Add wc-admin report tables to list of WooCommerce tables.
@@ -512,8 +514,7 @@ class Install {
 	 * @param string|null $version New WooCommerce Admin DB version or null.
 	 */
 	public static function update_db_version( $version = null ) {
-		delete_option( self::VERSION_OPTION );
-		add_option( self::VERSION_OPTION, is_null( $version ) ? WC_ADMIN_VERSION_NUMBER : $version );
+		update_option( self::VERSION_OPTION, is_null( $version ) ? WC_ADMIN_VERSION_NUMBER : $version );
 	}
 
 	/**

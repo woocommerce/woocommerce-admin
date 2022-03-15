@@ -50,6 +50,13 @@ abstract class Task {
 	const ACTIVE_TASK_TRANSIENT = 'wc_onboarding_active_task';
 
 	/**
+	 * Parent task list.
+	 *
+	 * @var TaskList
+	 */
+	protected $task_list;
+
+	/**
 	 * Duration to milisecond mapping.
 	 *
 	 * @var string
@@ -61,18 +68,20 @@ abstract class Task {
 	);
 
 	/**
+	 * Constructor
+	 *
+	 * @param TaskList|null $task_list Parent task list.
+	 */
+	public function __construct( $task_list = null ) {
+		$this->task_list = $task_list;
+	}
+
+	/**
 	 * ID.
 	 *
 	 * @return string
 	 */
 	abstract public function get_id();
-
-	/**
-	 * Parent ID.
-	 *
-	 * @return string
-	 */
-	abstract public function get_parent_id();
 
 	/**
 	 * Title.
@@ -94,6 +103,57 @@ abstract class Task {
 	 * @return string
 	 */
 	abstract public function get_time();
+
+	/**
+	 * Parent ID.
+	 *
+	 * @return string
+	 */
+	public function get_parent_id() {
+		if ( ! $this->task_list ) {
+			return '';
+		}
+		return $this->task_list->get_list_id();
+	}
+
+	/**
+	 * Get task list options.
+	 *
+	 * @return array
+	 */
+	public function get_parent_options() {
+		if ( ! $this->task_list ) {
+			return array();
+		}
+		return $this->task_list->options;
+	}
+
+	/**
+	 * Get custom option.
+	 *
+	 * @param string $option_name name of custom option.
+	 * @return mixed|null
+	 */
+	public function get_parent_option( $option_name ) {
+		if ( $this->task_list && isset( $this->task_list->options[ $option_name ] ) ) {
+			return $this->task_list->options[ $option_name ];
+		}
+		return null;
+	}
+
+
+	/**
+	 * Prefix event for track event naming.
+	 *
+	 * @param string $event_name Event name.
+	 * @return string
+	 */
+	public function prefix_event( $event_name ) {
+		if ( ! $this->task_list ) {
+			return '';
+		}
+		return $this->task_list->prefix_event( $event_name );
+	}
 
 	/**
 	 * Additional info.
@@ -382,6 +442,7 @@ abstract class Task {
 			'isSnoozeable'   => $this->is_snoozeable(),
 			'snoozedUntil'   => $this->get_snoozed_until(),
 			'additionalData' => self::convert_object_to_camelcase( $this->get_additional_data() ),
+			'eventPrefix'    => $this->prefix_event( '' ),
 		);
 	}
 
