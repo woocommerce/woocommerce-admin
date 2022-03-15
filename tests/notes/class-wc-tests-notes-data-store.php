@@ -343,4 +343,14 @@ class WC_Tests_Notes_Data_Store extends WC_Unit_Test_Case {
 		// The first note in each result set should be the same.
 		$this->assertEquals( $lookup_note_zero->get_id(), $get_note_zero->get_id() );
 	}
+
+	/**
+	 * Delete notes created by this class's tests.
+	 */
+	public function tearDown() {
+		global $wpdb;
+
+		parent::tearDown();
+		$wpdb->query( $wpdb->prepare( 'DELETE n.*, a.* FROM ' . $wpdb->prefix . 'wc_admin_notes n JOIN ' . $wpdb->prefix . 'wc_admin_note_actions a ON n.note_id = a.note_id WHERE n.source = %s', 'PHPUNIT_TEST' ) );
+	}
 }
