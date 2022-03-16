@@ -85,13 +85,8 @@
 		"wp-env-mysql-port": "node ./docker/wc-admin-wp-env/mysql-port.js",
 		"create-hook-reference": "node ./bin/hook-reference/index.js",
 		"changelogger": "./vendor/bin/changelogger",
-		"test-instruction-logger": "./bin/test-instruction-logger/bin/test-instruction-logger"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged",
-			"pre-push": "node bin/pre-push-hook.js"
-		}
+		"test-instruction-logger": "./bin/test-instruction-logger/bin/test-instruction-logger",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@automattic/explat-client": "^0.0.3",
@@ -245,7 +240,7 @@
 		"grunt": "^1.4.1",
 		"grunt-checktextdomain": "^1.0.1",
 		"grunt-wp-i18n": "^1.0.3",
-		"husky": "^4.3.8",
+		"husky": "^7.0.0",
 		"jest": "^27.5.1",
 		"jest-environment-jsdom": "~27.5.0",
 		"jest-environment-node": "^27.5.1",
