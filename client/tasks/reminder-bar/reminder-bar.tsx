@@ -13,6 +13,7 @@ import { Link } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/settings';
 import { close as closeIcon } from '@wordpress/icons';
 import interpolateComponents from '@automattic/interpolate-components';
+import { useEffect } from '@wordpress/element';
 
 // TODO: Automatically hide after 4 weeks
 
@@ -24,11 +25,14 @@ import './reminder-bar.scss';
 type ReminderBarProps = {
 	taskListId: string;
 	pageTitle: string;
+	updateBodyMargin: () => void;
 };
 
 type ReminderTextProps = {
 	remainingCount: number | null;
 };
+
+const REMINDER_BAR_HIDDEN_OPTION = 'woocommerce_task_list_reminder_bar_hidden';
 
 const ReminderText: React.FC< ReminderTextProps > = ( { remainingCount } ) => {
 	const translationText =
@@ -63,8 +67,9 @@ const ReminderText: React.FC< ReminderTextProps > = ( { remainingCount } ) => {
 };
 
 export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
-	taskListId,
+	taskListId = 'setup_experiment_1',
 	pageTitle,
+	updateBodyMargin,
 } ) => {
 	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
 	const {
@@ -82,19 +87,16 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 			getOption,
 			hasFinishedResolution: optionHasFinishedResolution,
 		} = select( OPTIONS_STORE_NAME );
-		const reminderBarHiddenOption = getOption(
-			'woocommerce_task_list_reminder_bar_hidden'
-		);
+		const reminderBarHiddenOption = getOption( REMINDER_BAR_HIDDEN_OPTION );
 		const taskList: TaskListType = getTaskList( taskListId );
 		const taskListIsResolved = onboardingHasFinishedResolution(
 			'getTaskList',
 			[ taskListId ]
 		);
 		const optionIsResolved = optionHasFinishedResolution( 'getOption', [
-			'woocommerce_task_list_reminder_bar_hidden',
+			REMINDER_BAR_HIDDEN_OPTION,
 		] );
 
-		// TODO: is it necessary to parse tasks in this way?
 		const visibleTasks = taskList?.tasks.filter(
 			( task ) =>
 				! task.isDismissed &&
@@ -118,13 +120,18 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 		};
 	} );
 
-	if (
+	const displayReminderBar =
 		loading ||
 		taskListHidden ||
 		taskListComplete ||
 		reminderBarHidden ||
-		[ 'Home', 'Shipping', 'Tax', 'Payments' ].includes( pageTitle )
-	) {
+		[ 'Home', 'Shipping', 'Tax', 'Payments' ].includes( pageTitle );
+
+	useEffect( () => {
+		updateBodyMargin();
+	}, [ displayReminderBar, updateBodyMargin ] );
+
+	if ( displayReminderBar ) {
 		return null;
 	}
 
@@ -135,7 +142,7 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 				isSmall
 				onClick={ () =>
 					updateOptions( {
-						woocommerce_task_list_reminder_bar_hidden: 'yes',
+						[ REMINDER_BAR_HIDDEN_OPTION ]: 'yes',
 					} )
 				}
 				icon={ closeIcon }

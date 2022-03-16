@@ -22,8 +22,6 @@ import { TasksReminderBar } from '../tasks';
 
 export const PAGE_TITLE_FILTER = 'woocommerce_admin_header_page_title';
 
-// TODO: Height logic not applying to Tasks reminder bar, move to another slot?
-
 export const Header = ( { sections, isEmbedded = false, query } ) => {
 	const headerElement = useRef( null );
 	const siteTitle = getSetting( 'siteTitle', '' );
@@ -97,10 +95,9 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 
 	return (
 		<div className={ className } ref={ headerElement }>
-			{ /* TODO: Task List ID? */ }
 			<TasksReminderBar
-				taskListId="setup_experiment_1"
 				pageTitle={ pageTitle }
+				updateBodyMargin={ updateBodyMargin }
 			/>
 			<div className="woocommerce-layout__header-wrapper">
 				<WooHeaderNavigationItem.Slot
