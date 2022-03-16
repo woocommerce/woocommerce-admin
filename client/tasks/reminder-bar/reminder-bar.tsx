@@ -2,11 +2,19 @@
  * External dependencies
  */
 import { __, sprintf } from '@wordpress/i18n';
-import { useSelect } from '@wordpress/data';
-import { ONBOARDING_STORE_NAME, TaskListType } from '@woocommerce/data';
+import { useSelect, useDispatch } from '@wordpress/data';
+import {
+	ONBOARDING_STORE_NAME,
+	OPTIONS_STORE_NAME,
+	TaskListType,
+} from '@woocommerce/data';
+import { Button } from '@wordpress/components';
 import { Link } from '@woocommerce/components';
 import { getAdminLink } from '@woocommerce/settings';
+import { close as closeIcon } from '@wordpress/icons';
 import interpolateComponents from '@automattic/interpolate-components';
+
+// TODO: Automatically hide after 4 weeks
 
 /**
  * Internal dependencies
@@ -15,6 +23,7 @@ import './reminder-bar.scss';
 
 type ReminderBarProps = {
 	taskListId: string;
+	pageTitle: string;
 };
 
 type ReminderTextProps = {
@@ -22,10 +31,6 @@ type ReminderTextProps = {
 };
 
 const ReminderText: React.FC< ReminderTextProps > = ( { remainingCount } ) => {
-	if ( typeof remainingCount !== 'number' ) {
-		return null;
-	}
-
 	const translationText =
 		remainingCount === 1
 			? /* translators: 1: remaining tasks count */
@@ -59,27 +64,53 @@ const ReminderText: React.FC< ReminderTextProps > = ( { remainingCount } ) => {
 
 export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 	taskListId,
+	pageTitle,
 } ) => {
-	const { remainingCount, loading } = useSelect( ( select ) => {
-		const { getTaskList, hasFinishedResolution } = select(
-			ONBOARDING_STORE_NAME
+	const { updateOptions } = useDispatch( OPTIONS_STORE_NAME );
+	const {
+		remainingCount,
+		loading,
+		taskListHidden,
+		taskListComplete,
+		reminderBarHidden,
+	} = useSelect( ( select ) => {
+		const {
+			getTaskList,
+			hasFinishedResolution: onboardingHasFinishedResolution,
+		} = select( ONBOARDING_STORE_NAME );
+		const {
+			getOption,
+			hasFinishedResolution: optionHasFinishedResolution,
+		} = select( OPTIONS_STORE_NAME );
+		const reminderBarHiddenOption = getOption(
+			'woocommerce_task_list_reminder_bar_hidden'
 		);
 		const taskList: TaskListType = getTaskList( taskListId );
-		const isResolved = hasFinishedResolution( 'getTaskList', [
-			taskListId,
+		const taskListIsResolved = onboardingHasFinishedResolution(
+			'getTaskList',
+			[ taskListId ]
+		);
+		const optionIsResolved = optionHasFinishedResolution( 'getOption', [
+			'woocommerce_task_list_reminder_bar_hidden',
 		] );
-		const nowTimestamp = Date.now();
+
+		// TODO: is it necessary to parse tasks in this way?
 		const visibleTasks = taskList?.tasks.filter(
 			( task ) =>
 				! task.isDismissed &&
-				( ! task.isSnoozed || task.snoozedUntil < nowTimestamp )
+				( ! task.isSnoozed || task.snoozedUntil < Date.now() )
 		);
 
 		const completedTasks = visibleTasks?.filter(
 			( task ) => task.isComplete
 		).length;
 
+		const isResolved = taskListIsResolved && optionIsResolved;
+
 		return {
+			reminderBarHidden: reminderBarHiddenOption === 'yes',
+			taskListHidden: isResolved ? taskList.isHidden : false,
+			taskListComplete: isResolved ? taskList.isComplete : false,
 			loading: ! isResolved,
 			remainingCount: isResolved
 				? visibleTasks?.length - completedTasks
@@ -87,13 +118,28 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 		};
 	} );
 
-	if ( loading ) {
+	if (
+		loading ||
+		taskListHidden ||
+		taskListComplete ||
+		reminderBarHidden ||
+		[ 'Home', 'Shipping', 'Tax', 'Payments' ].includes( pageTitle )
+	) {
 		return null;
 	}
 
 	return (
-		<div className="woocommerce-layout__header-tasks-reminder">
+		<div className="woocommerce-layout__header-tasks-reminder-bar">
 			<ReminderText remainingCount={ remainingCount } />
+			<Button
+				isSmall
+				onClick={ () =>
+					updateOptions( {
+						woocommerce_task_list_reminder_bar_hidden: 'yes',
+					} )
+				}
+				icon={ closeIcon }
+			/>
 		</div>
 	);
 };
