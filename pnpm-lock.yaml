@@ -112,7 +112,7 @@ importers:
       '@wordpress/warning': ^2.3.1
       autoprefixer: ^10.4.2
       await-exec: ^0.1.2
-      babel-jest: ^26.6.3
+      babel-jest: ^27.5.1
       babel-loader: ^8.2.3
       babel-plugin-transform-class-properties: ^6.24.1
       babel-plugin-transform-es2015-template-literals: ^6.22.0
@@ -320,8 +320,8 @@ importers:
       '@wordpress/scripts': 12.6.1_3d2d8d4acee74eea68cf8002a5de7191
       autoprefixer: 10.4.2_postcss@8.4.7
       await-exec: 0.1.2
-      babel-jest: 26.6.3_@babel+core@7.17.5
-      babel-loader: 8.2.3_ed870ac3ba52c4ec230ba2bc3dbb311c
+      babel-jest: 27.5.1_@babel+core@7.17.5
+      babel-loader: 8.2.3_a58183228c2c7b1a132de84b2b6f9adf
       babel-plugin-transform-class-properties: 6.24.1
       babel-plugin-transform-es2015-template-literals: 6.22.0
       chalk: 4.1.2
@@ -411,7 +411,7 @@ importers:
       jest-cli: 27.5.1
       jest-mock-extended: 1.0.18_jest@27.5.1+typescript@4.6.2
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/components:
@@ -575,7 +575,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/currency:
@@ -602,7 +602,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/customer-effort-score:
@@ -716,7 +716,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/date:
@@ -743,7 +743,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/dependency-extraction-webpack-plugin:
@@ -764,7 +764,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
       webpack: 5.70.0_webpack-cli@3.3.12
       webpack-cli: 3.3.12_webpack@5.70.0
@@ -795,7 +795,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/experimental:
@@ -905,7 +905,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/js-tests:
@@ -934,7 +934,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/navigation:
@@ -969,7 +969,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/notices:
@@ -992,7 +992,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/number:
@@ -1011,7 +1011,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
   packages/onboarding:
@@ -1096,7 +1096,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
       webpack: 5.70.0_webpack-cli@4.9.2
 
@@ -1116,7 +1116,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
+      ts-jest: 27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c
       typescript: 4.6.2
 
 packages:
@@ -8665,6 +8665,7 @@ packages:
       slash: 3.0.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   /babel-jest/27.5.1_@babel+core@7.17.5:
     resolution: {integrity: sha512-cdQ5dXjGRd0IBRATiQ4mZGlGlRE8kJpjPOixdNRdT+m3UcNqmYWN6rK6nvtXYfY3D76cb8s/O1Ss8ea24PIwcg==}
@@ -8807,6 +8808,7 @@ packages:
       '@babel/types': 7.17.0
       '@types/babel__core': 7.1.18
       '@types/babel__traverse': 7.14.2
+    dev: false
 
   /babel-plugin-jest-hoist/27.5.1:
     resolution: {integrity: sha512-50wCwD5EMNW4aRpOwtqzyZHIewTYNxLA4nhB+09d8BIssfNfzBRhkBIHiaPv1Si226TQSvp8gxAJm2iY2qs2hQ==}
@@ -8986,6 +8988,7 @@ packages:
       '@babel/core': 7.17.5
       babel-plugin-jest-hoist: 26.6.2
       babel-preset-current-node-syntax: 1.0.1_@babel+core@7.17.5
+    dev: false
 
   /babel-preset-jest/27.5.1_@babel+core@7.17.5:
     resolution: {integrity: sha512-Nptf2FzlPCWYuJg41HBqXVT8ym6bXOevuCTbhxlUpjwtysGaIWFvDEjp4y+G7fl13FgOdjs7P/DmErqH7da0Ag==}
@@ -22837,7 +22840,7 @@ packages:
       typescript: 4.6.2
     dev: true
 
-  /ts-jest/27.1.3_2371dc729ff6850dd91f77bc3eb39110:
+  /ts-jest/27.1.3_e0fe88243f0076a0bcfcaf16c62c6e3c:
     resolution: {integrity: sha512-6Nlura7s6uM9BVUAoqLH7JHyMXjz8gluryjpPXxr3IxZdAXnU6FhjvVLHFtfd1vsE1p8zD1OJfskkc0jhTSnkA==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
@@ -22860,7 +22863,7 @@ packages:
     dependencies:
       '@babel/core': 7.17.5
       '@types/jest': 27.4.1
-      babel-jest: 26.6.3_@babel+core@7.17.5
+      babel-jest: 27.5.1_@babel+core@7.17.5
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       jest: 27.5.1
