@@ -5,8 +5,8 @@
  * @package WooCommerce\Admin\Tests\Notes
  */
 
-use Automattic\WooCommerce\Admin\Notes\NewSalesRecord;
 use Automattic\WooCommerce\Admin\Notes\Notes;
+use Automattic\WooCommerce\Internal\Admin\Notes\NewSalesRecord;
 
 /**
  * Class WC_Tests_NewSalesRecord_Note
@@ -24,8 +24,7 @@ class WC_Tests_NewSalesRecord_Note extends WC_Unit_Test_Case {
 	 */
 	public function setUp() {
 		parent::setUp();
-		NewSalesRecord::possibly_delete_note();
-
+		Notes::delete_notes_with_name( NewSalesRecord::NOTE_NAME );
 		$this->yesterday = gmdate( 'Y-m-d', time() - DAY_IN_SECONDS );
 
 		$order = wc_create_order();
