@@ -23,7 +23,7 @@
 	"sideEffects": false,
 	"dependencies": {
 		"@jest/globals": "^26.6.2",
-		"@types/jest": "^26.0.24",
+		"@types/jest": "^27.4.1",
 		"config": "^3.3.7"
 	},
 	"peerDependencies": {

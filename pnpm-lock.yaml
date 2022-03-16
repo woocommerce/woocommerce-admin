@@ -45,7 +45,7 @@ importers:
       '@types/dompurify': ^2.3.3
       '@types/expect-puppeteer': ^4.4.7
       '@types/history': ^4.7.11
-      '@types/jest': ^26.0.24
+      '@types/jest': ^27.4.1
       '@types/lodash': ^4.14.179
       '@types/puppeteer': ^4.0.2
       '@types/react-router-dom': ^5.3.3
@@ -279,7 +279,7 @@ importers:
       '@types/dompurify': 2.3.3
       '@types/expect-puppeteer': 4.4.7
       '@types/history': 4.7.11
-      '@types/jest': 26.0.24
+      '@types/jest': 27.4.1
       '@types/lodash': 4.14.179
       '@types/puppeteer': 4.0.2
       '@types/react-router-dom': 5.3.3
@@ -386,7 +386,7 @@ importers:
       '@babel/core': ^7.17.5
       '@jest/globals': ^26.6.2
       '@types/expect-puppeteer': ^4.4.7
-      '@types/jest': ^26.0.24
+      '@types/jest': ^27.4.1
       '@types/puppeteer': ^5.4.5
       '@typescript-eslint/eslint-plugin': ^4.33.0
       '@woocommerce/api': ^0.2.0
@@ -399,7 +399,7 @@ importers:
       typescript: ^4.6.2
     dependencies:
       '@jest/globals': 26.6.2
-      '@types/jest': 26.0.24
+      '@types/jest': 27.4.1
       config: 3.3.7
     devDependencies:
       '@babel/core': 7.17.5
@@ -411,7 +411,7 @@ importers:
       jest-cli: 27.5.1
       jest-mock-extended: 1.0.18_jest@27.5.1+typescript@4.6.2
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/components:
@@ -575,7 +575,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/currency:
@@ -602,7 +602,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/customer-effort-score:
@@ -716,7 +716,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/date:
@@ -743,7 +743,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/dependency-extraction-webpack-plugin:
@@ -764,7 +764,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
       webpack: 5.70.0_webpack-cli@3.3.12
       webpack-cli: 3.3.12_webpack@5.70.0
@@ -795,7 +795,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/experimental:
@@ -905,7 +905,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/js-tests:
@@ -934,7 +934,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/navigation:
@@ -969,7 +969,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/notices:
@@ -992,7 +992,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/number:
@@ -1011,7 +1011,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
   packages/onboarding:
@@ -1096,7 +1096,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
       webpack: 5.70.0_webpack-cli@4.9.2
 
@@ -1116,7 +1116,7 @@ importers:
       jest: 27.5.1
       jest-cli: 27.5.1
       rimraf: 3.0.2
-      ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
+      ts-jest: 27.1.3_2371dc729ff6850dd91f77bc3eb39110
       typescript: 4.6.2
 
 packages:
@@ -6097,7 +6097,6 @@ packages:
     dependencies:
       jest-matcher-utils: 27.5.1
       pretty-format: 27.5.1
-    dev: true
 
   /@types/json-schema/7.0.9:
     resolution: {integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==}
@@ -22802,7 +22801,7 @@ packages:
       typescript: 4.6.2
     dev: true
 
-  /ts-jest/27.1.3_e0136da8ea7c802a721b6bb3c039eded:
+  /ts-jest/27.1.3_2371dc729ff6850dd91f77bc3eb39110:
     resolution: {integrity: sha512-6Nlura7s6uM9BVUAoqLH7JHyMXjz8gluryjpPXxr3IxZdAXnU6FhjvVLHFtfd1vsE1p8zD1OJfskkc0jhTSnkA==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
@@ -22824,7 +22823,7 @@ packages:
         optional: true
     dependencies:
       '@babel/core': 7.17.5
-      '@types/jest': 26.0.24
+      '@types/jest': 27.4.1
       babel-jest: 26.6.3_@babel+core@7.17.5
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
