@@ -68,6 +68,7 @@ const webpackConfig = {
 	},
 	output: {
 		filename: ( data ) => {
+			console.log("data", data)
 			return wpAdminScripts.includes( data.chunk.name )
 				? `wp-admin-scripts/[name]${ suffix }.js`
 				: `[name]/index${ suffix }.js`;
@@ -76,11 +77,12 @@ const webpackConfig = {
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
 		libraryTarget: 'this',
-		jsonpFunction: '__wcAdmin_webpackJsonp',
+		uniqueName: '__wcAdmin_webpackJsonp',
 	},
 	module: {
 		rules: [
 			{
+				test: /\.js$/,
 				parser: {
 					amd: false,
 				},
@@ -119,6 +121,9 @@ const webpackConfig = {
 		],
 	},
 	resolve: {
+		fallback:{
+			'crypto': 'empty'
+		},
 		extensions: [ '.json', '.js', '.jsx', '.ts', '.tsx' ],
 		alias: {
 			'~': path.resolve( __dirname + '/client' ),
@@ -142,13 +147,13 @@ const webpackConfig = {
 				return outputPath;
 			},
 		} ),
-		new CopyWebpackPlugin(
-			wcAdminPackages.map( ( packageName ) => ( {
+		new CopyWebpackPlugin({
+
+			patterns: wcAdminPackages.map( ( packageName ) => ( {
 				from: `./packages/${ packageName }/build-style/*.css`,
-				to: `./${ packageName }/`,
-				flatten: true,
-				transform: ( content ) => content,
+				to: `./${ packageName }/[name][ext]`,
 			} ) )
+		}
 		),
 
 		// We reuse this Webpack setup for Storybook, where we need to disable dependency extraction.
@@ -169,13 +174,9 @@ const webpackConfig = {
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
-		minimizer: [ new TerserPlugin() ],
 		splitChunks: {
-			name: false,
-		},
-	},
-	node: {
-		crypto: 'empty',
+			name: false
+		}
 	},
 };
 
