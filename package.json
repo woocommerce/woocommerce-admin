@@ -214,7 +214,7 @@
 		"@wordpress/jest-preset-default": "^8.0.1",
 		"@wordpress/postcss-plugins-preset": "^1.6.0",
 		"@wordpress/postcss-themes": "^1.0.5",
-		"@wordpress/prettier-config": "^0.4.0",
+		"@wordpress/prettier-config": "^1.1.2",
 		"@wordpress/scripts": "^12.6.1",
 		"autoprefixer": "^10.4.2",
 		"await-exec": "^0.1.2",
