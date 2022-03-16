@@ -186,7 +186,7 @@
 		"@types/wordpress__data-controls": "^2.2.0",
 		"@types/wordpress__notices": "^3.3.0",
 		"@typescript-eslint/eslint-plugin": "^5.14.0",
-		"@typescript-eslint/parser": "^4.33.0",
+		"@typescript-eslint/parser": "^5.14.0",
 		"@woocommerce/admin-e2e-tests": "workspace:*",
 		"@woocommerce/components": "workspace:*",
 		"@woocommerce/csv-export": "workspace:*",
