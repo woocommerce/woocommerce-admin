@@ -15,8 +15,6 @@ import { close as closeIcon } from '@wordpress/icons';
 import interpolateComponents from '@automattic/interpolate-components';
 import { useEffect } from '@wordpress/element';
 
-// TODO: Automatically hide after 4 weeks
-
 /**
  * Internal dependencies
  */
@@ -78,6 +76,7 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 		taskListHidden,
 		taskListComplete,
 		reminderBarHidden,
+		completedTasksCount,
 	} = useSelect( ( select ) => {
 		const {
 			getTaskList,
@@ -114,24 +113,26 @@ export const TasksReminderBar: React.FC< ReminderBarProps > = ( {
 			taskListHidden: isResolved ? taskList.isHidden : false,
 			taskListComplete: isResolved ? taskList.isComplete : false,
 			loading: ! isResolved,
+			completedTasksCount: completedTasks,
 			remainingCount: isResolved
 				? visibleTasks?.length - completedTasks
 				: null,
 		};
 	} );
 
-	const displayReminderBar =
+	const hideReminderBar =
 		loading ||
 		taskListHidden ||
 		taskListComplete ||
 		reminderBarHidden ||
+		completedTasksCount === 0 ||
 		[ 'Home', 'Shipping', 'Tax', 'Payments' ].includes( pageTitle );
 
 	useEffect( () => {
 		updateBodyMargin();
-	}, [ displayReminderBar, updateBodyMargin ] );
+	}, [ hideReminderBar, updateBodyMargin ] );
 
-	if ( displayReminderBar ) {
+	if ( hideReminderBar ) {
 		return null;
 	}
 
