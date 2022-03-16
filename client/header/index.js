@@ -18,6 +18,7 @@ import {
 	WooHeaderItem,
 	WooHeaderPageTitle,
 } from './utils';
+import { TasksReminderBar } from '../tasks';
 
 export const PAGE_TITLE_FILTER = 'woocommerce_admin_header_page_title';
 
@@ -94,6 +95,7 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 
 	return (
 		<div className={ className } ref={ headerElement }>
+			<TasksReminderBar taskListId="setup_experiment_1" />
 			<div className="woocommerce-layout__header-wrapper">
 				<WooHeaderNavigationItem.Slot
 					fillProps={ { isEmbedded, query } }
