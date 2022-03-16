@@ -1,5 +1,5 @@
 {
-	"extends": "stylelint-config-wordpress",
+	"extends": "@wordpress/stylelint-config/scss",
 	"ignoreFiles": [ "./vendor/**/*.scss" ],
 	"rules": {
 		"at-rule-empty-line-before": null,
@@ -7,7 +7,7 @@
 		"comment-empty-line-before": null,
 		"declaration-block-no-duplicate-properties": null,
 		"declaration-colon-newline-after": null,
-		"declaration-property-unit-whitelist": null,
+		"declaration-property-unit-allowed-list": null,
 		"font-weight-notation": null,
 		"max-line-length": null,
 		"no-descending-specificity": null,
@@ -16,6 +16,14 @@
 		"selector-class-pattern": null,
 		"string-quotes": "single",
 		"value-keyword-case": null,
-		"value-list-comma-newline-after": null
+		"value-list-comma-newline-after": null,
+		"scss/at-import-partial-extension": "always",
+		"scss/at-import-no-partial-leading-underscore": null,
+		"scss/no-global-function-names": null,
+		"scss/operator-no-unspaced": null,
+		"scss/at-extend-no-missing-placeholder": null,
+		"scss/selector-no-redundant-nesting-selector": null,
+		"selector-id-pattern": null,
+		"no-invalid-position-at-import-rule": null
 	}
 }
