@@ -4,10 +4,12 @@
 
 ## Breaking changes
 
--   The peer dependency constraint for ESLint has been updated from to ^8. #8475
--   The peer dependency constraint for  eslint-plugin-testing-library has been updated from to v5. #8475
+-   Update ESLint from v7 to ^8. #8475
+-   Update `eslint-plugin-testing-library` from v3 to v5. #8475
     - `no-unnecessary-act` is now enabled by default.
     - `no-wait-for-multiple-assertions` is now enabled by default.
+-   Update `@wordpress/eslint-plugin` from v8 to v11. #8475
+-   Update `@typescript-eslint/parser` from v4 to v5. #8475
 -   Drop support for Node v10. Required node version is now ^12.22.0 || ^14.17.0 || >=16.0.0. #8475
 
 
