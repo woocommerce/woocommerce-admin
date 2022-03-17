@@ -56,7 +56,7 @@ class OnboardingThemes {
 	 * @param string $slug from theme.
 	 * @return array|null
 	 */
-	 public static function get_paid_theme_by_slug( $slug ) {
+	public static function get_paid_theme_by_slug( $slug ) {
 		$themes    = self::get_themes();
 		$theme_key = array_search( $slug, array_column( $themes, 'slug' ), true );
 		$theme     = false !== $theme_key ? $themes[ $theme_key ] : null;
