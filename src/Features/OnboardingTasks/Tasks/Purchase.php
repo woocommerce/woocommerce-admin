@@ -2,9 +2,11 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingProducts;
-use Automattic\WooCommerce\Admin\Internal\Onboarding\OnboardingThemes;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProducts;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingThemes;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Purchase Task
@@ -142,22 +144,23 @@ class Purchase extends Task {
 	/**
 	 * Get purchaseable and remaining products.
 	 *
-	 * @return array
+	 * @return array purchaseable and remaining products and themes.
 	 */
 	public static function get_products() {
-		$relevan_products = OnboardingProducts::get_relevant_products();
+		$relevant_products = OnboardingProducts::get_relevant_products();
 
-		$profiler_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$profiler_data = get_option( OnboardingProfile::DATA_OPTION, array() );
 		$theme         = isset( $profiler_data['theme'] ) ? $profiler_data['theme'] : null;
 		$paid_theme    = $theme ? OnboardingThemes::get_paid_theme_by_slug( $theme ) : null;
 		$installed     = PluginsHelper::get_installed_plugin_slugs();
 		if ( $paid_theme ) {
 
-			$relevan_products['purchaseable'][] = $paid_theme;
+			$relevant_products['purchaseable'][] = $paid_theme;
 
 			if ( ! in_array( $paid_theme['slug'], $installed, true ) ) {
-				$remaining[] = $paid_theme['title'];
+				$relevant_products['remaining'][] = $paid_theme['title'];
 			}
 		}
+		return $relevant_products;
 	}
 }
