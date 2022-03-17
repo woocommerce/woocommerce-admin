@@ -93,12 +93,17 @@ export const Header = ( { sections, isEmbedded = false, query } ) => {
 		}
 	}, [ isEmbedded, sections, siteTitle ] );
 
+	const tasksReminderFeature =
+		window.wcAdminFeatures[ 'tasklist-setup-experiment-1' ];
+
 	return (
 		<div className={ className } ref={ headerElement }>
-			<TasksReminderBar
-				pageTitle={ pageTitle }
-				updateBodyMargin={ updateBodyMargin }
-			/>
+			{ tasksReminderFeature && (
+				<TasksReminderBar
+					pageTitle={ pageTitle }
+					updateBodyMargin={ updateBodyMargin }
+				/>
+			) }
 			<div className="woocommerce-layout__header-wrapper">
 				<WooHeaderNavigationItem.Slot
 					fillProps={ { isEmbedded, query } }
