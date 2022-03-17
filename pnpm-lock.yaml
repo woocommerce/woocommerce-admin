@@ -91,7 +91,6 @@ importers:
       '@wordpress/date': ^4.3.1
       '@wordpress/dom': ^3.3.2
       '@wordpress/dom-ready': ^3.3.1
-      '@wordpress/e2e-test-utils': ^4.16.1
       '@wordpress/element': ^4.1.1
       '@wordpress/eslint-plugin': ^11.0.0
       '@wordpress/hooks': ^2.12.3
@@ -312,7 +311,6 @@ importers:
       '@wordpress/babel-preset-default': 6.5.1
       '@wordpress/browserslist-config': 4.1.1
       '@wordpress/custom-templated-path-webpack-plugin': 2.1.2_webpack@5.70.0
-      '@wordpress/e2e-test-utils': 4.16.1_jest@27.5.1+puppeteer@2.1.1
       '@wordpress/eslint-plugin': 11.0.1_62ff3dd581099b08479a9299be3cffb5
       '@wordpress/jest-preset-default': 8.0.1_72c2f3e871b7ecc7c889991605527117
       '@wordpress/postcss-plugins-preset': 1.6.0
@@ -7359,6 +7357,7 @@ packages:
     transitivePeerDependencies:
       - encoding
       - react-native
+    dev: false
 
   /@wordpress/element/2.20.3:
     resolution: {integrity: sha512-f4ZPTDf9CxiiOXiMxc4v1K7jcBMT4dsiehVOpkKzCDKboNXp4qVf8oe5PE23VGZNEjcOj5Mkg9hB57R0nqvMTw==}
@@ -7494,6 +7493,7 @@ packages:
     resolution: {integrity: sha512-LmKiwKldZt6UYqOxV/a6+eUFXdvALFnB/pQx3RmrMvO64sgFhfR6dhrlv+uVbuuezSuv8dce1jx8lUWAT0krMA==}
     dependencies:
       '@babel/runtime': 7.17.2
+    dev: false
 
   /@wordpress/hooks/3.3.1:
     resolution: {integrity: sha512-Eyc5YYX8010Ihr6Ab4lq9G7J9DmPiLnGf6C4WwEMf0iQ9SBw8hcp2TCwkSyC12DU7iY0o11FYGfgdGW3UpPiYA==}
@@ -7519,6 +7519,7 @@ packages:
       memize: 1.1.0
       sprintf-js: 1.1.2
       tannin: 1.2.0
+    dev: false
 
   /@wordpress/i18n/4.3.1:
     resolution: {integrity: sha512-4xeGUOhZL+Xl97VPSEslWJxCjQPuK2I8AEJWe5cb1u/YOcgTzOav2QN7T7wYzt3Os5bfqNBmTFMfOr+1goFPrw==}
@@ -7660,6 +7661,7 @@ packages:
       '@babel/runtime': 7.17.2
       '@wordpress/i18n': 3.20.0
       lodash: 4.17.21
+    dev: false
 
   /@wordpress/keycodes/3.3.1:
     resolution: {integrity: sha512-d/8wCjqB8c5426i8kLSRDxR/tezZFR0R/OOPFLoh/XnKiuRda/8OuPdSTUDmsLCam+yjV9K5uRm0KcMiZeFu7A==}
@@ -7885,6 +7887,7 @@ packages:
       react-native-url-polyfill: 1.3.0
     transitivePeerDependencies:
       - react-native
+    dev: false
 
   /@wordpress/url/3.4.1:
     resolution: {integrity: sha512-EeE/qCTe2wYxvEhH4ygV8CONX7j1aQaZF5LUg+QHZ+cnV5Bo8SkcLZdOHqczwvljqwVnKc+ybzQx/WLE+APNSw==}
@@ -19975,6 +19978,7 @@ packages:
       react-native: '*'
     dependencies:
       whatwg-url-without-unicode: 8.0.0-3
+    dev: false
 
   /react-outside-click-handler/1.3.0_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-Te/7zFU0oHpAnctl//pP3hEAeobfeHMyygHB8MnjP6sX5OR8KHT1G3jmLsV3U9RnIYo+Yn+peJYWu+D5tUS8qQ==}
@@ -23873,6 +23877,7 @@ packages:
       buffer: 5.7.1
       punycode: 2.1.1
       webidl-conversions: 5.0.0
+    dev: false
 
   /whatwg-url/5.0.0:
     resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}
