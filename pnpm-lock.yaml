@@ -84,7 +84,7 @@ importers:
       '@wordpress/components': ^19.5.0
       '@wordpress/compose': ^5.1.2
       '@wordpress/core-data': ^4.1.2
-      '@wordpress/custom-templated-path-webpack-plugin': ^1.7.0
+      '@wordpress/custom-templated-path-webpack-plugin': ^2.1.2
       '@wordpress/data': ^6.3.0
       '@wordpress/data-controls': ^2.3.2
       '@wordpress/date': ^4.3.1
@@ -181,7 +181,6 @@ importers:
       style-loader: ^0.23.1
       stylelint: ^9.10.1
       stylelint-config-wordpress: ^13.1.0
-      terser-webpack-plugin: ^2.3.8
       ts-jest: ^27.1.3
       typescript: ^4.6.2
       url-loader: ^1.1.2
@@ -309,7 +308,7 @@ importers:
       '@wordpress/babel-plugin-makepot': 2.1.3_@babel+core@7.17.5
       '@wordpress/babel-preset-default': 6.5.1
       '@wordpress/browserslist-config': 4.1.1
-      '@wordpress/custom-templated-path-webpack-plugin': 1.7.0_webpack@5.70.0
+      '@wordpress/custom-templated-path-webpack-plugin': 2.1.2_webpack@5.70.0
       '@wordpress/e2e-test-utils': 4.16.1_jest@27.5.1+puppeteer@2.1.1
       '@wordpress/eslint-plugin': 8.0.2_2224278c77ff331cce15d84ca34e26e7
       '@wordpress/jest-preset-default': 8.0.1_72c2f3e871b7ecc7c889991605527117
@@ -370,7 +369,6 @@ importers:
       style-loader: 0.23.1
       stylelint: 9.10.1
       stylelint-config-wordpress: 13.1.0_stylelint@9.10.1
-      terser-webpack-plugin: 2.3.8_webpack@5.70.0
       ts-jest: 27.1.3_e0136da8ea7c802a721b6bb3c039eded
       typescript: 4.6.2
       url-loader: 1.1.2_webpack@5.70.0
@@ -7123,9 +7121,9 @@ packages:
       - react
     dev: false
 
-  /@wordpress/custom-templated-path-webpack-plugin/1.7.0_webpack@5.70.0:
-    resolution: {integrity: sha512-JmTTZi4o1DJ2nBFioO1txkV7pMWBF1CLlimZD49nohy4QeudH8zsALfSUXQpkg1bzlBRgDL4sTUth8se8kiLug==}
-    engines: {node: '>=8'}
+  /@wordpress/custom-templated-path-webpack-plugin/2.1.2_webpack@5.70.0:
+    resolution: {integrity: sha512-VsujYr8frbAaC2zZSgy4RMe6yfId4KyvUhAq8SvIK4t8aJVLyIBcI8FiahriSesDfQT6rQTxVsgRq1EAHc9CXQ==}
+    engines: {node: '>=12'}
     peerDependencies:
       webpack: ^4.0.0
     dependencies:
@@ -9262,30 +9260,6 @@ packages:
       ssri: 6.0.2
       unique-filename: 1.1.1
       y18n: 4.0.3
-    dev: true
-
-  /cacache/13.0.1:
-    resolution: {integrity: sha512-5ZvAxd05HDDU+y9BVvcqYu2LLXmPnQ0hW62h32g4xBTgL/MppR4/04NHfj/ycM2y6lmTnbw6HVi+1eN0Psba6w==}
-    engines: {node: '>= 8'}
-    dependencies:
-      chownr: 1.1.4
-      figgy-pudding: 3.5.2
-      fs-minipass: 2.1.0
-      glob: 7.2.0
-      graceful-fs: 4.2.9
-      infer-owner: 1.0.4
-      lru-cache: 5.1.1
-      minipass: 3.1.6
-      minipass-collect: 1.0.2
-      minipass-flush: 1.0.5
-      minipass-pipeline: 1.2.4
-      mkdirp: 0.5.5
-      move-concurrently: 1.0.1
-      p-map: 3.0.0
-      promise-inflight: 1.0.1
-      rimraf: 2.7.1
-      ssri: 7.1.1
-      unique-filename: 1.1.1
     dev: true
 
   /cacache/15.3.0:
@@ -21466,14 +21440,6 @@ packages:
       figgy-pudding: 3.5.2
     dev: true
 
-  /ssri/7.1.1:
-    resolution: {integrity: sha512-w+daCzXN89PseTL99MkA+fxJEcU3wfaE/ah0i0lnOlpG1CYLJ2ZjzEry68YBKfLs4JfoTShrTEsJkAZuNZ/stw==}
-    engines: {node: '>= 8'}
-    dependencies:
-      figgy-pudding: 3.5.2
-      minipass: 3.1.6
-    dev: true
-
   /ssri/8.0.1:
     resolution: {integrity: sha512-97qShzy1AiyxvPNIkLWoGua7xoQzzPjQ0HAH4B0rWKo7SZ6USuPcrUiAFrws0UH8RrbWmgq3LMTObhPIHbbBeQ==}
     engines: {node: '>= 8'}
@@ -22248,24 +22214,6 @@ packages:
       webpack: 4.46.0_webpack-cli@3.3.12
       webpack-sources: 1.4.3
       worker-farm: 1.7.0
-    dev: true
-
-  /terser-webpack-plugin/2.3.8_webpack@5.70.0:
-    resolution: {integrity: sha512-/fKw3R+hWyHfYx7Bv6oPqmk4HGQcrWLtV3X6ggvPuwPNHSnzvVV51z6OaaCOus4YLjutYGOz3pEpbhe6Up2s1w==}
-    engines: {node: '>= 8.9.0'}
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      cacache: 13.0.1
-      find-cache-dir: 3.3.2
-      jest-worker: 25.5.0
-      p-limit: 2.3.0
-      schema-utils: 2.7.1
-      serialize-javascript: 4.0.0
-      source-map: 0.6.1
-      terser: 4.8.0
-      webpack: 5.70.0_webpack-cli@4.9.2
-      webpack-sources: 1.4.3
     dev: true
 
   /terser-webpack-plugin/3.1.0_webpack@4.46.0:
