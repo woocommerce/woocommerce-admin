@@ -27,7 +27,6 @@
 	"types": "build-types",
 	"dependencies": {
 		"@automattic/interpolate-components": "^1.2.0",
-		"@storybook/addon-knobs": "^6.4.0",
 		"@woocommerce/csv-export": "workspace:*",
 		"@woocommerce/currency": "workspace:*",
 		"@woocommerce/data": "workspace:*",
@@ -80,7 +79,9 @@
 		"@babel/core": "^7.17.5",
 		"@storybook/addon-actions": "^6.4.0",
 		"@storybook/addon-console": "^1.2.3",
+		"@storybook/addon-controls": "^6.4.19",
 		"@storybook/addon-docs": "^6.4.19",
+		"@storybook/addon-knobs": "^6.4.0",
 		"@storybook/addon-links": "^6.4.19",
 		"@storybook/addons": "^6.4.0",
 		"@storybook/api": "^6.4.0",

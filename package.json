@@ -155,6 +155,7 @@
 		"@storybook/addon-a11y": "^6.4.19",
 		"@storybook/addon-actions": "^6.4.19",
 		"@storybook/addon-console": "^1.2.3",
+		"@storybook/addon-controls": "^6.4.19",
 		"@storybook/addon-docs": "^6.4.19",
 		"@storybook/addon-knobs": "^6.4.0",
 		"@storybook/addon-links": "^6.4.19",
