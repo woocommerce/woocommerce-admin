@@ -27,7 +27,7 @@ type ReminderBarProps = {
 };
 
 type ReminderTextProps = {
-	remainingCount: number | null;
+	remainingCount: number;
 };
 
 const REMINDER_BAR_HIDDEN_OPTION = 'woocommerce_task_list_reminder_bar_hidden';
