@@ -74,6 +74,16 @@ class CoreMenu {
 	}
 
 	/**
+	 * Get unfulfilled order count
+	 *
+	 * @return array
+	 */
+	public static function get_shop_order_count() {
+		$status_counts = array_map( 'wc_orders_count', array( 'processing', 'on-hold' ) );
+		return array_sum( $status_counts );
+	}
+
+	/**
 	 * Get all menu categories.
 	 *
 	 * @return array
@@ -84,6 +94,7 @@ class CoreMenu {
 			array(
 				'title' => __( 'Orders', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-orders',
+				'badge' => self::get_shop_order_count(),
 				'order' => 10,
 			),
 			array(
@@ -108,12 +119,6 @@ class CoreMenu {
 				'title' => __( 'Marketing', 'woocommerce-admin' ),
 				'id'    => 'woocommerce-marketing',
 				'order' => 40,
-			),
-			array(
-				'title'  => __( 'Marketplace', 'woocommerce-admin' ),
-				'id'     => 'woocommerce-marketplace',
-				'menuId' => 'secondary',
-				'order'  => 10,
 			),
 			array(
 				'title'  => __( 'Settings', 'woocommerce-admin' ),
@@ -184,11 +189,11 @@ class CoreMenu {
 		}
 
 		$home_item = array();
-		if ( defined( '\Automattic\WooCommerce\Admin\Features\Homescreen::MENU_SLUG' ) ) {
+		if ( defined( '\Automattic\WooCommerce\Internal\Admin\Homescreen::MENU_SLUG' ) ) {
 			$home_item = array(
 				'id'              => 'woocommerce-home',
 				'title'           => __( 'Home', 'woocommerce-admin' ),
-				'url'             => \Automattic\WooCommerce\Admin\Features\Homescreen::MENU_SLUG,
+				'url'             => \Automattic\WooCommerce\Internal\Admin\Homescreen::MENU_SLUG,
 				'order'           => 0,
 				'matchExpression' => 'page=wc-admin((?!path=).)*$',
 			);
@@ -224,9 +229,16 @@ class CoreMenu {
 				),
 				array_merge( $product_items['new'], array( 'order' => 50 ) ),
 				$coupon_items['default'],
+				// Marketplace category.
+				array(
+					'title'      => __( 'Marketplace', 'woocommerce-admin' ),
+					'capability' => 'manage_woocommerce',
+					'id'         => 'woocommerce-marketplace',
+					'url'        => 'wc-addons',
+					'menuId'     => 'secondary',
+					'order'      => 10,
+				),
 			),
-			// Marketplace category.
-			self::get_marketplace_items(),
 			// Tools category.
 			self::get_tool_items(),
 			// WooCommerce Admin items.
@@ -235,34 +247,6 @@ class CoreMenu {
 			$setting_items,
 			// Legacy report items.
 			self::get_legacy_report_items()
-		);
-	}
-
-	/**
-	 * Get marketplace menu items.
-	 *
-	 * @return array
-	 */
-	public static function get_marketplace_items() {
-		return array(
-			array(
-				'parent'     => 'woocommerce-marketplace',
-				'title'      => __( 'Browse', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'marketplace-browse',
-				'url'        => 'admin.php?page=wc-addons',
-				'migrate'    => false,
-				'order'      => 0,
-			),
-			array(
-				'parent'     => 'woocommerce-marketplace',
-				'title'      => __( 'My Subscriptions', 'woocommerce-admin' ),
-				'capability' => 'manage_woocommerce',
-				'id'         => 'marketplace-my-subscriptions',
-				'url'        => 'admin.php?page=wc-addons&section=helper',
-				'migrate'    => false,
-				'order'      => 1,
-			),
 		);
 	}
 
@@ -374,7 +358,7 @@ class CoreMenu {
 				) {
 					continue;
 				}
-	
+
 				// Use the link from the first item if it's a category.
 				if ( ! isset( $item['url'] ) ) {
 					$categoryMenuId = $menuId === 'favorites' ? 'plugins' : $menuId;
@@ -383,7 +367,7 @@ class CoreMenu {
 					if ( ! empty( $category_items ) ) {
 						$first_item = $category_items[0];
 
-	
+
 						$submenu['woocommerce'][] = array(
 							$item['title'],
 							$first_item['capability'],
@@ -391,10 +375,10 @@ class CoreMenu {
 							$item['title'],
 						);
 					}
-	
+
 					continue;
 				}
-	
+
 				// Show top-level items.
 				$submenu['woocommerce'][] = array(
 					$item['title'],
@@ -418,8 +402,6 @@ class CoreMenu {
 			'wc-reports',
 			'wc-settings',
 			'wc-status',
-			'wc-addons',
-			'wc-addons&section=helper',
 		);
 
 		return apply_filters( 'woocommerce_navigation_core_excluded_items', $excluded_items );

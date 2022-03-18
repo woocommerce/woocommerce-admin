@@ -12,7 +12,7 @@ const PAYMENT_METHOD_PROMOTIONS = [
 	{
 		gatewayId: 'pre_install_woocommerce_payments_promotion',
 		pluginSlug: 'woocommerce-payments',
-		link: 'https://woocommerce.com/payments/?utm_medium=product',
+		url: 'https://woocommerce.com/payments/?utm_medium=product',
 	},
 ];
 
@@ -22,8 +22,13 @@ PAYMENT_METHOD_PROMOTIONS.forEach( ( paymentMethod ) => {
 	);
 
 	if ( container ) {
-		const sortColumn = container.children[ 0 ].innerHTML;
-		const descriptionColumn = container.children[ 3 ].innerHTML;
+		const columns = [ ...container.children ].map( ( child ) => {
+			return {
+				className: child.className,
+				html: child.innerHTML,
+				width: child.getAttribute( 'width' ),
+			};
+		} );
 		const title = container.getElementsByClassName(
 			'wc-payment-gateway-method-title'
 		);
@@ -31,11 +36,9 @@ PAYMENT_METHOD_PROMOTIONS.forEach( ( paymentMethod ) => {
 
 		render(
 			<PaymentPromotionRow
-				pluginSlug={ paymentMethod.pluginSlug }
-				sortColumnContent={ sortColumn }
-				descriptionColumnContent={ descriptionColumn }
+				columns={ columns }
+				paymentMethod={ paymentMethod }
 				title={ title.length === 1 ? title[ 0 ].innerHTML : undefined }
-				titleLink={ paymentMethod.link }
 				subTitleContent={
 					subTitle.length === 1 ? subTitle[ 0 ].innerHTML : undefined
 				}

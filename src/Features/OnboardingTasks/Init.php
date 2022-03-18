@@ -6,12 +6,13 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks;
 
-use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Internal\Admin\Loader;
 use Automattic\WooCommerce\Admin\API\Reports\Taxes\Stats\DataStore as TaxDataStore;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\DeprecatedOptions;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Appearance;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Products;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\Tax;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Contains the logic for completing onboarding tasks.
@@ -38,19 +39,8 @@ class Init {
 	 * Constructor
 	 */
 	public function __construct() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'update_option_extended_task_list' ), 15 );
 		DeprecatedOptions::init();
 		TaskLists::init();
-
-		if ( ! is_admin() ) {
-			return;
-		}
-
-		// Old settings injection.
-		// Run after Onboarding.
-		add_filter( 'woocommerce_components_settings', array( __CLASS__, 'component_settings' ), 30 );
-		// New settings injection.
-		add_filter( 'woocommerce_admin_shared_settings', array( $this, 'component_settings' ), 30 );
 	}
 
 	/**
@@ -68,65 +58,6 @@ class Init {
 				: false;
 		}
 
-		$settings['automatedTaxSupportedCountries'] = Tax::get_automated_tax_supported_countries();
-		$settings['hasHomepage']                    = Appearance::has_homepage();
-		$settings['hasProducts']                    = Products::has_products();
-		$settings['stylesheet']                     = get_option( 'stylesheet' );
-		$settings['taxJarActivated']                = class_exists( 'WC_Taxjar' );
-		$settings['themeMods']                      = get_theme_mods();
-
 		return $settings;
-	}
-
-	/**
-	 * Add task items to component settings.
-	 *
-	 * @param array $settings Component settings.
-	 * @return array
-	 */
-	public function component_settings( $settings ) {
-		// Bail early if not on a wc-admin powered page, or task list shouldn't be shown.
-		if (
-			! \Automattic\WooCommerce\Admin\Loader::is_admin_page() ||
-			! count( TaskLists::get_visible() )
-		) {
-			return $settings;
-		}
-
-		// If onboarding isn't enabled this will throw warnings.
-		if ( ! isset( $settings['onboarding'] ) ) {
-			$settings['onboarding'] = array();
-		}
-
-		$settings['onboarding'] = array_merge(
-			$settings['onboarding'],
-			array(
-				'tasksStatus' => self::get_settings(),
-			)
-		);
-
-		return $settings;
-	}
-
-	/**
-	 * Update registered extended task list items.
-	 */
-	public static function update_option_extended_task_list() {
-		if (
-			! \Automattic\WooCommerce\Admin\Loader::is_admin_page() ||
-			! count( TaskLists::get_visible() )
-		) {
-			return;
-		}
-		$extended_tasks_list_items            = get_option( 'woocommerce_extended_task_list_items', array() );
-		$registered_extended_tasks_list_items = apply_filters( 'woocommerce_get_registered_extended_tasks', array() );
-		if ( $registered_extended_tasks_list_items !== $extended_tasks_list_items ) {
-			update_option( 'woocommerce_extended_task_list_items', $registered_extended_tasks_list_items );
-			$extended_list = TaskLists::get_list( 'extended' );
-			if ( ! $extended_list ) {
-				return;
-			}
-			$extended_list->show();
-		}
 	}
 }

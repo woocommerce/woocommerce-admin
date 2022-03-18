@@ -6,7 +6,10 @@ import { ElementHandle } from 'puppeteer';
 /**
  * Internal dependencies
  */
-import { waitForElementByText } from '../utils/actions';
+import {
+	waitForElementByText,
+	waitUntilElementStopsMoving,
+} from '../utils/actions';
 import { Analytics } from './Analytics';
 
 type Section = {
@@ -18,11 +21,11 @@ const isSection = ( item: Section | undefined ): item is Section => {
 };
 
 export class AnalyticsOverview extends Analytics {
-	async navigate() {
+	async navigate(): Promise< void > {
 		await this.navigateToSection( 'overview' );
 	}
 
-	async getSections() {
+	async getSections(): Promise< Section[] > {
 		const list = await this.page.$$(
 			'.woocommerce-dashboard-section .woocommerce-section-header'
 		);
@@ -44,14 +47,14 @@ export class AnalyticsOverview extends Analytics {
 		return sections.filter( isSection );
 	}
 
-	async getSectionTitles() {
+	async getSectionTitles(): Promise< string[] > {
 		const sections = ( await this.getSections() ).map(
 			( section ) => section.title
 		);
 		return sections;
 	}
 
-	async openSectionEllipsis( sectionTitle: string ) {
+	async openSectionEllipsis( sectionTitle: string ): Promise< void > {
 		const section = ( await this.getSections() ).find(
 			( thisSection ) => thisSection.title === sectionTitle
 		);
@@ -66,7 +69,7 @@ export class AnalyticsOverview extends Analytics {
 		}
 	}
 
-	async closeSectionEllipsis( sectionTitle: string ) {
+	async closeSectionEllipsis( sectionTitle: string ): Promise< void > {
 		const section = ( await this.getSections() ).find(
 			( thisSection ) => thisSection.title === sectionTitle
 		);
@@ -84,36 +87,38 @@ export class AnalyticsOverview extends Analytics {
 		}
 	}
 
-	async removeSection( sectionTitle: string ) {
+	async removeSection( sectionTitle: string ): Promise< void > {
 		await this.openSectionEllipsis( sectionTitle );
 		const item = await waitForElementByText( 'div', 'Remove section' );
 		await item?.click();
 	}
 
-	async addSection( sectionTitle: string ) {
+	async addSection( sectionTitle: string ): Promise< void > {
 		await this.page.waitForSelector( "button[title='Add more sections']" );
 		await this.page.click( "button[title='Add more sections']" );
-		await this.page.waitForSelector(
-			`button[title='Add ${ sectionTitle } section']`
-		);
-		await this.page.click(
-			`button[title='Add ${ sectionTitle } section']`
-		);
+		const addSectionSelector = `button[title='Add ${ sectionTitle } section']`;
+		await this.page.waitForSelector( addSectionSelector );
+		await waitUntilElementStopsMoving( addSectionSelector );
+		await this.page.click( addSectionSelector );
 	}
 
-	async moveSectionDown( sectionTitle: string ) {
+	async moveSectionDown( sectionTitle: string ): Promise< void > {
 		await this.openSectionEllipsis( sectionTitle );
 		const item = await waitForElementByText( 'div', 'Move down' );
 		await item?.click();
 	}
 
-	async moveSectionUp( sectionTitle: string ) {
+	async moveSectionUp( sectionTitle: string ): Promise< void > {
 		await this.openSectionEllipsis( sectionTitle );
 		const item = await waitForElementByText( 'div', 'Move up' );
 		await item?.click();
 	}
 
-	async getEllipsisMenuItems( sectionTitle: string ) {
+	async getEllipsisMenuItems(
+		sectionTitle: string
+	): Promise<
+		{ title: string | null; element: ElementHandle< Element > }[]
+	> {
 		await this.openSectionEllipsis( sectionTitle );
 		const list = await this.page.$$(
 			'.woocommerce-ellipsis-menu div[role=menuitem]'
@@ -128,7 +133,11 @@ export class AnalyticsOverview extends Analytics {
 		);
 	}
 
-	async getEllipsisMenuCheckboxItems( sectionTitle: string ) {
+	async getEllipsisMenuCheckboxItems(
+		sectionTitle: string
+	): Promise<
+		{ title: string | null; element: ElementHandle< Element > }[]
+	> {
 		await this.openSectionEllipsis( sectionTitle );
 		const list = await this.page.$$(
 			'.woocommerce-ellipsis-menu div[role=menuitemcheckbox]'

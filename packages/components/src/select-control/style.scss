@@ -33,6 +33,7 @@
 			transform: translateY(-50%);
 			color: $studio-gray-50;
 			font-size: 16px;
+			line-height: 1.5em;
 		}
 
 		.woocommerce-select-control__control-input {
@@ -151,6 +152,10 @@
 		.components-base-control.is-active .components-base-control__label {
 			font-size: 12px;
 			margin-top: -$gap-small;
+		}
+
+		.woocommerce-select-control__control-input {
+			padding-left: 12px;
 		}
 	}
 }

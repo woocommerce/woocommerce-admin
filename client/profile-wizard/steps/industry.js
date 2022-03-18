@@ -13,7 +13,6 @@ import {
 import { compose } from '@wordpress/compose';
 import { filter, find, findIndex, get } from 'lodash';
 import { withDispatch, withSelect } from '@wordpress/data';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME, SETTINGS_STORE_NAME } from '@woocommerce/data';
 import { TextControl } from '@woocommerce/components';
 import { recordEvent } from '@woocommerce/tracks';
@@ -23,8 +22,9 @@ import { Text } from '@woocommerce/experimental';
  * Internal dependencies
  */
 import { getCurrencyRegion } from '../../dashboard/utils';
+import { getAdminSetting } from '~/utils/admin-settings';
 
-const onboarding = getSetting( 'onboarding', {} );
+const onboarding = getAdminSetting( 'onboarding', {} );
 
 class Industry extends Component {
 	constructor( props ) {
@@ -66,6 +66,24 @@ class Industry extends Component {
 		this.onContinue = this.onContinue.bind( this );
 		this.onIndustryChange = this.onIndustryChange.bind( this );
 		this.onDetailChange = this.onDetailChange.bind( this );
+		const selectedSlugs = this.getSelectedSlugs();
+		props.trackStepValueChanges(
+			props.step.key,
+			selectedSlugs,
+			selectedSlugs,
+			this.onContinue
+		);
+	}
+
+	getSelectedSlugs() {
+		return this.state.selected.map( ( industry ) => industry.slug );
+	}
+
+	componentDidUpdate() {
+		this.props.updateCurrentStepValues(
+			this.props.step.key,
+			this.getSelectedSlugs()
+		);
 	}
 
 	async onContinue() {
@@ -74,12 +92,7 @@ class Industry extends Component {
 			return;
 		}
 
-		const {
-			createNotice,
-			goToNextStep,
-			isError,
-			updateProfileItems,
-		} = this.props;
+		const { createNotice, isError, updateProfileItems } = this.props;
 		const selectedIndustriesList = this.state.selected.map(
 			( industry ) => industry.slug
 		);
@@ -96,9 +109,7 @@ class Industry extends Component {
 		} );
 		await updateProfileItems( { industry: this.state.selected } );
 
-		if ( ! isError ) {
-			goToNextStep();
-		} else {
+		if ( isError ) {
 			createNotice(
 				'error',
 				__(
@@ -106,7 +117,11 @@ class Industry extends Component {
 					'woocommerce-admin'
 				)
 			);
+
+			return Promise.reject();
 		}
+
+		return true;
 	}
 
 	async validateField() {
@@ -251,7 +266,11 @@ class Industry extends Component {
 					<CardFooter isBorderless justify="center">
 						<Button
 							isPrimary
-							onClick={ this.onContinue }
+							onClick={ () => {
+								this.onContinue().then(
+									this.props.goToNextStep
+								);
+							} }
 							isBusy={ isProfileItemsRequesting }
 							disabled={
 								! selected.length || isProfileItemsRequesting

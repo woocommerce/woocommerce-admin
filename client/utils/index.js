@@ -1,3 +1,5 @@
+export * from './plugins';
+
 /**
  * Get the URL params.
  *
@@ -44,7 +46,7 @@ export function getScreenName() {
 /**
  * Similar to filter, but return two arrays separated by a partitioner function
  *
- * @param {Array} arr - Original array of values.
+ * @param {Array}    arr         - Original array of values.
  * @param {Function} partitioner - Function to return truthy/falsy values to separate items in array.
  *
  * @return {Array} - Array of two arrays, first including truthy values, and second including falsy.

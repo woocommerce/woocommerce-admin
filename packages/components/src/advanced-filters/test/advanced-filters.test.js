@@ -6,9 +6,12 @@
  */
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AdvancedFilters } from '@woocommerce/components';
-import { CURRENCY } from '@woocommerce/wc-admin-settings';
 import { createElement } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
+import AdvancedFilters from '../';
 
 const ORDER_STATUSES = {
 	cancelled: 'Cancelled',
@@ -18,6 +21,16 @@ const ORDER_STATUSES = {
 	pending: 'Pending payment',
 	processing: 'Processing',
 	refunded: 'Refunded',
+};
+
+const CURRENCY = {
+	code: 'USD',
+	decimalSeparator: '.',
+	precision: 2,
+	priceFormat: '%1$s%2$s',
+	symbol: '$',
+	symbolPosition: 'left',
+	thousandSeparator: ',',
 };
 
 const advancedFiltersConfig = {

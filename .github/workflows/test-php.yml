@@ -18,7 +18,7 @@ jobs:
                 composer: ['2.0.6']
                 include:
                     - php: '7.0'
-                      wordpress: '5.5'
+                      wordpress: '5.6'
                       woocommerce: 'latest'
                       phpunit: '6.5.9'
                       composer: '1.10.19'
@@ -49,6 +49,11 @@ jobs:
               uses: actions/setup-node@v2-beta
               with:
                   node-version: '14'
+            - name: Install PNPM and install dependencies
+              uses: pnpm/action-setup@v2.2.1
+              with:
+                version: ^6.24.2
+                run_install: true
             - name: Set up the tests
               env:
                   WP_VERSION: ${{matrix.wordpress}}
@@ -59,10 +64,10 @@ jobs:
                   sudo /etc/init.d/mysql start
                   bash bin/ci/gh-install-wp-tests.sh wc_admin_test root 'root' localhost
                   cd "$WP_CORE_DIR/wp-content/plugins/woocommerce-admin/"
-                  npm run build:feature-config	
+                  pnpm run build:feature-config	
                   composer install
                   node --version
-                  npm --version
+                  pnpm --version
                   timedatectl
             - name: Add PHP8 Compatibility.
               run: |

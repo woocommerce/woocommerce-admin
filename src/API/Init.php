@@ -9,10 +9,12 @@ use Automattic\WooCommerce\Admin\Features\Features;
 
 defined( 'ABSPATH' ) || exit;
 
-use \Automattic\WooCommerce\Admin\Loader;
+use \Automattic\WooCommerce\Internal\Admin\Loader;
 
 /**
  * Init class.
+ *
+ * @internal
  */
 class Init {
 	/**
@@ -59,10 +61,12 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\Data',
 			'Automattic\WooCommerce\Admin\API\DataCountries',
 			'Automattic\WooCommerce\Admin\API\DataDownloadIPs',
+			'Automattic\WooCommerce\Admin\API\Experiments',
 			'Automattic\WooCommerce\Admin\API\Marketing',
 			'Automattic\WooCommerce\Admin\API\MarketingOverview',
 			'Automattic\WooCommerce\Admin\API\Options',
 			'Automattic\WooCommerce\Admin\API\Orders',
+			'Automattic\WooCommerce\Admin\API\PaymentGatewaySuggestions',
 			'Automattic\WooCommerce\Admin\API\Products',
 			'Automattic\WooCommerce\Admin\API\ProductAttributes',
 			'Automattic\WooCommerce\Admin\API\ProductAttributeTerms',
@@ -75,7 +79,7 @@ class Init {
 			'Automattic\WooCommerce\Admin\API\Themes',
 			'Automattic\WooCommerce\Admin\API\Plugins',
 			'Automattic\WooCommerce\Admin\API\OnboardingFreeExtensions',
-			'Automattic\WooCommerce\Admin\API\OnboardingPayments',
+			'Automattic\WooCommerce\Admin\API\OnboardingProductTypes',
 			'Automattic\WooCommerce\Admin\API\OnboardingProfile',
 			'Automattic\WooCommerce\Admin\API\OnboardingTasks',
 			'Automattic\WooCommerce\Admin\API\OnboardingThemes',
@@ -127,6 +131,7 @@ class Init {
 	/**
 	 * Adds data stores.
 	 *
+	 * @internal
 	 * @param array $data_stores List of data stores.
 	 * @return array
 	 */
@@ -160,6 +165,7 @@ class Init {
 	 * Add the currency symbol (in addition to currency code) to each Order
 	 * object in REST API responses. For use in formatAmount().
 	 *
+	 * @internal
 	 * @param {WP_REST_Response} $response REST response object.
 	 * @returns {WP_REST_Response}
 	 */

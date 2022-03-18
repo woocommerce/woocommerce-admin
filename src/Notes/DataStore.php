@@ -43,7 +43,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 		$wpdb->insert( $wpdb->prefix . 'wc_admin_notes', $note_to_be_inserted );
 		$note_id = $wpdb->insert_id;
 		$note->set_id( $note_id );
-		$note->save_meta_data();
 		$this->save_actions( $note );
 		$note->apply_changes();
 
@@ -79,7 +78,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 
 		if ( 0 === $note->get_id() || '0' === $note->get_id() ) {
 			$this->read_actions( $note );
-			$note->read_meta_data();
 			$note->set_object_read( true );
 
 			/**
@@ -110,10 +108,10 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$note->set_date_reminder( $note_row->date_reminder );
 			$note->set_is_snoozable( $note_row->is_snoozable );
 			$note->set_is_deleted( (bool) $note_row->is_deleted );
+			isset( $note_row->is_read ) && $note->set_is_read( (bool) $note_row->is_read );
 			$note->set_layout( $note_row->layout );
 			$note->set_image( $note_row->image );
 			$this->read_actions( $note );
-			$note->read_meta_data();
 			$note->set_object_read( true );
 
 			/**
@@ -165,12 +163,12 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 					'layout'        => $note->get_layout(),
 					'image'         => $note->get_image(),
 					'is_deleted'    => $note->get_is_deleted(),
+					'is_read'       => $note->get_is_read(),
 				),
 				array( 'note_id' => $note->get_id() )
 			);
 		}
 
-		$note->save_meta_data();
 		$this->save_actions( $note );
 		$note->apply_changes();
 
@@ -215,7 +213,7 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 
 		$db_actions = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT action_id, name, label, query, status, is_primary, actioned_text, nonce_action, nonce_name
+				"SELECT action_id, name, label, query, status, actioned_text, nonce_action, nonce_name
 				FROM {$wpdb->prefix}wc_admin_note_actions
 				WHERE note_id = %d",
 				$note->get_id()
@@ -232,7 +230,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 					'label'         => $action->label,
 					'query'         => $action->query,
 					'status'        => $action->status,
-					'primary'       => (bool) $action->is_primary,
 					'actioned_text' => $action->actioned_text,
 					'nonce_action'  => $action->nonce_action,
 					'nonce_name'    => $action->nonce_name,
@@ -291,7 +288,6 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 				'label'         => $action->label,
 				'query'         => $action->query,
 				'status'        => $action->status,
-				'is_primary'    => $action->primary,
 				'actioned_text' => $action->actioned_text,
 				'nonce_action'  => $action->nonce_action,
 				'nonce_name'    => $action->nonce_name,
@@ -356,6 +352,29 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 	}
 
 	/**
+	 * Return an ordered list of notes, without paging or applying the 'woocommerce_note_where_clauses' filter.
+	 * INTERNAL: This method is not intended to be used by external code, and may change without notice.
+	 *
+	 * @param array $args Query arguments.
+	 * @return array An array of database records.
+	 */
+	public function lookup_notes( $args = array() ) {
+		global $wpdb;
+
+		$defaults = array(
+			'order'   => 'DESC',
+			'orderby' => 'date_created',
+		);
+		$args     = wp_parse_args( $args, $defaults );
+
+		$where_clauses = $this->args_to_where_clauses( $args );
+
+		$query = "SELECT * FROM {$wpdb->prefix}wc_admin_notes WHERE 1=1{$where_clauses} ORDER BY {$args['orderby']} {$args['order']}";
+
+		return $wpdb->get_results( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	/**
 	 * Return a count of notes.
 	 *
 	 * @param string $type Comma separated list of note types.
@@ -404,11 +423,34 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 
 	/**
 	 * Return where clauses for getting notes by status and type. For use in both the count and listing queries.
+	 * Applies woocommerce_note_where_clauses filter.
 	 *
+	 * @uses args_to_where_clauses
 	 *  @param array $args Array of args to pass.
 	 * @return string Where clauses for the query.
 	 */
 	public function get_notes_where_clauses( $args = array() ) {
+		$where_clauses = $this->args_to_where_clauses( $args );
+
+		/**
+		 * Filter the notes WHERE clause before retrieving the data.
+		 *
+		 * Allows modification of the notes select criterial.
+		 *
+		 * @param string $where_clauses The generated WHERE clause.
+		 * @param array  $args          The original arguments for the request.
+		 */
+		return apply_filters( 'woocommerce_note_where_clauses', $where_clauses, $args );
+	}
+
+	/**
+	 * Return where clauses for notes queries without applying woocommerce_note_where_clauses filter.
+	 * INTERNAL: This method is not intended to be used by external code, and may change without notice.
+	 *
+	 * @param array $args Array of arguments for query conditionals.
+	 * @return string Where clauses.
+	 */
+	protected function args_to_where_clauses( $args = array() ) {
 		$allowed_types    = Note::get_allowed_types();
 		$where_type_array = $this->get_escaped_arguments_array_by_key( $args, 'type', $allowed_types );
 
@@ -420,14 +462,16 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$escaped_is_deleted = esc_sql( $args['is_deleted'] );
 		}
 
-		$where_name_array   = $this->get_escaped_arguments_array_by_key( $args, 'name' );
-		$where_source_array = $this->get_escaped_arguments_array_by_key( $args, 'source' );
+		$where_name_array          = $this->get_escaped_arguments_array_by_key( $args, 'name' );
+		$where_excluded_name_array = $this->get_escaped_arguments_array_by_key( $args, 'excluded_name' );
+		$where_source_array        = $this->get_escaped_arguments_array_by_key( $args, 'source' );
 
-		$escaped_where_types  = implode( ',', $where_type_array );
-		$escaped_where_status = implode( ',', $where_status_array );
-		$escaped_where_names  = implode( ',', $where_name_array );
-		$escaped_where_source = implode( ',', $where_source_array );
-		$where_clauses        = '';
+		$escaped_where_types          = implode( ',', $where_type_array );
+		$escaped_where_status         = implode( ',', $where_status_array );
+		$escaped_where_names          = implode( ',', $where_name_array );
+		$escaped_where_excluded_names = implode( ',', $where_excluded_name_array );
+		$escaped_where_source         = implode( ',', $where_source_array );
+		$where_clauses                = '';
 
 		if ( ! empty( $escaped_where_types ) ) {
 			$where_clauses .= " AND type IN ($escaped_where_types)";
@@ -441,21 +485,17 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$where_clauses .= " AND name IN ($escaped_where_names)";
 		}
 
+		if ( ! empty( $escaped_where_excluded_names ) ) {
+			$where_clauses .= " AND name NOT IN ($escaped_where_excluded_names)";
+		}
+
 		if ( ! empty( $escaped_where_source ) ) {
 			$where_clauses .= " AND source IN ($escaped_where_source)";
 		}
 
 		$where_clauses .= $escaped_is_deleted ? ' AND is_deleted = 1' : ' AND is_deleted = 0';
 
-		/**
-		 * Filter the notes WHERE clause before retrieving the data.
-		 *
-		 * Allows modification of the notes select criterial.
-		 *
-		 * @param string $where_clauses The generated WHERE clause.
-		 * @param array  $args          The original arguments for the request.
-		 */
-		return apply_filters( 'woocommerce_note_where_clauses', $where_clauses, $args );
+		return $where_clauses;
 	}
 
 	/**
@@ -470,6 +510,22 @@ class DataStore extends \WC_Data_Store_WP implements \WC_Object_Data_Store_Inter
 			$wpdb->prepare(
 				"SELECT note_id FROM {$wpdb->prefix}wc_admin_notes WHERE name = %s ORDER BY note_id ASC",
 				$name
+			)
+		);
+	}
+
+	/**
+	 * Find the ids of all notes with a given type.
+	 *
+	 * @param string $note_type Type to search for.
+	 * @return array An array of matching note ids.
+	 */
+	public function get_note_ids_by_type( $note_type ) {
+		global $wpdb;
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT note_id FROM {$wpdb->prefix}wc_admin_notes WHERE type = %s ORDER BY note_id ASC",
+				$note_type
 			)
 		);
 	}

@@ -1,6 +1,7 @@
 # Unreleased
 
 -   Dev - Export data types. #7840
+-   Update all js packages with minor/patch version changes. #8392
 
 # 2.2.0
 

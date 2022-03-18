@@ -1,13 +1,13 @@
 /**
  * External dependencies
  */
-import { act, render } from '@testing-library/react';
-import { enqueueScript } from '@woocommerce/wc-admin-settings';
+import { render } from '@testing-library/react';
 
 /**
  * Internal dependencies
  */
 import { Setup } from '../';
+import { enqueueScript } from '~/utils/enqueue-script';
 
 jest.mock( '@woocommerce/components', () => {
 	const originalModule = jest.requireActual( '@woocommerce/components' );
@@ -19,7 +19,8 @@ jest.mock( '@woocommerce/components', () => {
 	};
 } );
 
-jest.mock( '@woocommerce/wc-admin-settings' );
+jest.mock( '@woocommerce/settings' );
+jest.mock( '~/utils/enqueue-script' );
 
 const mockGateway = {
 	id: 'mock-gateway',
@@ -69,9 +70,8 @@ describe( 'Setup', () => {
 				postInstallScripts: [ 'mock-post-install-script' ],
 			},
 		};
-		await act( async () => {
-			render( <Setup { ...props } /> );
-		} );
+
+		render( <Setup { ...props } /> );
 
 		expect( enqueueScript ).toHaveBeenCalledTimes( 1 );
 		expect( enqueueScript ).toHaveBeenCalledWith(

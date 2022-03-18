@@ -6,6 +6,10 @@ import { Button, Spinner } from '@wordpress/components';
 import { updateQueryString } from '@woocommerce/navigation';
 import { recordEvent } from '@woocommerce/tracks';
 import { useState } from '@wordpress/element';
+/**
+ * Internal dependencies
+ */
+import { getPluginTrackKey } from '~/utils';
 
 export const Action = ( {
 	hasSetup = false,
@@ -32,6 +36,10 @@ export const Action = ( {
 
 	const handleClick = async () => {
 		onSetUp( id );
+
+		recordEvent( 'tasklist_payment_setup', {
+			selected: getPluginTrackKey( id ),
+		} );
 
 		if ( onSetupCallback ) {
 			setIsBusy( true );
@@ -107,18 +115,16 @@ export const Action = ( {
 
 	if ( isInstalled && hasPlugins ) {
 		return (
-			<div>
-				<Button
-					className={ classes }
-					isPrimary={ isRecommended }
-					isSecondary={ ! isRecommended }
-					isBusy={ isBusy }
-					disabled={ isBusy }
-					onClick={ () => handleClick() }
-				>
-					{ __( 'Finish setup', 'woocommerce-admin' ) }
-				</Button>
-			</div>
+			<Button
+				className={ classes }
+				isPrimary={ isRecommended }
+				isSecondary={ ! isRecommended }
+				isBusy={ isBusy }
+				disabled={ isBusy }
+				onClick={ () => handleClick() }
+			>
+				{ __( 'Finish setup', 'woocommerce-admin' ) }
+			</Button>
 		);
 	}
 

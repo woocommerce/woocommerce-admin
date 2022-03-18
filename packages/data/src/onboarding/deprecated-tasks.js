@@ -20,6 +20,14 @@ function getQuery() {
  */
 export class DeprecatedTasks {
 	constructor() {
+		/**
+		 * **Deprecated** Filter Onboarding tasks.
+		 *
+		 * @filter woocommerce_admin_onboarding_task_list
+		 * @deprecated
+		 * @param {Array} tasks Array of tasks.
+		 * @param {Array} query Url query parameters.
+		 */
 		this.filteredTasks = applyFilters(
 			'woocommerce_admin_onboarding_task_list',
 			[],
@@ -54,7 +62,7 @@ export class DeprecatedTasks {
 						time: task.time,
 						level: task.level ? parseInt( task.level, 10 ) : 3,
 						list_id: task.type || 'extended',
-						is_visible: task.visible,
+						can_view: task.visible,
 						id: task.key,
 						is_snoozeable: task.allowRemindMeLater,
 						is_dismissable: task.isDismissable,

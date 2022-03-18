@@ -4,21 +4,11 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { recordEvent } from '@woocommerce/tracks';
-import {
-	PLUGINS_STORE_NAME,
-	SETTINGS_STORE_NAME,
-	OPTIONS_STORE_NAME,
-	WCDataStoreName,
-	Plugin,
-} from '@woocommerce/data';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
-import PaymentRecommendations, {
-	getPaymentRecommendationData,
-} from '../payment-recommendations';
+import PaymentRecommendations from '../payment-recommendations';
 import { isWCPaySupported } from '../../tasks/fills/PaymentGatewaySuggestions/components/WCPay';
 import { createNoticesFromResponse } from '~/lib/notices';
 
@@ -60,11 +50,6 @@ jest.mock(
 	} )
 );
 
-jest.mock( '@woocommerce/wc-admin-settings', () => ( {
-	getAdminLink: jest
-		.fn()
-		.mockImplementation( ( link: string ) => 'https://test.ca/' + link ),
-} ) );
 jest.mock( '../../lib/notices', () => ( {
 	createNoticesFromResponse: jest.fn().mockImplementation( () => {
 		// do nothing
@@ -72,161 +57,23 @@ jest.mock( '../../lib/notices', () => ( {
 } ) );
 
 describe( 'Payment recommendations', () => {
-	it( 'should render nothing with no recommendedPlugins and country not defined', () => {
+	it( 'should render nothing with no paymentGatewaySuggestions and country not defined', () => {
 		( useSelect as jest.Mock ).mockReturnValue( {
-			displayable: false,
-			recommendedPlugins: undefined,
+			installedPaymentGateways: {},
+			paymentGatewaySuggestions: undefined,
 		} );
 		const { container } = render( <PaymentRecommendations /> );
 
 		expect( container.firstChild ).toBe( null );
 	} );
 
-	describe( 'getPaymentRecommendationData', () => {
-		const plugin = {
-			title: 'test',
-			slug: 'test',
-			product: 'test',
-		} as Plugin;
-		const baseSelectValues = {
-			plugins: undefined,
-			optionsResolving: false,
-			country: undefined,
-			optionValues: {},
-		};
-		const recommendedPluginsMock = jest.fn();
-		const createFakeSelect = ( data: {
-			optionsResolving?: boolean;
-			optionValues: Record< string, boolean | string >;
-			country?: string;
-			plugins?: Plugin[];
-		} ) => {
-			return jest
-				.fn()
-				.mockImplementation( ( storeName: WCDataStoreName ) => {
-					switch ( storeName ) {
-						case OPTIONS_STORE_NAME:
-							return {
-								isResolving: () => data.optionsResolving,
-								getOption: ( option: string ) =>
-									data.optionValues[ option ],
-							};
-						case SETTINGS_STORE_NAME:
-							return {
-								getSettings: () => ( {
-									general: {
-										woocommerce_default_country:
-											data.country,
-									},
-								} ),
-							};
-						case PLUGINS_STORE_NAME:
-							return {
-								getRecommendedPlugins: recommendedPluginsMock.mockReturnValue(
-									data.plugins
-								),
-							};
-					}
-				} );
-		};
-
-		it( 'should render nothing if the country is not supported', () => {
-			( isWCPaySupported as jest.Mock ).mockReturnValue( false );
-
-			const selectData = getPaymentRecommendationData(
-				createFakeSelect( {
-					...baseSelectValues,
-					country: 'FR',
-					plugins: [ plugin ],
-				} )
-			);
-
-			expect( selectData.displayable ).toBe( false );
-		} );
-
-		it( 'should not call getRecommendedPlugins when displayable is false', () => {
-			( isWCPaySupported as jest.Mock ).mockReturnValue( false );
-
-			const selectData = getPaymentRecommendationData(
-				createFakeSelect( {
-					...baseSelectValues,
-					country: 'FR',
-					plugins: [ plugin ],
-				} )
-			);
-
-			expect( selectData.displayable ).toBe( false );
-			expect( recommendedPluginsMock ).not.toHaveBeenCalled();
-		} );
-
-		it( 'should have displayable as true if country is supported', () => {
-			( isWCPaySupported as jest.Mock ).mockReturnValue( true );
-			const selectData = getPaymentRecommendationData(
-				createFakeSelect( {
-					...baseSelectValues,
-					country: 'US',
-					plugins: [ plugin ],
-					optionValues: {},
-				} )
-			);
-
-			expect( selectData.displayable ).toBeTruthy();
-		} );
-
-		it( 'should have displayable as false if hidden is set to true', () => {
-			( isWCPaySupported as jest.Mock ).mockReturnValue( true );
-			const selectData = getPaymentRecommendationData(
-				createFakeSelect( {
-					...baseSelectValues,
-					country: 'US',
-					plugins: [ plugin ],
-					optionValues: {
-						woocommerce_setting_payments_recommendations_hidden:
-							'yes',
-					},
-				} )
-			);
-
-			expect( selectData.displayable ).toBeFalsy();
-		} );
-
-		it( 'should set displayable to true if isHidden is not defined', () => {
-			( isWCPaySupported as jest.Mock ).mockReturnValue( true );
-			const selectData = getPaymentRecommendationData(
-				createFakeSelect( {
-					...baseSelectValues,
-					country: 'US',
-					plugins: [ plugin ],
-					optionValues: {
-						woocommerce_setting_payments_recommendations_hidden:
-							'no',
-					},
-				} )
-			);
-
-			expect( selectData.displayable ).toBeTruthy();
-		} );
-
-		it( 'have displayable as false if still requesting options', () => {
-			( isWCPaySupported as jest.Mock ).mockReturnValue( true );
-			const selectData = getPaymentRecommendationData(
-				createFakeSelect( {
-					...baseSelectValues,
-					country: 'US',
-					plugins: [ plugin ],
-					optionsResolving: true,
-				} )
-			);
-
-			expect( selectData.displayable ).toBeFalsy();
-		} );
-	} );
-
-	it( 'should render the list if displayable is true and has recommendedPlugins', () => {
+	it( 'should render the list if displayable is true and has paymentGatewaySuggestions', () => {
 		( isWCPaySupported as jest.Mock ).mockReturnValue( true );
 		( useSelect as jest.Mock ).mockReturnValue( {
-			displayable: true,
-			recommendedPlugins: [ { title: 'test', slug: 'test' } ],
+			installedPaymentGateways: {},
+			paymentGatewaySuggestions: [
+				{ title: 'test', id: 'test', plugins: [ 'test' ] },
+			],
 		} );
 		const { container, getByText } = render( <PaymentRecommendations /> );
 
@@ -239,6 +86,7 @@ describe( 'Payment recommendations', () => {
 		( isWCPaySupported as jest.Mock ).mockReturnValue( true );
 		( useSelect as jest.Mock ).mockReturnValue( {
 			displayable: false,
+			installedPaymentGateways: {},
 		} );
 		const { container } = render( <PaymentRecommendations /> );
 
@@ -252,9 +100,9 @@ describe( 'Payment recommendations', () => {
 	it( 'should trigger event payments_recommendations_pageview, when first rendered', () => {
 		( isWCPaySupported as jest.Mock ).mockReturnValue( true );
 		( useSelect as jest.Mock ).mockReturnValue( {
-			displayable: true,
-			recommendedPlugins: [
-				{ title: 'test', slug: 'test', product: 'test' },
+			installedPaymentGateways: {},
+			paymentGatewaySuggestions: [
+				{ title: 'test', id: 'test', plugins: [ 'test' ] },
 			],
 		} );
 		const { container } = render( <PaymentRecommendations /> );
@@ -272,9 +120,9 @@ describe( 'Payment recommendations', () => {
 	it( 'should set woocommerce-payments-displayed prop to true if pre install wc pay promotion gateway is displayed', () => {
 		( isWCPaySupported as jest.Mock ).mockReturnValue( true );
 		( useSelect as jest.Mock ).mockReturnValue( {
-			displayable: true,
-			recommendedPlugins: [
-				{ title: 'test', slug: 'test', product: 'test' },
+			installedPaymentGateways: {},
+			paymentGatewaySuggestions: [
+				{ title: 'test', id: 'test', plugins: [ 'test' ] },
 			],
 		} );
 		const { container } = render(
@@ -294,11 +142,11 @@ describe( 'Payment recommendations', () => {
 		);
 	} );
 
-	it( 'should not render if there are no recommendedPlugins', () => {
+	it( 'should not render if there are no paymentGatewaySuggestions', () => {
 		( isWCPaySupported as jest.Mock ).mockReturnValue( true );
 		( useSelect as jest.Mock ).mockReturnValue( {
-			displayable: true,
-			recommendedPlugins: [],
+			installedPaymentGateways: {},
+			paymentGatewaySuggestions: [],
 		} );
 		const { container } = render( <PaymentRecommendations /> );
 
@@ -321,21 +169,22 @@ describe( 'Payment recommendations', () => {
 				installAndActivatePlugins: installAndActivateMock,
 			} );
 			( useSelect as jest.Mock ).mockReturnValue( {
-				displayable: true,
-				recommendedPlugins: [
+				installedPaymentGateways: {},
+				installedPaymentGateway: {
+					settings_url: 'https://test.ca/random-link',
+				},
+				paymentGatewaySuggestions: [
 					{
 						title: 'test',
-						slug: 'test',
-						product: 'test-product',
-						'button-text': 'install',
-						'setup-link': '/wp-admin/random-link',
+						id: 'test',
+						plugins: [ 'test-product' ],
+						actionText: 'install',
 					},
 					{
 						title: 'another',
-						slug: 'another',
-						product: 'another-product',
-						'button-text': 'install2',
-						'setup-link': '/wp-admin/random-link',
+						id: 'another',
+						plugins: [ 'another-product' ],
+						actionText: 'install2',
 					},
 				],
 			} );
@@ -367,15 +216,24 @@ describe( 'Payment recommendations', () => {
 					extension_selected: 'test-product',
 				}
 			);
-			await waitFor( () => {
-				expect( getAdminLink ).toHaveBeenCalledWith( 'random-link' );
-			} );
 			expect( mockLocation.href ).toEqual(
 				'https://test.ca/random-link'
 			);
 		} );
 
 		it( 'should call create notice if install and activate failed', async () => {
+			( useSelect as jest.Mock ).mockReturnValue( {
+				installedPaymentGateway: false,
+				installedPaymentGateways: {},
+				paymentGatewaySuggestions: [
+					{
+						title: 'test',
+						id: 'test',
+						plugins: [ 'test-product' ],
+						actionText: 'install',
+					},
+				],
+			} );
 			installAndActivateMock.mockClear();
 			installAndActivateMock.mockImplementation(
 				() =>
@@ -405,6 +263,34 @@ describe( 'Payment recommendations', () => {
 				expect( createNoticesFromResponse ).toHaveBeenCalled();
 			} );
 			expect( mockLocation.href ).toEqual( 'test' );
+		} );
+
+		it( 'should only show gateways that have not been installed', async () => {
+			( useSelect as jest.Mock ).mockReturnValue( {
+				installedPaymentGateway: false,
+				installedPaymentGateways: {
+					test: true,
+				},
+				paymentGatewaySuggestions: [
+					{
+						title: 'test',
+						id: 'test',
+						plugins: [ 'test-product' ],
+						actionText: 'install',
+					},
+					{
+						title: 'another',
+						id: 'another',
+						plugins: [ 'another-product' ],
+						actionText: 'install2',
+					},
+				],
+			} );
+
+			const { queryByText } = render( <PaymentRecommendations /> );
+
+			expect( queryByText( 'test' ) ).not.toBeInTheDocument();
+			expect( queryByText( 'another' ) ).toBeInTheDocument();
 		} );
 	} );
 } );

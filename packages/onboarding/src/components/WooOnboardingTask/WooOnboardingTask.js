@@ -28,7 +28,15 @@ export const trackView = ( taskId ) => {
 	} );
 };
 
-export const WooOnboardingTask = ( { id, ...props } ) => {
+/**
+ * A Fill for adding Onboarding tasks.
+ *
+ * @slotFill WooOnboardingTask
+ * @scope woocommerce-tasks
+ * @param {Object} props    React props.
+ * @param {string} props.id Task id.
+ */
+const WooOnboardingTask = ( { id, ...props } ) => {
 	return <Fill name={ 'woocommerce_onboarding_task_' + id } { ...props } />;
 };
 
@@ -46,3 +54,5 @@ WooOnboardingTask.Slot = ( { id, fillProps } ) => {
 		/>
 	);
 };
+
+export { WooOnboardingTask };

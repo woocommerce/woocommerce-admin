@@ -2,18 +2,19 @@
 /**
  * MailchimpScheduler tests
  *
- * @package Automattic\WooCommerce\Admin\Schedulers
+ * @package Automattic\WooCommerce\Internal\Admin\Schedulers
  */
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
+use Automattic\WooCommerce\Internal\Admin\Onboarding;
+use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
 
 /**
  * Class WC_Tests_Mailchimp_Scheduler
  */
 class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 	/**
-	 * @var MailchimpScheduler MailchimpScheduler instance to test
+	 * @var \Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler MailchimpScheduler instance to test
 	 */
 	private $instance;
 
@@ -33,7 +34,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 								->setMethods( array( 'make_request' ) )
 								->getMock();
 
-		delete_option( MailchimpScheduler::SUBSCRIBED_OPTION_NAME );
+		MailchimpScheduler::reset();
 
 		parent::setUp();
 	}
@@ -57,14 +58,14 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 	public function test_it_aborts_if_is_agree_marketing_is_false_or_missing() {
 		// When.
 		$profile_data = array( 'store_email' => 'test@test.com' );
-		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		update_option( OnboardingProfile::DATA_OPTION, $profile_data );
 		$this->assertFalse( $this->instance->run() );
 
 		$profile_data = array(
 			'is_agree_marketing' => false,
 			'store_email'        => 'test@test.com',
 		);
-		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		update_option( OnboardingProfile::DATA_OPTION, $profile_data );
 
 		// Then.
 		$this->assertFalse( $this->instance->run() );
@@ -77,7 +78,30 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 	public function test_it_aborts_if_store_email_is_missing() {
 		// When.
 		$profile_data = array( 'is_agree_marketing' => true );
-		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		update_option( OnboardingProfile::DATA_OPTION, $profile_data );
+
+		// Then.
+		$this->assertFalse( $this->instance->run() );
+	}
+
+
+	/**
+	 * When failed requests reaches the threshold.
+	 * Then it should abort.
+	 */
+	public function test_it_aborts_if_failed_requests_reaches_the_threshold() {
+		// Given.
+		$profile_data = array(
+			'is_agree_marketing' => true,
+			'store_email'        => 'test@test.com',
+		);
+		update_option( OnboardingProfile::DATA_OPTION, $profile_data );
+
+		// When.
+		update_option(
+			MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME,
+			MailchimpScheduler::MAX_ERROR_THRESHOLD
+		);
 
 		// Then.
 		$this->assertFalse( $this->instance->run() );
@@ -86,7 +110,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 	/**
 	 * Given is_agree_marketing and store_email values are set.
 	 * When the request to the API returns WP_Error.
-	 * Then it should log an error message.
+	 * Then it should log error message and error count.
 	 */
 	public function test_it_logs_error_when_wp_error_is_returned() {
 		// Given.
@@ -94,7 +118,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 			'is_agree_marketing' => true,
 			'store_email'        => 'test@test.com',
 		);
-		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		update_option( OnboardingProfile::DATA_OPTION, $profile_data );
 
 		// When.
 		$wp_error = new WP_Error();
@@ -106,16 +130,20 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 							->with( 'Error getting a response from Mailchimp API.', array( 'source' => MailchimpScheduler::LOGGER_CONTEXT ) );
 
 		$this->instance->run();
+		$this->assertEquals( 1, get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME ) );
 
 		// Check for the missing 'body'.
 		$this->instance->method( 'make_request' )->willReturn( array() );
 		$this->instance->run();
+		$this->assertEquals( 2, get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME ) );
 	}
+
+
 
 	/**
 	 * Given is_agree_marketing and store_email values are set.
 	 * When the request to the API returns body without 'success'.
-	 * Then it should log an error message.
+	 * Then it should log error message and error count.
 	 */
 	public function test_it_logs_error_when_response_data_is_incorrect() {
 		// Given.
@@ -123,7 +151,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 			'is_agree_marketing' => true,
 			'store_email'        => 'test@test.com',
 		);
-		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		update_option( OnboardingProfile::DATA_OPTION, $profile_data );
 
 		// When.
 		$body = wp_json_encode( array() );
@@ -139,6 +167,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 						);
 
 		$this->instance->run();
+		$this->assertEquals( 1, get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME ) );
 	}
 
 	/**
@@ -152,7 +181,7 @@ class WC_Tests_Mailchimp_Scheduler extends WC_Unit_Test_Case {
 			'is_agree_marketing' => true,
 			'store_email'        => 'test@test.com',
 		);
-		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		update_option( OnboardingProfile::DATA_OPTION, $profile_data );
 
 		// When.
 		$body = wp_json_encode( array( 'success' => true ) );

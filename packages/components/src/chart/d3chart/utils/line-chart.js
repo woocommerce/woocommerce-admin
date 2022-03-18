@@ -14,11 +14,11 @@ import { smallBreak, wideBreak } from './breakpoints';
 /**
  * Describes getDateSpaces
  *
- * @param {Array} data - The chart component's `data` prop.
- * @param {Array} uniqueDates - from `getUniqueDates`
- * @param {Array} visibleKeys - visible keys from the input data for the chart
- * @param {number} width - calculated width of the charting space
- * @param {Function} xScale - from `getXLineScale`
+ * @param {Array}    data        - The chart component's `data` prop.
+ * @param {Array}    uniqueDates - from `getUniqueDates`
+ * @param {Array}    visibleKeys - visible keys from the input data for the chart
+ * @param {number}   width       - calculated width of the charting space
+ * @param {Function} xScale      - from `getXLineScale`
  * @return {Array} that includes the date, start (x position) and width to mode the mouseover rectangles
  */
 export const getDateSpaces = (
@@ -82,7 +82,7 @@ export const getLine = ( xScale, yScale ) =>
 /**
  * Describes `getLineData`
  *
- * @param {Array} data - The chart component's `data` prop.
+ * @param {Array} data        - The chart component's `data` prop.
  * @param {Array} orderedKeys - from `getOrderedKeys`.
  * @return {Array} an array objects with a category `key` and an array of `values` with `date` and `value` properties
  */
@@ -93,7 +93,10 @@ export const getLineData = ( data, orderedKeys ) =>
 		visible: row.visible,
 		label: row.label,
 		values: data.map( ( d ) => ( {
+			// To have the same X-axis scale, we use the same dates for all lines.
 			date: d.date,
+			// To have actual date for the screenReader, we need to use label date.
+			labelDate: d[ row.key ].labelDate,
 			focus: row.focus,
 			value: get( d, [ row.key, 'value' ], 0 ),
 			visible: row.visible,
@@ -144,7 +147,6 @@ export const drawLines = ( node, data, params, scales, formats, tooltip ) => {
 			.attr( 'd', ( d ) => line( d.values ) );
 
 	const minDataPointSpacing = 36;
-
 	// eslint-disable-next-line no-unused-expressions
 	width / params.uniqueDates.length > minDataPointSpacing &&
 		series
@@ -173,7 +175,9 @@ export const drawLines = ( node, data, params, scales, formats, tooltip ) => {
 			.attr( 'role', 'graphics-symbol' )
 			.attr( 'aria-label', ( d ) => {
 				const label = formats.screenReaderFormat(
-					d.date instanceof Date ? d.date : moment( d.date ).toDate()
+					d.labelDate instanceof Date
+						? d.labelDate
+						: moment( d.labelDate ).toDate()
 				);
 				return `${ label } ${ tooltip.valueFormat( d.value ) }`;
 			} )

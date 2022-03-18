@@ -115,9 +115,14 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 	 */
 	protected function add_order_by_params( $query_args, $from_arg, $id_cell ) {
 		global $wpdb;
+
+		// Sanitize input: guarantee that the id cell in the join is quoted with backticks.
+		$id_cell_segments   = explode( '.', str_replace( '`', '', $id_cell ) );
+		$id_cell_identifier = '`' . implode( '`.`', $id_cell_segments ) . '`';
+
 		$lookup_table    = self::get_db_table_name();
 		$order_by_clause = $this->add_order_by_clause( $query_args, $this );
-		$join            = "JOIN {$wpdb->posts} AS _coupons ON {$id_cell} = _coupons.ID";
+		$join            = "JOIN {$wpdb->posts} AS _coupons ON {$id_cell_identifier} = _coupons.ID";
 		$this->add_orderby_order_clause( $query_args, $this );
 
 		if ( 'inner' === $from_arg ) {
@@ -283,7 +288,7 @@ class DataStore extends ReportsDataStore implements DataStoreInterface {
 				$this->subquery->add_sql_clause( 'limit', $this->get_sql_clause( 'limit' ) );
 				$coupons_query = $this->subquery->get_query_statement();
 
-				$this->subquery->clear_sql_clause( array( 'select', 'order_by' ) );
+				$this->subquery->clear_sql_clause( array( 'select', 'order_by', 'limit' ) );
 				$this->subquery->add_sql_clause( 'select', 'coupon_id' );
 				$coupon_subquery = "SELECT COUNT(*) FROM (
 					{$this->subquery->get_query_statement()}

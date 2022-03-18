@@ -67,6 +67,7 @@ class Note extends \WC_Data {
 			'layout'        => 'plain',
 			'image'         => '',
 			'is_deleted'    => false,
+			'is_read'       => false,
 		);
 
 		parent::__construct( $data );
@@ -295,6 +296,26 @@ class Note extends \WC_Data {
 	}
 
 	/**
+	 * Get action by action name on the note.
+	 *
+	 * @param  string $action_name The action name.
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array the action.
+	 */
+	public function get_action( $action_name, $context = 'view' ) {
+		$actions = $this->get_prop( 'actions', $context );
+
+		$matching_action = null;
+		foreach ( $actions as $i => $action ) {
+			if ( $action->name === $action_name ) {
+				$matching_action =& $actions[ $i ];
+				break;
+			}
+		}
+		return $matching_action;
+	}
+
+	/**
 	 * Get note layout (the old notes won't have one).
 	 *
 	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
@@ -322,6 +343,16 @@ class Note extends \WC_Data {
 	 */
 	public function get_is_deleted( $context = 'view' ) {
 		return $this->get_prop( 'is_deleted', $context );
+	}
+
+	/**
+	 * Get is_read status.
+	 *
+	 * @param  string $context What the value is for. Valid values are 'view' and 'edit'.
+	 * @return array
+	 */
+	public function get_is_read( $context = 'view' ) {
+		return $this->get_prop( 'is_read', $context );
 	}
 
 	/*
@@ -574,28 +605,34 @@ class Note extends \WC_Data {
 	}
 
 	/**
+	 * Set note is_read status. NULL is not allowed
+	 *
+	 * @param bool $is_read Note is_read status.
+	 */
+	public function set_is_read( $is_read ) {
+		$this->set_prop( 'is_read', $is_read );
+	}
+
+	/**
 	 * Add an action to the note
 	 *
-	 * @param string  $name           Action name (not presented to user).
-	 * @param string  $label          Action label (presented as button label).
-	 * @param string  $url            Action URL, if navigation needed. Optional.
-	 * @param string  $status         Status to transition parent Note to upon click. Defaults to 'actioned'.
-	 * @param boolean $primary        Whether or not this is the primary action. Defaults to false.
-	 * @param string  $actioned_text The label to display after the note has been actioned but before it is dismissed in the UI.
+	 * @param string $name           Action name (not presented to user).
+	 * @param string $label          Action label (presented as button label).
+	 * @param string $url            Action URL, if navigation needed. Optional.
+	 * @param string $status         Status to transition parent Note to upon click. Defaults to 'actioned'.
+	 * @param string $actioned_text The label to display after the note has been actioned but before it is dismissed in the UI.
 	 */
 	public function add_action(
 		$name,
 		$label,
 		$url = '',
 		$status = self::E_WC_ADMIN_NOTE_ACTIONED,
-		$primary = false,
 		$actioned_text = ''
 	) {
 		$name          = wc_clean( $name );
 		$label         = wc_clean( $label );
 		$query         = esc_url_raw( $url );
 		$status        = wc_clean( $status );
-		$primary       = (bool) $primary;
 		$actioned_text = wc_clean( $actioned_text );
 
 		if ( empty( $name ) ) {
@@ -611,7 +648,6 @@ class Note extends \WC_Data {
 			'label'         => $label,
 			'query'         => $query,
 			'status'        => $status,
-			'primary'       => $primary,
 			'actioned_text' => $actioned_text,
 			'nonce_name'    => null,
 			'nonce_action'  => null,
@@ -643,7 +679,7 @@ class Note extends \WC_Data {
 	 * @throws \Exception If note name cannot be found.
 	 */
 	public function add_nonce_to_action( string $note_action_name, string $nonce_action, string $nonce_name ) {
-		$actions   = $this->get_prop( 'actions', 'edit' );
+		$actions = $this->get_prop( 'actions', 'edit' );
 
 		$matching_action = null;
 		foreach ( $actions as $i => $action ) {

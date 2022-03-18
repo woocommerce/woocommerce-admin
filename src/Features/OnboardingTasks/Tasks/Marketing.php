@@ -4,29 +4,73 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
-use Automattic\WooCommerce\Admin\Features\RemoteFreeExtensions\Init as RemoteFreeExtensions;
+use Automattic\WooCommerce\Internal\Admin\RemoteFreeExtensions\Init as RemoteFreeExtensions;
 
 /**
  * Marketing Task
  */
-class Marketing {
+class Marketing extends Task {
 	/**
-	 * Get the task arguments.
+	 * ID.
 	 *
-	 * @return array
+	 * @return string
 	 */
-	public static function get_task() {
-		return array(
-			'id'          => 'marketing',
-			'title'       => __( 'Set up marketing tools', 'woocommerce-admin' ),
-			'content'     => __(
-				'Add recommended marketing tools to reach new customers and grow your business',
-				'woocommerce-admin'
-			),
-			'is_complete' => self::has_installed_extensions(),
-			'can_view'    => Features::is_enabled( 'remote-free-extensions' ) && count( self::get_plugins() ) > 0,
-			'time'        => __( '1 minute', 'woocommerce-admin' ),
+	public function get_id() {
+		return 'marketing';
+	}
+
+	/**
+	 * Title.
+	 *
+	 * @return string
+	 */
+	public function get_title() {
+		if ( true === $this->get_parent_option( 'use_completed_title' ) ) {
+			if ( $this->is_complete() ) {
+				return __( 'You added sales channels', 'woocommerce-admin' );
+			}
+			return __( 'Get more sales', 'woocommerce-admin' );
+		}
+		return __( 'Set up marketing tools', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Content.
+	 *
+	 * @return string
+	 */
+	public function get_content() {
+		return __(
+			'Add recommended marketing tools to reach new customers and grow your business',
+			'woocommerce-admin'
 		);
+	}
+
+	/**
+	 * Time.
+	 *
+	 * @return string
+	 */
+	public function get_time() {
+		return __( '1 minute', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Task completion.
+	 *
+	 * @return bool
+	 */
+	public function is_complete() {
+		return self::has_installed_extensions();
+	}
+
+	/**
+	 * Task visibility.
+	 *
+	 * @return bool
+	 */
+	public function can_view() {
+		return Features::is_enabled( 'remote-free-extensions' ) && count( self::get_plugins() ) > 0;
 	}
 
 	/**
@@ -37,8 +81,8 @@ class Marketing {
 	public static function get_plugins() {
 		$bundles = RemoteFreeExtensions::get_extensions(
 			array(
-				'reach',
-				'grow',
+				'task-list/reach',
+				'task-list/grow',
 			)
 		);
 

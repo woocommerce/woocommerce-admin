@@ -7,12 +7,17 @@ import { Component } from '@wordpress/element';
 import { Card, CardBody } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { difference, filter } from 'lodash';
-import interpolateComponents from 'interpolate-components';
+import interpolateComponents from '@automattic/interpolate-components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Link, Stepper, Plugins } from '@woocommerce/components';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/settings';
 import { getHistory, getNewPath } from '@woocommerce/navigation';
-import { SETTINGS_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
+import {
+	SETTINGS_STORE_NAME,
+	ONBOARDING_STORE_NAME,
+	PLUGINS_STORE_NAME,
+	COUNTRIES_STORE_NAME,
+} from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { registerPlugin } from '@wordpress/plugins';
 import { WooOnboardingTask } from '@woocommerce/onboarding';
@@ -52,7 +57,6 @@ export class Shipping extends Component {
 	}
 
 	async fetchShippingZones() {
-		this.setState( { isPending: true } );
 		const { countryCode, countryName } = this.props;
 
 		// @todo The following fetches for shipping information should be moved into
@@ -112,7 +116,7 @@ export class Shipping extends Component {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const { countryCode, settings } = this.props;
+		const { countryCode, countryName, settings } = this.props;
 		const {
 			woocommerce_store_address: storeAddress,
 			woocommerce_default_country: defaultCountry,
@@ -123,9 +127,13 @@ export class Shipping extends Component {
 		if (
 			step === 'rates' &&
 			( prevProps.countryCode !== countryCode ||
+				prevProps.countryName !== countryName ||
 				prevState.step !== 'rates' )
 		) {
-			this.fetchShippingZones();
+			this.setState( { isPending: true } );
+			if ( countryName ) {
+				this.fetchShippingZones();
+			}
 		}
 
 		const isCompleteAddress = Boolean(
@@ -172,7 +180,17 @@ export class Shipping extends Component {
 	}
 
 	getSteps() {
-		const { countryCode, isJetpackConnected, settings } = this.props;
+		const {
+			countryCode,
+			createNotice,
+			invalidateResolutionForStoreSelector,
+			isJetpackConnected,
+			onComplete,
+			optimisticallyCompleteTask,
+			settings,
+			task,
+			updateAndPersistSettingsForGroup,
+		} = this.props;
 		const pluginsToActivate = this.getPluginsToActivate();
 		const requiresJetpackConnection =
 			! isJetpackConnected && countryCode === 'US';
@@ -187,7 +205,11 @@ export class Shipping extends Component {
 				),
 				content: (
 					<StoreLocation
-						{ ...this.props }
+						createNotice={ createNotice }
+						updateAndPersistSettingsForGroup={
+							updateAndPersistSettingsForGroup
+						}
+						settings={ settings }
 						onComplete={ ( values ) => {
 							const country = getCountryCode(
 								values.countryState
@@ -195,7 +217,7 @@ export class Shipping extends Component {
 							recordEvent( 'tasklist_shipping_set_location', {
 								country,
 							} );
-							this.completeStep();
+							// Don't need to trigger completeStep here as it's triggered by the address updates in the componentDidUpdate function.
 						} }
 					/>
 				),
@@ -217,8 +239,13 @@ export class Shipping extends Component {
 								: __( 'Complete task', 'woocommerce-admin' )
 						}
 						shippingZones={ this.state.shippingZones }
-						onComplete={ this.completeStep }
-						{ ...this.props }
+						onComplete={ () => {
+							const { id } = task;
+							optimisticallyCompleteTask( id );
+							invalidateResolutionForStoreSelector();
+							this.completeStep();
+						} }
+						createNotice={ createNotice }
 					/>
 				),
 				visible:
@@ -275,9 +302,9 @@ export class Shipping extends Component {
 								plugins_to_activate: pluginsToActivate,
 							} );
 							getHistory().push( getNewPath( {}, '/', {} ) );
+							onComplete();
 						} }
 						pluginSlugs={ pluginsToActivate }
-						{ ...this.props }
 					/>
 				),
 				visible: pluginsToActivate.length,
@@ -295,7 +322,6 @@ export class Shipping extends Component {
 							'admin.php?page=wc-admin'
 						) }
 						completeStep={ this.completeStep }
-						{ ...this.props }
 						onConnect={ () => {
 							recordEvent( 'tasklist_shipping_connect_store' );
 						} }
@@ -339,16 +365,14 @@ const ShippingWrapper = compose(
 		const { getActivePlugins, isJetpackConnected } = select(
 			PLUGINS_STORE_NAME
 		);
+		const { getCountry } = select( COUNTRIES_STORE_NAME );
 
 		const { general: settings = {} } = getSettings( 'general' );
 		const countryCode = getCountryCode(
 			settings.woocommerce_default_country
 		);
 
-		const { countries = [] } = getSetting( 'dataEndpoints', {} );
-		const country = countryCode
-			? countries.find( ( c ) => c.code === countryCode )
-			: null;
+		const country = countryCode ? getCountry( countryCode ) : null;
 		const countryName = country ? country.name : null;
 		const activePlugins = getActivePlugins();
 
@@ -366,9 +390,15 @@ const ShippingWrapper = compose(
 		const { updateAndPersistSettingsForGroup } = dispatch(
 			SETTINGS_STORE_NAME
 		);
+		const {
+			invalidateResolutionForStoreSelector,
+			optimisticallyCompleteTask,
+		} = dispatch( ONBOARDING_STORE_NAME );
 
 		return {
 			createNotice,
+			invalidateResolutionForStoreSelector,
+			optimisticallyCompleteTask,
 			updateAndPersistSettingsForGroup,
 		};
 	} )
@@ -378,8 +408,10 @@ registerPlugin( 'wc-admin-onboarding-task-shipping', {
 	scope: 'woocommerce-tasks',
 	render: () => (
 		<WooOnboardingTask id="shipping">
-			{ ( { onComplete } ) => {
-				return <ShippingWrapper onComplete={ onComplete } />;
+			{ ( { onComplete, task } ) => {
+				return (
+					<ShippingWrapper onComplete={ onComplete } task={ task } />
+				);
 			} }
 		</WooOnboardingTask>
 	),

@@ -2,26 +2,287 @@
 
 ## Unreleased
 
+### Display WCPay task when installed via subscriptions option on profiler
+
+1. Start with a fresh install.
+2. Navigate to WooCommerce -> Home to start the OBW.
+3. Ensure you select "subscriptions" under the step for product types.
+4. Complete the rest of the onboarding wizard.
+5. Confirm that "Get paid with WooCommerce Payments" appears under primary task list.
+6. When clicked, it should redirect to WCPay connection page.
+7. Set up/connect WooCommerce Payments.
+8. After WCPay is connected, go to the Homescreen and confirm that "Set up additional payment providers" appears under extended task list.
+9. When clicked, it should direct to the payments task.
+
+## 3.3.0
+
+### Prompt a modal to save any unsaved changes in OBW
+
+1. Start with a fresh install.
+2. Navigate to WooCommerce -> Home to start the OBW.
+3. Complete a few steps.
+4. Click any of the previous steps and make some changes.
+5. Click the next/previous step. You should be prompted by the modal to save your changes. Click the save button.
+6. Go back to the step and confirm the changes.
+7. Repeat the step, but click the disregard button for this time.
+8. Confirm the changes are not saved for this time.
+
+## 3.2.0
+
+### Fix category report query returns invalid net sales
+
+1. Create a new store and finish the Onboarding flow
+2. Go to **Products > Add New** and create a product called **Hoodie with Pocket** with the price $35
+3. Create a new category called **Hoodie** with **Clothing** as the parent category in the **Product categories** on the right.
+4. Select **Clothing** and **Hoodie with Pocket** as well and click **Update**
+5. Create an order with a single item of **Hoodie with Pocket** (keep note of the total price)
+6. Run the action scheduler (make sure all are run), you can do this manually by going to **WooCommerce > Status > Scheduled Actions**. If your queue is large, just make sure that the `wc-admin_import_orders` actions are run.
+7. Go to **Analytics > Overview** and scroll down to the **Leaderboards**
+8. Observe that the **Clothing** category has only **1** items sold and net sales is $35
+9. Click on **Clothing** it will redirect to the Categories page and show the correct numbers
+10. Now click on **Analytics > Categories** again and scroll down to the table
+11. Observe that the **Clothing** category has only **1** items sold and net sales is $35
+
+### Hide store address fields in regions that specify hidden #8172
+
+1. Go to the store setup wizard
+2. Change to a country like Guatemala that hides the post code
+3. Verify that the post code is hidden and "Continue" still works as expected
+4. Switch to a different country with all fields shown and make sure things still work as expected
+
+### Add localized validation to store address #8123
+
+**Store details**
+
+1. Navigate to the Store Details step of the profiler
+2. Change the country/region to US.
+3. Check that all fields are still required
+4. Change your country to Australia
+5. Make sure post code and city labels are updated (you can check this [list here](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/includes/class-wc-countries.php#L795-L1528) for other country requirements by shortcode)
+6. Change the country to Hong Kong
+7. Check that zip/postal is no longer required
+
+**Tasks**
+
+1. Delete any shipping zones you might have
+2. Clear your address in **WooCommerce > Settings** aside from the country/region.
+3. Visit the Shipping task in the task list
+4. It should prompt you to put in the store address.
+5. This should follow the same store address validation as the Store Details step.
+
+### Enhance report chart i18n support #8129
+
+1. Go to **Analytics > Overview**
+2. Observe chart texts show normally in English/site language.
+3. Select different "stats" by click on the 3 dots on the right hand and enabling other stats, now repeat step 2 until all options are confirmed.
+4. Go to **Settings > General**
+5. Change the "Site Language" to another languages like "Português do Brasil"
+6. Repeat 1 ~ 3 steps
+
+### Add MailPoet to Installed marketing extensions #8091
+
+1. Go to **Marketing > Overview**
+2. MailPoet is not shown in **Installed marketing extensions**
+3. Go to **Plugins** and install but don't activate **MailPoet 3**
+4. Go to **Marketing > Overview**
+5. See MailPoet in **Installed marketing extensions**
+6. Click **Activate**
+7. Click **Finish Setup**
+8. Finish MailPoet setup (fill with dummy data)
+9. Go to **Marketing > Overview**
+10. See MailPoet links to Docs, Support, and Settings
+
+**Analytics**
+
+### Add chart color filter
+
+1. Add the following JS to your admin head. You can use a plugin like "Add Admin Javascript" to do this:
+```
+ addFilter( 'woocommerce_admin_chart_item_color', 'example', ( index, key, orderedKeys ) => '#7f54b3' );
+```
+2. Navigate to the profile wizard. `wp-admin/admin.php?page=wc-admin&path=%2Fanalytics%2Fproducts`.
+3. Make sure the chart line colors are purple.
+4. Confirm that chart legend items are not overflowing.
+### Add additional store profiler track for the business details tab. #8265
+
+1. Open your console and make sure you have tracks outputted ( `localStorage.setItem( 'debug', 'wc-admin:*' );` )
+2. Go to the Onboarding wizard and step through until the business details `/wp-admin/admin.php?page=wc-admin&path=%2Fsetup-wizard&step=business-details`
+3. A `storeprofiler_step_view` should be triggered with `business-details` as the step.
+4. Fill out the dropdowns and click continue
+5. A `storeprofiler_step_complete` should of fired with a `step` prop of `business-details`. A new `storeprofiler_step_view` should of also fired with `business-features` as a step. Now select some free features and click continue.
+6. A `storeprofiler_step_complete` should of fired with a `step` prop of `business-features`.
+7. Check the general styling of the business features tab to make sure things look good still.
+
+## 3.1.0
+
+### Inbox - 320 character limit
+
+On a new site, with English language settings:
+
+1. Go to WooCommerce home screen
+2. See that all Inbox notes are short in length (aproximately less than 320 characters).
+
+### OBW: Hide the extensions header when no available plugins in the category
+
+1. In a new JN site with WooCommerce, install WCAdmin 3.0.0-beta.1 or WCAdmin on the main branch
+2. Go to setup wizard
+3. Choose "Johor - Malaysia" as store country
+4. Go through all steps until "Business details"
+5. Go to "Free features" tab
+6. Observe the "GET THE BASICS" header is NOT shown without any plugins
+
+### OBW: Fix free extensions list isn't updated after store location or industry is changed
+
+**Change store Industry**
+
+1. Checkout to this branch
+2. Go to the setup wizard
+3. Choose any store location that supports WCPay, such as any state in the US
+4. In the Industry step, make sure to not select CBD
+5. Proceed through the setup until the Business Details step
+6. Go to the "Free features" tab
+7. Observe **WooCommerce Payments** is displayed in the suggested extensions
+8. Without refreshing, go back to the **Industry** step
+9. Select **CBD industry** and click on continue until Business Details step again
+10. In the extension list, observe that WooCommerce Payments is **NOT** displayed.
+
+**Change store country**
+
+11. Repeat steps 3~7
+12. Without refreshing, go back to the **Store Details** step
+13. Choose any store location that **doesn't** supports WCPay, such as Malaysia (MY).
+14. Go to Business Details step again
+15. In the extension list, observe that WooCommerce Payments is **NOT** displayed.
+
+### Fix PHP Warning on 'Add new product' page
+
+1. On a Jurassic Ninja site.
+2. Go to **WooCommerce** > **Home**.
+3. Press **Add my products** in the task list.
+4. Press **Add manually**.
+5. No PHP warning should be visible.
+
+## 3.0.0
+
+### Inbox - Read notes
+
+1. Go to WooCommerce home screen
+2. Interact with a note by clicking on its title or action buttons.
+3. Return to the WooCommerce home screen
+4. See that the note is in a read state, with duller appearance.
+
+### Inbox - Dismiss single note
+
+1. Go to WooCommerce home screen
+2. Dismiss a single note using the "Dismiss" button when hovering over a note.
+3. See the "Message dismissed" notification.
+4. Click "Undo" on the notification.
+5. See the note returns to inbox.
+6. Dismiss the note again.
+7. Re-load the WooCommerce home screen.
+8. See that the note no longer appears.
+
+### Inbox - Activity menu
+
+1. Go to WooCommerce products screen
+2. On Menu bar, see that "Activity" menu item exists in top right corner.
+3. Click "Activity" menu item.
+4. See notes appear in panel.
+
+### Inbox - Dismiss all notes
+
+1. Go to WooCommerce home screen
+2. On "Inbox" heading panel, click kebab menu (3 dots).
+3. Click "Dismiss all".
+4. On confirmation dialog, press "Cancel" button.
+5. See that notes still remain.
+6. Dismall all notes again and press "Yes, dismiss all" on confirmation dialog.
+7. See that all notes are removed.
+
+### Onboarding Workflow - Add number of employees field
+
+1. Go to step 4 of the OBW (Business details).
+2. Under `Currently selling elsewhere?` select any option other than "No".
+3. A drop-down list with the following options should be visible:
+
+```
+It's just me
+<10
+10-50
+50-250
++250
+I'd rather not say
+```
+
+4. Select one of those options and fill out the rest of the options.
+5. Open the browser devtools, go to the `Console` and enable the debug messages. You can do this by running `localStorage.setItem( 'debug', 'wc-admin:*' );` in the `Console` and looking for the verbose console messages.
+6. Verify that the event `wcadmin_storeprofiler_store_business_details_continue_variant` is recorded with the prop `number_employees` after pressing `Continue`.
+
+## 2.9.0
+
+### Add Avalara to tax task #7874
+
+**Avalara supported, WooCommerce Tax supported**
+
+1. Select an Avalara and WC Tax supported country (e.g., `US`) for your store's country
+2. Visit the tax task.
+3. Make sure your shown the "WooCommerce Tax" and "Avalara" options in the task list
+
+**Avalara supported, WooCommerce Tax not supported**
+
+1. Install the TaxJar plugin so that WC Tax is not supported and set your country to an Avalara supported country
+2. Visit the task tax.
+3. Make sure you are shown only the partner card of Avalara
+
+**Avalara not supported, WooCommerce Tax not supported**
+
+1. Set your store country to one not supported by Avalara or WC Tax (e.g., New Caledonia)
+2. Visit the task tax.
+3. Make sure you are immediately shown the manual set up flow with the "Configure" button
+
+**Partner actions**
+
+1. Visit the task tax with an Avalara supported country
+2. Click Avalara and check that a new tab opens with the WCCOM plugin page
+3. Back on the task tax, click on WooCommerce Tax
+4. Make sure you are dropped into the old configuration flow (which should be identical to the old flow)
+
+**Events**
+
+1. Enter `localStorage.setItem( 'debug', 'wc-admin:*' );` in your browser's console
+2. Set your store's country to an Avalara supported country
+3. Note the `wcadmin_tasklist_tax_view_options` event occurs
+4. Click on each of the partner action buttons
+5. Make sure that `wcadmin_tasklist_tax_select_option` is recorded with the respective `selected_option` partner key.
+
+**Completion**
+
+1. Create a fresh site without ever having set any taxes
+2. Note the task is incomplete
+3. Install the WC Avalara plugin
+4. Check that the task is now marked complete
+
 ## 2.8.0
 
 ### Store Profiler and Product task - include Subscriptions #7734
 
-##### Feature: turned off
+##### Non US stores
 
 1. Deactivate and delete `WooCommerce Payments` if you have it installed.
-2. Go to the 3rd step of the store profiler (`Product Types`).
-3. Verify `Subscriptions` is shown as a paid extension (with a price chip).
-4. Check `Subscriptions` and continue with the OBW.
-5. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is visible in the setup task list.
-6. Press `Add my products` in the setup task list.
-7. Select `Start with a template`. Verify that the option `Subscription product` is not visible in the popup.
+2. Go to step one of the store profiler and select `France` (or any country other than the US) as the store `Country / Region`.
+3. Go to step three of the store profiler (`Product Types`).
+4. Verify `Subscriptions` is shown as a paid extension (with a price chip).
+5. Check `Subscriptions` and continue with the OBW.
+6. Go back to the `Home` screen by pressing `Skip setup store details` in step one of the store profiler. Check that the task item `Add Subscriptions to my store` is visible in the setup task list.
+7. Press `Add my products` in the setup task list.
+8. Select `Start with a template`. Verify that the option `Subscription product` is not visible in the popup.
 
-##### Feature: turned on
+##### US stores
 
-1. Install and activate this plugin to turn on the subscriptions inclusion -> https://gist.github.com/octaedro/455eb4c85887608c253249bad533ccb3
-2. Deactivate and delete `WooCommerce Payments` if you have it installed.
-3. Go to the 3rd step of the store profiler (`Product Types`).
-4. Verify `Subscriptions` is shown as free (without a price chip). Also, verify that the text
+9. Deactivate and delete `WooCommerce Payments`.
+10. Go to step one of the store profiler and select `US` as the store `Country / Region`.
+11. Go to step three of the store profiler (`Product Types`).
+12. Verify `Subscriptions` is shown as free (without a price chip). Also, verify that the text
 
 ```
 The following extensions will be added to your site for free: WooCommerce Payments. An account is required to use this feature
@@ -31,34 +292,36 @@ is visible at the bottom when `WooCommerce Payments` is not installed.
 
 ![screenshot-one wordpress test-2021 09 30-14_12_58](https://user-images.githubusercontent.com/1314156/135506696-b7812f7e-437f-4d89-956a-b73248f70f6b.png)
 
-5. Press `Continue` and verify that the `WooCommerce Payments` plugin is installed and activated and it's not shown in the `Free features` list
+13. Check `Subscriptions` and press `Continue` and verify that the `WooCommerce Payments` plugin is installed and activated and it's not shown in the `Free features` list
 
 ![screenshot-one wordpress test-2021 09 30-14_32_20](https://user-images.githubusercontent.com/1314156/135506727-d8888f2b-3424-4cf5-a4bf-b67a14a198b6.png)
 
-6. Go back to the `Home` screen. Check that the task item `Add Subscriptions to my store` is not visible in the setup task list.
+14. Verify that the `WooCommerce Payments` plugin is being shown in the `Free features` list when the store country is other than the `US`.
+
+15. Go back to the `Home` screen by pressing `Skip setup store details` in step one of the store profiler. Check that the task item `Add Subscriptions to my store` is not visible in the setup task list. It should be visible if the store is from any country other than the `US`.
 
 ![screenshot-one wordpress test-2021 09 30-14_39_28](https://user-images.githubusercontent.com/1314156/135506770-91571f8f-2e2e-43a7-b092-b9e5fdf56df8.png)
 
-7. Press `Add my products` in the setup task list.
-8. Select `Start with a template`. Verify that the option `Subscription product` is visible in the popup
+16. Press `Add my products` in the setup task list.
+17. Select `Start with a template`. Verify that the option `Subscription product` is visible in the popup
 
 ![screenshot-one wordpress test-2021 09 30-14_35_22](https://user-images.githubusercontent.com/1314156/135506748-0b7bdce5-b006-47f9-9289-03ed26e4950c.png)
 
-9. Select `Subscription product` and press `Ok`. You should have been redirected to `post-new.php?post_type=product&subscription_pointers=true`
+18. Select `Subscription product` and press `Ok`. You should have been redirected to `post-new.php?post_type=product&subscription_pointers=true`.
 
 ## 2.7.1
 
 ### Add Newsletter Signup #7601
 
-- Start OBW and set up your browser console to monitor tracks. To do this, run `localStorage.setItem( 'debug', 'wc-admin:*' );`
-- Observe "Get tips, product updates and inspiration straight to your mailbox" checkbox and "Email address" field in the Store Details step.
-- Checking the checkbox should make the email field required, you should not be able to continue if it's not filled.
-- Fill in the email address field with a valid email and click on continue.
-- Observe in the track `wcadmin_storeprofiler_store_details_continue` with prop `email_signup` that appropriately flags if the user agreed to receive marketing emails.
-- Continue until Business Features step.
-- Observe the "I'm setting up a store for a client" checkbox in the step.
-- Click on continue.
-- Observe in the track `wcadmin_storeprofiler_store_business_details_continue_variant` with prop `setup_client` that appropriately flags if the user is setting up store for a client.
+-   Start OBW and set up your browser console to monitor tracks. To do this, run `localStorage.setItem( 'debug', 'wc-admin:*' );`
+-   Observe "Get tips, product updates and inspiration straight to your mailbox" checkbox and "Email address" field in the Store Details step.
+-   Checking the checkbox should make the email field required, you should not be able to continue if it's not filled.
+-   Fill in the email address field with a valid email and click on continue.
+-   Observe in the track `wcadmin_storeprofiler_store_details_continue` with prop `email_signup` that appropriately flags if the user agreed to receive marketing emails.
+-   Continue until Business Features step.
+-   Observe the "I'm setting up a store for a client" checkbox in the step.
+-   Click on continue.
+-   Observe in the track `wcadmin_storeprofiler_store_business_details_continue_variant` with prop `setup_client` that appropriately flags if the user is setting up store for a client.
 
 ### Making business details sticky in OBW #7426
 
@@ -70,20 +333,20 @@ is visible at the bottom when `WooCommerce Payments` is not installed.
 
 ### Show Pinterest for WooCommerce in `Marketing > Installed` #7417
 
-_Prerequisite_: This requires the forthcoming native [__Pinterest for WooCommerce__ extension](https://github.com/saucal/pinterest-for-woocommerce) (private repo – may not be available).
+_Prerequisite_: This requires the forthcoming native [**Pinterest for WooCommerce** extension](https://github.com/saucal/pinterest-for-woocommerce) (private repo – may not be available).
 
-If __Pinterest for WooCommerce__ is installed, marketing screen should show status info.
+If **Pinterest for WooCommerce** is installed, marketing screen should show status info.
 
-1. Install __Pinterest for WooCommerce__ extension. Don't activate it.
+1. Install **Pinterest for WooCommerce** extension. Don't activate it.
 1. Go to `WooCommerce > Marketing`.
 1. Confirm there is a row for Pinterest in `Installed marketing extensions` with `Activate` button.
 1. Activate the extension by clicking the button, or via normal `WordPress > Plugins` screen.
 1. Go to `WooCommerce > Marketing`.
 1. Confirm the Pinterest row guides merchant to set up the extension (if not yet set up) or links to settings and docs.
 
-Marketing screen should be unaffected if __Pinterest for WooCommerce__ is not installed.
+Marketing screen should be unaffected if **Pinterest for WooCommerce** is not installed.
 
-1. Ensure __Pinterest for WooCommerce__ is not installed.
+1. Ensure **Pinterest for WooCommerce** is not installed.
 1. Go to `WooCommerce > Marketing`.
 1. Should look and work the same as in previous versions.
 

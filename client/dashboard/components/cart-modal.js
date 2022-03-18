@@ -8,7 +8,6 @@ import { Button, Modal } from '@wordpress/components';
 import { find } from 'lodash';
 import { decodeEntities } from '@wordpress/html-entities';
 import { withSelect } from '@wordpress/data';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import { List } from '@woocommerce/components';
 import { ONBOARDING_STORE_NAME, PLUGINS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -19,6 +18,7 @@ import { recordEvent } from '@woocommerce/tracks';
 import { getProductIdsForCart } from '../utils';
 import sanitizeHTML from '../../lib/sanitize-html';
 import { getInAppPurchaseUrl } from '../../lib/in-app-purchase';
+import { getAdminSetting } from '~/utils/admin-settings';
 
 class CartModal extends Component {
 	constructor( props ) {
@@ -80,11 +80,8 @@ class CartModal extends Component {
 	}
 
 	renderProducts() {
-		const { productIds } = this.props;
-		const { productTypes = {}, themes = [] } = getSetting(
-			'onboarding',
-			{}
-		);
+		const { productIds, productTypes } = this.props;
+		const { themes = [] } = getAdminSetting( 'onboarding', {} );
 		const listItems = [];
 
 		productIds.forEach( ( productId ) => {
@@ -169,15 +166,19 @@ class CartModal extends Component {
 export default compose(
 	withSelect( ( select ) => {
 		const { getInstalledPlugins } = select( PLUGINS_STORE_NAME );
-		const { getProfileItems } = select( ONBOARDING_STORE_NAME );
+		const { getProductTypes, getProfileItems } = select(
+			ONBOARDING_STORE_NAME
+		);
 		const profileItems = getProfileItems();
 		const installedPlugins = getInstalledPlugins();
+		const productTypes = getProductTypes();
 		const productIds = getProductIdsForCart(
+			productTypes,
 			profileItems,
 			false,
 			installedPlugins
 		);
 
-		return { profileItems, productIds };
+		return { profileItems, productIds, productTypes };
 	} )
 )( CartModal );

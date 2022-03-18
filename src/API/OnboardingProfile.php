@@ -9,12 +9,14 @@ namespace Automattic\WooCommerce\Admin\API;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
-use \Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile as Profile;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProducts;
+use Automattic\Jetpack\Connection\Manager as Jetpack_Connection_Manager;
 
 /**
  * Onboarding Profile controller.
  *
+ * @internal
  * @extends WC_REST_Data_Controller
  */
 class OnboardingProfile extends \WC_REST_Data_Controller {
@@ -114,7 +116,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	public function get_items( $request ) {
 		include_once WC_ABSPATH . 'includes/admin/helper/class-wc-helper-options.php';
 
-		$onboarding_data             = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$onboarding_data             = get_option( Profile::DATA_OPTION, array() );
 		$onboarding_data['industry'] = isset( $onboarding_data['industry'] ) ? $this->filter_industries( $onboarding_data['industry'] ) : null;
 		$item_schema                 = $this->get_item_schema();
 		$items                       = array();
@@ -137,7 +139,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	 * @param  array $industries list of industries.
 	 * @return array
 	 */
-	public function filter_industries( $industries ) {
+	protected function filter_industries( $industries ) {
 		return apply_filters(
 			'woocommerce_admin_onboarding_industries',
 			$industries
@@ -153,9 +155,9 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 	public function update_items( $request ) {
 		$params          = $request->get_json_params();
 		$query_args      = $this->prepare_objects_query( $params );
-		$onboarding_data = (array) get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$onboarding_data = (array) get_option( Profile::DATA_OPTION, array() );
 		$profile_data    = array_merge( $onboarding_data, $query_args );
-		update_option( Onboarding::PROFILE_DATA_OPTION, $profile_data );
+		update_option( Profile::DATA_OPTION, $profile_data );
 		do_action( 'woocommerce_onboarding_profile_data_updated', $onboarding_data, $query_args );
 
 		$result = array(
@@ -291,7 +293,7 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 				'sanitize_callback' => 'wp_parse_slug_list',
 				'validate_callback' => 'rest_validate_request_arg',
 				'items'             => array(
-					'enum' => array_keys( Onboarding::get_allowed_product_types() ),
+					'enum' => array_keys( OnboardingProducts::get_allowed_product_types() ),
 					'type' => 'string',
 				),
 			),
@@ -321,6 +323,21 @@ class OnboardingProfile extends \WC_REST_Data_Controller {
 					'brick-mortar',
 					'brick-mortar-other',
 					'other-woocommerce',
+				),
+			),
+			'number_employees'    => array(
+				'type'              => 'string',
+				'description'       => __( 'Number of employees of the store.', 'woocommerce-admin' ),
+				'context'           => array( 'view' ),
+				'readonly'          => true,
+				'validate_callback' => 'rest_validate_request_arg',
+				'enum'              => array(
+					'1',
+					'<10',
+					'10-50',
+					'50-250',
+					'+250',
+					'not specified',
 				),
 			),
 			'revenue'             => array(

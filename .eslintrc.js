@@ -5,10 +5,13 @@ module.exports = {
 	extends: [ 'plugin:@woocommerce/eslint-plugin/recommended' ],
 	settings: {
 		'import/resolver': 'typescript',
+		// List of modules that are externals in our webpack config.
+		'import/core-modules': [ '@woocommerce/settings', 'lodash', 'react' ],
 		react: {
 			pragma: 'createElement',
 		},
 	},
+	root: true,
 	rules: {
 		// temporary conversion to warnings until the below are all handled.
 		'@wordpress/i18n-translator-comments': 'warn',
@@ -21,6 +24,7 @@ module.exports = {
 					'filter',
 					'action',
 					'slotFill',
+					'scope',
 				],
 			},
 		],

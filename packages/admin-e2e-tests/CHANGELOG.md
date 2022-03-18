@@ -1,7 +1,28 @@
 # Unreleased
+
+-   Add returned type annotations and remove unused vars. #8020
+
 -   Add E2E tests for checking store currency if it matches the onboarded country. #7712
 
 -   Make unchecking free features more robust. #7761
+
+-   Fix typescript type error in admin-e2e-tests package #7765
+
+-   Add extension deactivation util function addition. #7804
+
+-   Add tests to Subscriptions inclusion. #7804
+
+-   Add missing dependencies. #8349
+
+-   Update all js packages with minor/patch version changes. #8392
+
+-   Add E2E test for checking onboarding tab clickable after going back. #8469
+## Breaking changes
+
+-   Update `@types/jest` to v27
+-   Update the peer dependency constraint `@typescript-eslint/eslint-plugin` to ^5.
+    - eslint-plugin: ban-types no longer reports object by default.
+
 
 # 0.1.2
 

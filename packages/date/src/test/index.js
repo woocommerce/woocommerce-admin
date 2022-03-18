@@ -2,8 +2,8 @@
  * External dependencies
  */
 import moment from 'moment';
-import { getSetting } from '@woocommerce/wc-admin-settings';
-
+import { format as formatDate } from '@wordpress/date';
+import { timeFormat as d3TimeFormat } from 'd3-time-format';
 /**
  * Internal dependencies
  */
@@ -23,6 +23,9 @@ import {
 	getChartTypeForQuery,
 	getAllowedIntervalsForQuery,
 	getStoreTimeZoneMoment,
+	getDateFormatsForIntervalPhp,
+	getDateFormatsForIntervalD3,
+	dayTicksThreshold,
 } from '../';
 
 jest.mock( 'moment', () => {
@@ -101,18 +104,43 @@ describe( 'toMoment', () => {
 
 describe( 'getAllowedIntervalsForQuery', () => {
 	it( 'should return days when query period is defined but empty', () => {
-		const allowedIntervals = getAllowedIntervalsForQuery( { period: '' } );
+		const allowedIntervals = getAllowedIntervalsForQuery( {
+			period: '',
+			compare: 'previous_year',
+		} );
 		expect( allowedIntervals ).toEqual( [ 'day' ] );
+	} );
+
+	it( 'should return days, hours when query period is empty but defaultDateRange is today and yesterday', () => {
+		const allowedIntervals = getAllowedIntervalsForQuery(
+			{
+				period: '',
+				compare: 'previous_year',
+			},
+			'period=today&compare=previous_year'
+		);
+		expect( allowedIntervals ).toEqual( [ 'hour', 'day' ] );
+
+		const allowedIntervalsYesterday = getAllowedIntervalsForQuery(
+			{
+				period: '',
+				compare: 'previous_year',
+			},
+			'period=yesterday&compare=previous_year'
+		);
+		expect( allowedIntervalsYesterday ).toEqual( [ 'hour', 'day' ] );
 	} );
 
 	it( 'should return days and hours for today and yesterday periods', () => {
 		const allowedIntervalsToday = getAllowedIntervalsForQuery( {
 			period: 'today',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsToday ).toEqual( [ 'hour', 'day' ] );
 
 		const allowedIntervalsYesterday = getAllowedIntervalsForQuery( {
 			period: 'yesterday',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsYesterday ).toEqual( [ 'hour', 'day' ] );
 	} );
@@ -120,11 +148,13 @@ describe( 'getAllowedIntervalsForQuery', () => {
 	it( 'should return day for week and last_week periods', () => {
 		const allowedIntervalsWeek = getAllowedIntervalsForQuery( {
 			period: 'week',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsWeek ).toEqual( [ 'day' ] );
 
 		const allowedIntervalsLastWeek = getAllowedIntervalsForQuery( {
 			period: 'last_week',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsLastWeek ).toEqual( [ 'day' ] );
 	} );
@@ -132,11 +162,13 @@ describe( 'getAllowedIntervalsForQuery', () => {
 	it( 'should return day, week for month and last_month periods', () => {
 		const allowedIntervalsMonth = getAllowedIntervalsForQuery( {
 			period: 'month',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsMonth ).toEqual( [ 'day', 'week' ] );
 
 		const allowedIntervalsLastMonth = getAllowedIntervalsForQuery( {
 			period: 'last_month',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsLastMonth ).toEqual( [ 'day', 'week' ] );
 	} );
@@ -144,11 +176,13 @@ describe( 'getAllowedIntervalsForQuery', () => {
 	it( 'should return day, week, month for quarter and last_quarter periods', () => {
 		const allowedIntervalsQuarter = getAllowedIntervalsForQuery( {
 			period: 'quarter',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsQuarter ).toEqual( [ 'day', 'week', 'month' ] );
 
 		const allowedIntervalsLastQuarter = getAllowedIntervalsForQuery( {
 			period: 'last_quarter',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsLastQuarter ).toEqual( [
 			'day',
@@ -160,6 +194,7 @@ describe( 'getAllowedIntervalsForQuery', () => {
 	it( 'should return day, week, month, quarter for year and last_year periods', () => {
 		const allowedIntervalsYear = getAllowedIntervalsForQuery( {
 			period: 'year',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsYear ).toEqual( [
 			'day',
@@ -170,6 +205,7 @@ describe( 'getAllowedIntervalsForQuery', () => {
 
 		const allowedIntervalsLastYear = getAllowedIntervalsForQuery( {
 			period: 'last_year',
+			compare: 'previous_year',
 		} );
 		expect( allowedIntervalsLastYear ).toEqual( [
 			'day',
@@ -719,7 +755,10 @@ describe( 'getRangeLabel', () => {
 } );
 
 describe( 'loadLocaleData', () => {
-	const originalLocale = getSetting( 'locale' );
+	const originalLocale = {
+		siteLocale: 'en_US',
+		userLocale: 'en_US',
+	};
 	beforeEach( () => {
 		// Reset to default settings
 		loadLocaleData( originalLocale );
@@ -1006,4 +1045,56 @@ describe( 'getStoreTimeZoneMoment', () => {
 		expect( mockTz ).not.toHaveBeenCalled();
 		expect( utcOffset ).toHaveBeenCalledWith( '-04:00' );
 	} );
+} );
+
+describe( 'getDateFormatsForIntervalPhp', () => {
+	test.each( [
+		{ interval: 'hour', ticks: 0 },
+		{ interval: 'day', ticks: dayTicksThreshold - 1 },
+		{ interval: 'day', ticks: dayTicksThreshold + 1 },
+		{ interval: 'week', ticks: dayTicksThreshold - 1 },
+		{ interval: 'week', ticks: dayTicksThreshold + 1 },
+		{ interval: 'quarter', ticks: 0 },
+		{ interval: 'month', ticks: 0 },
+		{ interval: 'year', ticks: 0 },
+		{ interval: 'default', ticks: 0 },
+	] )(
+		'should return formatted date same as getDateFormatsForIntervalD3 when interval is $interval and ticks is $ticks',
+		( { interval, ticks } ) => {
+			const date = new Date();
+
+			const dateFormatsPhp = getDateFormatsForIntervalPhp(
+				interval,
+				ticks
+			);
+			const dateFormatsD3 = getDateFormatsForIntervalD3(
+				interval,
+				ticks
+			);
+
+			expect(
+				formatDate( dateFormatsPhp.screenReaderFormat, date )
+			).toBe(
+				d3TimeFormat( dateFormatsD3.screenReaderFormat )(
+					date
+				).trimStart() // trim the leading space since d3.timeFormat adds it but it does not affect the UI
+			);
+
+			expect(
+				formatDate( dateFormatsPhp.tooltipLabelFormat, date )
+			).toBe(
+				d3TimeFormat( dateFormatsD3.tooltipLabelFormat )(
+					date
+				).trimStart()
+			);
+
+			expect( formatDate( dateFormatsPhp.xFormat, date ) ).toBe(
+				d3TimeFormat( dateFormatsD3.xFormat )( date ).trimStart()
+			);
+
+			expect( formatDate( dateFormatsPhp.x2Format, date ) ).toBe(
+				d3TimeFormat( dateFormatsD3.x2Format )( date ).trimStart()
+			);
+		}
+	);
 } );

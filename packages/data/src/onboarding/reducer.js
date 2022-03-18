@@ -10,6 +10,7 @@ export const defaultState = {
 		business_extensions: null,
 		completed: null,
 		industry: null,
+		number_employees: null,
 		other_platform: null,
 		other_platform_name: null,
 		product_count: null,
@@ -25,26 +26,32 @@ export const defaultState = {
 	},
 	emailPrefill: '',
 	paymentMethods: [],
+	productTypes: [],
 	requesting: {},
-	taskLists: [],
-	tasksStatus: {},
+	taskLists: {},
 };
 
 const getUpdatedTaskLists = ( taskLists, args ) => {
-	return taskLists.map( ( taskList ) => {
-		return {
-			...taskList,
-			tasks: taskList.tasks.map( ( task ) => {
-				if ( args.id === task.id ) {
-					return {
-						...task,
-						...args,
-					};
-				}
-				return task;
-			} ),
-		};
-	} );
+	return Object.keys( taskLists ).reduce(
+		( lists, taskListId ) => {
+			return {
+				...lists,
+				[ taskListId ]: {
+					...taskLists[ taskListId ],
+					tasks: taskLists[ taskListId ].tasks.map( ( task ) => {
+						if ( args.id === task.id ) {
+							return {
+								...task,
+								...args,
+							};
+						}
+						return task;
+					} ),
+				},
+			};
+		},
+		{ ...taskLists }
+	);
 };
 
 const onboarding = (
@@ -55,6 +62,7 @@ const onboarding = (
 		profileItems,
 		emailPrefill,
 		paymentMethods,
+		productTypes,
 		replace,
 		error,
 		isRequesting,
@@ -64,7 +72,6 @@ const onboarding = (
 		taskListId,
 		taskList,
 		taskLists,
-		tasksStatus,
 	}
 ) => {
 	switch ( type ) {
@@ -79,11 +86,6 @@ const onboarding = (
 			return {
 				...state,
 				emailPrefill,
-			};
-		case TYPES.SET_TASKS_STATUS:
-			return {
-				...state,
-				tasksStatus: { ...state.tasksStatus, ...tasksStatus },
 			};
 		case TYPES.SET_ERROR:
 			return {
@@ -105,6 +107,19 @@ const onboarding = (
 			return {
 				...state,
 				paymentMethods,
+			};
+		case TYPES.GET_PRODUCT_TYPES_SUCCESS:
+			return {
+				...state,
+				productTypes,
+			};
+		case TYPES.GET_PRODUCT_TYPES_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					productTypes: error,
+				},
 			};
 		case TYPES.GET_FREE_EXTENSIONS_ERROR:
 			return {
@@ -130,7 +145,12 @@ const onboarding = (
 		case TYPES.GET_TASK_LISTS_SUCCESS:
 			return {
 				...state,
-				taskLists,
+				taskLists: taskLists.reduce( ( lists, list ) => {
+					return {
+						...lists,
+						[ list.id ]: list,
+					};
+				}, state.taskLists || {} ),
 			};
 		case TYPES.DISMISS_TASK_ERROR:
 			return {
@@ -271,15 +291,14 @@ const onboarding = (
 					...state.errors,
 					hideTaskList: error,
 				},
-				taskLists: state.taskLists.map( ( list ) => {
-					if ( taskListId === list.id ) {
-						return {
-							...list,
-							isVisible: true,
-						};
-					}
-					return list;
-				} ),
+				taskLists: {
+					...state.taskLists,
+					[ taskListId ]: {
+						...state.taskLists[ taskListId ],
+						isHidden: false,
+						isVisible: true,
+					},
+				},
 			};
 		case TYPES.HIDE_TASK_LIST_REQUEST:
 			return {
@@ -288,15 +307,14 @@ const onboarding = (
 					...state.requesting,
 					hideTaskList: true,
 				},
-				taskLists: state.taskLists.map( ( list ) => {
-					if ( taskListId === list.id ) {
-						return {
-							...list,
-							isVisible: false,
-						};
-					}
-					return list;
-				} ),
+				taskLists: {
+					...state.taskLists,
+					[ taskListId ]: {
+						...state.taskLists[ taskListId ],
+						isHidden: true,
+						isVisible: false,
+					},
+				},
 			};
 		case TYPES.HIDE_TASK_LIST_SUCCESS:
 			return {
@@ -305,9 +323,54 @@ const onboarding = (
 					...state.requesting,
 					hideTaskList: false,
 				},
-				taskLists: state.taskLists.map( ( list ) => {
-					return taskListId === list.id ? taskList : list;
-				} ),
+				taskLists: {
+					...state.taskLists,
+					[ taskListId ]: taskList,
+				},
+			};
+		case TYPES.UNHIDE_TASK_LIST_ERROR:
+			return {
+				...state,
+				errors: {
+					...state.errors,
+					unhideTaskList: error,
+				},
+				taskLists: {
+					...state.taskLists,
+					[ taskListId ]: {
+						...state.taskLists[ taskListId ],
+						isHidden: true,
+						isVisible: false,
+					},
+				},
+			};
+		case TYPES.UNHIDE_TASK_LIST_REQUEST:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					unhideTaskList: true,
+				},
+				taskLists: {
+					...state.taskLists,
+					[ taskListId ]: {
+						...state.taskLists[ taskListId ],
+						isHidden: false,
+						isVisible: true,
+					},
+				},
+			};
+		case TYPES.UNHIDE_TASK_LIST_SUCCESS:
+			return {
+				...state,
+				requesting: {
+					...state.requesting,
+					unhideTaskList: false,
+				},
+				taskLists: {
+					...state.taskLists,
+					[ taskListId ]: taskList,
+				},
 			};
 		case TYPES.OPTIMISTICALLY_COMPLETE_TASK_REQUEST:
 			return {

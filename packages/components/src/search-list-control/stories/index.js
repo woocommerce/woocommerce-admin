@@ -1,19 +1,12 @@
 /**
  * External dependencies
  */
-import { boolean } from '@storybook/addon-knobs';
 import { SearchListControl } from '@woocommerce/components';
-import { withState } from '@wordpress/compose';
-import { createElement } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 
-const SearchListControlExample = withState( {
-	selected: [],
-	loading: false,
-} )( ( { selected, loading, setState } ) => {
-	const showCount = boolean( 'Show count', false );
-	const isCompact = boolean( 'Compact', false );
-	const isSingle = boolean( 'Single', false );
-
+const SearchListControlExample = ( { showCount, isCompact, isSingle } ) => {
+	const [ selected, setSelected ] = useState( [] );
+	const [ loading, setLoading ] = useState( false );
 	let list = [
 		{ id: 1, name: 'Apricots' },
 		{ id: 2, name: 'Clementine' },
@@ -30,7 +23,7 @@ const SearchListControlExample = withState( {
 
 	return (
 		<div>
-			<button onClick={ () => setState( { loading: ! loading } ) }>
+			<button onClick={ () => setLoading( ! loading ) }>
 				Toggle loading state
 			</button>
 			<SearchListControl
@@ -38,16 +31,38 @@ const SearchListControlExample = withState( {
 				isCompact={ isCompact }
 				isLoading={ loading }
 				selected={ selected }
-				onChange={ ( items ) => setState( { selected: items } ) }
+				onChange={ ( items ) => setSelected( items ) }
 				isSingle={ isSingle }
 			/>
 		</div>
 	);
-} );
+};
 
-export const Basic = () => <SearchListControlExample />;
+export const Basic = ( args ) => <SearchListControlExample { ...args } />;
 
 export default {
 	title: 'WooCommerce Admin/components/SearchListControl',
 	component: SearchListControl,
+	args: {
+		showCount: false,
+		isCompact: false,
+		isSingle: false,
+	},
+	argTypes: {
+		showCount: {
+			control: {
+				type: 'boolean',
+			},
+		},
+		isCompact: {
+			control: {
+				type: 'boolean',
+			},
+		},
+		isSingle: {
+			control: {
+				type: 'boolean',
+			},
+		},
+	},
 };

@@ -5,7 +5,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
 import { useMemo } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import PropTypes from 'prop-types';
-import interpolateComponents from 'interpolate-components';
+import interpolateComponents from '@automattic/interpolate-components';
 import {
 	EmptyContent,
 	Flag,
@@ -15,7 +15,7 @@ import {
 	Section,
 } from '@woocommerce/components';
 import { getNewPath } from '@woocommerce/navigation';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/settings';
 import { ITEMS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 
@@ -25,7 +25,8 @@ import { recordEvent } from '@woocommerce/tracks';
 import {
 	ActivityCard,
 	ActivityCardPlaceholder,
-} from '../../../header/activity-panel/activity-card';
+} from '~/activity-panel/activity-card';
+import { getAdminSetting } from '~/utils/admin-settings';
 import './style.scss';
 
 function recordOrderEvent( eventName ) {
@@ -188,7 +189,7 @@ function renderOrders( orders ) {
 			>
 				<OrderStatus
 					order={ order }
-					orderStatusMap={ getSetting( 'orderStatuses', {} ) }
+					orderStatusMap={ getAdminSetting( 'orderStatuses', {} ) }
 				/>
 			</ActivityCard>
 		);
@@ -208,7 +209,7 @@ function renderOrders( orders ) {
 	);
 }
 
-function OrdersPanel( { countUnreadOrders, orderStatuses } ) {
+function OrdersPanel( { unreadOrdersCount, orderStatuses } ) {
 	const actionableOrdersQuery = useMemo(
 		() => ( {
 			page: 1,
@@ -232,7 +233,7 @@ function OrdersPanel( { countUnreadOrders, orderStatuses } ) {
 			ITEMS_STORE_NAME
 		);
 
-		if ( ! orderStatuses.length && countUnreadOrders === 0 ) {
+		if ( ! orderStatuses.length && unreadOrdersCount === 0 ) {
 			return { isRequesting: false };
 		}
 
@@ -246,7 +247,7 @@ function OrdersPanel( { countUnreadOrders, orderStatuses } ) {
 
 		if (
 			isRequestingActionable ||
-			countUnreadOrders === null ||
+			unreadOrdersCount === null ||
 			orderItems === null
 		) {
 			return {
@@ -330,7 +331,7 @@ function OrdersPanel( { countUnreadOrders, orderStatuses } ) {
 OrdersPanel.propTypes = {
 	isError: PropTypes.bool,
 	isRequesting: PropTypes.bool,
-	countUnreadOrders: PropTypes.number,
+	unreadOrdersCount: PropTypes.number,
 	orders: PropTypes.array.isRequired,
 	orderStatuses: PropTypes.array,
 };

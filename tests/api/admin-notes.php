@@ -98,7 +98,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		// Create a new note containing an action with a nonce.
 		$note = new \Automattic\WooCommerce\Admin\Notes\Note();
 		$note->set_name( 'nonce-note' );
-		$note->add_action( 'learn-more', __( 'Learn More', 'woocommerce-admin' ), 'https://woocommerce.com/', 'unactioned', true );
+		$note->add_action( 'learn-more', __( 'Learn More', 'woocommerce-admin' ), 'https://woocommerce.com/', 'unactioned' );
 		$note->add_nonce_to_action( 'learn-more', 'foo', 'bar' );
 		$note->save();
 
@@ -121,7 +121,7 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		// Create a new note containing an action with a nonce.
 		$note = new \Automattic\WooCommerce\Admin\Notes\Note();
 		$note->set_name( 'nonce-note' );
-		$note->add_action( 'learn-more', __( 'Learn More', 'woocommerce-admin' ), 'https://example.com/?x=1&y=2', 'unactioned', true );
+		$note->add_action( 'learn-more', __( 'Learn More', 'woocommerce-admin' ), 'https://example.com/?x=1&y=2', 'unactioned' );
 		$note->add_nonce_to_action( 'learn-more', 'foo', 'bar' );
 		$note->save();
 
@@ -142,11 +142,13 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 		wp_set_current_user( $this->user );
 
 		// Suppress deliberately caused errors.
+		// phpcs:ignore WordPress.PHP.IniSet.Risky
 		$log_file = ini_set( 'error_log', '/dev/null' );
 
 		$response = $this->server->dispatch( new WP_REST_Request( 'GET', $this->endpoint . '/999' ) );
 		$note     = $response->get_data();
 
+		// phpcs:ignore WordPress.PHP.IniSet.Risky
 		ini_set( 'error_log', $log_file );
 
 		$this->assertEquals( 404, $response->get_status() );
@@ -214,6 +216,79 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 4, count( $notes ) );
+	}
+
+	/**
+	 * Test getting notes when the user is in tasklist experiment returns notes of size `per_page` without any filters.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_when_user_is_in_tasklist_experiment_returns_unfiltered_notes() {
+		// Given.
+		wp_set_current_user( $this->user );
+		WC_Helper_Admin_Notes::reset_notes_dbs();
+		// Notes of the following two names are hidden when the user is not in the task list experiment.
+		WC_Helper_Admin_Notes::add_note_for_test( 'wc-admin-complete-store-details' );
+		WC_Helper_Admin_Notes::add_note_for_test( 'wc-admin-update-store-details' );
+		// Other notes.
+		WC_Helper_Admin_Notes::add_note_for_test( 'winter-sales' );
+		WC_Helper_Admin_Notes::add_note_for_test( '2022-promo' );
+
+		$this->set_user_in_tasklist_experiment();
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'page'     => '1',
+				'per_page' => '3',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 3, count( $notes ) );
+		$this->assertEquals( $notes[0]['name'], 'wc-admin-complete-store-details' );
+		$this->assertEquals( $notes[1]['name'], 'wc-admin-update-store-details' );
+		$this->assertEquals( $notes[2]['name'], 'winter-sales' );
+	}
+
+	/**
+	 * Test getting notes when the user is not in tasklist experiment excludes two notes.
+	 *
+	 * @since 3.5.0
+	 */
+	public function test_getting_notes_when_user_is_not_in_tasklist_experiment_excludes_two_notes() {
+		// Given.
+		wp_set_current_user( $this->user );
+		WC_Helper_Admin_Notes::reset_notes_dbs();
+		// Notes of the following two names are hidden when the user is not in the task list experiment.
+		WC_Helper_Admin_Notes::add_note_for_test( 'wc-admin-complete-store-details' );
+		WC_Helper_Admin_Notes::add_note_for_test( 'wc-admin-update-store-details' );
+		// Other notes.
+		WC_Helper_Admin_Notes::add_note_for_test( 'summer-sales' );
+		WC_Helper_Admin_Notes::add_note_for_test( '2022-promo' );
+
+		$this->set_user_out_of_tasklist_experiment();
+
+		// When.
+		$request = new WP_REST_Request( 'GET', $this->endpoint );
+		$request->set_query_params(
+			array(
+				'page'     => '1',
+				'per_page' => '3',
+			)
+		);
+		$response = $this->server->dispatch( $request );
+		$notes    = $response->get_data();
+
+		// Then.
+		$this->assertEquals( 200, $response->get_status() );
+		$this->assertEquals( 2, count( $notes ) );
+		$this->assertEquals( $notes[0]['name'], 'summer-sales' );
+		$this->assertEquals( $notes[1]['name'], '2022-promo' );
 	}
 
 	/**
@@ -544,5 +619,31 @@ class WC_Tests_API_Admin_Notes extends WC_REST_Unit_Test_Case {
 
 		$this->assertEquals( 200, $response->get_status() );
 		$this->assertEquals( 2, count( $notes ) );
+	}
+
+	/**
+	 * Simulates when the user is in tasklist experiment similar to `API/Notes` `is_tasklist_experiment_assigned_treatment` function.
+	 */
+	private function set_user_in_tasklist_experiment() {
+		// When the user is participating in either `wc-admin-complete-store-details` or `wc-admin-update-store-details` AB tests,
+		// the user is in tasklist experiment.
+		update_option( 'woocommerce_allow_tracking', 'yes' );
+		$date = new \DateTime();
+		$date->setTimeZone( new \DateTimeZone( 'UTC' ) );
+
+		$experiment_name = sprintf(
+			'woocommerce_tasklist_progression_headercard_%s_%s',
+			$date->format( 'Y' ),
+			$date->format( 'm' )
+		);
+		set_transient( 'abtest_variation_' . $experiment_name, 'treatment' );
+	}
+
+	/**
+	 * Simulates when the user is not in tasklist experiment similar to `API/Notes` `is_tasklist_experiment_assigned_treatment` function.
+	 */
+	private function set_user_out_of_tasklist_experiment() {
+		// Any experiment is off when `woocommerce_allow_tracking` option is false.
+		update_option( 'woocommerce_allow_tracking', false );
 	}
 }

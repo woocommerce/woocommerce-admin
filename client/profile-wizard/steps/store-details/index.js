@@ -16,8 +16,8 @@ import { Component, useRef } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { Form, TextControl } from '@woocommerce/components';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
+	COUNTRIES_STORE_NAME,
 	ONBOARDING_STORE_NAME,
 	OPTIONS_STORE_NAME,
 	SETTINGS_STORE_NAME,
@@ -25,6 +25,7 @@ import {
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
 import { Icon, info } from '@wordpress/icons';
+import { isEmail } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -32,10 +33,11 @@ import { Icon, info } from '@wordpress/icons';
 import { getCountryCode, getCurrencyRegion } from '../../../dashboard/utils';
 import {
 	StoreAddress,
-	validateStoreAddress,
+	getStoreAddressValidator,
 } from '../../../dashboard/components/settings/general/store-address';
 import UsageModal from '../usage-modal';
 import { CurrencyContext } from '../../../lib/currency-context';
+import { getAdminSetting } from '~/utils/admin-settings';
 import './style.scss';
 
 // FlexItem is not available until WP version 5.5. This code is safe to remove
@@ -55,7 +57,7 @@ const LoadingPlaceholder = () => (
 	</div>
 );
 
-class StoreDetails extends Component {
+export class StoreDetails extends Component {
 	constructor( props ) {
 		super( props );
 
@@ -68,6 +70,28 @@ class StoreDetails extends Component {
 
 		this.onContinue = this.onContinue.bind( this );
 		this.onSubmit = this.onSubmit.bind( this );
+		this.validateStoreDetails = this.validateStoreDetails.bind( this );
+		this.onFormValueChange = this.onFormValueChange.bind( this );
+		this.changedFormValues = {};
+	}
+
+	componentDidUpdate() {
+		if (
+			this.props.isLoading === false &&
+			Object.keys( this.changedFormValues ).length === 0
+		) {
+			// Make a copy of the initialValues.
+			// The values in this object gets updated on onFormValueChange.
+			this.changedFormValues = { ...this.props.initialValues };
+			this.props.trackStepValueChanges(
+				this.props.step.key,
+				this.props.initialValues,
+				this.changedFormValues,
+				() => {
+					this.onContinue( this.changedFormValues );
+				}
+			);
+		}
 	}
 
 	deriveCurrencySettings( countryState ) {
@@ -77,7 +101,7 @@ class StoreDetails extends Component {
 
 		const Currency = this.context;
 		const country = getCountryCode( countryState );
-		const { currencySymbols = {}, localeInfo = {} } = getSetting(
+		const { currencySymbols = {}, localeInfo = {} } = getAdminSetting(
 			'onboarding',
 			{}
 		);
@@ -95,10 +119,14 @@ class StoreDetails extends Component {
 		} );
 	}
 
+	onFormValueChange( changedFormValue ) {
+		this.changedFormValues[ changedFormValue.name ] =
+			changedFormValue.value;
+	}
+
 	async onContinue( values ) {
 		const {
 			createNotice,
-			goToNextStep,
 			updateProfileItems,
 			updateAndPersistSettingsForGroup,
 			profileItems,
@@ -114,7 +142,7 @@ class StoreDetails extends Component {
 
 		recordEvent( 'storeprofiler_store_details_continue', {
 			store_country: getCountryCode( values.countryState ),
-			derived_currency: currencySettings.currency_code,
+			derived_currency: currencySettings.code,
 			email_signup: values.isAgreeMarketing,
 		} );
 
@@ -181,39 +209,28 @@ class StoreDetails extends Component {
 			! Boolean( errorsRef.current.settings ) &&
 			! errorMessages.length
 		) {
-			goToNextStep();
-		} else {
-			createNotice(
-				'error',
-				__(
-					'There was a problem saving your store details',
-					'woocommerce-admin'
-				)
-			);
-
-			errorMessages.forEach( ( message ) =>
-				createNotice( 'error', message )
-			);
+			return true;
 		}
+		createNotice(
+			'error',
+			__(
+				'There was a problem saving your store details',
+				'woocommerce-admin'
+			)
+		);
+
+		errorMessages.forEach( ( message ) =>
+			createNotice( 'error', message )
+		);
 	}
 
 	validateStoreDetails( values ) {
-		const errors = validateStoreAddress( values );
+		const { getLocale } = this.props;
+		const locale = getLocale( values.countryState );
+		const validateAddress = getStoreAddressValidator( locale );
+		const errors = validateAddress( values );
 
-		if (
-			values.isAgreeMarketing &&
-			( ! values.storeEmail || ! values.storeEmail.trim().length )
-		) {
-			errors.storeEmail = __(
-				'Please add an email address',
-				'woocommerce-admin'
-			);
-		}
-		if (
-			values.storeEmail &&
-			values.storeEmail.trim().length &&
-			values.storeEmail.indexOf( '@' ) === -1
-		) {
+		if ( values.storeEmail && ! isEmail( values.storeEmail ) ) {
 			errors.storeEmail = __(
 				'Invalid email address',
 				'woocommerce-admin'
@@ -230,7 +247,13 @@ class StoreDetails extends Component {
 			isStoreDetailsPopoverVisible,
 			isSkipSetupPopoverVisible,
 		} = this.state;
-		const { skipProfiler, isLoading, isBusy, initialValues } = this.props;
+		const {
+			skipProfiler,
+			isLoading,
+			isBusy,
+			initialValues,
+			invalidateResolutionForStoreSelector,
+		} = this.props;
 
 		/* eslint-disable @wordpress/i18n-no-collapsible-whitespace */
 		const skipSetupText = __(
@@ -303,6 +326,7 @@ class StoreDetails extends Component {
 					initialValues={ initialValues }
 					onSubmit={ this.onSubmit }
 					validate={ this.validateStoreDetails }
+					onChange={ this.onFormValueChange }
 				>
 					{ ( {
 						getInputProps,
@@ -318,7 +342,11 @@ class StoreDetails extends Component {
 										if ( skipping ) {
 											skipProfiler();
 										} else {
-											this.onContinue( values );
+											this.onContinue(
+												values
+											).then( () =>
+												this.props.goToNextStep()
+											);
 										}
 									} }
 									onClose={ () =>
@@ -336,17 +364,31 @@ class StoreDetails extends Component {
 								/>
 
 								<TextControl
-									label={ __(
-										'Email address',
-										'woocommerce-admin'
-									) }
-									required
+									label={
+										values.isAgreeMarketing
+											? __(
+													'Email address',
+													'woocommerce-admin'
+											  )
+											: __(
+													'Email address (Optional)',
+													'woocommerce-admin'
+											  )
+									}
+									required={ values.isAgreeMarketing }
 									autoComplete="email"
 									{ ...getInputProps( 'storeEmail' ) }
 								/>
-							</CardBody>
-
-							<CardFooter>
+								{ values.isAgreeMarketing &&
+									( ! values.storeEmail ||
+										! values.storeEmail.trim().length ) && (
+										<div className="woocommerce-profile-wizard__store-details-error">
+											{ __(
+												'Please enter your email address to subscribe',
+												'woocommerce-admin'
+											) }
+										</div>
+									) }
 								<FlexItem>
 									<div className="woocommerce-profile-wizard__newsletter-signup">
 										<CheckboxControl
@@ -370,7 +412,7 @@ class StoreDetails extends Component {
 										/>
 									</div>
 								</FlexItem>
-							</CardFooter>
+							</CardBody>
 
 							<CardFooter justify="center">
 								<Button
@@ -390,6 +432,9 @@ class StoreDetails extends Component {
 						isLink
 						className="woocommerce-profile-wizard__footer-link"
 						onClick={ () => {
+							invalidateResolutionForStoreSelector(
+								'getTaskLists'
+							);
 							this.setState( {
 								showUsageModal: true,
 								skipping: true,
@@ -445,6 +490,12 @@ export default compose(
 			getEmailPrefill,
 			hasFinishedResolution: hasFinishedResolutionOnboarding,
 		} = select( ONBOARDING_STORE_NAME );
+		const {
+			getLocale,
+			getLocales,
+			getCountries,
+			hasFinishedResolution: hasFinishedResolutionCountries,
+		} = select( COUNTRIES_STORE_NAME );
 		const { isResolving } = select( OPTIONS_STORE_NAME );
 
 		const profileItems = getProfileItems();
@@ -457,7 +508,9 @@ export default compose(
 			isResolving( 'getOption', [ 'woocommerce_allow_tracking' ] );
 		const isLoading =
 			! hasFinishedResolutionOnboarding( 'getProfileItems' ) ||
-			! hasFinishedResolutionOnboarding( 'getEmailPrefill' );
+			! hasFinishedResolutionOnboarding( 'getEmailPrefill' ) ||
+			! hasFinishedResolutionCountries( 'getLocales' ) ||
+			! hasFinishedResolutionCountries( 'getCountries' );
 		const errorsRef = useRef( {
 			settings: null,
 		} );
@@ -470,6 +523,8 @@ export default compose(
 			( settings.woocommerce_store_address &&
 				settings.woocommerce_default_country ) ||
 			'';
+		getCountries();
+		getLocales();
 
 		const initialValues = {
 			addressLine1: settings.woocommerce_store_address || '',
@@ -488,6 +543,7 @@ export default compose(
 		};
 
 		return {
+			getLocale,
 			initialValues,
 			isLoading,
 			profileItems,
@@ -498,13 +554,17 @@ export default compose(
 	} ),
 	withDispatch( ( dispatch ) => {
 		const { createNotice } = dispatch( 'core/notices' );
-		const { updateProfileItems } = dispatch( ONBOARDING_STORE_NAME );
+		const {
+			invalidateResolutionForStoreSelector,
+			updateProfileItems,
+		} = dispatch( ONBOARDING_STORE_NAME );
 		const { updateAndPersistSettingsForGroup } = dispatch(
 			SETTINGS_STORE_NAME
 		);
 
 		return {
 			createNotice,
+			invalidateResolutionForStoreSelector,
 			updateProfileItems,
 			updateAndPersistSettingsForGroup,
 		};
