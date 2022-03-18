@@ -173,8 +173,7 @@ trait NoteTraits {
 		$need_save = self::update_note_field_if_changed( $note_in_db, $note, 'source' ) || $need_save;
 		$need_save = self::update_note_field_if_changed( $note_in_db, $note, 'actions' ) || $need_save;
 
-		if ( $need_save
-		) {
+		if ( $need_save ) {
 			$note_in_db->save();
 		}
 	}
@@ -219,7 +218,8 @@ trait NoteTraits {
 		);
 
 		if ( 'actions' === $field_name ) {
-			// We need to individually compare the action fields because action object from db is different from action object of note. For example, action object from db has "id".
+			// We need to individually compare the action fields because action object from db is different from action object of note.
+			// For example, action object from db has "id".
 			$diff        = array_udiff(
 				$note1_field_value,
 				$note2_field_value,
