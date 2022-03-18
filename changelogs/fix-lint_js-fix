@@ -1,0 +1,4 @@
+Significance: patch
+Type: Dev
+
+Fixed `npm run lint:js-fix` script. #8496
