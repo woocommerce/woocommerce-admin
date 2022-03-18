@@ -6,5 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Merge Blocked
-      if: github.event.pull_request.base.ref == "main"
+      if: github.event.pull_request.base.ref == 'main'
       run: exit 1
