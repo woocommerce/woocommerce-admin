@@ -201,12 +201,11 @@ class Purchase extends Task {
 
 			$purchaseable[] = $product_data[ $type ];
 
+			if ( 'themes' === $type && isset( $product_data[ $type ]['is_installed'] ) && false === $product_data[ $type ]['is_installed'] ) {
+				$remaining[] = $product_data[ $type ]['title'];
+			}
 			if ( ! in_array( $product_data[ $type ]['slug'], $installed, true ) ) {
-				if ( isset( $product_data[ $type ]['label'] ) ) {
-					$remaining[] = $product_data[ $type ]['label'];
-				} else {
-					$remaining[] = $product_data[ $type ]['title'];
-				}
+				$remaining[] = $product_data[ $type ]['label'];
 			}
 		}
 
