@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { withA11y } from '@storybook/addon-a11y';
+import { createElement } from '@wordpress/element';
 
 /**
  * Internal dependencies
