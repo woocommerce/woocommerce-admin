@@ -92,7 +92,10 @@ class Theme extends Component {
 			location,
 		} );
 
-		if ( slug !== activeTheme && getPriceValue( price ) <= 0 ) {
+		if (
+			slug !== activeTheme &&
+			( getPriceValue( price ) <= 0 || isInstalled )
+		) {
 			if ( isInstalled ) {
 				this.activateTheme( slug );
 			} else {
