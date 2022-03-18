@@ -705,7 +705,7 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test function that returns beginning of next week, for weeks starting on Monday.
+	 * Test function that returns beginning of next week  or previous week end if reversed, for weeks starting on Monday.
 	 */
 	public function test_next_week_start_ISO_week() {
 		update_option( 'start_of_week', 1 );
@@ -753,7 +753,7 @@ class WC_Tests_Reports_Interval_Stats extends WC_Unit_Test_Case {
 	}
 
 	/**
-	 * Test function that returns beginning of next week, for weeks starting on Sunday.
+	 * Test function that returns beginning of next week or previous week end if reversed, for weeks starting on Sunday.
 	 */
 	public function test_next_week_start_Sunday_based_week() {
 		update_option( 'start_of_week', 7 );

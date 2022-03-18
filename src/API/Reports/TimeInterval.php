@@ -319,6 +319,10 @@ class TimeInterval {
 	/**
 	 * Returns DateTime object representing the next week start, or previous week end if reversed.
 	 *
+	 * The next week start is the first day of the next week at 00:00:00.
+	 * The previous week end is the last day of the previous week at 23:59:59.
+	 * The start day is determined by the "start_of_week" wp_option.
+	 *
 	 * @param DateTime $datetime Date and time.
 	 * @param bool     $reversed Going backwards in time instead of forward.
 	 * @return DateTime
