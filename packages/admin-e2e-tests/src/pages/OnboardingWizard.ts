@@ -115,7 +115,7 @@ export class OnboardingWizard extends BasePage {
 		await this.continue();
 		await this.productTypes.isDisplayed( 7 );
 		const products = options.products || [
-			'Physicial products',
+			'Physical products',
 			'Downloads',
 		];
 		for ( const product of products ) {

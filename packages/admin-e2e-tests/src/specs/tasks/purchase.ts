@@ -45,9 +45,11 @@ const testAdminPurchaseSetupTask = () => {
 			} );
 
 			it( 'should show paid features modal with option to buy now', async () => {
-				await homeScreen.clickOnTaskList(
+				const task = await getElementByText(
+					'*',
 					'Add Memberships to my store'
 				);
+				await task?.click();
 				await waitForElementByText(
 					'h1',
 					'Would you like to add the following paid features to your store now?'
@@ -78,7 +80,11 @@ const testAdminPurchaseSetupTask = () => {
 			} );
 
 			it( 'should show paid features modal with option to buy now', async () => {
-				await homeScreen.clickOnTaskList( 'Add Blooms to my store' );
+				const task = await getElementByText(
+					'*',
+					'Add Blooms to my store'
+				);
+				await task?.click();
 				await waitForElementByText(
 					'h1',
 					'Would you like to add the following paid features to your store now?'
