@@ -99,6 +99,31 @@ trait NoteTraits {
 	}
 
 	/**
+	 * Should this note exist? (Default implementation is generous. Override as needed.)
+	 */
+	public static function is_applicable() {
+		return true;
+	}
+
+	/**
+	 * Delete this note if it is not applicable, unless has been soft-deleted or actioned already.
+	 */
+	public static function delete_if_not_applicable() {
+		if ( ! self::is_applicable() ) {
+			$data_store = Notes::load_data_store();
+			$note_ids   = $data_store->get_notes_with_name( self::NOTE_NAME );
+
+			if ( ! empty( $note_ids ) ) {
+				$note = Notes::get_note( $note_ids[0] );
+
+				if ( ! $note->get_is_deleted() && ( Note::E_WC_ADMIN_NOTE_ACTIONED !== $note->get_status() ) ) {
+					return self::possibly_delete_note();
+				}
+			}
+		}
+	}
+
+	/**
 	 * Possibly delete the note, if it exists in the database. Note that this
 	 * is a hard delete, for where it doesn't make sense to soft delete or
 	 * action the note.
@@ -118,6 +143,34 @@ trait NoteTraits {
 		}
 	}
 
+
+	/**
+	 * Update the note if it passes predefined conditions.
+	 *
+	 * @throws NotesUnavailableException Throws exception when notes are unavailable.
+	 */
+	public static function possibly_update_note() {
+		$note_in_db = Notes::get_note_by_name( self::NOTE_NAME );
+		if ( ! $note_in_db ) {
+			return;
+		}
+
+		if ( ! method_exists( self::class, 'get_note' ) ) {
+			return;
+		}
+
+		$note = self::get_note();
+		if ( ! $note instanceof Note && ! $note instanceof WC_Admin_Note ) {
+			return;
+		}
+
+		// Update note content if it's changed.
+		$latest_note_content = $note->get_content();
+		if ( $note_in_db->get_content() !== $latest_note_content ) {
+			$note_in_db->set_content( $latest_note_content );
+			$note_in_db->save();
+		}
+	}
 	/**
 	 * Get if the note has been actioned.
 	 *

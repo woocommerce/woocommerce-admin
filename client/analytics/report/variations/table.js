@@ -2,12 +2,13 @@
  * External dependencies
  */
 import { __, _n, _x } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { Component } from '@wordpress/element';
 import { map } from 'lodash';
 import { Link } from '@woocommerce/components';
 import { getNewPath, getPersistedQuery } from '@woocommerce/navigation';
 import { formatValue } from '@woocommerce/number';
-import { getAdminLink, getSetting } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/settings';
 
 /**
  * Internal dependencies
@@ -16,9 +17,15 @@ import ReportTable from '../../components/report-table';
 import { isLowStock } from '../products/utils';
 import { CurrencyContext } from '../../../lib/currency-context';
 import { getVariationName } from '../../../lib/async-requests';
+import { getAdminSetting } from '~/utils/admin-settings';
 
-const manageStock = getSetting( 'manageStock', 'no' );
-const stockStatuses = getSetting( 'stockStatuses', {} );
+const EXPERIMENTAL_VARIATIONS_REPORT_TABLE_TITLE_FILTER =
+	'experimental_woocommerce_admin_variations_report_table_title';
+const EXPERIMENTAL_VARIATIONS_REPORT_TABLE_SUMMARY_VARIATIONS_COUNT_LABEL_FILTER =
+	'experimental_woocommerce_admin_variations_report_table_summary_variations_count_label';
+
+const manageStock = getAdminSetting( 'manageStock', 'no' );
+const stockStatuses = getAdminSetting( 'stockStatuses', {} );
 
 const getFullVariationName = ( rowData ) =>
 	getVariationName( rowData.extended_info || {} );
@@ -106,6 +113,7 @@ class VariationsReportTable extends Component {
 				stock_status: stockStatus,
 				stock_quantity: stockQuantity,
 				low_stock_amount: lowStockAmount,
+				deleted,
 				sku,
 			} = extendedInfo;
 			const name = getFullVariationName( row );
@@ -123,7 +131,9 @@ class VariationsReportTable extends Component {
 
 			return [
 				{
-					display: (
+					display: deleted ? (
+						name + ' ' + __( '(Deleted)', ' woocommerce-admin' )
+					) : (
 						<Link href={ editPostLink } type="wp-admin">
 							{ name }
 						</Link>
@@ -185,6 +195,7 @@ class VariationsReportTable extends Component {
 	}
 
 	getSummary( totals ) {
+		const { query } = this.props;
 		const {
 			variations_count: variationsCount = 0,
 			items_sold: itemsSold = 0,
@@ -195,11 +206,25 @@ class VariationsReportTable extends Component {
 		const currency = getCurrencyConfig();
 		return [
 			{
-				label: _n(
-					'variation sold',
-					'variations sold',
+				/**
+				 * Experimental: Filter the label used for the number of variations in the report table summary.
+				 *
+				 * @filter experimental_woocommerce_admin_variations_report_table_summary_variations_count_label
+				 *
+				 * @param {string} label           Label used for the count.
+				 * @param {string} variationsCount Number of variations.
+				 * @param {Array}  query           Query parameters.
+				 */
+				label: applyFilters(
+					EXPERIMENTAL_VARIATIONS_REPORT_TABLE_SUMMARY_VARIATIONS_COUNT_LABEL_FILTER,
+					_n(
+						'variation sold',
+						'variations sold',
+						variationsCount,
+						'woocommerce-admin'
+					),
 					variationsCount,
-					'woocommerce-admin'
+					query
 				),
 				value: formatValue( currency, 'number', variationsCount ),
 			},
@@ -271,10 +296,22 @@ class VariationsReportTable extends Component {
 					orderby: query.orderby || 'items_sold',
 					order: query.order || 'desc',
 					extended_info: true,
-					product_includes: query.products,
+					product_includes: query.product_includes,
 					variations: query.variations,
 				} }
-				title={ __( 'Variations', 'woocommerce-admin' ) }
+				/**
+				 * Experimental: Filter the title used for the report table.
+				 *
+				 * @filter experimental_woocommerce_admin_variations_report_table_title
+				 *
+				 * @param {string} title Title used for the report table.
+				 * @param {Array}  query Query parameters.
+				 */
+				title={ applyFilters(
+					EXPERIMENTAL_VARIATIONS_REPORT_TABLE_TITLE_FILTER,
+					__( 'Variations', 'woocommerce-admin' ),
+					query
+				) }
 				columnPrefsKey="variations_report_columns"
 				filters={ filters }
 				advancedFilters={ advancedFilters }

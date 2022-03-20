@@ -8,7 +8,6 @@ const CustomTemplatedPathPlugin = require( '@wordpress/custom-templated-path-web
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' )
 	.BundleAnalyzerPlugin;
 const MomentTimezoneDataPlugin = require( 'moment-timezone-data-webpack-plugin' );
-const TerserPlugin = require( 'terser-webpack-plugin' );
 const ForkTsCheckerWebpackPlugin = require( 'fork-ts-checker-webpack-plugin' );
 
 /**
@@ -75,19 +74,25 @@ const webpackConfig = {
 		chunkFilename: `chunks/[name]${ suffix }.js`,
 		path: path.join( __dirname, 'dist' ),
 		library: [ 'wc', '[modulename]' ],
-		libraryTarget: 'this',
-		jsonpFunction: '__wcAdmin_webpackJsonp',
+		libraryTarget: 'window',
+		uniqueName: '__wcAdmin_webpackJsonp',
 	},
 	module: {
 		rules: [
 			{
+				test: /\.js$/,
 				parser: {
 					amd: false,
 				},
 			},
 			{
 				test: /\.(t|j)sx?$/,
-				exclude: [ /node_modules(\/|\\)(?!(debug))/ ],
+				exclude: [
+					// Exclude node_modules/ but not node_modules/debug* and node_modules/explat-client-react-helpers
+					// explat-client-react-helpers module contains optional chaining operators which need to be processed via babel loader for webpack 4.
+					// see webpack issue for details: https://github.com/webpack/webpack/issues/10227#issue-547480527
+					/node_modules(\/|\\)\.pnpm(\/|\\)(?!(debug|\@automattic\+explat-client-react-helpers))/,
+				],
 				use: {
 					loader: 'babel-loader',
 					options: {
@@ -114,6 +119,9 @@ const webpackConfig = {
 		],
 	},
 	resolve: {
+		fallback:{
+			'crypto': 'empty'
+		},
 		extensions: [ '.json', '.js', '.jsx', '.ts', '.tsx' ],
 		alias: {
 			'~': path.resolve( __dirname + '/client' ),
@@ -137,13 +145,14 @@ const webpackConfig = {
 				return outputPath;
 			},
 		} ),
-		new CopyWebpackPlugin(
-			wcAdminPackages.map( ( packageName ) => ( {
+		new CopyWebpackPlugin({
+
+			patterns: wcAdminPackages.map( ( packageName ) => ( {
 				from: `./packages/${ packageName }/build-style/*.css`,
-				to: `./${ packageName }/`,
-				flatten: true,
-				transform: ( content ) => content,
+				to: `./${ packageName }/[name][ext]`,
+				noErrorOnMissing: true
 			} ) )
+		}
 		),
 
 		// We reuse this Webpack setup for Storybook, where we need to disable dependency extraction.
@@ -164,13 +173,9 @@ const webpackConfig = {
 	].filter( Boolean ),
 	optimization: {
 		minimize: NODE_ENV !== 'development',
-		minimizer: [ new TerserPlugin() ],
 		splitChunks: {
-			name: false,
-		},
-	},
-	node: {
-		crypto: 'empty',
+			name: false
+		}
 	},
 };
 

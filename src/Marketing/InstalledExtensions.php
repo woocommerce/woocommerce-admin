@@ -5,7 +5,7 @@
 
 namespace Automattic\WooCommerce\Admin\Marketing;
 
-use Automattic\WooCommerce\Admin\Loader;
+use Automattic\WooCommerce\Internal\Admin\Loader;
 use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
@@ -28,6 +28,7 @@ class InstalledExtensions {
 		$google      = self::get_google_extension_data();
 		$hubspot     = self::get_hubspot_extension_data();
 		$amazon_ebay = self::get_amazon_ebay_extension_data();
+		$mailpoet    = self::get_mailpoet_extension_data();
 
 		if ( $automatewoo ) {
 			$data[] = $automatewoo;
@@ -57,6 +58,10 @@ class InstalledExtensions {
 			$data[] = $amazon_ebay;
 		}
 
+		if ( $mailpoet ) {
+			$data[] = $mailpoet;
+		}
+
 		return $data;
 	}
 
@@ -75,6 +80,7 @@ class InstalledExtensions {
 			'google-listings-and-ads',
 			'hubspot-for-woocommerce',
 			'woocommerce-amazon-ebay-integration',
+			'mailpoet',
 		];
 	}
 
@@ -91,7 +97,7 @@ class InstalledExtensions {
 		}
 
 		$data         = self::get_extension_base_data( $slug );
-		$data['icon'] = plugins_url( 'images/marketing/automatewoo.svg', WC_ADMIN_PLUGIN_FILE );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/automatewoo.svg';
 
 		if ( 'activated' === $data['status'] && function_exists( 'AW' ) ) {
 			$data['settingsUrl'] = admin_url( 'admin.php?page=automatewoo-settings' );
@@ -115,7 +121,7 @@ class InstalledExtensions {
 		}
 
 		$data         = self::get_extension_base_data( $slug );
-		$data['icon'] = plugins_url( 'images/marketing/mailchimp.svg', WC_ADMIN_PLUGIN_FILE );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/mailchimp.svg';
 
 		if ( 'activated' === $data['status'] && function_exists( 'mailchimp_is_configured' ) ) {
 			$data['docsUrl']     = 'https://mailchimp.com/help/connect-or-disconnect-mailchimp-for-woocommerce/';
@@ -142,7 +148,7 @@ class InstalledExtensions {
 		}
 
 		$data         = self::get_extension_base_data( $slug );
-		$data['icon'] = plugins_url( 'images/marketing/facebook.svg', WC_ADMIN_PLUGIN_FILE );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/facebook.svg';
 
 		if ( 'activated' === $data['status'] && function_exists( 'facebook_for_woocommerce' ) ) {
 			$integration = facebook_for_woocommerce()->get_integration();
@@ -171,10 +177,10 @@ class InstalledExtensions {
 		}
 
 		$data         = self::get_extension_base_data( $slug );
-		$data['icon'] = plugins_url( 'images/marketing/pinterest.svg', WC_ADMIN_PLUGIN_FILE );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/pinterest.svg';
 
 		// TODO: Finalise docs url.
-		$data['docsUrl'] = 'https://docs.woocommerce.com/document/pinterest-for-woocommerce/?utm_medium=product';
+		$data['docsUrl'] = 'https://woocommerce.com/document/pinterest-for-woocommerce/?utm_medium=product';
 
 		if ( 'activated' === $data['status'] && class_exists( 'Pinterest_For_Woocommerce' ) ) {
 			$pinterest_onboarding_completed = Pinterest_For_Woocommerce()::is_setup_complete();
@@ -202,7 +208,7 @@ class InstalledExtensions {
 		}
 
 		$data         = self::get_extension_base_data( $slug );
-		$data['icon'] = plugins_url( 'images/marketing/google.svg', WC_ADMIN_PLUGIN_FILE );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/google.svg';
 
 		if ( 'activated' === $data['status'] && function_exists( 'woogle_get_container' ) && class_exists( '\Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService' ) ) {
 
@@ -215,7 +221,7 @@ class InstalledExtensions {
 				$data['settingsUrl'] = admin_url( 'admin.php?page=wc-admin&path=/google/start' );
 			}
 
-			$data['docsUrl'] = 'https://docs.woocommerce.com/document/google-listings-and-ads/?utm_medium=product';
+			$data['docsUrl'] = 'https://woocommerce.com/document/google-listings-and-ads/?utm_medium=product';
 		}
 
 		return $data;
@@ -234,7 +240,7 @@ class InstalledExtensions {
 		}
 
 		$data         = self::get_extension_base_data( $slug );
-		$data['icon'] = plugins_url( 'images/marketing/hubspot.svg', WC_ADMIN_PLUGIN_FILE );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/hubspot.svg';
 
 		if ( 'activated' === $data['status'] && class_exists( '\Hubwoo' ) ) {
 
@@ -263,7 +269,7 @@ class InstalledExtensions {
 		}
 
 		$data         = self::get_extension_base_data( $slug );
-		$data['icon'] = plugins_url( 'images/marketing/amazon-ebay.svg', WC_ADMIN_PLUGIN_FILE );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/amazon-ebay.svg';
 
 		if ( 'activated' === $data['status'] && class_exists( '\CodistoConnect' ) ) {
 
@@ -275,7 +281,39 @@ class InstalledExtensions {
 			}
 
 			$data['settingsUrl'] = admin_url( 'admin.php?page=codisto-settings' );
-			$data['docsUrl']     = 'https://docs.woocommerce.com/document/getting-started-with-woocommerce-amazon-ebay-integration/?utm_medium=product';
+			$data['docsUrl']     = 'https://woocommerce.com/document/multichannel-for-woocommerce-google-amazon-ebay-walmart-integration/?utm_medium=product';
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Get MailPoet extension data.
+	 *
+	 * @return array|bool
+	 */
+	protected static function get_mailpoet_extension_data() {
+		$slug = 'mailpoet';
+
+		if ( ! PluginsHelper::is_plugin_installed( $slug ) ) {
+			return false;
+		}
+
+		$data         = self::get_extension_base_data( $slug );
+		$data['icon'] = WC_ADMIN_IMAGES_FOLDER_URL . '/marketing/mailpoet.svg';
+
+		if ( 'activated' === $data['status'] && class_exists( '\MailPoet\API\API' ) ) {
+			$mailpoet_api = \MailPoet\API\API::MP( 'v1' );
+
+			if ( ! method_exists( $mailpoet_api, 'isSetupComplete' ) || $mailpoet_api->isSetupComplete() ) {
+				$data['status']      = 'configured';
+				$data['settingsUrl'] = admin_url( 'admin.php?page=mailpoet-settings' );
+			} else {
+				$data['settingsUrl'] = admin_url( 'admin.php?page=mailpoet-newsletters' );
+			}
+
+			$data['docsUrl']    = 'https://kb.mailpoet.com/';
+			$data['supportUrl'] = 'https://www.mailpoet.com/support/';
 		}
 
 		return $data;

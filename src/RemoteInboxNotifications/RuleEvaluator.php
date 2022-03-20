@@ -37,6 +37,11 @@ class RuleEvaluator {
 	 * @return bool The result of the operation.
 	 */
 	public function evaluate( $rules, $stored_state = null, $logger_args = array() ) {
+
+		if ( is_bool( $rules ) ) {
+			return $rules;
+		}
+
 		if ( ! is_array( $rules ) ) {
 			$rules = array( $rules );
 		}
@@ -58,6 +63,10 @@ class RuleEvaluator {
 		}
 
 		foreach ( $rules as $rule ) {
+			if ( ! is_object( $rule ) ) {
+				return false;
+			}
+
 			$processor        = $this->get_rule_processor->get_processor( $rule->type );
 			$processor_result = $processor->process( $rule, $stored_state );
 			$evaluation_logger && $evaluation_logger->add_result( $rule->type, $processor_result );

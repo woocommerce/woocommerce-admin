@@ -4,33 +4,74 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks\WooCommercePayments;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**
  * Payments Task
  */
-class Payments {
+class Payments extends Task {
 	/**
-	 * Get the task arguments.
+	 * ID.
 	 *
-	 * @return array
+	 * @return string
 	 */
-	public static function get_task() {
-		return array(
-			'id'          => 'payments',
-			'title'       => __( 'Set up payments', 'woocommerce-admin' ),
-			'content'     => __(
-				'Choose payment providers and enable payment methods at checkout.',
-				'woocommerce-admin'
-			),
-			'is_complete' => self::has_gateways(),
-			'can_view'    => Features::is_enabled( 'payment-gateway-suggestions' ) &&
-				(
-					! WooCommercePayments::is_requested() ||
-					! WooCommercePayments::is_installed() ||
-					! WooCommercePayments::is_supported()
-				),
-			'time'        => __( '2 minutes', 'woocommerce-admin' ),
+	public function get_id() {
+		return 'payments';
+	}
+
+	/**
+	 * Title.
+	 *
+	 * @return string
+	 */
+	public function get_title() {
+		if ( true === $this->get_parent_option( 'use_completed_title' ) ) {
+			if ( $this->is_complete() ) {
+				return __( 'You set up payments', 'woocommerce-admin' );
+			}
+			return __( 'Set up payments', 'woocommerce-admin' );
+		}
+		return __( 'Set up payments', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Content.
+	 *
+	 * @return string
+	 */
+	public function get_content() {
+		return __(
+			'Choose payment providers and enable payment methods at checkout.',
+			'woocommerce-admin'
 		);
+	}
+
+	/**
+	 * Time.
+	 *
+	 * @return string
+	 */
+	public function get_time() {
+		return __( '2 minutes', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Task completion.
+	 *
+	 * @return bool
+	 */
+	public function is_complete() {
+		return self::has_gateways();
+	}
+
+	/**
+	 * Task visibility.
+	 *
+	 * @return bool
+	 */
+	public function can_view() {
+		$woocommerce_payments = $this->task_list->get_task( 'woocommerce-payments' );
+		return Features::is_enabled( 'payment-gateway-suggestions' ) && ! $woocommerce_payments->can_view();
 	}
 
 	/**
@@ -43,7 +84,7 @@ class Payments {
 		$enabled_gateways = array_filter(
 			$gateways,
 			function( $gateway ) {
-				return 'yes' === $gateway->enabled;
+				return 'yes' === $gateway->enabled && 'woocommerce_payments' !== $gateway->id;
 			}
 		);
 

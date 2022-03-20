@@ -1,8 +1,7 @@
 /**
  * External dependencies
  */
-import { getSetting } from '@woocommerce/wc-admin-settings';
-import { withOptionsHydration } from '@woocommerce/data';
+import { useUser, withOptionsHydration } from '@woocommerce/data';
 
 /**
  * Internal dependencies
@@ -12,19 +11,21 @@ import InstalledExtensions from './installed-extensions';
 import RecommendedExtensions from '../components/recommended-extensions';
 import KnowledgeBase from '../components/knowledge-base';
 import WelcomeCard from './welcome-card';
+import { getAdminSetting } from '~/utils/admin-settings';
 import '../data';
 
 const MarketingOverview = () => {
-	const allowMarketplaceSuggestions = getSetting(
-		'allowMarketplaceSuggestions',
-		false
-	);
+	const { currentUserCan } = useUser();
+
+	const shouldShowExtensions =
+		getAdminSetting( 'allowMarketplaceSuggestions', false ) &&
+		currentUserCan( 'install_plugins' );
 
 	return (
 		<div className="woocommerce-marketing-overview">
 			<WelcomeCard />
 			<InstalledExtensions />
-			{ allowMarketplaceSuggestions && (
+			{ shouldShowExtensions && (
 				<RecommendedExtensions category="marketing" />
 			) }
 			<KnowledgeBase category="marketing" />
@@ -33,5 +34,5 @@ const MarketingOverview = () => {
 };
 
 export default withOptionsHydration( {
-	...getSetting( 'preloadOptions', {} ),
+	...getAdminSetting( 'preloadOptions', {} ),
 } )( MarketingOverview );

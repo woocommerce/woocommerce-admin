@@ -6,8 +6,9 @@
  */
 
 use \Automattic\WooCommerce\Admin\API\OnboardingProfile;
-use Automattic\WooCommerce\Admin\Features\Onboarding;
-use Automattic\WooCommerce\Admin\Schedulers\MailchimpScheduler;
+use Automattic\WooCommerce\Internal\Admin\Schedulers\MailchimpScheduler;
+use Automattic\WooCommerce\Internal\Admin\Onboarding;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile as Profile;
 
 /**
  * WC Tests API Onboarding Profile
@@ -106,13 +107,14 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$data       = $response->get_data();
 		$properties = $data['schema']['properties'];
 
-		$this->assertCount( 15, $properties );
+		$this->assertCount( 16, $properties );
 		$this->assertArrayHasKey( 'completed', $properties );
 		$this->assertArrayHasKey( 'skipped', $properties );
 		$this->assertArrayHasKey( 'industry', $properties );
 		$this->assertArrayHasKey( 'product_types', $properties );
 		$this->assertArrayHasKey( 'product_count', $properties );
 		$this->assertArrayHasKey( 'selling_venues', $properties );
+		$this->assertArrayHasKey( 'number_employees', $properties );
 		$this->assertArrayHasKey( 'revenue', $properties );
 		$this->assertArrayHasKey( 'other_platform', $properties );
 		$this->assertArrayHasKey( 'other_platform_name', $properties );
@@ -192,7 +194,7 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 	public function test_it_deletes_the_option_when_a_different_email_gets_updated() {
 		wp_set_current_user( $this->user );
 
-		update_option( Onboarding::PROFILE_DATA_OPTION, array( 'store_email' => 'first@test.com' ) );
+		update_option( Profile::DATA_OPTION, array( 'store_email' => 'first@test.com' ) );
 		update_option( MailchimpScheduler::SUBSCRIBED_OPTION_NAME, 'yes' );
 
 		$request = new WP_REST_Request( 'POST', '/wc-admin/onboarding/profile' );
@@ -202,5 +204,6 @@ class WC_Tests_API_Onboarding_Profiles extends WC_REST_Unit_Test_Case {
 		$this->server->dispatch( $request );
 
 		$this->assertFalse( get_option( MailchimpScheduler::SUBSCRIBED_OPTION_NAME, false ) );
+		$this->assertFalse( get_option( MailchimpScheduler::SUBSCRIBED_ERROR_COUNT_OPTION_NAME, false ) );
 	}
 }

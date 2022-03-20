@@ -10,7 +10,7 @@ import { withSelect, withDispatch } from '@wordpress/data';
 import PropTypes from 'prop-types';
 import StarIcon from 'gridicons/dist/star';
 import StarOutlineIcon from 'gridicons/dist/star-outline';
-import interpolateComponents from 'interpolate-components';
+import interpolateComponents from '@automattic/interpolate-components';
 import {
 	EmptyContent,
 	Link,
@@ -18,7 +18,7 @@ import {
 	ProductImage,
 	Section,
 } from '@woocommerce/components';
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/settings';
 import { get, isNull } from 'lodash';
 import { REVIEWS_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
@@ -30,7 +30,7 @@ import './style.scss';
 import {
 	ActivityCard,
 	ActivityCardPlaceholder,
-} from '../../../header/activity-panel/activity-card';
+} from '~/activity-panel/activity-card';
 import CheckmarkCircleIcon from './checkmark-circle-icon';
 import { CurrencyContext } from '../../../lib/currency-context';
 import sanitizeHTML from '../../../lib/sanitize-html';

@@ -6,16 +6,17 @@ import { ElementHandle } from 'puppeteer';
 /**
  * Internal dependencies
  */
-import { NewOrder } from '../pages/NewOrder';
+import { Login } from '../pages/Login';
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { expect } = require( '@jest/globals' );
+const config = require( 'config' );
 /* eslint-enable @typescript-eslint/no-var-requires */
 
 /**
  * Wait for UI blocking to end.
  */
-const uiUnblocked = async () => {
+const uiUnblocked = async (): Promise< void > => {
 	await page.waitForFunction(
 		() => ! Boolean( document.querySelector( '.blockUI' ) )
 	);
@@ -26,14 +27,14 @@ const uiUnblocked = async () => {
  *
  * @param {number} timeout in milliseconds
  */
-const waitForTimeout = async ( timeout: number ) => {
+const waitForTimeout = async ( timeout: number ): Promise< void > => {
 	await new Promise( ( resolve ) => setTimeout( resolve, timeout ) );
 };
 
 /**
  * Publish, verify that item was published. Trash, verify that item was trashed.
  *
- * @param {string} button (Publish)
+ * @param {string} button              (Publish)
  * @param {string} publishNotice
  * @param {string} publishVerification
  */
@@ -42,7 +43,7 @@ const verifyPublishAndTrash = async (
 	publishNotice: string,
 	publishVerification: string,
 	trashVerification: string
-) => {
+): Promise< void > => {
 	// Wait for auto save
 	await waitForTimeout( 2000 );
 	// Publish
@@ -76,14 +77,17 @@ const verifyPublishAndTrash = async (
 	} );
 };
 
-const hasClass = async ( element: ElementHandle, elementClass: string ) => {
+const hasClass = async (
+	element: ElementHandle,
+	elementClass: string
+): Promise< boolean > => {
 	const classNameProp = await element.getProperty( 'className' );
 	const classNameValue = ( await classNameProp.jsonValue() ) as string;
 
 	return classNameValue.includes( elementClass );
 };
 
-const getInputValue = async ( selector: string ) => {
+const getInputValue = async ( selector: string ): Promise< unknown > => {
 	const field = await page.$( selector );
 	if ( field ) {
 		const fieldValue = await (
@@ -95,7 +99,10 @@ const getInputValue = async ( selector: string ) => {
 	return null;
 };
 
-const getAttribute = async ( selector: string, attribute: string ) => {
+const getAttribute = async (
+	selector: string,
+	attribute: string
+): Promise< unknown > => {
 	await page.focus( selector );
 	const field = await page.$( selector );
 	if ( field ) {
@@ -155,7 +162,7 @@ export const waitForElementByTextWithoutThrow = async (
 	element: string,
 	text: string,
 	timeoutInSeconds = 5
-) => {
+): Promise< boolean > => {
 	let selected = await getElementByText( element, text );
 	for ( let s = 0; s < timeoutInSeconds; s++ ) {
 		if ( selected ) {
@@ -167,6 +174,85 @@ export const waitForElementByTextWithoutThrow = async (
 	return Boolean( selected );
 };
 
+const waitUntilElementStopsMoving = async ( selector: string ) => {
+	return await page.waitForFunction(
+		( elementSelector ) => {
+			const element = document.querySelector( elementSelector );
+			const elementRect = element.getBoundingClientRect();
+			const jsWindow: Window &
+				typeof globalThis & {
+					elementX?: number;
+					elementY?: number;
+				} = window;
+
+			if (
+				jsWindow.elementX !== elementRect.x.toFixed( 1 ) ||
+				jsWindow.elementY !== elementRect.y.toFixed( 1 )
+			) {
+				jsWindow.elementX = elementRect.x.toFixed( 1 );
+				jsWindow.elementY = elementRect.y.toFixed( 1 );
+				return false;
+			}
+
+			delete jsWindow.elementX;
+			delete jsWindow.elementY;
+			return true;
+		},
+		{},
+		selector
+	);
+};
+
+const deactivateAndDeleteExtension = async (
+	extension: string
+): Promise< void > => {
+	const baseUrl = config.get( 'url' );
+	const pluginsAdmin = 'wp-admin/plugins.php?plugin_status=all&paged=1&s';
+	await page.goto( baseUrl + pluginsAdmin, {
+		waitUntil: 'networkidle0',
+		timeout: 10000,
+	} );
+	await waitForElementByText( 'h1', 'Plugins' );
+	// deactivate extension
+	const deactivateExtension = await page.$( `#deactivate-${ extension }` );
+	await deactivateExtension?.click();
+	await waitForElementByText( 'p', 'Plugin deactivated.' );
+	// delete extension
+	const deleteExtension = await page.$( `#delete-${ extension }` );
+	await deleteExtension?.click();
+};
+
+const addReviewToProduct = async ( productId: number, productName: string ) => {
+	// we need a guest user
+	const login = new Login( page );
+	await login.logout();
+
+	const baseUrl = config.get( 'url' );
+	const productUrl = `/?p=${ productId }`;
+	await page.goto( baseUrl + productUrl, {
+		waitUntil: 'networkidle0',
+		timeout: 10000,
+	} );
+	await waitForElementByText( 'h1', productName );
+
+	// Reviews tab
+	const reviewTab = await page.$( '#tab-title-reviews' );
+	await reviewTab?.click();
+	const fiveStars = await page.$( '.star-5' );
+	await fiveStars?.click();
+
+	// write a comment
+	await page.type( '#comment', 'My comment' );
+	await page.type( '#author', 'John Doe' );
+	await page.type( '#email', 'john.doe@john.doe' );
+
+	const submit = await page.$( '#submit' );
+	await submit?.click();
+	// the comment was published
+	await waitForElementByText( 'p', 'My comment' );
+	await login.login();
+};
+
 export {
 	uiUnblocked,
 	verifyPublishAndTrash,
@@ -175,6 +261,9 @@ export {
 	getElementByText,
 	getElementByAttributeAndValue,
 	waitForElementByText,
+	waitUntilElementStopsMoving,
 	hasClass,
 	waitForTimeout,
+	deactivateAndDeleteExtension,
+	addReviewToProduct,
 };

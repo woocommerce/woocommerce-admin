@@ -14,6 +14,7 @@ const basicPlugins: Extension[] = [
 		description: 'Basic plugin description',
 		manage_url: '#',
 		image_url: 'basic.jpeg',
+		is_built_by_wc: true,
 	},
 ];
 
@@ -46,17 +47,17 @@ const growPlugins: Extension[] = [
 
 const extensionLists = [
 	{
-		key: 'basics',
+		key: 'obw/basics',
 		plugins: basicPlugins,
 		title: 'Basics',
 	},
 	{
-		key: 'reach',
+		key: 'task-list/reach',
 		plugins: reachPlugins,
 		title: 'Reach',
 	},
 	{
-		key: 'grow',
+		key: 'task-list/grow',
 		plugins: growPlugins,
 		title: 'Grow',
 	},
@@ -71,6 +72,7 @@ describe( 'transformExtensionToPlugin', () => {
 			imageUrl: 'basic.jpeg',
 			isActive: false,
 			isInstalled: false,
+			isBuiltByWC: true,
 			manageUrl: '#',
 			name: 'Basic Plugin',
 		} );
@@ -109,8 +111,8 @@ describe( 'getMarketingExtensionLists', () => {
 		);
 
 		expect( lists.length ).toBe( 2 );
-		expect( lists[ 0 ].key ).toBe( 'reach' );
-		expect( lists[ 1 ].key ).toBe( 'grow' );
+		expect( lists[ 0 ].key ).toBe( 'task-list/reach' );
+		expect( lists[ 1 ].key ).toBe( 'task-list/grow' );
 	} );
 
 	test( 'should separate installed plugins', () => {

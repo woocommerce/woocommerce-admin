@@ -4,7 +4,7 @@
 	background: $studio-white;
 	border-radius: 2px;
 	@include font-size( 13 );
-	margin: 0 0 $gap-large;
+	margin: 0 0;
 	-ms-box-orient: horizontal;
 	&.banner {
 		-webkit-flex-direction: column;
@@ -22,13 +22,29 @@
 			height: 100%;
 		}
 	}
+	&:hover {
+		background: $gray-100;
+		.woocommerce-inbox-message__actions button.woocommerce-admin-dismiss-notification {
+			visibility: visible;
+		}
+	}
+
+	&:not(.message-is-unread) {
+		.woocommerce-inbox-message__title {
+			font-weight: normal;
+			a {
+				font-weight: normal;
+			}
+		}
+	}
 
 	.woocommerce-homepage-column & {
 		margin: 20px 0;
 	}
 
 	&:not(.is-placeholder) {
-		border: 1px solid $gray-200;
+		border: 0;
+		border-bottom: 1px solid $gray-200;
 	}
 
 	.line {
@@ -49,15 +65,6 @@
 }
 
 .woocommerce-inbox-message__content {
-	.woocommerce-inbox-message__unread-indicator {
-		height: 8px;
-		width: 8px;
-		background-color: var(--wp-admin-theme-color);
-		border-radius: 100px;
-		display: inline-block;
-		margin-right: $gap-smaller;
-	}
-
 	.woocommerce-inbox-message__title {
 		color: $gray-900;
 		@include font-size( 16 );
@@ -72,6 +79,12 @@
 				margin: 5px 0;
 			}
 			margin-bottom: 10px;
+		}
+
+		a {
+			@extend .woocommerce-inbox-message__title;
+			color: $gray-900 !important;
+			text-decoration: none !important;
 		}
 	}
 
@@ -89,6 +102,10 @@
 			margin-bottom: 10px;
 		}
 	}
+}
+
+.woocommerce-inbox-message__wrapper .woocommerce-inbox-message__content {
+	padding-bottom: 0;
 }
 
 .woocommerce-inbox-message__text {
@@ -114,9 +131,6 @@
 }
 
 .woocommerce-inbox-message__actions {
-	padding-top: $gap;
-	border-top: 1px solid $gray-200;
-
 	// Ensures any immediate child with a sibling has space between the items
 	& > * + * {
 		margin-left: 0.5em;
@@ -125,7 +139,32 @@
 	a,
 	button {
 		cursor: pointer;
+		&.is-link {
+			text-decoration: none;
+		}
 	}
+
+	&.has-multiple-actions {
+		button.is-link {
+			padding: 6px 12px;
+			border: 1px solid var(--wp-admin-theme-color);
+			margin-right: 0.5em;
+		}
+		a {
+			margin-right: 0.5em;
+		}
+	}
+
+	border-top: 0;
+
+	button.woocommerce-admin-dismiss-notification {
+		color: $gray-700;
+		&:hover {
+			box-shadow: none !important;
+		}
+		visibility: hidden;
+	}
+
 	.components-dropdown {
 		display: inline;
 
@@ -150,6 +189,10 @@
 		}
 	}
 }
+.woocommerce-inbox-message__wrapper {
+	padding-top: 0;
+}
+
 .woocommerce-inbox-dismiss-confirmation_modal {
 	text-align: left;
 }

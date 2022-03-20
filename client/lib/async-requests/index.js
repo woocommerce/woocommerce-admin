@@ -6,19 +6,19 @@ import apiFetch from '@wordpress/api-fetch';
 import { identity } from 'lodash';
 import { getIdsFromQuery } from '@woocommerce/navigation';
 import { NAMESPACE } from '@woocommerce/data';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 
 /**
  * Internal dependencies
  */
 import { getTaxCode } from '../../analytics/report/taxes/utils';
+import { getAdminSetting } from '~/utils/admin-settings';
 
 /**
  * Get a function that accepts ids as they are found in url parameter and
  * returns a promise with an optional method applied to results
  *
- * @param {string|Function} path - api path string or a function of the query returning api path string
- * @param {Function} [handleData] - function applied to each iteration of data
+ * @param {string|Function} path         - api path string or a function of the query returning api path string
+ * @param {Function}        [handleData] - function applied to each iteration of data
  * @return {Function} - a function of ids returning a promise
  */
 export function getRequestByIdString( path, handleData = identity ) {
@@ -90,13 +90,16 @@ export const getTaxRateLabels = getRequestByIdString(
  * Create a variation name by concatenating each of the variation's
  * attribute option strings.
  *
- * @param {Object} variation - variation returned by the api
- * @param {Array} variation.attributes - attribute objects, with option property.
- * @param {string} variation.name - name of variation.
+ * @param {Object} variation            - variation returned by the api
+ * @param {Array}  variation.attributes - attribute objects, with option property.
+ * @param {string} variation.name       - name of variation.
  * @return {string} - formatted variation name
  */
 export function getVariationName( { attributes, name } ) {
-	const separator = getSetting( 'variationTitleAttributesSeparator', ' - ' );
+	const separator = getAdminSetting(
+		'variationTitleAttributesSeparator',
+		' - '
+	);
 
 	if ( name && name.indexOf( separator ) > -1 ) {
 		return name;

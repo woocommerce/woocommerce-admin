@@ -17,7 +17,6 @@ import {
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { H } from '@woocommerce/components';
-import { getSetting, setSetting } from '@woocommerce/wc-admin-settings';
 import { ONBOARDING_STORE_NAME } from '@woocommerce/data';
 import { recordEvent } from '@woocommerce/tracks';
 import { Text } from '@woocommerce/experimental';
@@ -29,6 +28,7 @@ import './style.scss';
 import ThemeUploader from './uploader';
 import ThemePreview from './preview';
 import { getPriceValue } from '../../../dashboard/utils';
+import { getAdminSetting, setAdminSetting } from '~/utils/admin-settings';
 
 class Theme extends Component {
 	constructor() {
@@ -84,7 +84,7 @@ class Theme extends Component {
 	onChoose( theme, location = '' ) {
 		const { updateProfileItems } = this.props;
 		const { is_installed: isInstalled, price, slug } = theme;
-		const { activeTheme = '' } = getSetting( 'onboarding', {} );
+		const { activeTheme = '' } = getAdminSetting( 'onboarding', {} );
 
 		this.setState( { chosen: slug } );
 		recordEvent( 'storeprofiler_store_theme_choose', {
@@ -110,17 +110,7 @@ class Theme extends Component {
 			path: '/wc-admin/onboarding/themes/install?theme=' + slug,
 			method: 'POST',
 		} )
-			.then( ( response ) => {
-				createNotice(
-					'success',
-					sprintf(
-						__(
-							'%s was installed on your site',
-							'woocommerce-admin'
-						),
-						response.name
-					)
-				);
+			.then( () => {
 				this.activateTheme( slug );
 			} )
 			.catch( ( response ) => {
@@ -140,15 +130,16 @@ class Theme extends Component {
 				createNotice(
 					'success',
 					sprintf(
+						/* translators: The name of the theme that was installed and activated */
 						__(
-							'%s was activated on your site',
+							'%s was installed and activated on your site',
 							'woocommerce-admin'
 						),
 						response.name
 					)
 				);
-				setSetting( 'onboarding', {
-					...getSetting( 'onboarding', {} ),
+				setAdminSetting( 'onboarding', {
+					...getAdminSetting( 'onboarding', {} ),
 					activeTheme: response.slug,
 				} );
 				updateProfileItems( { theme: slug } );
@@ -177,7 +168,7 @@ class Theme extends Component {
 	}
 
 	skipStep() {
-		const { activeTheme = '' } = getSetting( 'onboarding', {} );
+		const { activeTheme = '' } = getAdminSetting( 'onboarding', {} );
 		recordEvent( 'storeprofiler_store_theme_skip_step', { activeTheme } );
 		this.props.goToNextStep();
 	}
@@ -191,7 +182,7 @@ class Theme extends Component {
 			title,
 		} = theme;
 		const { chosen } = this.state;
-		const { activeTheme = '' } = getSetting( 'onboarding', {} );
+		const { activeTheme = '' } = getAdminSetting( 'onboarding', {} );
 
 		return (
 			<Card className="woocommerce-profile-wizard__theme" key={ slug }>
@@ -267,7 +258,7 @@ class Theme extends Component {
 
 	getThemeStatus( theme ) {
 		const { is_installed: isInstalled, price, slug } = theme;
-		const { activeTheme = '' } = getSetting( 'onboarding', {} );
+		const { activeTheme = '' } = getAdminSetting( 'onboarding', {} );
 
 		if ( activeTheme === slug ) {
 			return __( 'Currently active theme', 'woocommerce-admin' );
@@ -285,7 +276,7 @@ class Theme extends Component {
 	}
 
 	doesActiveThemeSupportWooCommerce() {
-		const { activeTheme = '' } = getSetting( 'onboarding', {} );
+		const { activeTheme = '' } = getAdminSetting( 'onboarding', {} );
 		const allThemes = this.getThemes();
 		const currentTheme = allThemes.find(
 			( theme ) => theme.slug === activeTheme
@@ -306,7 +297,7 @@ class Theme extends Component {
 
 	getThemes( activeTab = 'all' ) {
 		const { uploadedThemes } = this.state;
-		const { activeTheme = '', themes = [] } = getSetting(
+		const { activeTheme = '', themes = [] } = getAdminSetting(
 			'onboarding',
 			{}
 		);

@@ -15,6 +15,7 @@ use \Automattic\WooCommerce\Admin\Notes\Notes as NotesFactory;
 /**
  * REST API Admin Note Action controller class.
  *
+ * @internal
  * @extends WC_REST_CRUD_Controller
  */
 class NoteActions extends Notes {
@@ -64,6 +65,9 @@ class NoteActions extends Notes {
 				array( 'status' => 404 )
 			);
 		}
+
+		$note->set_is_read( true );
+		$note->save();
 
 		$triggered_action = NotesFactory::get_action_by_id( $note, $request->get_param( 'action_id' ) );
 

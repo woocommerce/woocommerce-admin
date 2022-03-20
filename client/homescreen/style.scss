@@ -1,6 +1,7 @@
 .woocommerce-page #wpcontent,
 .woocommerce-page.woocommerce_page_wc-admin #wpbody-content {
 	overflow-x: inherit !important; // Overwriting wc-admin css from elsewhere. Necessary to make the right-hand column 'stick'
+	position: relative;
 }
 
 .woocommerce-homescreen {
@@ -56,6 +57,10 @@
 
 	> div {
 		margin-bottom: $gap-large;
+	}
+
+	.components-text + .woocommerce-badge {
+		margin-left: 16px;
 	}
 
 	@include breakpoint( '<782px' ) {

@@ -1,5 +1,16 @@
 # Unreleased
 
+-   Update all js packages with minor/patch version changes. #8392
+
+# 4.0.0
+
+## Breaking changes
+
+-   Update dependencies to support react 17. #8305
+-   Drop support for IE11. #8305
+
+# 3.2.1
+
 -   Tweak - Added `useCode` parameter to `formatAmount`, to render currency code instead of symbol. #7575
 -   Dev - Export data types. #7848
 

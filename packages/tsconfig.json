@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"composite": true,
 		"target": "es2019",
 		"module": "esnext",
 		"moduleResolution": "node",
@@ -14,8 +15,10 @@
 	},
 	"exclude": [
 		"node_modules",
+		"**/stories",
 		"**/build",
 		"**/build-module",
+		"**/build-types",
 		"**/test/*",
 		"**/jest.config.js",
 		"**/webpack.*.js"

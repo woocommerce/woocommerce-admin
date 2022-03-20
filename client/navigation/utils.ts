@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
+import { getAdminLink } from '@woocommerce/settings';
 
 type MenuId = 'primary' | 'favorites' | 'plugins' | 'secondary';
 
@@ -192,7 +192,7 @@ export const sortMenuItems = ( menuItems: Item[] ): Item[] => {
 /**
  * Get a flat tree structure of all Categories and thier children grouped by menuId
  *
- * @param {Array} menuItems Array of menu items.
+ * @param {Array}    menuItems      Array of menu items.
  * @param {Function} currentUserCan Callback method passed the capability to determine if a menu item is visible.
  * @return {Object} Mapped menu items and categories.
  */

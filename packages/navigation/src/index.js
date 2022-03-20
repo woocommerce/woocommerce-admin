@@ -38,6 +38,12 @@ export const getPath = () => getHistory().location.pathname;
  * @return {Object} Object containing the persisted queries.
  */
 export const getPersistedQuery = ( query = navUtils.getQuery() ) => {
+	/**
+	 * Filter persisted queries. These query parameters remain in the url when other parameters are updated.
+	 *
+	 * @filter woocommerce_admin_persisted_queries
+	 * @param {Array.<string>} persistedQueries Array of persisted queries.
+	 */
 	const params = applyFilters( 'woocommerce_admin_persisted_queries', [
 		'period',
 		'compare',
@@ -138,10 +144,10 @@ export function getSearchWords( query = navUtils.getQuery() ) {
 /**
  * Return a URL with set query parameters.
  *
- * @param {Object} query object of params to be updated.
- * @param {string} path Relative path (defaults to current path).
+ * @param {Object} query        object of params to be updated.
+ * @param {string} path         Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
- * @param {string} page Page key (defaults to "wc-admin")
+ * @param {string} page         Page key (defaults to "wc-admin")
  * @return {string}  Updated URL merging query params into existing params.
  */
 export function getNewPath(
@@ -174,7 +180,7 @@ export function getQuery() {
  * This function returns an event handler for the given `param`
  *
  * @param {string} param The parameter in the querystring which should be updated (ex `page`, `per_page`)
- * @param {string} path Relative path (defaults to current path).
+ * @param {string} path  Relative path (defaults to current path).
  * @param {string} query object of current query params (defaults to current querystring).
  * @return {Function} A callback which will update `param` to the passed value when called.
  */
@@ -203,10 +209,10 @@ export function onQueryChange( param, path = getPath(), query = getQuery() ) {
 /**
  * Updates the query parameters of the current page.
  *
- * @param {Object} query object of params to be updated.
- * @param {string} path Relative path (defaults to current path).
+ * @param {Object} query        object of params to be updated.
+ * @param {string} path         Relative path (defaults to current path).
  * @param {Object} currentQuery object of current query params (defaults to current querystring).
- * @param {string} page Page key (defaults to "wc-admin")
+ * @param {string} page         Page key (defaults to "wc-admin")
  */
 export function updateQueryString(
 	query,
@@ -261,21 +267,13 @@ export const addHistoryListener = ( listener ) => {
 };
 
 /**
- * Create a Fill for extensions to add client facing custom Navigation Items.
+ * A Fill for extensions to add client facing custom Navigation Items.
  *
  * @slotFill WooNavigationItem
- * @example
- * const MyExtenstionNavItem = () => (
- * 	<WooNavigationItem item="my-extension">My Extension</WooNavigationItem>
- * );
- *
- * registerPlugin( 'my-extension', {
- * 	render: MyExtenstionNavItem,
- * 	scope: 'woocommerce-admin',
- * } );
- * @param {Object} param0
- * @param {Array} param0.children - Node children.
- * @param {string} param0.item - Navigation item slug.
+ * @scope woocommerce-navigation
+ * @param {Object} props          React props.
+ * @param {Array}  props.children Node children.
+ * @param {string} props.item     Navigation item slug.
  */
 export const WooNavigationItem = ( { children, item } ) => {
 	return <Fill name={ 'woocommerce_navigation_' + item }>{ children }</Fill>;

@@ -2,32 +2,74 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**
  * Store Details Task
  */
-class StoreDetails {
+class StoreDetails extends Task {
 	/**
-	 * Get the task arguments.
+	 * ID.
 	 *
-	 * @return array
+	 * @return string
 	 */
-	public static function get_task() {
-		$profiler_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+	public function get_id() {
+		return 'store_details';
+	}
 
-		return array(
-			'id'           => 'store_details',
-			'title'        => __( 'Store details', 'woocommerce-admin' ),
-			'content'      => __(
-				'Your store address is required to set the origin country for shipping, currencies, and payment options.',
-				'woocommerce-admin'
-			),
-			'action_label' => __( "Let's go", 'woocommerce-admin' ),
-			'action_url'   => '/setup-wizard',
-			'is_complete'  => isset( $profiler_data['completed'] ) && true === $profiler_data['completed'],
-			'can_view'     => true,
-			'time'         => __( '4 minutes', 'woocommerce-admin' ),
+	/**
+	 * Title.
+	 *
+	 * @return string
+	 */
+	public function get_title() {
+		if ( true === $this->get_parent_option( 'use_completed_title' ) ) {
+			if ( $this->is_complete() ) {
+				return __( 'You added store details', 'woocommerce-admin' );
+			}
+			return __( 'Add store details', 'woocommerce-admin' );
+		}
+		return __( 'Store details', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Content.
+	 *
+	 * @return string
+	 */
+	public function get_content() {
+		return __(
+			'Your store address is required to set the origin country for shipping, currencies, and payment options.',
+			'woocommerce-admin'
 		);
+	}
+
+	/**
+	 * Time.
+	 *
+	 * @return string
+	 */
+	public function get_time() {
+		return __( '4 minutes', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Time.
+	 *
+	 * @return string
+	 */
+	public function get_action_url() {
+		return '/setup-wizard';
+	}
+
+	/**
+	 * Task completion.
+	 *
+	 * @return bool
+	 */
+	public function is_complete() {
+		$profiler_data = get_option( OnboardingProfile::DATA_OPTION, array() );
+		return isset( $profiler_data['completed'] ) && true === $profiler_data['completed'];
 	}
 }

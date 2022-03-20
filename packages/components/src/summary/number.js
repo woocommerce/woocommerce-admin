@@ -8,6 +8,7 @@ import ChevronDownIcon from 'gridicons/dist/chevron-down';
 import { isNil, noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { createElement } from '@wordpress/element';
+import { Icon, info } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -18,20 +19,21 @@ import { Text } from '../experimental';
 /**
  * A component to show a value, label, and optionally a change percentage and children node. Can also act as a link to a specific report focus.
  *
- * @param {Object} props
- * @param {Node} props.children
- * @param {number} props.delta Change percentage. Float precision is rendered as given.
- * @param {string} props.href
- * @param {string} props.hrefType
- * @param {boolean} props.isOpen
- * @param {string} props.label
- * @param {Function} props.onToggle
- * @param {string} props.prevLabel
+ * @param {Object}        props
+ * @param {Node}          props.children
+ * @param {number}        props.delta               Change percentage. Float precision is rendered as given.
+ * @param {string}        props.href
+ * @param {string}        props.hrefType
+ * @param {boolean}       props.isOpen
+ * @param {string}        props.label
+ * @param {string}        props.labelTooltipText
+ * @param {Function}      props.onToggle
+ * @param {string}        props.prevLabel
  * @param {number|string} props.prevValue
- * @param {boolean} props.reverseTrend
- * @param {boolean} props.selected
+ * @param {boolean}       props.reverseTrend
+ * @param {boolean}       props.selected
  * @param {number|string} props.value
- * @param {Function} props.onLinkClickCallback
+ * @param {Function}      props.onLinkClickCallback
  * @return {Object} -
  */
 const SummaryNumber = ( {
@@ -41,6 +43,7 @@ const SummaryNumber = ( {
 	hrefType,
 	isOpen,
 	label,
+	labelTooltipText,
 	onToggle,
 	prevLabel,
 	prevValue,
@@ -107,6 +110,20 @@ const SummaryNumber = ( {
 					<Text variant="body.small" size="14" lineHeight="20px">
 						{ label }
 					</Text>
+					{ labelTooltipText && (
+						<Tooltip
+							text={ labelTooltipText }
+							position="top center"
+						>
+							<div className="woocommerce-summary__info-tooltip">
+								<Icon
+									width={ 20 }
+									height={ 20 }
+									icon={ info }
+								/>
+							</div>
+						</Tooltip>
+					) }
 				</div>
 
 				<div className="woocommerce-summary__item-data">
@@ -179,6 +196,10 @@ SummaryNumber.propTypes = {
 	 * A string description of this value, ex "Revenue", or "New Customers"
 	 */
 	label: PropTypes.string.isRequired,
+	/**
+	 * A string that will displayed via a Tooltip next to the label
+	 */
+	labelTooltipText: PropTypes.string,
 	/**
 	 * A function used to switch the given SummaryNumber to a button, and called on click.
 	 */

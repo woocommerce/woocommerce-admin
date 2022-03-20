@@ -3,7 +3,11 @@
  */
 import { decodeEntities } from '@wordpress/html-entities';
 import { without } from 'lodash';
-import { getSetting } from '@woocommerce/wc-admin-settings';
+
+/**
+ * Internal dependencies
+ */
+import { getAdminSetting } from '~/utils/admin-settings';
 
 /**
  * Gets the country code from a country:state value string.
@@ -23,7 +27,7 @@ export function getCountryCode( countryState ) {
 export function getCurrencyRegion( countryState ) {
 	let region = getCountryCode( countryState );
 	const euCountries = without(
-		getSetting( 'onboarding', { euCountries: [] } ).euCountries,
+		getAdminSetting( 'onboarding', { euCountries: [] } ).euCountries,
 		'GB'
 	);
 	if ( euCountries.includes( region ) ) {
@@ -36,12 +40,14 @@ export function getCurrencyRegion( countryState ) {
 /**
  * Gets the product IDs for items based on the product types and theme selected in the onboarding profiler.
  *
- * @param {Object} profileItems Onboarding profile.
+ * @param {Object}  productTypes          Product Types.
+ * @param {Object}  profileItems          Onboarding profile.
  * @param {boolean} includeInstalledItems Include installed items in returned product IDs.
- * @param {Array} installedPlugins Installed plugins.
+ * @param {Array}   installedPlugins      Installed plugins.
  * @return {Array} Product Ids.
  */
 export function getProductIdsForCart(
+	productTypes,
 	profileItems,
 	includeInstalledItems = false,
 	installedPlugins
@@ -49,7 +55,8 @@ export function getProductIdsForCart(
 	const productList = getProductList(
 		profileItems,
 		includeInstalledItems,
-		installedPlugins
+		installedPlugins,
+		productTypes
 	);
 	const productIds = productList.map(
 		( product ) => product.id || product.product
@@ -60,11 +67,13 @@ export function getProductIdsForCart(
 /**
  * Gets the labeled/categorized product names and types for items based on the product types and theme selected in the onboarding profiler.
  *
- * @param {Object} profileItems Onboarding profile.
- * @param {Array} installedPlugins Installed plugins.
+ * @param {Object} productTypes     Product Types.
+ * @param {Object} profileItems     Onboarding profile.
+ * @param {Array}  installedPlugins Installed plugins.
  * @return {Array} Objects with labeled/categorized product names and types.
  */
 export function getCategorizedOnboardingProducts(
+	productTypes,
 	profileItems,
 	installedPlugins
 ) {
@@ -72,12 +81,14 @@ export function getCategorizedOnboardingProducts(
 	productList.products = getProductList(
 		profileItems,
 		true,
-		installedPlugins
+		installedPlugins,
+		productTypes
 	);
 	productList.remainingProducts = getProductList(
 		profileItems,
 		false,
-		installedPlugins
+		installedPlugins,
+		productTypes
 	);
 
 	const uniqueItemsList = [
@@ -103,43 +114,46 @@ export function getCategorizedOnboardingProducts(
 /**
  * Gets a product list for items based on the product types and theme selected in the onboarding profiler.
  *
- * @param {Object} profileItems Onboarding profile.
+ * @param {Object}  profileItems          Onboarding profile.
  * @param {boolean} includeInstalledItems Include installed items in returned product list.
- * @param {Array} installedPlugins Installed plugins.
+ * @param {Array}   installedPlugins      Installed plugins.
+ * @param {Object}  productTypes          Product Types.
  * @return {Array} Products.
  */
 export function getProductList(
 	profileItems,
 	includeInstalledItems = false,
-	installedPlugins
+	installedPlugins,
+	productTypes
 ) {
-	const onboarding = getSetting( 'onboarding', {} );
 	const productList = [];
 
-	// The population of onboarding.productTypes only happens if the task list should be shown
-	// so bail early if it isn't present.
-	if ( ! onboarding.productTypes ) {
+	if ( ! productTypes ) {
 		return productList;
 	}
 
-	const productTypes = profileItems.product_types || [];
+	const profileItemsProductTypes = profileItems.product_types || [];
 
-	productTypes.forEach( ( productType ) => {
+	profileItemsProductTypes.forEach( ( productType ) => {
 		if (
-			onboarding.productTypes[ productType ] &&
-			onboarding.productTypes[ productType ].product &&
+			productTypes[ productType ] &&
+			productTypes[ productType ].product &&
 			( includeInstalledItems ||
 				! installedPlugins.includes(
-					onboarding.productTypes[ productType ].slug
+					productTypes[ productType ].slug
 				) )
 		) {
-			productList.push( onboarding.productTypes[ productType ] );
+			productList.push( productTypes[ productType ] );
 		}
 	} );
 
-	const theme = onboarding.themes.find(
-		( themeData ) => themeData.slug === profileItems.theme
-	);
+	const onboarding = getAdminSetting( 'onboarding', {} );
+	let theme = null;
+	if ( onboarding && onboarding.themes ) {
+		theme = onboarding.themes.find(
+			( themeData ) => themeData.slug === profileItems.theme
+		);
+	}
 
 	if (
 		theme &&

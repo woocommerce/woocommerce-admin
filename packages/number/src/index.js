@@ -4,8 +4,8 @@ const numberFormatter = require( 'locutus/php/strings/number_format' );
  * Number formatting configuration object
  *
  * @typedef {Object} NumberConfig
- * @property {number} [precision] Decimal precision.
- * @property {string} [decimalSeparator] Decimal separator.
+ * @property {number} [precision]         Decimal precision.
+ * @property {string} [decimalSeparator]  Decimal separator.
  * @property {string} [thousandSeparator] Character used to separate thousands groups.
  */
 
@@ -13,8 +13,8 @@ const numberFormatter = require( 'locutus/php/strings/number_format' );
  * Formats a number using site's current locale
  *
  * @see http://locutus.io/php/strings/number_format/
- * @param {NumberConfig} numberConfig Number formatting configuration object.
- * @param {number|string} number number to format
+ * @param {NumberConfig}  numberConfig Number formatting configuration object.
+ * @param {number|string} number       number to format
  * @return {string} A formatted string.
  */
 export function numberFormat(
@@ -50,8 +50,8 @@ export function numberFormat(
  *  - `type = 'number'` returns a formatted `String`
  *
  * @param {NumberConfig} numberConfig number formatting configuration object.
- * @param {string} type of number to format, `'average'` or `'number'`
- * @param {number} value to format.
+ * @param {string}       type         of number to format, `'average'` or `'number'`
+ * @param {number}       value        to format.
  * @return {string | number | null} A formatted string.
  */
 export function formatValue( numberConfig, type, value ) {
@@ -70,7 +70,7 @@ export function formatValue( numberConfig, type, value ) {
 /**
  * Calculates the delta/percentage change between two numbers.
  *
- * @param {number} primaryValue the value to calculate change for.
+ * @param {number} primaryValue   the value to calculate change for.
  * @param {number} secondaryValue the baseline which to calculdate the change against.
  * @return {?number} Percent change between the primaryValue from the secondaryValue.
  */

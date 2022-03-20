@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { MenuGroup, MenuItem } from '@wordpress/components';
 import { check } from '@wordpress/icons';
-import { Fragment, useEffect } from '@wordpress/element';
+import { Fragment, useEffect, lazy, Suspense } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { ONBOARDING_STORE_NAME, OPTIONS_STORE_NAME } from '@woocommerce/data';
 import { useExperiment } from '@woocommerce/explat';
@@ -13,15 +13,38 @@ import { recordEvent } from '@woocommerce/tracks';
 /**
  * Internal dependencies
  */
-import { DisplayOption } from '../header/activity-panel/display-options';
+import { DisplayOption } from '~/activity-panel/display-options';
 import { Task } from './task';
-import { TaskList } from './task-list';
 import { TasksPlaceholder } from './placeholder';
 import './tasks.scss';
+import { TaskListProps } from './task-list';
+import '../two-column-tasks/style.scss';
 
 export type TasksProps = {
-	query: { task: string };
+	query: { task?: string };
 };
+
+const TaskList = lazy(
+	() => import( /* webpackChunkName: "task-list" */ './task-list' )
+);
+
+const TwoColumnTaskList = lazy(
+	() =>
+		import(
+			/* webpackChunkName: "two-column-task-list" */ '../two-column-tasks/task-list'
+		)
+);
+
+function getTaskListComponent(
+	taskListId: string
+): React.LazyExoticComponent< React.FC< TaskListProps > > {
+	switch ( taskListId ) {
+		case 'setup_experiment_1':
+			return TwoColumnTaskList;
+		default:
+			return TaskList;
+	}
+}
 
 export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	const { task } = query;
@@ -60,28 +83,22 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 	};
 
 	const toggleTaskList = ( taskList ) => {
-		const { id, isHidden } = taskList;
+		const { id, eventPrefix, isHidden } = taskList;
 		const newValue = ! isHidden;
 
 		recordEvent(
-			newValue ? `${ id }_tasklist_hide` : `${ id }_tasklist_show`,
+			newValue ? `${ eventPrefix }hide` : `${ eventPrefix }show`,
 			{}
 		);
 
-		hideTaskList();
+		hideTaskList( id );
 	};
-
-	useEffect( () => {
-		document.body.classList.add( 'woocommerce-onboarding' );
-		document.body.classList.add( 'woocommerce-task-dashboard__body' );
-	}, [] );
 
 	useEffect( () => {
 		// @todo Update this when all task lists have been hidden or completed.
 		const taskListsFinished = false;
 		updateOptions( {
 			woocommerce_task_list_prompt_shown: true,
-			woocommerce_default_homepage_layout: 'two_columns',
 		} );
 	}, [ taskLists, isResolving ] );
 
@@ -107,54 +124,69 @@ export const Tasks: React.FC< TasksProps > = ( { query } ) => {
 		return <TasksPlaceholder query={ query } />;
 	}
 
-	return taskLists.map( ( taskList ) => {
-		const {
-			id,
-			isComplete,
-			isVisible,
-			isToggleable,
-			title,
-			tasks,
-		} = taskList;
+	return taskLists
+		.filter( ( { id } ) =>
+			experimentAssignment?.variationName === 'treatment'
+				? id.endsWith( 'two_column' )
+				: ! id.endsWith( 'two_column' )
+		)
+		.map( ( taskList ) => {
+			const {
+				id,
+				eventPrefix,
+				isComplete,
+				isHidden,
+				isVisible,
+				isToggleable,
+				title,
+				tasks,
+			} = taskList;
 
-		if ( ! isVisible ) {
-			return null;
-		}
+			if ( ! isVisible ) {
+				return null;
+			}
 
-		return (
-			<Fragment key={ id }>
-				<TaskList
-					id={ id }
-					isComplete={ isComplete }
-					isExpandable={
-						experimentAssignment?.variationName === 'treatment'
-					}
-					query={ query }
-					tasks={ tasks }
-					title={ title }
-				/>
-				{ isToggleable && (
-					<DisplayOption>
-						<MenuGroup
-							className="woocommerce-layout__homescreen-display-options"
-							label={ __( 'Display', 'woocommerce-admin' ) }
-						>
-							<MenuItem
-								className="woocommerce-layout__homescreen-extension-tasklist-toggle"
-								icon={ ! isHidden && check }
-								isSelected={ ! isHidden }
-								role="menuitemcheckbox"
-								onClick={ () => toggleTaskList( taskList ) }
+			const TaskListComponent = getTaskListComponent( id );
+
+			return (
+				<Fragment key={ id }>
+					<Suspense fallback={ null }>
+						<TaskListComponent
+							id={ id }
+							eventPrefix={ eventPrefix }
+							isComplete={ isComplete }
+							isExpandable={
+								experimentAssignment?.variationName ===
+								'treatment'
+							}
+							query={ query }
+							tasks={ tasks }
+							title={ title }
+							twoColumns={ false }
+						/>
+					</Suspense>
+					{ isToggleable && (
+						<DisplayOption>
+							<MenuGroup
+								className="woocommerce-layout__homescreen-display-options"
+								label={ __( 'Display', 'woocommerce-admin' ) }
 							>
-								{ __(
-									'Show things to do next',
-									'woocommerce-admin'
-								) }
-							</MenuItem>
-						</MenuGroup>
-					</DisplayOption>
-				) }
-			</Fragment>
-		);
-	} );
+								<MenuItem
+									className="woocommerce-layout__homescreen-extension-tasklist-toggle"
+									icon={ ! isHidden && check }
+									isSelected={ ! isHidden }
+									role="menuitemcheckbox"
+									onClick={ () => toggleTaskList( taskList ) }
+								>
+									{ __(
+										'Show things to do next',
+										'woocommerce-admin'
+									) }
+								</MenuItem>
+							</MenuGroup>
+						</DisplayOption>
+					) }
+				</Fragment>
+			);
+		} );
 };

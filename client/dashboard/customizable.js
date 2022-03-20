@@ -32,6 +32,17 @@ import {
 } from '../lib/currency-context';
 
 const DASHBOARD_FILTERS_FILTER = 'woocommerce_admin_dashboard_filters';
+
+/**
+ * @typedef {import('../analytics/report/index.js').filter} filter
+ */
+
+/**
+ * Add Report filters to the dashboard. None are added by default.
+ *
+ * @filter woocommerce_admin_dashboard_filters
+ * @param {Array.<filter>} filters Report filters.
+ */
 const filters = applyFilters( DASHBOARD_FILTERS_FILTER, [] );
 
 const mergeSectionsWithDefaults = ( prefSections ) => {
@@ -271,6 +282,7 @@ const CustomizableDashboard = ( { defaultDateRange, path, query } ) => {
 									section.key
 								) }
 								path={ path }
+								defaultDateRange={ defaultDateRange }
 								query={ query }
 								title={ section.title }
 								onMove={ partial( onMove, index ) }
@@ -310,10 +322,8 @@ export default compose(
 			SETTINGS_STORE_NAME
 		).getSetting( 'wc_admin', 'wcAdminSettings' );
 
-		const withSelectData = {
+		return {
 			defaultDateRange,
 		};
-
-		return withSelectData;
 	} )
 )( CustomizableDashboard );

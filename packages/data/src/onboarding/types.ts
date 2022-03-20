@@ -7,6 +7,7 @@ export type TaskType = {
 	isDismissable: boolean;
 	isDismissed: boolean;
 	isVisible: boolean;
+	isSnoozed: boolean;
 	isSnoozable: boolean;
 	snoozedUntil: number;
 	time: string;
@@ -20,4 +21,5 @@ export type TaskListType = {
 	isExpandable?: boolean;
 	tasks: TaskType[];
 	title: string;
+	eventPrefix: string;
 };

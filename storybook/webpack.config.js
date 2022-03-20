@@ -34,7 +34,7 @@ module.exports = ( storybookConfig ) => {
 
 	storybookConfig.resolve.alias[ '@woocommerce/settings' ] = path.resolve(
 		__dirname,
-		`../client/wc-admin-settings/index`
+		'./setting.mock.js'
 	);
 
 	storybookConfig.resolve.modules = [
@@ -44,28 +44,28 @@ module.exports = ( storybookConfig ) => {
 
 	storybookConfig.plugins.push(
 		...wcAdminWebpackConfig.plugins,
-		new CopyWebpackPlugin( [
-			{
-				from: path.resolve( __dirname, 'wordpress/css' ),
-				to: 'wordpress/css',
-			},
-			{
-				from: path.resolve(
-					__dirname,
-					`../packages/components/build-style/*.css`
-				),
-				to: `./component-css`,
-				flatten: true,
-			},
-			{
-				from: path.resolve(
-					__dirname,
-					`../packages/experimental/build-style/*.css`
-				),
-				to: `./experimental-css`,
-				flatten: true,
-			},
-		] )
+		new CopyWebpackPlugin( {
+			patterns: [
+				{
+					from: path.resolve( __dirname, 'wordpress/css' ),
+					to: 'wordpress/css/[name][ext]',
+				},
+				{
+					from: path.resolve(
+						__dirname,
+						`../packages/components/build-style/*.css`
+					),
+					to: `./component-css/[name][ext]`,
+				},
+				{
+					from: path.resolve(
+						__dirname,
+						`../packages/experimental/build-style/*.css`
+					),
+					to: `./experimental-css/[name][ext]`,
+				},
+			],
+		} )
 	);
 
 	return storybookConfig;

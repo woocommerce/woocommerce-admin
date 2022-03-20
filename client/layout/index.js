@@ -9,9 +9,7 @@ import { Router, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { get, isFunction, identity } from 'lodash';
 import { parse } from 'qs';
-import { Spinner } from '@woocommerce/components';
 import { getHistory, getQuery } from '@woocommerce/navigation';
-import { getSetting } from '@woocommerce/wc-admin-settings';
 import {
 	PLUGINS_STORE_NAME,
 	useUser,
@@ -30,6 +28,9 @@ import { Controller, getPages } from './controller';
 import { Header } from '../header';
 import Notices from './notices';
 import TransientNotices from './transient-notices';
+import { getAdminSetting } from '~/utils/admin-settings';
+import '~/activity-panel';
+import '~/mobile-banner';
 import './navigation';
 
 const StoreAlerts = lazy( () =>
@@ -51,7 +52,7 @@ export class PrimaryLayout extends Component {
 				id="woocommerce-layout__primary"
 			>
 				{ window.wcAdminFeatures[ 'store-alerts' ] && (
-					<Suspense fallback={ <Spinner /> }>
+					<Suspense fallback={ null }>
 						<StoreAlerts />
 					</Suspense>
 				) }
@@ -204,10 +205,10 @@ _Layout.propTypes = {
 	} ).isRequired,
 };
 
-const dataEndpoints = getSetting( 'dataEndpoints' );
+const dataEndpoints = getAdminSetting( 'dataEndpoints' );
 const Layout = compose(
 	withPluginsHydration( {
-		...getSetting( 'plugins', {} ),
+		...getAdminSetting( 'plugins', {} ),
 		jetpackStatus:
 			( dataEndpoints && dataEndpoints.jetpackStatus ) || false,
 	} ),
@@ -263,7 +264,7 @@ const _PageLayout = () => {
 export const PageLayout = compose(
 	window.wcSettings.admin
 		? withOptionsHydration( {
-				...getSetting( 'preloadOptions', {} ),
+				...getAdminSetting( 'preloadOptions', {} ),
 		  } )
 		: identity
 )( _PageLayout );
@@ -271,16 +272,16 @@ export const PageLayout = compose(
 const _EmbedLayout = () => (
 	<Layout
 		page={ {
-			breadcrumbs: getSetting( 'embedBreadcrumbs', [] ),
+			breadcrumbs: getAdminSetting( 'embedBreadcrumbs', [] ),
 		} }
 		isEmbedded
 	/>
 );
 
 export const EmbedLayout = compose(
-	getSetting( 'preloadOptions' )
+	getAdminSetting( 'preloadOptions' )
 		? withOptionsHydration( {
-				...getSetting( 'preloadOptions' ),
+				...getAdminSetting( 'preloadOptions' ),
 		  } )
 		: identity
 )( _EmbedLayout );

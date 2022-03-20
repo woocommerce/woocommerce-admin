@@ -1,7 +1,12 @@
 /**
+ * External dependencies
+ */
+import createSelector from 'rememo';
+
+/**
  * Internal dependencies
  */
-import { TaskListType } from './types';
+import { TaskType, TaskListType } from './types';
 import { WPDataSelectors, RuleProcessor } from '../types';
 
 export const getFreeExtensions = (
@@ -16,16 +21,45 @@ export const getProfileItems = (
 	return state.profileItems || {};
 };
 
-export const getTasksStatus = (
-	state: OnboardingState
-): TasksStatusState | Record< string, never > => {
-	return state.tasksStatus || {};
+const EMPTY_ARRAY: Product[] = [];
+
+export const getTaskLists = createSelector(
+	( state: OnboardingState ): TaskListType[] => {
+		return Object.values( state.taskLists );
+	},
+	( state: OnboardingState ) => [ state.taskLists ]
+);
+
+export const getTaskListsByIds = createSelector(
+	( state: OnboardingState, ids: string[] ): TaskListType[] => {
+		return ids.map( ( id ) => state.taskLists[ id ] );
+	},
+	( state: OnboardingState, ids: string[] ) =>
+		ids.map( ( id ) => state.taskLists[ id ] )
+);
+
+export const getTaskList = (
+	state: OnboardingState,
+	selector: string
+): TaskListType | undefined => {
+	return state.taskLists[ selector ];
 };
 
-const initialTaskLists: TaskListType[] = [];
-
-export const getTaskLists = ( state: OnboardingState ): TaskListType[] => {
-	return state.taskLists || initialTaskLists;
+export const getTask = (
+	state: OnboardingState,
+	selector: string
+): TaskType | undefined => {
+	return Object.keys( state.taskLists ).reduce(
+		( value: TaskType | undefined, listId: string ) => {
+			return (
+				value ||
+				state.taskLists[ listId ].tasks.find(
+					( task ) => task.id === selector
+				)
+			);
+		},
+		undefined
+	);
 };
 
 export const getPaymentGatewaySuggestions = (
@@ -52,10 +86,13 @@ export const getEmailPrefill = ( state: OnboardingState ): string => {
 	return state.emailPrefill || '';
 };
 
+export const getProductTypes = ( state: OnboardingState ): Product[] => {
+	return state.productTypes || EMPTY_ARRAY;
+};
+
 // Types
 export type OnboardingSelectors = {
 	getProfileItems: () => ReturnType< typeof getProfileItems >;
-	getTasksStatus: () => ReturnType< typeof getTasksStatus >;
 	getPaymentGatewaySuggestions: () => ReturnType<
 		typeof getPaymentGatewaySuggestions
 	>;
@@ -66,23 +103,13 @@ export type OnboardingSelectors = {
 export type OnboardingState = {
 	freeExtensions: ExtensionList[];
 	profileItems: ProfileItemsState;
-	taskLists: TaskListType[];
-	tasksStatus: TasksStatusState;
+	taskLists: Record< string, TaskListType >;
 	paymentMethods: PaymentMethodsState[];
+	productTypes: Product[];
 	emailPrefill: string;
 	// TODO clarify what the error record's type is
 	errors: Record< string, unknown >;
 	requesting: Record< string, boolean >;
-};
-
-export type TasksStatusState = {
-	automatedTaxSupportedCountries: string[];
-	hasHomepage: boolean;
-	hasProducts: boolean;
-	stylesheet: string;
-	taxJarActivated: boolean;
-	// TODO - fill out this type
-	themeMods: unknown;
 };
 
 export type Industry = {
@@ -123,6 +150,7 @@ export type ProfileItemsState = {
 	business_extensions: [  ] | null;
 	completed: boolean | null;
 	industry: Industry[] | null;
+	number_employees: string | null;
 	other_platform: OtherPlatformSlug | null;
 	other_platform_name: string | null;
 	product_count: ProductCount | null;
@@ -149,6 +177,12 @@ export type MethodFields = {
 	locales?: FieldLocale[];
 	type?: string;
 	value?: string;
+};
+
+export type Product = {
+	default?: boolean;
+	label: string;
+	product?: number;
 };
 
 export type PaymentMethodsState = {

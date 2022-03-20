@@ -34,7 +34,7 @@ export abstract class BasePage {
 		this.page = page;
 	}
 
-	getDropdownField( selector: string ) {
+	getDropdownField( selector: string ): DropdownField {
 		if ( ! this.dropDownElements[ selector ] ) {
 			this.dropDownElements[ selector ] = new DropdownField(
 				page,
@@ -45,7 +45,7 @@ export abstract class BasePage {
 		return this.dropDownElements[ selector ];
 	}
 
-	getDropdownTypeahead( selector: string ) {
+	getDropdownTypeahead( selector: string ): DropdownTypeaheadField {
 		if ( ! this.dropDownTypeAheadElements[ selector ] ) {
 			this.dropDownTypeAheadElements[
 				selector
@@ -55,7 +55,7 @@ export abstract class BasePage {
 		return this.dropDownTypeAheadElements[ selector ];
 	}
 
-	getFormToggle( selector: string ) {
+	getFormToggle( selector: string ): FormToggle {
 		if ( ! this.formToggleElements[ selector ] ) {
 			this.formToggleElements[ selector ] = new FormToggle(
 				page,
@@ -66,18 +66,30 @@ export abstract class BasePage {
 		return this.formToggleElements[ selector ];
 	}
 
-	async click( selector: string ) {
+	async click( selector: string ): Promise< void > {
 		await this.page.waitForSelector( selector );
 		await this.page.click( selector );
 	}
 
-	async clickButtonWithText( text: string ) {
+	async clickButtonWithText( text: string ): Promise< void > {
 		const el = await getElementByText( 'button', text );
 		await el?.click();
 	}
 
-	async setCheckboxWithLabel( labelText: string ) {
-		const checkbox = await getElementByText( 'label', labelText );
+	async clickElementWithText(
+		element: string,
+		text: string
+	): Promise< void > {
+		const el = await getElementByText( element, text );
+		await el?.click();
+	}
+
+	async setCheckboxWithText( text: string ): Promise< void > {
+		let checkbox = await getElementByText( 'label', text );
+
+		if ( ! checkbox ) {
+			checkbox = await getElementByText( 'span', text );
+		}
 
 		if ( checkbox ) {
 			const checkboxStatus = await (
@@ -88,13 +100,11 @@ export abstract class BasePage {
 				await checkbox.click();
 			}
 		} else {
-			throw new Error(
-				`Could not find checkbox with label "${ labelText }"`
-			);
+			throw new Error( `Could not find checkbox with text "${ text }"` );
 		}
 	}
 
-	async unsetAllCheckboxes( selector: string ) {
+	async unsetAllCheckboxes( selector: string ): Promise< void > {
 		const checkboxes = await page.$$( selector );
 		// Uncheck all checkboxes, to avoid installing plugins
 		for ( const checkbox of checkboxes ) {
@@ -103,7 +113,7 @@ export abstract class BasePage {
 		}
 	}
 
-	async setAllCheckboxes( selector: string ) {
+	async setAllCheckboxes( selector: string ): Promise< void > {
 		const checkboxes = await page.$$( selector );
 		// Uncheck all checkboxes, to avoid installing plugins
 		for ( const checkbox of checkboxes ) {
@@ -116,7 +126,7 @@ export abstract class BasePage {
 	async toggleCheckbox(
 		checkbox: ElementHandle< Element >,
 		checked: boolean
-	) {
+	): Promise< void > {
 		const checkboxStatus = await (
 			await checkbox.getProperty( 'checked' )
 		 ).jsonValue();
@@ -126,7 +136,7 @@ export abstract class BasePage {
 		}
 	}
 
-	async navigate() {
+	async navigate(): Promise< void > {
 		if ( ! this.url ) {
 			throw new Error( 'You must define a url for the page object' );
 		}
@@ -134,7 +144,7 @@ export abstract class BasePage {
 		await this.goto( this.url );
 	}
 
-	protected async goto( url: string ) {
+	protected async goto( url: string ): Promise< void > {
 		const fullUrl = baseUrl + url;
 		try {
 			await this.page.goto( fullUrl, {
@@ -142,9 +152,11 @@ export abstract class BasePage {
 				timeout: 10000,
 			} );
 		} catch ( e ) {
-			throw new Error(
-				`Could not navigate to url: ${ fullUrl } with error: ${ e.message }`
-			);
+			if ( e instanceof Error ) {
+				throw new Error(
+					`Could not navigate to url: ${ fullUrl } with error: ${ e.message }`
+				);
+			}
 		}
 	}
 }

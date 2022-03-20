@@ -14,9 +14,9 @@ export const defaultDateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
  * DateValue Object
  *
  * @typedef  {Object} DateValue - Describes the date range supplied by the date picker.
- * @property {string} label - The translated value of the period.
- * @property {string} range - The human readable value of a date range.
- * @property {moment.Moment} after - Start of the date range.
+ * @property {string}        label  - The translated value of the period.
+ * @property {string}        range  - The human readable value of a date range.
+ * @property {moment.Moment} after  - Start of the date range.
  * @property {moment.Moment} before - End of the date range.
  */
 
@@ -24,10 +24,10 @@ export const defaultDateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
  * DateParams Object
  *
  * @typedef {Object} DateParams - date parameters derived from query parameters.
- * @property {string} period - period value, ie `last_week`
- * @property {string} compare - compare valuer, ie previous_year
- * @param {moment.Moment|null} after - If the period supplied is "custom", this is the after date
- * @param {moment.Moment|null} before - If the period supplied is "custom", this is the before date
+ * @property {string}             period  - period value, ie `last_week`
+ * @property {string}             compare - compare valuer, ie previous_year
+ * @param    {moment.Moment|null} after   - If the period supplied is "custom", this is the after date
+ * @param    {moment.Moment|null} before  - If the period supplied is "custom", this is the before date
  */
 
 export const presetValues = [
@@ -58,8 +58,8 @@ export const periods = [
 /**
  * Adds timestamp to a string date.
  *
- * @param {moment.Moment} date - Date as a moment object.
- * @param {string} timeOfDay - Either `start`, `now` or `end` of the day.
+ * @param {moment.Moment} date      - Date as a moment object.
+ * @param {string}        timeOfDay - Either `start`, `now` or `end` of the day.
  * @return {string} - String date with timestamp attached.
  */
 export const appendTimestamp = ( date, timeOfDay ) => {
@@ -83,7 +83,7 @@ export const appendTimestamp = ( date, timeOfDay ) => {
  * Convert a string to Moment object
  *
  * @param {string} format - localized date string format
- * @param {string} str - date string
+ * @param {string} str    - date string
  * @return {Object|null} - Moment object representing given string
  */
 export function toMoment( format, str ) {
@@ -100,7 +100,7 @@ export function toMoment( format, str ) {
 /**
  * Given two dates, derive a string representation
  *
- * @param {Object} after - start date
+ * @param {Object} after  - start date
  * @param {Object} before - end date
  * @return {string} - text value for the supplied date range
  */
@@ -149,7 +149,7 @@ export function getStoreTimeZoneMoment() {
 /**
  * Get a DateValue object for a period prior to the current period.
  *
- * @param {string} period - the chosen period
+ * @param {string} period  - the chosen period
  * @param {string} compare - `previous_period` or `previous_year`
  * @return {DateValue} -  DateValue data about the selected period
  */
@@ -198,7 +198,7 @@ export function getLastPeriod( period, compare ) {
  * Get a DateValue object for a curent period. The period begins on the first day of the period,
  * and ends on the current day.
  *
- * @param {string} period - the chosen period
+ * @param {string} period  - the chosen period
  * @param {string} compare - `previous_period` or `previous_year`
  * @return {DateValue} -  DateValue data about the selected period
  */
@@ -233,9 +233,9 @@ export function getCurrentPeriod( period, compare ) {
  * Get a DateValue object for a period described by a period, compare value, and start/end
  * dates, for custom dates.
  *
- * @param {string} period - the chosen period
- * @param {string} compare - `previous_period` or `previous_year`
- * @param {Object} [after] - after date if custom period
+ * @param {string} period   - the chosen period
+ * @param {string} compare  - `previous_period` or `previous_year`
+ * @param {Object} [after]  - after date if custom period
  * @param {Object} [before] - before date if custom period
  * @return {DateValue} - DateValue data about the selected period
  */
@@ -296,10 +296,10 @@ const getDateValue = memoize(
 /**
  * Memoized internal logic of getDateParamsFromQuery().
  *
- * @param {string} period - period value, ie `last_week`
- * @param {string} compare - compare value, ie `previous_year`
- * @param {string} after - date in iso date format, ie `2018-07-03`
- * @param {string} before - date in iso date format, ie `2018-07-03`
+ * @param {string} period           - period value, ie `last_week`
+ * @param {string} compare          - compare value, ie `previous_year`
+ * @param {string} after            - date in iso date format, ie `2018-07-03`
+ * @param {string} before           - date in iso date format, ie `2018-07-03`
  * @param {string} defaultDateRange - the store's default date range
  * @return {Object} - date parameters derived from query parameters with added defaults
  */
@@ -333,11 +333,11 @@ const getDateParamsFromQueryMemoized = memoize(
 /**
  * Add default date-related parameters to a query object
  *
- * @param {Object} query - query object
- * @param {string} query.period - period value, ie `last_week`
- * @param {string} query.compare - compare value, ie `previous_year`
- * @param {string} query.after - date in iso date format, ie `2018-07-03`
- * @param {string} query.before - date in iso date format, ie `2018-07-03`
+ * @param {Object} query            - query object
+ * @param {string} query.period     - period value, ie `last_week`
+ * @param {string} query.compare    - compare value, ie `previous_year`
+ * @param {string} query.after      - date in iso date format, ie `2018-07-03`
+ * @param {string} query.before     - date in iso date format, ie `2018-07-03`
  * @param {string} defaultDateRange - the store's default date range
  * @return {DateParams} - date parameters derived from query parameters with added defaults
  */
@@ -359,12 +359,12 @@ export const getDateParamsFromQuery = (
 /**
  * Memoized internal logic of getCurrentDates().
  *
- * @param {string} period - period value, ie `last_week`
- * @param {string} compare - compare value, ie `previous_year`
- * @param {Object} primaryStart - primary query start DateTime, in Moment instance.
- * @param {Object} primaryEnd - primary query start DateTime, in Moment instance.
+ * @param {string} period         - period value, ie `last_week`
+ * @param {string} compare        - compare value, ie `previous_year`
+ * @param {Object} primaryStart   - primary query start DateTime, in Moment instance.
+ * @param {Object} primaryEnd     - primary query start DateTime, in Moment instance.
  * @param {Object} secondaryStart - primary query start DateTime, in Moment instance.
- * @param {Object} secondaryEnd - primary query start DateTime, in Moment instance.
+ * @param {Object} secondaryEnd   - primary query start DateTime, in Moment instance.
  * @return {{primary: DateValue, secondary: DateValue}} - Primary and secondary DateValue objects
  */
 const getCurrentDatesMemoized = memoize(
@@ -411,11 +411,11 @@ const getCurrentDatesMemoized = memoize(
 /**
  * Get Date Value Objects for a primary and secondary date range
  *
- * @param {Object} query - query object
- * @param {string} query.period - period value, ie `last_week`
- * @param {string} query.compare - compare value, ie `previous_year`
- * @param {string} query.after - date in iso date format, ie `2018-07-03`
- * @param {string} query.before - date in iso date format, ie `2018-07-03`
+ * @param {Object} query            - query object
+ * @param {string} query.period     - period value, ie `last_week`
+ * @param {string} query.compare    - compare value, ie `previous_year`
+ * @param {string} query.after      - date in iso date format, ie `2018-07-03`
+ * @param {string} query.before     - date in iso date format, ie `2018-07-03`
  * @param {string} defaultDateRange - the store's default date range
  * @return {{primary: DateValue, secondary: DateValue}} - Primary and secondary DateValue objects
  */
@@ -447,7 +447,7 @@ export const getCurrentDates = (
 /**
  * Calculates the date difference between two dates. Used in calculating a matching date for previous period.
  *
- * @param {string} date - Date to compare
+ * @param {string} date  - Date to compare
  * @param {string} date2 - Seconary date to compare
  * @return {number}  - Difference in days.
  */
@@ -460,10 +460,10 @@ export const getDateDifferenceInDays = ( date, date2 ) => {
 /**
  * Get the previous date for either the previous period of year.
  *
- * @param {string} date - Base date
- * @param {string} date1 - primary start
- * @param {string} date2 - secondary start
- * @param {string} compare - `previous_period`  or `previous_year`
+ * @param {string} date     - Base date
+ * @param {string} date1    - primary start
+ * @param {string} date2    - secondary start
+ * @param {string} compare  - `previous_period`  or `previous_year`
  * @param {string} interval - interval
  * @return {Object}  - Calculated date
  */
@@ -484,12 +484,17 @@ export const getPreviousDate = ( date, date1, date2, compare, interval ) => {
 /**
  * Returns the allowed selectable intervals for a specific query.
  *
- * @param  {Object} query Current query
+ * @param {Object} query            Current query
+ * @param {string} defaultDateRange - the store's default date range
  * @return {Array} Array containing allowed intervals.
  */
-export function getAllowedIntervalsForQuery( query ) {
+export function getAllowedIntervalsForQuery(
+	query,
+	defaultDateRange = 'period=&compare=previous_year'
+) {
+	const { period } = getDateParamsFromQuery( query, defaultDateRange );
 	let allowed = [];
-	if ( query.period === 'custom' ) {
+	if ( period === 'custom' ) {
 		const { primary } = getCurrentDates( query );
 		const differenceInDays = getDateDifferenceInDays(
 			primary.before,
@@ -509,7 +514,7 @@ export function getAllowedIntervalsForQuery( query ) {
 			allowed = [ 'hour', 'day' ];
 		}
 	} else {
-		switch ( query.period ) {
+		switch ( period ) {
 			case 'today':
 			case 'yesterday':
 				allowed = [ 'hour', 'day' ];
@@ -541,11 +546,15 @@ export function getAllowedIntervalsForQuery( query ) {
 /**
  * Returns the current interval to use.
  *
- * @param  {Object} query Current query
+ * @param {Object} query            Current query
+ * @param {string} defaultDateRange - the store's default date range
  * @return {string} Current interval.
  */
-export function getIntervalForQuery( query ) {
-	const allowed = getAllowedIntervalsForQuery( query );
+export function getIntervalForQuery(
+	query,
+	defaultDateRange = 'period=&compare=previous_year'
+) {
+	const allowed = getAllowedIntervalsForQuery( query, defaultDateRange );
 	const defaultInterval = allowed[ 0 ];
 	let current = query.interval || defaultInterval;
 	if ( query.interval && ! allowed.includes( query.interval ) ) {
@@ -558,7 +567,7 @@ export function getIntervalForQuery( query ) {
 /**
  * Returns the current chart type to use.
  *
- * @param {Object} query Current query
+ * @param {Object} query           Current query
  * @param {string} query.chartType
  * @return {string} Current chart type.
  */
@@ -575,13 +584,37 @@ export const defaultTableDateFormat = 'm/d/Y';
 
 /**
  * Returns date formats for the current interval.
- * See https://github.com/d3/d3-time-format for chart formats.
  *
- * @param  {string} interval Interval to get date formats for.
- * @param  {number}    [ticks] Number of ticks the axis will have.
+ * @param {string} interval      Interval to get date formats for.
+ * @param {number} [ticks]       Number of ticks the axis will have.
+ * @param {Object} [option]      Options
+ * @param {string} [option.type] Date format type, d3 or php, defaults to d3.
  * @return {string} Current interval.
  */
-export function getDateFormatsForInterval( interval, ticks = 0 ) {
+export function getDateFormatsForInterval(
+	interval,
+	ticks = 0,
+	option = { type: 'd3' }
+) {
+	switch ( option.type ) {
+		case 'php':
+			return getDateFormatsForIntervalPhp( interval, ticks );
+
+		case 'd3':
+		default:
+			return getDateFormatsForIntervalD3( interval, ticks );
+	}
+}
+
+/**
+ * Returns d3 date formats for the current interval.
+ * See https://github.com/d3/d3-time-format for chart formats.
+ *
+ * @param {string} interval Interval to get date formats for.
+ * @param {number} [ticks]  Number of ticks the axis will have.
+ * @return {string} Current interval.
+ */
+export function getDateFormatsForIntervalD3( interval, ticks = 0 ) {
 	let screenReaderFormat = '%B %-d, %Y';
 	let tooltipLabelFormat = '%B %-d, %Y';
 	let xFormat = '%Y-%m-%d';
@@ -612,10 +645,12 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 				xFormat = '%b';
 				x2Format = '%Y';
 			}
+			// eslint-disable-next-line @wordpress/i18n-translator-comments
 			screenReaderFormat = __(
 				'Week of %B %-d, %Y',
 				'woocommerce-admin'
 			);
+			// eslint-disable-next-line @wordpress/i18n-translator-comments
 			tooltipLabelFormat = __(
 				'Week of %B %-d, %Y',
 				'woocommerce-admin'
@@ -645,13 +680,85 @@ export function getDateFormatsForInterval( interval, ticks = 0 ) {
 }
 
 /**
+ * Returns php date formats for the current interval.
+ * See see https://www.php.net/manual/en/datetime.format.php.
+ *
+ * @param {string} interval Interval to get date formats for.
+ * @param {number} [ticks]  Number of ticks the axis will have.
+ * @return {string} Current interval.
+ */
+export function getDateFormatsForIntervalPhp( interval, ticks = 0 ) {
+	let screenReaderFormat = 'F j, Y';
+	let tooltipLabelFormat = 'F j, Y';
+	let xFormat = 'Y-m-d';
+	let x2Format = 'M Y';
+	let tableFormat = defaultTableDateFormat;
+
+	switch ( interval ) {
+		case 'hour':
+			screenReaderFormat = 'gA F j, Y';
+			tooltipLabelFormat = 'gA M j, Y';
+			xFormat = 'gA';
+			x2Format = 'M j, Y';
+			tableFormat = 'h A';
+			break;
+		case 'day':
+			if ( ticks < dayTicksThreshold ) {
+				xFormat = 'j';
+			} else {
+				xFormat = 'M';
+				x2Format = 'Y';
+			}
+			break;
+		case 'week':
+			if ( ticks < weekTicksThreshold ) {
+				xFormat = 'j';
+				x2Format = 'M Y';
+			} else {
+				xFormat = 'M';
+				x2Format = 'Y';
+			}
+
+			// Since some alphabet letters have php associated formats, we need to escape them first.
+			const escapedWeekOfStr = __(
+				'Week of',
+				'woocommerce-admin'
+			).replace( /(\w)/g, '\\$1' );
+
+			screenReaderFormat = `${ escapedWeekOfStr } F j, Y`;
+			tooltipLabelFormat = `${ escapedWeekOfStr } F j, Y`;
+			break;
+		case 'quarter':
+		case 'month':
+			screenReaderFormat = 'F Y';
+			tooltipLabelFormat = 'F Y';
+			xFormat = 'M';
+			x2Format = 'Y';
+			break;
+		case 'year':
+			screenReaderFormat = 'Y';
+			tooltipLabelFormat = 'Y';
+			xFormat = 'Y';
+			break;
+	}
+
+	return {
+		screenReaderFormat,
+		tooltipLabelFormat,
+		xFormat,
+		x2Format,
+		tableFormat,
+	};
+}
+
+/**
  * Gutenberg's moment instance is loaded with i18n values, which are
  * PHP date formats, ie 'LLL: "F j, Y g:i a"'. Override those with translations
  * of moment style js formats.
  *
- * @param {Object} config Locale config object, from store settings.
+ * @param {Object} config               Locale config object, from store settings.
  * @param {string} config.userLocale
- * @param {Array} config.weekdaysShort
+ * @param {Array}  config.weekdaysShort
  */
 export function loadLocaleData( { userLocale, weekdaysShort } ) {
 	// Don't update if the wp locale hasn't been set yet, like in unit tests, for instance.
@@ -684,18 +791,18 @@ export const dateValidationMessages = {
 
 /**
  * @typedef {Object} validatedDate
- * @property {Object|null} date - A resulting Moment date object or null, if invalid
- * @property {string} error - An optional error message if date is invalid
+ * @property {Object|null} date  - A resulting Moment date object or null, if invalid
+ * @property {string}      error - An optional error message if date is invalid
  */
 
 /**
  * Validate text input supplied for a date range.
  *
- * @param {string} type - Designate beginning or end of range, eg `before` or `after`.
- * @param {string} value - User input value
+ * @param {string}      type     - Designate beginning or end of range, eg `before` or `after`.
+ * @param {string}      value    - User input value
  * @param {Object|null} [before] - If already designated, the before date parameter
- * @param {Object|null} [after] - If already designated, the after date parameter
- * @param {string} format - The expected date format in a user's locale
+ * @param {Object|null} [after]  - If already designated, the after date parameter
+ * @param {string}      format   - The expected date format in a user's locale
  * @return {Object} validatedDate - validated date object
  */
 export function validateDateInputForRange(

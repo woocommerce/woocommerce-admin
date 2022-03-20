@@ -2,33 +2,85 @@
 
 namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
-use Automattic\WooCommerce\Admin\Features\Onboarding;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
+use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 
 /**
  * Shipping Task
  */
-class Shipping {
+class Shipping extends Task {
 	/**
-	 * Get the task arguments.
+	 * ID.
 	 *
-	 * @return array
+	 * @return string
 	 */
-	public static function get_task() {
-		return array(
-			'id'           => 'shipping',
-			'title'        => __( 'Set up shipping', 'woocommerce-admin' ),
-			'content'      => __(
-				"Set your store location and where you'll ship to.",
-				'woocommerce-admin'
-			),
-			'action_url'   => self::has_shipping_zones()
-				? admin_url( 'admin.php?page=wc-settings&tab=shipping' )
-				: null,
-			'action_label' => __( "Let's go", 'woocommerce-admin' ),
-			'is_complete'  => self::has_shipping_zones(),
-			'can_view'     => self::has_physical_products(),
-			'time'         => __( '1 minute', 'woocommerce-admin' ),
+	public function get_id() {
+		return 'shipping';
+	}
+
+	/**
+	 * Title.
+	 *
+	 * @return string
+	 */
+	public function get_title() {
+		if ( true === $this->get_parent_option( 'use_completed_title' ) ) {
+			if ( $this->is_complete() ) {
+				return __( 'You added shipping costs', 'woocommerce-admin' );
+			}
+			return __( 'Add shipping costs', 'woocommerce-admin' );
+		}
+		return __( 'Set up shipping', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Content.
+	 *
+	 * @return string
+	 */
+	public function get_content() {
+		return __(
+			"Set your store location and where you'll ship to.",
+			'woocommerce-admin'
 		);
+	}
+
+	/**
+	 * Time.
+	 *
+	 * @return string
+	 */
+	public function get_time() {
+		return __( '1 minute', 'woocommerce-admin' );
+	}
+
+	/**
+	 * Task completion.
+	 *
+	 * @return bool
+	 */
+	public function is_complete() {
+		return self::has_shipping_zones();
+	}
+
+	/**
+	 * Task visibility.
+	 *
+	 * @return bool
+	 */
+	public function can_view() {
+		return self::has_physical_products();
+	}
+
+	/**
+	 * Action URL.
+	 *
+	 * @return string
+	 */
+	public function get_action_url() {
+		return self::has_shipping_zones()
+			? admin_url( 'admin.php?page=wc-settings&tab=shipping' )
+			: null;
 	}
 
 	/**
@@ -46,7 +98,7 @@ class Shipping {
 	 * @return bool
 	 */
 	public static function has_physical_products() {
-		$profiler_data = get_option( Onboarding::PROFILE_DATA_OPTION, array() );
+		$profiler_data = get_option( OnboardingProfile::DATA_OPTION, array() );
 		$product_types = isset( $profiler_data['product_types'] ) ? $profiler_data['product_types'] : array();
 
 		return in_array( 'physical', $product_types, true ) ||

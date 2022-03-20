@@ -2,11 +2,6 @@
  * @jest-environment node
  */
 
-/**
- * External dependencies
- */
-import { getAdminLink } from '@woocommerce/wc-admin-settings';
-
 jest.mock( '@wordpress/data-controls', () => ( {
 	apiFetch: jest.fn(),
 } ) );
@@ -38,6 +33,10 @@ global.window = {
 		href: '',
 	} as Location,
 } as Window & typeof globalThis;
+
+function getAdminLink( path: string ) {
+	return path;
+}
 
 describe( 'installJetPackAndConnect', () => {
 	beforeEach( () => {
@@ -108,7 +107,7 @@ describe( 'connectToJetpack', () => {
 		);
 
 		connect.next();
-		connect.throw( 'Failed' );
+		connect.throw( new Error( 'Failed' ) );
 		connect.next();
 
 		expect( global.window.location.href ).toBe(
