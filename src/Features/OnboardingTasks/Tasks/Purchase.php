@@ -4,6 +4,7 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
+use Automattic\WooCommerce\Admin\PluginsHelper;
 
 /**
  * Purchase Task
@@ -204,7 +205,7 @@ class Purchase extends Task {
 			if ( 'themes' === $type && isset( $product_data[ $type ]['is_installed'] ) && false === $product_data[ $type ]['is_installed'] ) {
 				$remaining[] = $product_data[ $type ]['title'];
 			}
-			if ( ! in_array( $product_data[ $type ]['slug'], $installed, true ) ) {
+			if ( 'themes' !== $type && ! in_array( $product_data[ $type ]['slug'], $installed, true ) ) {
 				$remaining[] = $product_data[ $type ]['label'];
 			}
 		}
