@@ -547,8 +547,13 @@ class Onboarding {
 			$active_theme     = get_option( 'stylesheet' );
 
 			foreach ( $installed_themes as $slug => $theme ) {
-				$theme_data      = self::get_theme_data( $theme );
-				$themes[ $slug ] = $theme_data;
+				$theme_data = self::get_theme_data( $theme );
+				if ( isset( $themes[ $slug ] ) ) {
+					$themes[ $slug ]['is_installed'] = true;
+					$themes[ $slug ]['image']        = $theme_data['image'];
+				} else {
+					$themes[ $slug ] = $theme_data;
+				}
 			}
 
 			// Add the WooCommerce support tag for default themes that don't explicitly declare support.

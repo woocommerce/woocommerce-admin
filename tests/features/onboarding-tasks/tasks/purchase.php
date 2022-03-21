@@ -31,12 +31,16 @@ class WC_Tests_OnboardingTasks_Task_Purchase extends WC_Unit_Test_Case {
 		set_transient(
 			Onboarding::THEMES_TRANSIENT,
 			array(
-				'free'            => array( 'slug' => 'free' ),
+				'free'            => array(
+					'slug'         => 'free',
+					'is_installed' => false,
+				),
 				'paid'            => array(
-					'slug'  => 'paid',
-					'id'    => 12312,
-					'price' => '&#36;79.00',
-					'title' => 'theme title',
+					'slug'         => 'paid',
+					'id'           => 12312,
+					'price'        => '&#36;79.00',
+					'title'        => 'theme title',
+					'is_installed' => false,
 				),
 				'paid_installed'  => array(
 					'slug'         => 'paid_installed',
@@ -46,10 +50,11 @@ class WC_Tests_OnboardingTasks_Task_Purchase extends WC_Unit_Test_Case {
 					'is_installed' => true,
 				),
 				'free_with_price' => array(
-					'slug'  => 'free_with_price',
-					'id'    => 12312,
-					'price' => '&#36;0.00',
-					'title' => 'theme title',
+					'slug'         => 'free_with_price',
+					'id'           => 12312,
+					'price'        => '&#36;0.00',
+					'title'        => 'theme title',
+					'is_installed' => false,
 				),
 			)
 		);
