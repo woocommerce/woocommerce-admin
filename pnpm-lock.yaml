@@ -10724,7 +10724,7 @@ packages:
       postcss-value-parser: 4.2.0
       schema-utils: 2.7.1
       semver: 6.3.0
-      webpack: 5.70.0_webpack-cli@4.9.2
+      webpack: 5.70.0_webpack-cli@3.3.12
 
   /css-loader/5.2.7_webpack@5.70.0:
     resolution: {integrity: sha512-Q7mOvpBNBG7YrVGMxRxcBJZFL75o+cH2abNASdibkj/fffYD8qWbInZrD0S9ccI6vZclF3DsHE7njGlLtaHbhg==}
@@ -21290,7 +21290,7 @@ packages:
       sass: 1.49.9
       schema-utils: 3.1.1
       semver: 7.3.5
-      webpack: 5.70.0_webpack-cli@4.9.2
+      webpack: 5.70.0_webpack-cli@3.3.12
 
   /sass-loader/8.0.2_sass@1.49.9+webpack@4.46.0:
     resolution: {integrity: sha512-7o4dbSK8/Ol2KflEmSco4jTjQoV988bM82P9CZdmo9hR3RLnvNc0ufMNdMrB0caq38JQ/FgF4/7RcbcfKzxoFQ==}

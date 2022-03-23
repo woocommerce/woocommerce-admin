@@ -280,7 +280,7 @@
 		"webpack-rtl-plugin": "^2.0.0"
 	},
 	"engines": {
-		"node": ">=12.20.1 <15",
+		"node": "<17",
 		"pnpm": "^6.24.2"
 	}
 }
