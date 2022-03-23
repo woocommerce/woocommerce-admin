@@ -10,7 +10,7 @@ jobs:
               with:
                   access_token: ${{ github.token }}
             - name: Check out repository code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Determine changed files
               id: changed-files
               uses: wyrihaximus/github-action-files-in-commit@v1.0
