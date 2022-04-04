@@ -157,6 +157,14 @@ class WooCommercePayments extends Task {
 				'IE',
 				'IT',
 				'NZ',
+				'AT',
+				'BE',
+				'NL',
+				'PL',
+				'PT',
+				'CH',
+				'HK',
+				'SG',
 			),
 			true
 		);
