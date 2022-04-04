@@ -5,6 +5,7 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 use Automattic\WooCommerce\Admin\Features\Onboarding;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
 use Automattic\WooCommerce\Admin\PluginsHelper;
+use Automattic\WooCommerce\Admin\Features\PaymentGatewaySuggestions\Init as Suggestions;
 
 /**
  * WooCommercePayments Task
@@ -143,22 +144,12 @@ class WooCommercePayments extends Task {
 	 * @return bool
 	 */
 	public static function is_supported() {
-		return in_array(
-			WC()->countries->get_base_country(),
-			array(
-				'US',
-				'PR',
-				'AU',
-				'CA',
-				'DE',
-				'ES',
-				'FR',
-				'GB',
-				'IE',
-				'IT',
-				'NZ',
-			),
-			true
-		);
+		$suggestions = Suggestions::get_suggestions();
+		$woocommerce_payments_ids = preg_grep( '/^woocommerce_payments/', array_column( $suggestions, 'id' ) );
+
+		if ( false !== $woocommerce_payments_ids && 0 < count( $woocommerce_payments_ids ) ) {
+			return true;
+		}
+		return false;
 	}
 }
