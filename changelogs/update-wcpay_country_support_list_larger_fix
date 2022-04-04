@@ -1,0 +1,4 @@
+Significance: patch
+Type: Update
+
+Update is_supported logic of WooCommerce Payments to keep consistency with other payment data. #8518
