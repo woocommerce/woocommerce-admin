@@ -1,5 +1,14 @@
 # Testing instructions
 
+## 3.3.2
+
+### Update wcpay country support list
+
+-   Create a brand new store (e.g.: using JN).
+-   Start the Onboarding flow and make sure to set the country to Portugal
+-   During the Business Details, install WCPayments.
+-   After finishing the OBW the task `Get paid with WooCommerce Payments` should appear instead of the `Set up payments` task.
+
 ## 3.3.0
 
 ### Prompt a modal to save any unsaved changes in OBW
