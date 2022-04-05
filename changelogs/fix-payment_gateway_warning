@@ -1,0 +1,4 @@
+Significance: patch
+Type: Fix
+
+Fix PHP warning when default param is missing in payments spec. #8519
