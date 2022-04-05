@@ -1,3 +1,8 @@
+== 3.3.2 04/05/2022 == 
+
+- Fix: Fix PHP warning when default param is missing in payments spec. #8519
+- Update: Update country support list for WooCommerce Payments Task. #8517
+
 == 3.3.1 03/31/2022 == 
 
 - Fix: WCPayments task is not visible after installing the plugin #8514
