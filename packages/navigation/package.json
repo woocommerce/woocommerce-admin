@@ -28,7 +28,7 @@
 		"@wordpress/hooks": "^2.12.3",
 		"@wordpress/notices": "^3.3.2",
 		"@wordpress/url": "^3.4.1",
-		"history": "^4.10.1",
+		"history": "^5.0.0",
 		"qs": "^6.10.3"
 	},
 	"peerDependencies": {

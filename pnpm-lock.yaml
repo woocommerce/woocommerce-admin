@@ -142,7 +142,7 @@ importers:
       grunt: ^1.4.1
       grunt-checktextdomain: ^1.0.1
       grunt-wp-i18n: ^1.0.3
-      history: ^4.10.1
+      history: ^5.0.0
       husky: ^7.0.0
       jest: ^27.5.1
       jest-environment-jsdom: ~27.5.0
@@ -229,7 +229,7 @@ importers:
       github-label-sync: 2.0.2
       grapheme-splitter: 1.0.4
       gridicons: 3.4.0_react@17.0.2
-      history: 4.10.1
+      history: 5.3.0
       lodash: 4.17.21
       memize: 1.1.0
       memoize-one: 5.2.1
@@ -949,7 +949,7 @@ importers:
       '@wordpress/hooks': ^2.12.3
       '@wordpress/notices': ^3.3.2
       '@wordpress/url': ^3.4.1
-      history: ^4.10.1
+      history: ^5.0.0
       jest: ^27.5.1
       jest-cli: ^27.5.1
       qs: ^6.10.3
@@ -964,7 +964,7 @@ importers:
       '@wordpress/hooks': 2.12.3
       '@wordpress/notices': 3.3.2_react@17.0.2
       '@wordpress/url': 3.4.1
-      history: 4.10.1
+      history: 5.3.0
       qs: 6.10.3
     devDependencies:
       '@babel/core': 7.17.5
@@ -14133,7 +14133,6 @@ packages:
     resolution: {integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==}
     dependencies:
       '@babel/runtime': 7.17.2
-    dev: true
 
   /hjson/1.8.4:
     resolution: {integrity: sha1-C8j/sCGY0hjEm1iZGxH2BIUBHTY=}
