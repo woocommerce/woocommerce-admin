@@ -1,0 +1,4 @@
+Significance: minor
+Type: Enhancement
+
+Added a filter to change the Error message and allow developers to add custom text after each table row
