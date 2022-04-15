@@ -850,7 +850,7 @@ class DataStore extends SqlQuery {
 		if ( isset( $query_args['interval'] ) && '' !== $query_args['interval'] ) {
 			$interval = $query_args['interval'];
 			$this->clear_sql_clause( 'select' );
-			$this->add_sql_clause( 'select', TimeInterval::db_datetime_format( $interval, $table_name ) );
+			$this->add_sql_clause( 'select', TimeInterval::db_datetime_format( $interval, $table_name, $this->date_column_name ) );
 		}
 	}
 
